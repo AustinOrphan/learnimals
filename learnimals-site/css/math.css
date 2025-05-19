@@ -1,0 +1,47 @@
+/* math.css - additional styles for the Math page */
+
+input[type="number"] {
+  padding: 10px 15px;
+  font-size: 1.1rem;
+  border: 2px solid #6c5ce7;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+  margin: 10px auto;
+  display: block;
+  text-align: center;
+  background-color: #fdfcfb;
+}
+
+input[type="number"]:focus {
+  border-color: #00cec9;
+  background-color: #f0faff;
+  box-shadow: 0 0 10px rgba(0, 206, 201, 0.3);
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #6c5ce7;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #5a4dd6;
+  transform: scale(1.05);
+}
+
+#numberOutput {
+  margin-top: 15px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: #2d3436;
+  text-align: center;
+}

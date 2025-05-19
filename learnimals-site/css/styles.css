@@ -1,0 +1,162 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base styles */
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background-color: #fdf6e3;
+  color: #333;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: #1a73e8;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Header */
+header {
+  background-color: #ffeaa7;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 50px;
+}
+
+nav ul {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  font-weight: bold;
+  color: #2d3436;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #00b894;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #dfe6e9;
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+  color: #0984e3;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeIn 1s 0.5s forwards;
+}
+
+.cta-button {
+  padding: 10px 20px;
+  background-color: #00b894;
+  color: white;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  transition: background-color 0.3s;
+  animation: bounce 2s infinite;
+}
+
+.cta-button:hover {
+  background-color: #019875;
+}
+
+/* Features Section */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 30px;
+  background-color: #f1f2f6;
+}
+
+.feature-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 260px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.feature-card img {
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  color: #6c5ce7;
+  margin-bottom: 10px;
+}
+
+/* Footer */
+footer {
+  background-color: #ffeaa7;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #636e72;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 12px #81ecec;
+}

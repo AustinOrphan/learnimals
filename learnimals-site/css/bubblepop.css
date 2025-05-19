@@ -1,0 +1,15 @@
+.game-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#gameCanvas {
+  border: 3px solid #008cba;
+  background: #e0f7fa;
+  width: 90%;
+  max-width: 600px;
+  height: 400px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+}
