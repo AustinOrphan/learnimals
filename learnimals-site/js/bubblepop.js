@@ -7,6 +7,9 @@ canvas.height = 400;
 let bubbles = [];
 let currentQuestion = {};
 let score = 0;
+let message = ""; // Add this line for the feedback message
+let messageTimer = null; // Timer for clearing the message
+let messageColor = "#d9534f"; // Default color for wrong answer
 
 // Bubble object
 class Bubble {
@@ -16,7 +19,8 @@ class Bubble {
     this.radius = radius;
     this.answer = answer;
     this.isCorrect = isCorrect;
-    this.speed = Math.random() * 1 + 0.5;
+    this.speed = Math.random() * 0.75 + 1;
+    this.active = true;
   }
 
   draw() {
@@ -28,7 +32,7 @@ class Bubble {
     ctx.stroke();
     ctx.closePath();
     ctx.fillStyle = "#000";
-    ctx.font = "16px Arial";
+    ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
     ctx.textAlign = "center";
     ctx.fillText(this.answer, this.x, this.y + 5);
   }
@@ -36,6 +40,10 @@ class Bubble {
   update() {
     this.y -= this.speed;
     this.draw();
+    // Mark as inactive if out of canvas
+    if (this.y + this.radius < 0) {
+      this.active = false;
+    }
   }
 }
 
@@ -90,10 +98,19 @@ canvas.addEventListener("click", (e) => {
     if (distance < b.radius) {
       if (b.isCorrect) {
         score++;
+        message = "Correct! Well done!";
+        messageColor = "#5cb85c"; // Green color for correct answer
+        // Clear the bubbles and spawn new ones
         nextRound();
       } else {
-        alert("Oops! Try again.");
+        message = "Oops! Try again."; // Message disappears after 1 second
+        messageColor = "#d9534f"; // Red color for wrong answer
       }
+      // Clear previous message timer if it exists
+      clearTimeout(messageTimer);
+      messageTimer = setTimeout(() => {
+        message = "";
+      }, 1000);
       break;
     }
   }
@@ -107,13 +124,44 @@ function nextRound() {
 // Game loop
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.font = "20px Arial";
+  ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
   ctx.fillStyle = "#333";
-  ctx.fillText(`Score: ${score}`, 40, 35);
-  ctx.fillText(`Solve: ${currentQuestion.text}`, 55, 60);
+  ctx.textAlign = "left";
+  ctx.fillText(`Score: ${score}`, 10, 35);
+  ctx.fillText(`Solve: ${currentQuestion.text}`, 10, 60);
 
+    // Draw message if present
+  if (message) {
+    ctx.font = "24px Comic Sans MS, Comic Sans, cursive";
+    ctx.fillStyle = messageColor;
+    ctx.textAlign = "center";
+    ctx.fillText(message, canvas.width / 2, 100);
+    ctx.textAlign = "left"; // Reset alignment
+  }
 
-  bubbles.forEach((b) => b.update());
+  // Update bubbles and check for missed correct answer
+  let missedCorrect = false;
+  bubbles.forEach((b) => {
+    b.update();
+    if (!b.active && b.isCorrect) {
+      missedCorrect = true;
+    }
+  });
+
+  // Remove inactive bubbles
+  bubbles = bubbles.filter(b => b.active);
+
+  // If the correct bubble was missed, show message and start next round
+  if (missedCorrect) {
+    message = "Oops! The correct answer got away!";
+    messageColor = "#d9534f";
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(() => {
+      message = "";
+    }, 1000);
+    nextRound();
+  }
+  
   requestAnimationFrame(animate);
 }
 
