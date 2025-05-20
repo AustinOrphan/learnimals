@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Create art with Leo the Lion - Fun art projects and activities for kids" />
+  <meta name="description" content="Fun art activities, games, and tutorials with Leo the Lion!" />
   <title>Art with Leo - Learnimals</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/subjects/art.css" />
   <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon">
   <link rel="manifest" href="../manifest.json">
 </head>
@@ -17,9 +17,7 @@
       </a>
     </div>
     <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </div>
     <nav aria-label="Main navigation">
       <ul id="nav-menu">
@@ -37,31 +35,38 @@
 
   <main>
     <section class="hero">
-      <h1>Art with Leo the Lion</h1>
-      <p>Express your creativity with fun art projects, drawing tutorials, and colorful activities!</p>
-      <div class="hero-image">
-        <img src="../assets/images/art-lion.png" alt="Leo the Lion" />
+      <h1>🎨 Art with Leo the Lion</h1>
+      <p>Let your imagination run wild with art projects, games, and drawing fun!</p>
+      <img src="../assets/images/art-lion.png" alt="Leo the Lion" class="hero-image" />
+    </section>
+
+    <section class="games-section">
+      <h2>🎮 Art Games</h2>
+      <ul class="games-list">
+        <li><a href="#">Color Match Game</a></li>
+        <li><a href="#">Leo's Shape Builder</a></li>
+        <li><a href="#">Memory Art Challenge</a></li>
+      </ul>
+    </section>
+
+    <section class="canvas-section">
+      <h2>🖌️ Draw with Leo</h2>
+      <canvas id="drawCanvas" width="500" height="400"></canvas>
+      <div class="canvas-controls">
+        <input type="color" id="colorPicker" value="#ff6600" />
+        <button onclick="clearCanvas()">Clear</button>
       </div>
     </section>
 
-    <div class="art-container" style="max-width: 900px; margin: 0 auto; padding: 20px;">
-      <section style="background-color: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 30px; margin-bottom: 40px;">
-        <h2>Coming Soon: Creative Art Projects</h2>
-        <p>Leo is gathering amazing art supplies and creative ideas! Check back soon to explore:</p>
-        
-        <ul style="list-style-type: disc; margin-left: 20px; line-height: 1.6;">
-          <li>Step-by-step drawing tutorials</li>
-          <li>Colorful crafts you can make at home</li>
-          <li>Digital art activities</li>
-          <li>Famous artist spotlights</li>
-          <li>Art history for kids</li>
-        </ul>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <img src="../assets/images/art-lion.png" alt="Leo the Lion" style="width: 200px; height: 200px; border-radius: 50%;" />
-        </div>
-      </section>
-    </div>
+    <section class="color-theory">
+      <h2>🌈 Kid-Friendly Color Theory</h2>
+      <p>Did you know you can mix <strong>blue + yellow = green</strong>? Learn about:</p>
+      <ul>
+        <li>Primary & Secondary Colors</li>
+        <li>Warm vs. Cool Colors</li>
+        <li>Shades and Tints</li>
+      </ul>
+    </section>
   </main>
 
   <footer>
@@ -75,32 +80,6 @@
     </div>
   </footer>
 
-  <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu').addEventListener('click', function() {
-      document.getElementById('nav-menu').classList.toggle('active');
-      this.classList.toggle('active');
-      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
-      this.setAttribute('aria-expanded', !expanded);
-    });
-    
-    // Theme toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const themeToggle = document.querySelector('#theme-toggle');
-      if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-          if (window.themeManager) {
-            const currentTheme = window.themeManager.getCurrentTheme();
-            const nextTheme = currentTheme === 'night' ? 'default' : 'night';
-            window.themeManager.applyTheme(nextTheme);
-          } else {
-            document.body.classList.toggle('dark-theme');
-          }
-        });
-      }
-    });
-  </script>
-  <script type="module" src="../js/utils/themeManager.js"></script>
-  <script type="module" src="../js/components/themeSwitcher.js"></script>
+  <script src="../js/art.js"></script>
 </body>
 </html>

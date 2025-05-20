@@ -6,8 +6,55 @@
   <meta name="description" content="Learn science with Sky the Parrot - Fun science experiments and facts for kids" />
   <title>Science with Sky - Learnimals</title>
   <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon">
-  <link rel="manifest" href="../manifest.json">
+  <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="../manifest.json" />
+  <style>
+    .section-box {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+
+    .science-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .fact-hover span {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      background: #e0f7fa;
+      border-radius: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .fact-hover span:hover {
+      background: #b2ebf2;
+    }
+
+    .quiz-question {
+      margin: 15px 0;
+    }
+
+    .quiz-question input[type="radio"] {
+      margin-right: 8px;
+    }
+
+    .rocket {
+      width: 80px;
+      animation: floatRocket 3s ease-in-out infinite;
+    }
+
+    @keyframes floatRocket {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -17,9 +64,7 @@
       </a>
     </div>
     <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </div>
     <nav aria-label="Main navigation">
       <ul id="nav-menu">
@@ -37,29 +82,58 @@
 
   <main>
     <section class="hero">
-      <h1>Science with Sky the Parrot</h1>
+      <h1>🔬 Science with Sky the Parrot</h1>
       <p>Explore amazing experiments, fascinating facts, and discover the wonders of science!</p>
       <div class="hero-image">
         <img src="../assets/images/science-parrot.png" alt="Sky the Parrot" />
       </div>
     </section>
 
-    <div class="science-container" style="max-width: 900px; margin: 0 auto; padding: 20px;">
-      <section style="background-color: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 30px; margin-bottom: 40px;">
-        <h2>Coming Soon: Fun Science Experiments</h2>
-        <p>Sky is preparing some exciting science experiments and activities for you! Check back soon to explore:</p>
-        
-        <ul style="list-style-type: disc; margin-left: 20px; line-height: 1.6;">
+    <div class="science-container">
+      <section class="section-box">
+        <h2>🧪 Coming Soon: Science Experiments</h2>
+        <ul style="line-height: 1.6;">
           <li>Simple experiments you can do at home</li>
           <li>Amazing facts about animals and nature</li>
           <li>Space exploration activities</li>
           <li>Environmental science projects</li>
           <li>Interactive quizzes and games</li>
         </ul>
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <img src="../assets/images/science-parrot.png" alt="Sky the Parrot" style="width: 200px; height: 200px; border-radius: 50%;" />
+      </section>
+
+      <section class="section-box">
+        <h2>🌍 Did You Know?</h2>
+        <div class="fact-hover">
+          <span>Octopuses have three hearts and blue blood!</span>
+          <span>Lightning is hotter than the surface of the sun!</span>
+          <span>Whales can hold their breath for over an hour.</span>
         </div>
+      </section>
+
+      <section class="section-box">
+        <h2>🚀 Sky's Space Zone</h2>
+        <p>Sky loves space! Watch the rocket float:</p>
+        <div style="text-align:center; margin-top: 20px;">
+          <img src="../assets/images/rocket.png" alt="Floating Rocket" class="rocket" />
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>🧠 Mini Quiz: Test Your Science Smarts!</h2>
+        <form onsubmit="return checkQuiz();">
+          <div class="quiz-question">
+            <p>1. What planet is known as the Red Planet?</p>
+            <label><input type="radio" name="q1" value="Mars" /> Mars</label><br>
+            <label><input type="radio" name="q1" value="Venus" /> Venus</label>
+          </div>
+          <div class="quiz-question">
+            <p>2. What do plants need to make food?</p>
+            <label><input type="radio" name="q2" value="Sunlight" /> Sunlight</label><br>
+            <label><input type="radio" name="q2" value="Juice" /> Juice</label>
+          </div>
+          <button type="submit" style="margin-top: 10px;">Check Answers</button>
+          <p id="quiz-result" style="margin-top: 10px; font-weight: bold;"></p>
+        </form>
       </section>
     </div>
   </main>
@@ -76,19 +150,19 @@
   </footer>
 
   <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu').addEventListener('click', function() {
+    // Mobile menu
+    document.getElementById('mobile-menu').addEventListener('click', function () {
       document.getElementById('nav-menu').classList.toggle('active');
       this.classList.toggle('active');
       const expanded = this.getAttribute('aria-expanded') === 'true' || false;
       this.setAttribute('aria-expanded', !expanded);
     });
-    
-    // Theme toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
+
+    // Theme toggle
+    document.addEventListener('DOMContentLoaded', function () {
       const themeToggle = document.querySelector('#theme-toggle');
       if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
+        themeToggle.addEventListener('click', function () {
           if (window.themeManager) {
             const currentTheme = window.themeManager.getCurrentTheme();
             const nextTheme = currentTheme === 'night' ? 'default' : 'night';
@@ -99,7 +173,26 @@
         });
       }
     });
+
+    // Quiz logic
+    function checkQuiz() {
+      const q1 = document.querySelector('input[name="q1"]:checked');
+      const q2 = document.querySelector('input[name="q2"]:checked');
+      const result = document.getElementById('quiz-result');
+
+      if (!q1 || !q2) {
+        result.textContent = 'Please answer all questions!';
+        result.style.color = 'red';
+        return false;
+      }
+
+      const correct = q1.value === 'Mars' && q2.value === 'Sunlight';
+      result.textContent = correct ? 'Great job! 🎉 You got them right!' : 'Oops! Try again!';
+      result.style.color = correct ? 'green' : 'orange';
+      return false;
+    }
   </script>
+
   <script type="module" src="../js/utils/themeManager.js"></script>
   <script type="module" src="../js/components/themeSwitcher.js"></script>
 </body>
