@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Fun math tools and games for children featuring Mango the Shark" />
   <title>Math Tools - Learnimals</title>
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="stylesheet" href="../css/math.css" />
@@ -11,16 +12,24 @@
 <body>
   <header>
     <div class="logo">
-      <img src="../assets/images/logo.png" alt="Learnimals Logo" />
+      <a href="../index.html">
+        <img src="../assets/images/logo.png" alt="Learnimals Logo" />
+      </a>
     </div>
-    <nav>
-      <ul>
+    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav aria-label="Main navigation">
+      <ul id="nav-menu">
         <li><a href="../index.html">Home</a></li>
-        <li><a href="math.html">Math</a></li>
+        <li><a href="math.html" aria-current="page">Math</a></li>
         <li><a href="science.html">Science</a></li>
         <li><a href="reading.html">Reading</a></li>
         <li><a href="art.html">Art</a></li>
         <li><a href="../about.html">About</a></li>
+        <li><a href="../profile.html">My Profile</a></li>
       </ul>
     </nav>
   </header>
@@ -35,15 +44,17 @@
       <div class="feature-card">
         <h3>Number to Words</h3>
         <p>Enter a number and get the name!</p>
-        <input type="number" id="numberInput" placeholder="Enter a number..." />
+        <label for="numberInput" class="sr-only">Enter a number</label>
+        <input type="number" id="numberInput" placeholder="Enter a number..." aria-describedby="numberHint" />
+        <div id="numberHint" class="sr-only">Enter a positive whole number to see how it's written in words</div>
         <button onclick="convertNumber()">Convert</button>
-        <p id="numberOutput" style="margin-top: 10px;"></p>
+        <p id="numberOutput" style="margin-top: 10px;" aria-live="polite"></p>
       </div>
 
       <div class="feature-card">
-        <h3>Mango’s Bubble Pop</h3>
+        <h3>Mango's Bubble Pop</h3>
         <p>Pop bubbles with the right math answer to help Mango learn!</p>
-        <a href="bubblepop.html"><button>Play Now</button></a>
+        <a href="bubblepop.html" class="game-link"><button>Play Now</button></a>
       </div>
 
       <div class="feature-card">
@@ -55,6 +66,22 @@
 
   <footer>
     <p>&copy; 2025 Learnimals. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="../about.html">About Us</a>
+      <a href="../contact.html">Contact</a>
+      <a href="#" aria-label="Read our privacy policy">Privacy Policy</a>
+      <a href="../profile.html">My Profile</a>
+    </div>
   </footer>
+
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu').addEventListener('click', function() {
+      document.getElementById('nav-menu').classList.toggle('active');
+      this.classList.toggle('active');
+      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+      this.setAttribute('aria-expanded', !expanded);
+    });
+  </script>
 </body>
 </html>

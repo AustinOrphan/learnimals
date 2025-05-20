@@ -1,0 +1,242 @@
+/* Reading page specific styles */
+
+.reading-container {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.reading-section {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.story-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-left: 5px solid #e056fd;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.story-card h3 {
+  color: #6c5ce7;
+  margin-bottom: 10px;
+}
+
+.story-preview {
+  color: #2d3436;
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+}
+
+.story-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #636e72;
+}
+
+.story-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.story-button {
+  padding: 8px 15px;
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.story-button:hover {
+  background-color: #5a4dd6;
+  transform: scale(1.05);
+}
+
+.story-button.outline {
+  background-color: transparent;
+  border: 2px solid #6c5ce7;
+  color: #6c5ce7;
+}
+
+.story-button.outline:hover {
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+.word-scramble-container {
+  margin-top: 30px;
+  border-top: 2px dashed #e2e8f0;
+  padding-top: 20px;
+}
+
+.reading-level {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: #ffeaa7;
+  color: #2d3436;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.reading-level.beginner {
+  background-color: #c8fcea;
+}
+
+.reading-level.intermediate {
+  background-color: #ffeaa7;
+}
+
+.reading-level.advanced {
+  background-color: #fab1a0;
+}
+
+.story-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* Word Scramble Game specific styles */
+.game-container {
+  padding: 20px;
+  background-color: #f0f7ff;
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+/* Story modal styles */
+.story-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: white;
+  margin: 30px auto;
+  padding: 30px;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 15px;
+  position: relative;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 30px;
+  cursor: pointer;
+  color: #636e72;
+  transition: color 0.2s;
+}
+
+.close-modal:hover {
+  color: #e74c3c;
+}
+
+.story-title {
+  color: #6c5ce7;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.story-image {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: 250px;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  border-radius: 10px;
+}
+
+.story-content {
+  margin-bottom: 30px;
+}
+
+.story-questions {
+  background-color: #f5f6fa;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.question {
+  margin-bottom: 20px;
+}
+
+.question p {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #dfe4ea;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.option:hover {
+  background-color: #e2e8f0;
+}
+
+.option.selected {
+  background-color: #c8fcea;
+  border-color: #00b894;
+}
+
+@media (max-width: 768px) {
+  .story-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .story-button {
+    width: 100%;
+  }
+  
+  .modal-content {
+    padding: 20px 15px;
+    margin: 10px auto;
+  }
+  
+  .story-meta {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

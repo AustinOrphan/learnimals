@@ -12,12 +12,24 @@
 <body>
   <header>
     <div class="logo">
-      <img src="../assets/images/logo.png" alt="Learnimals Logo" />
+      <a href="../index.html">
+        <img src="../assets/images/logo.png" alt="Learnimals Logo" />
+      </a>
     </div>
-    <nav>
-      <ul>
+    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <nav aria-label="Main navigation">
+      <ul id="nav-menu">
         <li><a href="../index.html">Home</a></li>
         <li><a href="math.html">Math</a></li>
+        <li><a href="science.html">Science</a></li>
+        <li><a href="reading.html">Reading</a></li>
+        <li><a href="art.html">Art</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../profile.html">My Profile</a></li>
       </ul>
     </nav>
   </header>
@@ -40,6 +52,41 @@
 
   <footer>
     <p>&copy; 2025 Learnimals. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="../about.html">About Us</a>
+      <a href="../contact.html">Contact</a>
+      <a href="#">Privacy Policy</a>
+      <a href="../profile.html">My Profile</a>
+      <button id="theme-toggle" aria-label="Toggle dark mode">Theme</button>
+    </div>
   </footer>
+
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu').addEventListener('click', function() {
+      document.getElementById('nav-menu').classList.toggle('active');
+      this.classList.toggle('active');
+      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+      this.setAttribute('aria-expanded', !expanded);
+    });
+    
+    // Theme toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const themeToggle = document.querySelector('#theme-toggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+          if (window.themeManager) {
+            const currentTheme = window.themeManager.getCurrentTheme();
+            const nextTheme = currentTheme === 'night' ? 'default' : 'night';
+            window.themeManager.applyTheme(nextTheme);
+          } else {
+            document.body.classList.toggle('dark-theme');
+          }
+        });
+      }
+    });
+  </script>
+  <script type="module" src="../js/utils/themeManager.js"></script>
+  <script type="module" src="../js/components/themeSwitcher.js"></script>
 </body>
 </html>
