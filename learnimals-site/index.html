@@ -17,39 +17,17 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffeaa7">
   <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="css/navbar.css" />
   <link rel="stylesheet" href="css/styles.css" />
-  <script defer src="js/main.js"></script>
-  <script defer src="js/themeInitializer.js"></script>
-</head>
   <link rel="preload" href="assets/images/logo.png" as="image">
   <link rel="preload" href="assets/images/math-shark.png" as="image">
   <link rel="preload" href="assets/images/science-parrot.png" as="image">
   <link rel="preload" href="assets/images/reading-panda.png" as="image">
   <link rel="preload" href="assets/images/art-lion.png" as="image">
 </head>
+
 <body>
-  <header>
-    <div class="logo">
-      <a href="index.html">
-        <img src="assets/images/logo.png" alt="Learnimals Logo" />
-      </a>
-    </div>
-    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <nav aria-label="Main navigation">
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="subjects/math.html">Math</a></li>
-        <li><a href="subjects/science.html">Science</a></li>
-        <li><a href="subjects/reading.html">Reading</a></li>
-        <li><a href="subjects/art.html">Art</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div id="navbar-placeholder"></div>
 
   <main>
     <section class="hero">
@@ -111,25 +89,30 @@
         "priceCurrency": "USD"
       }
     };
-    
+
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.text = JSON.stringify(structuredData);
     document.head.appendChild(script);
-    
+
     // Register the service worker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
+      window.addEventListener('load', function () {
         navigator.serviceWorker.register('./serviceWorker.js')
-          .then(function(registration) {
+          .then(function (registration) {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log('ServiceWorker registration failed: ', error);
           });
       });
     }
   </script>
+
+  <!-- ✅ Load universal navbar component -->
+  <script src="js/components/navbarLoader.js" defer></script>
+
+  <!-- Other scripts -->
   <script src="js/components/navigation.js"></script>
   <script type="module" src="js/utils/themeManager.js"></script>
   <script type="module" src="js/components/themeSwitcher.js"></script>
