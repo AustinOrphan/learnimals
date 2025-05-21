@@ -552,11 +552,6 @@ nav a:hover {
     background-color: var(--background-color);
 }
 
-/* [data-theme="night"] .features,
-.theme-mode-dark .features {
-    background-color: var(--background-color);
-} */
-
 .feature-card {
     background-color: var(--background-color-alt);
     border-radius: 20px;
@@ -565,6 +560,7 @@ nav a:hover {
     width: 260px;
     text-align: center;
     position: relative;
+    overflow: hidden;
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease,
@@ -582,9 +578,9 @@ nav a:hover {
     background-color: var(--accent-color-alt);
 }
 
-.feature-card.alt:hover, .feature-card:hover {
+.feature-card.alt:hover,
+.feature-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     background-color: var(--accent-color);
 }
 
@@ -592,6 +588,8 @@ nav a:hover {
     height: 120px;
     object-fit: contain;
     margin-bottom: 10px;
+    position: relative;
+    z-index: 100;
 }
 
 .feature-card h3,
@@ -626,11 +624,6 @@ footer {
     flex-shrink: 0;
     margin-top: auto;
 }
-
-/* [data-theme="night"] footer,
-.theme-mode-dark footer {
-    color: var(--color-gray-200);
-} */
 
 .footer-links {
     margin-top: 10px;
@@ -767,12 +760,25 @@ footer {
     }
 }
 
-.hover-glow:hover {
-    box-shadow: 0 0 12px var(--primary-color);
+@keyframes glowPulse {
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 var(--primary-color),
+            2px 5px 10px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow:
+            0 0 12px var(--primary-color),
+            2px 5px 10px rgba(0, 0, 0, 0.5);
+    }
 }
 
-.theme-mode-dark .hover-glow:hover {
-    box-shadow: 0 0 12px var(--primary-color);
+.hover-glow:hover {
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+    animation:
+        fadeIn 0.5s 0s,
+        glowPulse 1s 0.5s infinite;
 }
 
 /* Media Queries for Responsiveness */
