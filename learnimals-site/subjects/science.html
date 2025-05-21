@@ -1,94 +1,146 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Learn science with Sky the Parrot - Fun science experiments and facts for kids" />
-  <title>Science with Sky - Learnimals</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="stylesheet" href="../css/navbar.css" />
-  <link rel="stylesheet" href="../css/subjects/science.css" />
-  <link rel="icon" href="../assets/images/favicon.ico" type="image/x-icon" />
-  <link rel="manifest" href="../manifest.json" />
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Learn science with Sky the Parrot - Fun science experiments and facts for kids"
+        />
+        <title>Science with Sky - Learnimals</title>
+        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
+        <link
+            rel="stylesheet"
+            href="/learnimals-site/css/subjects/science.css"
+        />
+        <link
+            rel="icon"
+            href="/learnimals-site/assets/images/favicon.ico"
+            type="image/x-icon"
+        />
+        <link rel="manifest" href="/learnimals-site/manifest.json" />
+    </head>
+    <body>
+        <!-- Dynamic navbar load -->
+        <div id="navbar-placeholder"></div>
 
-  <!-- Dynamic navbar load -->
-  <div id="navbar-placeholder"></div>
+        <main>
+            <section class="hero">
+                <h1>🔬 Science with Sky the Parrot</h1>
+                <p>
+                    Explore amazing experiments, fascinating facts, and discover
+                    the wonders of science!
+                </p>
+                <div class="hero-image">
+                    <img
+                        src="/learnimals-site/assets/images/science-parrot.png"
+                        alt="Sky the Parrot"
+                    />
+                </div>
+            </section>
 
-  <main>
-    <section class="hero">
-      <h1>🔬 Science with Sky the Parrot</h1>
-      <p>Explore amazing experiments, fascinating facts, and discover the wonders of science!</p>
-      <div class="hero-image">
-        <img src="../assets/images/science-parrot.png" alt="Sky the Parrot" />
-      </div>
-    </section>
+            <div class="science-container">
+                <section class="section-box">
+                    <h2>🧪 Coming Soon: Science Experiments</h2>
+                    <ul style="line-height: 1.6">
+                        <li>Simple experiments you can do at home</li>
+                        <li>Amazing facts about animals and nature</li>
+                        <li>Space exploration activities</li>
+                        <li>Environmental science projects</li>
+                        <li>Interactive quizzes and games</li>
+                    </ul>
+                </section>
 
-    <div class="science-container">
-      <section class="section-box">
-        <h2>🧪 Coming Soon: Science Experiments</h2>
-        <ul style="line-height: 1.6">
-          <li>Simple experiments you can do at home</li>
-          <li>Amazing facts about animals and nature</li>
-          <li>Space exploration activities</li>
-          <li>Environmental science projects</li>
-          <li>Interactive quizzes and games</li>
-        </ul>
-      </section>
+                <section class="section-box">
+                    <h2>🌍 Did You Know?</h2>
+                    <div class="fact-hover">
+                        <span>Octopuses have three hearts and blue blood!</span>
+                        <span
+                            >Lightning is hotter than the surface of the
+                            sun!</span
+                        >
+                        <span
+                            >Whales can hold their breath for over an
+                            hour.</span
+                        >
+                    </div>
+                </section>
 
-      <section class="section-box">
-        <h2>🌍 Did You Know?</h2>
-        <div class="fact-hover">
-          <span>Octopuses have three hearts and blue blood!</span>
-          <span>Lightning is hotter than the surface of the sun!</span>
-          <span>Whales can hold their breath for over an hour.</span>
-        </div>
-      </section>
+                <section class="section-box">
+                    <h2>🚀 Sky's Space Zone</h2>
+                    <p>Sky loves space! Watch the rocket float:</p>
+                    <div style="text-align: center; margin-top: 20px">
+                        <img
+                            src="/learnimals-site/assets/images/rocket.png"
+                            alt="Floating Rocket"
+                            class="rocket"
+                        />
+                    </div>
+                </section>
 
-      <section class="section-box">
-        <h2>🚀 Sky's Space Zone</h2>
-        <p>Sky loves space! Watch the rocket float:</p>
-        <div style="text-align: center; margin-top: 20px">
-          <img src="../assets/images/rocket.png" alt="Floating Rocket" class="rocket" />
-        </div>
-      </section>
+                <section class="section-box" id="science-quiz">
+                    <h2>🧠 Mini Quiz: Test Your Science Smarts!</h2>
+                    <form onsubmit="return checkQuiz();" id="quiz-form">
+                        <div class="quiz-question">
+                            <p>1. What planet is known as the Red Planet?</p>
+                            <label
+                                ><input type="radio" name="q1" value="Mars" />
+                                Mars</label
+                            ><br />
+                            <label
+                                ><input type="radio" name="q1" value="Venus" />
+                                Venus</label
+                            >
+                        </div>
+                        <div class="quiz-question">
+                            <p>2. What do plants need to make food?</p>
+                            <label
+                                ><input
+                                    type="radio"
+                                    name="q2"
+                                    value="Sunlight"
+                                />
+                                Sunlight</label
+                            ><br />
+                            <label
+                                ><input type="radio" name="q2" value="Juice" />
+                                Juice</label
+                            >
+                        </div>
+                        <button type="submit" class="quiz-submit-button">
+                            Check Answers
+                        </button>
+                        <p id="quiz-result"></p>
+                    </form>
+                </section>
+            </div>
+        </main>
 
-      <section class="section-box" id="science-quiz">
-        <h2>🧠 Mini Quiz: Test Your Science Smarts!</h2>
-        <form onsubmit="return checkQuiz();" id="quiz-form">
-          <div class="quiz-question">
-            <p>1. What planet is known as the Red Planet?</p>
-            <label><input type="radio" name="q1" value="Mars" /> Mars</label><br />
-            <label><input type="radio" name="q1" value="Venus" /> Venus</label>
-          </div>
-          <div class="quiz-question">
-            <p>2. What do plants need to make food?</p>
-            <label><input type="radio" name="q2" value="Sunlight" /> Sunlight</label><br />
-            <label><input type="radio" name="q2" value="Juice" /> Juice</label>
-          </div>
-          <button type="submit" class="quiz-submit-button">Check Answers</button>
-          <p id="quiz-result"></p>
-        </form>
-      </section>
-    </div>
-  </main>
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/learnimals-site/about.html">About Us</a>
+                <a href="/learnimals-site/contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="/learnimals-site/profile.html">My Profile</a>
+            </div>
+        </footer>
 
-  <footer>
-    <p>&copy; 2025 Learnimals. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="../about.html">About Us</a>
-      <a href="../contact.html">Contact</a>
-      <a href="#">Privacy Policy</a>
-      <a href="../profile.html">My Profile</a>
-    </div>
-  </footer>
-
-  <!-- JS -->
-  <script src="../js/components/navbarLoader.js" defer></script>
-  <script src="../js/science.js"></script>
-  <script defer src="../js/themeInitializer.js"></script>
-  <script type="module" src="../js/utils/themeManager.js"></script>
-  <script type="module" src="../js/components/themeSwitcher.js"></script>
-</body>
+        <!-- JS -->
+        <script src="/learnimals-site/js/science.js"></script>
+        <script defer src="/learnimals-site/js/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/components/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="/learnimals-site/js/components/navbarLoader.js"
+        ></script>
+    </body>
 </html>

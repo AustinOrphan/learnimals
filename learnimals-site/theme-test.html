@@ -1,571 +1,833 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Test page for Learnimals theme system" />
-  <title>Theme Tester - Learnimals</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/theme-test.css" />
-  <script defer src="js/themeInitializer.js"></script>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      <a href="index.html">
-        <img src="assets/images/logo.png" alt="Learnimals Logo" />
-      </a>
-    </div>
-    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <nav aria-label="Main navigation">
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="subjects/math.html">Math</a></li>
-        <li><a href="subjects/science.html">Science</a></li>
-        <li><a href="subjects/reading.html">Reading</a></li>
-        <li><a href="subjects/art.html">Art</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="profile.html">My Profile</a></li>
-      </ul>
-    </nav>
-  </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Test page for Learnimals theme system"
+        />
+        <title>Theme Tester - Learnimals</title>
+        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/theme-test.css" />
+        <script defer src="js/themeInitializer.js"></script>
+    </head>
+    <body>
+        <div id="navbar-placeholder"></div>
 
-  <main>
-    <section class="hero">
-      <h1>Theme System Tester</h1>
-      <p>Test the various theme and mode combinations with RGB colors</p>
-    </section>
+        <main>
+            <section class="hero">
+                <h1>Theme System Tester</h1>
+                <p>
+                    Test the various theme and mode combinations with RGB colors
+                </p>
+            </section>
 
-    <div class="theme-test-container">
-      <section class="test-section">
-        <h2>Current Theme Colors</h2>
-        <p>These are the colors in the current theme and mode:</p>
-        
-        <div class="theme-demo">
-          <div class="color-box primary-color" data-rgb="RGB">
-            Primary Color
-          </div>
-          <div class="color-box primary-color-alt" data-rgb="RGB">
-            Primary Alt
-          </div>
-          <div class="color-box secondary-color" data-rgb="RGB">
-            Secondary Color
-          </div>
-          <div class="color-box secondary-color-alt" data-rgb="RGB">
-            Secondary Alt
-          </div>
-          <div class="color-box accent-color" data-rgb="RGB">
-            Accent Color
-          </div>
-          <div class="color-box accent-color-alt" data-rgb="RGB">
-            Accent Alt
-          </div>
-          <div class="color-box accent-color-opp" data-rgb="RGB">
-            Accent Opp
-          </div>
-          <div class="color-box accent-color-opp-alt" data-rgb="RGB">
-            Accent Opp Alt
-          </div>
-          <div class="color-box text-color" data-rgb="RGB">
-            Text Color
-          </div>
-          <div class="color-box text-color-alt" data-rgb="RGB">
-            Text Alt
-          </div>
-          <div class="color-box background-color" data-rgb="RGB">
-            Background Color
-          </div>
-          <div class="color-box background-color-alt" data-rgb="RGB">
-            Background Alt
-          </div>
-        </div>
-        
-        <div class="current-theme-info" id="theme-info">
-          Loading theme information...
-        </div>
-        
-        <p class="mt-15 italic">All colors now use a structured variable system with shared base colors between light and dark modes. Text and background colors now have primary and secondary variants that swap between modes.</p>
-      </section>
-      
-      <section class="test-section">
-        <h2>Theme Controls</h2>
-        <p>Use these controls to manually change the theme and mode:</p>
-        
-        <h3>Theme Selection</h3>
-        <div class="manual-controls">
-          <button class="theme-button" data-theme="default">Default Theme</button>
-          <button class="theme-button" data-theme="ocean">Ocean Theme</button>
-          <button class="theme-button" data-theme="forest">Forest Theme</button>
-          <button class="theme-button" data-theme="candy">Candy Theme</button>
-          <button class="theme-button" data-theme="space">Space Theme</button>
-          <button class="theme-button" data-theme="sunset">Sunset Theme</button>
-          <button class="theme-button" data-theme="neon">Neon Theme</button>
-          <button class="theme-button" data-theme="vintage">Vintage Theme</button>
-        </div>
-        
-        <h3>Mode Selection</h3>
-        <div class="manual-controls">
-          <button class="mode-button" data-mode="light">Light Mode</button>
-          <button class="mode-button" data-mode="dark">Dark Mode</button>
-        </div>
-      </section>
-      
-      <section class="test-section">
-        <h2>UI Elements in Current Theme</h2>
-        
-        <h3>Buttons</h3>
-        <div class="demo-buttons">
-          <button class="primary-button">Primary Button</button>
-          <button class="secondary-button">Secondary Button</button>
-          <button class="accent-button">Accent Button</button>
-        </div>
-        
-        <h3>Text Elements</h3>
-        <p>This is a standard paragraph with the default text color.</p>
-        <p><a href="#">This is a link</a> within a paragraph.</p>
-        <p class="text-primary">This is a standard paragraph with the default text color.</p>
-        <p><a href="#">This is a link</a> within a paragraph.</p>
-        <p class="primary-color-text">This text is in the primary color.</p>
-        <p class="secondary-color-text">This text is in the secondary color.</p>
-        
-        <h3>Feature Cards</h3>
-        <div class="feature-cards-container">
-          <div class="feature-card">
-            <h4>Math Adventures</h4>
-            <p>Learn math concepts through fun and interactive games.</p>
-            <button class="primary-button">Start Learning</button>
-          </div>
-          
-          <div class="feature-card">
-            <h4>Science Explorer</h4>
-            <p>Discover the wonders of science through engaging activities.</p>
-            <button class="secondary-button">Explore Now</button>
-          </div>
-          
-          <div class="feature-card">
-            <h4>Art Studio</h4>
-            <p>Express your creativity with our digital art tools.</p>
-            <button class="accent-button">Create Art</button>
-          </div>
-        </div>
-      </section>
-      
-      <section class="test-section">
-        <h2>Variable-Based Design System</h2>
-        <p>Our new variable system makes theming more powerful and consistent:</p>
-        <ul class="feature-list">
-          <li>All colors are defined as CSS custom properties in a logical hierarchy</li>
-          <li>Base colors are defined once and referenced in both light and dark modes</li>
-          <li>Text and background colors swap between modes without redefining palettes</li>
-          <li>Primary and secondary variants for text and background colors</li>
-          <li>Secondary text in light mode becomes primary text in dark mode (and vice versa)</li>
-          <li>Common UI elements share standardized color roles (primary, secondary, accent)</li>
-          <li>Theme-specific colors are used in preference to generic grays</li>
-          <li>Adding new themes only requires defining the base color set</li>
-        </ul>
-        <div class="flex-wrap mt-15">
-          <div class="theme-color-demo">Primary</div>
-          <div class="theme-color-demo secondary-color">Secondary</div>
-          <div class="theme-color-demo accent-color">Accent</div>
-        </div>
-        <div class="flex-wrap mt-10">
-          <div class="theme-color-demo text-color">Text</div>
-          <div class="theme-color-demo text-color-alt">Text Alt</div>
-          <div class="theme-color-demo background-color">Background</div>
-          <div class="theme-color-demo background-color-alt">Background Alt</div>
-        </div>
-        
-        <div id="variable-inspector" class="variable-inspector">
-          <h3>Variable Inspector</h3>
-          <div class="variable-grid" id="variable-grid">
-            <div class="variable-grid-header">Variable</div>
-            <div class="variable-grid-header">Value</div>
-            <!-- Variables will be inserted here by JavaScript -->
-          </div>
-        </div>
-      </section>
+            <div class="theme-test-container">
+                <section class="test-section">
+                    <h2>Current Theme Colors</h2>
+                    <p>These are the colors in the current theme and mode:</p>
 
-      <section class="test-section">
-        <h2>Theme Color Structure</h2>
-        <p>Each theme follows this consistent color structure:</p>
-        <div class="feature-cards-container">
-          <div class="feature-card">
-            <h4>🎨 Base Colors</h4>
-            <p>Each theme has 8 main colors plus light and dark background variants.</p>
-            <div class="flex-wrap mt-10">
-              <span class="color-swatch primary-color"></span>
-              <span class="color-swatch primary-color-alt"></span>
-              <span class="color-swatch secondary-color"></span>
-              <span class="color-swatch secondary-color-alt"></span>
-              <span class="color-swatch accent-color"></span>
-              <span class="color-swatch accent-color-alt"></span>
-              <span class="color-swatch accent-color-opp"></span>
-              <span class="color-swatch accent-color-opp-alt"></span>
+                    <div class="theme-demo">
+                        <div class="color-box primary-color" data-rgb="RGB">
+                            Primary Color
+                        </div>
+                        <div class="color-box primary-color-alt" data-rgb="RGB">
+                            Primary Alt
+                        </div>
+                        <div class="color-box secondary-color" data-rgb="RGB">
+                            Secondary Color
+                        </div>
+                        <div
+                            class="color-box secondary-color-alt"
+                            data-rgb="RGB"
+                        >
+                            Secondary Alt
+                        </div>
+                        <div class="color-box accent-color" data-rgb="RGB">
+                            Accent Color
+                        </div>
+                        <div class="color-box accent-color-alt" data-rgb="RGB">
+                            Accent Alt
+                        </div>
+                        <div class="color-box accent-color-opp" data-rgb="RGB">
+                            Accent Opp
+                        </div>
+                        <div
+                            class="color-box accent-color-opp-alt"
+                            data-rgb="RGB"
+                        >
+                            Accent Opp Alt
+                        </div>
+                        <div class="color-box text-color" data-rgb="RGB">
+                            Text Color
+                        </div>
+                        <div class="color-box text-color-alt" data-rgb="RGB">
+                            Text Alt
+                        </div>
+                        <div class="color-box background-color" data-rgb="RGB">
+                            Background Color
+                        </div>
+                        <div
+                            class="color-box background-color-alt"
+                            data-rgb="RGB"
+                        >
+                            Background Alt
+                        </div>
+                    </div>
+
+                    <div class="current-theme-info" id="theme-info">
+                        Loading theme information...
+                    </div>
+
+                    <p class="mt-15 italic">
+                        All colors now use a structured variable system with
+                        shared base colors between light and dark modes. Text
+                        and background colors now have primary and secondary
+                        variants that swap between modes.
+                    </p>
+                </section>
+
+                <section class="test-section">
+                    <h2>Theme Controls</h2>
+                    <p>
+                        Use these controls to manually change the theme and
+                        mode:
+                    </p>
+
+                    <h3>Theme Selection</h3>
+                    <div class="manual-controls">
+                        <button class="theme-button" data-theme="default">
+                            Default Theme
+                        </button>
+                        <button class="theme-button" data-theme="ocean">
+                            Ocean Theme
+                        </button>
+                        <button class="theme-button" data-theme="forest">
+                            Forest Theme
+                        </button>
+                        <button class="theme-button" data-theme="candy">
+                            Candy Theme
+                        </button>
+                        <button class="theme-button" data-theme="space">
+                            Space Theme
+                        </button>
+                        <button class="theme-button" data-theme="sunset">
+                            Sunset Theme
+                        </button>
+                        <button class="theme-button" data-theme="neon">
+                            Neon Theme
+                        </button>
+                        <button class="theme-button" data-theme="vintage">
+                            Vintage Theme
+                        </button>
+                    </div>
+
+                    <h3>Mode Selection</h3>
+                    <div class="manual-controls">
+                        <button class="mode-button" data-mode="light">
+                            Light Mode
+                        </button>
+                        <button class="mode-button" data-mode="dark">
+                            Dark Mode
+                        </button>
+                    </div>
+                </section>
+
+                <section class="test-section">
+                    <h2>UI Elements in Current Theme</h2>
+
+                    <h3>Buttons</h3>
+                    <div class="demo-buttons">
+                        <button class="primary-button">Primary Button</button>
+                        <button class="secondary-button">
+                            Secondary Button
+                        </button>
+                        <button class="accent-button">Accent Button</button>
+                    </div>
+
+                    <h3>Text Elements</h3>
+                    <p>
+                        This is a standard paragraph with the default text
+                        color.
+                    </p>
+                    <p><a href="#">This is a link</a> within a paragraph.</p>
+                    <p class="text-primary">
+                        This is a standard paragraph with the default text
+                        color.
+                    </p>
+                    <p><a href="#">This is a link</a> within a paragraph.</p>
+                    <p class="primary-color-text">
+                        This text is in the primary color.
+                    </p>
+                    <p class="secondary-color-text">
+                        This text is in the secondary color.
+                    </p>
+
+                    <h3>Feature Cards</h3>
+                    <div class="feature-cards-container">
+                        <div class="feature-card">
+                            <h4>Math Adventures</h4>
+                            <p>
+                                Learn math concepts through fun and interactive
+                                games.
+                            </p>
+                            <button class="primary-button">
+                                Start Learning
+                            </button>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>Science Explorer</h4>
+                            <p>
+                                Discover the wonders of science through engaging
+                                activities.
+                            </p>
+                            <button class="secondary-button">
+                                Explore Now
+                            </button>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>Art Studio</h4>
+                            <p>
+                                Express your creativity with our digital art
+                                tools.
+                            </p>
+                            <button class="accent-button">Create Art</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="test-section">
+                    <h2>Variable-Based Design System</h2>
+                    <p>
+                        Our new variable system makes theming more powerful and
+                        consistent:
+                    </p>
+                    <ul class="feature-list">
+                        <li>
+                            All colors are defined as CSS custom properties in a
+                            logical hierarchy
+                        </li>
+                        <li>
+                            Base colors are defined once and referenced in both
+                            light and dark modes
+                        </li>
+                        <li>
+                            Text and background colors swap between modes
+                            without redefining palettes
+                        </li>
+                        <li>
+                            Primary and secondary variants for text and
+                            background colors
+                        </li>
+                        <li>
+                            Secondary text in light mode becomes primary text in
+                            dark mode (and vice versa)
+                        </li>
+                        <li>
+                            Common UI elements share standardized color roles
+                            (primary, secondary, accent)
+                        </li>
+                        <li>
+                            Theme-specific colors are used in preference to
+                            generic grays
+                        </li>
+                        <li>
+                            Adding new themes only requires defining the base
+                            color set
+                        </li>
+                    </ul>
+                    <div class="flex-wrap mt-15">
+                        <div class="theme-color-demo">Primary</div>
+                        <div class="theme-color-demo secondary-color">
+                            Secondary
+                        </div>
+                        <div class="theme-color-demo accent-color">Accent</div>
+                    </div>
+                    <div class="flex-wrap mt-10">
+                        <div class="theme-color-demo text-color">Text</div>
+                        <div class="theme-color-demo text-color-alt">
+                            Text Alt
+                        </div>
+                        <div class="theme-color-demo background-color">
+                            Background
+                        </div>
+                        <div class="theme-color-demo background-color-alt">
+                            Background Alt
+                        </div>
+                    </div>
+
+                    <div id="variable-inspector" class="variable-inspector">
+                        <h3>Variable Inspector</h3>
+                        <div class="variable-grid" id="variable-grid">
+                            <div class="variable-grid-header">Variable</div>
+                            <div class="variable-grid-header">Value</div>
+                            <!-- Variables will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <section class="test-section">
+                    <h2>Theme Color Structure</h2>
+                    <p>Each theme follows this consistent color structure:</p>
+                    <div class="feature-cards-container">
+                        <div class="feature-card">
+                            <h4>🎨 Base Colors</h4>
+                            <p>
+                                Each theme has 8 main colors plus light and dark
+                                background variants.
+                            </p>
+                            <div class="flex-wrap mt-10">
+                                <span class="color-swatch primary-color"></span>
+                                <span
+                                    class="color-swatch primary-color-alt"
+                                ></span>
+                                <span
+                                    class="color-swatch secondary-color"
+                                ></span>
+                                <span
+                                    class="color-swatch secondary-color-alt"
+                                ></span>
+                                <span class="color-swatch accent-color"></span>
+                                <span
+                                    class="color-swatch accent-color-alt"
+                                ></span>
+                                <span
+                                    class="color-swatch accent-color-opp"
+                                ></span>
+                                <span
+                                    class="color-swatch accent-color-opp-alt"
+                                ></span>
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>⚙️ Shared Variables</h4>
+                            <p>
+                                Light and dark modes use the same base palette
+                                with light/dark variants for better consistency.
+                            </p>
+                            <button class="primary-button">
+                                Same Base Colors
+                            </button>
+                        </div>
+
+                        <div class="feature-card">
+                            <h3>🔄 Mode Switching</h3>
+                            <p>
+                                When toggling modes, primary and secondary
+                                colors swap while maintaining visual
+                                consistency.
+                            </p>
+                            <div class="mode-switch-demo">
+                                <span
+                                    class="mode-switch-item mode-switch-text-primary"
+                                    >Text Primary</span
+                                >
+                                <span
+                                    class="mode-switch-item mode-switch-text-secondary"
+                                    >Text Secondary</span
+                                >
+                                <span
+                                    class="mode-switch-item mode-switch-separator"
+                                    >⟷ Mode Switch ⟷</span
+                                >
+                                <span
+                                    class="mode-switch-item mode-switch-bg-primary"
+                                    >Bg Primary</span
+                                >
+                                <span
+                                    class="mode-switch-item mode-switch-bg-secondary"
+                                    >Bg Secondary</span
+                                >
+                            </div>
+                        </div>
+
+                        <div class="feature-card">
+                            <h4>🧩 Common Neutrals</h4>
+                            <p>
+                                Shared neutral colors (gray scales) ensure
+                                consistent text and background contrasts.
+                            </p>
+                            <div class="flex-wrap mt-10">
+                                <span class="color-swatch gray-100-bg"></span>
+                                <span class="color-swatch gray-300-bg"></span>
+                                <span class="color-swatch gray-500-bg"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="test-section">
+                    <h2>Color Variable System Benefits</h2>
+                    <p>
+                        Our new color variable system offers significant
+                        improvements:
+                    </p>
+                    <ul class="feature-list">
+                        <li>
+                            Shared base color palette between light and dark
+                            modes
+                        </li>
+                        <li>
+                            Theme-specific colors used in preference to generic
+                            neutrals
+                        </li>
+                        <li>
+                            Primary and secondary text/background colors that
+                            swap between modes
+                        </li>
+                        <li>Each theme defines its own set of 8 base colors</li>
+                        <li>
+                            Light and dark modes use related colors from the
+                            same palette
+                        </li>
+                        <li>
+                            Easy modification of entire themes by changing just
+                            base colors
+                        </li>
+                        <li>
+                            Consistent naming pattern for all themes (color-1
+                            through color-6, light, dark)
+                        </li>
+                        <li>
+                            More natural color relationships between light and
+                            dark modes
+                        </li>
+                    </ul>
+                    <div class="theme-color-box">
+                        <h3>Mode-Swapping Colors</h3>
+                        <p>
+                            This box uses the secondary background color and
+                            primary text color.
+                        </p>
+                        <div class="theme-color-box-inner">
+                            <p>
+                                This inner box swaps to use primary background
+                                and secondary text colors.
+                            </p>
+                        </div>
+                    </div>
+                </section>
             </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>⚙️ Shared Variables</h4>
-            <p>Light and dark modes use the same base palette with light/dark variants for better consistency.</p>
-            <button class="primary-button">Same Base Colors</button>
-          </div>
-          
-          <div class="feature-card">
-            <h3>🔄 Mode Switching</h3>
-            <p>When toggling modes, primary and secondary colors swap while maintaining visual consistency.</p>
-            <div class="mode-switch-demo">
-              <span class="mode-switch-item mode-switch-text-primary">Text Primary</span>
-              <span class="mode-switch-item mode-switch-text-secondary">Text Secondary</span>
-              <span class="mode-switch-item mode-switch-separator">⟷ Mode Switch ⟷</span>
-              <span class="mode-switch-item mode-switch-bg-primary">Bg Primary</span>
-              <span class="mode-switch-item mode-switch-bg-secondary">Bg Secondary</span>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="profile.html">My Profile</a>
             </div>
-          </div>
-          
-          <div class="feature-card">
-            <h4>🧩 Common Neutrals</h4>
-            <p>Shared neutral colors (gray scales) ensure consistent text and background contrasts.</p>
-            <div class="flex-wrap mt-10">
-              <span class="color-swatch gray-100-bg"></span>
-              <span class="color-swatch gray-300-bg"></span>
-              <span class="color-swatch gray-500-bg"></span>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <section class="test-section">
-        <h2>Color Variable System Benefits</h2>
-        <p>Our new color variable system offers significant improvements:</p>
-        <ul class="feature-list">
-          <li>Shared base color palette between light and dark modes</li>
-          <li>Theme-specific colors used in preference to generic neutrals</li>
-          <li>Primary and secondary text/background colors that swap between modes</li>
-          <li>Each theme defines its own set of 8 base colors</li>
-          <li>Light and dark modes use related colors from the same palette</li>
-          <li>Easy modification of entire themes by changing just base colors</li>
-          <li>Consistent naming pattern for all themes (color-1 through color-6, light, dark)</li>
-          <li>More natural color relationships between light and dark modes</li>
-        </ul>
-        <div class="theme-color-box">
-          <h3>Mode-Swapping Colors</h3>
-          <p>This box uses the secondary background color and primary text color.</p>
-          <div class="theme-color-box-inner">
-            <p>This inner box swaps to use primary background and secondary text colors.</p>
-          </div>
-        </div>
-      </section>
-    </div>
-  </main>
+        </footer>
 
-  <footer>
-    <p>&copy; 2025 Learnimals. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="#">Privacy Policy</a>
-      <a href="profile.html">My Profile</a>
+        <script>
+            // Function to extract variable values from a CSS variable
+            function extractRGB(cssVarName) {
+                const computedStyle = getComputedStyle(
+                    document.documentElement,
+                );
+                const value = computedStyle.getPropertyValue(cssVarName).trim();
+                // For variables that reference other variables, get the actual computed value
+                if (value.startsWith("var(--")) {
+                    const varName = value.match(/var\((.*?)\)/)[1];
+                    return computedStyle.getPropertyValue(varName).trim();
+                }
+                return value;
+            }
 
-    </div>
-  </footer>
+            // Function to get both variable reference and computed value
+            function getVariableInfo(cssVarName) {
+                const computedStyle = getComputedStyle(
+                    document.documentElement,
+                );
+                const varValue = computedStyle
+                    .getPropertyValue(cssVarName)
+                    .trim();
+                let computedValue = varValue;
+                let isReference = false;
 
-  <script>
-    // Function to extract variable values from a CSS variable
-    function extractRGB(cssVarName) {
-      const computedStyle = getComputedStyle(document.documentElement);
-      const value = computedStyle.getPropertyValue(cssVarName).trim();
-      // For variables that reference other variables, get the actual computed value
-      if (value.startsWith('var(--')) {
-        const varName = value.match(/var\((.*?)\)/)[1];
-        return computedStyle.getPropertyValue(varName).trim();
-      }
-      return value;
-    }
-    
-    // Function to get both variable reference and computed value
-    function getVariableInfo(cssVarName) {
-      const computedStyle = getComputedStyle(document.documentElement);
-      const varValue = computedStyle.getPropertyValue(cssVarName).trim();
-      let computedValue = varValue;
-      let isReference = false;
-      
-      // Check if the value references another variable
-      if (varValue.startsWith('var(--')) {
-        isReference = true;
-        const varName = varValue.match(/var\((.*?)\)/)[1];
-        computedValue = computedStyle.getPropertyValue(varName).trim();
-      }
-      
-      return {
-        value: varValue,
-        computed: computedValue,
-        isReference: isReference
-      };
-    }
-    
-    // Highlight the current theme mode on load
-    document.addEventListener('DOMContentLoaded', function() {
-      const currentMode = localStorage.getItem('learnimals-theme-mode') || 'light';
-      document.querySelectorAll('.test-section').forEach(section => {
-        section.setAttribute('title', `This section adapts to ${currentMode} mode`);
-      });
-      
-      // Update RGB values in color boxes
-      updateRGBValues();
-      
-      // Initialize variable inspector
-      updateVariableInspector();
-    });
-    
-    // Update RGB values in color boxes
-    function updateRGBValues() {
-      document.querySelector('.color-box.primary-color').setAttribute('data-rgb', extractRGB('--primary-color'));
-      document.querySelector('.color-box.primary-color-alt').setAttribute('data-rgb', extractRGB('--primary-color-alt'));
-      document.querySelector('.color-box.secondary-color').setAttribute('data-rgb', extractRGB('--secondary-color'));
-      document.querySelector('.color-box.secondary-color-alt').setAttribute('data-rgb', extractRGB('--secondary-color-alt'));
-      document.querySelector('.color-box.accent-color').setAttribute('data-rgb', extractRGB('--accent-color'));
-      document.querySelector('.color-box.accent-color-alt').setAttribute('data-rgb', extractRGB('--accent-color-alt'));
-      document.querySelector('.color-box.accent-color-opp').setAttribute('data-rgb', extractRGB('--accent-color-opp'));
-      document.querySelector('.color-box.accent-color-opp-alt').setAttribute('data-rgb', extractRGB('--accent-color-opp-alt'));
-      document.querySelector('.color-box.text-color').setAttribute('data-rgb', extractRGB('--text-color'));
-      document.querySelector('.color-box.text-color-alt').setAttribute('data-rgb', extractRGB('--text-color-alt'));
-      document.querySelector('.color-box.background-color').setAttribute('data-rgb', extractRGB('--background-color'));
-      document.querySelector('.color-box.background-color-alt').setAttribute('data-rgb', extractRGB('--background-color-alt'));
-    }
-    
-    // Update variable inspector
-    function updateVariableInspector() {
-      const grid = document.getElementById('variable-grid');
-      // Clear grid except for headers
-      while (grid.children.length > 2) {
-        grid.removeChild(grid.lastChild);
-      }
-      
-      // Main theme variables
-      const themeVars = [
-        '--primary-color',
-        '--primary-color-alt',
-        '--secondary-color', 
-        '--secondary-color-alt',
-        '--accent-color', 
-        '--accent-color-alt',
-        '--accent-color-opp',
-        '--accent-color-opp-alt',
-        '--text-color',
-        '--text-color-alt',
-        '--background-color',
-        '--background-color-alt'
-      ];
-      
-      // Current theme base colors
-      const currentTheme = document.body.className.match(/theme-(\w+)/)[1];
-      const baseVars = [
-        `--${currentTheme}-color-1`,
-        `--${currentTheme}-color-2`,
-        `--${currentTheme}-color-3`,
-        `--${currentTheme}-color-4`,
-        `--${currentTheme}-color-5`,
-        `--${currentTheme}-color-6`,
-        `--${currentTheme}-color-7`,
-        `--${currentTheme}-color-8`,
-        `--${currentTheme}-color-light`,
-        `--${currentTheme}-color-light-alt`,
-        `--${currentTheme}-color-dark`,
-        `--${currentTheme}-color-dark-alt`
-      ];
-      
-      // Common color variables
-      const commonVars = [
-        '--color-white',
-        '--color-black',
-        '--color-gray-100',
-        '--color-gray-300',
-        '--color-gray-500'
-      ];
-      
-      // Add section heading for theme variables
-      const themeHeading = document.createElement('div');
-      themeHeading.textContent = 'Theme Variables';
-      themeHeading.style.gridColumn = '1 / span 2';
-      themeHeading.style.fontWeight = 'bold';
-      themeHeading.style.marginTop = '15px';
-      grid.appendChild(themeHeading);
-      
-      // Add theme variables
-      themeVars.forEach(varName => {
-        addVariableRow(varName, grid);
-      });
-      
-      // Add section heading for base colors
-      const baseHeading = document.createElement('div');
-      baseHeading.textContent = `${currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)} Base Colors`;
-      baseHeading.style.gridColumn = '1 / span 2';
-      baseHeading.style.fontWeight = 'bold';
-      baseHeading.style.marginTop = '15px';
-      grid.appendChild(baseHeading);
-      
-      // Add base color variables
-      baseVars.forEach(varName => {
-        addVariableRow(varName, grid);
-      });
-      
-      // Add section heading for common colors
-      const commonHeading = document.createElement('div');
-      commonHeading.textContent = 'Common Colors';
-      commonHeading.style.gridColumn = '1 / span 2';
-      commonHeading.style.fontWeight = 'bold';
-      commonHeading.style.marginTop = '15px';
-      grid.appendChild(commonHeading);
-      
-      // Add common color variables
-      commonVars.forEach(varName => {
-        addVariableRow(varName, grid);
-      });
-    }
-    
-    // Add a row to the variable grid
-    function addVariableRow(varName, grid) {
-      const info = getVariableInfo(varName);
-      
-      // Variable name cell
-      const nameCell = document.createElement('div');
-      nameCell.textContent = varName;
-      nameCell.style.fontFamily = 'monospace';
-      grid.appendChild(nameCell);
-      
-      // Variable value cell
-      const valueCell = document.createElement('div');
-      valueCell.style.fontFamily = 'monospace';
-      
-      if (info.isReference) {
-        valueCell.innerHTML = `<span style="color:#0066cc">${info.value}</span><br>→ <span style="color:#cc0000">${info.computed}</span>`;
-      } else {
-        valueCell.innerHTML = `<span>${info.value}</span>`;
-      }
-      
-      // Add color preview if it's a color
-      if (info.computed.startsWith('rgb')) {
-        const colorPreview = document.createElement('span');
-        colorPreview.style.display = 'inline-block';
-        colorPreview.style.width = '16px';
-        colorPreview.style.height = '16px';
-        colorPreview.style.backgroundColor = info.computed;
-        colorPreview.style.borderRadius = '3px';
-        colorPreview.style.marginLeft = '5px';
-        colorPreview.style.verticalAlign = 'middle';
-        colorPreview.style.border = '1px solid #ccc';
-        valueCell.appendChild(colorPreview);
-      }
-      
-      grid.appendChild(valueCell);
-    }
-    
-    // Mobile menu toggle
-    document.getElementById('mobile-menu').addEventListener('click', function() {
-      document.getElementById('nav-menu').classList.toggle('active');
-      this.classList.toggle('active');
-      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
-      this.setAttribute('aria-expanded', !expanded);
-    });
-    
-    // Update theme info when theme changes
-    function updateThemeInfo() {
-      const themeInfo = document.getElementById('theme-info');
-      let currentTheme = '';
-      let currentMode = '';
-      
-      if (window.themeManager && typeof window.themeManager.getCurrentTheme === 'function') {
-        const themeData = window.themeManager.getCurrentTheme();
-        currentTheme = themeData.name;
-        currentMode = themeData.mode;
-      } else {
-        currentTheme = document.documentElement.getAttribute('data-theme-name') || 'default';
-        currentMode = document.documentElement.getAttribute('data-theme') === 'night' ? 'dark' : 'light';
-      }
-      
-      // Get the computed CSS variables
-      const computedStyle = getComputedStyle(document.documentElement);
-      const cssVariables = {
-        '--primary-color': computedStyle.getPropertyValue('--primary-color'),
-        '--secondary-color': computedStyle.getPropertyValue('--secondary-color'),
-        '--accent-color': computedStyle.getPropertyValue('--accent-color'),
-        '--text-color': computedStyle.getPropertyValue('--text-color'),
-        '--background-color': computedStyle.getPropertyValue('--background-color')
-      };
-      
-      // Create HTML content
-      let html = `<strong>Current Theme:</strong> ${currentTheme} (${currentMode} mode)<br><br>`;
-      html += '<strong>CSS Variables:</strong><br>';
-      
-      Object.entries(cssVariables).forEach(([variable, value]) => {
-        html += `${variable}: ${value.trim()}<br>`;
-      });
-      
-      themeInfo.innerHTML = html;
-    }
-    
-    // Handle manual theme buttons
-    document.querySelectorAll('.theme-button').forEach(button => {
-      button.addEventListener('click', () => {
-        const theme = button.getAttribute('data-theme');
-        if (window.themeManager && typeof window.themeManager.setTheme === 'function') {
-          window.themeManager.setTheme(theme);
-        } else {
-          // Fallback implementation
-          document.documentElement.setAttribute('data-theme-name', theme);
-          localStorage.setItem('learnimals-theme-name', theme);
-          // Only update data-theme if not in dark mode
-          if (document.documentElement.getAttribute('data-theme') !== 'night') {
-            document.documentElement.setAttribute('data-theme', theme);
-          }
-        }
-        updateThemeInfo();
-      });
-    });
-    
-    // Handle manual mode buttons
-    document.querySelectorAll('.mode-button').forEach(button => {
-      button.addEventListener('click', () => {
-        const mode = button.getAttribute('data-mode');
-        if (window.themeManager && typeof window.themeManager.setMode === 'function') {
-          window.themeManager.setMode(mode);
-        } else {
-          // Fallback implementation
-          localStorage.setItem('learnimals-theme-mode', mode);
-          const themeName = document.documentElement.getAttribute('data-theme-name') || 'default';
-          document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'night' : themeName);
-        }
-        updateThemeInfo();
-      });
-    });
-    
-    // Update theme info when DOM is loaded
-    document.addEventListener('DOMContentLoaded', updateThemeInfo);
-    
-    // Update theme info when theme changes
-    document.addEventListener('themeChanged', function(e) {
-      updateThemeInfo();
-      
-      // Update test section title attributes with current mode
-      const currentMode = e.detail.mode;
-      document.querySelectorAll('.test-section').forEach(section => {
-        section.setAttribute('title', `This section adapts to ${currentMode} mode`);
-      });
-      
-      // Update RGB values in color boxes
-      updateRGBValues();
-      
-      // Update variable inspector
-      updateVariableInspector();
-    });
-  </script>
-  <script src="js/components/navigation.js"></script>
-  <script type="module" src="js/utils/themeManager.js"></script>
-  <script type="module" src="js/components/themeSwitcher.js"></script>
-</body>
+                // Check if the value references another variable
+                if (varValue.startsWith("var(--")) {
+                    isReference = true;
+                    const varName = varValue.match(/var\((.*?)\)/)[1];
+                    computedValue = computedStyle
+                        .getPropertyValue(varName)
+                        .trim();
+                }
+
+                return {
+                    value: varValue,
+                    computed: computedValue,
+                    isReference: isReference,
+                };
+            }
+
+            // Highlight the current theme mode on load
+            document.addEventListener("DOMContentLoaded", function () {
+                const currentMode =
+                    localStorage.getItem("learnimals-theme-mode") || "light";
+                document
+                    .querySelectorAll(".test-section")
+                    .forEach((section) => {
+                        section.setAttribute(
+                            "title",
+                            `This section adapts to ${currentMode} mode`,
+                        );
+                    });
+
+                // Update RGB values in color boxes
+                updateRGBValues();
+
+                // Initialize variable inspector
+                updateVariableInspector();
+            });
+
+            // Update RGB values in color boxes
+            function updateRGBValues() {
+                document
+                    .querySelector(".color-box.primary-color")
+                    .setAttribute("data-rgb", extractRGB("--primary-color"));
+                document
+                    .querySelector(".color-box.primary-color-alt")
+                    .setAttribute(
+                        "data-rgb",
+                        extractRGB("--primary-color-alt"),
+                    );
+                document
+                    .querySelector(".color-box.secondary-color")
+                    .setAttribute("data-rgb", extractRGB("--secondary-color"));
+                document
+                    .querySelector(".color-box.secondary-color-alt")
+                    .setAttribute(
+                        "data-rgb",
+                        extractRGB("--secondary-color-alt"),
+                    );
+                document
+                    .querySelector(".color-box.accent-color")
+                    .setAttribute("data-rgb", extractRGB("--accent-color"));
+                document
+                    .querySelector(".color-box.accent-color-alt")
+                    .setAttribute("data-rgb", extractRGB("--accent-color-alt"));
+                document
+                    .querySelector(".color-box.accent-color-opp")
+                    .setAttribute("data-rgb", extractRGB("--accent-color-opp"));
+                document
+                    .querySelector(".color-box.accent-color-opp-alt")
+                    .setAttribute(
+                        "data-rgb",
+                        extractRGB("--accent-color-opp-alt"),
+                    );
+                document
+                    .querySelector(".color-box.text-color")
+                    .setAttribute("data-rgb", extractRGB("--text-color"));
+                document
+                    .querySelector(".color-box.text-color-alt")
+                    .setAttribute("data-rgb", extractRGB("--text-color-alt"));
+                document
+                    .querySelector(".color-box.background-color")
+                    .setAttribute("data-rgb", extractRGB("--background-color"));
+                document
+                    .querySelector(".color-box.background-color-alt")
+                    .setAttribute(
+                        "data-rgb",
+                        extractRGB("--background-color-alt"),
+                    );
+            }
+
+            // Update variable inspector
+            function updateVariableInspector() {
+                const grid = document.getElementById("variable-grid");
+                // Clear grid except for headers
+                while (grid.children.length > 2) {
+                    grid.removeChild(grid.lastChild);
+                }
+
+                // Main theme variables
+                const themeVars = [
+                    "--primary-color",
+                    "--primary-color-alt",
+                    "--secondary-color",
+                    "--secondary-color-alt",
+                    "--accent-color",
+                    "--accent-color-alt",
+                    "--accent-color-opp",
+                    "--accent-color-opp-alt",
+                    "--text-color",
+                    "--text-color-alt",
+                    "--background-color",
+                    "--background-color-alt",
+                ];
+
+                // Current theme base colors
+                const currentTheme =
+                    document.body.className.match(/theme-(\w+)/)[1];
+                const baseVars = [
+                    `--${currentTheme}-color-1`,
+                    `--${currentTheme}-color-2`,
+                    `--${currentTheme}-color-3`,
+                    `--${currentTheme}-color-4`,
+                    `--${currentTheme}-color-5`,
+                    `--${currentTheme}-color-6`,
+                    `--${currentTheme}-color-7`,
+                    `--${currentTheme}-color-8`,
+                    `--${currentTheme}-color-light`,
+                    `--${currentTheme}-color-light-alt`,
+                    `--${currentTheme}-color-dark`,
+                    `--${currentTheme}-color-dark-alt`,
+                ];
+
+                // Common color variables
+                const commonVars = [
+                    "--color-white",
+                    "--color-black",
+                    "--color-gray-100",
+                    "--color-gray-300",
+                    "--color-gray-500",
+                ];
+
+                // Add section heading for theme variables
+                const themeHeading = document.createElement("div");
+                themeHeading.textContent = "Theme Variables";
+                themeHeading.style.gridColumn = "1 / span 2";
+                themeHeading.style.fontWeight = "bold";
+                themeHeading.style.marginTop = "15px";
+                grid.appendChild(themeHeading);
+
+                // Add theme variables
+                themeVars.forEach((varName) => {
+                    addVariableRow(varName, grid);
+                });
+
+                // Add section heading for base colors
+                const baseHeading = document.createElement("div");
+                baseHeading.textContent = `${currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)} Base Colors`;
+                baseHeading.style.gridColumn = "1 / span 2";
+                baseHeading.style.fontWeight = "bold";
+                baseHeading.style.marginTop = "15px";
+                grid.appendChild(baseHeading);
+
+                // Add base color variables
+                baseVars.forEach((varName) => {
+                    addVariableRow(varName, grid);
+                });
+
+                // Add section heading for common colors
+                const commonHeading = document.createElement("div");
+                commonHeading.textContent = "Common Colors";
+                commonHeading.style.gridColumn = "1 / span 2";
+                commonHeading.style.fontWeight = "bold";
+                commonHeading.style.marginTop = "15px";
+                grid.appendChild(commonHeading);
+
+                // Add common color variables
+                commonVars.forEach((varName) => {
+                    addVariableRow(varName, grid);
+                });
+            }
+
+            // Add a row to the variable grid
+            function addVariableRow(varName, grid) {
+                const info = getVariableInfo(varName);
+
+                // Variable name cell
+                const nameCell = document.createElement("div");
+                nameCell.textContent = varName;
+                nameCell.style.fontFamily = "monospace";
+                grid.appendChild(nameCell);
+
+                // Variable value cell
+                const valueCell = document.createElement("div");
+                valueCell.style.fontFamily = "monospace";
+
+                if (info.isReference) {
+                    valueCell.innerHTML = `<span style="color:#0066cc">${info.value}</span><br>→ <span style="color:#cc0000">${info.computed}</span>`;
+                } else {
+                    valueCell.innerHTML = `<span>${info.value}</span>`;
+                }
+
+                // Add color preview if it's a color
+                if (info.computed.startsWith("rgb")) {
+                    const colorPreview = document.createElement("span");
+                    colorPreview.style.display = "inline-block";
+                    colorPreview.style.width = "16px";
+                    colorPreview.style.height = "16px";
+                    colorPreview.style.backgroundColor = info.computed;
+                    colorPreview.style.borderRadius = "3px";
+                    colorPreview.style.marginLeft = "5px";
+                    colorPreview.style.verticalAlign = "middle";
+                    colorPreview.style.border = "1px solid #ccc";
+                    valueCell.appendChild(colorPreview);
+                }
+
+                grid.appendChild(valueCell);
+            }
+
+            // Mobile menu toggle
+            document
+                .getElementById("mobile-menu")
+                .addEventListener("click", function () {
+                    document
+                        .getElementById("nav-menu")
+                        .classList.toggle("active");
+                    this.classList.toggle("active");
+                    const expanded =
+                        this.getAttribute("aria-expanded") === "true" || false;
+                    this.setAttribute("aria-expanded", !expanded);
+                });
+
+            // Update theme info when theme changes
+            function updateThemeInfo() {
+                const themeInfo = document.getElementById("theme-info");
+                let currentTheme = "";
+                let currentMode = "";
+
+                if (
+                    window.themeManager &&
+                    typeof window.themeManager.getCurrentTheme === "function"
+                ) {
+                    const themeData = window.themeManager.getCurrentTheme();
+                    currentTheme = themeData.name;
+                    currentMode = themeData.mode;
+                } else {
+                    currentTheme =
+                        document.documentElement.getAttribute(
+                            "data-theme-name",
+                        ) || "default";
+                    currentMode =
+                        document.documentElement.getAttribute("data-theme") ===
+                        "night"
+                            ? "dark"
+                            : "light";
+                }
+
+                // Get the computed CSS variables
+                const computedStyle = getComputedStyle(
+                    document.documentElement,
+                );
+                const cssVariables = {
+                    "--primary-color":
+                        computedStyle.getPropertyValue("--primary-color"),
+                    "--secondary-color":
+                        computedStyle.getPropertyValue("--secondary-color"),
+                    "--accent-color":
+                        computedStyle.getPropertyValue("--accent-color"),
+                    "--text-color":
+                        computedStyle.getPropertyValue("--text-color"),
+                    "--background-color":
+                        computedStyle.getPropertyValue("--background-color"),
+                };
+
+                // Create HTML content
+                let html = `<strong>Current Theme:</strong> ${currentTheme} (${currentMode} mode)<br><br>`;
+                html += "<strong>CSS Variables:</strong><br>";
+
+                Object.entries(cssVariables).forEach(([variable, value]) => {
+                    html += `${variable}: ${value.trim()}<br>`;
+                });
+
+                themeInfo.innerHTML = html;
+            }
+
+            // Handle manual theme buttons
+            document.querySelectorAll(".theme-button").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const theme = button.getAttribute("data-theme");
+                    if (
+                        window.themeManager &&
+                        typeof window.themeManager.setTheme === "function"
+                    ) {
+                        window.themeManager.setTheme(theme);
+                    } else {
+                        // Fallback implementation
+                        document.documentElement.setAttribute(
+                            "data-theme-name",
+                            theme,
+                        );
+                        localStorage.setItem("learnimals-theme-name", theme);
+                        // Only update data-theme if not in dark mode
+                        if (
+                            document.documentElement.getAttribute(
+                                "data-theme",
+                            ) !== "night"
+                        ) {
+                            document.documentElement.setAttribute(
+                                "data-theme",
+                                theme,
+                            );
+                        }
+                    }
+                    updateThemeInfo();
+                });
+            });
+
+            // Handle manual mode buttons
+            document.querySelectorAll(".mode-button").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const mode = button.getAttribute("data-mode");
+                    if (
+                        window.themeManager &&
+                        typeof window.themeManager.setMode === "function"
+                    ) {
+                        window.themeManager.setMode(mode);
+                    } else {
+                        // Fallback implementation
+                        localStorage.setItem("learnimals-theme-mode", mode);
+                        const themeName =
+                            document.documentElement.getAttribute(
+                                "data-theme-name",
+                            ) || "default";
+                        document.documentElement.setAttribute(
+                            "data-theme",
+                            mode === "dark" ? "night" : themeName,
+                        );
+                    }
+                    updateThemeInfo();
+                });
+            });
+
+            // Update theme info when DOM is loaded
+            document.addEventListener("DOMContentLoaded", updateThemeInfo);
+
+            // Update theme info when theme changes
+            document.addEventListener("themeChanged", function (e) {
+                updateThemeInfo();
+
+                // Update test section title attributes with current mode
+                const currentMode = e.detail.mode;
+                document
+                    .querySelectorAll(".test-section")
+                    .forEach((section) => {
+                        section.setAttribute(
+                            "title",
+                            `This section adapts to ${currentMode} mode`,
+                        );
+                    });
+
+                // Update RGB values in color boxes
+                updateRGBValues();
+
+                // Update variable inspector
+                updateVariableInspector();
+            });
+        </script>
+        <!-- JS -->
+        <script defer src="/learnimals-site/js/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/components/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="/learnimals-site/js/components/navbarLoader.js"
+        ></script>
+    </body>
 </html>

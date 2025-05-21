@@ -1,48 +1,50 @@
 /* NAVBAR LAYOUT */
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: var(--nav-bg, #fff);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  flex-wrap: wrap;
+    display: flex;
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    padding: 1rem 2rem;
+    background-color: var(--background-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .navbar-logo img {
-  height: 48px;
+    height: 48px;
 }
 
 /* NAV LINKS CONTAINER (THE WRAPPER BUBBLE) */
 .navbar-links {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .navbar-links ul {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-  margin: 0;
-  padding: 0.5rem 1rem;
-  background-color: #f1f1f1;
-  border-radius: 9999px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background-color: var(--background-color-alt);
+    border-radius: 9999px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* NORMAL LINK STYLING (NO INDIVIDUAL BUBBLES) */
 .navbar-links a {
-  color: #333;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.25rem 0.5rem;
-  transition: color 0.3s ease;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.3s ease;
 }
 
 .navbar-links a:hover,
 .navbar-links a:focus {
-  color: #000;
-  background-color: transparent;
-  text-decoration: underline;
+    color: var(--text-color-alt);
+    background-color: transparent;
+    text-decoration: underline;
 }

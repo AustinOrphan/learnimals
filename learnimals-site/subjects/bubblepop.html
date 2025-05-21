@@ -1,78 +1,76 @@
 <!-- File: bubblepop.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mango’s Bubble Pop - Learnimals</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="stylesheet" href="../css/bubblepop.css" />
-  <script defer src="../js/bubblepop.js"></script>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      <a href="../index.html">
-        <img src="../assets/images/logo.png" alt="Learnimals Logo" />
-      </a>
-    </div>
-    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <nav aria-label="Main navigation">
-      <ul id="nav-menu">
-        <li><a href="../index.html">Home</a></li>
-        <li><a href="math.html">Math</a></li>
-        <li><a href="science.html">Science</a></li>
-        <li><a href="reading.html">Reading</a></li>
-        <li><a href="art.html">Art</a></li>
-        <li><a href="../about.html">About</a></li>
-        <li><a href="../profile.html">My Profile</a></li>
-      </ul>
-    </nav>
-  </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Mango’s Bubble Pop - Learnimals</title>
+        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/bubblepop.css" />
+        <script defer src="/learnimals-site/js/bubblepop.js"></script>
+    </head>
+    <body>
+        <div id="navbar-placeholder"></div>
 
-  <main>
-    <section class="hero">
-      <h2>Mango’s Bubble Pop</h2>
-      <p>Pop the bubble with the correct answer before time runs out!</p>
-      <div class="hero-image">
-        <img src="../assets/images/mango-swimming.png" alt="Mango the Shark" />
-      </div>
-    </section>
+        <main>
+            <section class="hero">
+                <h2>Mango’s Bubble Pop</h2>
+                <p>
+                    Pop the bubble with the correct answer before time runs out!
+                </p>
+                <div class="hero-image">
+                    <img
+                        src="/learnimals-site/assets/images/mango-swimming.png"
+                        alt="Mango the Shark"
+                    />
+                </div>
+            </section>
 
-    <section class="game-container">
-      <!-- Game elements will go here -->
-      <canvas id="gameCanvas"></canvas>
-      <div id="questionBox"></div>
-    </section>
-  </main>
+            <section class="game-container">
+                <!-- Game elements will go here -->
+                <canvas id="gameCanvas"></canvas>
+                <div id="questionBox"></div>
+            </section>
+        </main>
 
-  <footer>
-    <p>&copy; 2025 Learnimals. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="../about.html">About Us</a>
-      <a href="../contact.html">Contact</a>
-      <a href="#">Privacy Policy</a>
-      <a href="../profile.html">My Profile</a>
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/learnimals-site/about.html">About Us</a>
+                <a href="/learnimals-site/contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="/learnimals-site/profile.html">My Profile</a>
+            </div>
+        </footer>
 
-    </div>
-  </footer>
-
-  <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu').addEventListener('click', function() {
-      document.getElementById('nav-menu').classList.toggle('active');
-      this.classList.toggle('active');
-      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
-      this.setAttribute('aria-expanded', !expanded);
-    });
-  </script>
-  <script src="../js/components/navigation.js"></script>
-  <script defer src="../js/themeInitializer.js"></script>
-  <script type="module" src="../js/utils/themeManager.js"></script>
-  <script type="module" src="../js/components/themeSwitcher.js"></script>
-</body>
+        <script>
+            // Mobile menu toggle
+            document
+                .getElementById("mobile-menu")
+                .addEventListener("click", function () {
+                    document
+                        .getElementById("nav-menu")
+                        .classList.toggle("active");
+                    this.classList.toggle("active");
+                    const expanded =
+                        this.getAttribute("aria-expanded") === "true" || false;
+                    this.setAttribute("aria-expanded", !expanded);
+                });
+        </script>
+        <!-- JS -->
+        <script defer src="/learnimals-site/js/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/components/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="/learnimals-site/js/components/navbarLoader.js"
+        ></script>
+    </body>
 </html>

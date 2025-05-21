@@ -1,232 +1,264 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Contact the Learnimals team - Fun educational games with animal friends" />
-  <title>Contact Us - Learnimals</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    .contact-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .contact-form {
-      background-color: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      margin-top: 30px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      color: #2d3436;
-    }
-    
-    input, textarea, select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #dfe6e9;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-    
-    input:focus, textarea:focus, select:focus {
-      border-color: #00b894;
-      outline: none;
-    }
-    
-    textarea {
-      height: 150px;
-      resize: vertical;
-    }
-    
-    .submit-btn {
-      background-color: #00b894;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 25px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-    
-    .submit-btn:hover {
-      background-color: #00a382;
-      transform: scale(1.05);
-    }
-    
-    .contact-info {
-      margin-top: 40px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      gap: 20px;
-    }
-    
-    .contact-card {
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      width: 200px;
-      text-align: center;
-      transition: transform 0.3s;
-    }
-    
-    .contact-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    .contact-card i {
-      font-size: 2rem;
-      color: #0984e3;
-      margin-bottom: 10px;
-    }
-    
-    @media (max-width: 768px) {
-      .contact-info {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .contact-card {
-        width: 100%;
-        max-width: 300px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      <a href="index.html">
-        <img src="assets/images/logo.png" alt="Learnimals Logo" />
-      </a>
-    </div>
-    <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <nav aria-label="Main navigation">
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="subjects/math.html">Math</a></li>
-        <li><a href="subjects/science.html">Science</a></li>
-        <li><a href="subjects/reading.html">Reading</a></li>
-        <li><a href="subjects/art.html">Art</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html" aria-current="page">Contact</a></li>
-        <li><a href="profile.html">My Profile</a></li>
-      </ul>
-    </nav>
-  </header>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Contact the Learnimals team - Fun educational games with animal friends"
+        />
+        <title>Contact Us - Learnimals</title>
+        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
+        <style>
+            .contact-container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
 
-  <main>
-    <section class="hero">
-      <h2>Contact the Learnimals Team</h2>
-      <p>Have questions, suggestions, or just want to say hello? We'd love to hear from you!</p>
-    </section>
+            .contact-form {
+                background-color: white;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                margin-top: 30px;
+            }
 
-    <div class="contact-container">
-      <div class="contact-form">
-        <h3>Send Us a Message</h3>
-        <form id="contactForm" aria-label="Contact form">
-          <div class="form-group">
-            <label for="name">Your Name</label>
-            <input type="text" id="name" name="name" required aria-required="true">
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required aria-required="true">
-          </div>
-          
-          <div class="form-group">
-            <label for="subject">Subject</label>
-            <select id="subject" name="subject">
-              <option value="question">I have a question</option>
-              <option value="feedback">I want to give feedback</option>
-              <option value="suggestion">I have a suggestion</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="message">Your Message</label>
-            <textarea id="message" name="message" required aria-required="true"></textarea>
-          </div>
-          
-          <button type="submit" class="submit-btn">Send Message</button>
-        </form>
-      </div>
-      
-      <div class="contact-info">
-        <div class="contact-card">
-          <i class="icon">📧</i>
-          <h4>Email Us</h4>
-          <p>hello@learnimals.com</p>
-        </div>
-        
-        <div class="contact-card">
-          <i class="icon">📱</i>
-          <h4>Call Us</h4>
-          <p>(123) 456-7890</p>
-        </div>
-        
-        <div class="contact-card">
-          <i class="icon">📍</i>
-          <h4>Visit Us</h4>
-          <p>123 Animal Lane<br>Education City, ED 12345</p>
-        </div>
-      </div>
-    </div>
-  </main>
+            .form-group {
+                margin-bottom: 20px;
+            }
 
-  <footer>
-    <p>&copy; 2025 Learnimals. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="#">Privacy Policy</a>
-      <a href="profile.html">My Profile</a>
-    </div>
-  </footer>
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: bold;
+                color: #2d3436;
+            }
 
-  <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu').addEventListener('click', function() {
-      document.getElementById('nav-menu').classList.toggle('active');
-      this.classList.toggle('active');
-      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
-      this.setAttribute('aria-expanded', !expanded);
-    });
-    
-    // Form submission handler
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Thank you for your message! We\'ll get back to you soon.');
-      this.reset();
-    });
-    
+            input,
+            textarea,
+            select {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #dfe6e9;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 1rem;
+                transition: border-color 0.3s;
+            }
 
-  </script>
-  <script src="js/components/navigation.js"></script>
-  <script defer src="js/themeInitializer.js"></script>
-  <script type="module" src="js/utils/themeManager.js"></script>
-  <script type="module" src="js/components/themeSwitcher.js"></script>
-</body>
+            input:focus,
+            textarea:focus,
+            select:focus {
+                border-color: #00b894;
+                outline: none;
+            }
+
+            textarea {
+                height: 150px;
+                resize: vertical;
+            }
+
+            .submit-btn {
+                background-color: #00b894;
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 25px;
+                font-size: 1.1rem;
+                cursor: pointer;
+                transition:
+                    background-color 0.3s,
+                    transform 0.2s;
+            }
+
+            .submit-btn:hover {
+                background-color: #00a382;
+                transform: scale(1.05);
+            }
+
+            .contact-info {
+                margin-top: 40px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                gap: 20px;
+            }
+
+            .contact-card {
+                background-color: white;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                width: 200px;
+                text-align: center;
+                transition: transform 0.3s;
+            }
+
+            .contact-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .contact-card i {
+                font-size: 2rem;
+                color: #0984e3;
+                margin-bottom: 10px;
+            }
+
+            @media (max-width: 768px) {
+                .contact-info {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .contact-card {
+                    width: 100%;
+                    max-width: 300px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="navbar-placeholder"></div>
+
+        <main>
+            <section class="hero">
+                <h2>Contact the Learnimals Team</h2>
+                <p>
+                    Have questions, suggestions, or just want to say hello? We'd
+                    love to hear from you!
+                </p>
+            </section>
+
+            <div class="contact-container">
+                <div class="contact-form">
+                    <h3>Send Us a Message</h3>
+                    <form id="contactForm" aria-label="Contact form">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                required
+                                aria-required="true"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                aria-required="true"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <select id="subject" name="subject">
+                                <option value="question">
+                                    I have a question
+                                </option>
+                                <option value="feedback">
+                                    I want to give feedback
+                                </option>
+                                <option value="suggestion">
+                                    I have a suggestion
+                                </option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Your Message</label>
+                            <textarea
+                                id="message"
+                                name="message"
+                                required
+                                aria-required="true"
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <i class="icon">📧</i>
+                        <h4>Email Us</h4>
+                        <p>hello@learnimals.com</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <i class="icon">📱</i>
+                        <h4>Call Us</h4>
+                        <p>(123) 456-7890</p>
+                    </div>
+
+                    <div class="contact-card">
+                        <i class="icon">📍</i>
+                        <h4>Visit Us</h4>
+                        <p>123 Animal Lane<br />Education City, ED 12345</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="profile.html">My Profile</a>
+            </div>
+        </footer>
+
+        <script>
+            // Mobile menu toggle
+            document
+                .getElementById("mobile-menu")
+                .addEventListener("click", function () {
+                    document
+                        .getElementById("nav-menu")
+                        .classList.toggle("active");
+                    this.classList.toggle("active");
+                    const expanded =
+                        this.getAttribute("aria-expanded") === "true" || false;
+                    this.setAttribute("aria-expanded", !expanded);
+                });
+
+            // Form submission handler
+            document
+                .getElementById("contactForm")
+                .addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    alert(
+                        "Thank you for your message! We'll get back to you soon.",
+                    );
+                    this.reset();
+                });
+        </script>
+        <!-- JS -->
+        <script defer src="/learnimals-site/js/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="/learnimals-site/js/components/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="/learnimals-site/js/components/navbarLoader.js"
+        ></script>
+    </body>
 </html>

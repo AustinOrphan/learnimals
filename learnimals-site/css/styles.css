@@ -535,11 +535,10 @@ nav a:hover {
     animation: bounce 2s infinite;
     display: inline-block;
     font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .cta-button:hover {
-    box-shadow: 1px 10px 2px rgba(var(--text-color), 0.5) inset;
+    background-color: var(--primary-color-alt);
 }
 
 /* Features Section */
@@ -754,9 +753,11 @@ footer {
     0%,
     100% {
         transform: translateY(0);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
     50% {
         transform: translateY(-5px);
+        box-shadow: 0 9px 9px rgba(0, 0, 0, 0.2);
     }
 }
 
