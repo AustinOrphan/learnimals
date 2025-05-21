@@ -988,12 +988,12 @@
       <a href="about.html">About Us</a>
       <a href="contact.html">Contact</a>
       <a href="#">Privacy Policy</a>
-      <button id="theme-toggle" aria-label="Toggle dark mode">Theme</button>
     </div>
   </footer>
 
   <script src="js/components/navigation.js"></script>
-  <script src="js/utils/themeManager.js"></script>
+  <script defer src="js/themeInitializer.js"></script>
+  <script type="module" src="js/utils/themeManager.js"></script>
   <script type="module" src="js/components/themeSwitcher.js"></script>
   <script type="module">
     import userProgress from './js/user/userProgress.js';

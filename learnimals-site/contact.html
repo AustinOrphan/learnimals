@@ -222,22 +222,10 @@
       this.reset();
     });
     
-    // Theme toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const themeToggle = document.querySelector('#theme-toggle');
-      if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-          if (window.themeManager) {
-            const currentTheme = window.themeManager.getCurrentTheme();
-            const nextTheme = currentTheme === 'night' ? 'default' : 'night';
-            window.themeManager.applyTheme(nextTheme);
-          } else {
-            document.body.classList.toggle('dark-theme');
-          }
-        });
-      }
-    });
+
   </script>
+  <script src="js/components/navigation.js"></script>
+  <script defer src="js/themeInitializer.js"></script>
   <script type="module" src="js/utils/themeManager.js"></script>
   <script type="module" src="js/components/themeSwitcher.js"></script>
 </body>

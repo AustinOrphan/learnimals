@@ -2,74 +2,81 @@
 // This script initializes theme support and ensures consistency across pages
 
 (function() {
-  // Check if a theme is stored in localStorage
-  const savedTheme = localStorage.getItem('learnimals-theme');
+  // Check if theme preferences are stored in localStorage
+  const savedThemeName = localStorage.getItem('learnimals-theme-name');
+  const savedThemeMode = localStorage.getItem('learnimals-theme-mode');
   
   // Apply the saved theme immediately to prevent flash of unstyled content
-  if (savedTheme) {
-    document.documentElement.setAttribute('data-theme', savedTheme);
+  if (savedThemeName) {
+    document.documentElement.setAttribute('data-theme-name', savedThemeName);
+  }
+  
+  // Apply the saved mode or use system preference
+  if (savedThemeMode) {
+    document.documentElement.setAttribute('data-theme', savedThemeMode === 'dark' ? 'night' : savedThemeName);
   } else {
-    // Check for system preference if no saved theme
+    // Check for system preference if no saved mode
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.setAttribute('data-theme', 'night');
+      localStorage.setItem('learnimals-theme-mode', 'dark');
     }
   }
   
   // Function to toggle between light and dark theme
-  function toggleTheme() {
+  function toggleMode() {
+    // Use themeSwitcher if available (preferred method)
+    if (window.themeSwitcher && typeof window.themeSwitcher.toggleTheme === 'function') {
+      window.themeSwitcher.toggleTheme();
+      return;
+    }
+    
+    // Use themeManager if available, otherwise fallback to basic toggle
+    if (window.themeManager && typeof window.themeManager.toggleMode === 'function') {
+      window.themeManager.toggleMode();
+      return;
+    }
+    
+    // Fallback toggle implementation
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'default';
-    const newTheme = currentTheme === 'night' ? 'default' : 'night';
+    const newMode = currentTheme === 'night' ? 'light' : 'dark';
+    const newTheme = newMode === 'dark' ? 'night' : (savedThemeName || 'default');
     
     // Update DOM
     document.documentElement.setAttribute('data-theme', newTheme);
     
     // Save preference
-    localStorage.setItem('learnimals-theme', newTheme);
+    localStorage.setItem('learnimals-theme-mode', newMode);
     
     // Update meta theme-color for browser UI
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
       metaThemeColor.setAttribute(
         'content', 
-        newTheme === 'night' ? '#222f3e' : '#ffeaa7'
+        newMode === 'dark' ? '#222f3e' : '#ffeaa7'
       );
     }
     
     // Dispatch event for other components
     const event = new CustomEvent('themeChanged', { 
-      detail: { theme: newTheme } 
+      detail: { 
+        theme: savedThemeName || 'default',
+        mode: newMode
+      } 
     });
     document.dispatchEvent(event);
   }
   
-  // Initialize theme toggle buttons when DOM is loaded
+  // Theme toggle buttons in footers have been removed
+  // All theme toggling is now handled by themeSwitcher component
   document.addEventListener('DOMContentLoaded', function() {
-    const themeToggleButtons = document.querySelectorAll('#theme-toggle');
-    
-    themeToggleButtons.forEach(button => {
-      button.addEventListener('click', toggleTheme);
-      
-      // Update button text based on current theme
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      button.textContent = currentTheme === 'night' ? '☀️ Light' : '🌙 Dark';
-      
-      // Add ARIA attributes
-      button.setAttribute('aria-label', `Switch to ${currentTheme === 'night' ? 'light' : 'dark'} mode`);
-    });
-    
-    // Listen for theme changes from other sources
-    document.addEventListener('themeChanged', function(e) {
-      themeToggleButtons.forEach(button => {
-        button.textContent = e.detail.theme === 'night' ? '☀️ Light' : '🌙 Dark';
-        button.setAttribute('aria-label', `Switch to ${e.detail.theme === 'night' ? 'light' : 'dark'} mode`);
-      });
-    });
+    // No need to initialize theme toggle buttons anymore as they've been removed from footers
+    // The themeSwitcher component will handle all theme switching functionality
   });
   
   // Export for module usage
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = { toggleTheme };
+    module.exports = { toggleMode };
   } else {
-    window.themeInitializer = { toggleTheme };
+    window.themeInitializer = { toggleMode };
   }
 })();

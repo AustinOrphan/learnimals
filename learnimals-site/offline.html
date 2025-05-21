@@ -86,6 +86,57 @@
         transform: translateY(-15px);
       }
     }
+    
+    /* Theme colors for dark mode */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #222f3e;
+        color: #f5f6fa;
+      }
+      
+      .offline-container {
+        background-color: #2d3436;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      }
+      
+      .cached-link {
+        background-color: #686de0;
+        color: #f5f6fa;
+      }
+      
+      .retry-button {
+        background-color: #00d1a0;
+      }
+      
+      .retry-button:hover {
+        background-color: #00c492;
+      }
+    }
+    
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      background-color: #ffeaa7;
+      color: #2d3436;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: all 0.3s;
+    }
+    
+    .dark-mode .theme-toggle {
+      background-color: #686de0;
+      color: #f5f6fa;
+    }
+    
+    .theme-toggle:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -128,6 +179,35 @@
         console.error('Error checking caches:', error);
       }
     });
+    
+    // Basic theme toggle for offline page
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const themeToggleBtn = document.createElement('button');
+    themeToggleBtn.className = 'theme-toggle';
+    themeToggleBtn.setAttribute('aria-label', 'Toggle dark mode');
+    
+    // Check if dark mode was saved or system prefers dark
+    const savedMode = localStorage.getItem('learnimals-theme-mode');
+    const isDarkMode = savedMode === 'dark' || 
+                     (!savedMode && darkModeMediaQuery.matches);
+    
+    // Apply initial theme
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      themeToggleBtn.textContent = '☀️ Light';
+    } else {
+      themeToggleBtn.textContent = '🌙 Dark';
+    }
+    
+    // Handle theme toggle
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      themeToggleBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+      localStorage.setItem('learnimals-theme-mode', isDark ? 'dark' : 'light');
+    });
+    
+    // Add toggle button to the page
+    document.body.appendChild(themeToggleBtn);
   </script>
 </body>
 </html>

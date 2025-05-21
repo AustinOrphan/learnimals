@@ -76,10 +76,22 @@
       <a href="../contact.html">Contact</a>
       <a href="#">Privacy Policy</a>
       <a href="../profile.html">My Profile</a>
-      <button id="theme-toggle" aria-label="Toggle dark mode">Theme</button>
     </div>
   </footer>
 
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobile-menu').addEventListener('click', function() {
+      document.getElementById('nav-menu').classList.toggle('active');
+      this.classList.toggle('active');
+      const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+      this.setAttribute('aria-expanded', !expanded);
+    });
+  </script>
+  <script src="../js/components/navigation.js"></script>
+  <script defer src="../js/themeInitializer.js"></script>
+  <script type="module" src="../js/utils/themeManager.js"></script>
+  <script type="module" src="../js/components/themeSwitcher.js"></script>
   <script src="../js/art.js"></script>
 </body>
 </html>
