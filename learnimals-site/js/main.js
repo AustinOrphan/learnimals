@@ -15,7 +15,7 @@ function createConfetti(container) {
   confettiContainer.style.top = "0";
   confettiContainer.style.width = "100%";
   confettiContainer.style.height = "100%";
-  confettiContainer.style.zIndex = "-1"; // Negative z-index to stay below the image
+  confettiContainer.style.zIndex = "1"; // Negative z-index to stay below the image
 
   // Insert at the beginning of the container to ensure it's behind other elements
   if (container.firstChild) {
