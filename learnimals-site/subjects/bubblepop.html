@@ -1,14 +1,18 @@
-<!-- File: bubblepop.html -->
+<!--        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Mango's Bubble Pop - Learnimals</title>
+        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
+        <link rel="stylesheet" href="/learnimals-site/css/bubblepop.css" /> bubblepop.html -->
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Mango’s Bubble Pop - Learnimals</title>
-        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
+        <title>Mango’s Bubble Pop - Learnimals</title>        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
         <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
         <link rel="stylesheet" href="/learnimals-site/css/bubblepop.css" />
-        <script defer src="/learnimals-site/js/bubblepop.js"></script>
+        <script type="module" src="/learnimals-site/js/bubblepop.js"></script>
     </head>
     <body>
         <div id="navbar-placeholder"></div>
@@ -25,13 +29,45 @@
                         alt="Mango the Shark"
                     />
                 </div>
-            </section>
-
-            <section class="game-container">
+            </section>            <section class="game-container">
                 <!-- Game elements will go here -->
                 <canvas id="gameCanvas"></canvas>
                 <div id="questionBox"></div>
             </section>
+              <script type="module">
+                import BubblePopGame from '/learnimals-site/js/bubblepop.js';
+                
+                // Initialize the game when DOM is fully loaded or content is already available
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initGame);
+                } else {
+                    initGame();
+                }
+                
+                function initGame() {
+                    // Create game instance and make available for debugging
+                    window.game = new BubblePopGame('gameCanvas');
+                    
+                    // Add event listeners for fullscreen mode if supported
+                    const canvasContainer = document.querySelector('.game-container');
+                    if (canvasContainer && document.fullscreenEnabled) {
+                        const fullscreenBtn = document.createElement('button');
+                        fullscreenBtn.className = 'fullscreen-btn';
+                        fullscreenBtn.innerHTML = '⤢'; // Fullscreen icon
+                        fullscreenBtn.title = 'Toggle fullscreen';
+                        fullscreenBtn.addEventListener('click', () => {
+                            if (!document.fullscreenElement) {
+                                canvasContainer.requestFullscreen().catch(err => {
+                                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                                });
+                            } else {
+                                document.exitFullscreen();
+                            }
+                        });
+                        canvasContainer.appendChild(fullscreenBtn);
+                    }
+                }
+            </script>
         </main>
 
         <footer>

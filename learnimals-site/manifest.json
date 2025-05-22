@@ -1,8 +1,8 @@
-{
-  "name": "Learnimals",
+{  "name": "Learnimals",
   "short_name": "Learnimals",
   "description": "Fun educational games with animal friends for children",
   "start_url": "./index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#fdf6e3",
   "theme_color": "#ffeaa7",

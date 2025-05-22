@@ -10,8 +10,7 @@
         <title>Theme Tester - Learnimals</title>
         <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
         <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
-        <link rel="stylesheet" href="/learnimals-site/css/theme-test.css" />
-        <script defer src="js/themeInitializer.js"></script>
+        <link rel="stylesheet" href="/learnimals-site/css/theme-test.css" />        <script defer src="js/themeInitializer.js" type="module"></script>
     </head>
     <body>
         <div id="navbar-placeholder"></div>
@@ -22,12 +21,14 @@
                 <p>
                     Test the various theme and mode combinations with RGB colors
                 </p>
-            </section>
-
-            <div class="theme-test-container">
+                <div class="theme-info">
+                    <div id="current-theme">Current theme: Loading...</div>
+                    <div id="current-mode">Current mode: Loading...</div>
+                </div>
+            </section>            <div class="theme-test-container">
                 <section class="test-section">
-                    <h2>Current Theme Colors</h2>
-                    <p>These are the colors in the current theme and mode:</p>
+                    <h2>Theme Base Colors</h2>
+                    <p>These are the base colors in the current theme and mode:</p>
 
                     <div class="theme-demo">
                         <div class="color-box primary-color" data-rgb="RGB">
@@ -814,8 +815,7 @@
                 // Update variable inspector
                 updateVariableInspector();
             });
-        </script>
-        <!-- JS -->
+        </script>        <!-- JS -->
         <script defer src="/learnimals-site/js/themeInitializer.js"></script>
         <script
             type="module"
@@ -829,5 +829,6 @@
             defer
             src="/learnimals-site/js/components/navbarLoader.js"
         ></script>
+        <script defer src="/learnimals-site/js/theme-test.js"></script>
     </body>
 </html>

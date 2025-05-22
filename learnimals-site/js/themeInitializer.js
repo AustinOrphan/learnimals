@@ -1,5 +1,6 @@
 // Theme Initializer for Learnimals
 // This script initializes theme support and ensures consistency across pages
+import { getPreferredColorScheme } from './utils/themeManagerUtils.js';
 
 (function() {
   // Check if theme preferences are stored in localStorage
@@ -16,7 +17,8 @@
     document.documentElement.setAttribute('data-theme', savedThemeMode === 'dark' ? 'night' : savedThemeName);
   } else {
     // Check for system preference if no saved mode
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    const preferredMode = getPreferredColorScheme();
+    if (preferredMode === 'dark') {
       document.documentElement.setAttribute('data-theme', 'night');
       localStorage.setItem('learnimals-theme-mode', 'dark');
     }

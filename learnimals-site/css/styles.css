@@ -50,8 +50,8 @@ body {
     --color-gray-500: rgb(45, 52, 54);
 
     /* Default Theme Colors */
-    --default-color-1: rgb(77, 255, 211); /* Mint */
-    --default-color-2: rgb(132, 255, 214); /* Lighter mint */
+    --default-color-1: rgb(68, 209, 174); /* Mint */
+    --default-color-2: rgb(147, 229, 209); /* Lighter mint */
     --default-color-3: rgb(9, 132, 227); /* Blue */
     --default-color-4: rgb(116, 185, 255); /* Light blue */
     --default-color-5: rgb(241, 217, 140); /* Yellow */

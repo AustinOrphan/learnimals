@@ -1,26 +1,55 @@
 // Service Worker for Learnimals PWA
-const CACHE_NAME = 'learnimals-cache-v1';
+const CACHE_NAME = 'learnimals-cache-v2';
 const ASSETS_TO_CACHE = [
+  // HTML pages
   './',
   './index.html',
   './about.html',
   './contact.html',
+  './subjects/math.html',
+  './subjects/science.html',
+  './subjects/reading.html',
+  './subjects/art.html',
+  './subjects/bubblepop.html',
+  './offline.html',
+  
+  // CSS files
   './css/styles.css',
+  './css/navbar.css',
   './css/math.css',
   './css/bubblepop.css',
+  './css/subjects/art.css',
+  './css/subjects/reading.css',
+  './css/subjects/science.css',
+  
+  // JavaScript files
+  './js/config.js',
   './js/main.js',
   './js/math.js',
+  './js/science.js',
+  './js/art.js',
   './js/bubblepop.js',
+  './js/games/Bubble.js',
+  './js/games/wordScramble.js',
+  './js/utils/common.js',
+  './js/utils/themeManager.js',
   './js/components/navigation.js',
+  './js/components/navbarLoader.js',
+  './js/components/themeSwitcher.js',
+  
+  // Images
   './assets/images/logo.png',
+  './assets/images/favicon.ico',
+  './assets/images/icon-192.png',
   './assets/images/math-shark.png',
   './assets/images/science-parrot.png',
   './assets/images/reading-panda.png',
   './assets/images/art-lion.png',
-  './subjects/math.html',
-  './subjects/bubblepop.html',
-  // Add other important assets
-  './offline.html'
+  './assets/images/mango-swimming.png',
+  './assets/images/rocket.png',
+  
+  // Components
+  './components/navbar.html'
 ];
 
 // Install event - Cache essential assets

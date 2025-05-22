@@ -1,5 +1,6 @@
 // Theme Switcher Component for Learnimals
 // This component creates a theme selection interface
+import { THEME_DEFINITIONS } from '../utils/themeRegistry.js';
 
 class ThemeSwitcher {
   constructor() {
@@ -151,10 +152,8 @@ class ThemeSwitcher {
     menuTitle.style.paddingBottom = "5px";
     menuTitle.style.borderBottom = "1px solid var(--primary-color)";
     menuTitle.style.transition = "border-bottom 0.3s";
-    menu.appendChild(menuTitle);
-
-    // Get themes from the theme manager
-    let themes = ["default", "ocean", "forest", "candy", "space", "sunset", "neon", "vintage"];
+    menu.appendChild(menuTitle);    // Get themes from the registry or fallback to theme manager
+    let themeDefinitions = THEME_DEFINITIONS;
     try {
       if (
         window.themeManager &&
@@ -162,7 +161,8 @@ class ThemeSwitcher {
       ) {
         const managerThemes = window.themeManager.getAvailableThemes();
         if (Array.isArray(managerThemes) && managerThemes.length > 0) {
-          themes = managerThemes;
+          // Filter theme definitions to only include available themes
+          themeDefinitions = THEME_DEFINITIONS.filter(def => managerThemes.includes(def.id));
         }
       }
     } catch (error) {
@@ -170,16 +170,13 @@ class ThemeSwitcher {
     }
 
     // Create a button for each theme
-    themes.forEach((theme) => {
+    themeDefinitions.forEach((themeDef) => {
       const themeButton = document.createElement("button");
       themeButton.className = "theme-option";
-      themeButton.setAttribute("data-theme", theme);
+      themeButton.setAttribute("data-theme", themeDef.id);
       themeButton.setAttribute("role", "menuitem");
 
-      // Get emoji for each theme
-      const themeEmoji = this.getThemeEmoji(theme);
-
-      themeButton.innerHTML = `${themeEmoji} <span>${this.capitalizeFirstLetter(theme)}</span>`;
+      themeButton.innerHTML = `${themeDef.icon} <span>${themeDef.title}</span>`;
 
       // Style the theme button
       themeButton.style.padding = "8px 12px";
@@ -201,7 +198,7 @@ class ThemeSwitcher {
             window.themeManager &&
             typeof window.themeManager.setTheme === "function"
           ) {
-            window.themeManager.setTheme(theme);
+            window.themeManager.setTheme(themeDef.id);
           } else {
             // Fallback implementation
             document.documentElement.setAttribute("data-theme", theme);
@@ -328,18 +325,9 @@ class ThemeSwitcher {
   }
 
   getThemeEmoji(theme) {
-    const emojis = {
-      default: "🏠",
-      ocean: "🌊",
-      forest: "🌲",
-      candy: "🍭",
-      space: "🚀",
-      sunset: "🌅",
-      neon: "✨",
-      vintage: "📜"
-    };
-
-    return emojis[theme] || "🎨";
+    // Use THEME_DEFINITIONS from registry to get the icon
+    const themeDef = THEME_DEFINITIONS.find(t => t.id === theme);
+    return themeDef ? themeDef.icon : "🎨";
   }
 
   capitalizeFirstLetter(string) {

@@ -304,3 +304,53 @@
 .demo-buttons button {
   margin-right: 10px;
 }
+
+/* Semantic Variable Color Boxes */
+.text-primary-color {
+  background-color: var(--text-primary);
+}
+
+.text-secondary-color {
+  background-color: var(--text-secondary);
+}
+
+.text-on-accent-color {
+  background-color: var(--accent-primary);
+  color: var(--text-on-accent);
+}
+
+.text-heading-color {
+  background-color: var(--text-heading);
+}
+
+.bg-body-color {
+  background-color: var(--bg-body);
+}
+
+.bg-card-color {
+  background-color: var(--bg-card);
+}
+
+.bg-card-alt-color {
+  background-color: var(--bg-card-alt);
+}
+
+.bg-highlight-color {
+  background-color: var(--bg-highlight);
+}
+
+.accent-primary-color {
+  background-color: var(--accent-primary);
+}
+
+.accent-secondary-color {
+  background-color: var(--accent-secondary);
+}
+
+.accent-primary-hover-color {
+  background-color: var(--accent-primary-hover);
+}
+
+.border-color {
+  background-color: var(--border-color);
+}
