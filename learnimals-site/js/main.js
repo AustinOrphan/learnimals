@@ -5,6 +5,11 @@ cards.forEach((card) => {
   card.addEventListener("mouseenter", () => {
     createConfetti(card);
   });
+  card.addEventListener("mouseleave", () => {
+    setTimeout(() => {
+      card.querySelector(".confetti-container").remove();
+    }, 3000);
+  });
 });
 
 function createConfetti(container) {
@@ -17,12 +22,7 @@ function createConfetti(container) {
   confettiContainer.style.height = "100%";
   confettiContainer.style.zIndex = "1"; // Negative z-index to stay below the image
 
-  // Insert at the beginning of the container to ensure it's behind other elements
-  if (container.firstChild) {
-    container.insertBefore(confettiContainer, container.firstChild);
-  } else {
-    container.appendChild(confettiContainer);
-  }
+  container.appendChild(confettiContainer);
 
   for (let i = 0; i < 100; i++) {
     const star = document.createElement("div");
@@ -33,9 +33,6 @@ function createConfetti(container) {
     confettiContainer.appendChild(star);
     setTimeout(() => star.remove(), 3000);
   }
-
-  // Remove the confetti container after all confetti are gone
-  setTimeout(() => confettiContainer.remove(), 3100);
 }
 
 // Add styles via JS so you don't have to maintain in CSS
@@ -62,9 +59,9 @@ style.innerHTML = `
   }
 
   @keyframes pop {
-    0% { transform: scale(0) translateY(0); opacity: 0; }
-    10% { transform: scale(1) translateY(-4px); opacity: 1; }
-    100% { transform: scale(0) translateY(-36px); opacity: 0; }
+    0% { transform: translateY(0) translateX(0); opacity: 0; height: 0; width: 0; }
+    10% { transform: translateY(-10px) translateX(-3px); opacity: 1; height: 6px; width: 6px; }
+    100% { transform: translateY(-40px) translateX(0); opacity: 0; height: 0; width: 0; }
   }
 `;
 document.head.appendChild(style);
