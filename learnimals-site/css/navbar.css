@@ -1,9 +1,9 @@
 /* NAVBAR LAYOUT */
 .navbar {
     display: flex;
-    /* justify-content: space-between; */
-    /* align-items: center; */
-    padding: 1rem 2rem;
+    justify-content: space-between; /* ensures logo and links are spaced */
+    align-items: center; /* vertically aligns logo and nav */
+    padding: 0.75rem 2rem; /* reduce vertical padding if logo is taller */
     background-color: var(--background-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     width: 100%;
@@ -11,8 +11,11 @@
 }
 
 .navbar-logo img {
-    height: 48px;
+    height: 80px; /* Adjust based on your visual preference */
+    max-height: 80px;
+    display: block;
 }
+
 
 /* NAV LINKS CONTAINER (THE WRAPPER BUBBLE) */
 .navbar-links {
