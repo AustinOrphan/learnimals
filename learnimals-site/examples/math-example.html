@@ -3,15 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-            name="description"
-            content="Fun math tools and games for children featuring Mango the Shark"
-        />
-        <title>Math Tools - Learnimals</title>
+        <title>Math - Learnimals</title>
         <script type="module">
-            import SubjectTemplateLoader from '/learnimals-site/js/utils/subjectTemplateLoader.js';
-
-            // Define content for math page
+            import SubjectTemplateLoader from '/learnimals-site/js/utils/subjectTemplateLoader.js';            // Define content for math page
             const mathOptions = {
                 subjectName: 'Math Tools',
                 subjectLower: 'math',
@@ -19,7 +13,7 @@
                 characterName: 'Mango',
                 characterType: 'Shark',
                 heroSubtitle: 'Try out fun math helpers below.',
-                // Fallback HTML for feature cards if Card.js doesn't work
+                // Fallback HTML if Card.js doesn't work
                 featureCards: `
                     <div class="feature-card">
                         <h3>Number to Words</h3>
@@ -49,7 +43,7 @@
                         <p>More math games and tools will be added here!</p>
                     </div>
                 `,
-                // Card.js data for generating feature cards
+                // Card.js data for generating cards
                 featureCardsData: [
                     {
                         title: 'Number to Words',
@@ -67,14 +61,15 @@
                             </div>
                             <button onclick="convertNumber()">Convert</button>
                             <p id="numberOutput" style="margin-top: 10px" aria-live="polite"></p>
-                        `
+                        `,
+                        imageUrl: '/learnimals-site/assets/images/math-shark.png',
+                        imageAlt: 'Mango the Math Shark'
                     },
                     {
-                        isLinked: true,
                         title: 'Mango\'s Bubble Pop',
                         content: '<p>Pop bubbles with the right math answer to help Mango learn!</p>',
-                        linkUrl: 'bubblepop.html',
                         linkText: 'Play Now',
+                        linkUrl: 'bubblepop.html',
                         imageUrl: '/learnimals-site/assets/images/mango-swimming.png',
                         imageAlt: 'Mango swimming with bubbles',
                         theme: 'alt'
@@ -82,75 +77,19 @@
                     {
                         title: 'Coming Soon...',
                         content: '<p>More math games and tools will be added here!</p>',
-                        imageUrl: '/learnimals-site/assets/images/math-parrot.png',
-                        imageAlt: 'Math coming soon'
+                        theme: 'default'
                     }
                 ]
             };
-            
+
+            // Render the template with math-specific content
             document.addEventListener('DOMContentLoaded', async () => {
                 await SubjectTemplateLoader.renderTemplate(mathOptions);
-                
             });
         </script>
-        
-        <!-- Keep the original CSS and JS references for backward compatibility -->
-        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
-        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
-        <link rel="stylesheet" href="/learnimals-site/css/subjects/math.css" />
     </head>
     <body>
         <!-- This content will be replaced by the template -->
         <p>Loading math content...</p>
-        
-        <script>
-            // Ensure math.js is loaded and convertNumber is available
-            window.addEventListener('load', function () {
-                console.log('Math page load event fired');
-                
-                if (typeof convertNumber !== 'function') {
-                    console.warn('convertNumber function not found. Loading fallback.');
-
-                    // Fallback implementation of convertNumber
-                    window.convertNumber = function () {
-                        console.log('Fallback convertNumber called');
-                        const input = document.getElementById('numberInput').value;
-                        const output = document.getElementById('numberOutput');
-
-                        if (!input) {
-                            output.textContent = 'Please enter a number';
-                            return;
-                        }
-
-                        output.textContent = `Fallback: You entered ${input}`;
-                    };
-                } else {
-                    console.log('Original convertNumber function found');
-                }
-
-                // Attach event listener to all buttons that might need it
-                setTimeout(function() {
-                    console.log('Searching for buttons to attach event handlers');
-                    const convertButtons = document.querySelectorAll('button[onclick="convertNumber()"]');
-                    console.log(`Found ${convertButtons.length} buttons with onclick="convertNumber()"`);
-                    
-                    convertButtons.forEach(function(button) {
-                        console.log('Attaching event listener to button');
-                        // Remove the inline onclick attribute to prevent double calls
-                        button.removeAttribute('onclick');
-                        // Add a direct event listener
-                        button.addEventListener('click', function() {
-                            console.log('Button clicked, calling convertNumber');
-                            if (typeof convertNumber === 'function') {
-                                convertNumber();
-                            } else {
-                                console.error('convertNumber still not available!');
-                                alert('Error: convertNumber function not available');
-                            }
-                        });
-                    });
-                }, 500); // Small delay to ensure DOM is fully processed
-            });
-        </script>
     </body>
 </html>
