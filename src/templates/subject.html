@@ -3,47 +3,63 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-            name="description"
-            content="{{subjectDescription}}"
-        />
+        <meta name="description" content="{{subjectDescription}}" />
         <title>{{subjectName}} - Learnimals</title>
         <link rel="stylesheet" href="/src/styles/base/styles.css" />
         <link rel="stylesheet" href="/src/styles/components/navbar.css" />
-        <link rel="stylesheet" href="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.css" />
-        <script defer src="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.js"></script>
+        <link rel="stylesheet" href="/src/styles/components/components.css" />
+        <link
+            rel="stylesheet"
+            href="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.css"
+        />
+        <script
+            defer
+            src="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.js"
+        ></script>
         <script defer src="/src/components/ui/Card.js"></script>
     </head>
     <body>
         <!-- Dynamic navbar load -->
         <div id="navbar-placeholder"></div>
 
-        <main>            <section class="hero">
-                <h2>{{subjectName}} with {{characterName}} the {{characterType}}!</h2>
+        <main>
+            <section class="hero">
+                <h2>
+                    {{subjectName}} with {{characterName}} the
+                    {{characterType}}!
+                </h2>
                 <p>{{heroSubtitle}}</p>
-            </section>            <section class="features" id="feature-cards-container">
+            </section>
+            <section class="features" id="feature-cards-container">
                 <!-- Feature cards will be dynamically rendered here -->
                 <div id="fallback-content">{{featureCards}}</div>
             </section>
-            
+
             <script>
                 // Feature cards will be rendered using Card.js
-                document.addEventListener('DOMContentLoaded', function() {
-                    if (typeof featureCardsData !== 'undefined') {
+                document.addEventListener("DOMContentLoaded", function () {
+                    if (typeof featureCardsData !== "undefined") {
                         try {
-                            const container = document.getElementById('feature-cards-container');
-                            const fallbackContent = document.getElementById('fallback-content');
-                            
+                            const container = document.getElementById(
+                                "feature-cards-container",
+                            );
+                            const fallbackContent =
+                                document.getElementById("fallback-content");
+
                             if (fallbackContent) {
                                 // Hide fallback content when using Card.js
-                                fallbackContent.style.display = 'none';
+                                fallbackContent.style.display = "none";
                             }
-                            
+
                             // Render each card from the feature cards data
-                            featureCardsData.forEach(function(cardData) {
+                            featureCardsData.forEach(function (cardData) {
                                 if (cardData.isLinked && cardData.linkUrl) {
                                     // For linked cards
-                                    const linkedCardHTML = Card.createLinkedCard(cardData, cardData.linkUrl);
+                                    const linkedCardHTML =
+                                        Card.createLinkedCard(
+                                            cardData,
+                                            cardData.linkUrl,
+                                        );
                                     container.innerHTML += linkedCardHTML;
                                 } else {
                                     // For regular cards
@@ -51,24 +67,40 @@
                                     card.render(container);
                                 }
                             });
-                            
+
                             // Process any script tags in the card content to make sure event handlers work
-                            Array.from(container.querySelectorAll('.card-content')).forEach(function(contentDiv) {
-                                const scriptTags = contentDiv.querySelectorAll('script');
-                                scriptTags.forEach(function(oldScript) {
-                                    const newScript = document.createElement('script');
-                                    Array.from(oldScript.attributes).forEach(attr => {
-                                        newScript.setAttribute(attr.name, attr.value)
-                                    });
-                                    newScript.textContent = oldScript.textContent;
-                                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                            Array.from(
+                                container.querySelectorAll(".card-content"),
+                            ).forEach(function (contentDiv) {
+                                const scriptTags =
+                                    contentDiv.querySelectorAll("script");
+                                scriptTags.forEach(function (oldScript) {
+                                    const newScript =
+                                        document.createElement("script");
+                                    Array.from(oldScript.attributes).forEach(
+                                        (attr) => {
+                                            newScript.setAttribute(
+                                                attr.name,
+                                                attr.value,
+                                            );
+                                        },
+                                    );
+                                    newScript.textContent =
+                                        oldScript.textContent;
+                                    oldScript.parentNode.replaceChild(
+                                        newScript,
+                                        oldScript,
+                                    );
                                 });
                             });
                         } catch (error) {
-                            console.error('Error rendering feature cards:', error);
+                            console.error(
+                                "Error rendering feature cards:",
+                                error,
+                            );
                             // Show fallback content if Card.js rendering fails
                             if (fallbackContent) {
-                                fallbackContent.style.display = 'block';
+                                fallbackContent.style.display = "block";
                             }
                         }
                     }
@@ -90,32 +122,33 @@
 
         <!-- JS -->
         <script defer type="module" src="/src/themeInitializer.js"></script>
-        <script
-            type="module"
-            src="/src/utils/themeManager.js"
-        ></script>
+        <script type="module" src="/src/utils/themeManager.js"></script>
         <script
             type="module"
             src="/src/components/layout/themeSwitcher.js"
         ></script>
+        <script defer src="/src/components/layout/navbarLoader.js"></script>
+
+        <!-- Subject-specific JavaScript -->
         <script
             defer
-            src="/src/components/layout/navbarLoader.js"
+            src="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.js"
         ></script>
-        
-        <!-- Subject-specific JavaScript -->
-        <script defer src="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.js"></script>
-        
+
         <!-- Script to ensure all functions are available -->
         <script>
-            window.addEventListener('load', function() {
-                console.log('Subject page fully loaded: {{subjectName}}');
-                
+            window.addEventListener("load", function () {
+                console.log("Subject page fully loaded: {{subjectName}}");
+
                 // Check if any buttons with onclick attributes exist but the functions don't
-                document.querySelectorAll('[onclick]').forEach(function(el) {
-                    const fnName = el.getAttribute('onclick').replace(/\(.*\)$/g, '');
-                    if (typeof window[fnName] !== 'function') {
-                        console.warn(`Function ${fnName} not found but is referenced in an onclick attribute`);
+                document.querySelectorAll("[onclick]").forEach(function (el) {
+                    const fnName = el
+                        .getAttribute("onclick")
+                        .replace(/\(.*\)$/g, "");
+                    if (typeof window[fnName] !== "function") {
+                        console.warn(
+                            `Function ${fnName} not found but is referenced in an onclick attribute`,
+                        );
                     }
                 });
             });

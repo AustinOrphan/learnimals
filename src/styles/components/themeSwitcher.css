@@ -1,0 +1,211 @@
+/* Theme Switcher Component Styles */
+/* Dedicated CSS for theme switcher to replace inline styles */
+
+/* Main container for theme switcher */
+.theme-switcher-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+/* Base button styles for both theme and mode buttons */
+.theme-switcher-button,
+.mode-toggle-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Theme switcher button specific styles */
+.theme-switcher-button {
+  background: var(--primary-color);
+  color: var(--text-color);
+}
+
+/* Mode toggle button specific styles */
+.mode-toggle-button {
+  background: var(--accent-color-alt);
+  color: var(--text-color);
+}
+
+/* Button hover effects */
+.theme-switcher-button:hover,
+.mode-toggle-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Button active state */
+.theme-switcher-button:active,
+.mode-toggle-button:active {
+  transform: scale(0.95);
+}
+
+/* Theme switcher button rotation when menu is open */
+.theme-switcher-button.menu-open {
+  transform: rotate(45deg);
+}
+
+/* Theme menu container */
+.theme-menu {
+  position: absolute;
+  bottom: 110px; /* Positioned above both buttons */
+  right: 0;
+  background: var(--text-color);
+  color: var(--accent-color);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Show menu when active */
+.theme-menu.menu-open {
+  display: flex;
+}
+
+/* Menu title styling */
+.theme-menu-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--primary-color);
+  transition: border-bottom-color 0.3s ease;
+  font-size: 14px;
+}
+
+/* Individual theme option buttons */
+.theme-option {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  color: inherit;
+  font-size: 14px;
+}
+
+/* Theme option hover effect */
+.theme-option:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode hover effect for theme options */
+.theme-mode-dark .theme-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Active theme option styling */
+.theme-option.active {
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Dark mode active theme option */
+.theme-mode-dark .theme-option.active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon styling within buttons */
+.theme-icon,
+.mode-icon {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .theme-switcher-container {
+    bottom: 15px;
+    right: 15px;
+    gap: 8px;
+  }
+
+  .theme-switcher-button,
+  .mode-toggle-button {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .theme-menu {
+    bottom: 100px;
+    min-width: 140px;
+    padding: 8px;
+  }
+
+  .theme-option {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .theme-switcher-button,
+  .mode-toggle-button {
+    border: 2px solid var(--text-color);
+  }
+
+  .theme-menu {
+    border: 2px solid var(--accent-color);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .theme-switcher-button,
+  .mode-toggle-button,
+  .theme-menu,
+  .theme-option,
+  .theme-menu-title {
+    transition: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.theme-switcher-button:focus-visible,
+.mode-toggle-button:focus-visible,
+.theme-option:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Animation for menu appearance */
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-menu.menu-open {
+  animation: menuSlideIn 0.2s ease-out;
+}
