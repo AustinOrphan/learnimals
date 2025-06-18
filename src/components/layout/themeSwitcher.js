@@ -201,8 +201,8 @@ class ThemeSwitcher {
             window.themeManager.setTheme(themeDef.id);
           } else {
             // Fallback implementation
-            document.documentElement.setAttribute("data-theme", theme);
-            localStorage.setItem("learnimals-theme-name", theme);
+            document.documentElement.setAttribute("data-theme", themeDef.id);
+            localStorage.setItem("learnimals-theme-name", themeDef.id);
           }
         } catch (error) {
           console.warn("Error applying theme:", error);

@@ -103,7 +103,7 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 - Caching strategy for static assets
 
 ## Games Architecture
-- Self-contained game modules in `js/games/`
+- Self-contained game modules in `src/features/games/`
 - Canvas-based rendering for performance (Bubble Pop game)
 - Touch and mouse input support
 - Score tracking and progress saving

@@ -64,7 +64,7 @@ function generateTemplateCode(options) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>${options.subjectName} - Learnimals</title>
         <script type="module">
-            import SubjectTemplateLoader from '/learnimals-site/js/utils/subjectTemplateLoader.js';
+            import SubjectTemplateLoader from './subjectTemplateLoader.js';
 
             // Define content for ${options.subjectLower} page
             const ${options.subjectLower}Options = {

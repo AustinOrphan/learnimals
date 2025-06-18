@@ -505,9 +505,9 @@ class WordScrambleGame {
   playSound(type) {
     const audio = new Audio();
     if (type === 'success') {
-      audio.src = 'assets/audio/success.mp3';
+      audio.src = '../../../public/audio/success.mp3';
     } else {
-      audio.src = 'assets/audio/error.mp3';
+      audio.src = '../../../public/audio/error.mp3';
     }
     audio.play().catch(e => console.log('Audio play failed:', e));
   }

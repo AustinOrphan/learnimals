@@ -8,9 +8,10 @@
             content="Test page for Learnimals theme system"
         />
         <title>Theme Tester - Learnimals</title>
-        <link rel="stylesheet" href="/learnimals-site/css/styles.css" />
-        <link rel="stylesheet" href="/learnimals-site/css/navbar.css" />
-        <link rel="stylesheet" href="/learnimals-site/css/theme-test.css" />        <script defer src="js/themeInitializer.js" type="module"></script>
+        <link rel="stylesheet" href="../styles/base/styles.css" />
+        <link rel="stylesheet" href="../styles/components/navbar.css" />
+        <link rel="stylesheet" href="../styles/components/theme-test.css" />
+        <script defer src="../components/layout/mobileMenuHandler.js" type="module"></script>
     </head>
     <body>
         <div id="navbar-placeholder"></div>
@@ -668,18 +669,7 @@
                 grid.appendChild(valueCell);
             }
 
-            // Mobile menu toggle
-            document
-                .getElementById("mobile-menu")
-                .addEventListener("click", function () {
-                    document
-                        .getElementById("nav-menu")
-                        .classList.toggle("active");
-                    this.classList.toggle("active");
-                    const expanded =
-                        this.getAttribute("aria-expanded") === "true" || false;
-                    this.setAttribute("aria-expanded", !expanded);
-                });
+            // Mobile menu is handled by mobileMenuHandler.js
 
             // Update theme info when theme changes
             function updateThemeInfo() {
@@ -816,19 +806,19 @@
                 updateVariableInspector();
             });
         </script>        <!-- JS -->
-        <script defer src="/learnimals-site/js/themeInitializer.js"></script>
+        <script defer src="../utils/themeInitializer.js"></script>
         <script
             type="module"
-            src="/learnimals-site/js/utils/themeManager.js"
+            src="../utils/themeManager.js"
         ></script>
         <script
             type="module"
-            src="/learnimals-site/js/components/themeSwitcher.js"
+            src="../components/layout/themeSwitcher.js"
         ></script>
         <script
             defer
-            src="/learnimals-site/js/components/navbarLoader.js"
+            src="../components/layout/navbarLoader.js"
         ></script>
-        <script defer src="/learnimals-site/js/theme-test.js"></script>
+        <script defer src="../utils/theme-test.js"></script>
     </body>
 </html>

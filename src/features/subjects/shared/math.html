@@ -46,8 +46,9 @@
                     </div>
 
                     <div class="feature-card">
-                        <h3>Coming Soon...</h3>
-                        <p>More math games and tools will be added here!</p>
+                        <h3>Place Value Activities</h3>
+                        <p>Learn place value with interactive manipulatives and visual exercises!</p>
+                        <a href="place-value.html" class="game-link"><button>Start Learning</button></a>
                     </div>
                 `,
                 // Card.js data for generating feature cards
@@ -81,10 +82,14 @@
                         theme: 'alt'
                     },
                     {
-                        title: 'Coming Soon...',
-                        content: '<p>More math games and tools will be added here!</p>',
-                        imageUrl: '/public/images/math-parrot.png',
-                        imageAlt: 'Math coming soon'
+                        isLinked: true,
+                        title: 'Place Value Activities',
+                        content: '<p>Learn place value with interactive manipulatives and visual exercises!</p>',
+                        linkUrl: 'place-value.html',
+                        linkText: 'Start Learning',
+                        imageUrl: '/public/images/math-shark.png',
+                        imageAlt: 'Math shark with place value blocks',
+                        theme: 'default'
                     }
                 ]
             };
