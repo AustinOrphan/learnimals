@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Fun art activities, games, and tutorials with Leo the Lion!"
+        />
+        <title>Art with Leo - Learnimals</title>
+        <link rel="stylesheet" href="/src/styles/base/styles.css" />
+        <link rel="stylesheet" href="/src/styles/components/navbar.css" />
+        <link rel="stylesheet" href="/src/features/subjects/art/art.css" />
+        <link
+            rel="icon"
+            href="/public/images/favicon.ico"
+            type="image/x-icon"
+        />
+        <link rel="manifest" href="/public/manifest.json" />
+    </head>
+    <body>
+        <div id="navbar-placeholder"></div>
+
+        <main>
+            <section class="hero">
+                <h1>🎨 Art with Leo the Lion</h1>
+                <p>
+                    Let your imagination run wild with art projects, games, and
+                    drawing fun!
+                </p>
+                <img
+                    src="/public/images/art-lion.png"
+                    alt="Leo the Lion"
+                    class="hero-image"
+                />
+            </section>
+
+            <section class="games-section">
+                <h2>🎮 Art Games</h2>
+                <ul class="games-list">
+                    <li><a href="#">Color Match Game</a></li>
+                    <li><a href="#">Leo's Shape Builder</a></li>
+                    <li><a href="#">Memory Art Challenge</a></li>
+                </ul>
+            </section>
+
+            <section class="canvas-section">
+                <h2>🖌️ Draw with Leo</h2>
+                <canvas id="drawCanvas" width="500" height="400"></canvas>
+                <div class="canvas-controls">
+                    <input type="color" id="colorPicker" value="#ff6600" />
+                    <button onclick="clearCanvas()">Clear</button>
+                </div>
+            </section>
+
+            <section class="color-theory">
+                <h2>🌈 Kid-Friendly Color Theory</h2>
+                <p>
+                    Did you know you can mix
+                    <strong>blue + yellow = green</strong>? Learn about:
+                </p>
+                <ul>
+                    <li>Primary & Secondary Colors</li>
+                    <li>Warm vs. Cool Colors</li>
+                    <li>Shades and Tints</li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/src/pages/about.html">About Us</a>
+                <a href="/src/pages/contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="/src/pages/profile.html">My Profile</a>
+            </div>
+        </footer>
+
+        <script>
+            // Mobile menu toggle - wait for navbar to load
+            function initializeMobileMenu() {
+                const mobileMenuButton = document.getElementById("mobile-menu");
+                const navMenu = document.getElementById("nav-menu");
+                
+                if (mobileMenuButton && navMenu) {
+                    mobileMenuButton.addEventListener("click", function () {
+                        navMenu.classList.toggle("active");
+                        this.classList.toggle("active");
+                        const expanded = this.getAttribute("aria-expanded") === "true" || false;
+                        this.setAttribute("aria-expanded", !expanded);
+                    });
+                }
+            }
+            
+            // Try to initialize after navbar loads
+            document.addEventListener('navbarLoaded', initializeMobileMenu);
+            // Fallback: try again after DOM is fully loaded
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initializeMobileMenu, 100);
+            });
+        </script>
+        <!-- JS -->
+        <script defer type="module" src="/src/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="/src/utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="/src/components/layout/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="/src/components/layout/navbarLoader.js"
+        ></script>
+        <script src="/src/features/subjects/art/art.js"></script>
+    </body>
+</html>

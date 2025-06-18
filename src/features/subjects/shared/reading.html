@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Improve reading skills with Ruby the Panda - Fun reading games for kids"
+        />
+        <title>Reading with Ruby - Learnimals</title>
+        <link rel="stylesheet" href="/src/styles/base/styles.css" />
+        <link rel="stylesheet" href="/src/styles/components/navbar.css" />
+        <link
+            rel="stylesheet"
+            href="/src/features/subjects/reading/reading.css"
+        />
+        <link
+            rel="icon"
+            href="/public/images/favicon.ico"
+            type="image/x-icon"
+        />
+        <script type="module" defer>
+            import WordScrambleGame from "/src/features/games/word-scramble/wordScramble.js";
+
+            document.addEventListener("DOMContentLoaded", () => {
+                // Initialize word scramble game when DOM is loaded
+                const wordGame = new WordScrambleGame("word-scramble-game");
+
+                // Setup story modal functionality
+                setupStoryModals();
+            });
+
+            function setupStoryModals() {
+                // Open modal buttons
+                const readButtons =
+                    document.querySelectorAll(".read-story-btn");
+                readButtons.forEach((button) => {
+                    button.addEventListener("click", () => {
+                        const storyId = button.getAttribute("data-story");
+                        document.getElementById(storyId).style.display =
+                            "block";
+                        document.body.style.overflow = "hidden";
+                    });
+                });
+
+                // Close modal buttons
+                const closeButtons = document.querySelectorAll(".close-modal");
+                closeButtons.forEach((button) => {
+                    button.addEventListener("click", () => {
+                        const modal = button.closest(".story-modal");
+                        modal.style.display = "none";
+                        document.body.style.overflow = "auto";
+                    });
+                });
+
+                // Close modal when clicking outside content
+                const modals = document.querySelectorAll(".story-modal");
+                modals.forEach((modal) => {
+                    modal.addEventListener("click", (e) => {
+                        if (e.target === modal) {
+                            modal.style.display = "none";
+                            document.body.style.overflow = "auto";
+                        }
+                    });
+                });
+
+                // Close modal with Escape key
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") {
+                        const openModal = document.querySelector(
+                            '.story-modal[style="display: block;"]',
+                        );
+                        if (openModal) {
+                            openModal.style.display = "none";
+                            document.body.style.overflow = "auto";
+                        }
+                    }
+                });
+
+                // Handle comprehension questions
+                const options = document.querySelectorAll(".option");
+                options.forEach((option) => {
+                    option.addEventListener("click", () => {
+                        // Deselect siblings
+                        const siblings =
+                            option.parentElement.querySelectorAll(".option");
+                        siblings.forEach((sib) =>
+                            sib.classList.remove("selected"),
+                        );
+
+                        // Select clicked option
+                        option.classList.add("selected");
+
+                        // Check if correct
+                        const isCorrect =
+                            option.getAttribute("data-correct") === "true";
+                        option.style.backgroundColor = isCorrect
+                            ? "#c8fcea"
+                            : "#ffcdd2";
+                    });
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <!-- Dynamic navbar load -->
+        <div id="navbar-placeholder"></div>
+        <main>
+            <section class="hero">
+                <h1>Reading with Ruby the Panda</h1>
+                <p>
+                    Explore stories, play word games, and improve your reading
+                    skills!
+                </p>
+                <div class="hero-image">
+                    <img
+                        src="/public/images/reading-panda.png"
+                        alt="Ruby the Panda"
+                    />
+                </div>
+            </section>
+
+            <div class="reading-container">
+                <section class="reading-section">
+                    <h2>Stories to Read</h2>
+                    <p>
+                        Choose a story to read with Ruby. Each story comes with
+                        fun comprehension questions!
+                    </p>
+
+                    <div class="story-card">
+                        <img
+                            src="/public/images/forest-adventure.jpg"
+                            alt="Forest Adventure Story"
+                        />
+                        <span class="reading-level beginner">Beginner</span>
+                        <h3>The Forest Adventure</h3>
+                        <p class="story-preview">
+                            Join Max and Lily as they explore a magical forest
+                            and meet friendly animals who need their help.
+                        </p>
+                        <div class="story-meta">
+                            <span>Reading time: 5 minutes</span>
+                            <span>Age: 5-7 years</span>
+                        </div>
+                        <div class="story-buttons">
+                            <button
+                                class="story-button read-story-btn"
+                                data-story="story-forest"
+                            >
+                                Read Story
+                            </button>
+                            <button class="story-button outline">
+                                Download PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="story-card">
+                        <img
+                            src="/public/images/ocean-discovery.jpg"
+                            alt="Ocean Discovery Story"
+                        />
+                        <span class="reading-level intermediate"
+                            >Intermediate</span
+                        >
+                        <h3>Ocean Discovery</h3>
+                        <p class="story-preview">
+                            Dive deep into the ocean with Captain Sam and
+                            discover the secrets hidden beneath the waves.
+                        </p>
+                        <div class="story-meta">
+                            <span>Reading time: 8 minutes</span>
+                            <span>Age: 7-9 years</span>
+                        </div>
+                        <div class="story-buttons">
+                            <button
+                                class="story-button read-story-btn"
+                                data-story="story-ocean"
+                            >
+                                Read Story
+                            </button>
+                            <button class="story-button outline">
+                                Download PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="story-card">
+                        <img
+                            src="/public/images/space-journey.jpg"
+                            alt="Space Journey Story"
+                        />
+                        <span class="reading-level advanced">Advanced</span>
+                        <h3>Journey to the Stars</h3>
+                        <p class="story-preview">
+                            Join astronaut Alex on an exciting mission to
+                            explore a mysterious planet in a distant galaxy.
+                        </p>
+                        <div class="story-meta">
+                            <span>Reading time: 12 minutes</span>
+                            <span>Age: 9-12 years</span>
+                        </div>
+                        <div class="story-buttons">
+                            <button
+                                class="story-button read-story-btn"
+                                data-story="story-space"
+                            >
+                                Read Story
+                            </button>
+                            <button class="story-button outline">
+                                Download PDF
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="reading-section">
+                    <h2>Word Games with Ruby</h2>
+                    <p>Practice your word skills with these fun games!</p>
+
+                    <div class="word-scramble-container">
+                        <h3>Ruby's Word Scramble</h3>
+                        <p>
+                            Unscramble the letters to spell the word correctly.
+                            Ruby will give you hints!
+                        </p>
+                        <div
+                            id="word-scramble-game"
+                            class="game-container"
+                        ></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Story Modals -->
+            <div id="story-forest" class="story-modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h2 class="story-title">The Forest Adventure</h2>
+                    <img
+                        src="/public/images/forest-adventure.jpg"
+                        alt="Forest Adventure"
+                        class="story-image"
+                    />
+
+                    <div class="story-content">
+                        <p>
+                            Once upon a time, there were two friends named Max
+                            and Lily. They loved to explore.
+                        </p>
+                        <p>"Let's go to the forest today!" said Max.</p>
+                        <p>
+                            "Great idea!" Lily replied. They packed their
+                            backpacks with snacks and water.
+                        </p>
+                        <p>
+                            In the forest, they saw tall trees and colorful
+                            flowers. They heard birds singing.
+                        </p>
+                        <p>
+                            Soon, they met a small rabbit. The rabbit looked
+                            sad.
+                        </p>
+                        <p>"What's wrong?" asked Lily.</p>
+                        <p>"I can't find my home," said the rabbit.</p>
+                        <p>"We will help you!" said Max.</p>
+                        <p>
+                            Max and Lily followed the rabbit's directions. They
+                            looked behind bushes and trees.
+                        </p>
+                        <p>
+                            Finally, they found a small hole under a big oak
+                            tree.
+                        </p>
+                        <p>
+                            "That's my home!" the rabbit hopped happily. "Thank
+                            you for helping me!"
+                        </p>
+                        <p>
+                            Next, they met a squirrel who had dropped all his
+                            nuts.
+                        </p>
+                        <p>
+                            "We'll help you collect them," said Lily. They
+                            picked up nuts from the ground.
+                        </p>
+                        <p>
+                            The squirrel was very happy. "You are kind friends,"
+                            he said.
+                        </p>
+                        <p>
+                            As the sun began to set, Max and Lily headed home.
+                        </p>
+                        <p>"That was a great adventure!" said Max.</p>
+                        <p>
+                            "Yes," smiled Lily. "And we helped our new animal
+                            friends!"
+                        </p>
+                        <p>
+                            They couldn't wait to return to the forest for
+                            another adventure.
+                        </p>
+                    </div>
+
+                    <div class="story-questions">
+                        <h3>Comprehension Questions</h3>
+
+                        <div class="question">
+                            <p>1. Who were the main characters in the story?</p>
+                            <div class="options">
+                                <div class="option" data-correct="true">
+                                    Max and Lily
+                                </div>
+                                <div class="option" data-correct="false">
+                                    Sam and Lucy
+                                </div>
+                                <div class="option" data-correct="false">
+                                    A rabbit and a squirrel
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>2. What animal did they help first?</p>
+                            <div class="options">
+                                <div class="option" data-correct="true">
+                                    A rabbit
+                                </div>
+                                <div class="option" data-correct="false">
+                                    A squirrel
+                                </div>
+                                <div class="option" data-correct="false">
+                                    A bird
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>3. How did Max and Lily help the squirrel?</p>
+                            <div class="options">
+                                <div class="option" data-correct="false">
+                                    They built him a new home
+                                </div>
+                                <div class="option" data-correct="true">
+                                    They picked up nuts from the ground
+                                </div>
+                                <div class="option" data-correct="false">
+                                    They gave him some of their snacks
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="story-ocean" class="story-modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h2 class="story-title">Ocean Discovery</h2>
+                    <img
+                        src="/public/images/ocean-discovery.jpg"
+                        alt="Ocean Discovery"
+                        class="story-image"
+                    />
+
+                    <div class="story-content">
+                        <p>
+                            Captain Sam loved the ocean more than anything else
+                            in the world. He had a small boat called "The
+                            Explorer" that he used for his adventures.
+                        </p>
+                        <p>
+                            One sunny morning, Captain Sam decided to explore a
+                            new part of the ocean. He packed his diving gear, a
+                            waterproof camera, and his notebook.
+                        </p>
+                        <p>
+                            "Today feels special," he said to himself as he
+                            sailed away from the shore.
+                        </p>
+                        <p>
+                            After an hour of sailing, Captain Sam stopped his
+                            boat. He put on his diving gear and jumped into the
+                            clear blue water.
+                        </p>
+                        <p>
+                            As he swam deeper, he saw colorful coral reefs. Fish
+                            of all colors and sizes swam around him. Some were
+                            striped, others had spots.
+                        </p>
+                        <p>
+                            Suddenly, Captain Sam noticed something shiny on the
+                            ocean floor. It was an old treasure chest!
+                        </p>
+                        <p>
+                            "I wonder what's inside," he thought as he swam
+                            closer.
+                        </p>
+                        <p>
+                            The chest wasn't locked. Carefully, Captain Sam
+                            opened it. Inside, he found old maps, a compass, and
+                            a message in a bottle.
+                        </p>
+                        <p>
+                            He took the bottle back to his boat and opened it.
+                            Inside was a message from another explorer named
+                            Captain Maria. She had hidden three more treasure
+                            chests in different parts of the ocean.
+                        </p>
+                        <p>
+                            "This is just the beginning of a great adventure!"
+                            Captain Sam exclaimed.
+                        </p>
+                        <p>
+                            He marked the locations on his map and made plans to
+                            find the other treasure chests.
+                        </p>
+                        <p>
+                            As the sun began to set, Captain Sam sailed back to
+                            shore, excited about his discovery and the
+                            adventures that awaited him.
+                        </p>
+                    </div>
+
+                    <div class="story-questions">
+                        <h3>Comprehension Questions</h3>
+
+                        <div class="question">
+                            <p>1. What was the name of Captain Sam's boat?</p>
+                            <div class="options">
+                                <div class="option" data-correct="true">
+                                    The Explorer
+                                </div>
+                                <div class="option" data-correct="false">
+                                    The Discoverer
+                                </div>
+                                <div class="option" data-correct="false">
+                                    The Ocean Wanderer
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>
+                                2. What did Captain Sam find on the ocean floor?
+                            </p>
+                            <div class="options">
+                                <div class="option" data-correct="false">
+                                    A sunken ship
+                                </div>
+                                <div class="option" data-correct="true">
+                                    A treasure chest
+                                </div>
+                                <div class="option" data-correct="false">
+                                    A giant pearl
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>3. Who had written the message in the bottle?</p>
+                            <div class="options">
+                                <div class="option" data-correct="false">
+                                    Captain Sam
+                                </div>
+                                <div class="option" data-correct="false">
+                                    A mermaid
+                                </div>
+                                <div class="option" data-correct="true">
+                                    Captain Maria
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="story-space" class="story-modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h2 class="story-title">Journey to the Stars</h2>
+                    <img
+                        src="/public/images/space-journey.jpg"
+                        alt="Space Journey"
+                        class="story-image"
+                    />
+
+                    <div class="story-content">
+                        <p>
+                            Astronaut Alex had been training for years for this
+                            moment. Today was the launch of the first mission to
+                            Planet Zephyr, a mysterious world that scientists
+                            believed might support life.
+                        </p>
+                        <p>
+                            "Mission Control to Starship Phoenix, all systems
+                            are go for launch," came the voice through Alex's
+                            helmet.
+                        </p>
+                        <p>
+                            "Roger that, Mission Control. Phoenix crew is ready
+                            for departure," Alex replied, checking the final
+                            preparations with the crew of four other astronauts.
+                        </p>
+                        <p>
+                            With a tremendous roar, the starship lifted off from
+                            Earth. Alex watched through the window as their home
+                            planet grew smaller and smaller until it was just a
+                            blue dot in the vast blackness of space.
+                        </p>
+                        <p>
+                            The journey to Planet Zephyr would take three
+                            months. During that time, the crew conducted
+                            experiments, monitored the ship's systems, and
+                            prepared for their arrival.
+                        </p>
+                        <p>
+                            One day, as Alex was recording data from an
+                            experiment, the ship's alarms began blaring.
+                        </p>
+                        <p>
+                            "Warning: Meteoroid field detected," announced the
+                            ship's computer.
+                        </p>
+                        <p>
+                            The captain quickly took control of the ship,
+                            skillfully navigating through the dangerous
+                            meteoroids. Everyone held their breath as rocks the
+                            size of cars zoomed past the ship.
+                        </p>
+                        <p>
+                            "That was close," sighed Alex when they were finally
+                            clear.
+                        </p>
+                        <p>
+                            Two weeks later, they received their first glimpse
+                            of Planet Zephyr. It was beautiful – swirling with
+                            colors of purple, blue, and green.
+                        </p>
+                        <p>
+                            As they prepared to enter orbit, their sensors
+                            detected something unusual – structures on the
+                            surface that appeared to be artificial.
+                        </p>
+                        <p>
+                            "Could this mean... intelligent life?" Alex
+                            whispered in awe.
+                        </p>
+                        <p>
+                            The crew sent down a probe to investigate. The
+                            images it sent back were incredible – crystal
+                            formations that seemed to form complex patterns and
+                            emitted light pulses.
+                        </p>
+                        <p>
+                            "It's a form of communication," the science officer
+                            announced after analyzing the data. "These aren't
+                            just random formations. They're trying to
+                            communicate with us!"
+                        </p>
+                        <p>
+                            Alex and the team worked tirelessly to decode the
+                            messages. After days of analysis, they made a
+                            breakthrough.
+                        </p>
+                        <p>
+                            "The Zephyrians are peaceful," Alex explained to
+                            Mission Control. "They've been observing Earth for
+                            centuries and welcome us to learn from each other."
+                        </p>
+                        <p>
+                            The mission had changed from exploration to first
+                            contact. As Alex prepared to be the first human to
+                            set foot on Zephyr, a feeling of wonder and
+                            responsibility filled the astronaut's heart.
+                        </p>
+                        <p>
+                            This wasn't just a journey to the stars – it was the
+                            beginning of a new chapter in human history.
+                        </p>
+                    </div>
+
+                    <div class="story-questions">
+                        <h3>Comprehension Questions</h3>
+
+                        <div class="question">
+                            <p>
+                                1. What was the name of the starship in the
+                                story?
+                            </p>
+                            <div class="options">
+                                <div class="option" data-correct="true">
+                                    Phoenix
+                                </div>
+                                <div class="option" data-correct="false">
+                                    Explorer
+                                </div>
+                                <div class="option" data-correct="false">
+                                    Voyager
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>
+                                2. What danger did the crew face during their
+                                journey?
+                            </p>
+                            <div class="options">
+                                <div class="option" data-correct="false">
+                                    Engine failure
+                                </div>
+                                <div class="option" data-correct="true">
+                                    Meteoroid field
+                                </div>
+                                <div class="option" data-correct="false">
+                                    Hostile aliens
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>
+                                3. What did the crew discover on Planet Zephyr?
+                            </p>
+                            <div class="options">
+                                <div class="option" data-correct="false">
+                                    Ancient ruins
+                                </div>
+                                <div class="option" data-correct="false">
+                                    Dangerous creatures
+                                </div>
+                                <div class="option" data-correct="true">
+                                    Crystal formations that communicated
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question">
+                            <p>
+                                4. How long would the journey to Planet Zephyr
+                                take?
+                            </p>
+                            <div class="options">
+                                <div class="option" data-correct="false">
+                                    Three days
+                                </div>
+                                <div class="option" data-correct="false">
+                                    Three weeks
+                                </div>
+                                <div class="option" data-correct="true">
+                                    Three months
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="/src/pages/about.html">About Us</a>
+                <a href="/src/pages/contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="/src/pages/profile.html">My Profile</a>
+            </div>
+        </footer>
+
+        <!-- JS -->
+        <script defer type="module" src="/src/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="/src/utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="/src/components/layout/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="/src/components/layout/navbarLoader.js"
+        ></script>
+    </body>
+</html>

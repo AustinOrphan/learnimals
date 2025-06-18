@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { border-color: green; background: #f0fff0; }
+        .error { border-color: red; background: #fff0f0; }
+        .link-test { margin: 10px 0; padding: 10px; border: 1px solid #eee; }
+        a { margin: 10px; padding: 5px 10px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        a:hover { background: #0056b3; }
+        .status { margin-left: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Navigation Path Test</h1>
+    
+    <div class="test-section">
+        <h2>📍 Current Location Info</h2>
+        <p><strong>Current URL:</strong> <span id="current-url"></span></p>
+        <p><strong>Base URL:</strong> <span id="base-url"></span></p>
+        <p><strong>Location:</strong> <span id="location-info"></span></p>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Navigation Links Test</h2>
+        <p>Test these links to see which ones work:</p>
+        
+        <div class="link-test">
+            <h3>From Project Root:</h3>
+            <a href="src/pages/index.html" onclick="return testLink(this)">Main Index (src/pages/)</a>
+            <a href="src/features/subjects/shared/math.html" onclick="return testLink(this)">Math Page (src/features/)</a>
+            <a href="src/features/subjects/shared/bubblepop.html" onclick="return testLink(this)">Bubble Pop (src/features/)</a>
+        </div>
+        
+        <div class="link-test">
+            <h3>Relative from src/pages/:</h3>
+            <a href="../features/subjects/shared/math.html" onclick="return testLink(this)">Math (../features/)</a>
+            <a href="../features/subjects/shared/science.html" onclick="return testLink(this)">Science (../features/)</a>
+        </div>
+        
+        <div class="link-test">
+            <h3>Relative from src/components/layout/:</h3>
+            <a href="../../features/subjects/shared/math.html" onclick="return testLink(this)">Math (../../features/)</a>
+            <a href="../../pages/index.html" onclick="return testLink(this)">Home (../../pages/)</a>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Link Checker</h2>
+        <button onclick="checkAllLinks()">Check All Links</button>
+        <div id="link-check-results"></div>
+    </div>
+
+    <script>
+        // Display current location info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('base-url').textContent = window.location.origin;
+        document.getElementById('location-info').textContent = window.location.pathname;
+
+        function testLink(linkElement) {
+            const url = linkElement.href;
+            console.log(`Testing link: ${url}`);
+            
+            // Don't actually navigate, just test the URL
+            fetch(url, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        console.log(`✅ Link works: ${url}`);
+                        linkElement.style.background = 'green';
+                    } else {
+                        console.log(`❌ Link broken (${response.status}): ${url}`);
+                        linkElement.style.background = 'red';
+                    }
+                })
+                .catch(error => {
+                    console.log(`❌ Link error: ${url} - ${error}`);
+                    linkElement.style.background = 'red';
+                });
+            
+            return false; // Prevent navigation
+        }
+
+        async function checkAllLinks() {
+            const results = document.getElementById('link-check-results');
+            results.innerHTML = '<p>Checking links...</p>';
+            
+            const links = [
+                'src/pages/index.html',
+                'src/features/subjects/shared/math.html',
+                'src/features/subjects/shared/science.html',
+                'src/features/subjects/shared/bubblepop.html',
+                'src/components/layout/navbar.html',
+                'public/images/logo.png'
+            ];
+            
+            let report = '<h3>Link Check Results:</h3><ul>';
+            
+            for (const link of links) {
+                try {
+                    const response = await fetch(link, { method: 'HEAD' });
+                    const status = response.ok ? '✅' : '❌';
+                    report += `<li>${status} ${link} (${response.status})</li>`;
+                } catch (error) {
+                    report += `<li>❌ ${link} (Error: ${error.message})</li>`;
+                }
+            }
+            
+            report += '</ul>';
+            results.innerHTML = report;
+        }
+
+        console.log('Navigation test page loaded');
+        console.log('Current URL:', window.location.href);
+    </script>
+</body>
+</html>
