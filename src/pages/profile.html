@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="View and manage your Learnimals profile and progress"
+        />
+        <title>My Profile - Learnimals</title>
+        <link rel="stylesheet" href="../styles/base/styles.css" />
+        <link rel="stylesheet" href="../styles/components/navbar.css" />
+        <link rel="stylesheet" href="../styles/components/profile.css" />
+        <link rel="icon" href="../../public/images/favicon.ico" type="image/x-icon" />
+        <link rel="manifest" href="manifest.json" />
+    </head>
+    <body>
+        <div id="navbar-placeholder"></div>
+
+        <main>
+            <section class="hero">
+                <h1>My Profile</h1>
+                <p>View your progress and achievements</p>
+            </section>
+
+            <div class="profile-container">
+                <!-- Profile Sidebar -->
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <img
+                            id="user-avatar"
+                            src="../../public/images/avatars/panda.png"
+                            alt="User avatar"
+                        />
+                        <div class="edit-avatar" id="edit-avatar">✏️</div>
+                    </div>
+
+                    <div class="avatar-options" id="avatar-options">
+                        <button class="close-avatar-modal" id="close-avatar">
+                            ×
+                        </button>
+                        <h3>Choose your avatar</h3>
+                        <div class="avatar-grid">
+                            <div
+                                class="avatar-option selected"
+                                data-avatar="panda"
+                            >
+                                <img
+                                    src="../../public/images/avatars/panda.png"
+                                    alt="Panda avatar"
+                                />
+                            </div>
+                            <div class="avatar-option" data-avatar="lion">
+                                <img
+                                    src="../../public/images/avatars/lion.png"
+                                    alt="Lion avatar"
+                                />
+                            </div>
+                            <div class="avatar-option" data-avatar="parrot">
+                                <img
+                                    src="../../public/images/avatars/parrot.png"
+                                    alt="Parrot avatar"
+                                />
+                            </div>
+                            <div class="avatar-option" data-avatar="shark">
+                                <img
+                                    src="../../public/images/avatars/shark.png"
+                                    alt="Shark avatar"
+                                />
+                            </div>
+                            <div class="avatar-option" data-avatar="fox">
+                                <img
+                                    src="../../public/images/avatars/fox.png"
+                                    alt="Fox avatar"
+                                />
+                            </div>
+                            <div class="avatar-option" data-avatar="monkey">
+                                <img
+                                    src="../../public/images/avatars/monkey.png"
+                                    alt="Monkey avatar"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="user-name">
+                            Ruby Learner
+                        </h2>
+                        <div class="profile-meta" id="user-meta">
+                            Grade 3 • Age 8
+                        </div>
+                    </div>
+
+                    <div class="profile-streak">
+                        <span class="streak-count" id="streak-count">5</span>
+                        <span>Day Streak</span>
+                    </div>
+
+                    <ul class="profile-menu">
+                        <li>
+                            <a
+                                href="#dashboard"
+                                class="active"
+                                data-tab="dashboard-tab"
+                                ><span class="icon">📊</span> Dashboard</a
+                            >
+                        </li>
+                        <li>
+                            <a href="#achievements" data-tab="achievements-tab"
+                                ><span class="icon">🏆</span> Achievements</a
+                            >
+                        </li>
+                        <li>
+                            <a href="#settings" data-tab="settings-tab"
+                                ><span class="icon">⚙️</span> Settings</a
+                            >
+                        </li>
+                        <li>
+                            <a href="#parents" data-tab="parents-tab"
+                                ><span class="icon">👪</span> Parents</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Profile Content -->
+                <div class="profile-content">
+                    <!-- Dashboard Tab -->
+                    <div id="dashboard-tab" class="tab-content active">
+                        <h2 class="section-title">Learning Progress</h2>
+
+                        <div class="progress-cards">
+                            <div class="progress-card math">
+                                <div class="level-display" id="math-level">
+                                    3
+                                </div>
+                                <div class="subject-name">Math Level</div>
+                                <div class="progress-bar-container">
+                                    <div
+                                        class="progress-bar"
+                                        style="width: 60%"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="progress-card reading">
+                                <div class="level-display" id="reading-level">
+                                    2
+                                </div>
+                                <div class="subject-name">Reading Level</div>
+                                <div class="progress-bar-container">
+                                    <div
+                                        class="progress-bar"
+                                        style="width: 40%"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="progress-card science">
+                                <div class="level-display" id="science-level">
+                                    1
+                                </div>
+                                <div class="subject-name">Science Level</div>
+                                <div class="progress-bar-container">
+                                    <div
+                                        class="progress-bar"
+                                        style="width: 20%"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="progress-card art">
+                                <div class="level-display" id="art-level">
+                                    2
+                                </div>
+                                <div class="subject-name">Art Level</div>
+                                <div class="progress-bar-container">
+                                    <div
+                                        class="progress-bar"
+                                        style="width: 50%"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="section-title">Statistics</h2>
+
+                        <div class="stats-overview">
+                            <div class="stat-item">
+                                <div class="stat-icon">🧮</div>
+                                <div class="stat-details">
+                                    <div class="stat-value" id="math-problems">
+                                        42
+                                    </div>
+                                    <div class="stat-label">
+                                        Math Problems Solved
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">📚</div>
+                                <div class="stat-details">
+                                    <div class="stat-value" id="stories-read">
+                                        5
+                                    </div>
+                                    <div class="stat-label">Stories Read</div>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">🔬</div>
+                                <div class="stat-details">
+                                    <div class="stat-value" id="experiments">
+                                        2
+                                    </div>
+                                    <div class="stat-label">
+                                        Science Experiments
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div class="stat-icon">🎨</div>
+                                <div class="stat-details">
+                                    <div class="stat-value" id="art-projects">
+                                        3
+                                    </div>
+                                    <div class="stat-label">Art Projects</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="section-title">Recent Activity</h2>
+
+                        <div class="recent-activity">
+                            <ul class="activity-list" id="activity-list">
+                                <li class="activity-item reading">
+                                    <div class="activity-details">
+                                        <div class="activity-description">
+                                            Read "The Forest Adventure" story
+                                        </div>
+                                        <div class="activity-time">Today</div>
+                                    </div>
+                                </li>
+
+                                <li class="activity-item math">
+                                    <div class="activity-details">
+                                        <div class="activity-description">
+                                            Completed Bubble Pop game with score
+                                            15
+                                        </div>
+                                        <div class="activity-time">
+                                            Yesterday
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li class="activity-item science">
+                                    <div class="activity-details">
+                                        <div class="activity-description">
+                                            Learned about ocean animals
+                                        </div>
+                                        <div class="activity-time">
+                                            2 days ago
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <h2 class="section-title">Recent Achievements</h2>
+
+                        <div class="achievements-grid">
+                            <div class="achievement">
+                                <div class="achievement-icon">🏅</div>
+                                <div class="achievement-name">Math Novice</div>
+                                <div class="achievement-desc">
+                                    Complete 5 math lessons
+                                </div>
+                            </div>
+
+                            <div class="achievement">
+                                <div class="achievement-icon">📚</div>
+                                <div class="achievement-name">
+                                    Reading Explorer
+                                </div>
+                                <div class="achievement-desc">
+                                    Read 10 stories
+                                </div>
+                                <div class="achievement-progress">
+                                    <div
+                                        class="achievement-progress-bar"
+                                        style="width: 50%"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Tab -->
+                    <div id="achievements-tab" class="tab-content">
+                        <h2 class="section-title">Your Achievements</h2>
+                        <p>You've unlocked 3 out of 10 achievements</p>
+
+                        <div class="achievements-grid">
+                            <div class="achievement">
+                                <div class="achievement-icon">🏅</div>
+                                <div class="achievement-name">Math Novice</div>
+                                <div class="achievement-desc">
+                                    Complete 5 math lessons
+                                </div>
+                            </div>
+
+                            <div class="achievement">
+                                <div class="achievement-icon">🎯</div>
+                                <div class="achievement-name">
+                                    Bubble Popper
+                                </div>
+                                <div class="achievement-desc">
+                                    Score 20 points in Bubble Pop
+                                </div>
+                            </div>
+
+                            <div class="achievement">
+                                <div class="achievement-icon">⭐</div>
+                                <div class="achievement-name">
+                                    Learnimals Friend
+                                </div>
+                                <div class="achievement-desc">
+                                    Visit the site for 5 consecutive days
+                                </div>
+                            </div>
+
+                            <div class="achievement locked">
+                                <div class="locked-badge">🔒</div>
+                                <div class="achievement-icon">📚</div>
+                                <div class="achievement-name">
+                                    Reading Explorer
+                                </div>
+                                <div class="achievement-desc">
+                                    Read 10 stories
+                                </div>
+                                <div class="achievement-progress">
+                                    <div
+                                        class="achievement-progress-bar"
+                                        style="width: 50%"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="achievement locked">
+                                <div class="locked-badge">🔒</div>
+                                <div class="achievement-icon">🔬</div>
+                                <div class="achievement-name">
+                                    Science Discoverer
+                                </div>
+                                <div class="achievement-desc">
+                                    Complete 5 science experiments
+                                </div>
+                                <div class="achievement-progress">
+                                    <div
+                                        class="achievement-progress-bar"
+                                        style="width: 40%"
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div class="achievement locked">
+                                <div class="locked-badge">🔒</div>
+                                <div class="achievement-icon">🎨</div>
+                                <div class="achievement-name">Art Creator</div>
+                                <div class="achievement-desc">
+                                    Complete 5 art projects
+                                </div>
+                                <div class="achievement-progress">
+                                    <div
+                                        class="achievement-progress-bar"
+                                        style="width: 60%"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settings-tab" class="tab-content">
+                        <h2 class="section-title">Profile Settings</h2>
+
+                        <form class="settings-form">
+                            <div class="form-group">
+                                <label for="display-name">Display Name</label>
+                                <input
+                                    type="text"
+                                    id="display-name"
+                                    value="Ruby Learner"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="grade">Grade</label>
+                                <select id="grade">
+                                    <option value="k">Kindergarten</option>
+                                    <option value="1">Grade 1</option>
+                                    <option value="2">Grade 2</option>
+                                    <option value="3" selected>Grade 3</option>
+                                    <option value="4">Grade 4</option>
+                                    <option value="5">Grade 5</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input
+                                    type="number"
+                                    id="age"
+                                    value="8"
+                                    min="3"
+                                    max="12"
+                                />
+                            </div>
+                        </form>
+
+                        <h2 class="section-title">App Settings</h2>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">Sound Effects</div>
+                                <div class="settings-description">
+                                    Play sounds for actions and achievements
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    id="sound-effects"
+                                    checked
+                                />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">
+                                    Background Music
+                                </div>
+                                <div class="settings-description">
+                                    Play background music while using the app
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    id="background-music"
+                                    checked
+                                />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">Large Text</div>
+                                <div class="settings-description">
+                                    Increase text size for better readability
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="large-text" />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">Reduced Motion</div>
+                                <div class="settings-description">
+                                    Minimize animations and motion effects
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="reduced-motion" />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <button class="save-button">Save Settings</button>
+                    </div>
+
+                    <!-- Parents Tab -->
+                    <div id="parents-tab" class="tab-content">
+                        <h2 class="section-title">Parents Dashboard</h2>
+
+                        <p>
+                            Welcome to the Parents Area! Here you can monitor
+                            your child's learning progress, access detailed
+                            reports, and customize learning preferences.
+                        </p>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">
+                                    Email Progress Reports
+                                </div>
+                                <div class="settings-description">
+                                    Receive weekly reports about your child's
+                                    progress
+                                </div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    id="email-reports"
+                                    checked
+                                />
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">
+                                    Content Difficulty
+                                </div>
+                                <div class="settings-description">
+                                    Adjust the difficulty level of learning
+                                    content
+                                </div>
+                            </div>
+                            <select id="content-difficulty">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="hard">Hard</option>
+                                <option value="adaptive">Adaptive</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-group">
+                            <div>
+                                <div class="settings-label">Time Limits</div>
+                                <div class="settings-description">
+                                    Set daily usage limits
+                                </div>
+                            </div>
+                            <select id="time-limit">
+                                <option value="none">No Limit</option>
+                                <option value="30">30 minutes</option>
+                                <option value="60" selected>1 hour</option>
+                                <option value="90">1.5 hours</option>
+                                <option value="120">2 hours</option>
+                            </select>
+                        </div>
+
+                        <h2 class="section-title">Learning Reports</h2>
+                        <p>
+                            Detailed reports and learning analytics will appear
+                            here as your child uses the platform.
+                        </p>
+
+                        <h3>Subject Performance</h3>
+                        <div class="stats-overview">
+                            <div class="stat-item">
+                                <div
+                                    class="stat-icon"
+                                    style="
+                                        background-color: #e8f5e9;
+                                        color: #00b894;
+                                    "
+                                >
+                                    🧮
+                                </div>
+                                <div class="stat-details">
+                                    <div class="stat-value">85%</div>
+                                    <div class="stat-label">Math Accuracy</div>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div
+                                    class="stat-icon"
+                                    style="
+                                        background-color: #f3e5f5;
+                                        color: #e056fd;
+                                    "
+                                >
+                                    📚
+                                </div>
+                                <div class="stat-details">
+                                    <div class="stat-value">Good</div>
+                                    <div class="stat-label">
+                                        Reading Comprehension
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div
+                                    class="stat-icon"
+                                    style="
+                                        background-color: #e3f2fd;
+                                        color: #0984e3;
+                                    "
+                                >
+                                    🔬
+                                </div>
+                                <div class="stat-details">
+                                    <div class="stat-value">Excellent</div>
+                                    <div class="stat-label">
+                                        Science Curiosity
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stat-item">
+                                <div
+                                    class="stat-icon"
+                                    style="
+                                        background-color: #fff8e1;
+                                        color: #fdcb6e;
+                                    "
+                                >
+                                    🎨
+                                </div>
+                                <div class="stat-details">
+                                    <div class="stat-value">Creative</div>
+                                    <div class="stat-label">Art Expression</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Weekly Learning Activity</h3>
+                        <div
+                            style="
+                                height: 200px;
+                                background-color: #f9f9f9;
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin-bottom: 20px;
+                            "
+                        >
+                            <p style="color: #636e72">
+                                Activity chart will display here
+                            </p>
+                        </div>
+
+                        <button class="save-button">
+                            Download Detailed Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </footer>
+
+        <script type="module">
+            import userProgress from "../features/user/userProgress.js";
+
+            document.addEventListener("DOMContentLoaded", () => {
+                // Set up tab navigation
+                setupTabs();
+
+                // Set up avatar selection
+                setupAvatarSelection();
+
+                // Load user data
+                loadUserData();
+
+                // Set up settings form
+                setupSettingsForm();
+            });
+
+            function setupTabs() {
+                const tabLinks = document.querySelectorAll(".profile-menu a");
+                const tabContents = document.querySelectorAll(".tab-content");
+
+                tabLinks.forEach((link) => {
+                    link.addEventListener("click", (e) => {
+                        e.preventDefault();
+
+                        // Remove active class from all links and tabs
+                        tabLinks.forEach((l) => l.classList.remove("active"));
+                        tabContents.forEach((t) =>
+                            t.classList.remove("active"),
+                        );
+
+                        // Add active class to clicked link
+                        link.classList.add("active");
+
+                        // Show corresponding tab
+                        const tabId = link.getAttribute("data-tab");
+                        document.getElementById(tabId).classList.add("active");
+                    });
+                });
+            }
+
+            function setupAvatarSelection() {
+                const editAvatarBtn = document.getElementById("edit-avatar");
+                const closeAvatarBtn = document.getElementById("close-avatar");
+                const avatarOptions = document.getElementById("avatar-options");
+                const avatarButtons =
+                    document.querySelectorAll(".avatar-option");
+                const userAvatar = document.getElementById("user-avatar");
+
+                // Open avatar selection modal
+                editAvatarBtn.addEventListener("click", () => {
+                    avatarOptions.classList.add("active");
+                });
+
+                // Close avatar selection modal
+                closeAvatarBtn.addEventListener("click", () => {
+                    avatarOptions.classList.remove("active");
+                });
+
+                // Handle avatar selection
+                avatarButtons.forEach((button) => {
+                    button.addEventListener("click", () => {
+                        // Remove selected class from all buttons
+                        avatarButtons.forEach((b) =>
+                            b.classList.remove("selected"),
+                        );
+
+                        // Add selected class to clicked button
+                        button.classList.add("selected");
+
+                        // Update avatar
+                        const avatar = button.getAttribute("data-avatar");
+                        userAvatar.src = `../../public/images/avatars/${avatar}.png`;
+
+                        // Update user data
+                        if (window.userProgress) {
+                            userProgress.updateProfile({ avatar: avatar });
+                        }
+
+                        // Close modal
+                        avatarOptions.classList.remove("active");
+                    });
+                });
+            }
+
+            function loadUserData() {
+                if (!window.userProgress) return;
+
+                const userData = userProgress.getProgressSummary();
+
+                // Update profile info
+                if (userData.profile.name) {
+                    document.getElementById("user-name").textContent =
+                        userData.profile.name;
+                    document.getElementById("display-name").value =
+                        userData.profile.name;
+                }
+
+                // Update avatar
+                if (userData.profile.avatar) {
+                    document.getElementById("user-avatar").src =
+                        `../../public/images/avatars/${userData.profile.avatar}.png`;
+
+                    // Update selected avatar in options
+                    document
+                        .querySelectorAll(".avatar-option")
+                        .forEach((option) => {
+                            if (
+                                option.getAttribute("data-avatar") ===
+                                userData.profile.avatar
+                            ) {
+                                option.classList.add("selected");
+                            } else {
+                                option.classList.remove("selected");
+                            }
+                        });
+                }
+
+                // Update streak
+                if (userData.profile.streak) {
+                    document.getElementById("streak-count").textContent =
+                        userData.profile.streak.current;
+                }
+
+                // Update levels
+                if (userData.levels) {
+                    document.getElementById("math-level").textContent =
+                        userData.levels.math;
+                    document.getElementById("reading-level").textContent =
+                        userData.levels.reading;
+                    document.getElementById("science-level").textContent =
+                        userData.levels.science;
+                    document.getElementById("art-level").textContent =
+                        userData.levels.art;
+                }
+
+                // Update stats
+                if (userData.stats) {
+                    document.getElementById("math-problems").textContent =
+                        userData.stats.mathProblems;
+                    document.getElementById("stories-read").textContent =
+                        userData.stats.storiesRead;
+                    document.getElementById("experiments").textContent =
+                        userData.stats.experimentsCompleted;
+                    document.getElementById("art-projects").textContent =
+                        userData.stats.projectsCompleted;
+                }
+
+                // Update recent activity
+                if (
+                    userData.recentActivity &&
+                    userData.recentActivity.length > 0
+                ) {
+                    const activityList =
+                        document.getElementById("activity-list");
+                    activityList.innerHTML = "";
+
+                    userData.recentActivity.forEach((activity) => {
+                        const li = document.createElement("li");
+                        li.className = `activity-item ${activity.type}`;
+
+                        li.innerHTML = `
+            <div class="activity-details">
+              <div class="activity-description">${activity.description}</div>
+              <div class="activity-time">${formatDate(activity.date)}</div>
+            </div>
+          `;
+
+                        activityList.appendChild(li);
+                    });
+                }
+            }
+
+            function setupSettingsForm() {
+                const saveButton = document.querySelector(".save-button");
+
+                saveButton.addEventListener("click", () => {
+                    // Get form values
+                    const name = document.getElementById("display-name").value;
+                    const grade = document.getElementById("grade").value;
+                    const age = parseInt(document.getElementById("age").value);
+
+                    // Update profile
+                    if (window.userProgress) {
+                        userProgress.updateProfile({
+                            name: name,
+                            grade: grade,
+                            age: age,
+                        });
+
+                        // Update settings
+                        userProgress.updateSettings({
+                            soundEffects:
+                                document.getElementById("sound-effects")
+                                    .checked,
+                            backgroundMusic:
+                                document.getElementById("background-music")
+                                    .checked,
+                            accessibility: {
+                                largeText:
+                                    document.getElementById("large-text")
+                                        .checked,
+                                reduceMotion:
+                                    document.getElementById("reduced-motion")
+                                        .checked,
+                            },
+                        });
+
+                        // Reload user data
+                        loadUserData();
+
+                        // Show success message
+                        alert("Settings saved successfully!");
+                    }
+                });
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 0) {
+                    return "Today";
+                } else if (diffDays === 1) {
+                    return "Yesterday";
+                } else if (diffDays < 7) {
+                    return `${diffDays} days ago`;
+                } else {
+                    return date.toLocaleDateString();
+                }
+            }
+        </script>
+        <!-- JS -->
+        <script defer src="../utils/themeInitializer.js"></script>
+        <script
+            type="module"
+            src="../utils/themeManager.js"
+        ></script>
+        <script
+            type="module"
+            src="../components/layout/themeSwitcher.js"
+        ></script>
+        <script
+            defer
+            src="../components/layout/navbarLoader.js"
+        ></script>
+    </body>
+</html>

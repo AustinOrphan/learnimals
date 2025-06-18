@@ -1,0 +1,142 @@
+.word-scramble-game {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-header h2 {
+  color: #e056fd;
+  margin-bottom: 5px;
+}
+
+.game-settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.game-status {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.game-area {
+  margin-bottom: 20px;
+}
+
+.word-hint {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #e8f5e9;
+  border-radius: 8px;
+  font-size: 1.1rem;
+}
+
+.scrambled-letters, .solution-area {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 60px;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.scrambled-letters {
+  background-color: #e3f2fd;
+}
+
+.solution-area {
+  background-color: #fff8e1;
+  border: 2px dashed #ffb74d;
+}
+
+.letter-tile {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #6c5ce7;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s;
+}
+
+.letter-tile:hover {
+  transform: scale(1.1);
+}
+
+.letter-tile.dragging {
+  opacity: 0.5;
+}
+
+.empty-tile {
+  width: 40px;
+  height: 40px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+}
+
+.game-message {
+  text-align: center;
+  margin: 15px 0;
+  font-size: 1.2rem;
+  min-height: 30px;
+}
+
+.success-message {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #e74c3c;
+}
+
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.game-button {
+  padding: 10px 20px;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-family: inherit;
+}
+
+.game-button:hover {
+  background-color: #00a382;
+  transform: scale(1.05);
+}
+
+.game-results {
+  text-align: center;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Learnimals</title>
+  <link rel="stylesheet" href="../styles/components/offline.css" />
+</head>
+<body>
+  <div class="offline-container">
+    <h1>Oops! You're Offline</h1>
+    <img src="../../public/images/sad-shark.png" alt="Sad Mango the Shark" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22 viewBox=%220 0 200 200%22><circle cx=%22100%22 cy=%22100%22 r=%2280%22 fill=%22%238ed1fc%22 /><circle cx=%2270%22 cy=%2280%22 r=%2210%22 fill=%22white%22 /><circle cx=%22130%22 cy=%2280%22 r=%2210%22 fill=%22white%22 /><path d=%22M70 130 Q100 100 130 130%22 stroke=%22%232d3436%22 stroke-width=%224%22 fill=%22transparent%22 /></svg>'">
+    
+    <p>It looks like you don't have an internet connection right now. Some Learnimals features won't work until you're back online.</p>
+    
+    <button class="retry-button" onclick="window.location.reload()">Try Again</button>
+    
+    <div class="cached-games">
+      <h2>But don't worry!</h2>
+      <p>You can still access these games that were saved for offline use:</p>
+      <div id="cached-links">
+        <!-- These links will be populated by JavaScript if they're in the cache -->
+        <a href="subjects/bubblepop.html" class="cached-link">Bubble Pop</a>
+        <a href="subjects/math.html" class="cached-link">Math Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // This script checks which pages are available in the cache
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Show a custom offline message if no cached content is available
+        const cachedLinksContainer = document.getElementById('cached-links');
+        
+        if (!'caches' in window) {
+          cachedLinksContainer.innerHTML = '<p>Your browser doesn\'t support offline content.</p>';
+          return;
+        }
+        
+        const cache = await caches.open('learnimals-cache-v1');
+        if (!cache) {
+          cachedLinksContainer.innerHTML = '<p>No cached content available yet. Visit pages while online to use them offline later!</p>';
+        }
+      } catch (error) {
+        console.error('Error checking caches:', error);
+      }
+    });
+    
+    // Basic theme toggle for offline page
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const themeToggleBtn = document.createElement('button');
+    themeToggleBtn.className = 'theme-toggle';
+    themeToggleBtn.setAttribute('aria-label', 'Toggle dark mode');
+    
+    // Check if dark mode was saved or system prefers dark
+    const savedMode = localStorage.getItem('learnimals-theme-mode');
+    const isDarkMode = savedMode === 'dark' || 
+                     (!savedMode && darkModeMediaQuery.matches);
+    
+    // Apply initial theme
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      themeToggleBtn.textContent = '☀️ Light';
+    } else {
+      themeToggleBtn.textContent = '🌙 Dark';
+    }
+    
+    // Handle theme toggle
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      themeToggleBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+      localStorage.setItem('learnimals-theme-mode', isDark ? 'dark' : 'light');
+    });
+    
+    // Add toggle button to the page
+    document.body.appendChild(themeToggleBtn);
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preload Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { border-color: green; background: #f0fff0; }
+        .warning { border-color: orange; background: #fff8f0; }
+        .error { border-color: red; background: #fff0f0; }
+        .image-test { margin: 10px 0; padding: 10px; border: 1px solid #eee; }
+        img { max-width: 100px; margin: 10px; }
+        #performance-output { background: #f5f5f5; padding: 10px; font-family: monospace; white-space: pre-wrap; }
+    </style>
+    
+    <!-- Test preload hints -->
+    <link rel="preload" href="public/images/logo.png" as="image">
+    <link rel="preload" href="public/images/math-shark.png" as="image">
+    <link rel="preload" href="public/images/science-parrot2.png" as="image">
+    <link rel="preload" href="public/images/cody-cat2.png" as="image">
+    <link rel="preload" href="public/images/reading-panda.png" as="image">
+    <link rel="preload" href="public/images/art-lion.png" as="image">
+</head>
+<body>
+    <h1>🔧 Preload Performance Test</h1>
+    
+    <div class="test-section">
+        <h2>📊 Performance Timing</h2>
+        <button onclick="checkPerformance()">Check Resource Timing</button>
+        <div id="performance-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🖼️ Image Loading Test</h2>
+        <p>These images should load quickly since they're preloaded:</p>
+        
+        <div class="image-test">
+            <h3>Logo (from navbar):</h3>
+            <img src="public/images/logo.png" alt="Logo" onload="imageLoaded(this)" onerror="imageError(this)" />
+            <span class="status" id="logo-status">Loading...</span>
+        </div>
+        
+        <div class="image-test">
+            <h3>Math Shark:</h3>
+            <img src="public/images/math-shark.png" alt="Math Shark" onload="imageLoaded(this)" onerror="imageError(this)" />
+            <span class="status" id="shark-status">Loading...</span>
+        </div>
+        
+        <div class="image-test">
+            <h3>Science Parrot 2:</h3>
+            <img src="public/images/science-parrot2.png" alt="Science Parrot" onload="imageLoaded(this)" onerror="imageError(this)" />
+            <span class="status" id="parrot-status">Loading...</span>
+        </div>
+        
+        <div class="image-test">
+            <h3>Coding Cat 2:</h3>
+            <img src="public/images/cody-cat2.png" alt="Coding Cat" onload="imageLoaded(this)" onerror="imageError(this)" />
+            <span class="status" id="cat-status">Loading...</span>
+        </div>
+        
+        <div class="image-test">
+            <h3>Reading Panda:</h3>
+            <img src="public/images/reading-panda.png" alt="Reading Panda" onload="imageLoaded(this)" onerror="imageError(this)" />
+            <span class="status" id="panda-status">Loading...</span>
+        </div>
+        
+        <div class="image-test">
+            <h3>Art Lion:</h3>
+            <img src="public/images/art-lion.png" alt="Art Lion" onload="imageLoaded(this)" onerror="imageError(this)" />
+            <span class="status" id="lion-status">Loading...</span>
+        </div>
+    </div>
+
+    <script>
+        const loadTimes = {};
+        const startTime = performance.now();
+
+        function imageLoaded(img) {
+            const loadTime = performance.now() - startTime;
+            const statusId = img.alt.toLowerCase().replace(/\s+/g, '-') + '-status';
+            const statusElement = document.getElementById(statusId) || 
+                                document.getElementById(img.alt.split(' ')[0].toLowerCase() + '-status');
+            
+            if (statusElement) {
+                statusElement.textContent = `✅ Loaded in ${loadTime.toFixed(1)}ms`;
+                statusElement.className = 'status success';
+            }
+            
+            loadTimes[img.src] = loadTime;
+            console.log(`${img.alt} loaded in ${loadTime.toFixed(1)}ms`);
+        }
+
+        function imageError(img) {
+            const statusId = img.alt.toLowerCase().replace(/\s+/g, '-') + '-status';
+            const statusElement = document.getElementById(statusId) || 
+                                document.getElementById(img.alt.split(' ')[0].toLowerCase() + '-status');
+            
+            if (statusElement) {
+                statusElement.textContent = '❌ Failed to load';
+                statusElement.className = 'status error';
+            }
+            
+            console.error(`Failed to load ${img.alt}`);
+        }
+
+        function checkPerformance() {
+            const output = document.getElementById('performance-output');
+            
+            if ('getEntriesByType' in performance) {
+                const resources = performance.getEntriesByType('resource');
+                const imageResources = resources.filter(resource => 
+                    resource.name.includes('public/images/')
+                );
+                
+                let report = 'Image Resource Timing:\n\n';
+                
+                imageResources.forEach(resource => {
+                    const filename = resource.name.split('/').pop();
+                    const loadTime = (resource.responseEnd - resource.startTime).toFixed(1);
+                    const isPreloaded = resource.initiatorType === 'link';
+                    
+                    report += `${filename}:\n`;
+                    report += `  Load time: ${loadTime}ms\n`;
+                    report += `  Initiator: ${resource.initiatorType}\n`;
+                    report += `  Preloaded: ${isPreloaded ? 'Yes' : 'No'}\n\n`;
+                });
+                
+                output.textContent = report;
+            } else {
+                output.textContent = 'Performance API not supported';
+            }
+        }
+
+        // Check for preload warnings
+        let preloadWarnings = 0;
+        const originalWarn = console.warn;
+        
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('preloaded using link preload but not used')) {
+                preloadWarnings++;
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'test-section warning';
+                warningDiv.innerHTML = `<h3>⚠️ Preload Warning</h3><p>${message}</p>`;
+                document.body.appendChild(warningDiv);
+            }
+            originalWarn.apply(console, args);
+        };
+
+        // Report results after page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (preloadWarnings === 0) {
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'test-section success';
+                    successDiv.innerHTML = '<h3>✅ Success</h3><p>No preload warnings detected!</p>';
+                    document.body.appendChild(successDiv);
+                }
+            }, 3000);
+        });
+
+        console.log('Preload test page started');
+    </script>
+</body>
+</html>

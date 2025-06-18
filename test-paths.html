@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path Test - Learnimals</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .working { border-color: green; background: #f0fff0; }
+        .broken { border-color: red; background: #fff0f0; }
+        img { max-width: 100px; margin: 10px; }
+        .status { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Learnimals Path Testing</h1>
+    
+    <div class="test-section">
+        <h2>📁 Project Structure</h2>
+        <p>Testing from root directory (<code>/learnimals/</code>)</p>
+        <ul>
+            <li><strong>Current file:</strong> <code>test-paths.html</code></li>
+            <li><strong>Images should be at:</strong> <code>public/images/</code></li>
+            <li><strong>Main page at:</strong> <code>src/pages/index.html</code></li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🖼️ Image Tests (from root)</h2>
+        <p>These images should load if paths are correct:</p>
+        
+        <div>
+            <h3>Logo Test:</h3>
+            <img src="public/images/logo.png" alt="Logo" />
+            <span class="status" id="logo-status">Loading...</span>
+        </div>
+        
+        <div>
+            <h3>Math Shark Test:</h3>
+            <img src="public/images/math-shark.png" alt="Math Shark" />
+            <span class="status" id="shark-status">Loading...</span>
+        </div>
+        
+        <div>
+            <h3>Science Parrot Test:</h3>
+            <img src="public/images/science-parrot2.png" alt="Science Parrot" />
+            <span class="status" id="parrot-status">Loading...</span>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Navigation Tests</h2>
+        <ul>
+            <li><a href="src/pages/index.html">Main Index Page</a></li>
+            <li><a href="src/features/subjects/shared/math.html">Math Page</a></li>
+            <li><a href="src/features/subjects/shared/bubblepop.html">Bubble Pop Game</a></li>
+        </ul>
+    </div>
+
+    <script>
+        // Test image loading
+        function testImage(src, statusId) {
+            const img = new Image();
+            const status = document.getElementById(statusId);
+            
+            img.onload = function() {
+                status.textContent = '✅ Working';
+                status.style.color = 'green';
+            };
+            
+            img.onerror = function() {
+                status.textContent = '❌ Broken';
+                status.style.color = 'red';
+            };
+            
+            img.src = src;
+        }
+
+        // Run tests
+        testImage('public/images/logo.png', 'logo-status');
+        testImage('public/images/math-shark.png', 'shark-status');
+        testImage('public/images/science-parrot2.png', 'parrot-status');
+    </script>
+</body>
+</html>

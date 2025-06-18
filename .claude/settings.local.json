@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(gh issue:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh pr:*)",
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(gh api:*)"
+    ],
+    "deny": []
+  }
+}

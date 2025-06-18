@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Worker Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .success { border-color: green; background: #f0fff0; }
+        .error { border-color: red; background: #fff0f0; }
+        .warning { border-color: orange; background: #fff8f0; }
+        #console-output { background: #f5f5f5; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Service Worker Test</h1>
+    
+    <div class="test-section">
+        <h2>📋 Service Worker Status</h2>
+        <p id="sw-status">Checking service worker support...</p>
+        <p id="sw-registration">Registration status: Not started</p>
+        <button onclick="testCache()" id="test-cache-btn" disabled>Test Cache</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📦 Cache Test</h2>
+        <p id="cache-status">Cache not tested yet</p>
+        <div id="cache-details"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Console Output</h2>
+        <div id="console-output"></div>
+    </div>
+
+    <script>
+        // Capture console messages
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        const consoleOutput = document.getElementById('console-output');
+        
+        function logToPage(type, ...args) {
+            const message = args.join(' ');
+            consoleOutput.textContent += `[${type.toUpperCase()}] ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToPage('log', ...args);
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            logToPage('warn', ...args);
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToPage('error', ...args);
+        };
+
+        // Test service worker
+        const swStatus = document.getElementById('sw-status');
+        const swRegistration = document.getElementById('sw-registration');
+        const testCacheBtn = document.getElementById('test-cache-btn');
+
+        if ('serviceWorker' in navigator) {
+            swStatus.textContent = '✅ Service Worker supported';
+            swStatus.className = 'success';
+            
+            navigator.serviceWorker.register('public/serviceWorker.js')
+                .then(function(registration) {
+                    swRegistration.textContent = '✅ Service Worker registered successfully';
+                    swRegistration.className = 'success';
+                    testCacheBtn.disabled = false;
+                    console.log('ServiceWorker registration successful:', registration);
+                })
+                .catch(function(error) {
+                    swRegistration.textContent = '❌ Service Worker registration failed: ' + error;
+                    swRegistration.className = 'error';
+                    console.error('ServiceWorker registration failed:', error);
+                });
+        } else {
+            swStatus.textContent = '❌ Service Worker not supported';
+            swStatus.className = 'error';
+        }
+
+        async function testCache() {
+            const cacheStatus = document.getElementById('cache-status');
+            const cacheDetails = document.getElementById('cache-details');
+            
+            try {
+                const cacheNames = await caches.keys();
+                const learnimalsCache = cacheNames.find(name => name.includes('learnimals'));
+                
+                if (learnimalsCache) {
+                    const cache = await caches.open(learnimalsCache);
+                    const cachedRequests = await cache.keys();
+                    
+                    cacheStatus.textContent = `✅ Found cache: ${learnimalsCache} with ${cachedRequests.length} items`;
+                    cacheStatus.className = 'success';
+                    
+                    const urlList = cachedRequests.map(req => `<li>${req.url}</li>`).join('');
+                    cacheDetails.innerHTML = `<h3>Cached URLs:</h3><ul>${urlList}</ul>`;
+                    
+                    console.log(`Cache contains ${cachedRequests.length} items`);
+                } else {
+                    cacheStatus.textContent = '❌ No Learnimals cache found';
+                    cacheStatus.className = 'error';
+                }
+            } catch (error) {
+                cacheStatus.textContent = '❌ Error testing cache: ' + error;
+                cacheStatus.className = 'error';
+                console.error('Cache test error:', error);
+            }
+        }
+
+        console.log('Service Worker test page loaded');
+    </script>
+</body>
+</html>
