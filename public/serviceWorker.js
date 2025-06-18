@@ -2,39 +2,38 @@
 const CACHE_NAME = 'learnimals-cache-v4';
 const ASSETS_TO_CACHE = [
   // HTML pages (only cache existing pages)
-  '/',
-  '../src/pages/index.html',
-  '../src/features/subjects/shared/math.html',
-  '../src/features/subjects/shared/bubblepop.html',
+  '/src/pages/index.html',
+  '/src/features/subjects/shared/math.html',
+  '/src/features/subjects/shared/bubblepop.html',
   
   // CSS files (only cache existing CSS)
-  '../src/styles/base/styles.css',
-  '../src/styles/components/navbar.css',
-  '../src/styles/components/bubblepop.css',
-  '../src/features/subjects/math/math.css',
-  '../src/features/subjects/science/science.css',
-  '../src/features/subjects/reading/reading.css',
-  '../src/features/subjects/art/art.css',
+  '/src/styles/base/styles.css',
+  '/src/styles/components/navbar.css',
+  '/src/styles/components/bubblepop.css',
+  '/src/features/subjects/math/math.css',
+  '/src/features/subjects/science/science.css',
+  '/src/features/subjects/reading/reading.css',
+  '/src/features/subjects/art/art.css',
   
   // JavaScript files (only cache existing JS)
-  '../src/config.js',
-  '../src/main.js',
-  '../src/themeInitializer.js',
-  '../src/features/subjects/math/math.js',
-  '../src/features/subjects/science/science.js',
-  '../src/features/subjects/art/art.js',
-  '../src/features/games/bubble-pop/bubblepop.js',
-  '../src/features/games/bubble-pop/Bubble.js',
-  '../src/features/games/word-scramble/wordScramble.js',
-  '../src/utils/common.js',
-  '../src/utils/themeManager.js',
-  '../src/utils/themeManagerUtils.js',
-  '../src/utils/themeRegistry.js',
-  '../src/components/layout/navigation.js',
-  '../src/components/layout/navbarLoader.js',
-  '../src/components/layout/themeSwitcher.js',
-  '../src/components/ui/Card.js',
-  '../src/components/ui/Modal.js',
+  '/src/config.js',
+  '/src/main.js',
+  '/src/themeInitializer.js',
+  '/src/features/subjects/math/math.js',
+  '/src/features/subjects/science/science.js',
+  '/src/features/subjects/art/art.js',
+  '/src/features/games/bubble-pop/bubblepop.js',
+  '/src/features/games/bubble-pop/Bubble.js',
+  '/src/features/games/word-scramble/wordScramble.js',
+  '/src/utils/common.js',
+  '/src/utils/themeManager.js',
+  '/src/utils/themeManagerUtils.js',
+  '/src/utils/themeRegistry.js',
+  '/src/components/layout/navigation.js',
+  '/src/components/layout/navbarLoader.js',
+  '/src/components/layout/themeSwitcher.js',
+  '/src/components/ui/Card.js',
+  '/src/components/ui/Modal.js',
   
   // Images (core images only)
   './images/logo.png',
@@ -48,7 +47,7 @@ const ASSETS_TO_CACHE = [
   './images/cody-cat2.png',
   
   // Components
-  '../src/components/layout/navbar.html'
+  '/src/components/layout/navbar.html'
 ];
 
 // Install event - Cache essential assets

@@ -43,14 +43,14 @@
       "name": "Play Math Games",
       "short_name": "Math",
       "description": "Start playing math games with Mango",
-      "url": "./src/features/subjects/shared/math.html",
+      "url": "/src/features/subjects/shared/math.html",
       "icons": [{ "src": "./images/math-shark.png", "sizes": "96x96" }]
     },
     {
       "name": "Bubble Pop Game",
       "short_name": "Bubble Pop",
       "description": "Play the Bubble Pop game",
-      "url": "./src/features/subjects/shared/bubblepop.html",
+      "url": "/src/features/subjects/shared/bubblepop.html",
       "icons": [{ "src": "./images/science-parrot.png", "sizes": "96x96" }]
     }
   ]
