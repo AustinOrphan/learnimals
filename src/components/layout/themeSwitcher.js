@@ -1,6 +1,6 @@
 // Theme Switcher Component for Learnimals
 // This component creates a theme selection interface
-import { THEME_DEFINITIONS } from '../../utils/themeRegistry.js';
+import { THEME_DEFINITIONS } from "../../utils/themeRegistry.js";
 
 class ThemeSwitcher {
   constructor() {
@@ -61,14 +61,6 @@ class ThemeSwitcher {
     // Create container for the theme switcher
     const container = document.createElement("div");
     container.className = "theme-switcher-container";
-    container.style.position = "fixed";
-    container.style.bottom = "20px";
-    container.style.right = "20px";
-    container.style.zIndex = "100";
-    container.style.display = "flex";
-    container.style.flexDirection = "column";
-    container.style.gap = "10px";
-    container.style.alignItems = "flex-end";
 
     // Create the theme picker button
     const themeButton = document.createElement("button");
@@ -79,17 +71,7 @@ class ThemeSwitcher {
     themeButton.setAttribute("aria-controls", this.themeMenuId);
     themeButton.innerHTML = '<span class="theme-icon">🎨</span>';
 
-    // Style the theme button
-    themeButton.style.width = "42px";
-    themeButton.style.height = "42px";
-    themeButton.style.borderRadius = "50%";
-    themeButton.style.border = "none";
-    themeButton.style.background = "var(--primary-color)";
-    themeButton.style.color = "var(--text-color)";
-    themeButton.style.fontSize = "20px";
-    themeButton.style.cursor = "pointer";
-    themeButton.style.boxShadow = "0 3px 8px rgba(0,0,0,0.2)";
-    themeButton.style.transition = "all 0.3s";
+    // Theme button styling is handled by CSS classes
 
     // Create the mode toggle button
     const modeButton = document.createElement("button");
@@ -109,17 +91,7 @@ class ThemeSwitcher {
         ? '<span class="mode-icon">☀️</span>'
         : '<span class="mode-icon">🌙</span>';
 
-    // Style the mode button
-    modeButton.style.width = "42px";
-    modeButton.style.height = "42px";
-    modeButton.style.borderRadius = "50%";
-    modeButton.style.border = "none";
-    modeButton.style.background = "var(--accent-color-alt)";
-    modeButton.style.color = "var(--text-color)";
-    modeButton.style.fontSize = "20px";
-    modeButton.style.cursor = "pointer";
-    modeButton.style.boxShadow = "0 3px 8px rgba(0,0,0,0.2)";
-    modeButton.style.transition = "all 0.3s";
+    // Mode button styling is handled by CSS classes
 
     // Create the theme menu (hidden initially)
     const menu = document.createElement("div");
@@ -128,31 +100,15 @@ class ThemeSwitcher {
     menu.setAttribute("aria-label", "Theme selection menu");
     menu.setAttribute("role", "menu");
 
-    // Style the menu
-    menu.style.position = "absolute";
-    menu.style.bottom = "110px"; // Positioned above both buttons
-    menu.style.right = "0";
-    menu.style.background = "var(--text-color)";
-    menu.style.color = "var(--accent-color)";
-    menu.style.borderRadius = "10px";
-    menu.style.padding = "10px";
-    menu.style.boxShadow = "0 5px 15px rgba(0,0,0,0.5)";
-    menu.style.display = "none";
-    menu.style.flexDirection = "column";
-    menu.style.gap = "8px";
-    menu.style.minWidth = "150px";
-    menu.style.transition =
-      "background-color 0.3s, color 0.3s, box-shadow 0.3s";
+    // Menu styling is handled by CSS classes
 
     // Add menu title
     const menuTitle = document.createElement("div");
+    menuTitle.className = "theme-menu-title";
     menuTitle.textContent = "Select Theme";
-    menuTitle.style.fontWeight = "bold";
-    menuTitle.style.marginBottom = "5px";
-    menuTitle.style.paddingBottom = "5px";
-    menuTitle.style.borderBottom = "1px solid var(--primary-color)";
-    menuTitle.style.transition = "border-bottom 0.3s";
-    menu.appendChild(menuTitle);    // Get themes from the registry or fallback to theme manager
+    menu.appendChild(menuTitle);
+
+    // Get themes from the registry or fallback to theme manager
     let themeDefinitions = THEME_DEFINITIONS;
     try {
       if (
@@ -162,7 +118,9 @@ class ThemeSwitcher {
         const managerThemes = window.themeManager.getAvailableThemes();
         if (Array.isArray(managerThemes) && managerThemes.length > 0) {
           // Filter theme definitions to only include available themes
-          themeDefinitions = THEME_DEFINITIONS.filter(def => managerThemes.includes(def.id));
+          themeDefinitions = THEME_DEFINITIONS.filter((def) =>
+            managerThemes.includes(def.id),
+          );
         }
       }
     } catch (error) {
@@ -178,18 +136,7 @@ class ThemeSwitcher {
 
       themeButton.innerHTML = `${themeDef.icon} <span>${themeDef.title}</span>`;
 
-      // Style the theme button
-      themeButton.style.padding = "8px 12px";
-      themeButton.style.border = "none";
-      themeButton.style.borderRadius = "6px";
-      themeButton.style.textAlign = "left";
-      themeButton.style.background = "transparent";
-      themeButton.style.cursor = "pointer";
-      themeButton.style.display = "flex";
-      themeButton.style.alignItems = "center";
-      themeButton.style.gap = "8px";
-      themeButton.style.width = "100%";
-      themeButton.style.transition = "background-color 0.2s";
+      // Theme option styling is handled by CSS classes
 
       // Add event listener to change theme
       themeButton.addEventListener("click", () => {
@@ -210,17 +157,7 @@ class ThemeSwitcher {
         this.closeMenu();
       });
 
-      // Hover effect
-      themeButton.addEventListener("mouseover", () => {
-        const isDarkMode = document.body.classList.contains("theme-mode-dark");
-        themeButton.style.backgroundColor = isDarkMode
-          ? "rgba(255,255,255,0.1)"
-          : "rgba(0,0,0,0.05)";
-      });
-
-      themeButton.addEventListener("mouseout", () => {
-        themeButton.style.backgroundColor = "transparent";
-      });
+      // Hover effects are handled by CSS classes
 
       menu.appendChild(themeButton);
     });
@@ -253,9 +190,9 @@ class ThemeSwitcher {
     const menu = document.getElementById(this.themeMenuId);
     const button = document.getElementById(this.themeButtonId);
 
-    menu.style.display = "flex";
+    menu.classList.add("menu-open");
+    button.classList.add("menu-open");
     button.setAttribute("aria-expanded", "true");
-    button.style.transform = "rotate(45deg)";
     this.isMenuOpen = true;
   }
 
@@ -263,9 +200,9 @@ class ThemeSwitcher {
     const menu = document.getElementById(this.themeMenuId);
     const button = document.getElementById(this.themeButtonId);
 
-    menu.style.display = "none";
+    menu.classList.remove("menu-open");
+    button.classList.remove("menu-open");
     button.setAttribute("aria-expanded", "false");
-    button.style.transform = "rotate(0deg)";
     this.isMenuOpen = false;
   }
 
@@ -307,15 +244,10 @@ class ThemeSwitcher {
     themeButtons.forEach((button) => {
       const theme = button.getAttribute("data-theme");
       if (theme === currentTheme) {
-        const isDarkMode = currentMode === "dark";
-        button.style.backgroundColor = isDarkMode
-          ? "rgba(255,255,255,0.15)"
-          : "rgba(0,0,0,0.1)";
-        button.style.fontWeight = "bold";
+        button.classList.add("active");
         button.setAttribute("aria-current", "true");
       } else {
-        button.style.backgroundColor = "transparent";
-        button.style.fontWeight = "normal";
+        button.classList.remove("active");
         button.removeAttribute("aria-current");
       }
     });
@@ -326,7 +258,7 @@ class ThemeSwitcher {
 
   getThemeEmoji(theme) {
     // Use THEME_DEFINITIONS from registry to get the icon
-    const themeDef = THEME_DEFINITIONS.find(t => t.id === theme);
+    const themeDef = THEME_DEFINITIONS.find((t) => t.id === theme);
     return themeDef ? themeDef.icon : "🎨";
   }
 

@@ -10,16 +10,17 @@
         <title>Math Tools - Learnimals</title>
         <script src="../math/math.js"></script>
         <script type="module">
-            import SubjectTemplateLoader from '../../../utils/subjectTemplateLoader.js';
+            import SubjectTemplateLoader from "../../../utils/subjectTemplateLoader.js";
 
             // Define content for math page
             const mathOptions = {
-                subjectName: 'Math Tools',
-                subjectLower: 'math',
-                subjectDescription: 'Fun math tools and games for children featuring Mango the Shark',
-                characterName: 'Mango',
-                characterType: 'Shark',
-                heroSubtitle: 'Try out fun math helpers below.',
+                subjectName: "Math Tools",
+                subjectLower: "math",
+                subjectDescription:
+                    "Fun math tools and games for children featuring Mango the Shark",
+                characterName: "Mango",
+                characterType: "Shark",
+                heroSubtitle: "Try out fun math helpers below.",
                 // Fallback HTML for feature cards if Card.js doesn't work
                 featureCards: `
                     <div class="feature-card">
@@ -54,7 +55,7 @@
                 // Card.js data for generating feature cards
                 featureCardsData: [
                     {
-                        title: 'Number to Words',
+                        title: "Number to Words",
                         content: `
                             <p>Enter a number and get the name!</p>
                             <label for="numberInput" class="sr-only">Enter a number</label>
@@ -69,37 +70,38 @@
                             </div>
                             <button onclick="convertNumber()">Convert</button>
                             <p id="numberOutput" style="margin-top: 10px" aria-live="polite"></p>
-                        `
+                        `,
                     },
                     {
                         isLinked: true,
-                        title: 'Mango\'s Bubble Pop',
-                        content: '<p>Pop bubbles with the right math answer to help Mango learn!</p>',
-                        linkUrl: 'bubblepop.html',
-                        linkText: 'Play Now',
-                        imageUrl: '/public/images/mango-swimming.png',
-                        imageAlt: 'Mango swimming with bubbles',
-                        theme: 'alt'
+                        title: "Mango's Bubble Pop",
+                        content:
+                            "<p>Pop bubbles with the right math answer to help Mango learn!</p>",
+                        linkUrl: "bubblepop.html",
+                        linkText: "Play Now",
+                        imageUrl: "/public/images/mango-swimming.png",
+                        imageAlt: "Mango swimming with bubbles",
+                        theme: "alt",
                     },
                     {
                         isLinked: true,
-                        title: 'Place Value Activities',
-                        content: '<p>Learn place value with interactive manipulatives and visual exercises!</p>',
-                        linkUrl: 'place-value.html',
-                        linkText: 'Start Learning',
-                        imageUrl: '/public/images/math-shark.png',
-                        imageAlt: 'Math shark with place value blocks',
-                        theme: 'default'
-                    }
-                ]
+                        title: "Place Value Activities",
+                        content:
+                            "<p>Learn place value with interactive manipulatives and visual exercises!</p>",
+                        linkUrl: "place-value.html",
+                        linkText: "Start Learning",
+                        imageUrl: "/public/images/math-shark.png",
+                        imageAlt: "Math shark with place value blocks",
+                        theme: "default",
+                    },
+                ],
             };
-            
-            document.addEventListener('DOMContentLoaded', async () => {
+
+            document.addEventListener("DOMContentLoaded", async () => {
                 await SubjectTemplateLoader.renderTemplate(mathOptions);
-                
             });
         </script>
-        
+
         <!-- Keep the original CSS and JS references for backward compatibility -->
         <link rel="stylesheet" href="/src/styles/base/styles.css" />
         <link rel="stylesheet" href="/src/styles/components/navbar.css" />
@@ -108,50 +110,65 @@
     <body>
         <!-- This content will be replaced by the template -->
         <p>Loading math content...</p>
-        
+
         <script>
             // Ensure math.js is loaded and convertNumber is available
-            window.addEventListener('load', function () {
-                console.log('Math page load event fired');
-                
-                if (typeof convertNumber !== 'function') {
-                    console.warn('convertNumber function not found. Loading fallback.');
+            window.addEventListener("load", function () {
+                console.log("Math page load event fired");
+
+                if (typeof convertNumber !== "function") {
+                    console.warn(
+                        "convertNumber function not found. Loading fallback.",
+                    );
 
                     // Fallback implementation of convertNumber
                     window.convertNumber = function () {
-                        console.log('Fallback convertNumber called');
-                        const input = document.getElementById('numberInput').value;
-                        const output = document.getElementById('numberOutput');
+                        console.log("Fallback convertNumber called");
+                        const input =
+                            document.getElementById("numberInput").value;
+                        const output = document.getElementById("numberOutput");
 
                         if (!input) {
-                            output.textContent = 'Please enter a number';
+                            output.textContent = "Please enter a number";
                             return;
                         }
 
                         output.textContent = `Fallback: You entered ${input}`;
                     };
                 } else {
-                    console.log('Original convertNumber function found');
+                    console.log("Original convertNumber function found");
                 }
 
                 // Attach event listener to all buttons that might need it
-                setTimeout(function() {
-                    console.log('Searching for buttons to attach event handlers');
-                    const convertButtons = document.querySelectorAll('button[onclick="convertNumber()"]');
-                    console.log(`Found ${convertButtons.length} buttons with onclick="convertNumber()"`);
-                    
-                    convertButtons.forEach(function(button) {
-                        console.log('Attaching event listener to button');
+                setTimeout(function () {
+                    console.log(
+                        "Searching for buttons to attach event handlers",
+                    );
+                    const convertButtons = document.querySelectorAll(
+                        'button[onclick="convertNumber()"]',
+                    );
+                    console.log(
+                        `Found ${convertButtons.length} buttons with onclick="convertNumber()"`,
+                    );
+
+                    convertButtons.forEach(function (button) {
+                        console.log("Attaching event listener to button");
                         // Remove the inline onclick attribute to prevent double calls
-                        button.removeAttribute('onclick');
+                        button.removeAttribute("onclick");
                         // Add a direct event listener
-                        button.addEventListener('click', function() {
-                            console.log('Button clicked, calling convertNumber');
-                            if (typeof convertNumber === 'function') {
+                        button.addEventListener("click", function () {
+                            console.log(
+                                "Button clicked, calling convertNumber",
+                            );
+                            if (typeof convertNumber === "function") {
                                 convertNumber();
                             } else {
-                                console.error('convertNumber still not available!');
-                                alert('Error: convertNumber function not available');
+                                console.error(
+                                    "convertNumber still not available!",
+                                );
+                                alert(
+                                    "Error: convertNumber function not available",
+                                );
                             }
                         });
                     });
