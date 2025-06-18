@@ -80,20 +80,6 @@
             </div>
         </footer>
 
-        <script>
-            // Mobile menu toggle
-            document
-                .getElementById("mobile-menu")
-                .addEventListener("click", function () {
-                    document
-                        .getElementById("nav-menu")
-                        .classList.toggle("active");
-                    this.classList.toggle("active");
-                    const expanded =
-                        this.getAttribute("aria-expanded") === "true" || false;
-                    this.setAttribute("aria-expanded", !expanded);
-                });
-        </script>
         <!-- JS -->
         <script defer src="../../themeInitializer.js"></script>
         <script
