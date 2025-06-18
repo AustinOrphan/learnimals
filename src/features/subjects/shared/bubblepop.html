@@ -9,10 +9,15 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Mango’s Bubble Pop - Learnimals</title>        <link rel="stylesheet" href="/src/styles/base/styles.css" />
+        <title>Mango's Bubble Pop - Learnimals</title>
+        <link rel="stylesheet" href="/src/styles/base/styles.css" />
         <link rel="stylesheet" href="/src/styles/components/navbar.css" />
+        <link rel="stylesheet" href="/src/styles/components/components.css" />
         <link rel="stylesheet" href="/src/styles/components/bubblepop.css" />
-        <script type="module" src="../../games/bubble-pop/bubblepop.js"></script>
+        <script
+            type="module"
+            src="../../games/bubble-pop/bubblepop.js"
+        ></script>
     </head>
     <body>
         <div id="navbar-placeholder"></div>
@@ -29,37 +34,45 @@
                         alt="Mango the Shark"
                     />
                 </div>
-            </section>            <section class="game-container">
+            </section>
+
+            <section class="game-container">
                 <!-- Game elements will go here -->
                 <canvas id="gameCanvas"></canvas>
                 <div id="questionBox"></div>
             </section>
-              <script type="module">
-                import BubblePopGame from '../../games/bubble-pop/bubblepop.js';
-                
+
+            <script type="module">
+                import BubblePopGame from "../../games/bubble-pop/bubblepop.js";
+
                 // Initialize the game when DOM is fully loaded or content is already available
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', initGame);
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", initGame);
                 } else {
                     initGame();
                 }
-                
+
                 function initGame() {
                     // Create game instance and make available for debugging
-                    window.game = new BubblePopGame('gameCanvas');
-                    
+                    window.game = new BubblePopGame("gameCanvas");
+
                     // Add event listeners for fullscreen mode if supported
-                    const canvasContainer = document.querySelector('.game-container');
+                    const canvasContainer =
+                        document.querySelector(".game-container");
                     if (canvasContainer && document.fullscreenEnabled) {
-                        const fullscreenBtn = document.createElement('button');
-                        fullscreenBtn.className = 'fullscreen-btn';
-                        fullscreenBtn.innerHTML = '⤢'; // Fullscreen icon
-                        fullscreenBtn.title = 'Toggle fullscreen';
-                        fullscreenBtn.addEventListener('click', () => {
+                        const fullscreenBtn = document.createElement("button");
+                        fullscreenBtn.className = "fullscreen-btn";
+                        fullscreenBtn.innerHTML = "⤢"; // Fullscreen icon
+                        fullscreenBtn.title = "Toggle fullscreen";
+                        fullscreenBtn.addEventListener("click", () => {
                             if (!document.fullscreenElement) {
-                                canvasContainer.requestFullscreen().catch(err => {
-                                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
-                                });
+                                canvasContainer
+                                    .requestFullscreen()
+                                    .catch((err) => {
+                                        console.log(
+                                            `Error attempting to enable fullscreen: ${err.message}`,
+                                        );
+                                    });
                             } else {
                                 document.exitFullscreen();
                             }
@@ -82,17 +95,11 @@
 
         <!-- JS -->
         <script defer src="../../themeInitializer.js"></script>
-        <script
-            type="module"
-            src="../../utils/themeManager.js"
-        ></script>
+        <script type="module" src="../../utils/themeManager.js"></script>
         <script
             type="module"
             src="../../components/layout/themeSwitcher.js"
         ></script>
-        <script
-            defer
-            src="../../components/layout/navbarLoader.js"
-        ></script>
+        <script defer src="../../components/layout/navbarLoader.js"></script>
     </body>
 </html>

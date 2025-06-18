@@ -1,143 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Learnimals - Fun Educational Games for Kids</title>
-  <meta name="description" content="Learnimals offers fun educational games with animal friends for children to learn math, science, reading and art through interactive play">
-  <meta name="keywords" content="kids education, educational games, math games, science for kids, reading games, learning animals">
-  <meta name="author" content="Learnimals Team">
-  <meta property="og:title" content="Learnimals - Fun Educational Games for Kids">
-  <meta property="og:description" content="Learn and play with animal friends in math, science, reading and art!">
-  <meta property="og:image" content="../../public/images/logo.png">
-  <meta property="og:url" content="https://learnimals.com">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="../../public/images/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="../../public/images/apple-touch-icon.png">
-  <link rel="manifest" href="../../public/manifest.json">
-  <meta name="theme-color" content="#ffeaa7">
-  <meta name="color-scheme" content="light dark">
-  <link rel="stylesheet" href="../styles/components/navbar.css" />
-  <link rel="stylesheet" href="../styles/base/styles.css" />
-  <link rel="preload" href="../public/images/logo.png" as="image">
-  <link rel="preload" href="../public/images/math-shark.png" as="image">
-  <link rel="preload" href="../public/images/science-parrot2.png" as="image">
-  <link rel="preload" href="../public/images/cody-cat2.png" as="image">
-  <link rel="preload" href="../public/images/reading-panda.png" as="image">
-  <link rel="preload" href="../public/images/art-lion.png" as="image">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Welcome to Learnimals - Fun Educational Games for Kids</title>
+        <meta
+            name="description"
+            content="Learnimals offers fun educational games with animal friends for children to learn math, science, reading and art through interactive play"
+        />
+        <meta
+            name="keywords"
+            content="kids education, educational games, math games, science for kids, reading games, learning animals"
+        />
+        <meta name="author" content="Learnimals Team" />
+        <meta
+            property="og:title"
+            content="Learnimals - Fun Educational Games for Kids"
+        />
+        <meta
+            property="og:description"
+            content="Learn and play with animal friends in math, science, reading and art!"
+        />
+        <meta property="og:image" content="../../public/images/logo.png" />
+        <meta property="og:url" content="https://learnimals.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link
+            rel="icon"
+            href="../../public/images/favicon.ico"
+            type="image/x-icon"
+        />
+        <link
+            rel="apple-touch-icon"
+            href="../../public/images/apple-touch-icon.png"
+        />
+        <link rel="manifest" href="../../public/manifest.json" />
+        <meta name="theme-color" content="#ffeaa7" />
+        <meta name="color-scheme" content="light dark" />
+        <link rel="stylesheet" href="../styles/components/navbar.css" />
+        <link rel="stylesheet" href="../styles/base/styles.css" />
+        <link rel="stylesheet" href="../styles/components/components.css" />
+        <link rel="preload" href="../public/images/logo.png" as="image" />
+        <link rel="preload" href="../public/images/math-shark.png" as="image" />
+        <link
+            rel="preload"
+            href="../public/images/science-parrot2.png"
+            as="image"
+        />
+        <link rel="preload" href="../public/images/cody-cat2.png" as="image" />
+        <link
+            rel="preload"
+            href="../public/images/reading-panda.png"
+            as="image"
+        />
+        <link rel="preload" href="../public/images/art-lion.png" as="image" />
+    </head>
 
-<body>
-  <div id="navbar-placeholder"></div>
+    <body>
+        <div id="navbar-placeholder"></div>
 
-  <main>
-    <section class="hero">
-      <h1 class="fade-in">Welcome to Learnimals!</h1>
-      <p class="fade-in-delay">Explore fun learning adventures with your favorite animal friends.</p>
-      <a href="/src/features/subjects/shared/math.html" class="cta-button bounce">Start Learning</a>
-    </section>
+        <main>
+            <section class="hero">
+                <h1 class="fade-in">Welcome to Learnimals!</h1>
+                <p class="fade-in-delay">
+                    Explore fun learning adventures with your favorite animal
+                    friends.
+                </p>
+                <a
+                    href="/src/features/subjects/shared/math.html"
+                    class="cta-button bounce"
+                    >Start Learning</a
+                >
+            </section>
 
-    <section class="features">
-      <a href="/src/features/subjects/shared/math.html" class="feature-card-link">
-        <div class="feature-card hover-glow alt">
-          <img src="/public/images/math-shark.png" alt="Math Shark" />
-          <h3>Math with Mango</h3>
-          <p>Master numbers, puzzles, and math games!</p>
-        </div>
-      </a>
+            <section class="features">
+                <a
+                    href="/src/features/subjects/shared/math.html"
+                    class="feature-card-link"
+                >
+                    <div class="feature-card hover-glow alt">
+                        <img
+                            src="/public/images/math-shark.png"
+                            alt="Math Shark"
+                        />
+                        <h3>Math with Mango</h3>
+                        <p>Master numbers, puzzles, and math games!</p>
+                    </div>
+                </a>
 
-      <a href="/src/features/subjects/shared/science.html" class="feature-card-link">
-        <div class="feature-card hover-glow">
-          <img src="/public/images/science-parrot2.png" alt="Science Parrot" />
-          <h3>Science with Sky</h3>
-          <p>Explore fun experiments and amazing facts.</p>
-        </div>
-      </a>
+                <a
+                    href="/src/features/subjects/shared/science.html"
+                    class="feature-card-link"
+                >
+                    <div class="feature-card hover-glow">
+                        <img
+                            src="/public/images/science-parrot2.png"
+                            alt="Science Parrot"
+                        />
+                        <h3>Science with Sky</h3>
+                        <p>Explore fun experiments and amazing facts.</p>
+                    </div>
+                </a>
 
-      <a href="/src/features/subjects/shared/coding.html" class="feature-card-link">
-        <div class="feature-card hover-glow">
-          <img src="/public/images/cody-cat2.png" alt="Coding Cat" />
-          <h3>Code with Cody</h3>
-          <p>Code, Learn, and master your skills!</p>
-        </div>
-      </a>
+                <a
+                    href="/src/features/subjects/shared/coding.html"
+                    class="feature-card-link"
+                >
+                    <div class="feature-card hover-glow">
+                        <img
+                            src="/public/images/cody-cat2.png"
+                            alt="Coding Cat"
+                        />
+                        <h3>Code with Cody</h3>
+                        <p>Code, Learn, and master your skills!</p>
+                    </div>
+                </a>
 
-      <a href="/src/features/subjects/shared/reading.html" class="feature-card-link">
-        <div class="feature-card hover-glow alt">
-          <img src="/public/images/reading-panda.png" alt="Reading Panda" />
-          <h3>Reading with Ruby</h3>
-          <p>Follow along with stories and learn to love reading!</p>
-        </div>
-      </a>
+                <a
+                    href="/src/features/subjects/shared/reading.html"
+                    class="feature-card-link"
+                >
+                    <div class="feature-card hover-glow alt">
+                        <img
+                            src="/public/images/reading-panda.png"
+                            alt="Reading Panda"
+                        />
+                        <h3>Reading with Ruby</h3>
+                        <p>
+                            Follow along with stories and learn to love reading!
+                        </p>
+                    </div>
+                </a>
 
-      <a href="/src/features/subjects/shared/art.html" class="feature-card-link">
-        <div class="feature-card hover-glow">
-          <img src="/public/images/art-lion.png" alt="Art Lion" />
-          <h3>Art with Leo</h3>
-          <p>Paint, color, and craft your creativity!</p>
-        </div>
-      </a>
+                <a
+                    href="/src/features/subjects/shared/art.html"
+                    class="feature-card-link"
+                >
+                    <div class="feature-card hover-glow">
+                        <img src="/public/images/art-lion.png" alt="Art Lion" />
+                        <h3>Art with Leo</h3>
+                        <p>Paint, color, and craft your creativity!</p>
+                    </div>
+                </a>
+            </section>
+        </main>
 
+        <footer>
+            <p>&copy; 2025 Learnimals. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="about.html">About Us</a>
+                <a href="contact.html">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="profile.html">My Profile</a>
+            </div>
+        </footer>
 
-    </section>
-  </main>
+        <script>
+            // Add structured data for SEO
+            const structuredData = {
+                "@context": "https://schema.org",
+                "@type": "EducationalOrganization",
+                name: "Learnimals",
+                description:
+                    "Fun educational games with animal friends for children",
+                url: "https://learnimals.com",
+                logo: "https://learnimals.com/public/images/logo.png",
+                offers: {
+                    "@type": "Offer",
+                    availability: "https://schema.org/InStock",
+                    price: "0",
+                    priceCurrency: "USD",
+                },
+            };
 
-  <footer>
-    <p>&copy; 2025 Learnimals. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="#">Privacy Policy</a>
-      <a href="profile.html">My Profile</a>
-    </div>
-  </footer>
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.text = JSON.stringify(structuredData);
+            document.head.appendChild(script);
 
-  <script>
-    // Add structured data for SEO
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "Learnimals",
-      "description": "Fun educational games with animal friends for children",
-      "url": "https://learnimals.com",
-      "logo": "https://learnimals.com/public/images/logo.png",
-      "offers": {
-        "@type": "Offer",
-        "availability": "https://schema.org/InStock",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    };
+            // Register the service worker
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", function () {
+                    navigator.serviceWorker
+                        .register("../public/serviceWorker.js")
+                        .then(function (registration) {
+                            console.log(
+                                "ServiceWorker registration successful with scope: ",
+                                registration.scope,
+                            );
+                        })
+                        .catch(function (error) {
+                            console.log(
+                                "ServiceWorker registration failed: ",
+                                error,
+                            );
+                        });
+                });
+            }
+        </script>
 
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(structuredData);
-    document.head.appendChild(script);
+        <!-- ✅ Load universal navbar component -->
+        <script src="../components/layout/navbarLoader.js" defer></script>
 
-    // Register the service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('../public/serviceWorker.js')
-          .then(function (registration) {
-            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-          })
-          .catch(function (error) {
-            console.log('ServiceWorker registration failed: ', error);
-          });
-      });
-    }
-  </script>
+        <!-- Navigation helper -->
+        <script src="../utils/navigationHelper.js" defer></script>
 
-  <!-- ✅ Load universal navbar component -->
-  <script src="../components/layout/navbarLoader.js" defer></script>
-
-  <!-- Navigation helper -->
-  <script src="../utils/navigationHelper.js" defer></script>
-
-  <!-- Other scripts -->
-  <script src="../main.js"></script>
-  <script src="../components/layout/navigation.js" defer></script>
-  <script type="module" src="../utils/themeManager.js"></script>
-  <script type="module" src="../components/layout/themeSwitcher.js"></script>
-</body>
+        <!-- Other scripts -->
+        <script src="../main.js"></script>
+        <script src="../components/layout/navigation.js" defer></script>
+        <script type="module" src="../utils/themeManager.js"></script>
+        <script
+            type="module"
+            src="../components/layout/themeSwitcher.js"
+        ></script>
+    </body>
 </html>
