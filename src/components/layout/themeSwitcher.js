@@ -65,7 +65,7 @@ class ThemeSwitcher {
     // Create the theme picker button
     const themeButton = document.createElement("button");
     themeButton.id = this.themeButtonId;
-    themeButton.className = "theme-switcher-button";
+    themeButton.className = "theme-button";
     themeButton.setAttribute("aria-label", "Change theme colors");
     themeButton.setAttribute("aria-expanded", "false");
     themeButton.setAttribute("aria-controls", this.themeMenuId);
@@ -76,7 +76,7 @@ class ThemeSwitcher {
     // Create the mode toggle button
     const modeButton = document.createElement("button");
     modeButton.id = this.modeToggleId;
-    modeButton.className = "mode-toggle-button";
+    modeButton.className = "theme-button";
     modeButton.setAttribute("aria-label", "Toggle light/dark mode");
 
     // Get current mode
@@ -109,6 +109,7 @@ class ThemeSwitcher {
     menu.appendChild(menuTitle);
 
     // Get themes from the registry or fallback to theme manager
+
     let themeDefinitions = THEME_DEFINITIONS;
     try {
       if (
