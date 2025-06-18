@@ -24,7 +24,7 @@ class FormComponent {
       onValidate: options.onValidate || null,
       submitButtonText: options.submitButtonText || 'Submit',
       useLocalStorage: options.useLocalStorage || false,
-      storageKey: options.storageKey || `form-data-${options.id || Math.random().toString(36).substr(2, 9)}`,
+      storageKey: options.storageKey || `form-data-${this.options.id}`,
     };
 
     this.formData = {};
