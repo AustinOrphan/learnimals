@@ -69,7 +69,13 @@ class ThemeSwitcher {
     themeButton.setAttribute("aria-label", "Change theme colors");
     themeButton.setAttribute("aria-expanded", "false");
     themeButton.setAttribute("aria-controls", this.themeMenuId);
-    themeButton.innerHTML = '<span class="theme-icon">🎨</span>';
+    themeButton.innerHTML = ''; // Empty button for background only
+    
+    // Create separate emoji overlay that won't be affected by filters
+    const emojiOverlay = document.createElement("span");
+    emojiOverlay.className = "theme-emoji-overlay";
+    emojiOverlay.textContent = "🎨";
+    emojiOverlay.setAttribute("aria-hidden", "true");
 
     // Theme button styling is handled by CSS classes
 
@@ -166,6 +172,7 @@ class ThemeSwitcher {
     // Add elements to the DOM
     container.appendChild(menu);
     container.appendChild(themeButton);
+    container.appendChild(emojiOverlay); // Add emoji overlay after button
     container.appendChild(modeButton);
     document.body.appendChild(container);
 

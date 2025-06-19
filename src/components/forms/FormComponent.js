@@ -1,7 +1,9 @@
 // Form Component
 // Reusable form component for consistent UI and validation across the site
 
-class FormComponent {
+import BaseComponent from '../BaseComponent.js';
+
+class FormComponent extends BaseComponent {
   /**
    * Create a form component
    * @param {Object} options - Form options
@@ -15,8 +17,7 @@ class FormComponent {
    * @param {boolean} [options.useLocalStorage] - Store form data in localStorage
    */
   constructor(options) {
-    this.options = {
-      id: options.id || `form-${Math.random().toString(36).substr(2, 9)}`,
+    super({
       method: options.method || 'get',
       action: options.action || '',
       fields: options.fields || [],
@@ -24,8 +25,9 @@ class FormComponent {
       onValidate: options.onValidate || null,
       submitButtonText: options.submitButtonText || 'Submit',
       useLocalStorage: options.useLocalStorage || false,
-      storageKey: options.storageKey || `form-data-${this.options.id}`,
-    };
+      storageKey: options.storageKey || `form-data-${options.id || ''}`,
+      ...options
+    });
 
     this.formData = {};
     this.errors = {};
@@ -73,7 +75,7 @@ class FormComponent {
     
     // Label
     if (label) {
-      html += `<label for="${fieldId}">${label}${required ? ' <span class="required">*</span>' : ''}</label>`;
+      html += `<label for="${fieldId}" class="component-label">${label}${required ? ' <span class="required">*</span>' : ''}</label>`;
     }
     
     // Field based on type
@@ -84,6 +86,7 @@ class FormComponent {
             id="${fieldId}" 
             name="${name}" 
             placeholder="${placeholder}"
+            class="component-input"
             ${requiredAttr}
             ${ariaDescribedBy}
             rows="4"
@@ -96,6 +99,7 @@ class FormComponent {
           <select 
             id="${fieldId}" 
             name="${name}"
+            class="component-input"
             ${requiredAttr}
             ${ariaDescribedBy}
           >
@@ -148,6 +152,7 @@ class FormComponent {
             name="${name}" 
             value="${value}"
             placeholder="${placeholder}"
+            class="component-input"
             ${requiredAttr}
             ${minAttr}
             ${maxAttr}
@@ -159,11 +164,11 @@ class FormComponent {
     
     // Help text
     if (helpText) {
-      html += `<div class="help-text" id="${fieldId}-help">${helpText}</div>`;
+      html += `<div class="component-help" id="${fieldId}-help">${helpText}</div>`;
     }
     
     // Error message container
-    html += `<div class="error-message" id="${fieldId}-error"></div>`;
+    html += `<div class="component-error" id="${fieldId}-error"></div>`;
     
     html += '</div>';
     
@@ -178,7 +183,7 @@ class FormComponent {
     const { id, method, action, fields, submitButtonText } = this.options;
     
     let html = `
-      <form id="${id}" method="${method}" action="${action}" novalidate>
+      <form id="${id}" class="component" method="${method}" action="${action}" novalidate>
     `;
     
     // Generate fields
@@ -189,7 +194,7 @@ class FormComponent {
     // Submit button
     html += `
         <div class="form-actions">
-          <button type="submit" class="submit-button">${submitButtonText}</button>
+          <button type="submit" class="component-button component-button--primary">${submitButtonText}</button>
         </div>
       </form>
     `;
@@ -197,57 +202,49 @@ class FormComponent {
     return html;
   }
 
-  /**
-   * Render the form to a container
-   * @param {HTMLElement|string} container - Container element or selector
-   */
-  render(container) {
-    const containerEl = typeof container === 'string' 
-      ? document.querySelector(container) 
-      : container;
-    
-    if (!containerEl) {
-      console.error('Container not found:', container);
-      return;
-    }
-    
-    containerEl.innerHTML = this.generateHTML();
-    this.attachEventListeners();
-    
-    return this;
-  }
 
   /**
    * Attach event listeners to the form
    */
   attachEventListeners() {
-    const form = document.getElementById(this.options.id);
-    if (!form) return;
-    
     // Add submit handler
-    form.addEventListener('submit', (e) => {
+    this.addEventListener('submit', (e) => {
       e.preventDefault();
       this.handleSubmit();
     });
     
     // Add input handlers for live validation
     this.options.fields.forEach(field => {
-      const input = form.querySelector(`[name="${field.name}"]`);
-      if (input) {
-        input.addEventListener('input', () => {
-          this.validateField(field.name);
-          
-          // Save to localStorage if enabled
-          if (this.options.useLocalStorage) {
-            this.saveToLocalStorage();
-          }
-        });
+      // Input change handling
+      this.addEventListener('input', () => {
+        this.validateField(field.name);
         
-        input.addEventListener('blur', () => {
-          this.validateField(field.name);
-        });
-      }
+        // Save to localStorage if enabled
+        if (this.options.useLocalStorage) {
+          this.saveToLocalStorage();
+        }
+        
+        // Emit field change event
+        this.emit('fieldChange', { field: field.name, value: this.getFieldValue(field.name) });
+      }, `[name="${field.name}"]`);
+      
+      // Blur handling for validation
+      this.addEventListener('blur', () => {
+        this.validateField(field.name);
+      }, `[name="${field.name}"]`);
     });
+  }
+  
+  /**
+   * Get value of a specific field
+   * @param {string} fieldName - Name of the field
+   * @returns {*} - Field value
+   */
+  getFieldValue(fieldName) {
+    if (!this.element) return null;
+    
+    const input = this.element.querySelector(`[name="${fieldName}"]`);
+    return input ? input.value : null;
   }
 
   /**
@@ -255,10 +252,9 @@ class FormComponent {
    * @returns {Object} - Current form data
    */
   getFormData() {
-    const form = document.getElementById(this.options.id);
-    if (!form) return this.formData;
+    if (!this.element) return this.formData;
     
-    const formData = new FormData(form);
+    const formData = new FormData(this.element);
     const data = {};
     
     // Convert FormData to object

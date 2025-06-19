@@ -1,0 +1,421 @@
+/* Base Component Styles
+   Common styles and utilities for all components */
+
+:root {
+  /* Component spacing */
+  --component-padding-sm: 0.5rem;
+  --component-padding-md: 1rem;
+  --component-padding-lg: 1.5rem;
+  --component-padding-xl: 2rem;
+  
+  /* Component margins */
+  --component-margin-sm: 0.5rem;
+  --component-margin-md: 1rem;
+  --component-margin-lg: 1.5rem;
+  --component-margin-xl: 2rem;
+  
+  /* Component borders */
+  --component-border-width: 1px;
+  --component-border-radius-sm: 0.25rem;
+  --component-border-radius-md: 0.5rem;
+  --component-border-radius-lg: 0.75rem;
+  --component-border-radius-xl: 1rem;
+  
+  /* Component shadows */
+  --component-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --component-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --component-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --component-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Component focus styles */
+  --component-focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  --component-focus-border: var(--accent-primary);
+  
+  /* Component transitions */
+  --component-transition-fast: 150ms ease-in-out;
+  --component-transition-normal: 250ms ease-in-out;
+  --component-transition-slow: 350ms ease-in-out;
+}
+
+/* Base component container */
+.component {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.component *,
+.component *::before,
+.component *::after {
+  box-sizing: inherit;
+}
+
+/* Component states */
+.component--hidden {
+  display: none !important;
+}
+
+.component--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.component--loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.component--loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Focus management for components */
+.component:focus-visible,
+.component [tabindex]:focus-visible,
+.component button:focus-visible,
+.component input:focus-visible,
+.component select:focus-visible,
+.component textarea:focus-visible {
+  outline: 2px solid var(--component-focus-border);
+  outline-offset: 2px;
+  box-shadow: var(--component-focus-ring);
+}
+
+/* Component typography */
+.component h1,
+.component h2,
+.component h3,
+.component h4,
+.component h5,
+.component h6 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  margin: 0 0 var(--component-margin-sm) 0;
+}
+
+.component p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 var(--component-margin-sm) 0;
+}
+
+.component p:last-child {
+  margin-bottom: 0;
+}
+
+/* Component buttons */
+.component-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--component-padding-sm) var(--component-padding-md);
+  border: var(--component-border-width) solid transparent;
+  border-radius: var(--component-border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--component-transition-fast);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+.component-button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+  box-shadow: var(--component-shadow-sm);
+}
+
+.component-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.component-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.component-button:disabled:hover {
+  background: var(--bg-primary);
+  border-color: var(--border-light);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Button variants */
+.component-button--primary {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+  border-color: var(--accent-primary);
+}
+
+.component-button--primary:hover {
+  background: var(--accent-primary-dark, var(--accent-primary));
+  border-color: var(--accent-primary-dark, var(--accent-primary));
+}
+
+.component-button--secondary {
+  background: var(--accent-secondary);
+  color: var(--text-inverse);
+  border-color: var(--accent-secondary);
+}
+
+.component-button--secondary:hover {
+  background: var(--accent-secondary-dark, var(--accent-secondary));
+  border-color: var(--accent-secondary-dark, var(--accent-secondary));
+}
+
+.component-button--outline {
+  background: transparent;
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.component-button--outline:hover {
+  background: var(--accent-primary);
+  color: var(--text-inverse);
+}
+
+.component-button--ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: transparent;
+}
+
+.component-button--ghost:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-light);
+}
+
+/* Button sizes */
+.component-button--sm {
+  padding: calc(var(--component-padding-sm) * 0.75) var(--component-padding-sm);
+  font-size: var(--font-size-sm);
+}
+
+.component-button--lg {
+  padding: var(--component-padding-md) var(--component-padding-lg);
+  font-size: var(--font-size-lg);
+}
+
+/* Component forms */
+.component-input {
+  display: block;
+  width: 100%;
+  padding: var(--component-padding-sm) var(--component-padding-md);
+  border: var(--component-border-width) solid var(--border-light);
+  border-radius: var(--component-border-radius-md);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: all var(--component-transition-fast);
+}
+
+.component-input:hover {
+  border-color: var(--border-medium);
+}
+
+.component-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: var(--component-focus-ring);
+}
+
+.component-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--bg-secondary);
+}
+
+.component-input.invalid {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Component labels */
+.component-label {
+  display: block;
+  margin-bottom: var(--component-margin-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.component-label .required {
+  color: var(--color-error);
+  margin-left: 0.25rem;
+}
+
+/* Component error messages */
+.component-error {
+  display: block;
+  margin-top: var(--component-margin-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+/* Component help text */
+.component-help {
+  display: block;
+  margin-top: var(--component-margin-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+/* Utility classes for components */
+.component-flex {
+  display: flex;
+}
+
+.component-flex--column {
+  flex-direction: column;
+}
+
+.component-flex--center {
+  align-items: center;
+  justify-content: center;
+}
+
+.component-flex--between {
+  justify-content: space-between;
+}
+
+.component-flex--around {
+  justify-content: space-around;
+}
+
+.component-flex--evenly {
+  justify-content: space-evenly;
+}
+
+.component-grid {
+  display: grid;
+}
+
+.component-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--component-margin-md);
+}
+
+.component-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--component-margin-md);
+}
+
+.component-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--component-margin-md);
+}
+
+/* Responsive grid */
+@media (max-width: 768px) {
+  .component-grid--3,
+  .component-grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .component-grid--2,
+  .component-grid--3,
+  .component-grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animation utilities */
+.component-animate-fade-in {
+  animation: componentFadeIn var(--component-transition-normal) ease-out;
+}
+
+.component-animate-slide-up {
+  animation: componentSlideUp var(--component-transition-normal) ease-out;
+}
+
+.component-animate-slide-down {
+  animation: componentSlideDown var(--component-transition-normal) ease-out;
+}
+
+@keyframes componentFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes componentSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes componentSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Screen reader utilities */
+.component-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Print styles for components */
+@media print {
+  .component {
+    break-inside: avoid;
+  }
+  
+  .component-button {
+    border: 1px solid #000;
+    background: transparent !important;
+    color: #000 !important;
+  }
+}
