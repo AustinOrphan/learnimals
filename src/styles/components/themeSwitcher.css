@@ -14,43 +14,53 @@
 }
 
 /* Base theme button styles - shared by both buttons */
-.theme-switcher-container .theme-button {
-  width: 42px !important;
-  height: 42px !important;
-  border-radius: 50% !important;
-  border: none !important;
-  font-size: 20px !important;
+/* High specificity to override default button styles without !important */
+.theme-switcher-container button.theme-button,
+.theme-switcher-container button.theme-button:focus,
+.theme-switcher-container button.theme-button:visited {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: var(--text-inverse) !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
   /* Override any conflicting button styles */
-  padding: 0 !important;
-  min-height: auto !important;
-  line-height: 1 !important;
-  min-width: auto !important;
-  /* Remove all transitions that might conflict */
-  transition: none !important;
-  animation: none !important;
+  padding: 0;
+  margin: 0;
+  min-height: auto;
+  line-height: 1;
+  min-width: auto;
+  max-width: none;
+  max-height: none;
+  /* Allow only specific transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  animation: none;
+  /* Reset other potential conflicting properties */
+  outline: none;
+  text-decoration: none;
+  vertical-align: baseline;
 }
 
 /* Theme switcher button - uses gradient with current theme colors */
-.theme-switcher-container #theme-switcher-button {
+.theme-switcher-container button#theme-switcher-button.theme-button {
   background: linear-gradient(135deg, 
     var(--primary-color), 
     var(--secondary-color), 
     var(--accent-color), 
     var(--accent-color-alt),
     var(--primary-color)
-  ) !important;
-  animation: colorShift 6s ease-in-out infinite !important;
+  );
+  animation: colorShift 6s ease-in-out infinite;
 }
 
 /* Mode toggle button - uses accent color alt */
-.theme-switcher-container #mode-toggle-button {
-  background: var(--accent-color-alt) !important;
+.theme-switcher-container button#mode-toggle-button.theme-button {
+  background: var(--accent-color-alt);
 }
 
 /* Subtle theme color shift animation */
@@ -73,63 +83,63 @@
 }
 
 /* Button hover effects */
-.theme-switcher-container .theme-button:hover {
-  transform: scale(1.05) !important;
+.theme-switcher-container button.theme-button:hover {
+  transform: scale(1.05);
 }
 
 /* Ensure theme switcher animation continues on hover */
-.theme-switcher-container #theme-switcher-button:hover {
-  animation: colorShift 6s ease-in-out infinite !important;
-  transform: scale(1.05) !important;
+.theme-switcher-container button#theme-switcher-button.theme-button:hover {
+  animation: colorShift 6s ease-in-out infinite;
+  transform: scale(1.05);
 }
 
 /* Emoji overlay positioned over the button but outside filter effects */
 .theme-switcher-container .theme-emoji-overlay {
-  position: absolute !important;
-  top: 10px !important;
-  left: 0 !important;
-  width: 42px !important;
-  height: 42px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 20px !important;
-  pointer-events: none !important;
-  z-index: 100 !important;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 101;
+  transition: transform 0.3s ease;
   /* This element is completely separate from the filtered button */
 }
 
 /* Emoji scales with button on hover */
-.theme-switcher-container #theme-switcher-button:hover + .theme-emoji-overlay {
-  transform: scale(1.05) !important;
+.theme-switcher-container button#theme-switcher-button:hover + .theme-emoji-overlay {
+  transform: scale(1.05);
 }
 
 /* Emoji rotates when menu is open */
-.theme-switcher-container #theme-switcher-button.menu-open + .theme-emoji-overlay {
-  transform: rotate(45deg) !important;
-  transition: transform 0.3s ease !important;
+.theme-switcher-container button#theme-switcher-button.menu-open + .theme-emoji-overlay {
+  transform: rotate(45deg);
 }
 
 /* Theme switcher button specific hover effects */
-.theme-switcher-container #theme-switcher-button:hover {
-  animation-duration: 2s !important;
-  filter: brightness(1.1) !important;
-  box-shadow: 0 4px 16px var(--primary-color) !important;
+.theme-switcher-container button#theme-switcher-button.theme-button:hover {
+  animation-duration: 2s;
+  filter: brightness(1.1);
+  box-shadow: 0 4px 16px var(--primary-color);
 }
 
 /* Mode toggle button specific hover effects */
-.theme-switcher-container #mode-toggle-button:hover {
-  filter: brightness(1.1) drop-shadow(0 4px 16px var(--accent-color-alt)) !important;
+.theme-switcher-container button#mode-toggle-button.theme-button:hover {
+  filter: brightness(1.1) drop-shadow(0 4px 16px var(--accent-color-alt));
 }
 
 /* Button active state */
-.theme-switcher-container .theme-button:active {
-  transform: scale(0.95) !important;
+.theme-switcher-container button.theme-button:active {
+  transform: scale(0.95);
 }
 
 /* Theme switcher button rotation when menu is open */
-.theme-switcher-container .theme-button.menu-open {
-  transform: rotate(45deg) !important;
+.theme-switcher-container button.theme-button.menu-open {
+  transform: rotate(45deg);
 }
 
 /* Theme menu container */
@@ -217,10 +227,10 @@
     gap: 8px;
   }
 
-  .theme-switcher-container .theme-button {
-    width: 38px !important;
-    height: 38px !important;
-    font-size: 18px !important;
+  .theme-switcher-container button.theme-button {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
   }
 
   .theme-menu {
@@ -237,8 +247,8 @@
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .theme-switcher-container .theme-button {
-    border: 2px solid var(--text-color) !important;
+  .theme-switcher-container button.theme-button {
+    border: 2px solid var(--text-color);
   }
 
   .theme-menu {
@@ -248,25 +258,26 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .theme-switcher-container .theme-button,
+  .theme-switcher-container button.theme-button,
   .theme-menu,
   .theme-option,
-  .theme-menu-title {
-    transition: none !important;
+  .theme-menu-title,
+  .theme-emoji-overlay {
+    transition: none;
   }
-  .theme-switcher-container #theme-switcher-button {
-    animation: none !important;
-    filter: none !important;
-    box-shadow: none !important;
-    background: var(--primary-color) !important;
+  .theme-switcher-container button#theme-switcher-button.theme-button {
+    animation: none;
+    filter: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    background: var(--primary-color);
   }
 }
 
 /* Focus styles for accessibility */
-.theme-switcher-container .theme-button:focus-visible,
+.theme-switcher-container button.theme-button:focus-visible,
 .theme-option:focus-visible {
-  outline: 2px solid var(--accent-color) !important;
-  outline-offset: 2px !important;
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 /* Animation for menu appearance */
