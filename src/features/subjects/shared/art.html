@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="/src/styles/base/styles.css" />
         <link rel="stylesheet" href="/src/styles/components/navbar.css" />
         <link rel="stylesheet" href="/src/styles/components/components.css" />
+        <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css" />
         <link rel="stylesheet" href="/src/features/subjects/art/art.css" />
         <link
             rel="icon"
@@ -71,21 +72,36 @@
         <footer>
             <p>&copy; 2025 Learnimals. All rights reserved.</p>
             <div class="footer-links">
-                <a href="/src/pages/about.html">About Us</a>
-                <a href="/src/pages/contact.html">Contact</a>
+                <a href="../../pages/about.html">About Us</a>
+                <a href="../../pages/contact.html">Contact</a>
                 <a href="#">Privacy Policy</a>
-                <a href="/src/pages/profile.html">My Profile</a>
+                <a href="../../pages/profile.html">My Profile</a>
             </div>
         </footer>
 
+        <script>
+            // Mobile menu toggle
+            document.addEventListener('DOMContentLoaded', function() {
+                const mobileMenu = document.getElementById("mobile-menu");
+                if (mobileMenu) {
+                    mobileMenu.addEventListener("click", function () {
+                        const navMenu = document.getElementById("nav-menu");
+                        if (navMenu) {
+                            navMenu.classList.toggle("active");
+                            this.classList.toggle("active");
+                            const expanded = this.getAttribute("aria-expanded") === "true" || false;
+                            this.setAttribute("aria-expanded", !expanded);
+                        }
+                    });
+                }
+            });
+        </script>
         <!-- JS -->
         <script defer type="module" src="/src/themeInitializer.js"></script>
         <script type="module" src="/src/utils/themeManager.js"></script>
-        <script
-            type="module"
-            src="/src/components/layout/themeSwitcher.js"
-        ></script>
+        <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
         <script defer src="/src/components/layout/navbarLoader.js"></script>
+        <script defer src="/src/components/component-loader.js"></script>
         <script src="/src/features/subjects/art/art.js"></script>
     </body>
 </html>

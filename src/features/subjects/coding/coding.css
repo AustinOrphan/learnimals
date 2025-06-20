@@ -2,27 +2,27 @@
 
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background-color: #f7fafc;
+  background-color: var(--bg-body);
   margin: 0;
   padding: 0;
 }
 
 .hero {
   text-align: center;
-  background: #e0f2fe;
+  background: var(--bg-card);
   padding: 2rem;
-  border-bottom: 3px solid #38bdf8;
+  border-bottom: 3px solid var(--accent-primary);
 }
 
 .hero h2 {
-  color: #0c4a6e;
+  color: var(--text-primary);
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
 .hero p {
   font-size: 1.1rem;
-  color: #0369a1;
+  color: var(--text-secondary);
 }
 
 .features {
@@ -36,9 +36,9 @@ body {
 }
 
 .feature-card {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px var(--shadow-color);
   padding: 20px;
   width: 100%;
   max-width: 300px;
@@ -51,19 +51,19 @@ body {
 }
 
 .feature-card h3 {
-  color: #0f172a;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .feature-card p {
-  color: #334155;
+  color: var(--text-secondary);
   margin-bottom: 1rem;
 }
 
 button {
   padding: 10px 20px;
-  background-color: #0ea5e9;
-  color: #fff;
+  background-color: var(--accent-primary);
+  color: var(--text-on-accent);
   border: none;
   border-radius: 10px;
   font-size: 1rem;
@@ -72,7 +72,7 @@ button {
 }
 
 button:hover {
-  background-color: #0284c7;
+  background-color: var(--accent-secondary);
   transform: scale(1.05);
 }
 
@@ -82,15 +82,15 @@ a {
 }
 
 a:hover button {
-  background-color: #0369a1;
+  background-color: var(--accent-secondary);
 }
 
 footer {
   text-align: center;
   padding: 1rem;
-  background: #f1f5f9;
+  background: var(--bg-card);
   margin-top: 2rem;
-  color: #475569;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -100,7 +100,7 @@ footer {
 
 .footer-links a {
   margin: 0 10px;
-  color: #0ea5e9;
+  color: var(--accent-primary);
   text-decoration: none;
 }
 
