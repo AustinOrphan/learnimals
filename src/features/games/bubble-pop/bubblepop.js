@@ -21,7 +21,7 @@ export default class BubblePopGame {
     this.score = 0;
     this.message = "";
     this.messageTimer = null;
-    this.messageColor = this.getThemeColor('--text-primary'); // Dynamic theme color
+this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
     this.lastFrameTime = 0;
     this.gameActive = true;
     
