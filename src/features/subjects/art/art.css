@@ -5,16 +5,16 @@ html, body {
 
 body {
   font-family: 'Comic Sans MS', cursive, sans-serif;
-  background-color: #fff7ec;
+  background-color: var(--bg-body);
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
   min-height: 100%;
 }
 
 header, footer {
-  background-color: #ffdaab;
+  background-color: var(--bg-card);
   padding: 10px 20px;
   text-align: center;
 }
@@ -29,13 +29,13 @@ nav ul {
 
 nav a {
   text-decoration: none;
-  color: #333;
+  color: var(--text-primary);
   font-weight: bold;
 }
 
 .hero {
   text-align: center;
-  background: linear-gradient(to right, #fef7e5, #fff0c9);
+  background: linear-gradient(to right, var(--bg-card), var(--bg-card-alt));
   padding: 30px;
   border-radius: 20px;
   margin: 20px;
@@ -49,12 +49,12 @@ nav a {
 .games-section,
 .canvas-section,
 .color-theory {
-  background: #fff;
+  background: var(--bg-card);
   margin: 20px auto;
   padding: 25px;
   border-radius: 15px;
   max-width: 800px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .games-list {
@@ -67,13 +67,13 @@ nav a {
 }
 
 .games-list a {
-  color: #007acc;
+  color: var(--accent-primary);
   font-weight: bold;
 }
 
 #drawCanvas {
-  border: 2px solid #444;
-  background: #ffffff;
+  border: 2px solid var(--border-color);
+  background: var(--bg-card);
   display: block;
   margin: 15px auto;
 }
@@ -90,8 +90,13 @@ nav a {
   margin: 5px;
   border-radius: 8px;
   border: none;
-  background: #ffd966;
+  background: var(--accent-secondary);
+  color: var(--text-on-accent);
   cursor: pointer;
+}
+
+.canvas-controls button:hover {
+  background: var(--accent-primary);
 }
 
 footer {
@@ -105,6 +110,6 @@ footer .footer-links {
 
 footer .footer-links a {
   margin: 0 10px;
-  color: #333;
+  color: var(--text-primary);
   text-decoration: underline;
 }

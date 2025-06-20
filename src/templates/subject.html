@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="/src/styles/base/styles.css" />
         <link rel="stylesheet" href="/src/styles/components/navbar.css" />
         <link rel="stylesheet" href="/src/styles/components/components.css" />
+        <link rel="stylesheet" href="/src/styles/components/base-component.css" />
         <link
             rel="stylesheet"
             href="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.css"
@@ -32,8 +33,8 @@
 
             <script>
                 // Feature cards will be rendered using Card.js
-                document.addEventListener("DOMContentLoaded", function () {
-                    if (typeof featureCardsData !== "undefined") {
+                function renderFeatureCards() {
+                    if (typeof featureCardsData !== "undefined" && typeof Card !== "undefined") {
                         try {
                             const container = document.getElementById(
                                 "feature-cards-container",
@@ -45,6 +46,9 @@
                                 // Hide fallback content when using Card.js
                                 fallbackContent.style.display = "none";
                             }
+
+                            // Clear container before adding new cards
+                            container.innerHTML = "";
 
                             // Render each card from the feature cards data
                             featureCardsData.forEach(function (cardData) {
@@ -94,11 +98,27 @@
                                 error,
                             );
                             // Show fallback content if Card.js rendering fails
+                            const fallbackContent = document.getElementById("fallback-content");
                             if (fallbackContent) {
                                 fallbackContent.style.display = "block";
                             }
                         }
+                    } else {
+                        // Show fallback content if Card component is not available
+                        const fallbackContent = document.getElementById("fallback-content");
+                        if (fallbackContent) {
+                            fallbackContent.style.display = "block";
+                        }
                     }
+                }
+
+                // Wait for components to load before rendering
+                document.addEventListener("componentsLoaded", renderFeatureCards);
+                
+                // Also try on DOMContentLoaded in case components are already loaded
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Small delay to ensure all scripts are loaded
+                    setTimeout(renderFeatureCards, 100);
                 });
             </script>
         </main>
@@ -123,7 +143,7 @@
             src="/src/components/layout/themeSwitcher.js"
         ></script>
         <script defer src="/src/components/layout/navbarLoader.js"></script>
-        <script defer src="/src/components/ui/Card.js"></script>
+        <script defer src="/src/components/component-loader.js"></script>
 
         <!-- Subject-specific JavaScript -->
         <script
