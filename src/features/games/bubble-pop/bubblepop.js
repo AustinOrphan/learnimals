@@ -21,7 +21,7 @@ export default class BubblePopGame {
     this.score = 0;
     this.message = "";
     this.messageTimer = null;
-    this.messageColor = this.getThemeColor('--text-primary'); // Dynamic theme color
+this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
     this.lastFrameTime = 0;
     this.gameActive = true;
     
@@ -246,7 +246,7 @@ export default class BubblePopGame {
           // Clear the bubbles and spawn new ones
           this.nextRound();
         } else {
-          this.showMessage("Oops! Try again.", this.getThemeColor('--text-primary') || '#d9534f');
+          this.showMessage("Oops! Try again.", this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
         }
         break;
       }
@@ -325,7 +325,7 @@ export default class BubblePopGame {
     this.ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
     this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
     this.ctx.textAlign = "left";
-    this.ctx.shadowColor = this.getThemeColor('--bg-body') || 'rgba(255, 255, 255, 0.7)';
+    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Or a dedicated shadow variable
     this.ctx.shadowBlur = 4;
     this.ctx.fillText(`Score: ${this.score}`, 10, 35);
     this.ctx.fillText(`Solve: ${this.currentQuestion.text}`, 10, 60);
@@ -360,7 +360,7 @@ export default class BubblePopGame {
 
     // If the correct bubble was missed, show message and start next round
     if (missedCorrect) {
-      this.showMessage("Oops! The correct answer got away!", this.getThemeColor('--text-primary') || '#d9534f');
+      this.showMessage("Oops! The correct answer got away!", this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
       this.nextRound();
     }
 

@@ -1,7 +1,9 @@
 // Modal Component
 // Reusable modal component for consistent UI across the site
 
-class Modal {
+import BaseComponent from '../BaseComponent.js';
+
+class Modal extends BaseComponent {
   /**
    * Create a modal component
    * @param {Object} options - Modal options
@@ -17,8 +19,7 @@ class Modal {
    * @param {string} [options.size] - Modal size (small, medium, large)
    */
   constructor(options) {
-    this.options = {
-      id: options.id || `modal-${Math.random().toString(36).substr(2, 9)}`,
+    super({
       title: options.title || '',
       content: options.content || '',
       confirmButtonText: options.confirmButtonText || 'OK',
@@ -30,7 +31,8 @@ class Modal {
       size: options.size || 'medium',
       showConfirmButton: options.showConfirmButton !== undefined ? options.showConfirmButton : true,
       showCancelButton: options.showCancelButton !== undefined ? options.showCancelButton : false,
-    };
+      ...options
+    });
     
     this.isOpen = false;
   }
@@ -43,14 +45,14 @@ class Modal {
     const { id, title, content, confirmButtonText, cancelButtonText, showClose, size, showConfirmButton, showCancelButton } = this.options;
     
     // Size class
-    const sizeClass = `modal-${size}`;
+    const sizeClass = `modal--${size}`;
     
     let html = `
-      <div id="${id}" class="modal-overlay" aria-hidden="true">
+      <div id="${id}" class="component modal-overlay" aria-hidden="true">
         <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${id}-title" aria-modal="true">
           <div class="modal-header">
-            <h3 id="${id}-title">${title}</h3>
-            ${showClose ? '<button class="modal-close" aria-label="Close">&times;</button>' : ''}
+            <h3 id="${id}-title" class="modal-title">${title}</h3>
+            ${showClose ? '<button class="modal-close component-button component-button--ghost" aria-label="Close">&times;</button>' : ''}
           </div>
           <div class="modal-content">
             ${content}
@@ -60,18 +62,18 @@ class Modal {
     // Only add footer if we have buttons
     if (showConfirmButton || showCancelButton) {
       html += `
-        <div class="modal-footer">
+        <div class="modal-footer component-flex component-flex--between">
       `;
       
       if (showCancelButton) {
         html += `
-          <button class="modal-cancel">${cancelButtonText}</button>
+          <button class="modal-cancel component-button component-button--outline">${cancelButtonText}</button>
         `;
       }
       
       if (showConfirmButton) {
         html += `
-          <button class="modal-confirm">${confirmButtonText}</button>
+          <button class="modal-confirm component-button component-button--primary">${confirmButtonText}</button>
         `;
       }
       
@@ -112,46 +114,39 @@ class Modal {
    * Attach event listeners to the modal
    */
   attachEventListeners() {
-    const modal = document.getElementById(this.options.id);
-    if (!modal) return;
-    
     // Close button
-    const closeBtn = modal.querySelector('.modal-close');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => this.close());
-    }
+    this.addEventListener('click', () => this.close(), '.modal-close');
     
     // Confirm button
-    const confirmBtn = modal.querySelector('.modal-confirm');
-    if (confirmBtn && this.options.onConfirm) {
-      confirmBtn.addEventListener('click', () => {
+    if (this.options.onConfirm) {
+      this.addEventListener('click', () => {
         this.options.onConfirm();
         this.close();
-      });
+      }, '.modal-confirm');
     }
     
     // Cancel button
-    const cancelBtn = modal.querySelector('.modal-cancel');
-    if (cancelBtn && this.options.onCancel) {
-      cancelBtn.addEventListener('click', () => {
+    if (this.options.onCancel) {
+      this.addEventListener('click', () => {
         this.options.onCancel();
         this.close();
-      });
+      }, '.modal-cancel');
     }
     
-    // Close on click outside (optional)
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
+    // Close on click outside
+    this.addEventListener('click', (e) => {
+      if (e.target === this.element) {
         this.close();
       }
     });
     
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
+    // Close on Escape key - handled globally
+    this.escapeHandler = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.close();
       }
-    });
+    };
+    document.addEventListener('keydown', this.escapeHandler);
   }
 
   /**
@@ -220,11 +215,20 @@ class Modal {
    * Remove the modal from the DOM
    */
   destroy() {
-    const modal = document.getElementById(this.options.id);
-    if (modal) {
-      modal.remove();
+    // Remove escape key handler
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler);
     }
+    
+    // Remove body class if modal is open
+    if (this.isOpen) {
+      document.body.classList.remove('modal-open');
+    }
+    
     this.isOpen = false;
+    
+    // Call parent destroy method
+    super.destroy();
   }
 }
 

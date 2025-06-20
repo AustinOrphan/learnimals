@@ -13,9 +13,11 @@
   align-items: flex-end;
 }
 
-/* Base button styles for both theme and mode buttons */
-.theme-switcher-button,
-.mode-toggle-button {
+/* Base theme button styles - shared by both buttons */
+/* High specificity to override default button styles without !important */
+.theme-switcher-container button.theme-button,
+.theme-switcher-container button.theme-button:focus,
+.theme-switcher-container button.theme-button:visited {
   width: 42px;
   height: 42px;
   border-radius: 50%;
@@ -23,39 +25,120 @@
   font-size: 20px;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text-inverse);
+  /* Override any conflicting button styles */
+  padding: 0;
+  margin: 0;
+  min-height: auto;
+  line-height: 1;
+  min-width: auto;
+  max-width: none;
+  max-height: none;
+  /* Allow only specific transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  animation: none;
+  /* Reset other potential conflicting properties */
+  outline: none;
+  text-decoration: none;
+  vertical-align: baseline;
 }
 
-/* Theme switcher button specific styles */
-.theme-switcher-button {
-  background: var(--primary-color);
-  color: var(--text-color);
+/* Theme switcher button - uses gradient with current theme colors */
+.theme-switcher-container button#theme-switcher-button.theme-button {
+  background: linear-gradient(135deg, 
+    var(--primary-color), 
+    var(--secondary-color), 
+    var(--accent-color), 
+    var(--accent-color-alt),
+    var(--primary-color)
+  );
+  animation: colorShift 6s ease-in-out infinite;
 }
 
-/* Mode toggle button specific styles */
-.mode-toggle-button {
+/* Mode toggle button - uses accent color alt */
+.theme-switcher-container button#mode-toggle-button.theme-button {
   background: var(--accent-color-alt);
-  color: var(--text-color);
+}
+
+/* Subtle theme color shift animation */
+@keyframes colorShift {
+  0% { 
+    filter: hue-rotate(0deg) brightness(1) saturate(1); 
+  }
+  25% { 
+    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1); 
+  }
+  50% { 
+    filter: hue-rotate(30deg) brightness(1.1) saturate(1.2); 
+  }
+  75% { 
+    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1); 
+  }
+  100% { 
+    filter: hue-rotate(0deg) brightness(1) saturate(1); 
+  }
 }
 
 /* Button hover effects */
-.theme-switcher-button:hover,
-.mode-toggle-button:hover {
+.theme-switcher-container button.theme-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure theme switcher animation continues on hover */
+.theme-switcher-container button#theme-switcher-button.theme-button:hover {
+  animation: colorShift 6s ease-in-out infinite;
+  transform: scale(1.05);
+}
+
+/* Emoji overlay positioned over the button but outside filter effects */
+.theme-switcher-container .theme-emoji-overlay {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 101;
+  transition: transform 0.3s ease;
+  /* This element is completely separate from the filtered button */
+}
+
+/* Emoji scales with button on hover */
+.theme-switcher-container button#theme-switcher-button:hover + .theme-emoji-overlay {
+  transform: scale(1.05);
+}
+
+/* Emoji rotates when menu is open */
+.theme-switcher-container button#theme-switcher-button.menu-open + .theme-emoji-overlay {
+  transform: rotate(45deg);
+}
+
+/* Theme switcher button specific hover effects */
+.theme-switcher-container button#theme-switcher-button.theme-button:hover {
+  animation-duration: 2s;
+  filter: brightness(1.1);
+  box-shadow: 0 4px 16px var(--primary-color);
+}
+
+/* Mode toggle button specific hover effects */
+.theme-switcher-container button#mode-toggle-button.theme-button:hover {
+  filter: brightness(1.1) drop-shadow(0 4px 16px var(--accent-color-alt));
 }
 
 /* Button active state */
-.theme-switcher-button:active,
-.mode-toggle-button:active {
+.theme-switcher-container button.theme-button:active {
   transform: scale(0.95);
 }
 
 /* Theme switcher button rotation when menu is open */
-.theme-switcher-button.menu-open {
+.theme-switcher-container button.theme-button.menu-open {
   transform: rotate(45deg);
 }
 
@@ -144,8 +227,7 @@
     gap: 8px;
   }
 
-  .theme-switcher-button,
-  .mode-toggle-button {
+  .theme-switcher-container button.theme-button {
     width: 38px;
     height: 38px;
     font-size: 18px;
@@ -165,8 +247,7 @@
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .theme-switcher-button,
-  .mode-toggle-button {
+  .theme-switcher-container button.theme-button {
     border: 2px solid var(--text-color);
   }
 
@@ -177,18 +258,23 @@
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .theme-switcher-button,
-  .mode-toggle-button,
+  .theme-switcher-container button.theme-button,
   .theme-menu,
   .theme-option,
-  .theme-menu-title {
+  .theme-menu-title,
+  .theme-emoji-overlay {
     transition: none;
+  }
+  .theme-switcher-container button#theme-switcher-button.theme-button {
+    animation: none;
+    filter: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    background: var(--primary-color);
   }
 }
 
 /* Focus styles for accessibility */
-.theme-switcher-button:focus-visible,
-.mode-toggle-button:focus-visible,
+.theme-switcher-container button.theme-button:focus-visible,
 .theme-option:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
