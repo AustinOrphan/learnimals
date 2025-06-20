@@ -246,7 +246,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
           // Clear the bubbles and spawn new ones
           this.nextRound();
         } else {
-          this.showMessage("Oops! Try again.", this.getThemeColor('--text-primary') || '#d9534f');
+          this.showMessage("Oops! Try again.", this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
         }
         break;
       }
