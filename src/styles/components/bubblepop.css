@@ -4,8 +4,8 @@
 }
 
 #gameCanvas {
-  border: 3px solid #008cba;
-  background: #e0f7fa;
+  border: 3px solid var(--primary-color);
+  background: var(--bg-card);
   width: 90%;
   max-width: 600px;
   height: 400px;
@@ -37,8 +37,9 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.7);
-  border: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 2px solid var(--primary-color);
   border-radius: 50%;
   width: 36px;
   height: 36px;
@@ -47,13 +48,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: transform 0.2s ease;
+  /* Theme color transitions handled by universal system */
   z-index: 10;
+  opacity: 0.9;
 }
 
 .fullscreen-btn:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--primary-color);
+  color: var(--text-on-accent);
   transform: scale(1.1);
+  opacity: 1;
 }
 
 /* Game container position relative for fullscreen button */
@@ -63,7 +68,7 @@
 
 /* Fullscreen styles */
 .game-container:fullscreen {
-  background-color: #fff;
+  background-color: var(--bg-body);
   padding: 20px;
   display: flex;
   flex-direction: column;

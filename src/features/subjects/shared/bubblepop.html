@@ -13,10 +13,11 @@
         <link rel="stylesheet" href="/src/styles/base/styles.css" />
         <link rel="stylesheet" href="/src/styles/components/navbar.css" />
         <link rel="stylesheet" href="/src/styles/components/components.css" />
+        <link rel="stylesheet" href="/src/styles/components/base-component.css" />
         <link rel="stylesheet" href="/src/styles/components/bubblepop.css" />
         <script
             type="module"
-            src="../../games/bubble-pop/bubblepop.js"
+            src="/src/features/games/bubble-pop/bubblePop.js"
         ></script>
     </head>
     <body>
@@ -30,7 +31,7 @@
                 </p>
                 <div class="hero-image">
                     <img
-                        src="../../../public/images/mango-swimming.png"
+                        src="/public/images/mango-swimming.png"
                         alt="Mango the Shark"
                     />
                 </div>
@@ -43,7 +44,7 @@
             </section>
 
             <script type="module">
-                import BubblePopGame from "../../games/bubble-pop/bubblepop.js";
+                import BubblePopGame from "/src/features/games/bubble-pop/bubblePop.js";
 
                 // Initialize the game when DOM is fully loaded or content is already available
                 if (document.readyState === "loading") {
@@ -86,20 +87,21 @@
         <footer>
             <p>&copy; 2025 Learnimals. All rights reserved.</p>
             <div class="footer-links">
-                <a href="../../pages/about.html">About Us</a>
-                <a href="../../pages/contact.html">Contact</a>
-                <a href="#">Privacy Policy</a>
-                <a href="../../pages/profile.html">My Profile</a>
+                <a href="/src/pages/about.html">About Us</a>
+                <a href="/src/pages/contact.html">Contact</a>
+                <a href="#" aria-label="Read our privacy policy">Privacy Policy</a>
+                <a href="/src/pages/profile.html">My Profile</a>
             </div>
         </footer>
 
         <!-- JS -->
-        <script defer src="../../themeInitializer.js"></script>
-        <script type="module" src="../../utils/themeManager.js"></script>
+        <script defer type="module" src="/src/themeInitializer.js"></script>
+        <script type="module" src="/src/utils/themeManager.js"></script>
         <script
             type="module"
-            src="../../components/layout/themeSwitcher.js"
+            src="/src/components/layout/themeSwitcher.js"
         ></script>
-        <script defer src="../../components/layout/navbarLoader.js"></script>
+        <script defer src="/src/components/layout/navbarLoader.js"></script>
+        <script defer src="/src/components/component-loader.js"></script>
     </body>
 </html>
