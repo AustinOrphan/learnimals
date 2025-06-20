@@ -6,16 +6,17 @@
 }
 
 /* Universal theme transition system */
-*,
+*, /* Consider limiting this to specific elements */
 *::before,
 *::after {
-    transition-property: 
+    transition-property:
         background-color,
         color,
         border-color,
         box-shadow,
         fill,
         stroke;
+    will-change: background-color, color, border-color, box-shadow, fill, stroke; /* Add will-change */
     transition-duration: 0.4s;
     transition-timing-function: ease;
 }
