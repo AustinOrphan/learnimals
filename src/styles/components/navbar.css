@@ -42,7 +42,7 @@
     text-decoration: none;
     font-weight: 500;
     padding: 0.25rem 0.5rem;
-    transition: color 0.3s ease;
+    /* Theme color transitions handled by universal system */
 }
 
 .navbar-links a:hover,
@@ -71,8 +71,9 @@
     width: 100%;
     background-color: var(--text-color, #333);
     margin: 2px 0;
-    transition: 0.3s;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     border-radius: 1px;
+    /* Theme color transitions handled by universal system */
 }
 
 .mobile-menu-button.active span:nth-child(1) {
