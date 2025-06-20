@@ -325,7 +325,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
     this.ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
     this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
     this.ctx.textAlign = "left";
-    this.ctx.shadowColor = this.getThemeColor('--bg-body') || 'rgba(255, 255, 255, 0.7)';
+    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Or a dedicated shadow variable
     this.ctx.shadowBlur = 4;
     this.ctx.fillText(`Score: ${this.score}`, 10, 35);
     this.ctx.fillText(`Solve: ${this.currentQuestion.text}`, 10, 60);
