@@ -360,7 +360,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
 
     // If the correct bubble was missed, show message and start next round
     if (missedCorrect) {
-      this.showMessage("Oops! The correct answer got away!", this.getThemeColor('--text-primary') || '#d9534f');
+      this.showMessage("Oops! The correct answer got away!", this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
       this.nextRound();
     }
 
