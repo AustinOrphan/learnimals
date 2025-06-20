@@ -43,7 +43,8 @@ p {
   border-radius: 25px;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: transform 0.2s ease;
+  /* Theme color transitions handled by universal system */
   font-family: inherit;
 }
 
@@ -120,7 +121,8 @@ p {
   cursor: pointer;
   font-size: 1rem;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: all 0.3s;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  /* Theme color transitions handled by universal system */
 }
 
 .dark-mode .theme-toggle {

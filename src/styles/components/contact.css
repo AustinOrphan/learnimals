@@ -34,7 +34,7 @@ select {
     border-radius: 10px;
     font-family: inherit;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    /* Theme color transitions handled by universal system */
 }
 
 input:focus,
@@ -57,9 +57,8 @@ textarea {
     border-radius: 25px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition:
-        background-color 0.3s,
-        transform 0.2s;
+    transition: transform 0.2s ease;
+    /* Theme color transitions handled by universal system */
 }
 
 .submit-btn:hover {
