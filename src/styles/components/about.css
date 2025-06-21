@@ -49,13 +49,24 @@
 }
 
 .team-member h4 {
-    color: var(--accent-secondary);
+    color: var(--text-heading);
+    font-weight: bold;
     margin: 10px 0 5px;
 }
 
 .team-member p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Loading placeholder styles */
+.loading-placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
     color: var(--text-secondary);
+    font-style: italic;
 }
 
 .timeline {
