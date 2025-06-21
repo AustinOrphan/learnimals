@@ -5,11 +5,26 @@
     box-sizing: border-box;
 }
 
-/* Universal theme transition system */
-*, /* Consider limiting this to specific elements */
-*::before,
-*::after {
-    transition-property:
+/* Targeted theme transition system for better performance */
+body,
+.hero,
+.feature-card,
+.card,
+.btn,
+button,
+.navbar,
+.nav-link,
+.modal,
+.story-card,
+.reading-container,
+.word-scramble-container,
+.game-container,
+.story-modal .modal-content,
+.option,
+.question,
+footer,
+.footer-links a {
+    transition-property: 
         background-color,
         color,
         border-color,
@@ -55,9 +70,24 @@ textarea:focus,
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    body,
+    .hero,
+    .feature-card,
+    .card,
+    .btn,
+    button,
+    .navbar,
+    .nav-link,
+    .modal,
+    .story-card,
+    .reading-container,
+    .word-scramble-container,
+    .game-container,
+    .story-modal .modal-content,
+    .option,
+    .question,
+    footer,
+    .footer-links a {
         transition-duration: 0.1s !important;
     }
     

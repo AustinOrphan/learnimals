@@ -42,6 +42,9 @@ export function setSemanticVariables(mode) {
     '--accent-primary': 'var(--primary-color)',
     '--accent-secondary': 'var(--secondary-color)',
     '--accent-tertiary': 'var(--accent-color)',
+    '--accent-color-alpha-30': mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.3)'
+      : 'rgba(0, 0, 0, 0.3)',
     
     // Interactive states
     '--accent-primary-hover': mode === 'dark'
