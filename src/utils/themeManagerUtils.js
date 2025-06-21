@@ -46,6 +46,11 @@ export function setSemanticVariables(mode) {
       ? 'rgba(255, 255, 255, 0.3)'
       : 'rgba(0, 0, 0, 0.3)',
     
+    // Status colors
+    '--success-color': mode === 'dark' ? '#4ade80' : '#22c55e',
+    '--error-color': mode === 'dark' ? '#f87171' : '#ef4444',
+    '--text-danger': mode === 'dark' ? '#f87171' : '#dc2626',
+    
     // Interactive states
     '--accent-primary-hover': mode === 'dark'
       ? 'color-mix(in srgb, var(--primary-color) 80%, white)'

@@ -37,8 +37,9 @@ export default class Bubble {
       this.y - this.radius - 2
     );
     
-    // Draw the answer text
-this.ctx.fillStyle = this.textColor;
+    // Draw the answer text with theme-aware color
+    this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || 
+                        getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#000';
     this.ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
     this.ctx.textAlign = "center";
     this.ctx.fillText(this.answer, this.x, this.y + 5);
