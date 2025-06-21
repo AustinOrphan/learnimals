@@ -7,9 +7,9 @@
 }
 
 .about-section {
-    background-color: white;
+    background-color: var(--bg-card);
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
     padding: 30px;
     margin-bottom: 40px;
 }
@@ -17,10 +17,10 @@
 .mission-statement {
     font-size: 1.2rem;
     line-height: 1.8;
-    color: #2d3436;
+    color: var(--text-primary);
     padding: 20px;
-    border-left: 5px solid #00b894;
-    background-color: rgba(0, 184, 148, 0.1);
+    border-left: 5px solid var(--accent-primary);
+    background-color: var(--bg-highlight);
     margin: 20px 0;
 }
 
@@ -45,7 +45,7 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid #ffeaa7;
+    border: 5px solid var(--accent-tertiary);
 }
 
 .team-member h4 {

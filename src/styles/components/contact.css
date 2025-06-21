@@ -7,10 +7,10 @@
 }
 
 .contact-form {
-    background-color: white;
+    background-color: var(--bg-card);
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
     margin-top: 30px;
 }
 
@@ -22,7 +22,7 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #2d3436;
+    color: var(--text-primary);
 }
 
 input,
@@ -30,17 +30,19 @@ textarea,
 select {
     width: 100%;
     padding: 12px;
-    border: 2px solid #dfe6e9;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     font-family: inherit;
     font-size: 1rem;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
     /* Theme color transitions handled by universal system */
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-    border-color: #00b894;
+    border-color: var(--accent-primary);
     outline: none;
 }
 
@@ -50,8 +52,8 @@ textarea {
 }
 
 .submit-btn {
-    background-color: #00b894;
-    color: white;
+    background-color: var(--accent-primary);
+    color: var(--text-on-accent);
     border: none;
     padding: 12px 25px;
     border-radius: 25px;
@@ -62,7 +64,7 @@ textarea {
 }
 
 .submit-btn:hover {
-    background-color: #00a382;
+    background-color: var(--accent-primary-hover);
     transform: scale(1.05);
 }
 
@@ -75,10 +77,10 @@ textarea {
 }
 
 .contact-card {
-    background-color: white;
+    background-color: var(--bg-card);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px var(--shadow-color);
     width: 200px;
     text-align: center;
     transition: transform 0.3s;
@@ -90,7 +92,7 @@ textarea {
 
 .contact-card i {
     font-size: 2rem;
-    color: #0984e3;
+    color: var(--accent-secondary);
     margin-bottom: 10px;
 }
 
