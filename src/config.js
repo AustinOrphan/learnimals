@@ -72,7 +72,7 @@ const config = {
       character: {
         name: 'Cody',
         type: 'Cat',
-        image: '/public/images/coding-cat.png',
+        image: '/public/images/cody-cat.png',
         role: 'Coding Guide'
       },
       description: 'Learn programming concepts with interactive lessons'
