@@ -16,9 +16,9 @@
 }
 
 .profile-sidebar {
-    background-color: white;
+    background-color: var(--bg-card);
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px var(--shadow-color);
     padding: 20px;
     position: relative;
 }
@@ -70,7 +70,7 @@
 }
 
 .profile-meta {
-    color: #636e72;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
@@ -141,7 +141,7 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #636e72;
+    color: var(--text-secondary);
 }
 
 .profile-menu {
@@ -160,7 +160,7 @@
     border-radius: 10px;
     text-decoration: none;
     color: var(--text-color);
-    transition: background-color 0.2s;
+    /* Theme color transitions handled by universal system */
 }
 
 .profile-menu a:hover {
@@ -178,7 +178,7 @@
 }
 
 .profile-content {
-    background-color: white;
+    background-color: var(--bg-card);
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     padding: 30px;
@@ -199,7 +199,7 @@
 }
 
 .progress-card {
-    background-color: #f9f9f9;
+    background-color: var(--bg-highlight);
     border-radius: 12px;
     padding: 15px;
     text-align: center;
@@ -224,18 +224,18 @@
 .level-display {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #2d3436;
+    color: var(--text-primary);
     margin-bottom: 5px;
 }
 
 .subject-name {
-    color: #636e72;
+    color: var(--text-secondary);
     margin-bottom: 10px;
 }
 
 .progress-bar-container {
     height: 10px;
-    background-color: #dfe6e9;
+    background-color: var(--border-color);
     border-radius: 5px;
     margin-top: 10px;
 }
@@ -279,11 +279,11 @@
     font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 3px;
-    color: #2d3436;
+    color: var(--text-primary);
 }
 
 .stat-label {
-    color: #636e72;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
@@ -298,7 +298,7 @@
 .activity-item {
     padding: 15px;
     border-left: 3px solid var(--primary-color);
-    background-color: #f9f9f9;
+    background-color: var(--bg-highlight);
     margin-bottom: 10px;
     border-radius: 0 8px 8px 0;
 }
@@ -309,11 +309,11 @@
 }
 
 .activity-description {
-    color: #2d3436;
+    color: var(--text-primary);
 }
 
 .activity-time {
-    color: #636e72;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
@@ -344,7 +344,7 @@
 }
 
 .achievement {
-    background-color: #f9f9f9;
+    background-color: var(--bg-highlight);
     border-radius: 10px;
     padding: 15px;
     text-align: center;
@@ -371,7 +371,7 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #636e72;
+    background-color: var(--text-secondary);
     color: white;
     width: 20px;
     height: 20px;
@@ -385,18 +385,18 @@
 .achievement-name {
     font-weight: bold;
     margin-bottom: 5px;
-    color: #2d3436;
+    color: var(--text-primary);
 }
 
 .achievement-desc {
     font-size: 0.8rem;
-    color: #636e72;
+    color: var(--text-secondary);
     margin-bottom: 10px;
 }
 
 .achievement-progress {
     height: 5px;
-    background-color: #dfe6e9;
+    background-color: var(--border-color);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -426,18 +426,18 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #2d3436;
+    color: var(--text-primary);
 }
 
 input,
 select {
     width: 100%;
     padding: 12px;
-    border: 2px solid #dfe6e9;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     font-family: inherit;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    /* Theme color transitions handled by universal system */
 }
 
 input:focus,
@@ -467,7 +467,7 @@ select:focus {
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: 0.4s;
+    transition: background-color 0.4s ease;
     border-radius: 34px;
 }
 
@@ -478,8 +478,8 @@ select:focus {
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
+    background-color: var(--bg-card);
+    transition: transform 0.4s ease;
     border-radius: 50%;
 }
 
@@ -509,11 +509,11 @@ input:checked + .slider:before {
 
 .settings-label {
     font-weight: bold;
-    color: #2d3436;
+    color: var(--text-primary);
 }
 
 .settings-description {
-    color: #636e72;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-top: 3px;
 }
@@ -526,9 +526,8 @@ input:checked + .slider:before {
     border-radius: 10px;
     font-size: 1rem;
     cursor: pointer;
-    transition:
-        background-color 0.3s,
-        transform 0.2s;
+    transition: transform 0.2s ease;
+    /* Theme color transitions handled by universal system */
     margin-top: 20px;
 }
 

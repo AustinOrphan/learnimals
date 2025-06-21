@@ -10,7 +10,13 @@
       "Bash(gh pr:*)",
       "Bash(rg:*)",
       "Bash(grep:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(git stash show:*)",
+      "Bash(git stash pop:*)",
+      "Bash(git rm:*)",
+      "Bash(git reset:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

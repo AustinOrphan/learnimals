@@ -144,9 +144,9 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
 
       bubbleCtx.beginPath();
       bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
-      bubbleCtx.fillStyle = this.getThemeColor('--secondary-color') || '#a2e8ff';
+      bubbleCtx.fillStyle = this.getThemeColor('--secondary-color') || this.getThemeColor('--bg-secondary') || '#a2e8ff';
       bubbleCtx.fill();
-      bubbleCtx.strokeStyle = this.getThemeColor('--primary-color') || '#008cba';
+      bubbleCtx.strokeStyle = this.getThemeColor('--primary-color') || this.getThemeColor('--bg-primary') || '#008cba';
       bubbleCtx.lineWidth = 2;
       bubbleCtx.stroke();
       bubbleCtx.closePath();
@@ -242,7 +242,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
       if (bubble.containsPoint(clickX, clickY)) {
         if (bubble.isCorrect) {
           this.score++;
-          this.showMessage("Correct! Well done!", this.getThemeColor('--accent-color') || '#5cb85c');
+          this.showMessage("Correct! Well done!", this.getThemeColor('--accent-color') || this.getThemeColor('--success-color') || '#5cb85c');
           // Clear the bubbles and spawn new ones
           this.nextRound();
         } else {
@@ -318,12 +318,12 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Apply theme-based background
-    this.ctx.fillStyle = this.getThemeColor('--bg-card') || '#e0f7fa';
+    this.ctx.fillStyle = this.getThemeColor('--bg-card') || this.getThemeColor('--bg-body') || '#e0f7fa';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw game UI with shadow effect for better readability
     this.ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
-    this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
+    this.ctx.fillStyle = this.getThemeColor('--text-primary') || this.getThemeColor('--text-color') || '#333';
     this.ctx.textAlign = "left";
     this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Or a dedicated shadow variable
     this.ctx.shadowBlur = 4;

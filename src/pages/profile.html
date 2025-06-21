@@ -10,6 +10,8 @@
         <title>My Profile - Learnimals</title>
         <link rel="stylesheet" href="../styles/base/styles.css" />
         <link rel="stylesheet" href="../styles/components/navbar.css" />
+        <link rel="stylesheet" href="../styles/components/components.css" />
+        <link rel="stylesheet" href="../styles/components/themeSwitcher.css" />
         <link rel="stylesheet" href="../styles/components/profile.css" />
         <link rel="icon" href="../../public/images/favicon.ico" type="image/x-icon" />
         <link rel="manifest" href="manifest.json" />
@@ -899,18 +901,13 @@
             }
         </script>
         <!-- JS -->
-        <script defer src="../utils/themeInitializer.js"></script>
-        <script
-            type="module"
-            src="../utils/themeManager.js"
-        ></script>
+        <script defer type="module" src="../themeInitializer.js"></script>
+        <script type="module" src="../utils/themeManager.js"></script>
         <script
             type="module"
             src="../components/layout/themeSwitcher.js"
         ></script>
-        <script
-            defer
-            src="../components/layout/navbarLoader.js"
-        ></script>
+        <script defer src="../components/layout/navbarLoader.js"></script>
+        <script defer src="../components/component-loader.js"></script>
     </body>
 </html>

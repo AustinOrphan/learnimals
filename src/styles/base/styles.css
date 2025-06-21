@@ -5,6 +5,98 @@
     box-sizing: border-box;
 }
 
+/* Targeted theme transition system for better performance */
+body,
+.hero,
+.feature-card,
+.card,
+.btn,
+button,
+.navbar,
+.nav-link,
+.modal,
+.story-card,
+.reading-container,
+.word-scramble-container,
+.game-container,
+.story-modal .modal-content,
+.option,
+.question,
+footer,
+.footer-links a {
+    transition-property: 
+        background-color,
+        color,
+        border-color,
+        box-shadow,
+        fill,
+        stroke;
+    will-change: background-color, color, border-color, box-shadow, fill, stroke; /* Add will-change */
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+}
+
+/* Exceptions for elements that need faster or no transitions */
+button:hover,
+a:hover,
+input:focus,
+select:focus,
+textarea:focus,
+[role="button"]:hover,
+.fast-transition,
+.no-theme-transition {
+    transition-duration: 0.2s;
+}
+
+.no-theme-transition {
+    transition-property: none;
+}
+
+/* Preserve existing animations - they override transitions */
+[class*="animate"],
+[class*="animation"],
+.theme-switcher-container #theme-switcher-button {
+    /* Animations take precedence over universal transitions */
+}
+
+/* Utility classes for theme transitions */
+.instant-theme-transition {
+    transition-duration: 0.1s !important;
+}
+
+.no-theme-transition {
+    transition-property: none !important;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    body,
+    .hero,
+    .feature-card,
+    .card,
+    .btn,
+    button,
+    .navbar,
+    .nav-link,
+    .modal,
+    .story-card,
+    .reading-container,
+    .word-scramble-container,
+    .game-container,
+    .story-modal .modal-content,
+    .option,
+    .question,
+    footer,
+    .footer-links a {
+        transition-duration: 0.1s !important;
+    }
+    
+    .no-motion {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
 /* Accessibility helpers */
 .sr-only {
     position: absolute;
@@ -31,50 +123,48 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden;
-    transition:
-        background-color 0.3s ease,
-        color 0.3s ease;
     display: flex;
     flex-direction: column;
+    /* Theme color transitions handled by universal system */
 }
 
 input[type="number"] {
     padding: 10px 15px;
     font-size: 1.1rem;
-    border: 2px solid #6c5ce7;
+    border: 2px solid var(--primary-color);
     border-radius: 10px;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
     max-width: 300px;
     margin: 10px auto;
     display: block;
     text-align: center;
-    background-color: #fdfcfb;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    /* Theme color transitions handled by universal system */
 }
 
 input[type="number"]:focus {
-    border-color: #00cec9;
-    background-color: #f0faff;
-    box-shadow: 0 0 10px rgba(0, 206, 201, 0.3);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color-alpha-30);
 }
 
 button {
     padding: 10px 20px;
-    background-color: #6c5ce7;
-    color: #fff;
+    background-color: var(--primary-color);
+    color: var(--text-on-accent);
     border: none;
     border-radius: 10px;
     font-size: 1rem;
     cursor: pointer;
     margin-top: 10px;
-    transition:
-        background-color 0.3s ease,
-        transform 0.2s ease;
+    transition: transform 0.2s ease;
+    /* Theme color transitions handled by universal system */
 }
 
 button:hover {
-    background-color: #5a4dd6;
+    background-color: var(--accent-primary-hover);
     transform: scale(1.05);
 }
 
@@ -82,8 +172,9 @@ button:hover {
     margin-top: 15px;
     font-size: 1.1rem;
     line-height: 1.5;
-    color: #2d3436;
+    color: var(--text-primary);
     text-align: center;
+    /* Theme color transitions handled by universal system */
 }
 
 /* Theme Base Colors */

@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="../styles/base/styles.css" />
         <link rel="stylesheet" href="../styles/components/navbar.css" />
         <link rel="stylesheet" href="../styles/components/components.css" />
+        <link rel="stylesheet" href="../styles/components/themeSwitcher.css" />
         <link rel="stylesheet" href="../styles/components/about.css" />
         <script
             defer
@@ -53,42 +54,9 @@
 
                 <section class="about-section">
                     <h3>Meet Our Animal Educators</h3>
-                    <div class="team-grid">
-                        <div class="team-member">
-                            <img
-                                src="../../public/images/math-shark.png"
-                                alt="Mango the Shark"
-                            />
-                            <h4>Mango the Shark</h4>
-                            <p>Math Expert</p>
-                        </div>
-
-                        <div class="team-member">
-                            <img
-                                src="../../public/images/science-parrot.png"
-                                alt="Sky the Parrot"
-                            />
-                            <h4>Sky the Parrot</h4>
-                            <p>Science Specialist</p>
-                        </div>
-
-                        <div class="team-member">
-                            <img
-                                src="../../public/images/reading-panda.png"
-                                alt="Ruby the Panda"
-                            />
-                            <h4>Ruby the Panda</h4>
-                            <p>Reading Teacher</p>
-                        </div>
-
-                        <div class="team-member">
-                            <img
-                                src="../../public/images/art-lion.png"
-                                alt="Leo the Lion"
-                            />
-                            <h4>Leo the Lion</h4>
-                            <p>Art Instructor</p>
-                        </div>
+                    <div class="team-grid" id="educators-container">
+                        <!-- Animal educators will be dynamically loaded here -->
+                        <div class="loading-placeholder">Loading our amazing animal educators...</div>
                     </div>
                 </section>
 
@@ -188,12 +156,23 @@
         </footer>
 
         <!-- JS -->
-        <script defer src="../utils/themeInitializer.js"></script>
+        <script defer type="module" src="../themeInitializer.js"></script>
         <script type="module" src="../utils/themeManager.js"></script>
         <script
             type="module"
             src="../components/layout/themeSwitcher.js"
         ></script>
         <script defer src="../components/layout/navbarLoader.js"></script>
+        <script defer src="../components/component-loader.js"></script>
+        
+        <!-- Dynamic educators loading -->
+        <script type="module">
+            import { loadEducators } from '../utils/subjectEducators.js';
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                // Load the animal educators dynamically
+                loadEducators('educators-container');
+            });
+        </script>
     </body>
 </html>
