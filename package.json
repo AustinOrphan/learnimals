@@ -1,0 +1,12 @@
+{
+  "name": "learnimals",
+  "version": "1.0.0",
+  "description": "Educational web application featuring interactive games and activities for children",
+  "type": "commonjs",
+  "scripts": {
+    "generate-subjects": "node scripts/generateSubjects.js",
+    "list-templates": "node scripts/generateSubjects.js --list-templates"
+  },
+  "keywords": ["education", "children", "games", "learning"],
+  "private": true
+}
