@@ -55,6 +55,7 @@
 
 .team-member p {
     font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
 .timeline {
@@ -116,11 +117,19 @@
     color: var(--text-primary);
     border-radius: 10px;
     box-shadow: 0 3px 10px var(--shadow-color);
+    border: 1px solid var(--border-color);
 }
 
 .timeline-content h4 {
-    color: var(--accent-secondary);
+    color: var(--text-heading);
+    font-weight: bold;
     margin-top: 0;
+}
+
+.timeline-content p {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
 }
 
 @media screen and (max-width: 768px) {
