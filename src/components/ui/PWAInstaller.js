@@ -58,16 +58,16 @@ class PWAInstaller {
                 <span class="install-text">Install App</span>
             `;
             
-            // Add styles
+            // Add styles - match theme button height
             installButton.style.cssText = `
                 position: fixed;
-                bottom: 80px;
-                right: 20px;
+                bottom: 20px;
+                left: 20px;
                 background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
                 color: white;
                 border: none;
-                border-radius: 25px;
-                padding: 12px 20px;
+                border-radius: 24px;
+                padding: 0 16px;
                 font-size: 14px;
                 font-weight: bold;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -77,12 +77,38 @@ class PWAInstaller {
                 align-items: center;
                 gap: 8px;
                 transition: all 0.3s ease;
-                min-height: 48px;
+                height: 48px;
                 backdrop-filter: blur(10px);
             `;
 
             installButton.addEventListener('click', () => this.promptInstall());
             document.body.appendChild(installButton);
+
+            // Add responsive styles to match theme button heights
+            const style = document.createElement('style');
+            style.textContent = `
+                @media (max-width: 768px) {
+                    #pwa-install-button {
+                        height: 48px !important;
+                        font-size: 13px !important;
+                        border-radius: 24px !important;
+                        bottom: 16px !important;
+                        left: 16px !important;
+                    }
+                }
+                @media (max-width: 480px) {
+                    #pwa-install-button {
+                        height: 44px !important;
+                        font-size: 12px !important;
+                        border-radius: 22px !important;
+                        bottom: 15px !important;
+                        left: 15px !important;
+                        padding: 0 12px !important;
+                        gap: 6px !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
 
             // Add hover effects
             installButton.addEventListener('mouseenter', () => {
@@ -230,20 +256,30 @@ class PWAInstaller {
             // If viewport height reduced significantly, keyboard is probably open
             if (heightDifference > 150) {
                 document.body.classList.add('keyboard-open');
-                // Hide fixed position elements that might interfere
-                const fixedElements = document.querySelectorAll('.theme-switcher-container, #pwa-install-button');
-                fixedElements.forEach(el => {
-                    el.style.opacity = '0.3';
-                    el.style.pointerEvents = 'none';
-                });
+                // Only hide PWA install button, keep theme switcher accessible
+                const pwaButton = document.querySelector('#pwa-install-button');
+                if (pwaButton) {
+                    pwaButton.style.opacity = '0.3';
+                    pwaButton.style.pointerEvents = 'none';
+                }
+                // Move theme switcher up slightly to avoid keyboard
+                const themeSwitcher = document.querySelector('.theme-switcher-container');
+                if (themeSwitcher) {
+                    themeSwitcher.style.transform = 'translateY(-60px)';
+                }
             } else {
                 document.body.classList.remove('keyboard-open');
-                // Restore fixed position elements
-                const fixedElements = document.querySelectorAll('.theme-switcher-container, #pwa-install-button');
-                fixedElements.forEach(el => {
-                    el.style.opacity = '1';
-                    el.style.pointerEvents = 'auto';
-                });
+                // Restore PWA install button
+                const pwaButton = document.querySelector('#pwa-install-button');
+                if (pwaButton) {
+                    pwaButton.style.opacity = '1';
+                    pwaButton.style.pointerEvents = 'auto';
+                }
+                // Reset theme switcher position
+                const themeSwitcher = document.querySelector('.theme-switcher-container');
+                if (themeSwitcher) {
+                    themeSwitcher.style.transform = 'translateY(0)';
+                }
             }
         };
 

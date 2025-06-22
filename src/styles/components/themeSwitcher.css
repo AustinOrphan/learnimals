@@ -6,11 +6,12 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 100;
+  z-index: 1050;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
-  align-items: flex-end;
+  align-items: center;
+  transition: transform 0.3s ease;
 }
 
 /* Mobile optimizations for theme switcher */
@@ -18,16 +19,24 @@
   .theme-switcher-container {
     bottom: 16px;
     right: 16px;
-    gap: 14px;
+    gap: 10px;
   }
   
   .theme-switcher-container button.theme-button,
   .theme-switcher-container button.theme-button:focus,
   .theme-switcher-container button.theme-button:visited {
-    width: 52px;
-    height: 52px;
-    font-size: 22px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .theme-switcher-container .theme-emoji-overlay {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    top: 0;
+    left: 0;
   }
   
   /* Larger touch target for better mobile usability */
@@ -67,7 +76,7 @@
   max-width: none;
   max-height: none;
   /* Allow only specific transitions */
-  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, width 0.3s ease, height 0.3s ease, font-size 0.3s ease;
   animation: none;
   /* Reset other potential conflicting properties */
   outline: none;
@@ -125,10 +134,10 @@
 /* Emoji overlay positioned over the button but outside filter effects */
 .theme-switcher-container .theme-emoji-overlay {
   position: absolute;
-  top: 10px;
+  top: 0;
   left: 0;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,6 +146,7 @@
   z-index: 101;
   transition: transform 0.3s ease;
   /* This element is completely separate from the filtered button */
+  transition: width 0.3s ease, height 0.3s ease, font-size 0.3s ease, transform 0.3s ease;
 }
 
 /* Emoji scales with button on hover */
@@ -174,7 +184,7 @@
 /* Theme menu container */
 .theme-menu {
   position: absolute;
-  bottom: 110px; /* Positioned above both buttons */
+  bottom: 60px; /* Positioned above horizontal buttons */
   right: 0;
   background: var(--text-color);
   color: var(--accent-color);
@@ -249,7 +259,7 @@
 }
 
 /* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .theme-switcher-container {
     bottom: 15px;
     right: 15px;
@@ -257,13 +267,19 @@
   }
 
   .theme-switcher-container button.theme-button {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .theme-switcher-container .theme-emoji-overlay {
+    width: 44px;
+    height: 44px;
     font-size: 18px;
   }
 
   .theme-menu {
-    bottom: 100px;
+    bottom: 55px;
     min-width: 140px;
     padding: 8px;
   }
