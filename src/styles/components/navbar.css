@@ -59,10 +59,16 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
-    width: 30px;
-    height: 24px;
+    padding: 0.75rem;
+    width: 44px;
+    height: 44px;
     position: relative;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    /* Better touch target for mobile */
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .mobile-menu-button span {
@@ -126,13 +132,29 @@
     
     .navbar-links a {
         display: block;
-        padding: 0.75rem 1rem;
+        padding: 1rem;
         border-radius: 0.5rem;
         width: 100%;
         text-align: left;
+        font-size: 18px;
+        /* Better touch targets for mobile */
+        min-height: 48px;
+        line-height: 1.4;
     }
     
-    .navbar-links a:hover {
+    /* Mobile touch feedback */
+    .navbar-links a:hover,
+    .navbar-links a:active,
+    .navbar-links a:focus {
         background-color: var(--background-color-alt, #f8f9fa);
+        transform: scale(0.98);
+        transition: all 0.15s ease;
+    }
+    
+    /* Hamburger menu hover/active states */
+    .mobile-menu-button:hover,
+    .mobile-menu-button:active {
+        background-color: var(--background-color-alt, rgba(0, 0, 0, 0.05));
+        transition: background-color 0.15s ease;
     }
 }

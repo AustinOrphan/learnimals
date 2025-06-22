@@ -61,6 +61,8 @@ textarea {
     cursor: pointer;
     transition: transform 0.2s ease;
     /* Theme color transitions handled by universal system */
+    /* Better touch target for mobile */
+    min-height: 48px;
 }
 
 .submit-btn:hover {
@@ -97,13 +99,66 @@ textarea {
 }
 
 @media (max-width: 768px) {
+    .contact-container {
+        padding: 16px;
+    }
+    
+    .contact-form {
+        padding: 20px 16px;
+        margin-top: 24px;
+    }
+    
+    input,
+    textarea,
+    select {
+        padding: 16px;
+        font-size: 16px;
+        /* Prevent zoom on iOS */
+        border-radius: 8px;
+    }
+    
+    textarea {
+        height: 120px;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 16px 25px;
+        font-size: 18px;
+        margin-top: 16px;
+    }
+    
     .contact-info {
         flex-direction: column;
         align-items: center;
+        margin-top: 24px;
+        gap: 16px;
     }
 
     .contact-card {
         width: 100%;
-        max-width: 300px;
+        max-width: 320px;
+        padding: 16px;
+    }
+    
+    .contact-card i {
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .contact-container {
+        padding: 12px;
+    }
+    
+    .contact-form {
+        padding: 16px 12px;
+    }
+    
+    .contact-card {
+        max-width: 280px;
+        padding: 12px;
     }
 }

@@ -9,8 +9,37 @@
   z-index: 100;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   align-items: flex-end;
+}
+
+/* Mobile optimizations for theme switcher */
+@media (max-width: 768px) {
+  .theme-switcher-container {
+    bottom: 16px;
+    right: 16px;
+    gap: 14px;
+  }
+  
+  .theme-switcher-container button.theme-button,
+  .theme-switcher-container button.theme-button:focus,
+  .theme-switcher-container button.theme-button:visited {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Larger touch target for better mobile usability */
+  .theme-switcher-container button.theme-button::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    pointer-events: auto;
+  }
 }
 
 /* Base theme button styles - shared by both buttons */
@@ -18,8 +47,8 @@
 .theme-switcher-container button.theme-button,
 .theme-switcher-container button.theme-button:focus,
 .theme-switcher-container button.theme-button:visited {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   border: none;
   font-size: 20px;

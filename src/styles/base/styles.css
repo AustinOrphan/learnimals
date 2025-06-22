@@ -1021,3 +1021,108 @@ footer {
         font-size: 2rem;
     }
 }
+
+/* Additional Mobile Enhancements */
+@media (max-width: 768px) {
+    /* Better touch targets for all buttons */
+    button {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+    
+    /* Improved form inputs for mobile */
+    input,
+    select,
+    textarea {
+        font-size: 16px; /* Prevent zoom on iOS */
+        min-height: 44px;
+    }
+    
+    /* Better spacing for mobile */
+    .hero {
+        padding: 40px 16px;
+    }
+    
+    .features {
+        padding: 40px 16px;
+        gap: 20px;
+    }
+    
+    .feature-card {
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto;
+        padding: 20px 16px;
+    }
+    
+    /* Mobile-friendly modal styling */
+    .modal-content,
+    .story-modal .modal-content {
+        margin: 12px;
+        width: calc(100% - 24px);
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+    }
+    
+    /* Improved text readability */
+    body {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+    }
+    
+    /* Touch-friendly links */
+    a {
+        min-height: 44px;
+        padding: 8px;
+        margin: -8px;
+        display: inline-block;
+    }
+    
+    /* Prevent text selection on interactive elements */
+    button,
+    .theme-button,
+    .mobile-menu-button {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* Small mobile devices (phones in portrait) */
+@media (max-width: 480px) {
+    .hero {
+        padding: 32px 12px;
+    }
+    
+    .features {
+        padding: 32px 12px;
+    }
+    
+    .feature-card {
+        padding: 16px 12px;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+    }
+}
