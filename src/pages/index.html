@@ -36,23 +36,26 @@
         <link rel="manifest" href="../../public/manifest.json" />
         <meta name="theme-color" content="#ffeaa7" />
         <meta name="color-scheme" content="light dark" />
+        
+        <!-- Critical resource hints for performance -->
+        <link rel="preconnect" href="/" />
+        <link rel="dns-prefetch" href="/" />
+        
+        <!-- CSS with performance optimizations -->
+        <link rel="preload" href="../styles/base/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="../styles/base/styles.css"></noscript>
         <link rel="stylesheet" href="../styles/components/navbar.css" />
-        <link rel="stylesheet" href="../styles/base/styles.css" />
         <link rel="stylesheet" href="../styles/components/components.css" />
-        <link rel="preload" href="../public/images/logo.png" as="image" />
-        <link rel="preload" href="../public/images/math-shark.png" as="image" />
-        <link
-            rel="preload"
-            href="../public/images/science-parrot2.png"
-            as="image"
-        />
-        <link rel="preload" href="../public/images/cody-cat2.png" as="image" />
-        <link
-            rel="preload"
-            href="../public/images/reading-panda.png"
-            as="image"
-        />
-        <link rel="preload" href="../public/images/art-lion.png" as="image" />
+        
+        <!-- Only preload above-the-fold critical images -->
+        <link rel="preload" href="/public/images/logo.png" as="image" fetchpriority="high" />
+        <link rel="preload" href="/public/images/math-shark.png" as="image" fetchpriority="high" />
+        
+        <!-- Prefetch below-the-fold images for faster loading -->
+        <link rel="prefetch" href="/public/images/science-parrot2.png" as="image" />
+        <link rel="prefetch" href="/public/images/cody-cat2.png" as="image" />
+        <link rel="prefetch" href="/public/images/reading-panda.png" as="image" />
+        <link rel="prefetch" href="/public/images/art-lion.png" as="image" />
     </head>
 
     <body>
@@ -68,6 +71,7 @@
                 <a
                     href="/src/features/subjects/shared/math.html"
                     class="cta-button bounce"
+                    aria-label="Start learning with math games"
                     >Start Learning</a
                 >
             </section>
@@ -76,6 +80,7 @@
                 <a
                     href="/src/features/subjects/shared/math.html"
                     class="feature-card-link"
+                    aria-label="Math with Mango - Master numbers, puzzles, and math games"
                 >
                     <div class="feature-card hover-glow alt">
                         <img
@@ -90,11 +95,14 @@
                 <a
                     href="/src/features/subjects/shared/science.html"
                     class="feature-card-link"
+                    aria-label="Science with Sky - Explore fun experiments and amazing facts"
                 >
                     <div class="feature-card hover-glow">
                         <img
                             src="/public/images/science-parrot2.png"
                             alt="Science Parrot"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <h3>Science with Sky</h3>
                         <p>Explore fun experiments and amazing facts.</p>
@@ -104,11 +112,14 @@
                 <a
                     href="/src/features/subjects/shared/coding.html"
                     class="feature-card-link"
+                    aria-label="Code with Cody - Learn coding and master programming skills"
                 >
                     <div class="feature-card hover-glow">
                         <img
                             src="/public/images/cody-cat2.png"
                             alt="Coding Cat"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <h3>Code with Cody</h3>
                         <p>Code, Learn, and master your skills!</p>
@@ -118,11 +129,14 @@
                 <a
                     href="/src/features/subjects/shared/reading.html"
                     class="feature-card-link"
+                    aria-label="Reading with Ruby - Follow stories and learn to love reading"
                 >
                     <div class="feature-card hover-glow alt">
                         <img
                             src="/public/images/reading-panda.png"
                             alt="Reading Panda"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <h3>Reading with Ruby</h3>
                         <p>
@@ -134,9 +148,11 @@
                 <a
                     href="/src/features/subjects/shared/art.html"
                     class="feature-card-link"
+                    aria-label="Art with Leo - Paint, color, and craft your creativity"
                 >
                     <div class="feature-card hover-glow">
-                        <img src="/public/images/art-lion.png" alt="Art Lion" />
+                        <img src="/public/images/art-lion.png" alt="Art Lion" 
+                             loading="lazy" decoding="async" />
                         <h3>Art with Leo</h3>
                         <p>Paint, color, and craft your creativity!</p>
                     </div>
@@ -203,6 +219,9 @@
 
         <!-- Navigation helper -->
         <script src="../utils/navigationHelper.js" defer></script>
+
+        <!-- PWA Mobile Enhancements -->
+        <script type="module" src="../components/ui/PWAInstaller.js"></script>
 
         <!-- Other scripts -->
         <script src="../main.js"></script>

@@ -1,12 +1,14 @@
-{  "name": "Learnimals",
+{  "name": "Learnimals - Educational Games for Kids",
   "short_name": "Learnimals",
-  "description": "Fun educational games with animal friends for children",
+  "description": "Fun educational games with animal friends for children to learn math, science, reading and art",
   "start_url": "/src/pages/index.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#fdf6e3",
   "theme_color": "#ffeaa7",
-  "orientation": "portrait-primary",
+  "orientation": "any",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./images/logo.png",
@@ -42,16 +44,30 @@
     {
       "name": "Play Math Games",
       "short_name": "Math",
-      "description": "Start playing math games with Mango",
+      "description": "Start playing math games with Mango the Shark",
       "url": "/src/features/subjects/shared/math.html",
       "icons": [{ "src": "./images/math-shark.png", "sizes": "96x96" }]
     },
     {
+      "name": "Read Stories",
+      "short_name": "Reading",
+      "description": "Read fun stories with Ruby the Panda",
+      "url": "/src/features/subjects/shared/reading.html",
+      "icons": [{ "src": "./images/reading-panda.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Science Experiments",
+      "short_name": "Science",
+      "description": "Explore science with Sky the Parrot",
+      "url": "/src/features/subjects/shared/science.html",
+      "icons": [{ "src": "./images/science-parrot.png", "sizes": "96x96" }]
+    },
+    {
       "name": "Bubble Pop Game",
       "short_name": "Bubble Pop",
-      "description": "Play the Bubble Pop game",
+      "description": "Play the math bubble pop game",
       "url": "/src/features/subjects/shared/bubblepop.html",
-      "icons": [{ "src": "./images/science-parrot.png", "sizes": "96x96" }]
+      "icons": [{ "src": "./images/math-shark.png", "sizes": "96x96" }]
     }
   ]
 }

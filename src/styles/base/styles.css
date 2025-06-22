@@ -1126,3 +1126,110 @@ footer {
         font-size: 1.4rem;
     }
 }
+
+/* PWA and Mobile-Specific Enhancements */
+:root {
+    --vh: 1vh; /* Will be updated by PWA installer */
+}
+
+/* Mobile viewport height fix */
+.mobile-full-height {
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Mobile keyboard handling */
+.keyboard-open {
+    /* Adjust layout when mobile keyboard is open */
+    overflow: hidden;
+}
+
+.keyboard-open .hero {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* PWA Install Button Styles */
+.pwa-install-btn {
+    /* Enhanced mobile touch target */
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Enhanced focus styles for mobile accessibility */
+@media (max-width: 768px) {
+    button:focus,
+    input:focus,
+    select:focus,
+    textarea:focus,
+    a:focus {
+        outline: 3px solid var(--accent-primary);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+    
+    /* Better touch feedback */
+    button:active,
+    .btn:active,
+    .theme-button:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    button,
+    .btn,
+    .theme-button {
+        border: 2px solid currentColor;
+    }
+    
+    .feature-card {
+        border: 2px solid var(--text-primary);
+    }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .pwa-install-btn,
+    .theme-button,
+    .feature-card {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Screen reader enhancements */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Enhanced iOS Safari support */
+@supports (-webkit-touch-callout: none) {
+    /* iOS-specific optimizations */
+    body {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    input,
+    textarea {
+        -webkit-appearance: none;
+        border-radius: 8px; /* Consistent with design */
+    }
+    
+    button {
+        -webkit-appearance: none;
+        -webkit-touch-callout: none;
+    }
+}
