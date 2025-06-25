@@ -229,12 +229,8 @@ export default class BaseGame {
      * Resume the game
      */
   resume() {
-    if (this.state !== 'paused') {
-      console.log('Cannot resume: game is not paused, current state:', this.state);
-      return;
-    }
+    if (this.state !== 'paused') return;
         
-    console.log('Resuming game...');
     this.setState('playing');
     this.isPaused = false;
         
@@ -243,11 +239,8 @@ export default class BaseGame {
     this.startTime += pauseDuration;
     this.lastFrameTime = performance.now();
         
-    console.log('Calling onResume callbacks...');
     this.onResume();
     this.onResumeCallback();
-    
-    console.log('Restarting game loop...');
     this.gameLoop();
   }
     
@@ -297,10 +290,7 @@ export default class BaseGame {
      * Main game loop
      */
   gameLoop(timestamp = performance.now()) {
-    if (!this.isActive || this.isPaused) {
-      console.log('Game loop stopped: isActive=', this.isActive, 'isPaused=', this.isPaused, 'state=', this.state);
-      return;
-    }
+    if (!this.isActive || this.isPaused) return;
         
     // Calculate delta time
     const deltaTime = timestamp - this.lastFrameTime;
