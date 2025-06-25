@@ -28,14 +28,8 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.messageQueue = [];
     this.bubbleCache = new Map();
         
-    // Theme colors
-    this.themeColors = {
-      primary: this.getThemeColor('--accent-primary') || '#007bff',
-      secondary: this.getThemeColor('--accent-secondary') || '#6f42c1',
-      success: this.getThemeColor('--success-color') || '#28a745',
-      danger: this.getThemeColor('--danger-color') || '#dc3545',
-      warning: this.getThemeColor('--warning-color') || '#ffc107'
-    };
+    // Theme colors - will be initialized after theme is loaded
+    this.themeColors = null;
         
     // Difficulty settings
     this.difficultySettings = {
@@ -72,6 +66,29 @@ export default class BubblePopGameTemplate extends BaseGame {
   }
     
   /**
+   * Initialize theme colors from CSS variables
+   */
+  initializeThemeColors() {
+    this.themeColors = {
+      primary: this.getThemeColor('--accent-primary') || '#007bff',
+      secondary: this.getThemeColor('--accent-secondary') || '#6f42c1',
+      success: this.getThemeColor('--success-color') || '#28a745',
+      danger: this.getThemeColor('--danger-color') || '#dc3545',
+      warning: this.getThemeColor('--warning-color') || '#ffc107'
+    };
+  }
+    
+  /**
+   * Ensure theme colors are available, initialize if needed
+   */
+  ensureThemeColors() {
+    if (!this.themeColors) {
+      this.initializeThemeColors();
+    }
+    return this.themeColors;
+  }
+    
+  /**
      * Draw a rounded rectangle (fallback for browsers without roundRect support)
      */
   drawRoundedRect(x, y, width, height, radius) {
@@ -93,6 +110,21 @@ export default class BubblePopGameTemplate extends BaseGame {
      */
   async onInitialized() {
     super.onInitialized();
+    
+    // Wait for DOM and CSS to be fully ready
+    await new Promise(resolve => {
+      if (document.readyState === 'complete') {
+        resolve();
+      } else {
+        window.addEventListener('load', resolve, { once: true });
+      }
+    });
+    
+    // Small additional delay to ensure CSS variables are computed
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // Initialize theme colors immediately to prevent fallback colors
+    this.ensureThemeColors();
     
     // Set canvas rendering options to prevent streaking/artifacts
     if (this.ctx) {
@@ -131,7 +163,23 @@ export default class BubblePopGameTemplate extends BaseGame {
       }
     });
   }
+  
+  /**
+   * Handle theme changes from GameTemplateLoader
+   */
+  handleThemeChange() {
+    // Reinitialize theme colors
+    this.initializeThemeColors();
     
+    // Clear cached bubbles to regenerate with new colors
+    this.bubbleCache.clear();
+    
+    // Force a re-render to apply new theme immediately
+    if (this.state === 'playing' || this.state === 'paused' || this.isTransitioning) {
+      this.render();
+    }
+  }
+
   /**
      * Generate a new math question based on difficulty
      */
@@ -238,6 +286,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         );
       }
             
+      const themeColors = this.ensureThemeColors();
       const isCorrect = i === this.correctBubbleIndex;
       const bubble = new Bubble({
         x,
@@ -248,7 +297,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         bubbleBackground: this.createBubbleBackground(radius),
         ctx: this.ctx,
         floatSpeed: 0.8 + Math.random() * 0.4, // Slightly faster and more varied
-        color: isCorrect ? this.themeColors.success : this.themeColors.primary
+        color: isCorrect ? themeColors.success : themeColors.primary
       });
             
       this.bubbles.push(bubble);
@@ -262,6 +311,9 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Create cached bubble background for performance
      */
   createBubbleBackground(radius) {
+    // Ensure theme colors are available
+    this.ensureThemeColors();
+    
     // Include theme colors in cache key to handle theme changes
     const primaryColor = this.themeColors.primary;
     const secondaryColor = this.themeColors.secondary;
@@ -726,7 +778,8 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.drawRoundedRect(x, y, barWidth, barHeight, 4);
     this.ctx.fill();
         
-    // Timer fill
+    // Timer fill - ensure theme colors are available
+    this.ensureThemeColors();
     const fillWidth = (this.timeRemaining / this.settings.timeLimit) * barWidth;
     const timeRatio = this.timeRemaining / this.settings.timeLimit;
         
@@ -791,6 +844,9 @@ export default class BubblePopGameTemplate extends BaseGame {
      */
   renderStreakIndicator() {
     if (this.streakCount > 0) {
+      // Ensure theme colors are available
+      this.ensureThemeColors();
+      
       const text = `Streak: ${this.streakCount}`;
       this.ctx.save();
       this.ctx.font = 'bold 20px Arial';

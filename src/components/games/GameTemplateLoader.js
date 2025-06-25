@@ -24,6 +24,10 @@ export default class GameTemplateLoader {
     try {
       this.cacheElements();
       this.setupEventListeners();
+      
+      // Initialize theme colors immediately
+      this.updateThemeColors();
+      
       this.hideLoading();
       await this.loadGameScript();
       this.initializeGame();
@@ -149,6 +153,9 @@ export default class GameTemplateLoader {
         
     // Keyboard controls
     document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+    
+    // Theme change listener
+    document.addEventListener('themeChanged', () => this.handleThemeChange());
         
     // Modal backdrop clicks
     document.querySelectorAll('.game-modal').forEach(modal => {
@@ -628,5 +635,40 @@ export default class GameTemplateLoader {
         
     this.gameInstance = null;
     this.isInitialized = false;
+  }
+    
+  /**
+     * Handle theme changes
+     */
+  handleThemeChange() {
+    // Update game instance if it exists and has theme handling
+    if (this.gameInstance && typeof this.gameInstance.handleThemeChange === 'function') {
+      this.gameInstance.handleThemeChange();
+    }
+    
+    // Force re-render of any theme-dependent elements
+    this.updateThemeColors();
+  }
+  
+  /**
+   * Update theme colors for UI elements
+   */
+  updateThemeColors() {
+    // Get current theme colors
+    const computedStyle = getComputedStyle(document.documentElement);
+    const accentPrimary = computedStyle.getPropertyValue('--accent-primary').trim();
+    const accentSecondary = computedStyle.getPropertyValue('--accent-secondary').trim();
+    
+    // Update hero section gradient if needed
+    const heroSection = document.querySelector('.game-hero');
+    if (heroSection && accentPrimary && accentSecondary) {
+      heroSection.style.background = `linear-gradient(135deg, ${accentPrimary} 0%, ${accentSecondary} 100%)`;
+    }
+    
+    // Trigger any other theme-dependent updates
+    if (this.gameInstance && typeof this.gameInstance.render === 'function') {
+      // Force a re-render to apply new theme colors
+      this.gameInstance.render();
+    }
   }
 }

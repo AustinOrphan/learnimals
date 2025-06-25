@@ -1,5 +1,5 @@
 /* Game Hero Section Styles */
-/* Provides engaging hero layout for game pages */
+/* Provides engaging hero layout for game pages with theme support */
 
 .game-hero {
   display: flex;
@@ -10,11 +10,31 @@
   background: linear-gradient(135deg, 
     var(--accent-primary, #007bff) 0%, 
     var(--accent-secondary, #6f42c1) 100%);
-  color: white;
+  color: var(--hero-text-color, white);
   border-radius: 0 0 24px 24px;
   margin-bottom: 2rem;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Theme-specific hero text colors */
+:root {
+  --hero-text-color: white;
+  --hero-overlay-opacity: 0.1;
+  --hero-button-bg: rgba(255, 255, 255, 0.2);
+  --hero-button-border: rgba(255, 255, 255, 0.3);
+  --hero-button-hover-bg: rgba(255, 255, 255, 0.3);
+  --hero-button-hover-border: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] {
+  --hero-text-color: #ffffff;
+  --hero-overlay-opacity: 0.15;
+  --hero-button-bg: rgba(255, 255, 255, 0.15);
+  --hero-button-border: rgba(255, 255, 255, 0.25);
+  --hero-button-hover-bg: rgba(255, 255, 255, 0.25);
+  --hero-button-hover-border: rgba(255, 255, 255, 0.4);
 }
 
 .game-hero::before {
@@ -24,8 +44,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='var(--hero-overlay-opacity, 0.1)'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  opacity: var(--hero-overlay-opacity, 0.1);
   z-index: 1;
+  transition: opacity 0.3s ease;
 }
 
 .hero-content,
@@ -56,9 +78,9 @@
 }
 
 .how-to-play-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  background: var(--hero-button-bg);
+  border: 2px solid var(--hero-button-border);
+  color: var(--hero-text-color);
   padding: 0.75rem 1.5rem;
   border-radius: 50px;
   font-weight: 600;
@@ -71,10 +93,11 @@
 
 .how-to-play-btn:hover,
 .how-to-play-btn:focus {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--hero-button-hover-bg);
+  border-color: var(--hero-button-hover-border);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: var(--hero-text-color);
 }
 
 .btn-icon {
@@ -224,5 +247,4 @@
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  user-drag: none;
 }
