@@ -46,17 +46,17 @@ function convertNumber() {
       n = Math.floor(n / 1000);
     }
 
-    const words = [];
+    const wordParts = [];
     for (let i = chunks.length - 1; i >= 0; i--) {
       if (chunks[i] !== 0) {
-        words.push(chunkToWords(chunks[i]) + (scales[i] ? ' ' + scales[i] : ''));
+        wordParts.push(chunkToWords(chunks[i]) + (scales[i] ? ' ' + scales[i] : ''));
       }
     }
-    return words.join(', ').trim();
+    return wordParts.join(', ').trim();
   }
 
-  const words = numberToWords(num);
-  const capitalized = words.charAt(0).toUpperCase() + words.slice(1);
+  const wordsResult = numberToWords(num);
+  const capitalized = wordsResult.charAt(0).toUpperCase() + wordsResult.slice(1);
 
   output.innerHTML = `<strong>${formattedNumber}</strong><br>${capitalized}`;
 }
