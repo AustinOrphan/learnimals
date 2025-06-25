@@ -48,6 +48,9 @@ export default class Bubble {
   draw() {
     this.ctx.save();
     
+    // Ensure proper rendering context
+    this.ctx.globalCompositeOperation = 'source-over';
+    
     // Apply pulse scale if pulsing
     if (this.isPulsing) {
       this.ctx.translate(this.x, this.y);
@@ -61,18 +64,31 @@ export default class Bubble {
     }
     
     // Draw pre-rendered bubble background for better performance
-    this.ctx.drawImage(
-      this.bubbleBackground,
-      this.x - this.radius - 2, // Account for stroke width
-      this.y - this.radius - 2
-    );
+    if (this.bubbleBackground) {
+      this.ctx.drawImage(
+        this.bubbleBackground,
+        this.x - this.radius - 2, // Account for stroke width
+        this.y - this.radius - 2
+      );
+    }
     
     // Draw the answer text with theme-aware color
-    this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || 
-                        getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#000';
+    const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || 
+                     getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || 
+                     getComputedStyle(document.documentElement).getPropertyValue('--foreground-color').trim() || 
+                     '#000';
+    
+    this.ctx.fillStyle = textColor;
     this.ctx.font = '20px Comic Sans MS, Comic Sans, cursive';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
+    
+    // Add text shadow for better visibility in both light and dark modes
+    this.ctx.shadowColor = textColor.includes('#fff') || textColor.includes('255, 255, 255') ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)';
+    this.ctx.shadowBlur = 2;
+    this.ctx.shadowOffsetX = 1;
+    this.ctx.shadowOffsetY = 1;
+    
     this.ctx.fillText(this.answer, this.x, this.y);
     
     this.ctx.restore();

@@ -93,6 +93,15 @@ export default class BubblePopGameTemplate extends BaseGame {
      */
   async onInitialized() {
     super.onInitialized();
+    
+    // Set canvas rendering options to prevent streaking/artifacts
+    if (this.ctx) {
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.imageSmoothingQuality = 'high';
+      // Ensure proper composite operation for clean rendering
+      this.ctx.globalCompositeOperation = 'source-over';
+    }
+    
     this.setupThemeListener();
     this.generateQuestion();
     this.spawnBubbles();
@@ -104,6 +113,7 @@ export default class BubblePopGameTemplate extends BaseGame {
      */
   setupThemeListener() {
     document.addEventListener('themeChanged', () => {
+      // Update theme colors
       this.themeColors = {
         primary: this.getThemeColor('--accent-primary') || '#007bff',
         secondary: this.getThemeColor('--accent-secondary') || '#6f42c1',
@@ -111,7 +121,14 @@ export default class BubblePopGameTemplate extends BaseGame {
         danger: this.getThemeColor('--danger-color') || '#dc3545',
         warning: this.getThemeColor('--warning-color') || '#ffc107'
       };
-      this.bubbleCache.clear(); // Clear cached bubbles to regenerate with new colors
+      
+      // Clear cached bubbles to regenerate with new colors
+      this.bubbleCache.clear();
+      
+      // Force a re-render to apply new theme immediately
+      if (this.state === 'playing' || this.state === 'paused') {
+        this.render();
+      }
     });
   }
     
@@ -245,13 +262,19 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Create cached bubble background for performance
      */
   createBubbleBackground(radius) {
-    const cacheKey = `bubble_${radius}_${this.themeColors.primary}`;
+    // Include theme colors in cache key to handle theme changes
+    const primaryColor = this.themeColors.primary;
+    const secondaryColor = this.themeColors.secondary;
+    const cacheKey = `bubble_${radius}_${primaryColor}_${secondaryColor}`;
         
     if (!this.bubbleCache.has(cacheKey)) {
       const bubbleCanvas = document.createElement('canvas');
       bubbleCanvas.width = radius * 2 + 4;
       bubbleCanvas.height = radius * 2 + 4;
       const bubbleCtx = bubbleCanvas.getContext('2d');
+      
+      // Clear the bubble canvas completely first
+      bubbleCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
             
       // Create gradient
       const gradient = bubbleCtx.createRadialGradient(
@@ -270,10 +293,10 @@ export default class BubblePopGameTemplate extends BaseGame {
       bubbleCtx.fillStyle = gradient;
       bubbleCtx.fill();
             
-      // Add shine effect
+      // Add shine effect with better opacity for dark mode
       bubbleCtx.beginPath();
       bubbleCtx.arc(radius + 2 - radius/3, radius + 2 - radius/3, radius/4, 0, Math.PI * 2);
-      bubbleCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      bubbleCtx.fillStyle = 'rgba(255, 255, 255, 0.3)'; // Slightly less opacity
       bubbleCtx.fill();
             
       // Border
@@ -616,8 +639,14 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Render the game
      */
   render() {
-    // Clear canvas with theme-aware background
-    this.ctx.fillStyle = this.getThemeColor('--bg-card') || '#f8f9fa';
+    // Clear canvas completely first
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Fill with theme-aware background
+    this.ctx.fillStyle = this.getThemeColor('--bg-card') || 
+                         this.getThemeColor('--bg-primary') || 
+                         this.getThemeColor('--background-color') || 
+                         '#f8f9fa';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
     // Draw question
