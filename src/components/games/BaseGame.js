@@ -9,13 +9,14 @@ export default class BaseGame {
     this.canvas = document.getElementById(canvasId);
     this.options = options;
         
-    // Game state
+    // Game state with atomic operations for thread safety
     this.state = 'loading'; // loading, playing, paused, game-over
     this.score = 0;
     this.level = 1;
     this.lives = 3;
     this.isActive = false;
     this.isPaused = false;
+    this.stateTransitionInProgress = false;
         
     // Timing
     this.startTime = null;
@@ -115,28 +116,45 @@ export default class BaseGame {
      * Set up event listeners for input handling
      */
   setupEventListeners() {
+    // Store bound event handlers for proper cleanup
+    this.boundHandlers = {
+      keydown: (e) => this.handleKeyDown(e),
+      keyup: (e) => this.handleKeyUp(e),
+      click: (e) => this.handleClick(e),
+      mousemove: (e) => this.handleMouseMove(e),
+      mousedown: (e) => this.handleMouseDown(e),
+      mouseup: (e) => this.handleMouseUp(e),
+      touchstart: (e) => this.handleTouchStart(e),
+      touchmove: (e) => this.handleTouchMove(e),
+      touchend: (e) => this.handleTouchEnd(e),
+      resize: () => this.handleResize(),
+      blur: () => this.handleWindowBlur(),
+      focus: () => this.handleWindowFocus(),
+      visibilitychange: () => this.handleVisibilityChange()
+    };
+        
     // Keyboard events
-    document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-    document.addEventListener('keyup', (e) => this.handleKeyUp(e));
+    document.addEventListener('keydown', this.boundHandlers.keydown);
+    document.addEventListener('keyup', this.boundHandlers.keyup);
         
     // Mouse events
-    this.canvas.addEventListener('click', (e) => this.handleClick(e));
-    this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-    this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-    this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+    this.canvas.addEventListener('click', this.boundHandlers.click);
+    this.canvas.addEventListener('mousemove', this.boundHandlers.mousemove);
+    this.canvas.addEventListener('mousedown', this.boundHandlers.mousedown);
+    this.canvas.addEventListener('mouseup', this.boundHandlers.mouseup);
         
     // Touch events
-    this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
-    this.canvas.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
-    this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: false });
+    this.canvas.addEventListener('touchstart', this.boundHandlers.touchstart, { passive: false });
+    this.canvas.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
+    this.canvas.addEventListener('touchend', this.boundHandlers.touchend, { passive: false });
         
     // Window events
-    window.addEventListener('resize', () => this.handleResize());
-    window.addEventListener('blur', () => this.handleWindowBlur());
-    window.addEventListener('focus', () => this.handleWindowFocus());
+    window.addEventListener('resize', this.boundHandlers.resize);
+    window.addEventListener('blur', this.boundHandlers.blur);
+    window.addEventListener('focus', this.boundHandlers.focus);
         
     // Visibility API
-    document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
+    document.addEventListener('visibilitychange', this.boundHandlers.visibilitychange);
   }
     
   /**
@@ -196,12 +214,12 @@ export default class BaseGame {
   }
     
   /**
-     * Start the game
+     * Start the game with race condition protection
      */
   start() {
     if (this.state !== 'ready' && this.state !== 'game-over') {
       console.warn('Cannot start game in current state:', this.state);
-      return;
+      return false;
     }
         
     // Prevent multiple simultaneous starts
@@ -210,7 +228,11 @@ export default class BaseGame {
       this.stopGameLoop();
     }
         
-    this.setState('playing');
+    if (!this.setState('playing')) {
+      console.warn('Failed to transition to playing state');
+      return false;
+    }
+    
     this.isActive = true;
     this.isPaused = false;
     this.startTime = performance.now();
@@ -218,15 +240,23 @@ export default class BaseGame {
         
     this.onStart();
     this.startGameLoop();
+    return true;
   }
     
   /**
-     * Pause the game
+     * Pause the game with race condition protection
      */
   pause() {
-    if (this.state !== 'playing') return;
+    if (this.state !== 'playing') {
+      console.warn('Cannot pause game in current state:', this.state);
+      return false;
+    }
         
-    this.setState('paused');
+    if (!this.setState('paused')) {
+      console.warn('Failed to transition to paused state');
+      return false;
+    }
+    
     this.isPaused = true;
     this.pausedTime = performance.now();
     
@@ -235,15 +265,23 @@ export default class BaseGame {
     
     this.onPause();
     this.onPauseCallback();
+    return true;
   }
     
   /**
-     * Resume the game
+     * Resume the game with race condition protection
      */
   resume() {
-    if (this.state !== 'paused') return;
+    if (this.state !== 'paused') {
+      console.warn('Cannot resume game in current state:', this.state);
+      return false;
+    }
         
-    this.setState('playing');
+    if (!this.setState('playing')) {
+      console.warn('Failed to transition to playing state');
+      return false;
+    }
+    
     this.isPaused = false;
         
     // Adjust timing to account for pause duration
@@ -254,13 +292,23 @@ export default class BaseGame {
     this.onResume();
     this.onResumeCallback();
     this.startGameLoop();
+    return true;
   }
     
   /**
-     * End the game
+     * End the game with race condition protection
      */
   gameOver() {
-    this.setState('game-over');
+    if (this.state === 'game-over') {
+      console.warn('Game already over');
+      return false;
+    }
+    
+    if (!this.setState('game-over')) {
+      console.warn('Failed to transition to game-over state');
+      return false;
+    }
+    
     this.isActive = false;
     this.isPaused = false;
     
@@ -269,6 +317,7 @@ export default class BaseGame {
         
     this.onGameOverCallback();
     this.onGameEnd();
+    return true;
   }
     
   /**
@@ -308,13 +357,54 @@ export default class BaseGame {
   }
     
   /**
-     * Set game state and notify listeners
+     * Set game state and notify listeners with race condition protection
      */
   setState(newState) {
+    // Prevent concurrent state transitions
+    if (this.stateTransitionInProgress) {
+      console.warn(`State transition already in progress, ignoring: ${this.state} → ${newState}`);
+      return false;
+    }
+    
+    this.stateTransitionInProgress = true;
+    
     const oldState = this.state;
+    
+    // Validate state transition
+    if (!this.isValidStateTransition(oldState, newState)) {
+      console.warn(`Invalid state transition: ${oldState} → ${newState}`);
+      this.stateTransitionInProgress = false;
+      return false;
+    }
+    
     this.state = newState;
-    this.onStateChange(newState, oldState);
-    console.log(`Game state: ${oldState} → ${newState}`);
+    
+    try {
+      this.onStateChange(newState, oldState);
+      console.log(`Game state: ${oldState} → ${newState}`);
+    } catch (error) {
+      console.error('Error in state change callback:', error);
+    } finally {
+      this.stateTransitionInProgress = false;
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Validate if a state transition is allowed
+   */
+  isValidStateTransition(from, to) {
+    const validTransitions = {
+      'loading': ['ready', 'error'],
+      'ready': ['playing'],
+      'playing': ['paused', 'game-over'],
+      'paused': ['playing', 'game-over'],
+      'game-over': ['loading', 'ready'],
+      'error': ['loading']
+    };
+    
+    return validTransitions[from]?.includes(to) || false;
   }
     
   /**
@@ -622,36 +712,54 @@ export default class BaseGame {
     // Stop game loop completely
     this.stopGameLoop();
         
-    // Remove event listeners
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('keyup', this.handleKeyUp);
-        
-    if (this.canvas) {
-      this.canvas.removeEventListener('click', this.handleClick);
-      this.canvas.removeEventListener('mousemove', this.handleMouseMove);
-      this.canvas.removeEventListener('mousedown', this.handleMouseDown);
-      this.canvas.removeEventListener('mouseup', this.handleMouseUp);
-      this.canvas.removeEventListener('touchstart', this.handleTouchStart);
-      this.canvas.removeEventListener('touchmove', this.handleTouchMove);
-      this.canvas.removeEventListener('touchend', this.handleTouchEnd);
+    // Remove event listeners using bound handlers for proper cleanup
+    if (this.boundHandlers) {
+      document.removeEventListener('keydown', this.boundHandlers.keydown);
+      document.removeEventListener('keyup', this.boundHandlers.keyup);
+      
+      if (this.canvas) {
+        this.canvas.removeEventListener('click', this.boundHandlers.click);
+        this.canvas.removeEventListener('mousemove', this.boundHandlers.mousemove);
+        this.canvas.removeEventListener('mousedown', this.boundHandlers.mousedown);
+        this.canvas.removeEventListener('mouseup', this.boundHandlers.mouseup);
+        this.canvas.removeEventListener('touchstart', this.boundHandlers.touchstart);
+        this.canvas.removeEventListener('touchmove', this.boundHandlers.touchmove);
+        this.canvas.removeEventListener('touchend', this.boundHandlers.touchend);
+      }
+      
+      window.removeEventListener('resize', this.boundHandlers.resize);
+      window.removeEventListener('blur', this.boundHandlers.blur);
+      window.removeEventListener('focus', this.boundHandlers.focus);
+      document.removeEventListener('visibilitychange', this.boundHandlers.visibilitychange);
+      
+      // Clear bound handlers
+      this.boundHandlers = null;
     }
         
-    window.removeEventListener('resize', this.handleResize);
-    window.removeEventListener('blur', this.handleWindowBlur);
-    window.removeEventListener('focus', this.handleWindowFocus);
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-        
-    // Close audio context
-    if (this.audioContext) {
-      this.audioContext.close();
+    // Close audio context safely
+    if (this.audioContext && this.audioContext.state !== 'closed') {
+      try {
+        this.audioContext.close();
+      } catch (error) {
+        console.warn('Error closing audio context:', error);
+      }
       this.audioContext = null;
     }
         
-    // Clear references
+    // Clear references to prevent memory leaks
     this.canvas = null;
     this.ctx = null;
     this.keys.clear();
     this.touches.clear();
+    this.fpsHistory = [];
+        
+    // Clear callbacks to prevent references
+    this.onScoreUpdate = null;
+    this.onLevelUpdate = null;
+    this.onGameOver = null;
+    this.onPause = null;
+    this.onResume = null;
+    this.onStateChange = null;
         
     console.log(`${this.constructor.name} destroyed`);
   }

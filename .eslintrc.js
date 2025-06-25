@@ -33,8 +33,8 @@ module.exports = {
         // Allow trailing commas in multiline
         'comma-dangle': ['error', 'only-multiline'],
         
-        // Disable some rules that might be too strict for a learning project
-        'no-undef': 'off', // Canvas/DOM globals might not be recognized
+        // Enable strict undef checking with proper globals defined
+        'no-undef': 'error',
         'no-redeclare': 'warn'
     },
     globals: {
@@ -46,13 +46,42 @@ module.exports = {
         'localStorage': 'readonly',
         'sessionStorage': 'readonly',
         'fetch': 'readonly',
+        'performance': 'readonly',
+        'getComputedStyle': 'readonly',
         
         // Canvas/WebGL globals
         'CanvasRenderingContext2D': 'readonly',
         'HTMLCanvasElement': 'readonly',
+        'Image': 'readonly',
         
-        // Game-specific globals that might be used
+        // Animation globals
         'requestAnimationFrame': 'readonly',
-        'cancelAnimationFrame': 'readonly'
+        'cancelAnimationFrame': 'readonly',
+        
+        // Audio globals
+        'AudioContext': 'readonly',
+        'webkitAudioContext': 'readonly',
+        
+        // DOM Events and Elements
+        'Element': 'readonly',
+        'HTMLElement': 'readonly',
+        'Event': 'readonly',
+        'CustomEvent': 'readonly',
+        'MouseEvent': 'readonly',
+        'TouchEvent': 'readonly',
+        'KeyboardEvent': 'readonly',
+        
+        // Timing functions
+        'setTimeout': 'readonly',
+        'clearTimeout': 'readonly',
+        'setInterval': 'readonly',
+        'clearInterval': 'readonly',
+        
+        // Math and utility globals
+        'Math': 'readonly',
+        'parseInt': 'readonly',
+        'parseFloat': 'readonly',
+        'isNaN': 'readonly',
+        'isFinite': 'readonly'
     }
 };
