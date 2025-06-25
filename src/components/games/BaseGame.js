@@ -665,7 +665,6 @@ export default class BaseGame {
       return;
     }
     
-    console.log('Starting game loop');
     this.gameLoopRunning = true;
     this.gameLoopId = null;
     this.gameLoop();
@@ -675,9 +674,6 @@ export default class BaseGame {
      * Stop the game loop completely
      */
   stopGameLoop() {
-    if (this.gameLoopRunning) {
-      console.log('Stopping game loop');
-    }
     this.gameLoopRunning = false;
     if (this.gameLoopId) {
       cancelAnimationFrame(this.gameLoopId);
