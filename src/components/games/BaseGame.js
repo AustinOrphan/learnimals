@@ -22,6 +22,7 @@ export default class BaseGame {
     this.pausedTime = 0;
     this.lastFrameTime = 0;
     this.gameLoopId = null; // Track current game loop
+    this.gameLoopRunning = false; // Flag to prevent multiple loops
         
     // Event callbacks from GameTemplateLoader
     this.onScoreUpdate = options.onScoreUpdate || (() => {});
@@ -203,10 +204,10 @@ export default class BaseGame {
       return;
     }
         
-    // Stop any existing game loop before starting a new one
-    if (this.gameLoopId) {
-      cancelAnimationFrame(this.gameLoopId);
-      this.gameLoopId = null;
+    // Prevent multiple simultaneous starts
+    if (this.gameLoopRunning) {
+      console.warn('Game loop already running, stopping previous loop');
+      this.stopGameLoop();
     }
         
     this.setState('playing');
@@ -216,7 +217,7 @@ export default class BaseGame {
     this.lastFrameTime = this.startTime;
         
     this.onStart();
-    this.gameLoop();
+    this.startGameLoop();
   }
     
   /**
@@ -228,6 +229,10 @@ export default class BaseGame {
     this.setState('paused');
     this.isPaused = true;
     this.pausedTime = performance.now();
+    
+    // Stop the game loop
+    this.stopGameLoop();
+    
     this.onPause();
     this.onPauseCallback();
   }
@@ -248,7 +253,7 @@ export default class BaseGame {
         
     this.onResume();
     this.onResumeCallback();
-    this.gameLoop();
+    this.startGameLoop();
   }
     
   /**
@@ -258,6 +263,9 @@ export default class BaseGame {
     this.setState('game-over');
     this.isActive = false;
     this.isPaused = false;
+    
+    // Stop the game loop
+    this.stopGameLoop();
         
     this.onGameOverCallback();
     this.onGameEnd();
@@ -268,6 +276,9 @@ export default class BaseGame {
      * @param {boolean} autoStart - Whether to automatically start the game after restart (default: true)
      */
   restart(autoStart = true) {
+    // Stop any running game loop immediately
+    this.stopGameLoop();
+    
     this.setState('loading');
     this.score = 0;
     this.level = 1;
@@ -282,6 +293,7 @@ export default class BaseGame {
     this.pausedTime = 0;
     this.lastFrameTime = 0;
     this.gameLoopId = null; // Clear any existing game loop
+    this.gameLoopRunning = false; // Ensure loop is not running
         
     this.onScoreUpdate(this.score);
     this.onLevelUpdate(this.level);
@@ -309,8 +321,10 @@ export default class BaseGame {
      * Main game loop
      */
   gameLoop(timestamp = performance.now()) {
-    if (!this.isActive || this.isPaused) {
+    // Exit immediately if loop should not be running
+    if (!this.gameLoopRunning || !this.isActive || this.isPaused) {
       this.gameLoopId = null;
+      this.gameLoopRunning = false;
       return;
     }
         
@@ -327,8 +341,13 @@ export default class BaseGame {
     // Render game
     this.render();
         
-    // Continue loop and store the ID
-    this.gameLoopId = requestAnimationFrame((ts) => this.gameLoop(ts));
+    // Continue loop and store the ID - only if still should be running
+    if (this.gameLoopRunning && this.isActive && !this.isPaused) {
+      this.gameLoopId = requestAnimationFrame((ts) => this.gameLoop(ts));
+    } else {
+      this.gameLoopId = null;
+      this.gameLoopRunning = false;
+    }
   }
     
   /**
@@ -600,11 +619,8 @@ export default class BaseGame {
     this.isActive = false;
     this.isPaused = false;
     
-    // Stop game loop
-    if (this.gameLoopId) {
-      cancelAnimationFrame(this.gameLoopId);
-      this.gameLoopId = null;
-    }
+    // Stop game loop completely
+    this.stopGameLoop();
         
     // Remove event listeners
     document.removeEventListener('keydown', this.handleKeyDown);
@@ -638,5 +654,34 @@ export default class BaseGame {
     this.touches.clear();
         
     console.log(`${this.constructor.name} destroyed`);
+  }
+    
+  /**
+     * Start the game loop with protection against multiple instances
+     */
+  startGameLoop() {
+    if (this.gameLoopRunning) {
+      console.warn('Attempted to start game loop while already running');
+      return;
+    }
+    
+    console.log('Starting game loop');
+    this.gameLoopRunning = true;
+    this.gameLoopId = null;
+    this.gameLoop();
+  }
+    
+  /**
+     * Stop the game loop completely
+     */
+  stopGameLoop() {
+    if (this.gameLoopRunning) {
+      console.log('Stopping game loop');
+    }
+    this.gameLoopRunning = false;
+    if (this.gameLoopId) {
+      cancelAnimationFrame(this.gameLoopId);
+      this.gameLoopId = null;
+    }
   }
 }
