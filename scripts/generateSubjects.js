@@ -477,7 +477,7 @@ class SubjectGenerator {
  * Interactive features for ${subject.character.name} the ${subject.character.type}
  */
 
-class ${subject.name}Subject {
+class ${subject.name.replace(/\s+/g, '')}Subject {
     constructor() {
         this.subjectName = '${subject.name}';
         this.character = {
@@ -665,7 +665,7 @@ export default ${subject.name}Subject;`;
   <!-- Subject name -->
   <text x="100" y="180" font-size="12" text-anchor="middle" font-family="Arial, sans-serif" 
         fill="${subject.color}cc">
-    ${subject.name} ${subject.character.role}
+    ${subject.character.role}
   </text>
 </svg>`;
 
@@ -718,7 +718,7 @@ export default ${subject.name}Subject;`;
       } else {
         // If subjects section doesn't exist, add it
         const subjectsSection = `\n  // Subject configurations\n  subjects: {\n${newSubjects}\n  },\n`;
-        const insertPoint = configContent.lastIndexOf('};');
+        const insertPoint = configContent.search(/^};?\s*$/m);
         const updatedConfig = configContent.slice(0, insertPoint) + subjectsSection + configContent.slice(insertPoint);
         
         await fs.writeFile(this.configPath, updatedConfig);
