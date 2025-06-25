@@ -258,8 +258,9 @@ export default class BaseGame {
     
   /**
      * Restart the game
+     * @param {boolean} autoStart - Whether to automatically start the game after restart (default: true)
      */
-  restart() {
+  restart(autoStart = true) {
     this.setState('loading');
     this.score = 0;
     this.level = 1;
@@ -268,12 +269,22 @@ export default class BaseGame {
     this.isPaused = false;
     this.frameCount = 0;
     this.fpsHistory = [];
+    
+    // Reset timing
+    this.startTime = null;
+    this.pausedTime = 0;
+    this.lastFrameTime = 0;
         
     this.onScoreUpdate(this.score);
     this.onLevelUpdate(this.level);
         
     this.onRestart();
     this.setState('ready');
+    
+    // Automatically start the game after restart if requested
+    if (autoStart) {
+      this.start();
+    }
   }
     
   /**

@@ -334,14 +334,14 @@ export default class GameTemplateLoader {
     
   restartGame() {
     if (this.gameInstance && typeof this.gameInstance.restart === 'function') {
-      this.gameInstance.restart();
+      // Let the game instance handle the restart and state management
+      this.gameInstance.restart(true); // auto-start after restart
     } else {
       // Reinitialize if no restart method
       this.initializeGame();
+      this.setState('playing');
     }
-    this.setState('playing');
-    this.updateScore(0);
-    this.updateLevel(1);
+    // Score and level updates are handled by the game instance callbacks
   }
     
   restartFromModal() {
