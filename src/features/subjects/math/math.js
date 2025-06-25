@@ -64,25 +64,47 @@ function convertNumber() {
 // Make convertNumber globally available for HTML usage
 window.convertNumber = convertNumber;
 
-// Educational tools and games for children
-const difficulty = [
-  'easy', 'medium', 'hard',
-  'very-easy', 'basic', 'beginner',
-  'intermediate', 'advanced',
-  'expert', 'graduate-level'
-];
-const basicLevels = ['Place Value', 'Counting', 'Addition', 'Subtraction', 'Multiplication', 'Division'];
-const intermediateLevels = ['Fractions', 'Decimals', 'Percentages', 'Algebra Basics', 'Geometry Basics'];
-const advancedLevels = ['Algebra', 'Geometry', 'Trigonometry', 'Statistics', 'Calculus'];
-const expertLevels = ['Advanced Calculus', 'Complex Analysis', 'Linear Algebra', 'Differential Equations'];
+// Educational tools and games for children - check if already defined to avoid redeclaration
+if (typeof window.mathDifficulty === 'undefined') {
+  window.mathDifficulty = [
+    'easy', 'medium', 'hard',
+    'very-easy', 'basic', 'beginner',
+    'intermediate', 'advanced',
+    'expert', 'graduate-level'
+  ];
+}
+
+if (typeof window.mathBasicLevels === 'undefined') {
+  window.mathBasicLevels = ['Place Value', 'Counting', 'Addition', 'Subtraction', 'Multiplication', 'Division'];
+}
+
+if (typeof window.mathIntermediateLevels === 'undefined') {
+  window.mathIntermediateLevels = ['Fractions', 'Decimals', 'Percentages', 'Algebra Basics', 'Geometry Basics'];
+}
+
+if (typeof window.mathAdvancedLevels === 'undefined') {
+  window.mathAdvancedLevels = ['Algebra', 'Geometry', 'Trigonometry', 'Statistics', 'Calculus'];
+}
+
+if (typeof window.mathExpertLevels === 'undefined') {
+  window.mathExpertLevels = ['Advanced Calculus', 'Complex Analysis', 'Linear Algebra', 'Differential Equations'];
+}
 
 // TODO: Game features to be implemented
-const words = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Fractions', 'Decimals', 'Percentages', 'Exponents'];
+if (typeof window.mathWords === 'undefined') {
+  window.mathWords = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Fractions', 'Decimals', 'Percentages', 'Exponents'];
+}
 
 console.log('Math games loaded');
-console.log(words);
+console.log(window.mathWords);
 
 // Export features for other modules
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { difficulty, basicLevels, intermediateLevels, advancedLevels, expertLevels };
+  module.exports = { 
+    difficulty: window.mathDifficulty, 
+    basicLevels: window.mathBasicLevels, 
+    intermediateLevels: window.mathIntermediateLevels, 
+    advancedLevels: window.mathAdvancedLevels, 
+    expertLevels: window.mathExpertLevels 
+  };
 }
