@@ -95,8 +95,12 @@ if (typeof window.mathWords === 'undefined') {
   window.mathWords = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Fractions', 'Decimals', 'Percentages', 'Exponents'];
 }
 
-console.log('Math games loaded');
-console.log(window.mathWords);
+// Only log once when first loaded
+if (!window.mathJsLoaded) {
+  console.log('Math games loaded');
+  console.log(window.mathWords);
+  window.mathJsLoaded = true;
+}
 
 // Export features for other modules
 if (typeof module !== 'undefined' && module.exports) {
