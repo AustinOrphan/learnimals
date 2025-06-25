@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Texture Features Summary - Learnimals</title>
+    
+    <link rel="stylesheet" href="/src/styles/base/styles.css">
+    <link rel="stylesheet" href="/src/styles/components/games/game-hero.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            background: var(--bg-primary, #f8f9fa);
+            font-family: var(--font-primary, 'Segoe UI', sans-serif);
+        }
+        
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: var(--bg-card, white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--accent-primary, #007bff);
+        }
+        
+        .feature-card h3 {
+            margin: 0 0 1rem 0;
+            color: var(--accent-primary, #007bff);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-light, #eee);
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .demo-hero {
+            margin: 2rem 0;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-primary, #007bff);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Theme</button>
+    
+    <div class="features-container">
+        <h1>🎨 Enhanced Hero Section - Visual Texture Features</h1>
+        
+        <div class="demo-hero">
+            <section class="game-hero">
+                <div class="glass-overlay"></div>
+                <div class="hero-content">
+                    <h1 class="game-title">Rich Visual Texture Demo</h1>
+                    <p class="game-description">This hero section now features multiple layers of sophisticated visual textures for a modern, engaging appearance.</p>
+                    <button class="btn btn-outline how-to-play-btn">
+                        <span class="btn-icon">✨</span>
+                        Explore Features
+                    </button>
+                </div>
+                <div class="hero-character">
+                    <img src="/public/images/math-parrot.png" alt="Parrot character" class="character-image" />
+                </div>
+            </section>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🔶 Layer 1: Background Patterns (::before)</h3>
+                <ul class="feature-list">
+                    <li><strong>Hexagonal Pattern:</strong> Large geometric hexagons for structure</li>
+                    <li><strong>Circular Rings:</strong> Geometric circles for depth</li>
+                    <li><strong>Dot Matrix:</strong> Multiple dot sizes for texture</li>
+                    <li><strong>Opacity:</strong> Theme-adaptive transparency (12% light, 18% dark)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🌊 Layer 2: Advanced Textures (::after)</h3>
+                <ul class="feature-list">
+                    <li><strong>Mesh Gradients:</strong> Radial gradients at 25% and 75% positions</li>
+                    <li><strong>Fractal Noise:</strong> SVG-generated noise with 2 octaves</li>
+                    <li><strong>Woven Pattern:</strong> Checkerboard weave effect</li>
+                    <li><strong>Diagonal Lines:</strong> Subtle cross-hatch patterns</li>
+                    <li><strong>Animation:</strong> 20-second subtle shift cycle</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>✨ Layer 3: Glass Overlay</h3>
+                <ul class="feature-list">
+                    <li><strong>Glass Effect:</strong> Diagonal gradient overlay</li>
+                    <li><strong>Backdrop Blur:</strong> 0.5px blur for depth</li>
+                    <li><strong>Theme Adaptive:</strong> Different opacity for light/dark modes</li>
+                    <li><strong>Modern Look:</strong> Frosted glass appearance</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🎯 Visual Enhancements</h3>
+                <ul class="feature-list">
+                    <li><strong>Fixed Background:</strong> Subtle parallax effect</li>
+                    <li><strong>Smooth Transitions:</strong> 0.3s ease animations</li>
+                    <li><strong>Accessibility:</strong> Respects reduced motion preferences</li>
+                    <li><strong>Performance:</strong> GPU-accelerated transforms</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🎨 Theme Integration</h3>
+                <ul class="feature-list">
+                    <li><strong>Subject Themes:</strong> Math, Science, Reading, Art, Coding</li>
+                    <li><strong>Dark Mode:</strong> Enhanced contrast and visibility</li>
+                    <li><strong>Color Variables:</strong> CSS custom properties</li>
+                    <li><strong>High Contrast:</strong> Accessibility support</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📱 Responsive Design</h3>
+                <ul class="feature-list">
+                    <li><strong>Mobile First:</strong> Optimized for all screen sizes</li>
+                    <li><strong>Flexible Layout:</strong> Adapts to content</li>
+                    <li><strong>Touch Friendly:</strong> Appropriate button sizes</li>
+                    <li><strong>Performance:</strong> Efficient rendering on all devices</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="feature-card" style="margin-top: 2rem;">
+            <h3>🔧 Technical Implementation</h3>
+            <p><strong>CSS Features Used:</strong></p>
+            <ul class="feature-list">
+                <li>Multiple background layers with different patterns</li>
+                <li>SVG data URIs for scalable patterns</li>
+                <li>CSS custom properties for theme adaptation</li>
+                <li>Backdrop filters for modern glass effects</li>
+                <li>Keyframe animations for subtle movement</li>
+                <li>Media queries for accessibility and responsiveness</li>
+                <li>Z-index layering for proper depth</li>
+                <li>Opacity and blend modes for sophisticated visuals</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            const btn = document.querySelector('.theme-toggle');
+            btn.textContent = newTheme === 'dark' ? '☀️ Toggle Theme' : '🌙 Toggle Theme';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Hero Texture Features Summary loaded');
+            console.log('Multiple visual layers implemented:');
+            console.log('- Hexagonal patterns');
+            console.log('- Geometric overlays'); 
+            console.log('- Mesh gradients');
+            console.log('- Noise textures');
+            console.log('- Glass effects');
+            console.log('- Subtle animations');
+        });
+    </script>
+</body>
+</html>

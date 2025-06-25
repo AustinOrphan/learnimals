@@ -16,6 +16,8 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  /* Add subtle shimmer effect */
+  background-attachment: fixed;
 }
 
 /* Theme-specific hero text colors */
@@ -30,7 +32,7 @@
 
 [data-theme="dark"] {
   --hero-text-color: #ffffff;
-  --hero-overlay-opacity: 0.15;
+  --hero-overlay-opacity: 0.25;
   --hero-button-bg: rgba(255, 255, 255, 0.15);
   --hero-button-border: rgba(255, 255, 255, 0.25);
   --hero-button-hover-bg: rgba(255, 255, 255, 0.25);
@@ -44,16 +46,60 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='var(--hero-overlay-opacity, 0.1)'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-  opacity: var(--hero-overlay-opacity, 0.1);
+  background: 
+    /* Hexagonal pattern overlay */
+    url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M60 10l40 23.09V66.91L60 90l-40-23.09V33.09z' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.08'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat,
+    /* Geometric pattern overlay */
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M40 40c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm0-4c6.63 0 12-5.37 12-12s-5.37-12-12-12-12 5.37-12 12 5.37 12 12 12z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat,
+    /* Dot pattern overlay */
+    url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  opacity: var(--hero-overlay-opacity, 0.12);
   z-index: 1;
   transition: opacity 0.3s ease;
+}
+
+/* Additional texture layer for more depth */
+.game-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    /* Mesh gradient overlay */
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.06) 0%, transparent 50%),
+    /* Subtle noise texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E"),
+    /* Woven texture pattern */
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M0 0h30v30H0zM30 30h30v30H30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+    /* Subtle diagonal lines */
+    linear-gradient(45deg, 
+      transparent 48%, 
+      rgba(255,255,255,0.02) 50%, 
+      transparent 52%),
+    linear-gradient(-45deg, 
+      transparent 48%, 
+      rgba(255,255,255,0.02) 50%, 
+      transparent 52%);
+  background-size: 
+    200% 200%,
+    200% 200%,
+    100% 100%,
+    60px 60px,
+    30px 30px,
+    30px 30px;
+  opacity: 0.8;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+  animation: subtleShift 20s ease-in-out infinite;
 }
 
 .hero-content,
 .hero-character {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .hero-content {
@@ -125,6 +171,47 @@
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
+}
+
+/* Subtle texture animation */
+@keyframes subtleShift {
+  0%, 100% { 
+    background-position: 0% 0%, 100% 100%, 0 0, 0 0, 0 0, 0 0; 
+  }
+  50% { 
+    background-position: 100% 100%, 0% 0%, 0 0, 30px 30px, 15px 15px, -15px 15px; 
+  }
+}
+
+/* Glass-like overlay for extra depth */
+.game-hero .glass-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(0.5px);
+  transition: background 0.3s ease;
+}
+
+/* Dark mode glass overlay */
+[data-theme="dark"] .game-hero .glass-overlay {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
 }
 
 /* Responsive Design */
@@ -208,6 +295,10 @@
   .how-to-play-btn:hover,
   .how-to-play-btn:focus {
     transform: none;
+  }
+  
+  .game-hero::after {
+    animation: none;
   }
 }
 
