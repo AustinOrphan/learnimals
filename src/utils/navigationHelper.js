@@ -8,8 +8,7 @@ class NavigationHelper {
   }
 
   detectBaseUrl() {
-    // Get the current URL and find the project root
-    const currentUrl = window.location.href;
+    // Get the current URL and find the project root  
     const currentPath = window.location.pathname;
     
     // Find where 'learnimals' appears in the path

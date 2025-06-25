@@ -10,28 +10,28 @@ export function formatDate(date, format = 'short') {
   if (!date) return '';
   
   switch (format) {
-    case 'short':
-      return date.toLocaleDateString();
-    case 'long':
-      return date.toLocaleDateString(undefined, { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-    case 'time':
-      return date.toLocaleTimeString();
-    case 'full':
-      return date.toLocaleDateString(undefined, { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    default:
-      return date.toLocaleDateString();
+  case 'short':
+    return date.toLocaleDateString();
+  case 'long':
+    return date.toLocaleDateString(undefined, { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  case 'time':
+    return date.toLocaleTimeString();
+  case 'full':
+    return date.toLocaleDateString(undefined, { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  default:
+    return date.toLocaleDateString();
   }
 }
 

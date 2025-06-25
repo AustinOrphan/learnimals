@@ -70,9 +70,9 @@ export default class Bubble {
     // Draw the answer text with theme-aware color
     this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || 
                         getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#000';
-    this.ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
-    this.ctx.textAlign = "center";
-    this.ctx.textBaseline = "middle";
+    this.ctx.font = '20px Comic Sans MS, Comic Sans, cursive';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
     this.ctx.fillText(this.answer, this.x, this.y);
     
     this.ctx.restore();
@@ -89,8 +89,7 @@ export default class Bubble {
       if (this.removeAnimation >= 1) {
         this.active = false;
       }
-      this.render();
-      return;
+      return; // Don't continue with normal update
     }
     
     // Original upward floating movement (like the original game)
@@ -100,9 +99,6 @@ export default class Bubble {
     if (this.isPulsing) {
       this.pulseScale = 1 + Math.sin(Date.now() * this.pulseSpeed) * 0.2;
     }
-    
-    // Render the bubble
-    this.render();
     
     // Mark as inactive if out of canvas (only if floating upward)
     if (this.y + this.radius < 0) {

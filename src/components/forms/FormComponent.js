@@ -80,8 +80,8 @@ class FormComponent extends BaseComponent {
     
     // Field based on type
     switch (type) {
-      case 'textarea':
-        html += `
+    case 'textarea':
+      html += `
           <textarea 
             id="${fieldId}" 
             name="${name}" 
@@ -92,10 +92,10 @@ class FormComponent extends BaseComponent {
             rows="4"
           >${value}</textarea>
         `;
-        break;
+      break;
         
-      case 'select':
-        html += `
+    case 'select':
+      html += `
           <select 
             id="${fieldId}" 
             name="${name}"
@@ -105,27 +105,27 @@ class FormComponent extends BaseComponent {
           >
         `;
         
-        // Add options
-        options.forEach(opt => {
-          const isSelected = opt.value === value ? 'selected' : '';
-          html += `<option value="${opt.value}" ${isSelected}>${opt.label}</option>`;
-        });
+      // Add options
+      options.forEach(opt => {
+        const isSelected = opt.value === value ? 'selected' : '';
+        html += `<option value="${opt.value}" ${isSelected}>${opt.label}</option>`;
+      });
         
-        html += '</select>';
-        break;
+      html += '</select>';
+      break;
         
-      case 'radio':
-      case 'checkbox':
-        html += '<div class="option-group">';
+    case 'radio':
+    case 'checkbox':
+      html += '<div class="option-group">';
         
-        options.forEach((opt, index) => {
-          const optionId = `${fieldId}-${index}`;
-          const isChecked = 
+      options.forEach((opt, index) => {
+        const optionId = `${fieldId}-${index}`;
+        const isChecked = 
             (type === 'checkbox' && Array.isArray(value) && value.includes(opt.value)) || 
             (type === 'radio' && opt.value === value) ? 
-            'checked' : '';
+              'checked' : '';
             
-          html += `
+        html += `
             <div class="option-item">
               <input 
                 type="${type}" 
@@ -138,14 +138,14 @@ class FormComponent extends BaseComponent {
               <label for="${optionId}">${opt.label}</label>
             </div>
           `;
-        });
+      });
         
-        html += '</div>';
-        break;
+      html += '</div>';
+      break;
         
-      default:
-        // Default to normal input field
-        html += `
+    default:
+      // Default to normal input field
+      html += `
           <input 
             type="${type}" 
             id="${fieldId}" 

@@ -7,57 +7,57 @@
  */
 
 function extractSubjectPageContent(html) {
-    // Create a DOM parser
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
+  // Create a DOM parser
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
     
-    // Extract subject information
-    const title = doc.querySelector('title').textContent.replace(' - Learnimals', '');
-    const subjectLower = extractSubjectFromTitle(title);
-    const description = doc.querySelector('meta[name="description"]').getAttribute('content');
+  // Extract subject information
+  const title = doc.querySelector('title').textContent.replace(' - Learnimals', '');
+  const subjectLower = extractSubjectFromTitle(title);
+  const description = doc.querySelector('meta[name="description"]').getAttribute('content');
     
-    // Extract hero content
-    const h2Text = doc.querySelector('.hero h2').textContent;
-    const characterInfo = extractCharacterInfo(h2Text);
-    const heroSubtitle = doc.querySelector('.hero p').textContent;
+  // Extract hero content
+  const h2Text = doc.querySelector('.hero h2').textContent;
+  const characterInfo = extractCharacterInfo(h2Text);
+  const heroSubtitle = doc.querySelector('.hero p').textContent;
     
-    // Extract feature cards
-    const featureCardsSection = doc.querySelector('.features');
-    const featureCards = featureCardsSection.innerHTML.trim();
+  // Extract feature cards
+  const featureCardsSection = doc.querySelector('.features');
+  const featureCards = featureCardsSection.innerHTML.trim();
     
-    return {
-        subjectName: title,
-        subjectLower,
-        subjectDescription: description,
-        characterName: characterInfo.name,
-        characterType: characterInfo.type,
-        heroSubtitle,
-        featureCards
-    };
+  return {
+    subjectName: title,
+    subjectLower,
+    subjectDescription: description,
+    characterName: characterInfo.name,
+    characterType: characterInfo.type,
+    heroSubtitle,
+    featureCards
+  };
 }
 
 function extractSubjectFromTitle(title) {
-    // Extract the subject name from the title and convert to lowercase
-    const match = title.match(/^(\w+)/i);
-    return match ? match[1].toLowerCase() : '';
+  // Extract the subject name from the title and convert to lowercase
+  const match = title.match(/^(\w+)/i);
+  return match ? match[1].toLowerCase() : '';
 }
 
 function extractCharacterInfo(h2Text) {
-    // Extract character name and type from heading text
-    // Example: "Math Tools with Mango the Shark!"
-    const match = h2Text.match(/with\s+(\w+)\s+the\s+(\w+)/i);
-    if (match) {
-        return {
-            name: match[1],
-            type: match[2]
-        };
-    }
-    return { name: '', type: '' };
+  // Extract character name and type from heading text
+  // Example: "Math Tools with Mango the Shark!"
+  const match = h2Text.match(/with\s+(\w+)\s+the\s+(\w+)/i);
+  if (match) {
+    return {
+      name: match[1],
+      type: match[2]
+    };
+  }
+  return { name: '', type: '' };
 }
 
 function generateTemplateCode(options) {
-    // Generate the code to use the template
-    return `<!doctype html>
+  // Generate the code to use the template
+  return `<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />

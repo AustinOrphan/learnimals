@@ -13,7 +13,7 @@ fetch(navbarPath)
     return res.text();
   })
   .then((data) => {
-    const placeholder = document.getElementById("navbar-placeholder");
+    const placeholder = document.getElementById('navbar-placeholder');
     if (placeholder) {
       placeholder.innerHTML = data;
       console.log('Navbar loaded successfully from:', navbarPath);
