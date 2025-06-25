@@ -8,6 +8,7 @@ export default class GameTemplateLoader {
     this.gameInstance = null;
     this.isInitialized = false;
     this.gameState = 'loading'; // loading, playing, paused, game-over
+    this.autoPausedForInstructions = false; // Track if we auto-paused for help modal
         
     // DOM elements
     this.elements = {};
@@ -424,10 +425,21 @@ export default class GameTemplateLoader {
   }
     
   showInstructions() {
+    // Pause the game when showing instructions modal
+    if (this.gameState === 'playing') {
+      this.pauseGame();
+      // Mark that we auto-paused for instructions
+      this.autoPausedForInstructions = true;
+    }
     this.showModal(this.elements.instructionsModal);
   }
     
   hideInstructionsModal() {
+    // Resume the game if we auto-paused for instructions
+    if (this.autoPausedForInstructions && this.gameState === 'paused') {
+      this.autoPausedForInstructions = false;
+      this.resumeGame();
+    }
     this.hideModal(this.elements.instructionsModal);
   }
     
@@ -459,8 +471,13 @@ export default class GameTemplateLoader {
       document.body.style.overflow = '';
             
       // Resume game if paused by modal
-      if (this.gameState === 'paused' && modal === this.elements.pauseModal) {
-        this.resumeGame();
+      if (this.gameState === 'paused') {
+        if (modal === this.elements.pauseModal) {
+          this.resumeGame();
+        } else if (modal === this.elements.instructionsModal && this.autoPausedForInstructions) {
+          this.autoPausedForInstructions = false;
+          this.resumeGame();
+        }
       }
     }
   }

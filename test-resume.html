@@ -33,6 +33,7 @@
         .pause-btn { background: #007bff; color: white; }
         .resume-btn { background: #28a745; color: white; }
         .restart-btn { background: #dc3545; color: white; }
+        .help-btn { background: #17a2b8; color: white; }
         #gameCanvas {
             border: 2px solid #ddd;
             border-radius: 5px;
@@ -59,6 +60,7 @@
             <button id="pauseBtn" class="pause-btn">Pause Game</button>
             <button id="resumeBtn" class="resume-btn">Resume Game</button>
             <button id="restartBtn" class="restart-btn">Restart Game</button>
+            <button id="helpBtn" class="help-btn">Help</button>
         </div>
         
         <div class="status">
@@ -68,6 +70,9 @@
                 <li>Click "Pause Game" - bubbles should stop moving</li>
                 <li>Click "Resume Game" - bubbles should continue moving</li>
                 <li>Click "Restart Game" - game should reset and start fresh</li>
+                <li><strong>Click "Restart Game" multiple times rapidly</strong> - should not lag</li>
+                <li>Click "Help" - game should pause automatically</li>
+                <li>Close help - game should resume automatically</li>
                 <li>Try pause/resume again after restart to verify it still works</li>
                 <li>Check console for any errors</li>
             </ol>
@@ -83,6 +88,7 @@
         const pauseBtn = document.getElementById('pauseBtn');
         const resumeBtn = document.getElementById('resumeBtn');
         const restartBtn = document.getElementById('restartBtn');
+        const helpBtn = document.getElementById('helpBtn');
 
         let game = null;
 
@@ -138,6 +144,12 @@
             if (!game) return;
             console.log('Calling game.restart()...');
             game.restart();
+        });
+
+        helpBtn.addEventListener('click', () => {
+            if (!game) return;
+            console.log('Help button clicked - should pause game');
+            alert('Help Modal\n\nThis simulates a help modal.\nThe game should be paused while this is open.\nClick OK to close and resume.');
         });
 
         // Initialize when page loads

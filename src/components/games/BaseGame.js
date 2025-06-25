@@ -21,6 +21,7 @@ export default class BaseGame {
     this.startTime = null;
     this.pausedTime = 0;
     this.lastFrameTime = 0;
+    this.gameLoopId = null; // Track current game loop
         
     // Event callbacks from GameTemplateLoader
     this.onScoreUpdate = options.onScoreUpdate || (() => {});
@@ -202,6 +203,12 @@ export default class BaseGame {
       return;
     }
         
+    // Stop any existing game loop before starting a new one
+    if (this.gameLoopId) {
+      cancelAnimationFrame(this.gameLoopId);
+      this.gameLoopId = null;
+    }
+        
     this.setState('playing');
     this.isActive = true;
     this.isPaused = false;
@@ -274,6 +281,7 @@ export default class BaseGame {
     this.startTime = null;
     this.pausedTime = 0;
     this.lastFrameTime = 0;
+    this.gameLoopId = null; // Clear any existing game loop
         
     this.onScoreUpdate(this.score);
     this.onLevelUpdate(this.level);
@@ -301,7 +309,10 @@ export default class BaseGame {
      * Main game loop
      */
   gameLoop(timestamp = performance.now()) {
-    if (!this.isActive || this.isPaused) return;
+    if (!this.isActive || this.isPaused) {
+      this.gameLoopId = null;
+      return;
+    }
         
     // Calculate delta time
     const deltaTime = timestamp - this.lastFrameTime;
@@ -316,8 +327,8 @@ export default class BaseGame {
     // Render game
     this.render();
         
-    // Continue loop
-    requestAnimationFrame((ts) => this.gameLoop(ts));
+    // Continue loop and store the ID
+    this.gameLoopId = requestAnimationFrame((ts) => this.gameLoop(ts));
   }
     
   /**
@@ -588,6 +599,12 @@ export default class BaseGame {
   destroy() {
     this.isActive = false;
     this.isPaused = false;
+    
+    // Stop game loop
+    if (this.gameLoopId) {
+      cancelAnimationFrame(this.gameLoopId);
+      this.gameLoopId = null;
+    }
         
     // Remove event listeners
     document.removeEventListener('keydown', this.handleKeyDown);
