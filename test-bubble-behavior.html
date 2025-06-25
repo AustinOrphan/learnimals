@@ -68,9 +68,11 @@
             <h3>Test Scenarios:</h3>
             <ul>
                 <li><strong>Off-screen Start:</strong> Bubbles should appear from below the canvas and float upward</li>
-                <li><strong>Correct Answer:</strong> Click the correct bubble - all bubbles should pop simultaneously</li>
-                <li><strong>Missed Answer:</strong> Let bubbles float off-screen - all should pop when the correct one exits</li>
+                <li><strong>Correct Answer:</strong> Click the correct bubble - all bubbles should pop simultaneously with animations continuing</li>
+                <li><strong>Missed Answer:</strong> Let bubbles float off-screen - all should pop when the correct one exits, animations continue</li>
                 <li><strong>Wrong Answer:</strong> Click a wrong bubble - only that bubble pops, others continue floating</li>
+                <li><strong>Transition Animations:</strong> After correct/missed answers, bubbles should finish their popping animations even though game logic pauses</li>
+                <li><strong>No Input During Transition:</strong> Clicks should be ignored during the brief transition period between rounds</li>
             </ul>
         </div>
         

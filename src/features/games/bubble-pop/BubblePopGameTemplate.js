@@ -21,6 +21,7 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.streakCount = 0;
     this.maxStreak = 0;
     this.roundEnding = false;
+    this.isTransitioning = false; // Flag for round transitions
         
     // Visual effects
     this.particles = [];
@@ -292,7 +293,7 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Handle click/touch on bubbles
      */
   onClick(position, _event) {
-    if (this.state !== 'playing' || !this.bubbles) return;
+    if (this.state !== 'playing' || !this.bubbles || this.isTransitioning) return;
         
     // Check collision with bubbles
     for (let i = 0; i < this.bubbles.length; i++) {
@@ -383,8 +384,8 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.round++;
     this.updateLevel(this.round);
         
-    // Temporarily pause the game to prevent visual issues
-    this.setState('transitioning');
+    // Set a transitioning flag but keep the game loop running for animations
+    this.isTransitioning = true;
         
     // Increase difficulty gradually
     if (this.round % 5 === 0 && this.settings.timeLimit > 15) {
@@ -392,12 +393,12 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.addMessage('Time limit decreased!', this.themeColors.warning);
     }
         
-    // Generate new question and bubbles
+    // Generate new question and bubbles after a brief delay
     setTimeout(() => {
       this.generateQuestion();
       this.spawnBubbles();
-      this.setState('playing'); // Resume playing
-    }, 1000);
+      this.isTransitioning = false; // Resume normal game logic
+    }, 1500); // Slightly longer delay to allow animations to complete
   }
     
   /**
@@ -479,7 +480,11 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Update game logic
      */
   update(deltaTime, _timestamp) {
-    if (this.state !== 'playing') return;
+    // Always update animations (bubbles, particles, messages) regardless of game state
+    this.updateAnimations(deltaTime);
+    
+    // Only update game logic if playing and not transitioning
+    if (this.state !== 'playing' || this.isTransitioning) return;
         
     // Update time remaining
     this.timeRemaining -= deltaTime / 1000;
@@ -488,7 +493,28 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.handleTimeUp();
       return;
     }
-        
+            
+    // Check if correct bubble was missed or all bubbles have exited (only check once per round)
+    const correctBubble = this.bubbles?.find(b => b.isCorrect);
+    const activeBubbles = this.bubbles?.filter(b => b.active) || [];
+    
+    if ((!correctBubble || !correctBubble.active || activeBubbles.length === 0) && !this.roundEnding) {
+      // Prevent multiple calls by setting a flag
+      this.roundEnding = true;
+      
+      // If there are still active bubbles, pop them all before ending the round
+      if (activeBubbles.length > 0) {
+        this.popAllBubbles();
+      }
+      
+      this.handleMissedBubble();
+    }
+  }
+  
+  /**
+   * Update all animations - separated from game logic so it continues during transitions
+   */
+  updateAnimations(deltaTime) {
     // Update bubbles
     if (this.bubbles) {
       this.bubbles.forEach(bubble => {
@@ -497,22 +523,6 @@ export default class BubblePopGameTemplate extends BaseGame {
             
       // Remove inactive bubbles
       this.bubbles = this.bubbles.filter(bubble => bubble.active);
-            
-      // Check if correct bubble was missed or all bubbles have exited (only check once per round)
-      const correctBubble = this.bubbles.find(b => b.isCorrect);
-      const activeBubbles = this.bubbles.filter(b => b.active);
-      
-      if ((!correctBubble || !correctBubble.active || activeBubbles.length === 0) && !this.roundEnding) {
-        // Prevent multiple calls by setting a flag
-        this.roundEnding = true;
-        
-        // If there are still active bubbles, pop them all before ending the round
-        if (activeBubbles.length > 0) {
-          this.popAllBubbles();
-        }
-        
-        this.handleMissedBubble();
-      }
     }
         
     // Update particles
@@ -807,6 +817,7 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.streakCount = 0;
     this.maxStreak = 0;
     this.roundEnding = false;
+    this.isTransitioning = false;
     this.timeRemaining = this.settings.timeLimit;
     this.lives = 3;
         
