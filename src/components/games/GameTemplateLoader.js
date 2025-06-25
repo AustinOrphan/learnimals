@@ -329,7 +329,9 @@ export default class GameTemplateLoader {
       this.gameInstance.pause();
     }
     this.setState('paused');
-    this.showModal(this.elements.pauseModal);
+    
+    // Instead of showing a modal, just update the pause button and show pause overlay
+    this.showPauseOverlay();
   }
     
   resumeGame() {
@@ -337,7 +339,9 @@ export default class GameTemplateLoader {
       this.gameInstance.resume();
     }
     this.setState('playing');
-    this.hideModal(this.elements.pauseModal);
+    
+    // Hide the pause overlay instead of modal
+    this.hidePauseOverlay();
   }
     
   restartGame() {
@@ -477,14 +481,13 @@ export default class GameTemplateLoader {
       // Restore body scroll
       document.body.style.overflow = '';
             
-      // Resume game if paused by modal
+      // Resume game if paused by modal (but not for pause modal since we handle that differently)
       if (this.gameState === 'paused') {
-        if (modal === this.elements.pauseModal) {
-          this.resumeGame();
-        } else if (modal === this.elements.instructionsModal && this.autoPausedForInstructions) {
+        if (modal === this.elements.instructionsModal && this.autoPausedForInstructions) {
           this.autoPausedForInstructions = false;
           this.resumeGame();
         }
+        // Note: Removed pauseModal handling since we now use overlay instead
       }
     }
   }
@@ -669,6 +672,84 @@ export default class GameTemplateLoader {
     if (this.gameInstance && typeof this.gameInstance.render === 'function') {
       // Force a re-render to apply new theme colors
       this.gameInstance.render();
+    }
+  }
+  
+  /**
+   * Show pause overlay only over the game canvas
+   */
+  showPauseOverlay() {
+    // Update pause button state
+    if (this.elements.pauseBtn) {
+      this.elements.pauseBtn.textContent = '▶️ Resume';
+      this.elements.pauseBtn.setAttribute('aria-label', 'Resume game');
+    }
+    
+    // Show pause indicator over the game canvas only
+    const gameCanvas = this.elements.gameCanvas;
+    if (gameCanvas) {
+      let pauseOverlay = document.getElementById('game-pause-overlay');
+      
+      if (!pauseOverlay) {
+        // Create pause overlay if it doesn't exist
+        pauseOverlay = document.createElement('div');
+        pauseOverlay.id = 'game-pause-overlay';
+        pauseOverlay.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 2rem;
+          font-weight: bold;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+          z-index: 10;
+          pointer-events: none;
+        `;
+        pauseOverlay.innerHTML = `
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">⏸️</div>
+            <div>Game Paused</div>
+            <div style="font-size: 1rem; margin-top: 0.5rem; opacity: 0.8;">
+              Press Space or click Resume to continue
+            </div>
+          </div>
+        `;
+        
+        // Make sure the game canvas container is positioned relatively
+        const gameContainer = gameCanvas.closest('#game-content') || gameCanvas.parentElement;
+        if (gameContainer) {
+          const currentPosition = window.getComputedStyle(gameContainer).position;
+          if (currentPosition === 'static') {
+            gameContainer.style.position = 'relative';
+          }
+          gameContainer.appendChild(pauseOverlay);
+        }
+      }
+      
+      pauseOverlay.style.display = 'flex';
+    }
+  }
+  
+  /**
+   * Hide pause overlay from the game canvas
+   */
+  hidePauseOverlay() {
+    // Update pause button state
+    if (this.elements.pauseBtn) {
+      this.elements.pauseBtn.textContent = '⏸️ Pause';
+      this.elements.pauseBtn.setAttribute('aria-label', 'Pause game');
+    }
+    
+    // Hide pause overlay
+    const pauseOverlay = document.getElementById('game-pause-overlay');
+    if (pauseOverlay) {
+      pauseOverlay.style.display = 'none';
     }
   }
 }

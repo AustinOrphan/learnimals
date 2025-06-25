@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Pause Test - Canvas Only</title>
+    <link rel="stylesheet" href="./learnimals-site/css/styles.css">
+    <link rel="stylesheet" href="./src/styles/components/games/game-hero.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: var(--bg-primary, #f8f9fa);
+            color: var(--text-primary, #333);
+        }
+        
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--bg-card, white);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            margin-top: 0;
+            color: var(--text-primary, #333);
+        }
+        
+        .controls {
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .controls button {
+            margin: 5px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background: var(--accent-primary, #007bff);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .controls button:hover {
+            background: var(--accent-secondary, #6f42c1);
+        }
+        
+        .game-container {
+            text-align: center;
+            position: relative;
+        }
+        
+        canvas {
+            border: 2px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            background: var(--bg-secondary, #f8f9fa);
+        }
+        
+        .side-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
+            background: var(--bg-card, white);
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .side-panel h4 {
+            margin-top: 0;
+            color: var(--text-primary, #333);
+        }
+        
+        .side-panel input, .side-panel textarea {
+            width: 100%;
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid var(--border-color, #ddd);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .side-panel textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: var(--bg-secondary, #f8f9fa);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .instructions {
+            background: var(--bg-secondary, #f8f9fa);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Game Pause Test - Canvas Only</h1>
+        <p>This test verifies that game pause only affects the canvas area, not the entire window.</p>
+        
+        <div class="instructions">
+            <h3>Test Instructions:</h3>
+            <ul>
+                <li><strong>Space key</strong> - Toggle pause/resume</li>
+                <li><strong>Escape key</strong> - Pause game (if not already paused)</li>
+                <li><strong>Pause button</strong> - Click to pause/resume</li>
+                <li><strong>Side panel</strong> - Should remain interactive when game is paused</li>
+                <li><strong>Scrolling</strong> - Should work normally when game is paused</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <button id="pause-btn">⏸️ Pause</button>
+            <button onclick="location.reload()">Reload Test</button>
+            <button onclick="toggleTheme()">Toggle Theme</button>
+        </div>
+        
+        <div class="test-section game-container">
+            <h3>Bubble Pop Game Canvas</h3>
+            <div id="game-content" style="position: relative; display: inline-block;">
+                <canvas id="bubble-canvas" width="600" height="400"></canvas>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Page Content Below Game</h3>
+            <p>This content should remain scrollable and interactive even when the game is paused.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
+    
+    <!-- Side panel to test interactivity during pause -->
+    <div class="side-panel">
+        <h4>Interactive Panel</h4>
+        <p>This panel should remain fully interactive when the game is paused.</p>
+        
+        <input type="text" placeholder="Type here..." />
+        <textarea placeholder="Test typing here while game is paused..."></textarea>
+        
+        <div class="status" id="game-status">
+            Game Status: Loading...
+        </div>
+        
+        <button onclick="testInteraction()">Test Button</button>
+        
+        <h4>Scroll Test</h4>
+        <div style="height: 300px; overflow-y: auto; border: 1px solid var(--border-color, #ddd); padding: 10px;">
+            <p>Scroll test content:</p>
+            <p>Line 1</p><p>Line 2</p><p>Line 3</p><p>Line 4</p><p>Line 5</p>
+            <p>Line 6</p><p>Line 7</p><p>Line 8</p><p>Line 9</p><p>Line 10</p>
+            <p>Line 11</p><p>Line 12</p><p>Line 13</p><p>Line 14</p><p>Line 15</p>
+        </div>
+    </div>
+
+    <!-- Theme system -->
+    <script src="./src/themeInitializer.js"></script>
+    <script type="module" src="./src/utils/themeManager.js"></script>
+    
+    <script type="module">
+        import BubblePopGameTemplate from './src/features/games/bubble-pop/BubblePopGameTemplate.js';
+        
+        let game = null;
+        let isDark = false;
+        let gameLoader = null;
+        
+        // Mock GameTemplateLoader for testing pause functionality
+        class MockGameTemplateLoader {
+            constructor() {
+                this.gameInstance = null;
+                this.gameState = 'loading';
+                this.elements = {
+                    pauseBtn: document.getElementById('pause-btn'),
+                    gameCanvas: document.getElementById('bubble-canvas')
+                };
+                
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                // Pause button
+                this.elements.pauseBtn.addEventListener('click', () => this.togglePause());
+                
+                // Keyboard controls
+                document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+            }
+            
+            setState(state) {
+                this.gameState = state;
+                document.getElementById('game-status').textContent = `Game Status: ${state}`;
+            }
+            
+            togglePause() {
+                if (this.gameState === 'playing') {
+                    this.pauseGame();
+                } else if (this.gameState === 'paused') {
+                    this.resumeGame();
+                }
+            }
+            
+            pauseGame() {
+                if (this.gameInstance && typeof this.gameInstance.pause === 'function') {
+                    this.gameInstance.pause();
+                }
+                this.setState('paused');
+                
+                // Instead of showing a modal, just update the pause button and show pause overlay
+                this.showPauseOverlay();
+            }
+            
+            resumeGame() {
+                if (this.gameInstance && typeof this.gameInstance.resume === 'function') {
+                    this.gameInstance.resume();
+                }
+                this.setState('playing');
+                
+                // Hide the pause overlay instead of modal
+                this.hidePauseOverlay();
+            }
+            
+            showPauseOverlay() {
+                // Update pause button state
+                if (this.elements.pauseBtn) {
+                    this.elements.pauseBtn.textContent = '▶️ Resume';
+                    this.elements.pauseBtn.setAttribute('aria-label', 'Resume game');
+                }
+                
+                // Show pause indicator over the game canvas only
+                const gameCanvas = this.elements.gameCanvas;
+                if (gameCanvas) {
+                    let pauseOverlay = document.getElementById('game-pause-overlay');
+                    
+                    if (!pauseOverlay) {
+                        // Create pause overlay if it doesn't exist
+                        pauseOverlay = document.createElement('div');
+                        pauseOverlay.id = 'game-pause-overlay';
+                        pauseOverlay.style.cssText = `
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(0, 0, 0, 0.6);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 2rem;
+                            font-weight: bold;
+                            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+                            z-index: 10;
+                            pointer-events: none;
+                        `;
+                        pauseOverlay.innerHTML = `
+                            <div style="text-align: center;">
+                                <div style="font-size: 3rem; margin-bottom: 0.5rem;">⏸️</div>
+                                <div>Game Paused</div>
+                                <div style="font-size: 1rem; margin-top: 0.5rem; opacity: 0.8;">
+                                    Press Space or click Resume to continue
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Make sure the game canvas container is positioned relatively
+                        const gameContainer = gameCanvas.closest('#game-content') || gameCanvas.parentElement;
+                        if (gameContainer) {
+                            const currentPosition = window.getComputedStyle(gameContainer).position;
+                            if (currentPosition === 'static') {
+                                gameContainer.style.position = 'relative';
+                            }
+                            gameContainer.appendChild(pauseOverlay);
+                        }
+                    }
+                    
+                    pauseOverlay.style.display = 'flex';
+                }
+            }
+            
+            hidePauseOverlay() {
+                // Update pause button state
+                if (this.elements.pauseBtn) {
+                    this.elements.pauseBtn.textContent = '⏸️ Pause';
+                    this.elements.pauseBtn.setAttribute('aria-label', 'Pause game');
+                }
+                
+                // Hide pause overlay
+                const pauseOverlay = document.getElementById('game-pause-overlay');
+                if (pauseOverlay) {
+                    pauseOverlay.style.display = 'none';
+                }
+            }
+            
+            handleKeyboard(e) {
+                switch (e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    this.togglePause();
+                    break;
+                case 'Escape':
+                    e.preventDefault();
+                    if (this.gameState !== 'paused') {
+                        this.pauseGame();
+                    }
+                    break;
+                }
+            }
+        }
+        
+        async function initGame() {
+            try {
+                // Create mock game loader
+                gameLoader = new MockGameTemplateLoader();
+                
+                // Initialize game
+                game = new BubblePopGameTemplate('bubble-canvas', {
+                    difficulty: 'easy'
+                });
+                
+                gameLoader.gameInstance = game;
+                
+                await game.onInitialized();
+                gameLoader.setState('playing');
+                
+            } catch (error) {
+                console.error('Game initialization error:', error);
+                document.getElementById('game-status').textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        window.toggleTheme = function() {
+            isDark = !isDark;
+            const newTheme = isDark ? 'night' : 'default';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            if (!isDark) {
+                document.documentElement.setAttribute('data-theme-name', 'default');
+            }
+            
+            // Trigger theme change event
+            document.dispatchEvent(new CustomEvent('themeChanged', {
+                detail: { theme: newTheme, mode: isDark ? 'dark' : 'light' }
+            }));
+        };
+        
+        window.testInteraction = function() {
+            alert('Button clicked! UI is responsive even when game is paused.');
+        };
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGame);
+        } else {
+            initGame();
+        }
+    </script>
+</body>
+</html>
