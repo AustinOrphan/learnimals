@@ -314,7 +314,7 @@ class SubjectGenerator {
             <h1>${subject.name} with ${subject.character.name} the ${subject.character.type}</h1>
             <p>${subject.description}</p>
             <div class="hero-image">
-                <img src="/public/images/${subjectKey}-${subject.character.type.toLowerCase()}.png" 
+                <img src="/public/images/${subjectKey}-${subject.character.type.toLowerCase()}.svg" 
                      alt="${subject.character.name} the ${subject.character.type}" />
             </div>
         </section>
