@@ -166,6 +166,34 @@ export default class BaseGame {
   }
     
   /**
+     * Called when game starts - override in subclasses
+     */
+  onStart() {
+    // Base implementation - subclasses can override
+  }
+    
+  /**
+     * Called when game ends - override in subclasses
+     */
+  onGameEnd() {
+    // Base implementation - subclasses can override
+  }
+    
+  /**
+     * Called when game restarts - override in subclasses
+     */
+  onRestart() {
+    // Base implementation - subclasses can override
+  }
+    
+  /**
+     * Called when canvas is resized - override in subclasses
+     */
+  onResize(_width, _height) {
+    // Base implementation - subclasses can override
+  }
+    
+  /**
      * Start the game
      */
   start() {
@@ -201,8 +229,12 @@ export default class BaseGame {
      * Resume the game
      */
   resume() {
-    if (this.state !== 'paused') return;
+    if (this.state !== 'paused') {
+      console.log('Cannot resume: game is not paused, current state:', this.state);
+      return;
+    }
         
+    console.log('Resuming game...');
     this.setState('playing');
     this.isPaused = false;
         
@@ -211,8 +243,11 @@ export default class BaseGame {
     this.startTime += pauseDuration;
     this.lastFrameTime = performance.now();
         
+    console.log('Calling onResume callbacks...');
     this.onResume();
     this.onResumeCallback();
+    
+    console.log('Restarting game loop...');
     this.gameLoop();
   }
     
@@ -262,7 +297,10 @@ export default class BaseGame {
      * Main game loop
      */
   gameLoop(timestamp = performance.now()) {
-    if (!this.isActive || this.isPaused) return;
+    if (!this.isActive || this.isPaused) {
+      console.log('Game loop stopped: isActive=', this.isActive, 'isPaused=', this.isPaused, 'state=', this.state);
+      return;
+    }
         
     // Calculate delta time
     const deltaTime = timestamp - this.lastFrameTime;
@@ -422,22 +460,6 @@ export default class BaseGame {
     // Override in subclasses
     // Clear canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-    
-  onStart() {
-    // Override in subclasses
-  }
-    
-  onRestart() {
-    // Override in subclasses
-  }
-    
-  onGameEnd() {
-    // Override in subclasses
-  }
-    
-  onResize(_width, _height) {
-    // Override in subclasses
   }
     
   // Input event handlers - override in subclasses

@@ -701,8 +701,6 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Game over handling
      */
   onGameEnd() {
-    super.onGameEnd();
-        
     // Calculate final stats
     const accuracy = this.round > 1 ? Math.round((this.score / (this.round * 100)) * 100) : 0;
     const finalStats = {
@@ -730,7 +728,6 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Restart game
      */
   onRestart() {
-    super.onRestart();
     this.bubbles = [];
     this.particles = [];
     this.messageQueue = [];

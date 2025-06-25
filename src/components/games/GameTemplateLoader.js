@@ -317,16 +317,16 @@ export default class GameTemplateLoader {
   }
     
   pauseGame() {
-    if (this.gameInstance && typeof this.gameInstance.pauseGame === 'function') {
-      this.gameInstance.pauseGame();
+    if (this.gameInstance && typeof this.gameInstance.pause === 'function') {
+      this.gameInstance.pause();
     }
     this.setState('paused');
     this.showModal(this.elements.pauseModal);
   }
     
   resumeGame() {
-    if (this.gameInstance && typeof this.gameInstance.resumeGame === 'function') {
-      this.gameInstance.resumeGame();
+    if (this.gameInstance && typeof this.gameInstance.resume === 'function') {
+      this.gameInstance.resume();
     }
     this.setState('playing');
     this.hideModal(this.elements.pauseModal);
