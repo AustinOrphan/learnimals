@@ -93,10 +93,8 @@ export default class Bubble {
       return;
     }
     
-    // Floating animation
-    this.floatOffset += this.floatSpeed * (deltaTime / 1000);
-    const floatY = this.originalY + Math.sin(this.floatOffset) * this.floatAmplitude;
-    this.y = floatY;
+    // Original upward floating movement (like the original game)
+    this.y -= this.speed * (deltaTime / 16.67); // Normalized to ~60 FPS
     
     // Pulse animation
     if (this.isPulsing) {
