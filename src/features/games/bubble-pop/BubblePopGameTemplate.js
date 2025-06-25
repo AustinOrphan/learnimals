@@ -71,6 +71,23 @@ export default class BubblePopGameTemplate extends BaseGame {
   }
     
   /**
+     * Draw a rounded rectangle (fallback for browsers without roundRect support)
+     */
+  drawRoundedRect(x, y, width, height, radius) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x + radius, y);
+    this.ctx.lineTo(x + width - radius, y);
+    this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    this.ctx.lineTo(x + width, y + height - radius);
+    this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    this.ctx.lineTo(x + radius, y + height);
+    this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    this.ctx.lineTo(x, y + radius);
+    this.ctx.quadraticCurveTo(x, y, x + radius, y);
+    this.ctx.closePath();
+  }
+    
+  /**
      * Initialize game after BaseGame setup
      */
   async onInitialized() {
@@ -179,14 +196,14 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.roundEnding = false; // Reset round ending flag
     this.correctBubbleIndex = getRandomInt(0, this.settings.bubbleCount - 1);
         
-    // Calculate bubble positions
+    // Calculate bubble positions - start off-screen (below canvas)
     const spacing = this.canvas.width / (this.settings.bubbleCount + 1);
     const radius = Math.min(40, spacing / 3);
-    const baseY = this.canvas.height - 80;
+    const startY = this.canvas.height + radius + 20; // Start below canvas
         
     for (let i = 0; i < this.settings.bubbleCount; i++) {
       const x = spacing * (i + 1);
-      const y = baseY + getRandomInt(-20, 20); // Add some variation
+      const y = startY + getRandomInt(0, 40); // Stagger start positions slightly
       let answer;
             
       if (i === this.correctBubbleIndex) {
@@ -212,7 +229,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         isCorrect,
         bubbleBackground: this.createBubbleBackground(radius),
         ctx: this.ctx,
-        floatSpeed: 0.5 + Math.random() * 0.5,
+        floatSpeed: 0.8 + Math.random() * 0.4, // Slightly faster and more varied
         color: isCorrect ? this.themeColors.success : this.themeColors.primary
       });
             
@@ -309,8 +326,11 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.streakCount++;
     this.maxStreak = Math.max(this.maxStreak, this.streakCount);
         
-    // Create explosion particles
+    // Create explosion particles for the clicked bubble
     this.createExplosion(bubble.x, bubble.y, this.themeColors.success);
+        
+    // Pop all remaining bubbles simultaneously
+    this.popAllBubbles();
         
     // Play success sound
     this.playSound(523.25, 200); // C5 note
@@ -478,14 +498,20 @@ export default class BubblePopGameTemplate extends BaseGame {
       // Remove inactive bubbles
       this.bubbles = this.bubbles.filter(bubble => bubble.active);
             
-      // Check if correct bubble was missed (only check once per round)
+      // Check if correct bubble was missed or all bubbles have exited (only check once per round)
       const correctBubble = this.bubbles.find(b => b.isCorrect);
-      if (!correctBubble || !correctBubble.active) {
+      const activeBubbles = this.bubbles.filter(b => b.active);
+      
+      if ((!correctBubble || !correctBubble.active || activeBubbles.length === 0) && !this.roundEnding) {
         // Prevent multiple calls by setting a flag
-        if (!this.roundEnding) {
-          this.roundEnding = true;
-          this.handleMissedBubble();
+        this.roundEnding = true;
+        
+        // If there are still active bubbles, pop them all before ending the round
+        if (activeBubbles.length > 0) {
+          this.popAllBubbles();
         }
+        
+        this.handleMissedBubble();
       }
     }
         
@@ -532,10 +558,46 @@ export default class BubblePopGameTemplate extends BaseGame {
   }
     
   /**
+     * Pop all bubbles simultaneously with explosion effects
+     */
+  popAllBubbles() {
+    if (!this.bubbles) return;
+    
+    // Create explosion effects for all bubbles
+    this.bubbles.forEach(bubble => {
+      if (bubble.active) {
+        // Create smaller explosion for non-correct bubbles
+        const particleCount = bubble.isCorrect ? 15 : 8;
+        const color = bubble.isCorrect ? this.themeColors.success : this.themeColors.primary;
+        
+        for (let i = 0; i < particleCount; i++) {
+          this.particles.push({
+            x: bubble.x,
+            y: bubble.y,
+            vx: (Math.random() - 0.5) * 8,
+            vy: (Math.random() - 0.5) * 8 - 2,
+            size: Math.random() * 4 + 2,
+            color: color,
+            life: 1,
+            decay: 0.02
+          });
+        }
+        
+        // Mark bubble for removal
+        bubble.isRemoving = true;
+      }
+    });
+  }
+
+  /**
      * Handle missed correct bubble
      */
   handleMissedBubble() {
     this.streakCount = 0;
+    
+    // Pop all remaining bubbles
+    this.popAllBubbles();
+    
     this.addMessage('Missed the answer!', this.themeColors.danger);
     this.nextRound();
   }
@@ -575,9 +637,12 @@ export default class BubblePopGameTemplate extends BaseGame {
      * Render the current question
      */
   renderQuestion() {
+    if (!this.currentQuestion || !this.currentQuestion.text) {
+      return;
+    }
+    
     this.ctx.save();
     this.ctx.font = 'bold 32px "Comic Sans MS", cursive';
-    this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
         
@@ -590,9 +655,16 @@ export default class BubblePopGameTemplate extends BaseGame {
     const bgWidth = metrics.width + padding * 2;
     const bgHeight = 50;
         
+    // Draw background
     this.ctx.fillStyle = this.getThemeColor('--bg-secondary') || '#e9ecef';
-    this.ctx.roundRect(bgX, bgY, bgWidth, bgHeight, 10);
+    this.drawRoundedRect(bgX, bgY, bgWidth, bgHeight, 10);
     this.ctx.fill();
+        
+    // Add border for better visibility
+    this.ctx.strokeStyle = this.getThemeColor('--border-color') || '#ddd';
+    this.ctx.lineWidth = 2;
+    this.drawRoundedRect(bgX, bgY, bgWidth, bgHeight, 10);
+    this.ctx.stroke();
         
     // Question text
     this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
@@ -612,7 +684,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         
     // Background
     this.ctx.fillStyle = this.getThemeColor('--border-color') || '#e0e0e0';
-    this.ctx.roundRect(x, y, barWidth, barHeight, 4);
+    this.drawRoundedRect(x, y, barWidth, barHeight, 4);
     this.ctx.fill();
         
     // Timer fill
@@ -627,7 +699,7 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.ctx.fillStyle = this.themeColors.danger;
     }
         
-    this.ctx.roundRect(x, y, fillWidth, barHeight, 4);
+    this.drawRoundedRect(x, y, fillWidth, barHeight, 4);
     this.ctx.fill();
         
     // Timer text
