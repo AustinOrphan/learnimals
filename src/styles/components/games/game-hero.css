@@ -1,0 +1,374 @@
+/* Game Hero Section Styles */
+/* Provides engaging hero layout for game pages with theme support */
+
+.game-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, 
+    var(--accent-primary, #007bff) 0%, 
+    var(--accent-secondary, #6f42c1) 100%);
+  color: var(--hero-text-color, white);
+  border-radius: 0 0 24px 24px;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  /* Add subtle shimmer effect */
+  background-attachment: fixed;
+}
+
+/* Theme-specific hero text colors */
+:root {
+  --hero-text-color: white;
+  --hero-overlay-opacity: 0.1;
+  --hero-button-bg: rgba(255, 255, 255, 0.2);
+  --hero-button-border: rgba(255, 255, 255, 0.3);
+  --hero-button-hover-bg: rgba(255, 255, 255, 0.3);
+  --hero-button-hover-border: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] {
+  --hero-text-color: #ffffff;
+  --hero-overlay-opacity: 0.15;
+  --hero-button-bg: rgba(255, 255, 255, 0.15);
+  --hero-button-border: rgba(255, 255, 255, 0.25);
+  --hero-button-hover-bg: rgba(255, 255, 255, 0.25);
+  --hero-button-hover-border: rgba(255, 255, 255, 0.4);
+}
+
+.game-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    /* Enhanced geometric pattern overlay - concentric circles with rings */
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Ccircle cx='40' cy='40' r='16' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.06'/%3E%3Ccircle cx='40' cy='40' r='12' stroke='%23ffffff' stroke-width='1' stroke-opacity='0.08'/%3E%3Ccircle cx='40' cy='40' r='8' fill='%23ffffff' fill-opacity='0.04'/%3E%3Ccircle cx='40' cy='40' r='4' fill='%23ffffff' fill-opacity='0.06'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat,
+    /* Dot pattern overlay */
+    url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='20' cy='20' r='2'/%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  opacity: var(--hero-overlay-opacity, 0.12);
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Additional texture layer for more depth */
+.game-hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    /* Mesh gradient overlay */
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.06) 0%, transparent 50%),
+    /* Woven texture pattern */
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M0 0h30v30H0zM30 30h30v30H30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+    /* Subtle diagonal lines */
+    linear-gradient(45deg, 
+      transparent 48%, 
+      rgba(255,255,255,0.04) 50%, 
+      transparent 52%),
+    linear-gradient(-45deg, 
+      transparent 48%, 
+      rgba(255,255,255,0.04) 50%, 
+      transparent 52%);
+  background-size: 
+    200% 200%,
+    200% 200%,
+    120px 120px,
+    30px 30px,
+    30px 30px;
+  opacity: 0.8;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+  animation: subtleShift 20s linear infinite;
+}
+
+/* Subtle texture animation - gentle swaying to 240px (2x pattern size) */
+@keyframes subtleShift {
+  0% { 
+    background-position: 0 0, 0 0, 0px 0px, 0px 0px, 0px 0px; 
+  }
+  25% {
+    background-position: 0 0, 0 0, 60px 30px, 15px 6px, -15px 6px;
+  }
+  50% { 
+    background-position: 0 0, 0 0, 120px 90px, 30px 12px, -30px 12px; 
+  }
+  75% {
+    background-position: 0 0, 0 0, 180px 180px, 45px 18px, -45px 18px;
+  }
+  100% { 
+    background-position: 0 0, 0 0, 240px 240px, 60px 24px, -60px 24px; 
+  }
+}
+
+.hero-content,
+.hero-character {
+  position: relative;
+  z-index: 4;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.game-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-description {
+  font-size: 1.2rem;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+  opacity: 0.95;
+  max-width: 500px;
+}
+
+.how-to-play-btn {
+  background: var(--hero-button-bg);
+  border: 2px solid var(--hero-button-border);
+  color: var(--hero-text-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.how-to-play-btn:hover,
+.how-to-play-btn:focus {
+  background: var(--hero-button-hover-bg);
+  border-color: var(--hero-button-hover-border);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: var(--hero-text-color);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.hero-character {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.character-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.3));
+  animation: float 3s ease-in-out infinite, bubbleShimmer 4s ease-in-out infinite;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(255, 255, 255, 0.25) 0%, 
+    rgba(255, 255, 255, 0.15) 40%, 
+    rgba(255, 255, 255, 0.08) 70%, 
+    rgba(255, 255, 255, 0.05) 100%);
+  padding: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Character floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Bubble shimmer animation for character */
+@keyframes bubbleShimmer {
+  0%, 100% {
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 0 30px rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Glass-like overlay for extra depth */
+.game-hero .glass-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(1px);
+  transition: background 0.3s ease;
+}
+
+/* Dark mode glass overlay */
+[data-theme="dark"] .game-hero .glass-overlay {
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 20%,
+    transparent 80%,
+    rgba(255, 255, 255, 0.10) 100%
+  );
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+  
+  .game-title {
+    font-size: 2rem;
+  }
+  
+  .game-description {
+    font-size: 1.1rem;
+    max-width: none;
+  }
+  
+  .character-image {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-hero {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 0 16px 16px;
+  }
+  
+  .game-title {
+    font-size: 1.75rem;
+  }
+  
+  .game-description {
+    font-size: 1rem;
+  }
+  
+  .character-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .how-to-play-btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .game-hero {
+    background: var(--accent-primary, #007bff);
+  }
+  
+  .how-to-play-btn {
+    background: var(--bg-card, #fff);
+    color: var(--text-primary, #333);
+    border-color: var(--text-primary, #333);
+  }
+  
+  .game-title,
+  .game-description {
+    text-shadow: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .character-image {
+    animation: none;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  
+  .how-to-play-btn {
+    transition: none;
+  }
+  
+  .how-to-play-btn:hover,
+  .how-to-play-btn:focus {
+    transform: none;
+  }
+  
+  .game-hero::after {
+    animation: none;
+  }
+}
+
+/* Theme Variations */
+.game-hero.math-theme {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.game-hero.science-theme {
+  background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+}
+
+.game-hero.reading-theme {
+  background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+}
+
+.game-hero.art-theme {
+  background: linear-gradient(135deg, #e83e8c 0%, #fd7e14 100%);
+}
+
+.game-hero.coding-theme {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+/* Focus and Accessibility */
+.how-to-play-btn:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+.character-image {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}

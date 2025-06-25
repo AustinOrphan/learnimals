@@ -206,19 +206,19 @@ class PlaceValueManipulative {
     return `
       <div class="breakdown-visual">
         ${Object.entries(breakdown).map(([place, count]) => {
-          if (count === 0) return '';
-          return `
+    if (count === 0) return '';
+    return `
             <div class="breakdown-section">
               <div class="breakdown-label">${place}: ${count}</div>
               <div class="breakdown-blocks">
                 ${Array(count).fill().map(() => 
-                  `<div class="breakdown-block block-${this.getBlockColor(place)}"></div>`
-                ).join('')}
+    `<div class="breakdown-block block-${this.getBlockColor(place)}"></div>`
+  ).join('')}
               </div>
               <div class="breakdown-value">${count} × ${this.getPlaceValue(place)} = ${count * this.getPlaceValue(place)}</div>
             </div>
           `;
-        }).join('')}
+  }).join('')}
       </div>
     `;
   }
@@ -310,7 +310,7 @@ class PlaceValueManipulative {
    * @param {string} type - Block type (ones, tens, hundreds, thousands)
    */
   addBlock(type) {
-    if (!this.blocks.hasOwnProperty(type)) return;
+    if (!Object.prototype.hasOwnProperty.call(this.blocks, type)) return;
     
     const value = this.getPlaceValue(type);
     
@@ -330,7 +330,7 @@ class PlaceValueManipulative {
    * @param {string} type - Block type
    */
   removeBlock(type) {
-    if (!this.blocks.hasOwnProperty(type) || this.blocks[type] <= 0) return;
+    if (!Object.prototype.hasOwnProperty.call(this.blocks, type) || this.blocks[type] <= 0) return;
     
     const value = this.getPlaceValue(type);
     this.blocks[type]--;
@@ -457,8 +457,8 @@ class PlaceValueManipulative {
     if (number === 1) return 'one';
     if (number <= 20) {
       const words = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 
-                     'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 
-                     'seventeen', 'eighteen', 'nineteen', 'twenty'];
+        'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 
+        'seventeen', 'eighteen', 'nineteen', 'twenty'];
       return words[number] || '';
     }
     

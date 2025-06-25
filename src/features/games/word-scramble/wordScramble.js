@@ -293,7 +293,7 @@ class WordScrambleGame {
     if (answer === this.currentWord) {
       // Correct answer
       this.score += this.difficultyLevel === 'easy' ? 1 : 
-                   this.difficultyLevel === 'medium' ? 2 : 3;
+        this.difficultyLevel === 'medium' ? 2 : 3;
       document.getElementById('score').textContent = this.score;
       
       document.getElementById('game-message').textContent = 'Correct! Well done!';

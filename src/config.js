@@ -76,20 +76,7 @@ const config = {
         role: 'Coding Guide'
       },
       description: 'Learn programming concepts with interactive lessons'
-    }
-  },
-  
-  // API endpoints (if any)
-  api: {
-    baseUrl: '/api',
-    endpoints: {
-      userProgress: '/progress',
-      gameScores: '/scores'
-    }
-  }
-
-  // Subject configurations
-  subjects: {
+    },
     music: {
       name: 'Music',
       character: {
@@ -102,9 +89,8 @@ const config = {
       color: '#9b59b6',
       difficulty: 'beginner',
       ageRange: '4-12',
-      features: ["Music Theory","Virtual Instruments","Rhythm Games","Song Composition"]
+      features: ['Music Theory','Virtual Instruments','Rhythm Games','Song Composition']
     },
-
     geography: {
       name: 'Geography',
       character: {
@@ -117,7 +103,16 @@ const config = {
       color: '#27ae60',
       difficulty: 'intermediate',
       ageRange: '6-12',
-      features: ["World Map","Country Explorer","Capital Quiz","Culture Corner"]
+      features: ['World Map','Country Explorer','Capital Quiz','Culture Corner']
+    }
+  },
+  
+  // API endpoints (if any)
+  api: {
+    baseUrl: '/api',
+    endpoints: {
+      userProgress: '/progress',
+      gameScores: '/scores'
     }
   },
 };

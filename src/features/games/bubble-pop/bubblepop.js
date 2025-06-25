@@ -1,6 +1,6 @@
 // filepath: src/features/games/bubble-pop/bubblepop.js
 import config from '../../../config.js';
-import { getRandomInt, debounce, createCancellableTimeout } from '../../../utils/common.js';
+import { getRandomInt, debounce } from '../../../utils/common.js';
 import Bubble from './Bubble.js';
 
 /**
@@ -13,15 +13,15 @@ export default class BubblePopGame {
    */
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
-    this.ctx = this.canvas.getContext("2d", { alpha: false });
+    this.ctx = this.canvas.getContext('2d', { alpha: false });
     
     // Initialize game variables
     this.bubbles = [];
     this.currentQuestion = {};
     this.score = 0;
-    this.message = "";
+    this.message = '';
     this.messageTimer = null;
-this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
+    this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
     this.lastFrameTime = 0;
     this.gameActive = true;
     
@@ -71,16 +71,16 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
    */
   setupEventListeners() {
     // Canvas interaction
-    this.canvas.addEventListener("click", this.handlePointerEvent);
-    this.canvas.addEventListener("touchstart", this.handlePointerEvent, { passive: false });
+    this.canvas.addEventListener('click', this.handlePointerEvent);
+    this.canvas.addEventListener('touchstart', this.handlePointerEvent, { passive: false });
     
     // Window events
-    window.addEventListener("resize", debounce(this.resizeCanvas, 250));
-    window.addEventListener("blur", this.pauseGame);
-    window.addEventListener("focus", this.resumeGame);
+    window.addEventListener('resize', debounce(this.resizeCanvas, 250));
+    window.addEventListener('blur', this.pauseGame);
+    window.addEventListener('focus', this.resumeGame);
     
     // Document visibility
-    document.addEventListener("visibilitychange", () => {
+    document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.pauseGame();
       } else {
@@ -89,7 +89,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
     });
     
     // Theme changes
-    document.addEventListener("themeChanged", () => {
+    document.addEventListener('themeChanged', () => {
       if (this.gameActive) {
         requestAnimationFrame(this.animate);
       }
@@ -137,10 +137,10 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
     const cacheKey = `bubble_${radius}`;
 
     if (!this.bubbleCache[cacheKey]) {
-      const bubbleCanvas = document.createElement("canvas");
+      const bubbleCanvas = document.createElement('canvas');
       bubbleCanvas.width = radius * 2 + 4; // Add padding for stroke
       bubbleCanvas.height = radius * 2 + 4;
-      const bubbleCtx = bubbleCanvas.getContext("2d");
+      const bubbleCtx = bubbleCanvas.getContext('2d');
 
       bubbleCtx.beginPath();
       bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
@@ -228,7 +228,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
 
     // Get pointer position (works for both touch and mouse)
     let clickX, clickY;
-    if (e.type.startsWith("touch")) {
+    if (e.type.startsWith('touch')) {
       clickX = (e.touches[0].clientX - rect.left) * scale;
       clickY = (e.touches[0].clientY - rect.top) * scale;
     } else {
@@ -242,11 +242,11 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
       if (bubble.containsPoint(clickX, clickY)) {
         if (bubble.isCorrect) {
           this.score++;
-          this.showMessage("Correct! Well done!", this.getThemeColor('--accent-color') || this.getThemeColor('--success-color') || '#5cb85c');
+          this.showMessage('Correct! Well done!', this.getThemeColor('--accent-color') || this.getThemeColor('--success-color') || '#5cb85c');
           // Clear the bubbles and spawn new ones
           this.nextRound();
         } else {
-          this.showMessage("Oops! Try again.", this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
+          this.showMessage('Oops! Try again.', this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
         }
         break;
       }
@@ -269,7 +269,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
     
     // Set new timer to clear message
     this.messageTimer = setTimeout(() => {
-      this.message = "";
+      this.message = '';
     }, config.games.bubblePop.messageTimeout);
   }
 
@@ -322,9 +322,9 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw game UI with shadow effect for better readability
-    this.ctx.font = "20px Comic Sans MS, Comic Sans, cursive";
+    this.ctx.font = '20px Comic Sans MS, Comic Sans, cursive';
     this.ctx.fillStyle = this.getThemeColor('--text-primary') || this.getThemeColor('--text-color') || '#333';
-    this.ctx.textAlign = "left";
+    this.ctx.textAlign = 'left';
     this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Or a dedicated shadow variable
     this.ctx.shadowBlur = 4;
     this.ctx.fillText(`Score: ${this.score}`, 10, 35);
@@ -333,15 +333,15 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
 
     // Draw message if present
     if (this.message) {
-      this.ctx.font = "24px Comic Sans MS, Comic Sans, cursive";
+      this.ctx.font = '24px Comic Sans MS, Comic Sans, cursive';
       this.ctx.fillStyle = this.messageColor;
-      this.ctx.textAlign = "center";
-      this.ctx.shadowColor = "rgba(255, 255, 255, 0.7)";
+      this.ctx.textAlign = 'center';
+      this.ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
       this.ctx.shadowBlur = 6;
       // Position message in the middle of the canvas
       this.ctx.fillText(this.message, this.canvas.width / 2, this.canvas.height / 2 - 50);
       this.ctx.shadowBlur = 0;
-      this.ctx.textAlign = "left"; // Reset alignment
+      this.ctx.textAlign = 'left'; // Reset alignment
     }
 
     // Update bubbles with time-based movement
@@ -360,7 +360,7 @@ this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('-
 
     // If the correct bubble was missed, show message and start next round
     if (missedCorrect) {
-      this.showMessage("Oops! The correct answer got away!", this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
+      this.showMessage('Oops! The correct answer got away!', this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
       this.nextRound();
     }
 

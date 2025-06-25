@@ -52,7 +52,7 @@ class ThemeManager {
       });
     }
   }
-    applyCurrentTheme() {
+  applyCurrentTheme() {
     const { name, mode } = this.currentTheme;
     
     // First apply common colors
