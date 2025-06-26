@@ -2,6 +2,8 @@
  * BaseGame - Base class for all Learnimals games
  * Provides common functionality for game state management, scoring, and UI integration
  */
+import logger from '../../utils/logger.js';
+
 export default class BaseGame {
   constructor(canvasId, options = {}) {
     // Core properties
@@ -64,7 +66,7 @@ export default class BaseGame {
       this.setState('ready');
       this.onInitialized();
     } catch (error) {
-      console.error('Game initialization failed:', error);
+      logger.error('Game initialization failed:', error);
       this.setState('error');
       throw error;
     }
@@ -165,7 +167,7 @@ export default class BaseGame {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       this.soundEnabled = true;
     } catch (error) {
-      console.warn('Audio not supported:', error);
+      logger.warn('Audio not supported:', error);
       this.soundEnabled = false;
     }
   }
@@ -182,7 +184,7 @@ export default class BaseGame {
      * Called after successful initialization - override in subclasses
      */
   onInitialized() {
-    console.log(`${this.constructor.name} initialized successfully`);
+    logger.debug(`${this.constructor.name} initialized successfully`);
   }
     
   /**
@@ -218,18 +220,18 @@ export default class BaseGame {
      */
   start() {
     if (this.state !== 'ready' && this.state !== 'game-over') {
-      console.warn('Cannot start game in current state:', this.state);
+      logger.warn('Cannot start game in current state:', this.state);
       return false;
     }
         
     // Prevent multiple simultaneous starts
     if (this.gameLoopRunning) {
-      console.warn('Game loop already running, stopping previous loop');
+      logger.warn('Game loop already running, stopping previous loop');
       this.stopGameLoop();
     }
         
     if (!this.setState('playing')) {
-      console.warn('Failed to transition to playing state');
+      logger.warn('Failed to transition to playing state');
       return false;
     }
     
@@ -248,12 +250,12 @@ export default class BaseGame {
      */
   pause() {
     if (this.state !== 'playing') {
-      console.warn('Cannot pause game in current state:', this.state);
+      logger.warn('Cannot pause game in current state:', this.state);
       return false;
     }
         
     if (!this.setState('paused')) {
-      console.warn('Failed to transition to paused state');
+      logger.warn('Failed to transition to paused state');
       return false;
     }
     
@@ -273,12 +275,12 @@ export default class BaseGame {
      */
   resume() {
     if (this.state !== 'paused') {
-      console.warn('Cannot resume game in current state:', this.state);
+      logger.warn('Cannot resume game in current state:', this.state);
       return false;
     }
         
     if (!this.setState('playing')) {
-      console.warn('Failed to transition to playing state');
+      logger.warn('Failed to transition to playing state');
       return false;
     }
     
@@ -300,12 +302,12 @@ export default class BaseGame {
      */
   gameOver() {
     if (this.state === 'game-over') {
-      console.warn('Game already over');
+      logger.warn('Game already over');
       return false;
     }
     
     if (!this.setState('game-over')) {
-      console.warn('Failed to transition to game-over state');
+      logger.warn('Failed to transition to game-over state');
       return false;
     }
     
@@ -362,7 +364,7 @@ export default class BaseGame {
   setState(newState) {
     // Prevent concurrent state transitions
     if (this.stateTransitionInProgress) {
-      console.warn(`State transition already in progress, ignoring: ${this.state} → ${newState}`);
+      logger.warn(`State transition already in progress, ignoring: ${this.state} → ${newState}`);
       return false;
     }
     
@@ -372,7 +374,7 @@ export default class BaseGame {
     
     // Validate state transition
     if (!this.isValidStateTransition(oldState, newState)) {
-      console.warn(`Invalid state transition: ${oldState} → ${newState}`);
+      logger.warn(`Invalid state transition: ${oldState} → ${newState}`);
       this.stateTransitionInProgress = false;
       return false;
     }
@@ -381,9 +383,9 @@ export default class BaseGame {
     
     try {
       this.onStateChange(newState, oldState);
-      console.log(`Game state: ${oldState} → ${newState}`);
+      logger.debug(`Game state: ${oldState} → ${newState}`);
     } catch (error) {
-      console.error('Error in state change callback:', error);
+      logger.error('Error in state change callback:', error);
     } finally {
       this.stateTransitionInProgress = false;
     }
@@ -462,7 +464,7 @@ export default class BaseGame {
       if (this.fpsHistory.length >= 3) {
         const avgFps = this.fpsHistory.reduce((a, b) => a + b) / this.fpsHistory.length;
         if (avgFps < 30) {
-          console.warn('Low FPS detected:', avgFps);
+          logger.perf('Low FPS detected:', avgFps);
         }
       }
     }
@@ -543,7 +545,7 @@ export default class BaseGame {
       oscillator.start(this.audioContext.currentTime);
       oscillator.stop(this.audioContext.currentTime + duration / 1000);
     } catch (error) {
-      console.warn('Sound playback failed:', error);
+      logger.warn('Sound playback failed:', error);
     }
   }
     
@@ -741,7 +743,7 @@ export default class BaseGame {
       try {
         this.audioContext.close();
       } catch (error) {
-        console.warn('Error closing audio context:', error);
+        logger.warn('Error closing audio context:', error);
       }
       this.audioContext = null;
     }
@@ -761,7 +763,7 @@ export default class BaseGame {
     this.onResume = null;
     this.onStateChange = null;
         
-    console.log(`${this.constructor.name} destroyed`);
+    logger.debug(`${this.constructor.name} destroyed`);
   }
     
   /**
@@ -769,7 +771,7 @@ export default class BaseGame {
      */
   startGameLoop() {
     if (this.gameLoopRunning) {
-      console.warn('Attempted to start game loop while already running');
+      logger.warn('Attempted to start game loop while already running');
       return;
     }
     

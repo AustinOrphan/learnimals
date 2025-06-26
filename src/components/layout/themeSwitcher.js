@@ -1,6 +1,7 @@
 // Theme Switcher Component for Learnimals
 // This component creates a theme selection interface
 import { THEME_DEFINITIONS } from '../../utils/themeRegistry.js';
+import logger from '../../utils/logger.js';
 
 class ThemeSwitcher {
   constructor() {
@@ -131,7 +132,7 @@ class ThemeSwitcher {
         }
       }
     } catch (error) {
-      console.warn('Error getting themes from theme manager:', error);
+      logger.warn('Error getting themes from theme manager:', error);
     }
 
     // Create a button for each theme
@@ -159,7 +160,7 @@ class ThemeSwitcher {
             localStorage.setItem('learnimals-theme-name', themeDef.id);
           }
         } catch (error) {
-          console.warn('Error applying theme:', error);
+          logger.warn('Error applying theme:', error);
         }
         this.closeMenu();
       });
@@ -181,7 +182,7 @@ class ThemeSwitcher {
       try {
         this.toggleTheme();
       } catch (error) {
-        console.warn('Error toggling mode:', error);
+        logger.warn('Error toggling mode:', error);
       }
     });
   }
@@ -244,7 +245,7 @@ class ThemeSwitcher {
         }
       }
     } catch (error) {
-      console.warn('Error getting current theme:', error);
+      logger.warn('Error getting current theme:', error);
     }
 
     // Update theme buttons

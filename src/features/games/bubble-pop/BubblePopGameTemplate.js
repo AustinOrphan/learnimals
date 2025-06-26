@@ -5,6 +5,7 @@
 import BaseGame from '../../../components/games/BaseGame.js';
 import { getRandomInt } from '../../../utils/common.js';
 import Bubble from './Bubble.js';
+import logger from '../../../utils/logger.js';
 
 export default class BubblePopGameTemplate extends BaseGame {
   constructor(canvasId, options = {}) {
@@ -878,7 +879,7 @@ export default class BubblePopGameTemplate extends BaseGame {
       difficulty: this.difficulty
     };
         
-    console.log('Game Over Stats:', finalStats);
+    logger.game('Game Over Stats:', finalStats);
         
     // Update game info for template
     const gameInfoElement = document.getElementById('game-info');

@@ -2,6 +2,8 @@
  * GameTemplateLoader - Loads and manages game templates
  * Handles template customization, game initialization, and UI management
  */
+import logger from '../../utils/logger.js';
+
 export default class GameTemplateLoader {
   constructor(gameConfig) {
     this.config = gameConfig;
@@ -34,7 +36,7 @@ export default class GameTemplateLoader {
       this.isInitialized = true;
       this.setState('playing');
     } catch (error) {
-      console.error('Failed to initialize game template:', error);
+      logger.error('Failed to initialize game template:', error);
       this.showError('Failed to load game. Please refresh and try again.');
     }
   }
@@ -200,7 +202,7 @@ export default class GameTemplateLoader {
         throw new Error(`Game class '${this.config.gameClass}' not found in ${this.config.gameScript}`);
       }
     } catch (error) {
-      console.error('Failed to load game script:', error);
+      logger.error('Failed to load game script:', error);
       throw error;
     }
   }
@@ -230,7 +232,7 @@ export default class GameTemplateLoader {
       }
             
     } catch (error) {
-      console.error('Failed to initialize game:', error);
+      logger.error('Failed to initialize game:', error);
       throw error;
     }
   }
@@ -263,7 +265,7 @@ export default class GameTemplateLoader {
       }
     }
         
-    console.log(`Game state changed: ${oldState} → ${newState}`);
+    logger.debug(`Game state changed: ${oldState} → ${newState}`);
   }
     
   /**
@@ -387,7 +389,7 @@ export default class GameTemplateLoader {
   toggleFullscreen() {
     if (!document.fullscreenElement) {
       this.elements.gameContainer.requestFullscreen().catch(err => {
-        console.log('Fullscreen request failed:', err);
+        logger.warn('Fullscreen request failed:', err);
       });
     } else {
       document.exitFullscreen();
@@ -568,13 +570,13 @@ export default class GameTemplateLoader {
         title: this.config.gameTitle,
         text: shareText,
         url: window.location.href
-      }).catch(err => console.log('Share failed:', err));
+      }).catch(err => logger.warn('Share failed:', err));
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(shareText).then(() => {
         this.showTemporaryMessage('Score copied to clipboard!');
       }).catch(() => {
-        console.log('Share not supported');
+        logger.debug('Share not supported');
       });
     }
   }

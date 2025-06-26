@@ -1,10 +1,11 @@
 // Navigation Helper for Learnimals
 // Provides absolute URL resolution for navigation links
+import logger from './logger.js';
 
 class NavigationHelper {
   constructor() {
     this.baseUrl = this.detectBaseUrl();
-    console.log('Navigation Helper initialized with base URL:', this.baseUrl);
+    logger.debug('Navigation Helper initialized with base URL:', this.baseUrl);
   }
 
   detectBaseUrl() {
@@ -70,7 +71,7 @@ class NavigationHelper {
       const navKey = link.getAttribute('data-nav');
       if (linkMappings[navKey]) {
         link.href = this.getUrl(linkMappings[navKey]);
-        console.log(`Updated ${navKey} link to:`, link.href);
+        logger.debug(`Updated ${navKey} link to:`, link.href);
       }
     });
 
@@ -78,14 +79,14 @@ class NavigationHelper {
     document.querySelectorAll('[data-img]').forEach(img => {
       const imgKey = img.getAttribute('data-img');
       img.src = this.getImageUrl(imgKey);
-      console.log(`Updated ${imgKey} image to:`, img.src);
+      logger.debug(`Updated ${imgKey} image to:`, img.src);
     });
   }
 
   // Navigate to a page programmatically
   navigateTo(page) {
     const url = this.getSubjectUrl(page);
-    console.log(`Navigating to: ${url}`);
+    logger.debug(`Navigating to: ${url}`);
     window.location.href = url;
   }
 

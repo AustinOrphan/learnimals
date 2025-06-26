@@ -2,6 +2,7 @@
  * PWA Installation Component for Enhanced Mobile Experience
  * Provides app installation prompts and mobile-specific optimizations
  */
+import logger from '../../utils/logger.js';
 
 class PWAInstaller {
   constructor() {
@@ -140,7 +141,7 @@ class PWAInstaller {
 
     // Wait for the user's response
     const { outcome } = await this.deferredPrompt.userChoice;
-    console.log(`User response to the install prompt: ${outcome}`);
+    logger.debug(`User response to the install prompt: ${outcome}`);
 
     // Clear the deferredPrompt
     this.deferredPrompt = null;
