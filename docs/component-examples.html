@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnimals Component Examples</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../src/styles/base/styles.css">
+    <link rel="stylesheet" href="../src/styles/components/components.css">
+    <link rel="stylesheet" href="../src/styles/components/navbar.css">
+    
+    <style>
+        .demo-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-card);
+        }
+        
+        .demo-section h2 {
+            color: var(--text-heading);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-primary);
+            padding-bottom: 10px;
+        }
+        
+        .demo-controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-controls button {
+            padding: 8px 16px;
+            border: 1px solid var(--accent-primary);
+            background-color: var(--accent-primary);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .demo-controls button:hover {
+            background-color: var(--accent-secondary);
+        }
+        
+        .demo-controls button:disabled {
+            background-color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+        
+        .demo-output {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: var(--bg-primary);
+            border-radius: 4px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .code-example {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .cards-demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .game-canvas {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: block;
+            margin: 20px auto;
+            background-color: #87CEEB;
+        }
+        
+        .performance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background-color: var(--bg-secondary);
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .event-log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .event-entry {
+            margin: 2px 0;
+            padding: 2px 4px;
+            border-left: 3px solid #007bff;
+            background-color: white;
+        }
+        
+        .nav-demo {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <img src="../public/images/logo.png" alt="Learnimals Logo" class="nav-logo">
+                <span>Component Examples</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#modal-examples">Modals</a></li>
+                <li><a href="#card-examples">Cards</a></li>
+                <li><a href="#game-examples">Games</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header>
+            <h1>Learnimals Component Examples</h1>
+            <p>Interactive demonstrations of all Learnimals UI components with live code examples.</p>
+        </header>
+
+        <!-- Modal Examples -->
+        <section id="modal-examples" class="demo-section">
+            <h2>Modal Component Examples</h2>
+            
+            <div class="demo-controls">
+                <button onclick="showBasicModal()">Basic Modal</button>
+                <button onclick="showConfirmationModal()">Confirmation Modal</button>
+                <button onclick="showCustomModal()">Custom Styled Modal</button>
+                <button onclick="showDynamicModal()">Dynamic Content Modal</button>
+            </div>
+            
+            <div class="demo-output">
+                <h3>Event Log</h3>
+                <div id="modal-events" class="event-log">
+                    <div class="event-entry">Ready to demonstrate modals...</div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Code Examples</summary>
+                <div class="code-example">
+<pre>// Basic Modal
+const basicModal = new Modal({
+  id: 'basic-demo',
+  title: 'Basic Modal',
+  content: '&lt;p&gt;This is a simple modal with default settings.&lt;/p&gt;',
+  onConfirm: () => logEvent('Basic modal confirmed'),
+  onClose: () => logEvent('Basic modal closed')
+});
+
+// Confirmation Modal
+const confirmModal = new Modal({
+  id: 'confirm-demo',
+  title: 'Confirm Action',
+  content: '&lt;p&gt;Are you sure you want to proceed?&lt;/p&gt;',
+  confirmButtonText: 'Yes, Continue',
+  cancelButtonText: 'Cancel',
+  showCancelButton: true,
+  size: 'small',
+  onConfirm: () => logEvent('Action confirmed'),
+  onCancel: () => logEvent('Action cancelled')
+});
+</pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- Card Examples -->
+        <section id="card-examples" class="demo-section">
+            <h2>Card Component Examples</h2>
+            
+            <div class="demo-controls">
+                <button onclick="generateSubjectCards()">Subject Cards</button>
+                <button onclick="generateFeatureCards()">Feature Cards</button>
+                <button onclick="generateAnnouncementCard()">Announcement Card</button>
+                <button onclick="clearCards()">Clear Cards</button>
+            </div>
+            
+            <div id="cards-container" class="cards-demo-grid">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+            
+            <div class="demo-output">
+                <h3>Card Events</h3>
+                <div id="card-events" class="event-log">
+                    <div class="event-entry">Ready to demonstrate cards...</div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Code Examples</summary>
+                <div class="code-example">
+<pre>// Subject Card with Image
+const mathCard = new Card({
+  title: 'Mathematics with Max',
+  content: '&lt;p&gt;Join Max the Monkey for exciting math adventures!&lt;/p&gt;',
+  imageUrl: '/images/math-character.png',
+  imageAlt: 'Max the Monkey character',
+  linkUrl: '/subjects/math.html',
+  linkText: 'Explore Math',
+  theme: 'default'
+});
+mathCard.render('#cards-container');
+
+// Feature Card
+const bubbleGameCard = new Card({
+  title: 'Bubble Pop Game',
+  content: '&lt;p&gt;Pop colorful bubbles while learning letters and numbers!&lt;/p&gt;',
+  linkUrl: '/games/bubble-pop.html',
+  linkText: 'Play Now',
+  cssClasses: ['game-card'],
+  theme: 'alt'
+});
+</pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- Game Examples -->
+        <section id="game-examples" class="demo-section">
+            <h2>BaseGame Component Example</h2>
+            
+            <div class="demo-controls">
+                <button id="start-game" onclick="startDemoGame()">Start Game</button>
+                <button id="pause-game" onclick="pauseDemoGame()" disabled>Pause Game</button>
+                <button id="resume-game" onclick="resumeDemoGame()" disabled>Resume Game</button>
+                <button id="restart-game" onclick="restartDemoGame()" disabled>Restart Game</button>
+            </div>
+            
+            <canvas id="demo-game-canvas" class="game-canvas" width="400" height="300"></canvas>
+            
+            <div class="performance-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="game-score">0</div>
+                    <div class="stat-label">Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="game-level">1</div>
+                    <div class="stat-label">Level</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="game-fps">0</div>
+                    <div class="stat-label">FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="game-state">ready</div>
+                    <div class="stat-label">State</div>
+                </div>
+            </div>
+            
+            <div class="demo-output">
+                <h3>Game Events</h3>
+                <div id="game-events" class="event-log">
+                    <div class="event-entry">Demo game initialized and ready to start...</div>
+                </div>
+            </div>
+
+            <details>
+                <summary>Code Examples</summary>
+                <div class="code-example">
+<pre>// Simple Demo Game Implementation
+class SimpleDemoGame extends BaseGame {
+  constructor(canvasId) {
+    super(canvasId, {
+      onScoreUpdate: (score) => updateGameStat('score', score),
+      onLevelUpdate: (level) => updateGameStat('level', level),
+      onStateChange: (state) => updateGameStat('state', state),
+      onGameOver: (score) => logEvent(`Game Over! Final Score: ${score}`)
+    });
+    
+    this.circles = [];
+    this.spawnTimer = 0;
+    this.spawnInterval = 2000; // 2 seconds
+  }
+  
+  onStart() {
+    this.circles = [];
+    this.spawnTimer = 0;
+    logEvent('Game started!');
+  }
+  
+  update(deltaTime, timestamp) {
+    // Update spawn timer
+    this.spawnTimer += deltaTime;
+    if (this.spawnTimer >= this.spawnInterval) {
+      this.spawnCircle();
+      this.spawnTimer = 0;
+    }
+    
+    // Update circles
+    this.circles.forEach((circle, index) => {
+      circle.y += circle.speed * deltaTime / 16;
+      if (circle.y > this.canvas.height + 50) {
+        this.circles.splice(index, 1);
+      }
+    });
+    
+    // Update FPS display
+    updateGameStat('fps', Math.round(this.getAverageFPS()));
+  }
+  
+  render() {
+    super.render(); // Clear canvas
+    
+    // Draw circles
+    this.circles.forEach(circle => {
+      this.ctx.fillStyle = circle.color;
+      this.ctx.beginPath();
+      this.ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+      this.ctx.fill();
+    });
+  }
+  
+  handleClick(position) {
+    // Check if any circle was clicked
+    for (let i = this.circles.length - 1; i >= 0; i--) {
+      const circle = this.circles[i];
+      const distance = Math.sqrt(
+        Math.pow(position.x - circle.x, 2) + 
+        Math.pow(position.y - circle.y, 2)
+      );
+      
+      if (distance <= circle.radius) {
+        this.circles.splice(i, 1);
+        this.addScore(10);
+        this.playSound(600, 100);
+        break;
+      }
+    }
+  }
+}
+</pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- API Reference -->
+        <section class="demo-section">
+            <h2>Complete API Reference</h2>
+            <p>For detailed API documentation, see the <a href="component-api-reference.md">Component API Reference</a>.</p>
+            
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="component-api-reference.md#modal-component">Modal Component API</a></li>
+                <li><a href="component-api-reference.md#card-component">Card Component API</a></li>
+                <li><a href="component-api-reference.md#basegame-component">BaseGame Component API</a></li>
+                <li><a href="component-api-reference.md#basecomponent-foundation">BaseComponent API</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Component Scripts -->
+    <script src="../src/components/ui/Modal.js"></script>
+    <script src="../src/components/ui/Card.js"></script>
+    <script src="../src/components/games/BaseGame.js"></script>
+    <script src="../src/utils/logger.js"></script>
+
+    <!-- Demo Implementation -->
+    <script>
+        // Event logging utility
+        function logEvent(message, containerId = 'modal-events') {
+            const container = document.getElementById(containerId);
+            const entry = document.createElement('div');
+            entry.className = 'event-entry';
+            entry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Modal Examples
+        function showBasicModal() {
+            const modal = new Modal({
+                id: 'basic-demo',
+                title: 'Basic Modal Example',
+                content: '<p>This is a simple modal with default settings. It demonstrates the basic functionality of the Modal component.</p>',
+                onConfirm: () => {
+                    logEvent('Basic modal confirmed');
+                    modal.close();
+                },
+                onClose: () => logEvent('Basic modal closed')
+            });
+            modal.create().open();
+        }
+
+        function showConfirmationModal() {
+            const modal = new Modal({
+                id: 'confirm-demo',
+                title: 'Confirm Action',
+                content: '<p>Are you sure you want to proceed with this action? This action cannot be undone.</p>',
+                confirmButtonText: 'Yes, Continue',
+                cancelButtonText: 'Cancel',
+                showCancelButton: true,
+                size: 'small',
+                onConfirm: () => {
+                    logEvent('Action confirmed');
+                    modal.close();
+                },
+                onCancel: () => {
+                    logEvent('Action cancelled');
+                    modal.close();
+                }
+            });
+            modal.create().open();
+        }
+
+        function showCustomModal() {
+            const modal = new Modal({
+                id: 'custom-demo',
+                title: 'Custom Styled Modal',
+                content: `
+                    <div style="text-align: center;">
+                        <h4 style="color: #e74c3c;">Special Announcement!</h4>
+                        <p>This modal demonstrates custom content styling and larger size.</p>
+                        <div style="background: linear-gradient(45deg, #3498db, #2ecc71); padding: 20px; border-radius: 8px; color: white; margin: 15px 0;">
+                            <strong>New features coming soon!</strong>
+                        </div>
+                    </div>
+                `,
+                confirmButtonText: 'Awesome!',
+                size: 'large',
+                onConfirm: () => {
+                    logEvent('Custom modal confirmed');
+                    modal.close();
+                }
+            });
+            modal.create().open();
+        }
+
+        function showDynamicModal() {
+            const modal = new Modal({
+                id: 'dynamic-demo',
+                title: 'Dynamic Content',
+                content: '<p>Loading dynamic content...</p>',
+                confirmButtonText: 'Reload Content',
+                showCancelButton: true,
+                onConfirm: () => {
+                    // Simulate dynamic content update
+                    const newContent = `
+                        <h4>Content Updated!</h4>
+                        <p>Current time: ${new Date().toLocaleTimeString()}</p>
+                        <p>Random number: ${Math.floor(Math.random() * 1000)}</p>
+                    `;
+                    modal.update({ content: newContent });
+                    logEvent('Dynamic content updated');
+                },
+                onCancel: () => {
+                    modal.close();
+                }
+            });
+            
+            modal.create().open();
+            
+            // Simulate loading content
+            setTimeout(() => {
+                modal.update({
+                    content: `
+                        <h4>Content Loaded!</h4>
+                        <p>This content was loaded dynamically after opening the modal.</p>
+                        <p>Click "Reload Content" to see it change again.</p>
+                    `
+                });
+                logEvent('Initial dynamic content loaded');
+            }, 1000);
+        }
+
+        // Card Examples
+        function generateSubjectCards() {
+            clearCards();
+            
+            const subjects = [
+                {
+                    title: 'Mathematics with Max',
+                    content: '<p>Join Max the Monkey for exciting math adventures! Learn numbers, shapes, and problem-solving.</p>',
+                    imageUrl: '../public/images/math-parrot.png',
+                    imageAlt: 'Math character',
+                    linkUrl: '/subjects/math.html',
+                    linkText: 'Explore Math',
+                    theme: 'default'
+                },
+                {
+                    title: 'Science with Sage',
+                    content: '<p>Discover the wonders of science through experiments and exploration with Sage the Parrot!</p>',
+                    imageUrl: '../public/images/science-parrot.png',
+                    imageAlt: 'Science character',
+                    linkUrl: '/subjects/science.html',
+                    linkText: 'Start Exploring',
+                    theme: 'default'
+                },
+                {
+                    title: 'Reading Adventures',
+                    content: '<p>Build reading skills through interactive stories and phonics activities.</p>',
+                    imageUrl: '../public/images/reading-panda.png',
+                    imageAlt: 'Reading character',
+                    linkUrl: '/subjects/reading.html',
+                    linkText: 'Start Reading',
+                    theme: 'default'
+                }
+            ];
+
+            subjects.forEach(subject => {
+                const card = new Card(subject);
+                card.render('#cards-container');
+            });
+
+            logEvent('Subject cards generated', 'card-events');
+        }
+
+        function generateFeatureCards() {
+            clearCards();
+            
+            const features = [
+                {
+                    title: 'Bubble Pop Game',
+                    content: '<p>Pop colorful bubbles while learning letters and numbers in this exciting game!</p>',
+                    linkUrl: '/games/bubble-pop.html',
+                    linkText: 'Play Now',
+                    theme: 'alt'
+                },
+                {
+                    title: 'Word Scramble',
+                    content: '<p>Unscramble words to build vocabulary and spelling skills.</p>',
+                    linkUrl: '/games/word-scramble.html',
+                    linkText: 'Play Game',
+                    theme: 'alt'
+                },
+                {
+                    title: 'Math Challenges',
+                    content: '<p>Solve math problems and compete for high scores!</p>',
+                    linkUrl: '/games/math-challenge.html',
+                    linkText: 'Take Challenge',
+                    theme: 'alt'
+                }
+            ];
+
+            features.forEach(feature => {
+                const card = new Card(feature);
+                card.render('#cards-container');
+            });
+
+            logEvent('Feature cards generated', 'card-events');
+        }
+
+        function generateAnnouncementCard() {
+            clearCards();
+            
+            const announcement = new Card({
+                title: 'Special Announcement',
+                content: `
+                    <div style="text-align: center;">
+                        <h4 style="color: #e74c3c;">🎉 New Features Available!</h4>
+                        <p>We've added new games and activities to make learning even more fun!</p>
+                        <ul style="text-align: left; margin: 15px 0;">
+                            <li>Enhanced bubble pop game</li>
+                            <li>New science experiments</li>
+                            <li>Interactive math manipulatives</li>
+                        </ul>
+                    </div>
+                `,
+                linkUrl: '/whats-new.html',
+                linkText: 'See What\'s New',
+                cssClasses: ['announcement-card'],
+                theme: 'alt'
+            });
+            
+            announcement.render('#cards-container');
+            logEvent('Announcement card generated', 'card-events');
+        }
+
+        function clearCards() {
+            document.getElementById('cards-container').innerHTML = '';
+            logEvent('Cards cleared', 'card-events');
+        }
+
+        // Game Example
+        class SimpleDemoGame extends BaseGame {
+            constructor(canvasId) {
+                super(canvasId, {
+                    onScoreUpdate: (score) => updateGameStat('score', score),
+                    onLevelUpdate: (level) => updateGameStat('level', level),
+                    onStateChange: (state) => {
+                        updateGameStat('state', state);
+                        updateGameButtons(state);
+                        logEvent(`Game state: ${state}`, 'game-events');
+                    },
+                    onGameOver: (score) => {
+                        logEvent(`Game Over! Final Score: ${score}`, 'game-events');
+                        updateGameButtons('game-over');
+                    }
+                });
+                
+                this.circles = [];
+                this.spawnTimer = 0;
+                this.spawnInterval = 2000; // 2 seconds
+                this.colors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6'];
+            }
+            
+            onStart() {
+                this.circles = [];
+                this.spawnTimer = 0;
+                logEvent('Demo game started!', 'game-events');
+            }
+            
+            update(deltaTime, timestamp) {
+                // Update spawn timer
+                this.spawnTimer += deltaTime;
+                if (this.spawnTimer >= this.spawnInterval) {
+                    this.spawnCircle();
+                    this.spawnTimer = 0;
+                }
+                
+                // Update circles
+                this.circles.forEach((circle, index) => {
+                    circle.y += circle.speed * deltaTime / 16;
+                    if (circle.y > this.canvas.height + 50) {
+                        this.circles.splice(index, 1);
+                    }
+                });
+                
+                // Update FPS display periodically
+                if (Math.floor(timestamp / 500) % 2 === 0) {
+                    updateGameStat('fps', Math.round(this.getAverageFPS()));
+                }
+            }
+            
+            render() {
+                super.render(); // Clear canvas
+                
+                // Draw circles
+                this.circles.forEach(circle => {
+                    this.ctx.fillStyle = circle.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                
+                // Draw instructions
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.font = '16px Arial';
+                this.ctx.fillText('Click the circles to score points!', 10, 25);
+            }
+            
+            spawnCircle() {
+                this.circles.push({
+                    x: Math.random() * (this.canvas.width - 60) + 30,
+                    y: -30,
+                    radius: Math.random() * 20 + 15,
+                    speed: Math.random() * 2 + 1,
+                    color: this.colors[Math.floor(Math.random() * this.colors.length)]
+                });
+            }
+            
+            handleClick(position) {
+                // Check if any circle was clicked
+                for (let i = this.circles.length - 1; i >= 0; i--) {
+                    const circle = this.circles[i];
+                    const distance = Math.sqrt(
+                        Math.pow(position.x - circle.x, 2) + 
+                        Math.pow(position.y - circle.y, 2)
+                    );
+                    
+                    if (distance <= circle.radius) {
+                        this.circles.splice(i, 1);
+                        this.addScore(10);
+                        this.playSound(600, 100);
+                        logEvent(`Circle clicked! Score: ${this.score}`, 'game-events');
+                        
+                        // Level up every 100 points
+                        if (this.score > 0 && this.score % 100 === 0) {
+                            this.updateLevel(this.level + 1);
+                            this.spawnInterval = Math.max(500, this.spawnInterval - 200);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        let demoGame = null;
+
+        function updateGameStat(stat, value) {
+            const element = document.getElementById(`game-${stat}`);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        function updateGameButtons(state) {
+            const startBtn = document.getElementById('start-game');
+            const pauseBtn = document.getElementById('pause-game');
+            const resumeBtn = document.getElementById('resume-game');
+            const restartBtn = document.getElementById('restart-game');
+            
+            // Reset all buttons
+            [startBtn, pauseBtn, resumeBtn, restartBtn].forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            switch (state) {
+                case 'ready':
+                    startBtn.disabled = false;
+                    restartBtn.disabled = false;
+                    break;
+                case 'playing':
+                    pauseBtn.disabled = false;
+                    restartBtn.disabled = false;
+                    break;
+                case 'paused':
+                    resumeBtn.disabled = false;
+                    restartBtn.disabled = false;
+                    break;
+                case 'game-over':
+                    startBtn.disabled = false;
+                    restartBtn.disabled = false;
+                    break;
+            }
+        }
+
+        function startDemoGame() {
+            if (demoGame) {
+                demoGame.start();
+            }
+        }
+
+        function pauseDemoGame() {
+            if (demoGame) {
+                demoGame.pause();
+            }
+        }
+
+        function resumeDemoGame() {
+            if (demoGame) {
+                demoGame.resume();
+            }
+        }
+
+        function restartDemoGame() {
+            if (demoGame) {
+                demoGame.restart();
+            }
+        }
+
+        // Initialize demo game
+        document.addEventListener('DOMContentLoaded', () => {
+            // Listen for card events
+            document.addEventListener('cardClick', (event) => {
+                const { card, linkUrl } = event.detail;
+                logEvent(`Card clicked: ${card.title} -> ${linkUrl}`, 'card-events');
+            });
+
+            document.addEventListener('cardHover', (event) => {
+                const { card } = event.detail;
+                logEvent(`Card hovered: ${card.title}`, 'card-events');
+            });
+
+            // Initialize demo game
+            try {
+                demoGame = new SimpleDemoGame('demo-game-canvas');
+                logEvent('Demo game initialized', 'game-events');
+                updateGameButtons('ready');
+            } catch (error) {
+                logEvent(`Game initialization error: ${error.message}`, 'game-events');
+            }
+        });
+    </script>
+</body>
+</html>

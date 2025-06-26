@@ -1,10 +1,85 @@
 /**
- * BaseGame - Base class for all Learnimals games
- * Provides common functionality for game state management, scoring, and UI integration
+ * @fileoverview BaseGame - Base class for all Learnimals games
+ * @module BaseGame
+ * @requires logger
+ * @version 1.0.0
+ * @author Learnimals Development Team
+ * @since 1.0.0
  */
 import logger from '../../utils/logger.js';
 
+/**
+ * Base class for all Learnimals games providing common functionality for game state management,
+ * scoring, UI integration, input handling, and performance monitoring.
+ * 
+ * Features:
+ * - Robust state management with race condition protection
+ * - Canvas-based rendering with high DPI support
+ * - Multi-input support (keyboard, mouse, touch)
+ * - Performance monitoring and FPS tracking
+ * - Audio context integration
+ * - Responsive canvas sizing
+ * - Memory leak prevention
+ * 
+ * @class BaseGame
+ * @example
+ * // Basic game implementation
+ * class MyGame extends BaseGame {
+ *   constructor(canvasId) {
+ *     super(canvasId, {
+ *       onScoreUpdate: (score) => console.log('Score:', score),
+ *       onGameOver: (finalScore) => console.log('Game Over:', finalScore)
+ *     });
+ *   }
+ *   
+ *   update(deltaTime) {
+ *     // Game logic here
+ *   }
+ *   
+ *   render() {
+ *     super.render(); // Clear canvas
+ *     // Rendering logic here
+ *   }
+ * }
+ * 
+ * @example
+ * // Game with input handling
+ * class InteractiveGame extends BaseGame {
+ *   handleClick(position) {
+ *     console.log('Clicked at:', position.x, position.y);
+ *   }
+ *   
+ *   handleKeyDown(event) {
+ *     if (event.code === 'Space') {
+ *       // Handle spacebar
+ *     }
+ *   }
+ * }
+ */
 export default class BaseGame {
+  /**
+   * Creates a new BaseGame instance with the specified canvas and options.
+   * Initializes all game systems including state management, input handling,
+   * performance monitoring, and audio context.
+   * 
+   * @param {string} canvasId - ID of the HTML canvas element to render the game
+   * @param {Object} [options={}] - Configuration options for the game
+   * @param {Function} [options.onScoreUpdate] - Callback when score changes (score) => void
+   * @param {Function} [options.onLevelUpdate] - Callback when level changes (level) => void
+   * @param {Function} [options.onGameOver] - Callback when game ends (finalScore) => void
+   * @param {Function} [options.onPause] - Callback when game pauses () => void
+   * @param {Function} [options.onResume] - Callback when game resumes () => void
+   * @param {Function} [options.onStateChange] - Callback when state changes (newState, oldState) => void
+   * 
+   * @throws {Error} Throws error if canvas element is not found or doesn't support 2D context
+   * 
+   * @example
+   * const game = new BaseGame('game-canvas', {
+   *   onScoreUpdate: (score) => updateScoreDisplay(score),
+   *   onGameOver: (score) => showGameOverModal(score),
+   *   onStateChange: (newState) => updateGameButtons(newState)
+   * });
+   */
   constructor(canvasId, options = {}) {
     // Core properties
     this.canvasId = canvasId;
@@ -54,8 +129,23 @@ export default class BaseGame {
   }
 
   /**
-     * Initialize the game - called by constructor
-     */
+   * Initializes the game systems asynchronously.
+   * Sets up canvas, event listeners, audio context, loads assets,
+   * and transitions to 'ready' state. Called automatically by constructor.
+   * 
+   * @returns {Promise<void>} Promise that resolves when initialization is complete
+   * @throws {Error} Throws error if any initialization step fails
+   * 
+   * @example
+   * // Initialization is automatic, but you can override onInitialized
+   * class MyGame extends BaseGame {
+   *   onInitialized() {
+   *     console.log('Game ready to start!');
+   *   }
+   * }
+   * 
+   * @private
+   */
   async initialize() {
     try {
       this.validateCanvas();
@@ -73,8 +163,19 @@ export default class BaseGame {
   }
 
   /**
-     * Validate canvas element exists and is accessible
-     */
+   * Validates that the canvas element exists and supports 2D rendering context.
+   * Sets up the rendering context for use throughout the game.
+   * 
+   * @throws {Error} Throws error if canvas not found or doesn't support 2D context
+   * 
+   * @example
+   * // Canvas validation happens automatically, but errors are thrown for:
+   * // - Canvas element not found in DOM
+   * // - Canvas doesn't support getContext
+   * // - 2D context creation fails
+   * 
+   * @private
+   */
   validateCanvas() {
     if (!this.canvas) {
       throw new Error(`Canvas element with ID '${this.canvasId}' not found`);
@@ -91,8 +192,18 @@ export default class BaseGame {
   }
 
   /**
-     * Set up canvas properties and responsive sizing
-     */
+   * Sets up canvas properties including high DPI support and responsive sizing.
+   * Configures pixel ratio scaling for crisp rendering on high DPI displays.
+   * 
+   * @example
+   * // Canvas setup includes:
+   * // - Responsive sizing
+   * // - High DPI support (retina displays)
+   * // - Default rendering settings
+   * // - Image smoothing enabled
+   * 
+   * @private
+   */
   setupCanvas() {
     // Set canvas size
     this.resizeCanvas();
@@ -216,8 +327,23 @@ export default class BaseGame {
   }
 
   /**
-     * Start the game with race condition protection
-     */
+   * Starts the game with race condition protection.
+   * Transitions from 'ready' or 'game-over' state to 'playing' state,
+   * initializes timing, and begins the game loop.
+   * 
+   * @returns {boolean} True if game started successfully, false otherwise
+   * 
+   * @example
+   * const game = new BaseGame('canvas');
+   * // Wait for initialization
+   * game.start(); // Returns true if successful
+   * 
+   * @example
+   * // Check if start was successful
+   * if (!game.start()) {
+   *   console.log('Could not start game in current state:', game.state);
+   * }
+   */
   start() {
     if (this.state !== 'ready' && this.state !== 'game-over') {
       logger.warn('Cannot start game in current state:', this.state);
@@ -246,8 +372,25 @@ export default class BaseGame {
   }
 
   /**
-     * Pause the game with race condition protection
-     */
+   * Pauses the game with race condition protection.
+   * Transitions from 'playing' state to 'paused' state,
+   * stops the game loop, and triggers pause callbacks.
+   * 
+   * @returns {boolean} True if game paused successfully, false otherwise
+   * 
+   * @example
+   * if (game.state === 'playing') {
+   *   game.pause(); // Game is now paused
+   * }
+   * 
+   * @example
+   * // Pause on window blur
+   * window.addEventListener('blur', () => {
+   *   if (game.state === 'playing') {
+   *     game.pause();
+   *   }
+   * });
+   */
   pause() {
     if (this.state !== 'playing') {
       logger.warn('Cannot pause game in current state:', this.state);
@@ -271,8 +414,25 @@ export default class BaseGame {
   }
 
   /**
-     * Resume the game with race condition protection
-     */
+   * Resumes the game with race condition protection.
+   * Transitions from 'paused' state to 'playing' state,
+   * adjusts timing to account for pause duration, and restarts the game loop.
+   * 
+   * @returns {boolean} True if game resumed successfully, false otherwise
+   * 
+   * @example
+   * if (game.state === 'paused') {
+   *   game.resume(); // Game continues from where it was paused
+   * }
+   * 
+   * @example
+   * // Resume button handler
+   * resumeButton.addEventListener('click', () => {
+   *   if (game.resume()) {
+   *     updateButtonText('Pause');
+   *   }
+   * });
+   */
   resume() {
     if (this.state !== 'paused') {
       logger.warn('Cannot resume game in current state:', this.state);
@@ -298,8 +458,24 @@ export default class BaseGame {
   }
 
   /**
-     * End the game with race condition protection
-     */
+   * Ends the game with race condition protection.
+   * Transitions to 'game-over' state, stops the game loop,
+   * and triggers game over callbacks with final score.
+   * 
+   * @returns {boolean} True if game ended successfully, false if already over
+   * 
+   * @example
+   * // End game when lives reach zero
+   * if (this.lives <= 0) {
+   *   this.gameOver();
+   * }
+   * 
+   * @example
+   * // End game after time limit
+   * if (this.getElapsedTime() > TIME_LIMIT) {
+   *   this.gameOver();
+   * }
+   */
   gameOver() {
     if (this.state === 'game-over') {
       logger.warn('Game already over');
@@ -323,9 +499,28 @@ export default class BaseGame {
   }
 
   /**
-     * Restart the game
-     * @param {boolean} autoStart - Whether to automatically start the game after restart (default: true)
-     */
+   * Restarts the game by resetting all state to initial values.
+   * Clears score, level, lives, timing, and performance tracking.
+   * Optionally starts the game automatically after reset.
+   * 
+   * @param {boolean} [autoStart=true] - Whether to automatically start the game after restart
+   * 
+   * @example
+   * // Restart and begin playing immediately
+   * game.restart(); // autoStart defaults to true
+   * 
+   * @example
+   * // Restart but wait for user to manually start
+   * game.restart(false);
+   * // User can call game.start() when ready
+   * 
+   * @example
+   * // Restart button handler
+   * restartButton.addEventListener('click', () => {
+   *   game.restart();
+   *   updateUI();
+   * });
+   */
   restart(autoStart = true) {
     // Stop any running game loop immediately
     this.stopGameLoop();
@@ -498,8 +693,30 @@ export default class BaseGame {
   }
 
   /**
-     * Get normalized pointer position (0-1 range)
-     */
+   * Gets normalized pointer position from mouse or touch event.
+   * Handles coordinate transformation and scaling for canvas interactions.
+   * 
+   * @param {MouseEvent|TouchEvent} event - The pointer event
+   * @returns {Object} Position object with pixel and normalized coordinates
+   * @returns {number} returns.x - X coordinate in canvas pixels
+   * @returns {number} returns.y - Y coordinate in canvas pixels
+   * @returns {number} returns.normalizedX - X coordinate normalized to 0-1 range
+   * @returns {number} returns.normalizedY - Y coordinate normalized to 0-1 range
+   * 
+   * @example
+   * handleClick(event) {
+   *   const pos = this.getPointerPosition(event);
+   *   console.log('Clicked at:', pos.x, pos.y);
+   *   console.log('Normalized:', pos.normalizedX, pos.normalizedY);
+   * }
+   * 
+   * @example
+   * // Check if click is in specific area
+   * const pos = this.getPointerPosition(event);
+   * if (pos.normalizedX > 0.5 && pos.normalizedY < 0.5) {
+   *   // Top-right quadrant clicked
+   * }
+   */
   getPointerPosition(event) {
     const rect = this.canvas.getBoundingClientRect();
     const scaleX = this.canvas.width / rect.width;
@@ -524,8 +741,25 @@ export default class BaseGame {
   }
 
   /**
-     * Play sound effect
-     */
+   * Plays a simple sound effect using the Web Audio API.
+   * Creates a short tone with specified frequency and waveform type.
+   * 
+   * @param {number} frequency - Sound frequency in Hz
+   * @param {number} [duration=200] - Duration in milliseconds
+   * @param {string} [type='sine'] - Oscillator type ('sine', 'square', 'triangle', 'sawtooth')
+   * 
+   * @example
+   * // Play different sound effects
+   * game.playSound(440, 100);           // A4 note for 100ms
+   * game.playSound(880, 200, 'square'); // Higher pitch square wave
+   * game.playSound(220, 500, 'triangle'); // Lower pitch triangle wave
+   * 
+   * @example
+   * // Game event sounds
+   * game.playSound(600, 100);  // Point scored
+   * game.playSound(200, 300);  // Game over
+   * game.playSound(800, 50);   // UI click
+   */
   playSound(frequency, duration = 200, type = 'sine') {
     if (!this.soundEnabled || !this.audioContext) {return;}
 
@@ -550,16 +784,42 @@ export default class BaseGame {
   }
 
   /**
-     * Update score and notify listeners
-     */
+   * Updates the game score and notifies listeners.
+   * Ensures score never goes below zero and triggers score update callback.
+   * 
+   * @param {number} newScore - The new score value
+   * 
+   * @example
+   * // Set specific score
+   * game.updateScore(150);
+   * 
+   * @example
+   * // Update score based on game events
+   * if (playerHitTarget) {
+   *   game.updateScore(game.score + 10);
+   * }
+   */
   updateScore(newScore) {
     this.score = Math.max(0, newScore);
     this.onScoreUpdate(this.score);
   }
 
   /**
-     * Add to score
-     */
+   * Adds points to the current score.
+   * Convenience method for incrementing score by a specific amount.
+   * 
+   * @param {number} points - Points to add to current score
+   * 
+   * @example
+   * // Add points for various achievements
+   * game.addScore(10);  // Small target hit
+   * game.addScore(50);  // Bonus target
+   * game.addScore(100); // Perfect combo
+   * 
+   * @example
+   * // Subtract points for penalties
+   * game.addScore(-5); // Missed shot penalty
+   */
   addScore(points) {
     this.updateScore(this.score + points);
   }
@@ -573,12 +833,50 @@ export default class BaseGame {
   }
 
   /**
-     * Event handler methods - override in subclasses
-     */
+   * Updates game logic each frame. Must be overridden in subclasses.
+   * Called automatically by the game loop with timing information.
+   * 
+   * @param {number} _deltaTime - Time elapsed since last frame in milliseconds
+   * @param {number} _timestamp - Current timestamp from performance.now()
+   * 
+   * @example
+   * // Override in your game class
+   * update(deltaTime, timestamp) {
+   *   // Update player position
+   *   this.player.x += this.player.velocity * deltaTime;
+   *   
+   *   // Check collisions
+   *   this.checkCollisions();
+   *   
+   *   // Update game objects
+   *   this.enemies.forEach(enemy => enemy.update(deltaTime));
+   * }
+   * 
+   * @abstract
+   */
   update(_deltaTime, _timestamp) {
     // Override in subclasses
   }
 
+  /**
+   * Renders the game graphics each frame. Must be overridden in subclasses.
+   * Base implementation clears the canvas - call super.render() to clear before drawing.
+   * 
+   * @example
+   * // Override in your game class
+   * render() {
+   *   super.render(); // Clear canvas
+   *   
+   *   // Draw game objects
+   *   this.player.draw(this.ctx);
+   *   this.enemies.forEach(enemy => enemy.draw(this.ctx));
+   *   
+   *   // Draw UI
+   *   this.drawHUD();
+   * }
+   * 
+   * @abstract
+   */
   render() {
     // Override in subclasses
     // Clear canvas
@@ -669,21 +967,94 @@ export default class BaseGame {
   }
 
   /**
-     * Utility methods
-     */
+   * Checks if a specific key is currently pressed.
+   * Uses KeyboardEvent.code values for consistent cross-layout support.
+   * 
+   * @param {string} keyCode - The key code to check (e.g., 'Space', 'ArrowUp', 'KeyW')
+   * @returns {boolean} True if the key is currently pressed
+   * 
+   * @example
+   * // Check movement keys in update loop
+   * update(deltaTime) {
+   *   if (this.isKeyPressed('ArrowLeft')) {
+   *     this.player.moveLeft();
+   *   }
+   *   if (this.isKeyPressed('Space')) {
+   *     this.player.jump();
+   *   }
+   * }
+   * 
+   * @example
+   * // Multiple key combinations
+   * if (this.isKeyPressed('KeyW') && this.isKeyPressed('KeyA')) {
+   *   this.player.moveNorthWest();
+   * }
+   */
   isKeyPressed(keyCode) {
     return this.keys.has(keyCode);
   }
 
+  /**
+   * Gets the number of active touch points.
+   * Useful for detecting multi-touch gestures and interactions.
+   * 
+   * @returns {number} Number of active touches
+   * 
+   * @example
+   * // Handle different touch counts
+   * if (this.getTouchCount() === 1) {
+   *   // Single finger - move player
+   * } else if (this.getTouchCount() === 2) {
+   *   // Two fingers - special action
+   * }
+   */
   getTouchCount() {
     return this.touches.size;
   }
 
+  /**
+   * Gets the elapsed time since the game started.
+   * Accounts for pause time by using the adjusted start time.
+   * 
+   * @returns {number} Elapsed time in milliseconds, or 0 if not started
+   * 
+   * @example
+   * // Check time limits
+   * update() {
+   *   const elapsed = this.getElapsedTime();
+   *   if (elapsed > 60000) { // 1 minute
+   *     this.gameOver();
+   *   }
+   * }
+   * 
+   * @example
+   * // Display timer
+   * const seconds = Math.floor(this.getElapsedTime() / 1000);
+   * timerDisplay.textContent = `${seconds}s`;
+   */
   getElapsedTime() {
     if (!this.startTime) {return 0;}
     return performance.now() - this.startTime;
   }
 
+  /**
+   * Gets the average frames per second over recent history.
+   * Based on the last 10 seconds of FPS measurements.
+   * 
+   * @returns {number} Average FPS, or 0 if no history available
+   * 
+   * @example
+   * // Monitor performance
+   * const fps = this.getAverageFPS();
+   * if (fps < 30) {
+   *   console.warn('Low FPS detected:', fps);
+   *   this.reduceGraphicsQuality();
+   * }
+   * 
+   * @example
+   * // Display performance info
+   * debugInfo.textContent = `FPS: ${Math.round(this.getAverageFPS())}`;
+   */
   getAverageFPS() {
     if (this.fpsHistory.length === 0) {return 0;}
     return this.fpsHistory.reduce((a, b) => a + b) / this.fpsHistory.length;
@@ -705,8 +1076,23 @@ export default class BaseGame {
   }
 
   /**
-     * Cleanup method
-     */
+   * Completely destroys the game instance and cleans up all resources.
+   * Stops the game loop, removes event listeners, closes audio context,
+   * and clears all references to prevent memory leaks.
+   * 
+   * @example
+   * // Clean up when navigating away
+   * window.addEventListener('beforeunload', () => {
+   *   game.destroy();
+   * });
+   * 
+   * @example
+   * // Clean up when switching games
+   * function switchToNewGame() {
+   *   currentGame.destroy();
+   *   currentGame = new NewGame('canvas');
+   * }
+   */
   destroy() {
     this.isActive = false;
     this.isPaused = false;
