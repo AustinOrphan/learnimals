@@ -476,6 +476,7 @@ class SubjectGenerator {
  * ${subject.name} Subject JavaScript
  * Interactive features for ${subject.character.name} the ${subject.character.type}
  */
+import Modal from '../../../components/ui/Modal.js';
 
 class ${subject.name.replace(/\s+/g, '')}Subject {
     constructor() {
@@ -591,15 +592,20 @@ class ${subject.name.replace(/\s+/g, '')}Subject {
     }
 
     displayMessage(message) {
-        // Simple alert for now - can be enhanced with custom modal
-        alert(\`\${this.character.name}: \${message}\`);
-        
-        // TODO: Replace with custom modal component
-        // const modal = new MessageModal({
-        //     character: this.character,
-        //     message: message
-        // });
-        // modal.show();
+        // Use custom modal component with character theming
+        const modal = new Modal({
+            id: '${subjectKey}-message-modal',
+            title: \`\${this.character.name} the \${this.character.type}\`,
+            content: \`<div class="character-message">
+                <div class="character-icon">${subject.character.emoji || '🎓'}</div>
+                <p>\${message}</p>
+            </div>\`,
+            confirmButtonText: 'Got it!',
+            showClose: true,
+            size: 'medium',
+            onConfirm: () => modal.hide()
+        });
+        modal.show();
     }
 
     onThemeChange(theme) {
