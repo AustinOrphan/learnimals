@@ -2,6 +2,7 @@
  * Geography Subject JavaScript
  * Interactive features for Atlas the Eagle
  */
+import Modal from '../../../components/ui/Modal.js';
 
 class GeographySubject {
   constructor() {
@@ -122,15 +123,20 @@ class GeographySubject {
   }
 
   displayMessage(message) {
-    // Simple alert for now - can be enhanced with custom modal
-    alert(`${this.character.name}: ${message}`);
-        
-    // TODO: Replace with custom modal component
-    // const modal = new MessageModal({
-    //     character: this.character,
-    //     message: message
-    // });
-    // modal.show();
+    // Use custom modal component with character theming
+    const modal = new Modal({
+      id: 'geography-message-modal',
+      title: `${this.character.name} the ${this.character.type}`,
+      content: `<div class="character-message">
+        <div class="character-icon">🦅</div>
+        <p>${message}</p>
+      </div>`,
+      confirmButtonText: 'Understood!',
+      showClose: true,
+      size: 'medium',
+      onConfirm: () => modal.hide()
+    });
+    modal.show();
   }
 
   onThemeChange(theme) {

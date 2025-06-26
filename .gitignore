@@ -65,3 +65,6 @@ temp/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# Development and test files
+dev-tests/
