@@ -35,6 +35,12 @@ pids/
 # Coverage directory used by tools like istanbul
 coverage/
 
+# Test artifacts and reports
+tests/coverage/
+tests/results/
+*.test.js.snap
+.vitest/
+
 # Environment variables
 .env
 .env.local
