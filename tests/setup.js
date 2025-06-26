@@ -11,13 +11,13 @@ global.testUtils = {
   createElement: (tag, attributes = {}, textContent = '') => {
     const element = document.createElement(tag);
     Object.assign(element, attributes);
-    if (textContent) element.textContent = textContent;
+    if (textContent) {element.textContent = textContent;}
     return element;
   },
-  
+
   // Wait for next tick
   nextTick: () => new Promise(resolve => setTimeout(resolve, 0)),
-  
+
   // Create mock canvas context
   mockCanvasContext: () => ({
     fillRect: vi.fn(),
@@ -96,7 +96,7 @@ global.URL = class URL {
   constructor(url) {
     this.href = url;
     this.pathname = url.split('?')[0];
-    this.search = url.includes('?') ? '?' + url.split('?')[1] : '';
+    this.search = url.includes('?') ? `?${  url.split('?')[1]}` : '';
   }
 };
 

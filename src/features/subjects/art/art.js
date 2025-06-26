@@ -9,7 +9,7 @@ canvas.addEventListener('mouseout', () => drawing = false);
 canvas.addEventListener('mousemove', draw);
 
 function draw(e) {
-  if (!drawing) return;
+  if (!drawing) {return;}
   const rect = canvas.getBoundingClientRect();
   ctx.lineWidth = 4;
   ctx.lineCap = 'round';

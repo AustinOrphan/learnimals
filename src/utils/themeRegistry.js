@@ -3,7 +3,7 @@
 
 /**
  * Theme Registry - Centralized theme configuration for Learnimals
- * 
+ *
  * This module exports theme configurations that can be used by ThemeManager
  * and ThemeSwitcher to ensure consistent theming across the application.
  */

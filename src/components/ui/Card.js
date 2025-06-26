@@ -15,18 +15,18 @@
       this.element = null;
       this.isRendered = false;
     }
-    
+
     generateId() {
       const className = this.constructor.name.toLowerCase();
       return `${className}-${Math.random().toString(36).substr(2, 9)}`;
     }
-    
+
     render(container) {
       const targetContainer = container || this.options.container;
-      const containerEl = typeof targetContainer === 'string' 
-        ? document.querySelector(targetContainer) 
+      const containerEl = typeof targetContainer === 'string'
+        ? document.querySelector(targetContainer)
         : targetContainer;
-      
+
       if (!containerEl) {
         console.error('Container not found:', targetContainer);
         return this;
@@ -34,19 +34,19 @@
 
       const html = this.generateHTML();
       containerEl.innerHTML += html;
-      
+
       this.element = document.getElementById(this.options.id);
-      
+
       if (this.element) {
         this.attachEventListeners();
         this.isRendered = true;
       }
-      
+
       return this;
     }
-    
+
     attachEventListeners() {}
-    
+
     emit(eventName, detail) {
       if (this.element) {
         const event = new CustomEvent(eventName, {
@@ -93,36 +93,36 @@
    */
     generateHTML() {
       const { title, content, imageUrl, imageAlt, linkUrl, linkText, cssClasses, theme, id } = this.options;
-    
+
       // Build CSS classes
       const cardClasses = ['component', 'feature-card'];
-      if (theme === 'alt') cardClasses.push('feature-card--alt');
-      if (cssClasses && cssClasses.length) cardClasses.push(...cssClasses);
-    
+      if (theme === 'alt') {cardClasses.push('feature-card--alt');}
+      if (cssClasses && cssClasses.length) {cardClasses.push(...cssClasses);}
+
       let html = `<div id="${id}" class="${cardClasses.join(' ')}" role="article">`;
-    
+
       // Add image if provided
       if (imageUrl) {
         html += `<div class="card-image">
         <img src="${imageUrl}" alt="${imageAlt}" loading="lazy">
       </div>`;
       }
-    
+
       // Add title
       if (title) {
         html += `<h3 class="card-title">${title}</h3>`;
       }
-    
+
       // Add content
       html += `<div class="card-content">${content}</div>`;
-    
+
       // Add link if provided
       if (linkUrl) {
         html += `<a href="${linkUrl}" class="card-link component-button component-button--primary">${linkText}</a>`;
       }
-    
+
       html += '</div>';
-    
+
       return html;
     }
 
@@ -132,25 +132,25 @@
     attachEventListeners() {
     // Add click event for card interactions
       this.addEventListener('click', this.handleCardClick, '.card-link');
-    
+
       // Emit card events for external handling
       this.addEventListener('mouseenter', () => {
         this.emit('cardHover', { card: this.options });
       });
     }
-  
+
     /**
    * Handle card link clicks
    */
     handleCardClick(event) {
     // Emit card click event for analytics or other tracking
-      this.emit('cardClick', { 
+      this.emit('cardClick', {
         card: this.options,
         linkUrl: this.options.linkUrl,
-        event 
+        event
       });
     }
-  
+
     /**
    * Create a card wrapper that can be used as a link
    * @param {Object} options - Card options

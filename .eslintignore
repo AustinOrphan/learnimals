@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Test artifacts
+tests/coverage/
+tests/results/
+
+# Generated or vendor files
+public/serviceWorker.js
+*.min.js
+*.bundle.js
+
+# Logs
+logs/
+*.log
+
+# Cache directories
+.cache/
+.parcel-cache/
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -18,7 +18,7 @@ class BaseComponent {
       attributes: options.attributes || {},
       ...options
     };
-    
+
     this.element = null;
     this.isRendered = false;
     this.eventListeners = new Map();
@@ -48,10 +48,10 @@ class BaseComponent {
    */
   render(container) {
     const targetContainer = container || this.options.container;
-    const containerEl = typeof targetContainer === 'string' 
-      ? document.querySelector(targetContainer) 
+    const containerEl = typeof targetContainer === 'string'
+      ? document.querySelector(targetContainer)
       : targetContainer;
-    
+
     if (!containerEl) {
       console.error('Container not found:', targetContainer);
       return this;
@@ -60,17 +60,17 @@ class BaseComponent {
     // Generate and insert HTML
     const html = this.generateHTML();
     containerEl.innerHTML += html;
-    
+
     // Store reference to the element
     this.element = document.getElementById(this.options.id);
-    
+
     if (this.element) {
       this.applyAttributes();
       this.attachEventListeners();
       this.isRendered = true;
       this.onRender();
     }
-    
+
     return this;
   }
 
@@ -78,8 +78,8 @@ class BaseComponent {
    * Apply attributes to the component element
    */
   applyAttributes() {
-    if (!this.element) return;
-    
+    if (!this.element) {return;}
+
     Object.entries(this.options.attributes).forEach(([key, value]) => {
       this.element.setAttribute(key, value);
     });
@@ -106,18 +106,18 @@ class BaseComponent {
    * @param {string} [selector] - Optional selector for event delegation
    */
   addEventListener(event, handler, selector) {
-    if (!this.element) return;
-    
-    const wrappedHandler = selector 
+    if (!this.element) {return;}
+
+    const wrappedHandler = selector
       ? (e) => {
         if (e.target.matches(selector)) {
           handler.call(this, e);
         }
       }
       : handler.bind(this);
-    
+
     this.element.addEventListener(event, wrappedHandler);
-    
+
     // Store for cleanup
     const key = `${event}-${selector || 'root'}`;
     if (!this.eventListeners.has(key)) {
@@ -131,8 +131,8 @@ class BaseComponent {
    * @param {string} [event] - Specific event to remove (removes all if not specified)
    */
   removeEventListeners(event) {
-    if (!this.element) return;
-    
+    if (!this.element) {return;}
+
     if (event) {
       // Remove specific event
       const listeners = this.eventListeners.get(event);
@@ -161,12 +161,12 @@ class BaseComponent {
    */
   update(newOptions, rerender = false) {
     Object.assign(this.options, newOptions);
-    
+
     if (rerender && this.isRendered) {
       this.destroy();
       this.render();
     }
-    
+
     return this;
   }
 
@@ -282,7 +282,7 @@ class BaseComponent {
       this.element = null;
       this.isRendered = false;
     }
-    
+
     return this;
   }
 
@@ -300,7 +300,7 @@ class BaseComponent {
       });
       this.element.dispatchEvent(event);
     }
-    
+
     return this;
   }
 
@@ -315,21 +315,21 @@ class BaseComponent {
    */
   static createElement(tag, options = {}) {
     const element = document.createElement(tag);
-    
+
     if (options.className) {
       element.className = options.className;
     }
-    
+
     if (options.innerHTML) {
       element.innerHTML = options.innerHTML;
     }
-    
+
     if (options.attributes) {
       Object.entries(options.attributes).forEach(([key, value]) => {
         element.setAttribute(key, value);
       });
     }
-    
+
     return element;
   }
 }

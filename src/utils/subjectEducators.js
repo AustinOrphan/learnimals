@@ -8,12 +8,12 @@ import config from '../config.js';
  * @returns {string} HTML string for team grid
  */
 export function generateEducatorsHTML() {
-  const subjects = config.subjects;
-  
+  const {subjects} = config;
+
   return Object.keys(subjects).map(subjectKey => {
     const subject = subjects[subjectKey];
-    const character = subject.character;
-    
+    const {character} = subject;
+
     return `
       <div class="team-member">
         <img
@@ -32,12 +32,12 @@ export function generateEducatorsHTML() {
  * @returns {Array} Array of educator card data
  */
 export function generateEducatorsCardData() {
-  const subjects = config.subjects;
-  
+  const {subjects} = config;
+
   return Object.keys(subjects).map(subjectKey => {
     const subject = subjects[subjectKey];
-    const character = subject.character;
-    
+    const {character} = subject;
+
     return {
       title: `${character.name} the ${character.type}`,
       content: `<p>${character.role}</p>`,
@@ -59,7 +59,7 @@ export function loadEducators(containerId = 'team-grid', useCards = false) {
     console.warn(`Container with ID "${containerId}" not found`);
     return;
   }
-  
+
   if (useCards && typeof Card !== 'undefined') {
     // Use Card.js components
     const educatorData = generateEducatorsCardData();

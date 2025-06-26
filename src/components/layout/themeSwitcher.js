@@ -71,7 +71,7 @@ class ThemeSwitcher {
     themeButton.setAttribute('aria-expanded', 'false');
     themeButton.setAttribute('aria-controls', this.themeMenuId);
     themeButton.innerHTML = ''; // Empty button for background only
-    
+
     // Create separate emoji overlay that won't be affected by filters
     const emojiOverlay = document.createElement('span');
     emojiOverlay.className = 'theme-emoji-overlay';

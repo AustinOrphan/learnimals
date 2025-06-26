@@ -24,21 +24,21 @@ function convertNumber() {
     const remainder = chunk % 100;
 
     if (hundred) {
-      word += ones[hundred] + ' hundred ';
+      word += `${ones[hundred]  } hundred `;
     }
     if (remainder >= 10 && remainder < 20) {
-      word += teens[remainder - 10] + ' ';
+      word += `${teens[remainder - 10]  } `;
     } else {
       const ten = Math.floor(remainder / 10);
       const one = remainder % 10;
-      if (ten) word += tens[ten] + ' ';
-      if (one) word += ones[one] + ' ';
+      if (ten) {word += `${tens[ten]  } `;}
+      if (one) {word += `${ones[one]  } `;}
     }
     return word.trim();
   }
 
   function numberToWords(n) {
-    if (n === 0) return 'zero';
+    if (n === 0) {return 'zero';}
 
     const chunks = [];
     while (n > 0) {
@@ -49,7 +49,7 @@ function convertNumber() {
     const wordParts = [];
     for (let i = chunks.length - 1; i >= 0; i--) {
       if (chunks[i] !== 0) {
-        wordParts.push(chunkToWords(chunks[i]) + (scales[i] ? ' ' + scales[i] : ''));
+        wordParts.push(chunkToWords(chunks[i]) + (scales[i] ? ` ${  scales[i]}` : ''));
       }
     }
     return wordParts.join(', ').trim();
@@ -104,11 +104,11 @@ if (!window.mathJsLoaded) {
 
 // Export features for other modules
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { 
-    difficulty: window.mathDifficulty, 
-    basicLevels: window.mathBasicLevels, 
-    intermediateLevels: window.mathIntermediateLevels, 
-    advancedLevels: window.mathAdvancedLevels, 
-    expertLevels: window.mathExpertLevels 
+  module.exports = {
+    difficulty: window.mathDifficulty,
+    basicLevels: window.mathBasicLevels,
+    intermediateLevels: window.mathIntermediateLevels,
+    advancedLevels: window.mathAdvancedLevels,
+    expertLevels: window.mathExpertLevels
   };
 }

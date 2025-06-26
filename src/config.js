@@ -3,7 +3,7 @@ const config = {
   // App settings
   appName: 'Learnimals',
   version: '1.0.0',
-  
+
   // Game settings
   games: {
     bubblePop: {
@@ -18,13 +18,13 @@ const config = {
       timeLimit: 60
     }
   },
-  
+
   // Theme settings
   theme: {
     transitionSpeed: 300, // ms
     defaultTheme: 'day'
   },
-  
+
   // Subject configurations
   subjects: {
     math: {
@@ -89,7 +89,7 @@ const config = {
       color: '#9b59b6',
       difficulty: 'beginner',
       ageRange: '4-12',
-      features: ['Music Theory','Virtual Instruments','Rhythm Games','Song Composition']
+      features: ['Music Theory', 'Virtual Instruments', 'Rhythm Games', 'Song Composition']
     },
     geography: {
       name: 'Geography',
@@ -103,10 +103,10 @@ const config = {
       color: '#27ae60',
       difficulty: 'intermediate',
       ageRange: '6-12',
-      features: ['World Map','Country Explorer','Capital Quiz','Culture Corner']
+      features: ['World Map', 'Country Explorer', 'Capital Quiz', 'Culture Corner']
     }
   },
-  
+
   // API endpoints (if any)
   api: {
     baseUrl: '/api',

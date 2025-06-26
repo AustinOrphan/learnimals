@@ -28,8 +28,8 @@ class Logger {
     }
 
     // Check if we're in development mode
-    const isDevelopment = typeof window !== 'undefined' && 
-                         (window.location.hostname === 'localhost' || 
+    const isDevelopment = typeof window !== 'undefined' &&
+                         (window.location.hostname === 'localhost' ||
                           window.location.hostname === '127.0.0.1' ||
                           window.location.hostname.includes('localhost'));
 
@@ -72,7 +72,7 @@ class Logger {
   formatMessage(level, message, args) {
     const timestamp = new Date().toISOString().substr(11, 12);
     const prefix = `[${timestamp}] ${level}:`;
-    
+
     if (args.length > 0) {
       return [prefix, message, ...args];
     }

@@ -1,6 +1,6 @@
 /**
  * Subject Page Template Converter
- * 
+ *
  * This utility helps convert existing subject pages to use the template system.
  * It extracts the necessary information from an existing page and generates
  * the options object needed for the SubjectTemplateLoader.
@@ -10,21 +10,21 @@ function extractSubjectPageContent(html) {
   // Create a DOM parser
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
-    
+
   // Extract subject information
   const title = doc.querySelector('title').textContent.replace(' - Learnimals', '');
   const subjectLower = extractSubjectFromTitle(title);
   const description = doc.querySelector('meta[name="description"]').getAttribute('content');
-    
+
   // Extract hero content
   const h2Text = doc.querySelector('.hero h2').textContent;
   const characterInfo = extractCharacterInfo(h2Text);
   const heroSubtitle = doc.querySelector('.hero p').textContent;
-    
+
   // Extract feature cards
   const featureCardsSection = doc.querySelector('.features');
   const featureCards = featureCardsSection.innerHTML.trim();
-    
+
   return {
     subjectName: title,
     subjectLower,
@@ -96,13 +96,13 @@ ${options.featureCards}
 // 1. Fetch an existing subject page
 // const response = await fetch('/subjects/math.html');
 // const html = await response.text();
-// 
+//
 // 2. Extract content and options
 // const options = extractSubjectPageContent(html);
-// 
+//
 // 3. Generate template code
 // const templateCode = generateTemplateCode(options);
-// 
+//
 // 4. Output or save the template code
 // console.log(templateCode);
 

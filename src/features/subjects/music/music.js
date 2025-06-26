@@ -18,13 +18,13 @@ class MusicSubject {
       'Rhythm Games',
       'Song Composition'
     ];
-        
+
     this.init();
   }
 
   init() {
     console.log(`🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`);
-        
+
     // Set up event listeners when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setupEventListeners());
@@ -42,7 +42,7 @@ class MusicSubject {
 
   setupFeatureCards() {
     const featureCards = document.querySelectorAll('.feature-card');
-        
+
     featureCards.forEach((card, index) => {
       const feature = this.features[index];
       if (feature) {
@@ -58,7 +58,7 @@ class MusicSubject {
       characterImage.addEventListener('click', () => {
         this.showCharacterMessage();
       });
-            
+
       // Add hover effect
       characterImage.style.cursor = 'pointer';
       characterImage.title = `Click to interact with ${this.character.name}!`;
@@ -74,20 +74,20 @@ class MusicSubject {
 
   handleFeatureClick(feature) {
     console.log(`🎯 User clicked on: ${feature}`);
-        
+
     // Show character encouragement
     this.showCharacterMessage(`Great choice! Let's explore ${feature} together!`);
-        
+
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'music theory':
-      this.startFirstFeature();
-      break;
-    case 'virtual instruments':
-      this.startSecondFeature();
-      break;
-    default:
-      this.showComingSoon(feature);
+      case 'music theory':
+        this.startFirstFeature();
+        break;
+      case 'virtual instruments':
+        this.startSecondFeature();
+        break;
+      default:
+        this.showComingSoon(feature);
     }
   }
 
@@ -115,9 +115,9 @@ class MusicSubject {
       'Let\'s explore and have fun together!',
       'Click on any activity to get started!'
     ];
-        
+
     const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
-        
+
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
   }

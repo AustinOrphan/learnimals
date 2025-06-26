@@ -11,14 +11,14 @@ export default class GameTemplateLoader {
     this.isInitialized = false;
     this.gameState = 'loading'; // loading, playing, paused, game-over
     this.autoPausedForInstructions = false; // Track if we auto-paused for help modal
-        
+
     // DOM elements
     this.elements = {};
-        
+
     // Initialize the game template
     this.init();
   }
-    
+
   /**
      * Initialize the game template
      */
@@ -26,10 +26,10 @@ export default class GameTemplateLoader {
     try {
       this.cacheElements();
       this.setupEventListeners();
-      
+
       // Initialize theme colors immediately
       this.updateThemeColors();
-      
+
       this.hideLoading();
       await this.loadGameScript();
       this.initializeGame();
@@ -40,7 +40,7 @@ export default class GameTemplateLoader {
       this.showError('Failed to load game. Please refresh and try again.');
     }
   }
-    
+
   /**
      * Cache DOM elements for performance
      */
@@ -52,28 +52,28 @@ export default class GameTemplateLoader {
       gameCanvas: document.getElementById('gameCanvas'),
       gameLoading: document.getElementById('game-loading'),
       gameUIOverlay: document.getElementById('game-ui-overlay'),
-            
+
       // Status and controls
       scoreValue: document.getElementById('score-value'),
       levelValue: document.getElementById('level-value'),
       gameInfo: document.getElementById('game-info'),
-            
+
       // Control buttons
       pauseBtn: document.getElementById('pause-btn'),
       restartBtn: document.getElementById('restart-btn'),
       fullscreenBtn: document.getElementById('fullscreen-btn'),
       helpBtn: document.getElementById('help-btn'),
-            
+
       // Instructions
       gameInstructions: document.getElementById('game-instructions'),
       howToPlayBtn: document.querySelector('.how-to-play-btn'),
       startGameBtn: document.querySelector('.start-game-btn'),
-            
+
       // Modals
       pauseModal: document.getElementById('pause-modal'),
       gameOverModal: document.getElementById('game-over-modal'),
       instructionsModal: document.getElementById('instructions-modal'),
-            
+
       // Modal buttons
       resumeBtn: document.querySelector('.resume-btn'),
       restartGameBtn: document.querySelector('.restart-game-btn'),
@@ -85,7 +85,7 @@ export default class GameTemplateLoader {
       modalCloses: document.querySelectorAll('.modal-close')
     };
   }
-    
+
   /**
      * Set up event listeners for game controls
      */
@@ -94,57 +94,57 @@ export default class GameTemplateLoader {
     if (this.elements.pauseBtn) {
       this.elements.pauseBtn.addEventListener('click', () => this.togglePause());
     }
-        
+
     if (this.elements.restartBtn) {
       this.elements.restartBtn.addEventListener('click', () => this.restartGame());
     }
-        
+
     if (this.elements.fullscreenBtn) {
       this.elements.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
     }
-        
+
     if (this.elements.helpBtn) {
       this.elements.helpBtn.addEventListener('click', () => this.showInstructions());
     }
-        
+
     // Instructions
     if (this.elements.howToPlayBtn) {
       this.elements.howToPlayBtn.addEventListener('click', () => this.toggleInstructions());
     }
-        
+
     if (this.elements.startGameBtn) {
       this.elements.startGameBtn.addEventListener('click', () => this.hideInstructions());
     }
-        
+
     // Modal buttons
     if (this.elements.resumeBtn) {
       this.elements.resumeBtn.addEventListener('click', () => this.resumeGame());
     }
-        
+
     if (this.elements.restartGameBtn) {
       this.elements.restartGameBtn.addEventListener('click', () => this.restartFromModal());
     }
-        
+
     if (this.elements.quitGameBtn) {
       this.elements.quitGameBtn.addEventListener('click', () => this.quitGame());
     }
-        
+
     if (this.elements.playAgainBtn) {
       this.elements.playAgainBtn.addEventListener('click', () => this.playAgain());
     }
-        
+
     if (this.elements.shareScoreBtn) {
       this.elements.shareScoreBtn.addEventListener('click', () => this.shareScore());
     }
-        
+
     if (this.elements.backToMenuBtn) {
       this.elements.backToMenuBtn.addEventListener('click', () => this.backToMenu());
     }
-        
+
     if (this.elements.startPlayingBtn) {
       this.elements.startPlayingBtn.addEventListener('click', () => this.hideInstructionsModal());
     }
-        
+
     // Modal close buttons
     this.elements.modalCloses.forEach(closeBtn => {
       closeBtn.addEventListener('click', (e) => {
@@ -152,13 +152,13 @@ export default class GameTemplateLoader {
         this.hideModal(modal);
       });
     });
-        
+
     // Keyboard controls
     document.addEventListener('keydown', (e) => this.handleKeyboard(e));
-    
+
     // Theme change listener
     document.addEventListener('themeChanged', () => this.handleThemeChange());
-        
+
     // Modal backdrop clicks
     document.querySelectorAll('.game-modal').forEach(modal => {
       modal.addEventListener('click', (e) => {
@@ -167,17 +167,17 @@ export default class GameTemplateLoader {
         }
       });
     });
-        
+
     // Fullscreen change detection
     document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
-        
+
     // Visibility change (tab switching)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden && this.gameState === 'playing') {
         this.pauseGame();
       }
     });
-        
+
     // Window blur/focus
     window.addEventListener('blur', () => {
       if (this.gameState === 'playing') {
@@ -185,7 +185,7 @@ export default class GameTemplateLoader {
       }
     });
   }
-    
+
   /**
      * Load the game-specific script dynamically
      */
@@ -193,11 +193,11 @@ export default class GameTemplateLoader {
     if (!this.config.gameScript || !this.config.gameClass) {
       throw new Error('Game script and class must be specified in config');
     }
-        
+
     try {
       const gameModule = await import(this.config.gameScript);
       this.GameClass = gameModule.default || gameModule[this.config.gameClass];
-            
+
       if (!this.GameClass) {
         throw new Error(`Game class '${this.config.gameClass}' not found in ${this.config.gameScript}`);
       }
@@ -206,7 +206,7 @@ export default class GameTemplateLoader {
       throw error;
     }
   }
-    
+
   /**
      * Initialize the game instance
      */
@@ -214,7 +214,7 @@ export default class GameTemplateLoader {
     if (!this.GameClass || !this.config.canvasId) {
       throw new Error('Game class or canvas ID not available');
     }
-        
+
     try {
       // Create game instance with config options
       this.gameInstance = new this.GameClass(this.config.canvasId, {
@@ -225,49 +225,49 @@ export default class GameTemplateLoader {
         onPause: () => this.setState('paused'),
         onResume: () => this.setState('playing')
       });
-            
+
       // Make game instance available globally for debugging
       if (typeof window !== 'undefined') {
         window.gameInstance = this.gameInstance;
       }
-            
+
     } catch (error) {
       logger.error('Failed to initialize game:', error);
       throw error;
     }
   }
-    
+
   /**
      * Set the current game state
      */
   setState(newState) {
     const oldState = this.gameState;
     this.gameState = newState;
-        
+
     // Update UI based on state
     if (this.elements.gameContainer) {
       this.elements.gameContainer.className = `game-container ${newState}`;
     }
-        
+
     // Update pause button
     if (this.elements.pauseBtn) {
       const pauseIcon = this.elements.pauseBtn.querySelector('.btn-icon');
       const pauseText = this.elements.pauseBtn.querySelector('.btn-text');
-            
+
       if (newState === 'paused') {
         this.elements.pauseBtn.classList.add('paused');
-        if (pauseIcon) pauseIcon.textContent = '▶️';
-        if (pauseText) pauseText.textContent = 'Resume';
+        if (pauseIcon) {pauseIcon.textContent = '▶️';}
+        if (pauseText) {pauseText.textContent = 'Resume';}
       } else {
         this.elements.pauseBtn.classList.remove('paused');
-        if (pauseIcon) pauseIcon.textContent = '⏸️';
-        if (pauseText) pauseText.textContent = 'Pause';
+        if (pauseIcon) {pauseIcon.textContent = '⏸️';}
+        if (pauseText) {pauseText.textContent = 'Pause';}
       }
     }
-        
+
     logger.debug(`Game state changed: ${oldState} → ${newState}`);
   }
-    
+
   /**
      * Update score display
      */
@@ -276,7 +276,7 @@ export default class GameTemplateLoader {
       this.elements.scoreValue.textContent = score;
     }
   }
-    
+
   /**
      * Update level display
      */
@@ -285,36 +285,36 @@ export default class GameTemplateLoader {
       this.elements.levelValue.textContent = level;
     }
   }
-    
+
   /**
      * Handle game over
      */
   handleGameOver(finalScore) {
     this.setState('game-over');
-        
+
     // Update final score in modal
     const finalScoreElement = document.getElementById('final-score');
     if (finalScoreElement) {
       finalScoreElement.textContent = finalScore;
     }
-        
+
     // Update high score
     const highScore = this.getHighScore();
     const highScoreElement = document.getElementById('high-score');
     if (highScoreElement) {
       highScoreElement.textContent = highScore;
     }
-        
+
     // Save high score if this is a new record
     if (finalScore > highScore) {
       this.saveHighScore(finalScore);
       this.showAchievement('New High Score!', `You scored ${finalScore} points!`);
     }
-        
+
     // Show game over modal
     this.showModal(this.elements.gameOverModal);
   }
-    
+
   /**
      * Game control methods
      */
@@ -325,27 +325,27 @@ export default class GameTemplateLoader {
       this.resumeGame();
     }
   }
-    
+
   pauseGame() {
     if (this.gameInstance && typeof this.gameInstance.pause === 'function') {
       this.gameInstance.pause();
     }
     this.setState('paused');
-    
+
     // Instead of showing a modal, just update the pause button and show pause overlay
     this.showPauseOverlay();
   }
-    
+
   resumeGame() {
     if (this.gameInstance && typeof this.gameInstance.resume === 'function') {
       this.gameInstance.resume();
     }
     this.setState('playing');
-    
+
     // Hide the pause overlay instead of modal
     this.hidePauseOverlay();
   }
-    
+
   restartGame() {
     if (this.gameInstance && typeof this.gameInstance.restart === 'function') {
       // Let the game instance handle the restart and state management
@@ -357,32 +357,32 @@ export default class GameTemplateLoader {
     }
     // Score and level updates are handled by the game instance callbacks
   }
-    
+
   restartFromModal() {
     this.hideAllModals();
     this.restartGame();
   }
-    
+
   playAgain() {
     this.hideAllModals();
     this.restartGame();
   }
-    
+
   quitGame() {
     this.hideAllModals();
     this.backToMenu();
   }
-    
+
   backToMenu() {
     // Navigate back to subject page or main menu
-    const referrer = document.referrer;
+    const {referrer} = document;
     if (referrer && referrer.includes(window.location.origin)) {
       window.location.href = referrer;
     } else {
       window.location.href = '/src/pages/index.html';
     }
   }
-    
+
   /**
      * Fullscreen functionality
      */
@@ -395,24 +395,24 @@ export default class GameTemplateLoader {
       document.exitFullscreen();
     }
   }
-    
+
   handleFullscreenChange() {
-    const isFullscreen = !!document.fullscreenElement;
+    const isFullscreen = Boolean(document.fullscreenElement);
     if (this.elements.fullscreenBtn) {
       this.elements.fullscreenBtn.classList.toggle('active', isFullscreen);
       const icon = this.elements.fullscreenBtn.querySelector('.btn-icon');
       const text = this.elements.fullscreenBtn.querySelector('.btn-text');
-            
+
       if (isFullscreen) {
-        if (icon) icon.textContent = '⤡';
-        if (text) text.textContent = 'Exit';
+        if (icon) {icon.textContent = '⤡';}
+        if (text) {text.textContent = 'Exit';}
       } else {
-        if (icon) icon.textContent = '⤢';
-        if (text) text.textContent = 'Fullscreen';
+        if (icon) {icon.textContent = '⤢';}
+        if (text) {text.textContent = 'Fullscreen';}
       }
     }
   }
-    
+
   /**
      * Instructions functionality
      */
@@ -424,19 +424,19 @@ export default class GameTemplateLoader {
       this.hideInstructions();
     }
   }
-    
+
   showInstructionsPanel() {
     if (this.elements.gameInstructions) {
       this.elements.gameInstructions.setAttribute('aria-hidden', 'false');
     }
   }
-    
+
   hideInstructions() {
     if (this.elements.gameInstructions) {
       this.elements.gameInstructions.setAttribute('aria-hidden', 'true');
     }
   }
-    
+
   showInstructions() {
     // Pause the game when showing instructions modal
     if (this.gameState === 'playing') {
@@ -446,7 +446,7 @@ export default class GameTemplateLoader {
     }
     this.showModal(this.elements.instructionsModal);
   }
-    
+
   hideInstructionsModal() {
     // Resume the game if we auto-paused for instructions
     if (this.autoPausedForInstructions && this.gameState === 'paused') {
@@ -455,7 +455,7 @@ export default class GameTemplateLoader {
     }
     this.hideModal(this.elements.instructionsModal);
   }
-    
+
   /**
      * Modal management
      */
@@ -463,26 +463,26 @@ export default class GameTemplateLoader {
     if (modal) {
       modal.setAttribute('aria-hidden', 'false');
       modal.style.display = 'flex';
-            
+
       // Focus management
       const focusableElement = modal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
       if (focusableElement) {
         focusableElement.focus();
       }
-            
+
       // Prevent body scroll
       document.body.style.overflow = 'hidden';
     }
   }
-    
+
   hideModal(modal) {
     if (modal) {
       modal.setAttribute('aria-hidden', 'true');
       modal.style.display = 'none';
-            
+
       // Restore body scroll
       document.body.style.overflow = '';
-            
+
       // Resume game if paused by modal (but not for pause modal since we handle that differently)
       if (this.gameState === 'paused') {
         if (modal === this.elements.instructionsModal && this.autoPausedForInstructions) {
@@ -493,43 +493,43 @@ export default class GameTemplateLoader {
       }
     }
   }
-    
+
   hideAllModals() {
     document.querySelectorAll('.game-modal').forEach(modal => {
       this.hideModal(modal);
     });
   }
-    
+
   /**
      * Keyboard controls
      */
   handleKeyboard(e) {
     switch (e.code) {
-    case 'Space':
-      e.preventDefault();
-      this.togglePause();
-      break;
-    case 'Escape':
-      e.preventDefault();
-      if (document.querySelector('.game-modal[aria-hidden="false"]')) {
-        this.hideAllModals();
-      } else {
-        this.pauseGame();
-      }
-      break;
-    case 'KeyR':
-      if (e.ctrlKey || e.metaKey) {
+      case 'Space':
         e.preventDefault();
-        this.restartGame();
-      }
-      break;
-    case 'F11':
-      e.preventDefault();
-      this.toggleFullscreen();
-      break;
+        this.togglePause();
+        break;
+      case 'Escape':
+        e.preventDefault();
+        if (document.querySelector('.game-modal[aria-hidden="false"]')) {
+          this.hideAllModals();
+        } else {
+          this.pauseGame();
+        }
+        break;
+      case 'KeyR':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.restartGame();
+        }
+        break;
+      case 'F11':
+        e.preventDefault();
+        this.toggleFullscreen();
+        break;
     }
   }
-    
+
   /**
      * High score management
      */
@@ -537,12 +537,12 @@ export default class GameTemplateLoader {
     const key = `${this.config.gameTitle}_highScore`;
     return parseInt(localStorage.getItem(key) || '0', 10);
   }
-    
+
   saveHighScore(score) {
     const key = `${this.config.gameTitle}_highScore`;
     localStorage.setItem(key, score.toString());
   }
-    
+
   /**
      * Achievement system
      */
@@ -557,14 +557,14 @@ export default class GameTemplateLoader {
       achievementSection.classList.remove('hidden');
     }
   }
-    
+
   /**
      * Share score functionality
      */
   shareScore() {
     const finalScore = document.getElementById('final-score')?.textContent || '0';
     const shareText = `I just scored ${finalScore} points in ${this.config.gameTitle} on Learnimals! 🎮`;
-        
+
     if (navigator.share) {
       navigator.share({
         title: this.config.gameTitle,
@@ -580,7 +580,7 @@ export default class GameTemplateLoader {
       });
     }
   }
-    
+
   /**
      * Utility methods
      */
@@ -589,7 +589,7 @@ export default class GameTemplateLoader {
       this.elements.gameLoading.classList.add('hidden');
     }
   }
-    
+
   showError(message) {
     if (this.elements.gameLoading) {
       const loadingText = this.elements.gameLoading.querySelector('.loading-text');
@@ -599,7 +599,7 @@ export default class GameTemplateLoader {
       }
     }
   }
-    
+
   showTemporaryMessage(message, duration = 3000) {
     // Create temporary message element
     const messageEl = document.createElement('div');
@@ -615,16 +615,16 @@ export default class GameTemplateLoader {
             z-index: 1001;
             font-weight: 500;
         `;
-        
+
     document.body.appendChild(messageEl);
-        
+
     setTimeout(() => {
       if (messageEl.parentNode) {
         messageEl.parentNode.removeChild(messageEl);
       }
     }, duration);
   }
-    
+
   /**
      * Cleanup method
      */
@@ -632,16 +632,16 @@ export default class GameTemplateLoader {
     if (this.gameInstance && typeof this.gameInstance.destroy === 'function') {
       this.gameInstance.destroy();
     }
-        
+
     // Remove event listeners
     document.removeEventListener('keydown', this.handleKeyboard);
     document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-        
+
     this.gameInstance = null;
     this.isInitialized = false;
   }
-    
+
   /**
      * Handle theme changes
      */
@@ -650,11 +650,11 @@ export default class GameTemplateLoader {
     if (this.gameInstance && typeof this.gameInstance.handleThemeChange === 'function') {
       this.gameInstance.handleThemeChange();
     }
-    
+
     // Force re-render of any theme-dependent elements
     this.updateThemeColors();
   }
-  
+
   /**
    * Update theme colors for UI elements
    */
@@ -663,20 +663,20 @@ export default class GameTemplateLoader {
     const computedStyle = getComputedStyle(document.documentElement);
     const accentPrimary = computedStyle.getPropertyValue('--accent-primary').trim();
     const accentSecondary = computedStyle.getPropertyValue('--accent-secondary').trim();
-    
+
     // Update hero section gradient if needed
     const heroSection = document.querySelector('.game-hero');
     if (heroSection && accentPrimary && accentSecondary) {
       heroSection.style.background = `linear-gradient(135deg, ${accentPrimary} 0%, ${accentSecondary} 100%)`;
     }
-    
+
     // Trigger any other theme-dependent updates
     if (this.gameInstance && typeof this.gameInstance.render === 'function') {
       // Force a re-render to apply new theme colors
       this.gameInstance.render();
     }
   }
-  
+
   /**
    * Show pause overlay only over the game canvas
    */
@@ -686,12 +686,12 @@ export default class GameTemplateLoader {
       this.elements.pauseBtn.textContent = '▶️ Resume';
       this.elements.pauseBtn.setAttribute('aria-label', 'Resume game');
     }
-    
+
     // Show pause indicator over the game canvas only
-    const gameCanvas = this.elements.gameCanvas;
+    const {gameCanvas} = this.elements;
     if (gameCanvas) {
       let pauseOverlay = document.getElementById('game-pause-overlay');
-      
+
       if (!pauseOverlay) {
         // Create pause overlay if it doesn't exist
         pauseOverlay = document.createElement('div');
@@ -722,7 +722,7 @@ export default class GameTemplateLoader {
             </div>
           </div>
         `;
-        
+
         // Make sure the game canvas container is positioned relatively
         const gameContainer = gameCanvas.closest('#game-content') || gameCanvas.parentElement;
         if (gameContainer) {
@@ -733,11 +733,11 @@ export default class GameTemplateLoader {
           gameContainer.appendChild(pauseOverlay);
         }
       }
-      
+
       pauseOverlay.style.display = 'flex';
     }
   }
-  
+
   /**
    * Hide pause overlay from the game canvas
    */
@@ -747,7 +747,7 @@ export default class GameTemplateLoader {
       this.elements.pauseBtn.textContent = '⏸️ Pause';
       this.elements.pauseBtn.setAttribute('aria-label', 'Pause game');
     }
-    
+
     // Hide pause overlay
     const pauseOverlay = document.getElementById('game-pause-overlay');
     if (pauseOverlay) {

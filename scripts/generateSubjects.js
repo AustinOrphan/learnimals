@@ -1,9 +1,9 @@
 /**
  * Subject Generator Script for Learnimals
- * 
+ *
  * This script programmatically creates new subjects with their animal characters,
  * directory structures, templates, and updates the main configuration.
- * 
+ *
  * Usage:
  *   node scripts/generateSubjects.js
  *   node scripts/generateSubjects.js --subjects=music,geography
@@ -32,7 +32,7 @@ const subjectTemplates = {
     difficulty: 'beginner',
     ageRange: '4-12'
   },
-  
+
   geography: {
     name: 'Geography',
     character: {
@@ -47,7 +47,7 @@ const subjectTemplates = {
     difficulty: 'intermediate',
     ageRange: '6-12'
   },
-  
+
   history: {
     name: 'History',
     character: {
@@ -62,7 +62,7 @@ const subjectTemplates = {
     difficulty: 'intermediate',
     ageRange: '7-12'
   },
-  
+
   language: {
     name: 'Language',
     character: {
@@ -77,7 +77,7 @@ const subjectTemplates = {
     difficulty: 'beginner',
     ageRange: '5-12'
   },
-  
+
   physics: {
     name: 'Physics',
     character: {
@@ -92,7 +92,7 @@ const subjectTemplates = {
     difficulty: 'advanced',
     ageRange: '8-12'
   },
-  
+
   cooking: {
     name: 'Cooking',
     character: {
@@ -127,7 +127,7 @@ const subjectTemplates = {
 // Animal character image placeholders
 const animalImages = {
   songbird: '🐦',
-  eagle: '🦅', 
+  eagle: '🦅',
   turtle: '🐢',
   parrot: '🦜',
   owl: '🦉',
@@ -145,7 +145,7 @@ class SubjectGenerator {
 
   async generateSubjects(subjectKeys = []) {
     console.log('🚀 Starting Subject Generation...');
-    
+
     const results = {
       created: [],
       updated: [],
@@ -155,7 +155,7 @@ class SubjectGenerator {
     for (const subjectKey of subjectKeys) {
       try {
         console.log(`\n📚 Processing subject: ${subjectKey}`);
-        
+
         if (!subjectTemplates[subjectKey]) {
           throw new Error(`Unknown subject template: ${subjectKey}`);
         }
@@ -163,7 +163,7 @@ class SubjectGenerator {
         const subject = subjectTemplates[subjectKey];
         await this.createSubjectStructure(subjectKey, subject);
         results.created.push(subjectKey);
-        
+
         console.log(`✅ Successfully created ${subjectKey}`);
       } catch (error) {
         console.error(`❌ Error creating ${subjectKey}:`, error.message);
@@ -183,16 +183,16 @@ class SubjectGenerator {
   async createSubjectStructure(subjectKey, subject) {
     // 1. Create directory structure
     await this.createDirectories(subjectKey);
-    
+
     // 2. Generate HTML templates
     await this.createHTMLTemplates(subjectKey, subject);
-    
+
     // 3. Create CSS files
     await this.createCSSFiles(subjectKey, subject);
-    
+
     // 4. Create JavaScript files
     await this.createJavaScriptFiles(subjectKey, subject);
-    
+
     // 5. Generate placeholder image
     await this.createPlaceholderImage(subjectKey, subject);
   }
@@ -221,16 +221,14 @@ class SubjectGenerator {
   }
 
   generateSharedTemplate(subjectKey, subject) {
-    const features = subject.features.map((feature, index) => {
-      return `
+    const features = subject.features.map((feature, index) => `
                 {
                     title: '${feature}',
                     content: '<p>Interactive ${feature.toLowerCase()} activities and games!</p>',
                     linkUrl: '#${feature.toLowerCase().replace(/\s+/g, '-')}',
                     linkText: 'Explore Now',
                     theme: 'default'
-                }${index < subject.features.length - 1 ? ',' : ''}`;
-    }).join('');
+                }${index < subject.features.length - 1 ? ',' : ''}`).join('');
 
     return `<!doctype html>
 <html lang="en">
@@ -677,7 +675,7 @@ export default ${subject.name}Subject;`;
 
     const imagePath = path.join(this.imagesDir, `${subjectKey}-${subject.character.type.toLowerCase()}.svg`);
     await fs.writeFile(imagePath, svgContent);
-    
+
     console.log(`📸 Created placeholder image: ${subjectKey}-${subject.character.type.toLowerCase()}.svg`);
   }
 
@@ -685,7 +683,7 @@ export default ${subject.name}Subject;`;
     try {
       // Read current config
       const configContent = await fs.readFile(this.configPath, 'utf8');
-      
+
       // Generate new subjects object
       const newSubjects = createdSubjects.map(subjectKey => {
         const subject = subjectTemplates[subjectKey];
@@ -708,25 +706,25 @@ export default ${subject.name}Subject;`;
       // Find subjects section and update it
       const subjectsRegex = /(\/\/ Subject configurations\s+subjects:\s*{)([\s\S]*?)(}\s*,?\s*\n)/;
       const match = configContent.match(subjectsRegex);
-      
+
       if (match) {
         const existingSubjects = match[2].trim();
-        const updatedSubjects = existingSubjects 
+        const updatedSubjects = existingSubjects
           ? `${existingSubjects},\n\n${newSubjects}`
           : newSubjects;
-          
+
         const updatedConfig = configContent.replace(
           subjectsRegex,
           `$1\n${updatedSubjects}\n  $3`
         );
-        
+
         await fs.writeFile(this.configPath, updatedConfig);
       } else {
         // If subjects section doesn't exist, add it
         const subjectsSection = `\n  // Subject configurations\n  subjects: {\n${newSubjects}\n  },\n`;
         const insertPoint = configContent.search(/^};?\s*$/m);
         const updatedConfig = configContent.slice(0, insertPoint) + subjectsSection + configContent.slice(insertPoint);
-        
+
         await fs.writeFile(this.configPath, updatedConfig);
       }
     } catch (error) {
@@ -739,12 +737,12 @@ export default ${subject.name}Subject;`;
     try {
       const batchContent = await fs.readFile(filePath, 'utf8');
       const batchData = JSON.parse(batchContent);
-      
+
       if (batchData.subjects && Array.isArray(batchData.subjects)) {
         return await this.generateSubjects(batchData.subjects);
-      } else {
-        throw new Error('Batch file must contain a "subjects" array');
       }
+      throw new Error('Batch file must contain a "subjects" array');
+
     } catch (error) {
       console.error('❌ Error reading batch file:', error.message);
       throw error;
@@ -754,7 +752,7 @@ export default ${subject.name}Subject;`;
   listAvailableTemplates() {
     console.log('\n📋 Available Subject Templates:');
     console.log('================================');
-    
+
     Object.keys(subjectTemplates).forEach(key => {
       const subject = subjectTemplates[key];
       console.log(`\n🎓 ${key.toUpperCase()}`);
@@ -765,7 +763,7 @@ export default ${subject.name}Subject;`;
       console.log(`   Features: ${subject.features.join(', ')}`);
       console.log(`   Difficulty: ${subject.difficulty} | Age: ${subject.ageRange}`);
     });
-    
+
     console.log(`\n📊 Total Templates Available: ${Object.keys(subjectTemplates).length}`);
   }
 }
@@ -842,7 +840,7 @@ async function main() {
     }
 
     let results;
-    
+
     if (options.batchFile) {
       console.log(`📁 Processing batch file: ${options.batchFile}`);
       results = await generator.generateBatchFromFile(options.batchFile);
@@ -862,11 +860,11 @@ async function main() {
     console.log(`✅ Created: ${results.created.length} subjects`);
     console.log(`📝 Updated: ${results.updated.length} configurations`);
     console.log(`❌ Errors: ${results.errors.length} failures`);
-    
+
     if (results.created.length > 0) {
       console.log(`\n🎓 New Subjects Created: ${results.created.join(', ')}`);
     }
-    
+
     if (results.errors.length > 0) {
       console.log('\n❌ Errors:');
       results.errors.forEach(error => {

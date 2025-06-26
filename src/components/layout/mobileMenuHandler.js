@@ -49,7 +49,7 @@ class MobileMenuHandler {
     const mobileMenuButton = document.getElementById(this.menuButtonId);
     const navMenu = document.getElementById(this.navMenuId);
 
-    if (!mobileMenuButton || !navMenu) return;
+    if (!mobileMenuButton || !navMenu) {return;}
 
     // Toggle the active class on both elements
     navMenu.classList.toggle('active');
@@ -64,7 +64,7 @@ class MobileMenuHandler {
     const mobileMenuButton = document.getElementById(this.menuButtonId);
     const navMenu = document.getElementById(this.navMenuId);
 
-    if (!mobileMenuButton || !navMenu) return;
+    if (!mobileMenuButton || !navMenu) {return;}
 
     // Remove active class from both elements
     navMenu.classList.remove('active');
@@ -78,7 +78,7 @@ class MobileMenuHandler {
     const mobileMenuButton = document.getElementById(this.menuButtonId);
     const navMenu = document.getElementById(this.navMenuId);
 
-    if (!mobileMenuButton || !navMenu) return;
+    if (!mobileMenuButton || !navMenu) {return;}
 
     // Add active class to both elements
     navMenu.classList.add('active');

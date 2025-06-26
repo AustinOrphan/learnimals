@@ -16,7 +16,7 @@ export function createMockDOM() {
       <div id="modal-root"></div>
     </div>
   `;
-  
+
   return {
     app: document.getElementById('app'),
     navbar: document.getElementById('navbar-placeholder'),
@@ -61,10 +61,10 @@ export function createMockCanvas(width = 800, height = 600) {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  
+
   const context = global.testUtils.mockCanvasContext();
   canvas.getContext = vi.fn(() => context);
-  
+
   return { canvas, context };
 }
 
@@ -120,7 +120,7 @@ export function createMockSubjectData(subject = 'math') {
       features: ['Physics', 'Chemistry', 'Biology', 'Earth Science']
     }
   };
-  
+
   return subjects[subject] || subjects.math;
 }
 
@@ -155,7 +155,7 @@ export function mockBrowserEnvironment() {
     },
     writable: true
   });
-  
+
   // Mock navigator
   Object.defineProperty(window, 'navigator', {
     value: {
@@ -164,7 +164,7 @@ export function mockBrowserEnvironment() {
     },
     writable: true
   });
-  
+
   // Mock CSS custom properties
   const mockComputedStyle = {
     getPropertyValue: vi.fn((prop) => {
@@ -176,7 +176,7 @@ export function mockBrowserEnvironment() {
       return mockValues[prop] || '';
     })
   };
-  
+
   window.getComputedStyle = vi.fn(() => mockComputedStyle);
 }
 

@@ -14,7 +14,7 @@ export default class BubblePopGame {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d', { alpha: false });
-    
+
     // Initialize game variables
     this.bubbles = [];
     this.currentQuestion = {};
@@ -24,10 +24,10 @@ export default class BubblePopGame {
     this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
     this.lastFrameTime = 0;
     this.gameActive = true;
-    
+
     // Bubble cache for performance
     this.bubbleCache = {};
-    
+
     // Bind methods to preserve 'this' context
     this.handlePointerEvent = this.handlePointerEvent.bind(this);
     this.animate = this.animate.bind(this);
@@ -37,10 +37,10 @@ export default class BubblePopGame {
     this.generateQuestion = this.generateQuestion.bind(this);
     this.spawnBubbles = this.spawnBubbles.bind(this);
     this.nextRound = this.nextRound.bind(this);
-    
+
     // Initialize event listeners and start game
     this.setupEventListeners();
-    
+
     // Listen for theme changes to update bubble cache
     this.setupThemeListener();
   }
@@ -73,12 +73,12 @@ export default class BubblePopGame {
     // Canvas interaction
     this.canvas.addEventListener('click', this.handlePointerEvent);
     this.canvas.addEventListener('touchstart', this.handlePointerEvent, { passive: false });
-    
+
     // Window events
     window.addEventListener('resize', debounce(this.resizeCanvas, 250));
     window.addEventListener('blur', this.pauseGame);
     window.addEventListener('focus', this.resumeGame);
-    
+
     // Document visibility
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
@@ -87,14 +87,14 @@ export default class BubblePopGame {
         this.resumeGame();
       }
     });
-    
+
     // Theme changes
     document.addEventListener('themeChanged', () => {
       if (this.gameActive) {
         requestAnimationFrame(this.animate);
       }
     });
-    
+
     // Initial setup
     this.resizeCanvas();
     this.generateQuestion();
@@ -198,18 +198,18 @@ export default class BubblePopGame {
       }
 
       const isCorrect = answer === this.currentQuestion.answer;
-      
+
       // Create the bubble
       const bubble = new Bubble({
-        x, 
-        y, 
-        radius, 
-        answer, 
-        isCorrect, 
+        x,
+        y,
+        radius,
+        answer,
+        isCorrect,
         bubbleBackground: this.createBubbleBackground(radius),
         ctx: this.ctx
       });
-      
+
       this.bubbles.push(bubble);
     }
   }
@@ -219,7 +219,7 @@ export default class BubblePopGame {
    * @param {Event} e - The pointer event
    */
   handlePointerEvent(e) {
-    if (!this.gameActive) return;
+    if (!this.gameActive) {return;}
 
     e.preventDefault();
 
@@ -252,7 +252,7 @@ export default class BubblePopGame {
       }
     }
   }
-  
+
   /**
    * Display a message on the canvas
    * @param {string} text - Message to display
@@ -261,12 +261,12 @@ export default class BubblePopGame {
   showMessage(text, color) {
     this.message = text;
     this.messageColor = color;
-    
+
     // Clear previous message timer if exists
     if (this.messageTimer) {
       clearTimeout(this.messageTimer);
     }
-    
+
     // Set new timer to clear message
     this.messageTimer = setTimeout(() => {
       this.message = '';

@@ -19,7 +19,7 @@ function checkQuiz() {
 
   // Check if answers are correct
   const correct = q1.value === 'Mars' && q2.value === 'Sunlight';
-    
+
   // Display result
   result.textContent = correct
     ? 'Great job! 🎉 You got them right!'
@@ -28,7 +28,7 @@ function checkQuiz() {
 
   // Scroll to make sure result is visible
   result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
+
   return false;
 }
 
@@ -39,7 +39,7 @@ function initSciencePage() {
   // Quiz form initialization
   const quizForm = document.getElementById('quiz-form');
   if (quizForm) {
-    quizForm.addEventListener('submit', function(e) {
+    quizForm.addEventListener('submit', (e) => {
       e.preventDefault();
       checkQuiz();
     });
@@ -57,7 +57,7 @@ function initSciencePage() {
     span.addEventListener('mouseenter', function() {
       this.style.transform = 'scale(1.05)';
     });
-        
+
     span.addEventListener('mouseleave', function() {
       this.style.transform = 'scale(1)';
     });

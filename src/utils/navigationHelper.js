@@ -9,9 +9,9 @@ class NavigationHelper {
   }
 
   detectBaseUrl() {
-    // Get the current URL and find the project root  
+    // Get the current URL and find the project root
     const currentPath = window.location.pathname;
-    
+
     // Find where 'learnimals' appears in the path
     const learnimalsIndex = currentPath.toLowerCase().indexOf('learnimals');
     if (learnimalsIndex !== -1) {
@@ -19,7 +19,7 @@ class NavigationHelper {
       const pathToLearnimals = currentPath.substring(0, currentPath.indexOf('learnimals') + 'learnimals'.length);
       return window.location.origin + pathToLearnimals;
     }
-    
+
     // Fallback: assume we're in the project root
     return window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
   }
@@ -28,7 +28,7 @@ class NavigationHelper {
   getUrl(relativePath) {
     // Remove leading slash if present
     const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-    return this.baseUrl + '/' + cleanPath;
+    return `${this.baseUrl  }/${  cleanPath}`;
   }
 
   // Navigation shortcuts
@@ -56,7 +56,7 @@ class NavigationHelper {
       'about': 'src/pages/about.html',
       'contact': 'src/pages/contact.html',
       'profile': 'src/pages/profile.html',
-      
+
       // Subjects
       'math': 'src/features/subjects/shared/math.html',
       'science': 'src/features/subjects/shared/science.html',
@@ -104,7 +104,7 @@ class NavigationHelper {
 // Create global instance
 if (typeof window !== 'undefined') {
   window.navigationHelper = new NavigationHelper();
-  
+
   // Auto-update navigation when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {

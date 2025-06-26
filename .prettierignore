@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Test artifacts
+tests/coverage/
+tests/results/
+*.test.js.snap
+
+# Generated files
+public/serviceWorker.js
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Don't format minified files
+*.min.js
+*.min.css
+
+# Documentation that should preserve formatting
+CHANGELOG.md
+LICENSE

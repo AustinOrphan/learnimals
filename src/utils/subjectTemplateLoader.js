@@ -1,6 +1,6 @@
 /**
  * Subject Template Loader
- * 
+ *
  * This utility loads the subject template and replaces placeholders with subject-specific content.
  * It can be used to maintain a consistent structure across all subject pages while allowing
  * for customization of content.
@@ -8,7 +8,7 @@
 
 class SubjectTemplateLoader {    /**
      * Load the subject template with custom content
-     * 
+     *
      * @param {Object} options - Configuration options for the template
      * @param {string} options.subjectName - Name of the subject (e.g., "Math", "Science")
      * @param {string} options.subjectLower - Lowercase name of subject for file paths (e.g., "math", "science")
@@ -27,7 +27,7 @@ class SubjectTemplateLoader {    /**
       if (!response.ok) {
         throw new Error(`Failed to load template: ${response.status}`);
       }
-            
+
       let template = await response.text();
       // Replace placeholders with actual content
       template = template.replace(/{{subjectName}}/g, options.subjectName);
@@ -37,7 +37,7 @@ class SubjectTemplateLoader {    /**
       template = template.replace(/{{characterType}}/g, options.characterType);
       template = template.replace(/{{heroSubtitle}}/g, options.heroSubtitle);
       template = template.replace(/{{featureCards}}/g, options.featureCards);
-            
+
       // Handle feature cards data for Card.js
       if (options.featureCardsData) {
         // Add the feature cards data as a JavaScript variable
@@ -45,11 +45,11 @@ class SubjectTemplateLoader {    /**
                     // Feature cards data for Card.js
                     const featureCardsData = ${JSON.stringify(options.featureCardsData)};
                 </script>`;
-                
+
         // Insert the script tag before the closing head tag
         template = template.replace('</head>', `${scriptTag}\n    </head>`);
       }
-            
+
       return template;
     } catch (error) {
       console.error('Error loading subject template:', error);
@@ -59,7 +59,7 @@ class SubjectTemplateLoader {    /**
 
   /**
      * Render the template directly into the current page
-     * 
+     *
      * @param {Object} options - Configuration options for the template
      */
   static async renderTemplate(options) {

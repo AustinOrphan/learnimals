@@ -18,13 +18,13 @@ class GeographySubject {
       'Capital Quiz',
       'Culture Corner'
     ];
-        
+
     this.init();
   }
 
   init() {
     console.log(`🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`);
-        
+
     // Set up event listeners when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setupEventListeners());
@@ -42,7 +42,7 @@ class GeographySubject {
 
   setupFeatureCards() {
     const featureCards = document.querySelectorAll('.feature-card');
-        
+
     featureCards.forEach((card, index) => {
       const feature = this.features[index];
       if (feature) {
@@ -58,7 +58,7 @@ class GeographySubject {
       characterImage.addEventListener('click', () => {
         this.showCharacterMessage();
       });
-            
+
       // Add hover effect
       characterImage.style.cursor = 'pointer';
       characterImage.title = `Click to interact with ${this.character.name}!`;
@@ -74,20 +74,20 @@ class GeographySubject {
 
   handleFeatureClick(feature) {
     console.log(`🎯 User clicked on: ${feature}`);
-        
+
     // Show character encouragement
     this.showCharacterMessage(`Great choice! Let's explore ${feature} together!`);
-        
+
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'world map':
-      this.startFirstFeature();
-      break;
-    case 'country explorer':
-      this.startSecondFeature();
-      break;
-    default:
-      this.showComingSoon(feature);
+      case 'world map':
+        this.startFirstFeature();
+        break;
+      case 'country explorer':
+        this.startSecondFeature();
+        break;
+      default:
+        this.showComingSoon(feature);
     }
   }
 
@@ -115,9 +115,9 @@ class GeographySubject {
       'Let\'s explore and have fun together!',
       'Click on any activity to get started!'
     ];
-        
+
     const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
-        
+
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
   }

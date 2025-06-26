@@ -33,7 +33,7 @@ class Modal extends BaseComponent {
       showCancelButton: options.showCancelButton !== undefined ? options.showCancelButton : false,
       ...options
     });
-    
+
     this.isOpen = false;
   }
 
@@ -43,10 +43,10 @@ class Modal extends BaseComponent {
    */
   generateHTML() {
     const { id, title, content, confirmButtonText, cancelButtonText, showClose, size, showConfirmButton, showCancelButton } = this.options;
-    
+
     // Size class
     const sizeClass = `modal--${size}`;
-    
+
     let html = `
       <div id="${id}" class="component modal-overlay" aria-hidden="true">
         <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${id}-title" aria-modal="true">
@@ -58,35 +58,35 @@ class Modal extends BaseComponent {
             ${content}
           </div>
     `;
-    
+
     // Only add footer if we have buttons
     if (showConfirmButton || showCancelButton) {
       html += `
         <div class="modal-footer component-flex component-flex--between">
       `;
-      
+
       if (showCancelButton) {
         html += `
           <button class="modal-cancel component-button component-button--outline">${cancelButtonText}</button>
         `;
       }
-      
+
       if (showConfirmButton) {
         html += `
           <button class="modal-confirm component-button component-button--primary">${confirmButtonText}</button>
         `;
       }
-      
+
       html += `
         </div>
       `;
     }
-    
+
     html += `
         </div>
       </div>
     `;
-    
+
     return html;
   }
 
@@ -99,14 +99,14 @@ class Modal extends BaseComponent {
       // Create a div to hold the modal
       const modalContainer = document.createElement('div');
       modalContainer.innerHTML = this.generateHTML();
-      
+
       // Append to body
       document.body.appendChild(modalContainer.firstElementChild);
-      
+
       // Attach event listeners
       this.attachEventListeners();
     }
-    
+
     return this;
   }
 
@@ -116,7 +116,7 @@ class Modal extends BaseComponent {
   attachEventListeners() {
     // Close button
     this.addEventListener('click', () => this.close(), '.modal-close');
-    
+
     // Confirm button
     if (this.options.onConfirm) {
       this.addEventListener('click', () => {
@@ -124,7 +124,7 @@ class Modal extends BaseComponent {
         this.close();
       }, '.modal-confirm');
     }
-    
+
     // Cancel button
     if (this.options.onCancel) {
       this.addEventListener('click', () => {
@@ -132,14 +132,14 @@ class Modal extends BaseComponent {
         this.close();
       }, '.modal-cancel');
     }
-    
+
     // Close on click outside
     this.addEventListener('click', (e) => {
       if (e.target === this.element) {
         this.close();
       }
     });
-    
+
     // Close on Escape key - handled globally
     this.escapeHandler = (e) => {
       if (e.key === 'Escape' && this.isOpen) {
@@ -157,11 +157,11 @@ class Modal extends BaseComponent {
     if (!modal) {
       this.create();
     }
-    
+
     document.getElementById(this.options.id).setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
     this.isOpen = true;
-    
+
     return this;
   }
 
@@ -174,12 +174,12 @@ class Modal extends BaseComponent {
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
       this.isOpen = false;
-      
+
       if (this.options.onClose) {
         this.options.onClose();
       }
     }
-    
+
     return this;
   }
 
@@ -190,24 +190,24 @@ class Modal extends BaseComponent {
   update(options) {
     // Update options
     Object.assign(this.options, options);
-    
+
     // If modal exists in DOM, replace it
     const existingModal = document.getElementById(this.options.id);
     if (existingModal) {
       const wasOpen = this.isOpen;
-      
+
       // Remove old modal
       existingModal.remove();
-      
+
       // Create new modal with updated options
       this.create();
-      
+
       // Reopen if it was open
       if (wasOpen) {
         this.open();
       }
     }
-    
+
     return this;
   }
 
@@ -219,14 +219,14 @@ class Modal extends BaseComponent {
     if (this.escapeHandler) {
       document.removeEventListener('keydown', this.escapeHandler);
     }
-    
+
     // Remove body class if modal is open
     if (this.isOpen) {
       document.body.classList.remove('modal-open');
     }
-    
+
     this.isOpen = false;
-    
+
     // Call parent destroy method
     super.destroy();
   }

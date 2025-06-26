@@ -29,7 +29,7 @@ vi.mock('../../src/components/BaseComponent.js', () => ({
 describe('Game Flow Integration', () => {
   let mockDOM;
   let mockCanvas;
-  
+
   beforeEach(() => {
     mockBrowserEnvironment();
     mockDOM = createMockDOM();
@@ -39,15 +39,15 @@ describe('Game Flow Integration', () => {
   describe('Bubble Pop Game Flow', () => {
     let BubblePopGame;
     let game;
-    
+
     beforeEach(async () => {
       // Set up canvas in DOM
       mockDOM.main.appendChild(mockCanvas.canvas);
-      
+
       try {
         const module = await import('../../src/features/games/bubble-pop/bubblepop.js');
         BubblePopGame = module.default;
-        
+
         game = new BubblePopGame({
           canvas: mockCanvas.canvas,
           gameId: 'bubble-pop-test'
@@ -66,32 +66,32 @@ describe('Game Flow Integration', () => {
               bubbles: []
             };
           }
-          
+
           start() {
             this.state.isRunning = true;
             return true;
           }
-          
+
           pause() {
             this.state.isPaused = true;
             return true;
           }
-          
+
           resume() {
             this.state.isPaused = false;
             return true;
           }
-          
+
           stop() {
             this.state.isRunning = false;
             this.state.isPaused = false;
             return true;
           }
-          
+
           addBubble(bubble) {
             this.state.bubbles.push(bubble);
           }
-          
+
           popBubble(bubbleId) {
             const bubbleIndex = this.state.bubbles.findIndex(b => b.id === bubbleId);
             if (bubbleIndex !== -1) {
@@ -102,50 +102,50 @@ describe('Game Flow Integration', () => {
             return false;
           }
         };
-        
+
         game = new BubblePopGame({
           canvas: mockCanvas.canvas,
           gameId: 'bubble-pop-test'
         });
       }
     });
-    
+
     it('should complete a full game cycle', async () => {
       // Start game
       expect(game.start()).toBe(true);
       expect(game.state.isRunning).toBe(true);
-      
+
       // Add some bubbles
       game.addBubble({ id: 1, x: 100, y: 100, radius: 20 });
       game.addBubble({ id: 2, x: 200, y: 150, radius: 25 });
-      
+
       expect(game.state.bubbles.length).toBe(2);
-      
+
       // Pop a bubble
       const popped = game.popBubble(1);
       expect(popped).toBe(true);
       expect(game.state.bubbles.length).toBe(1);
       expect(game.state.score).toBe(10);
-      
+
       // Pause and resume
       expect(game.pause()).toBe(true);
       expect(game.state.isPaused).toBe(true);
-      
+
       expect(game.resume()).toBe(true);
       expect(game.state.isPaused).toBe(false);
-      
+
       // Stop game
       expect(game.stop()).toBe(true);
       expect(game.state.isRunning).toBe(false);
     });
-    
+
     it('should handle rapid state changes', () => {
       // Test rapid start/stop cycles
       for (let i = 0; i < 5; i++) {
         expect(game.start()).toBe(true);
         expect(game.stop()).toBe(true);
       }
-      
+
       // Test pause/resume cycles
       game.start();
       for (let i = 0; i < 3; i++) {
@@ -158,7 +158,7 @@ describe('Game Flow Integration', () => {
 
   describe('Game Template Loader Integration', () => {
     let GameTemplateLoader;
-    
+
     beforeEach(async () => {
       try {
         const module = await import('../../src/components/games/GameTemplateLoader.js');
@@ -172,7 +172,7 @@ describe('Game Flow Integration', () => {
         };
       }
     });
-    
+
     it('should load and initialize games correctly', async () => {
       const gameConfig = {
         type: 'bubble-pop',
@@ -182,18 +182,18 @@ describe('Game Flow Integration', () => {
           theme: 'ocean'
         }
       };
-      
+
       const result = await GameTemplateLoader.loadGame(gameConfig);
       expect(result).toBeDefined();
       expect(GameTemplateLoader.loadGame).toHaveBeenCalledWith(gameConfig);
     });
-    
+
     it('should list available games', () => {
       const games = GameTemplateLoader.getAvailableGames();
       expect(Array.isArray(games)).toBe(true);
       expect(games.length).toBeGreaterThan(0);
     });
-    
+
     it('should validate game support', () => {
       expect(GameTemplateLoader.isGameSupported('bubble-pop')).toBe(true);
       expect(GameTemplateLoader.isGameSupported('nonexistent-game')).toBe(true); // Mock returns true
@@ -202,7 +202,7 @@ describe('Game Flow Integration', () => {
 
   describe('Subject Page Integration', () => {
     let SubjectPage;
-    
+
     beforeEach(async () => {
       // Create a mock subject page
       SubjectPage = class MockSubjectPage {
@@ -212,27 +212,27 @@ describe('Game Flow Integration', () => {
           this.features = options.features || [];
           this.modalShown = false;
         }
-        
+
         init() {
           this.setupEventListeners();
         }
-        
+
         setupEventListeners() {
           // Mock setup
         }
-        
+
         showCharacterMessage(message) {
           this.modalShown = true;
           this.lastMessage = message;
         }
-        
+
         handleFeatureClick(feature) {
           this.lastClickedFeature = feature;
           this.showCharacterMessage(`Let's explore ${feature}!`);
         }
       };
     });
-    
+
     it('should handle subject interaction flow', () => {
       const subject = new SubjectPage({
         subjectName: 'Math',
@@ -243,12 +243,12 @@ describe('Game Flow Integration', () => {
         },
         features: ['Addition', 'Subtraction', 'Multiplication']
       });
-      
+
       subject.init();
-      
+
       // Simulate feature click
       subject.handleFeatureClick('Addition');
-      
+
       expect(subject.lastClickedFeature).toBe('Addition');
       expect(subject.modalShown).toBe(true);
       expect(subject.lastMessage).toContain('Addition');
@@ -257,7 +257,7 @@ describe('Game Flow Integration', () => {
 
   describe('Theme Integration', () => {
     let ThemeManager;
-    
+
     beforeEach(() => {
       // Mock theme manager
       ThemeManager = {
@@ -277,28 +277,28 @@ describe('Game Flow Integration', () => {
           background: '#ffffff'
         }))
       };
-      
+
       // Make it globally available
       window.themeManager = ThemeManager;
     });
-    
+
     it('should propagate theme changes to components', async () => {
       const themeChangeHandler = vi.fn();
-      
+
       // Listen for theme changes
       document.addEventListener('themeChanged', themeChangeHandler);
-      
+
       // Change theme
       ThemeManager.setTheme('dark');
-      
+
       await waitForDOM();
-      
+
       expect(themeChangeHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           detail: { theme: 'dark' }
         })
       );
-      
+
       expect(ThemeManager.currentTheme).toBe('dark');
     });
   });
@@ -310,7 +310,7 @@ describe('Game Flow Integration', () => {
           throw new Error('Initialization failed');
         }
       };
-      
+
       expect(() => {
         try {
           new ErrorProneComponent();
@@ -320,7 +320,7 @@ describe('Game Flow Integration', () => {
         }
       }).not.toThrow();
     });
-    
+
     it('should handle game errors without crashing', () => {
       const game = {
         state: { isRunning: true },
@@ -331,7 +331,7 @@ describe('Game Flow Integration', () => {
           game.state.isRunning = false;
         })
       };
-      
+
       expect(() => {
         try {
           game.update();
@@ -339,7 +339,7 @@ describe('Game Flow Integration', () => {
           game.handleError(error);
         }
       }).not.toThrow();
-      
+
       expect(game.state.isRunning).toBe(false);
     });
   });
@@ -358,16 +358,16 @@ describe('Game Flow Integration', () => {
         }),
         getMetrics: vi.fn(() => performanceTracker.metrics)
       };
-      
+
       // Simulate component lifecycle
       performanceTracker.startTiming('component-init');
       // ... component initialization ...
       performanceTracker.endTiming('component-init');
-      
+
       performanceTracker.startTiming('game-loop');
       // ... game loop execution ...
       performanceTracker.endTiming('game-loop');
-      
+
       const metrics = performanceTracker.getMetrics();
       expect(metrics['component-init']).toBeDefined();
       expect(metrics['component-init'].duration).toBeGreaterThanOrEqual(0);
