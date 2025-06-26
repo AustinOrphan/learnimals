@@ -10,6 +10,6 @@ export default defineConfig({
       'tests/unit/**/*.{test,spec}.js'
     ],
     name: 'unit',
-    environment: 'node'
+    environment: 'happy-dom'
   }
 });

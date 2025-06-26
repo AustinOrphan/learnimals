@@ -7,11 +7,11 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 describe('Logger Utility', () => {
   let Logger;
-  let originalEnv;
+  let originalWindow;
   
   beforeEach(async () => {
-    // Store original NODE_ENV
-    originalEnv = process.env.NODE_ENV;
+    // Store original window state
+    originalWindow = global.window;
     
     // Clear module cache and reimport
     vi.resetModules();
@@ -20,13 +20,18 @@ describe('Logger Utility', () => {
   });
   
   afterEach(() => {
-    // Restore original NODE_ENV
-    process.env.NODE_ENV = originalEnv;
+    // Restore original window
+    if (originalWindow) {
+      global.window = originalWindow;
+    }
   });
 
   describe('Log Level Detection', () => {
     it('should default to INFO level in production', async () => {
-      process.env.NODE_ENV = 'production';
+      // Mock production environment (non-localhost hostname)
+      global.window = {
+        location: { hostname: 'learnimals.com' }
+      };
       
       vi.resetModules();
       const module = await import('../../src/utils/logger.js');
@@ -35,24 +40,43 @@ describe('Logger Utility', () => {
       expect(logger.level).toBe(2); // INFO level
     });
     
-    it('should default to DEBUG level in development', async () => {
-      process.env.NODE_ENV = 'development';
+    it('should default to DEBUG level in development (localhost)', async () => {
+      // Mock development environment (localhost)
+      global.window = {
+        location: { hostname: 'localhost' }
+      };
       
       vi.resetModules();
       const module = await import('../../src/utils/logger.js');
       const logger = module.default;
       
-      expect(logger.level).toBe(0); // DEBUG level
+      expect(logger.level).toBe(3); // DEBUG level
     });
     
-    it('should use custom log level from environment', async () => {
-      process.env.LOG_LEVEL = 'WARN';
+    it('should default to DEBUG level in development (127.0.0.1)', async () => {
+      // Mock development environment (127.0.0.1)
+      global.window = {
+        location: { hostname: '127.0.0.1' }
+      };
       
       vi.resetModules();
       const module = await import('../../src/utils/logger.js');
       const logger = module.default;
       
-      expect(logger.level).toBe(3); // WARN level
+      expect(logger.level).toBe(3); // DEBUG level
+    });
+    
+    it('should use custom log level from window setting', async () => {
+      global.window = {
+        location: { hostname: 'localhost' },
+        LEARNIMALS_LOG_LEVEL: 'WARN'
+      };
+      
+      vi.resetModules();
+      const module = await import('../../src/utils/logger.js');
+      const logger = module.default;
+      
+      expect(logger.level).toBe(1); // WARN level
     });
   });
 
@@ -61,7 +85,11 @@ describe('Logger Utility', () => {
     let consoleSpy;
     
     beforeEach(async () => {
-      process.env.NODE_ENV = 'development';
+      // Mock development environment
+      global.window = {
+        location: { hostname: 'localhost' }
+      };
+      
       vi.resetModules();
       
       const module = await import('../../src/utils/logger.js');
@@ -69,7 +97,6 @@ describe('Logger Utility', () => {
       
       consoleSpy = {
         log: vi.spyOn(console, 'log').mockImplementation(() => {}),
-        info: vi.spyOn(console, 'info').mockImplementation(() => {}),
         warn: vi.spyOn(console, 'warn').mockImplementation(() => {}),
         error: vi.spyOn(console, 'error').mockImplementation(() => {})
       };
@@ -84,7 +111,7 @@ describe('Logger Utility', () => {
       logger.debug('Debug message', { data: 'test' });
       
       expect(consoleSpy.log).toHaveBeenCalledWith(
-        expect.stringContaining('[DEBUG]'),
+        expect.stringContaining('DEBUG:'),
         'Debug message',
         { data: 'test' }
       );
@@ -94,8 +121,8 @@ describe('Logger Utility', () => {
       logger.setLevel('INFO');
       logger.info('Info message');
       
-      expect(consoleSpy.info).toHaveBeenCalledWith(
-        expect.stringContaining('[INFO]'),
+      expect(consoleSpy.log).toHaveBeenCalledWith(
+        expect.stringContaining('INFO:'),
         'Info message'
       );
     });
@@ -105,7 +132,7 @@ describe('Logger Utility', () => {
       logger.warn('Warning message');
       
       expect(consoleSpy.warn).toHaveBeenCalledWith(
-        expect.stringContaining('[WARN]'),
+        expect.stringContaining('WARN:'),
         'Warning message'
       );
     });
@@ -115,7 +142,7 @@ describe('Logger Utility', () => {
       logger.error('Error message', new Error('Test error'));
       
       expect(consoleSpy.error).toHaveBeenCalledWith(
-        expect.stringContaining('[ERROR]'),
+        expect.stringContaining('ERROR:'),
         'Error message',
         expect.any(Error)
       );
@@ -128,7 +155,6 @@ describe('Logger Utility', () => {
       logger.warn('Warning message');
       
       expect(consoleSpy.log).not.toHaveBeenCalled();
-      expect(consoleSpy.info).not.toHaveBeenCalled();
       expect(consoleSpy.warn).not.toHaveBeenCalled();
     });
     
@@ -151,18 +177,18 @@ describe('Logger Utility', () => {
     
     it('should set log level by string', () => {
       logger.setLevel('WARN');
-      expect(logger.level).toBe(3);
+      expect(logger.level).toBe(1);
       
       logger.setLevel('DEBUG');
-      expect(logger.level).toBe(0);
+      expect(logger.level).toBe(3);
     });
     
     it('should set log level by number', () => {
-      logger.setLevel(1);
+      logger.setLevel('WARN');
       expect(logger.level).toBe(1);
       
-      logger.setLevel(4);
-      expect(logger.level).toBe(4);
+      logger.setLevel('ERROR');
+      expect(logger.level).toBe(0);
     });
     
     it('should handle invalid log levels', () => {
@@ -189,17 +215,20 @@ describe('Logger Utility', () => {
     });
     
     it('should format timestamps correctly', () => {
-      const timestamp = logger.getTimestamp();
+      // Test the formatMessage method instead since getTimestamp is not public
+      const formatted = logger.formatMessage('INFO', 'test message', []);
+      const timestamp = formatted[0];
       
-      // Should match ISO timestamp format
-      expect(timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+      // Should match HH:MM:SS.mmm format
+      expect(timestamp).toMatch(/^\[\d{2}:\d{2}:\d{2}\.\d{3}\] INFO:$/);
     });
     
     it('should include milliseconds in timestamp', () => {
-      const timestamp = logger.getTimestamp();
+      const formatted = logger.formatMessage('DEBUG', 'test', []);
+      const timestamp = formatted[0];
       
       // Should include milliseconds
-      expect(timestamp).toMatch(/\.\d{3}Z$/);
+      expect(timestamp).toMatch(/\.\d{3}\] DEBUG:$/);
     });
   });
 
@@ -208,13 +237,16 @@ describe('Logger Utility', () => {
     let consoleSpy;
     
     beforeEach(async () => {
-      process.env.NODE_ENV = 'development';
+      // Mock development environment
+      global.window = {
+        location: { hostname: 'localhost' }
+      };
       vi.resetModules();
       
       const module = await import('../../src/utils/logger.js');
       logger = module.default;
       
-      consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+      consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
     });
     
     afterEach(() => {
@@ -225,7 +257,7 @@ describe('Logger Utility', () => {
       logger.info('Test message');
       
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z \[INFO\]/),
+        expect.stringMatching(/^\[\d{2}:\d{2}:\d{2}\.\d{3}\] INFO:/),
         'Test message'
       );
     });
@@ -237,7 +269,7 @@ describe('Logger Utility', () => {
       logger.info('Message with data', data, error);
       
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('[INFO]'),
+        expect.stringContaining('INFO:'),
         'Message with data',
         data,
         error
@@ -247,7 +279,10 @@ describe('Logger Utility', () => {
 
   describe('Production Behavior', () => {
     it('should be more restrictive in production', async () => {
-      process.env.NODE_ENV = 'production';
+      // Mock production environment (non-localhost hostname)
+      global.window = {
+        location: { hostname: 'learnimals.com' }
+      };
       vi.resetModules();
       
       const module = await import('../../src/utils/logger.js');

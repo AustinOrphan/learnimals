@@ -30,20 +30,25 @@ class Logger {
     // Check if we're in development mode
     const isDevelopment = typeof window !== 'undefined' && 
                          (window.location.hostname === 'localhost' || 
-                          window.location.hostname === '127.0.0.1' ||
-                          window.location.hostname.includes('localhost'));
+                          window.location.hostname === '127.0.0.1');
 
     return isDevelopment ? LOG_LEVELS.DEBUG : LOG_LEVELS.INFO;
   }
 
   /**
    * Set the logging level
-   * @param {string} level - 'ERROR', 'WARN', 'INFO', or 'DEBUG'
+   * @param {string|number} level - 'ERROR', 'WARN', 'INFO', 'DEBUG' or numeric level
    */
   setLevel(level) {
-    const upperLevel = level.toUpperCase();
-    if (upperLevel in LOG_LEVELS) {
-      this.level = LOG_LEVELS[upperLevel];
+    if (typeof level === 'number') {
+      if (level >= 0 && level <= 3) {
+        this.level = level;
+      }
+    } else {
+      const upperLevel = level.toUpperCase();
+      if (upperLevel in LOG_LEVELS) {
+        this.level = LOG_LEVELS[upperLevel];
+      }
     }
   }
 
@@ -53,6 +58,20 @@ class Logger {
    */
   setEnabled(enabled) {
     this.enabled = enabled;
+  }
+
+  /**
+   * Enable logging
+   */
+  enable() {
+    this.enabled = true;
+  }
+
+  /**
+   * Disable logging
+   */
+  disable() {
+    this.enabled = false;
   }
 
   /**
@@ -70,7 +89,7 @@ class Logger {
    * @param {Array} args
    */
   formatMessage(level, message, args) {
-    const timestamp = new Date().toISOString().substr(11, 12);
+    const timestamp = new Date().toISOString().slice(11, 23);
     const prefix = `[${timestamp}] ${level}:`;
     
     if (args.length > 0) {
