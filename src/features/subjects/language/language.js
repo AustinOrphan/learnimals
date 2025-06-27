@@ -1,23 +1,23 @@
 /**
- * Music Subject JavaScript
- * Interactive features for Melody the Songbird
+ * Language Subject JavaScript
+ * Interactive features for Polyglot the Parrot
  */
 import Modal from '../../../components/ui/Modal.js';
 import { escapeHTML } from '../../../utils/common.js';
 
-class MusicSubject {
+class LanguageSubject {
     constructor() {
-        this.subjectName = 'Music';
+        this.subjectName = 'Language';
         this.character = {
-            name: 'Melody',
-            type: 'Songbird',
-            role: 'Music Teacher'
+            name: 'Polyglot',
+            type: 'Parrot',
+            role: 'Language Teacher'
         };
         this.features = [
-        "Music Theory",
-        "Virtual Instruments",
-        "Rhythm Games",
-        "Song Composition"
+        "Vocabulary Builder",
+        "Pronunciation Practice",
+        "Language Games",
+        "Cultural Stories"
 ];
         
         this.init();
@@ -81,10 +81,10 @@ class MusicSubject {
         
         // Here you can add specific functionality for each feature
         switch (feature.toLowerCase()) {
-            case 'music theory':
+            case 'vocabulary builder':
                 this.startFirstFeature();
                 break;
-            case 'virtual instruments':
+            case 'pronunciation practice':
                 this.startSecondFeature();
                 break;
             default:
@@ -124,13 +124,13 @@ class MusicSubject {
     }
 
     displayMessage(message) {
-        // Use custom modal component with character theming
         // SECURITY: Escape HTML to prevent XSS attacks
+        // Use custom modal component with character theming
         const modal = new Modal({
-            id: 'music-message-modal',
+            id: 'language-message-modal',
             title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
             content: `<div class="character-message">
-                <div class="character-icon">🎵</div>
+                <div class="character-icon">🎓</div>
                 <p>${escapeHTML(message)}</p>
             </div>`,
             confirmButtonText: 'Got it!',
@@ -166,7 +166,7 @@ class MusicSubject {
 }
 
 // Initialize the subject when script loads
-const musicSubject = new MusicSubject();
+const languageSubject = new LanguageSubject();
 
 // Export for potential use by other modules
-export default MusicSubject;
+export default LanguageSubject;

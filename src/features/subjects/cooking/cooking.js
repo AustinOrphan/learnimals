@@ -1,23 +1,23 @@
 /**
- * Music Subject JavaScript
- * Interactive features for Melody the Songbird
+ * Cooking Subject JavaScript
+ * Interactive features for Chef the Bear
  */
 import Modal from '../../../components/ui/Modal.js';
 import { escapeHTML } from '../../../utils/common.js';
 
-class MusicSubject {
+class CookingSubject {
     constructor() {
-        this.subjectName = 'Music';
+        this.subjectName = 'Cooking';
         this.character = {
-            name: 'Melody',
-            type: 'Songbird',
-            role: 'Music Teacher'
+            name: 'Chef',
+            type: 'Bear',
+            role: 'Head Chef'
         };
         this.features = [
-        "Music Theory",
-        "Virtual Instruments",
-        "Rhythm Games",
-        "Song Composition"
+        "Recipe Maker",
+        "Nutrition Guide",
+        "Kitchen Safety",
+        "Virtual Cooking"
 ];
         
         this.init();
@@ -81,10 +81,10 @@ class MusicSubject {
         
         // Here you can add specific functionality for each feature
         switch (feature.toLowerCase()) {
-            case 'music theory':
+            case 'recipe maker':
                 this.startFirstFeature();
                 break;
-            case 'virtual instruments':
+            case 'nutrition guide':
                 this.startSecondFeature();
                 break;
             default:
@@ -127,10 +127,10 @@ class MusicSubject {
         // Use custom modal component with character theming
         // SECURITY: Escape HTML to prevent XSS attacks
         const modal = new Modal({
-            id: 'music-message-modal',
+            id: 'cooking-message-modal',
             title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
             content: `<div class="character-message">
-                <div class="character-icon">🎵</div>
+                <div class="character-icon">🐻</div>
                 <p>${escapeHTML(message)}</p>
             </div>`,
             confirmButtonText: 'Got it!',
@@ -166,7 +166,7 @@ class MusicSubject {
 }
 
 // Initialize the subject when script loads
-const musicSubject = new MusicSubject();
+const cookingSubject = new CookingSubject();
 
 // Export for potential use by other modules
-export default MusicSubject;
+export default CookingSubject;
