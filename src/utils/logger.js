@@ -31,9 +31,11 @@ class Logger {
     // SECURITY: Use exact hostname matching only to prevent malicious domain bypass
     // Malicious domains like "evil-localhost.com" or "not-localhost.malicious.com" 
     // could trigger development mode if substring matching was used
-    const DEVELOPMENT_HOSTNAMES = ['localhost', '127.0.0.1'];
-    const isDevelopment = typeof window !== 'undefined' && 
-                         DEVELOPMENT_HOSTNAMES.includes(window.location.hostname);
+    const isDevelopmentHostname = () => {
+      const DEVELOPMENT_HOSTNAMES = ['localhost', '127.0.0.1'];
+      return typeof window !== 'undefined' && DEVELOPMENT_HOSTNAMES.includes(window.location.hostname);
+    };
+    const isDevelopment = isDevelopmentHostname();
 
     return isDevelopment ? LOG_LEVELS.DEBUG : LOG_LEVELS.INFO;
   }
