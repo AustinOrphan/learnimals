@@ -76,10 +76,10 @@
       
       const wrappedHandler = selector 
         ? (e) => {
-            if (e.target.matches(selector)) {
-              handler.call(this, e);
-            }
+          if (e.target.matches(selector)) {
+            handler.call(this, e);
           }
+        }
         : handler.bind(this);
       
       this.element.addEventListener(event, wrappedHandler);

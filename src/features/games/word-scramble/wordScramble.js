@@ -1,5 +1,6 @@
 // Word Scramble Game for Learnimals
 // A fun educational game where players unscramble words by dragging letters
+import logger from '../../../utils/logger.js';
 
 class WordScrambleGame {
   constructor(containerId, difficultLevel = 'easy') {
@@ -293,7 +294,7 @@ class WordScrambleGame {
     if (answer === this.currentWord) {
       // Correct answer
       this.score += this.difficultyLevel === 'easy' ? 1 : 
-                   this.difficultyLevel === 'medium' ? 2 : 3;
+        this.difficultyLevel === 'medium' ? 2 : 3;
       document.getElementById('score').textContent = this.score;
       
       document.getElementById('game-message').textContent = 'Correct! Well done!';
@@ -363,7 +364,7 @@ class WordScrambleGame {
     } else {
       audio.src = '/public/audio/error.mp3';
     }
-    audio.play().catch(e => console.log('Audio play failed:', e));
+    audio.play().catch(e => logger.debug('Audio play failed:', e));
   }
   
   startTimer() {

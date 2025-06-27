@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{{gameDescription}}" />
+    <title>{{gameTitle}} - Learnimals</title>
+    
+    <!-- Base Styles -->
+    <link rel="stylesheet" href="/src/styles/base/styles.css" />
+    <link rel="stylesheet" href="/src/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/src/styles/components/components.css" />
+    <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css" />
+    
+    <!-- Game Template Styles -->
+    <link rel="stylesheet" href="/src/styles/components/games/game-template.css" />
+    <link rel="stylesheet" href="/src/styles/components/games/game-hero.css" />
+    <link rel="stylesheet" href="/src/styles/components/games/game-controls.css" />
+    <link rel="stylesheet" href="/src/styles/components/games/game-modals.css" />
+    
+    <!-- Game-Specific Styles -->
+    {{customStyles}}
+    
+    <link rel="icon" href="/public/images/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="/public/manifest.json" />
+</head>
+<body>
+    <!-- Navigation -->
+    <div id="navbar-placeholder"></div>
+    
+    <main class="game-page">
+        <!-- Game Hero Section -->
+        <section class="game-hero">
+            <div class="glass-overlay"></div>
+            <div class="hero-content">
+                <h1 class="game-title">{{gameTitle}}</h1>
+                <p class="game-description">{{gameDescription}}</p>
+                <button class="btn btn-outline how-to-play-btn" aria-label="Learn how to play">
+                    <span class="btn-icon">❓</span>
+                    How to Play
+                </button>
+            </div>
+            <div class="hero-character">
+                <img src="{{characterImage}}" alt="{{characterAlt}}" class="character-image" />
+            </div>
+        </section>
+
+        <!-- Game Instructions (Collapsible) -->
+        <section class="game-instructions" id="game-instructions" aria-hidden="true">
+            <div class="instructions-content">
+                <h2>How to Play</h2>
+                <ol class="instructions-list">
+                    {{instructionsList}}
+                </ol>
+                <div class="controls-info">
+                    <h3>Controls</h3>
+                    <ul class="controls-list">
+                        {{controlsList}}
+                    </ul>
+                </div>
+                <button class="btn btn-primary start-game-btn">Start Playing!</button>
+            </div>
+        </section>
+
+        <!-- Game Container -->
+        <div class="game-container" id="game-container">
+            <!-- Game Status Bar -->
+            <div class="game-status">
+                <div class="score-display">
+                    <span class="score-label">Score:</span>
+                    <span class="score-value" id="score-value">0</span>
+                </div>
+                <div class="level-display">
+                    <span class="level-label">Level:</span>
+                    <span class="level-value" id="level-value">1</span>
+                </div>
+                <div class="game-info" id="game-info">
+                    {{gameInfo}}
+                </div>
+            </div>
+
+            <!-- Game Controls -->
+            <div class="game-controls">
+                <button class="game-btn pause-btn" id="pause-btn" aria-label="Pause game">
+                    <span class="btn-icon">⏸️</span>
+                    <span class="btn-text">Pause</span>
+                </button>
+                <button class="game-btn restart-btn" id="restart-btn" aria-label="Restart game">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">Restart</span>
+                </button>
+                <button class="game-btn fullscreen-btn" id="fullscreen-btn" aria-label="Toggle fullscreen">
+                    <span class="btn-icon">⤢</span>
+                    <span class="btn-text">Fullscreen</span>
+                </button>
+                <button class="game-btn help-btn" id="help-btn" aria-label="Show help">
+                    <span class="btn-icon">❓</span>
+                    <span class="btn-text">Help</span>
+                </button>
+            </div>
+
+            <!-- Game Canvas/Content Area -->
+            <div class="game-content" id="game-content">
+                <canvas id="gameCanvas" class="game-canvas" aria-label="Game playing area"></canvas>
+                <div id="game-ui-overlay" class="game-ui-overlay">
+                    {{gameUIElements}}
+                </div>
+            </div>
+
+            <!-- Game Loading State -->
+            <div class="game-loading" id="game-loading">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Loading {{gameTitle}}...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Modals -->
+    <!-- Pause Modal -->
+    <div class="game-modal" id="pause-modal" role="dialog" aria-labelledby="pause-title" aria-hidden="true">
+        <div class="modal-content">
+            <h2 id="pause-title">Game Paused</h2>
+            <div class="modal-actions">
+                <button class="btn btn-primary resume-btn">Resume</button>
+                <button class="btn btn-outline restart-game-btn">Restart</button>
+                <button class="btn btn-outline quit-game-btn">Quit Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="game-modal" id="game-over-modal" role="dialog" aria-labelledby="game-over-title" aria-hidden="true">
+        <div class="modal-content">
+            <h2 id="game-over-title">Game Over!</h2>
+            <div class="final-score">
+                <p>Your Score: <span id="final-score">0</span></p>
+                <p class="high-score">High Score: <span id="high-score">0</span></p>
+            </div>
+            <div class="achievement-section" id="achievement-section">
+                <!-- Achievements will be populated here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary play-again-btn">Play Again</button>
+                <button class="btn btn-outline share-score-btn">Share Score</button>
+                <button class="btn btn-outline back-to-menu-btn">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="game-modal" id="instructions-modal" role="dialog" aria-labelledby="instructions-title" aria-hidden="true">
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close instructions">&times;</button>
+            <h2 id="instructions-title">How to Play {{gameTitle}}</h2>
+            <div class="instructions-content">
+                <ol class="instructions-list">
+                    {{instructionsList}}
+                </ol>
+                <div class="controls-info">
+                    <h3>Controls</h3>
+                    <ul class="controls-list">
+                        {{controlsList}}
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary start-playing-btn">Start Playing!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Learnimals. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="/src/pages/about.html">About Us</a>
+            <a href="/src/pages/contact.html">Contact</a>
+            <a href="#" aria-label="Read our privacy policy">Privacy Policy</a>
+            <a href="/src/pages/profile.html">My Profile</a>
+        </div>
+    </footer>
+
+    <!-- Core Scripts -->
+    <script defer type="module" src="/src/themeInitializer.js"></script>
+    <script type="module" src="/src/utils/themeManager.js"></script>
+    <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
+    <script defer src="/src/components/layout/navbarLoader.js"></script>
+    <script defer src="/src/components/component-loader.js"></script>
+    
+    <!-- Game Template Scripts -->
+    <script type="module" src="/src/components/games/GameTemplateLoader.js"></script>
+    
+    <!-- Game-Specific Script -->
+    <script type="module">
+        import GameTemplateLoader from '/src/components/games/GameTemplateLoader.js';
+        
+        // Initialize game template when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameConfig = {
+                gameTitle: '{{gameTitle}}',
+                gameClass: '{{gameClass}}',
+                gameScript: '{{gameScript}}',
+                canvasId: 'gameCanvas',
+                difficulty: '{{difficulty}}',
+                features: '{{gameFeatures}}'
+            };
+            
+            window.gameTemplate = new GameTemplateLoader(gameConfig);
+        });
+    </script>
+</body>
+</html>
