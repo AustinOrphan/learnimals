@@ -476,7 +476,7 @@ class SubjectGenerator {
  * ${subject.name} Subject JavaScript
  * Interactive features for ${subject.character.name} the ${subject.character.type}
  */
-import Modal from '../../../components/ui/Modal.js';
+import Modal from '../src/components/ui/Modal.js';
 
 class ${subject.name.replace(/\s+/g, '')}Subject {
     constructor() {
