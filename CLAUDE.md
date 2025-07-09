@@ -14,6 +14,33 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 2. **Open browser**: Navigate to `/src/pages/index.html` 
 3. **No build/compilation required**: Files can be edited directly and refreshed in browser
 
+### Available npm Scripts
+
+- `npm run lint` - Run ESLint on the src/ directory
+- `npm run lint:fix` - Run ESLint with auto-fix enabled
+- `npm run generate-subjects` - Generate new subject pages programmatically
+- `npm run list-templates` - List all available subject templates
+- `npm run test:unit` - Placeholder for unit tests (not configured yet)
+- `npm run test:components` - Placeholder for component tests (not configured yet)
+- `npm run test:integration` - Placeholder for integration tests (not configured yet)
+
+### Subject Generation System
+
+The project includes a powerful subject generation system:
+
+```bash
+# Generate specific subjects
+npm run generate-subjects -- --subjects=music,geography
+
+# List all available templates
+npm run list-templates
+
+# Generate from batch file
+node scripts/generateSubjects.js --batch-file=subjects.json
+```
+
+Available subject templates: music, geography, history, language, physics, cooking, environment
+
 ## Architecture
 
 ### Modern Component-Based System
@@ -108,9 +135,39 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 - Touch and mouse input support
 - Score tracking and progress saving
 
+## Code Standards
+
+### ESLint Configuration
+- **Indentation**: 2 spaces (enforced)
+- **Quotes**: Single quotes (enforced)
+- **Semicolons**: Required (enforced)
+- **Variables**: Prefer const for non-reassigned variables
+- **Unused variables**: Allowed if prefixed with underscore
+- **Console**: console.log allowed for development/debugging
+
+### JavaScript Guidelines
+- Use ES6+ features (modules, arrow functions, async/await)
+- Follow semantic CSS variable naming: `--text-primary`, `--bg-card`, `--accent-primary`
+- Component imports should use relative paths from `src/components/`
+- All components should extend or integrate with the theme system
+- Use the Modal component for user interactions rather than native alerts
+
+### File Organization
+- Subject-specific files: `src/features/subjects/[subject]/[subject].js|css|html`
+- Reusable components: `src/components/[type]/ComponentName.js`
+- Utilities: `src/utils/utilityName.js`
+- Templates: `src/templates/templateName.html`
+
 ## Testing
 No automated testing framework is currently configured. Test manually by:
 1. Loading pages in different browsers
 2. Testing responsive design on mobile devices
 3. Verifying theme switching functionality
 4. Testing offline capabilities (PWA features)
+5. Running `npm run lint` to check code quality
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
