@@ -83,7 +83,12 @@
       "mcp__filesystem__list_directory",
       "mcp__filesystem__read_multiple_files",
       "mcp__filesystem__search_files",
-      "mcp__filesystem__edit_file"
+      "mcp__filesystem__edit_file",
+      "Bash(cd:*)",
+      "mcp__serena__find_symbol",
+      "Bash(chmod:*)",
+      "Bash(npm test)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }
