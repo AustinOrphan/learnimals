@@ -3,6 +3,7 @@
 
 import authService from '../../features/user/authService.js';
 import AuthModal from '../../features/user/authModal.js';
+import UserSwitcher from '../../features/user/userSwitcher.js';
 
 class AuthNavigation {
   constructor() {
@@ -322,41 +323,11 @@ class AuthNavigation {
   }
   
   showUserSwitcher() {
-    // This would open a user switching interface
-    // For now, we'll implement a simple version
-    const users = this.authService.getFamilyUsers();
-    
-    if (users.length <= 1) {
-      alert('No other users available. Create a new account to switch users.');
-      return;
-    }
-    
     // Close current menu
     this.closeUserMenu();
     
-    // Show simple user switching (could be enhanced with a proper modal)
-    const userNames = users
-      .filter(user => user.id !== this.currentUser.id)
-      .map(user => user.profile.name || user.username);
-    
-    const selectedUser = prompt(`Switch to user:\n${userNames.join('\n')}\n\nEnter the name:`);
-    
-    if (selectedUser) {
-      const targetUser = users.find(user => 
-        (user.profile.name || user.username) === selectedUser
-      );
-      
-      if (targetUser) {
-        const result = this.authService.switchToUser(targetUser.id);
-        if (result.success) {
-          // The userSwitched event will be dispatched automatically
-        } else {
-          alert('Failed to switch user: ' + result.error);
-        }
-      } else {
-        alert('User not found.');
-      }
-    }
+    // Show enhanced user switcher modal
+    UserSwitcher.show();
   }
   
   // Static method to initialize the auth navigation

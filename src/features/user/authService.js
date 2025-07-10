@@ -95,9 +95,17 @@ class AuthService {
           grade: grade || null,
           avatar: avatar || 'default'
         },
+        role: this.determineUserRole(age),
+        familyId: this.generateFamilyId(),
+        parentId: null, // Will be set when adding child accounts
         createdAt: new Date().toISOString(),
         lastLogin: null,
-        isActive: true
+        isActive: true,
+        preferences: {
+          showInSwitcher: true,
+          allowDirectSwitch: true,
+          theme: 'auto'
+        }
       };
       
       // Save user to storage
@@ -242,6 +250,17 @@ class AuthService {
   // Helper methods
   generateUserId() {
     return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  generateFamilyId() {
+    return 'family_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  determineUserRole(age) {
+    if (!age) return 'learner';
+    if (age >= 18) return 'parent';
+    if (age >= 13) return 'teen';
+    return 'child';
   }
   
   async hashPassword(password) {
@@ -417,8 +436,55 @@ class AuthService {
         id: user.id,
         username: user.username,
         profile: user.profile,
-        lastLogin: user.lastLogin
+        role: user.role,
+        familyId: user.familyId,
+        parentId: user.parentId,
+        lastLogin: user.lastLogin,
+        preferences: user.preferences
       }));
+  }
+
+  // Get users for current family
+  getCurrentFamilyUsers() {
+    if (!this.currentUser) return [];
+    
+    const users = this.getAllUsers();
+    const currentFamilyId = this.getCurrentUserFull()?.familyId;
+    
+    if (!currentFamilyId) return [this.currentUser];
+    
+    return users
+      .filter(user => user.isActive && user.familyId === currentFamilyId)
+      .filter(user => user.preferences?.showInSwitcher !== false)
+      .map(user => ({
+        id: user.id,
+        username: user.username,
+        profile: user.profile,
+        role: user.role,
+        lastLogin: user.lastLogin,
+        isCurrentUser: user.id === this.currentUser.id
+      }))
+      .sort((a, b) => {
+        // Sort by last login, then by name
+        if (a.isCurrentUser) return -1;
+        if (b.isCurrentUser) return 1;
+        if (a.lastLogin && b.lastLogin) {
+          return new Date(b.lastLogin) - new Date(a.lastLogin);
+        }
+        return a.profile.name.localeCompare(b.profile.name);
+      });
+  }
+
+  // Get full user data for current user (internal use)
+  getCurrentUserFull() {
+    if (!this.currentUser) return null;
+    return this.getUserById(this.currentUser.id);
+  }
+
+  // Get user by ID
+  getUserById(userId) {
+    const users = this.getAllUsers();
+    return users.find(user => user.id === userId);
   }
   
   // Account management
@@ -555,6 +621,129 @@ class AuthService {
       'food': 'What is your favorite food?'
     };
     return questions[questionKey] || 'Security question not found';
+  }
+
+  // Add child account to current family
+  async addChildAccount(childData) {
+    if (!this.isAuthenticated || !this.currentUser) {
+      return { success: false, error: 'Parent must be logged in to add child account' };
+    }
+
+    const currentUserFull = this.getCurrentUserFull();
+    if (!currentUserFull || currentUserFull.role !== 'parent') {
+      return { success: false, error: 'Only parents can add child accounts' };
+    }
+
+    try {
+      const { username, name, age, grade, avatar } = childData;
+      
+      // Validation
+      if (!username || username.length < 3) {
+        return { success: false, error: 'Username must be at least 3 characters long' };
+      }
+      
+      if (!name || name.trim().length < 1) {
+        return { success: false, error: 'Child name is required' };
+      }
+      
+      // Check if username already exists
+      const existingUser = this.getUserByUsername(username);
+      if (existingUser) {
+        return { success: false, error: 'Username already exists' };
+      }
+
+      // Create child user
+      const childUser = {
+        id: this.generateUserId(),
+        username: username,
+        email: '', // Children don't need email
+        passwordHash: '', // Children don't need password initially
+        securityQuestion: '',
+        securityAnswerHash: '',
+        profile: {
+          name: name,
+          age: age || null,
+          grade: grade || null,
+          avatar: avatar || 'default'
+        },
+        role: this.determineUserRole(age),
+        familyId: currentUserFull.familyId,
+        parentId: currentUserFull.id,
+        createdAt: new Date().toISOString(),
+        lastLogin: null,
+        isActive: true,
+        preferences: {
+          showInSwitcher: true,
+          allowDirectSwitch: true,
+          theme: 'auto'
+        }
+      };
+
+      // Save child to storage
+      const users = this.getAllUsers();
+      users.push(childUser);
+      localStorage.setItem(this.USERS_STORAGE_KEY, JSON.stringify(users));
+
+      this.dispatchAuthEvent('childAccountAdded', { 
+        child: {
+          id: childUser.id,
+          username: childUser.username,
+          profile: childUser.profile,
+          role: childUser.role
+        },
+        parent: this.currentUser 
+      });
+
+      return { success: true, child: childUser };
+
+    } catch (error) {
+      console.error('Error adding child account:', error);
+      return { success: false, error: 'Failed to add child account' };
+    }
+  }
+
+  // Switch to child account (parent can do this without password)
+  switchToChildAccount(childId) {
+    if (!this.isAuthenticated || !this.currentUser) {
+      return { success: false, error: 'Parent must be logged in' };
+    }
+
+    const currentUserFull = this.getCurrentUserFull();
+    if (!currentUserFull || currentUserFull.role !== 'parent') {
+      return { success: false, error: 'Only parents can switch to child accounts' };
+    }
+
+    const child = this.getUserById(childId);
+    if (!child || child.parentId !== currentUserFull.id) {
+      return { success: false, error: 'Child account not found or not authorized' };
+    }
+
+    return this.switchToUser(childId);
+  }
+
+  // Check if current user can manage other users
+  canManageFamily() {
+    const currentUserFull = this.getCurrentUserFull();
+    return currentUserFull && (currentUserFull.role === 'parent' || currentUserFull.role === 'admin');
+  }
+
+  // Get children of current user
+  getMyChildren() {
+    if (!this.isAuthenticated || !this.currentUser) return [];
+
+    const currentUserFull = this.getCurrentUserFull();
+    if (!currentUserFull || currentUserFull.role !== 'parent') return [];
+
+    const users = this.getAllUsers();
+    return users
+      .filter(user => user.isActive && user.parentId === currentUserFull.id)
+      .map(user => ({
+        id: user.id,
+        username: user.username,
+        profile: user.profile,
+        role: user.role,
+        lastLogin: user.lastLogin
+      }));
   }
 
   // Delete account

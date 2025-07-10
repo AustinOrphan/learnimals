@@ -1,0 +1,330 @@
+/* User Management and Switcher Styles */
+
+/* User Switcher Modal Styles */
+.user-switcher-container {
+  padding: 0;
+}
+
+.current-user-info {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.current-user-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.current-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar-large {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-primary);
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-role {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* User Switcher Grid */
+.user-switcher-grid h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.users-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--bg-card);
+}
+
+.user-card:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accent-primary-rgb), 0.15);
+}
+
+.user-card .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.user-card .user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-card .user-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.125rem;
+}
+
+.user-card .user-role {
+  font-size: 0.75rem;
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.last-login {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+.switch-button {
+  padding: 0.375rem 0.75rem;
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.switch-button:hover {
+  background: var(--accent-secondary);
+}
+
+.switch-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.user-switcher-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.empty-state {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Family Management Section */
+.family-management {
+  margin-top: 1.5rem;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1.5rem 0 1rem 0;
+}
+
+.family-management h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.management-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.management-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.management-actions .btn--outline {
+  background: transparent;
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.management-actions .btn--outline:hover {
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+}
+
+.management-actions .btn svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* Success/Error Messages */
+.switcher-success-message,
+.switcher-error-message {
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.switcher-success-message {
+  background-color: var(--success-bg, #d4edda);
+  border: 1px solid var(--success-border, #c3e6cb);
+  color: var(--success-text, #155724);
+}
+
+.switcher-error-message {
+  background-color: var(--error-bg, #f8d7da);
+  border: 1px solid var(--error-border, #f5c6cb);
+  color: var(--error-text, #721c24);
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .users-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .management-actions {
+    justify-content: flex-start;
+  }
+  
+  .user-switcher-container {
+    padding: 0.5rem;
+  }
+}
+
+/* Role-specific styling */
+.user-card[data-role="parent"] {
+  border-left: 4px solid var(--accent-primary);
+}
+
+.user-card[data-role="child"] {
+  border-left: 4px solid #22c55e;
+}
+
+.user-card[data-role="teen"] {
+  border-left: 4px solid #f59e0b;
+}
+
+.user-card[data-role="learner"] {
+  border-left: 4px solid #8b5cf6;
+}
+
+/* Animation for switching state */
+@keyframes switchingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.user-card.switching {
+  animation: switchingPulse 1s infinite;
+  pointer-events: none;
+}
+
+/* Enhanced hover effects */
+.user-card:not(.switching):hover .user-avatar {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.user-card:not(.switching):hover .switch-button {
+  transform: translateX(2px);
+}
+
+/* Focus styles for accessibility */
+.user-card:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.switch-button:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .user-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .user-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .current-user-info {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
