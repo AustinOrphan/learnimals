@@ -16,7 +16,7 @@
 </head>
 <body class="pizza-maker-page">
     <!-- Navigation -->
-    <nav class="navbar" id="navbar"></nav>
+    <div id="navbar-placeholder"></div>
 
     <!-- Game Container -->
     <main class="pizza-game-container">
@@ -182,7 +182,9 @@
     </main>
 
     <!-- Game Scripts -->
-    <script type="module" src="../components/layout/navbar.js"></script>
+    <script src="../components/layout/navbarLoader.js" defer></script>
+    <script src="../utils/navigationHelper.js" defer></script>
+    <script src="../components/layout/navigation.js" defer></script>
     <script type="module" src="../features/games/pizza-maker/PizzaMakerGame.js"></script>
     <script type="module">
         import PizzaMakerGame from '../features/games/pizza-maker/PizzaMakerGame.js';
