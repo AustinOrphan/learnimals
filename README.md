@@ -1,8 +1,10 @@
 # 🎮 Learnimals - Educational Games for Children
 
 [![CI/CD Pipeline](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml)
+[![Deploy](https://github.com/AustinOrphan/learnimals/actions/workflows/deploy.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/deploy.yml)
 [![Security Scan](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml)
 [![Monitoring](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml)
+[![codecov](https://codecov.io/gh/AustinOrphan/learnimals/branch/main/graph/badge.svg)](https://codecov.io/gh/AustinOrphan/learnimals)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Learnimals is an interactive educational web application featuring fun games and activities designed to help children learn core subjects through play. Each subject area is represented by a friendly animal character, creating an engaging and memorable learning experience.
@@ -26,25 +28,63 @@ Learnimals is an interactive educational web application featuring fun games and
 
 - Node.js 18+ (use `.nvmrc` for exact version)
 - npm or yarn
+- Modern web browser (Chrome, Firefox, Edge, etc.)
 - Python 3 (for local development server)
 
 ### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/AustinOrphan/learnimals.git
-cd learnimals
+1. Clone this repository
+   ```bash
+   git clone https://github.com/AustinOrphan/learnimals.git
+   cd learnimals
+   ```
 
-# Install dependencies
-npm install
+2. Install dependencies
+   ```bash
+   npm install
+   ```
 
-# Start local development server
-python3 -m http.server 8080
-# or use the Makefile
-make dev-server
-```
+3. Run tests
+   ```bash
+   npm test
+   ```
 
-Visit `http://localhost:8080` to see the application.
+4. Start a local web server
+   ```bash
+   python3 -m http.server 8080
+   # or
+   npx serve src/pages
+   # or use the Makefile
+   make dev-server
+   ```
+
+5. Open `http://localhost:8080` in your browser
+
+### CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **CI Pipeline**: Runs on every push and PR
+  - ESLint for code quality
+  - Vitest for unit testing (80% coverage threshold)
+  - HTML validation
+  - PWA audit with Lighthouse
+  - Security scanning
+  - Multi-version Node.js testing (18, 20)
+
+- **Deployment**: Automatic deployment to GitHub Pages on main branch
+- **Release Management**: Automated versioning and changelog generation
+- **Dependency Updates**: Weekly automated dependency checks
+
+### Development Workflow
+
+1. Create a feature branch
+2. Make your changes
+3. Run tests locally: `npm test`
+4. Commit changes (pre-commit hooks will run)
+5. Push and create a PR
+6. CI pipeline will validate changes
+7. Merge to main triggers deployment
 
 ### Using Make Commands
 
