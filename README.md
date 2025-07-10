@@ -1,5 +1,10 @@
 # Learnimals - Educational Games for Kids
 
+[![CI Pipeline](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml)
+[![Deploy](https://github.com/AustinOrphan/learnimals/actions/workflows/deploy.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/deploy.yml)
+[![codecov](https://codecov.io/gh/AustinOrphan/learnimals/branch/main/graph/badge.svg)](https://codecov.io/gh/AustinOrphan/learnimals)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Learnimals is an interactive educational platform featuring fun animal characters who guide children through math, science, reading, and art activities.
 
 ## Project Overview
@@ -93,14 +98,62 @@ A math game where players pop bubbles containing the correct answers to simple m
 
 ### Prerequisites
 
+- Node.js (version specified in `.nvmrc`)
+- npm or yarn
 - Modern web browser (Chrome, Firefox, Edge, etc.)
-- Local web server for testing
 
 ### Running Locally
 
 1. Clone this repository
-2. Start a local web server in the project root
-3. Open `index.html` in your browser
+   ```bash
+   git clone https://github.com/AustinOrphan/learnimals.git
+   cd learnimals
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Run tests
+   ```bash
+   npm test
+   ```
+
+4. Start a local web server
+   ```bash
+   python3 -m http.server 8000
+   # or
+   npx serve src/pages
+   ```
+
+5. Open `http://localhost:8000` in your browser
+
+### CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration and deployment:
+
+- **CI Pipeline**: Runs on every push and PR
+  - ESLint for code quality
+  - Vitest for unit testing (80% coverage threshold)
+  - HTML validation
+  - PWA audit with Lighthouse
+  - Security scanning
+  - Multi-version Node.js testing (18, 20)
+
+- **Deployment**: Automatic deployment to GitHub Pages on main branch
+- **Release Management**: Automated versioning and changelog generation
+- **Dependency Updates**: Weekly automated dependency checks
+
+### Development Workflow
+
+1. Create a feature branch
+2. Make your changes
+3. Run tests locally: `npm test`
+4. Commit changes (pre-commit hooks will run)
+5. Push and create a PR
+6. CI pipeline will validate changes
+7. Merge to main triggers deployment
 
 ## Future Improvements
 

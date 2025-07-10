@@ -1,0 +1,103 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  pr-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v40
+        with:
+          files: |
+            src/**/*.js
+            src/**/*.html
+            src/**/*.css
+            tests/**/*.js
+      
+      - name: Comment PR
+        uses: actions/github-script@v7
+        if: github.event.action == 'opened'
+        with:
+          script: |
+            const files = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ').filter(f => f);
+            const jsFiles = files.filter(f => f.endsWith('.js')).length;
+            const htmlFiles = files.filter(f => f.endsWith('.html')).length;
+            const cssFiles = files.filter(f => f.endsWith('.css')).length;
+            const testFiles = files.filter(f => f.includes('test')).length;
+            
+            const comment = `## 🚀 PR Analysis
+            
+            ### 📊 Changed Files Summary
+            - **JavaScript files**: ${jsFiles}
+            - **HTML files**: ${htmlFiles}
+            - **CSS files**: ${cssFiles}
+            - **Test files**: ${testFiles}
+            
+            ### ✅ Automated Checks
+            The following checks will run automatically:
+            - ESLint code quality check
+            - Vitest unit tests with 80% coverage requirement
+            - HTML validation
+            - PWA audit
+            - Security scanning
+            
+            ### 📋 PR Checklist
+            Please ensure:
+            - [ ] All tests pass locally (\`npm test\`)
+            - [ ] Code follows project style guidelines
+            - [ ] New features have corresponding tests
+            - [ ] Documentation is updated if needed
+            - [ ] Commit messages follow conventional format
+            
+            Thank you for contributing to Learnimals! 🎉`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Size Check
+        run: |
+          # Check bundle size impact
+          SIZE_BEFORE=$(find src -name "*.js" -o -name "*.css" | xargs wc -c | tail -1 | awk '{print $1}')
+          echo "Total size: $((SIZE_BEFORE / 1024))KB"
+          
+          if [ $SIZE_BEFORE -gt 5242880 ]; then # 5MB
+            echo "::warning::Bundle size exceeds 5MB. Consider code splitting."
+          fi
+      
+      - name: Test Coverage Report
+        if: always()
+        run: |
+          # Run tests with coverage
+          npm run test:coverage || true
+          
+          # Generate coverage summary
+          if [ -f coverage/lcov.info ]; then
+            npx lcov-summary coverage/lcov.info
+          fi
