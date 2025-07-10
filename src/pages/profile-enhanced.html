@@ -397,7 +397,10 @@
     import Modal from '../components/ui/Modal.js';
     import profileManager from '../utils/profileManager.js';
     import { getProgressTracker } from '../utils/progressIntegration.js';
-    import { getBadgeByAchievementId, createBadgeElement } from '../utils/badgeDefinitions.js';
+    import { getBadgeByAchievementId } from '../utils/badgeDefinitions.js';
+    import BadgeDisplay from '../components/badges/BadgeDisplay.js';
+    import BadgeGallery from '../components/badges/BadgeGallery.js';
+    import BadgeNotification from '../components/badges/BadgeNotification.js';
 
     class EnhancedProfilePage {
       constructor() {
@@ -584,13 +587,23 @@
           return;
         }
         
-        container.innerHTML = recentAchievements.slice(0, 3).map(achievement => `
-          <div class="achievement-preview">
-            <div class="achievement-icon">${achievement.icon}</div>
-            <div class="achievement-name">${achievement.name}</div>
-            <div class="achievement-date">${this.formatTimeAgo(achievement.dateUnlocked)}</div>
-          </div>
-        `).join('');
+        // Clear container
+        container.innerHTML = '';
+        container.className = 'achievement-showcase';
+        
+        // Create badge displays for recent achievements
+        recentAchievements.slice(0, 3).forEach(achievement => {
+          const badgeElement = BadgeDisplay.createElement(achievement, {
+            size: 'mini',
+            showTooltip: true,
+            showProgress: false,
+            onClick: (achievement) => {
+              this.showAchievementDetails(achievement);
+            }
+          });
+          
+          container.appendChild(badgeElement);
+        });
       }
       
       // Additional methods for other content loading...
@@ -782,11 +795,8 @@
         document.getElementById('achievements-total').textContent = progressSummary.achievements.total;
         document.getElementById('achievement-points').textContent = progressSummary.achievements.points;
         
-        // Setup filters
-        this.setupAchievementFilters();
-        
-        // Load achievements grid
-        this.loadAchievementsGrid('all');
+        // Create badge gallery
+        this.createBadgeGallery();
       }
       
       loadStatisticsContent() {
@@ -876,49 +886,88 @@
         return colors[Math.floor(Math.random() * colors.length)];
       }
       
-      setupAchievementFilters() {
+      createBadgeGallery() {
+        // Get achievements data
+        const progressSummary = this.progressTracker.getProgressSummary();
+        const achievements = progressSummary.achievements.list || [];
+        
+        // Clear existing content and create new gallery
+        const achievementsGrid = document.getElementById('achievements-grid');
+        achievementsGrid.innerHTML = '';
+        
+        // Create badge gallery
+        this.badgeGallery = new BadgeGallery('achievements-grid', {
+          achievements: achievements,
+          showFilters: false, // We use the existing filter UI
+          showSearch: true,
+          showStats: false, // We use the existing stats UI
+          badgeSize: 'normal',
+          onBadgeClick: (achievement) => {
+            this.showAchievementDetails(achievement);
+          }
+        });
+        
+        // Connect existing filter buttons to gallery
+        this.setupBadgeGalleryFilters();
+      }
+      
+      setupBadgeGalleryFilters() {
         document.querySelectorAll('.filter-btn').forEach(btn => {
           btn.addEventListener('click', () => {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            this.loadAchievementsGrid(btn.dataset.filter);
+            
+            // Apply filter to badge gallery
+            if (this.badgeGallery) {
+              this.badgeGallery.setFilter(btn.dataset.filter);
+            }
           });
         });
       }
       
-      loadAchievementsGrid(filter) {
-        const grid = document.getElementById('achievements-grid');
-        const progressSummary = this.progressTracker.getProgressSummary();
-        const allAchievements = progressSummary.achievements.list || [];
+      showAchievementDetails(achievement) {
+        const badge = getBadgeByAchievementId(achievement.id);
+        if (!badge) return;
         
-        let filteredAchievements = allAchievements;
-        
-        switch (filter) {
-          case 'unlocked':
-            filteredAchievements = allAchievements.filter(a => a.unlocked);
-            break;
-          case 'locked':
-            filteredAchievements = allAchievements.filter(a => !a.unlocked);
-            break;
-          case 'rare':
-            filteredAchievements = allAchievements.filter(a => ['rare', 'epic', 'legendary'].includes(a.rarity));
-            break;
-        }
-        
-        if (filteredAchievements.length === 0) {
-          grid.innerHTML = `
-            <div class="no-achievements">
-              <div class="empty-state-icon">🏆</div>
-              <p>No achievements found</p>
-              <small>Try a different filter or play more games!</small>
+        const content = `
+          <div class="achievement-details">
+            <div class="achievement-header">
+              <div class="achievement-icon ${badge.rarity}">${badge.icon}</div>
+              <div class="achievement-info">
+                <h3>${badge.name}</h3>
+                <div class="achievement-rarity ${badge.rarity}">${badge.rarity.toUpperCase()}</div>
+                <p>${badge.description}</p>
+              </div>
             </div>
-          `;
-          return;
-        }
+            
+            ${achievement.unlocked ? `
+              <div class="achievement-unlocked">
+                <p><strong>Unlocked:</strong> ${new Date(achievement.dateUnlocked).toLocaleDateString()}</p>
+                ${badge.points ? `<p><strong>Points:</strong> ${badge.points}</p>` : ''}
+              </div>
+            ` : `
+              <div class="achievement-locked">
+                <p><strong>Status:</strong> Locked</p>
+                ${achievement.progress ? `
+                  <div class="achievement-progress">
+                    <p><strong>Progress:</strong> ${achievement.progress.current}/${achievement.progress.target}</p>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: ${(achievement.progress.current / achievement.progress.target) * 100}%"></div>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `}
+          </div>
+        `;
         
-        grid.innerHTML = filteredAchievements.map(achievement => 
-          createBadgeElement(achievement)
-        ).join('');
+        Modal.show({
+          title: 'Achievement Details',
+          content: content,
+          buttons: [
+            { text: 'Close', primary: true }
+          ]
+        });
       }
       
       loadGameStatistics() {

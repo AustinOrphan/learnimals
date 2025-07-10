@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badge System Integration Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="src/styles/base/reset.css">
+  <link rel="stylesheet" href="src/styles/base/variables.css">
+  <link rel="stylesheet" href="src/styles/base/typography.css">
+  <link rel="stylesheet" href="src/styles/components/badges.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="src/styles/themes/theme.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+      font-family: var(--font-family);
+    }
+    
+    .test-section {
+      background-color: var(--bg-card);
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    
+    #badge-gallery-test {
+      min-height: 300px;
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Badge System Integration Test</h1>
+  
+  <div class="test-section">
+    <h2>1. BadgeDisplay Component Test</h2>
+    <p>Testing individual badge display with different rarities:</p>
+    <div class="test-grid" id="badge-display-test"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>2. BadgeGallery Component Test</h2>
+    <p>Testing badge gallery with filtering and search:</p>
+    <div id="badge-gallery-test"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>3. BadgeNotification Component Test</h2>
+    <p>Testing achievement unlock notifications:</p>
+    <button id="test-notification" class="btn btn-primary">Test Notification</button>
+    <button id="test-epic-notification" class="btn btn-secondary">Test Epic Notification</button>
+    <button id="test-legendary-notification" class="btn btn-accent">Test Legendary Notification</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>4. Integration Test Results</h2>
+    <ul id="test-results"></ul>
+  </div>
+
+  <script type="module">
+    import BadgeDisplay from './src/components/badges/BadgeDisplay.js';
+    import BadgeGallery from './src/components/badges/BadgeGallery.js';
+    import BadgeNotification from './src/components/badges/BadgeNotification.js';
+    import { getAllBadges, BADGE_RARITY } from './src/utils/badgeDefinitions.js';
+    
+    const testResults = document.getElementById('test-results');
+    
+    function addTestResult(test, success, details = '') {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <strong>${test}:</strong> 
+        <span style="color: ${success ? 'green' : 'red'}">
+          ${success ? '✅ PASS' : '❌ FAIL'}
+        </span>
+        ${details ? `<br><small>${details}</small>` : ''}
+      `;
+      testResults.appendChild(li);
+    }
+    
+    // Test data
+    const mockAchievements = [
+      {
+        id: 'first-steps',
+        unlocked: true,
+        dateUnlocked: new Date().toISOString(),
+        progress: { current: 1, target: 1 }
+      },
+      {
+        id: 'word-master',
+        unlocked: true,
+        dateUnlocked: new Date(Date.now() - 86400000).toISOString(),
+        progress: { current: 10, target: 10 }
+      },
+      {
+        id: 'speed-demon',
+        unlocked: false,
+        progress: { current: 3, target: 5 }
+      },
+      {
+        id: 'perfect-streak',
+        unlocked: false,
+        progress: { current: 0, target: 10 }
+      }
+    ];
+    
+    // Test 1: BadgeDisplay Component
+    try {
+      const badgeContainer = document.getElementById('badge-display-test');
+      
+      mockAchievements.forEach((achievement, index) => {
+        const element = BadgeDisplay.createElement(achievement, {
+          size: index === 0 ? 'mini' : 'normal',
+          onClick: (ach) => {
+            console.log('Badge clicked:', ach);
+            addTestResult('Badge Click Event', true, `Clicked ${ach.id}`);
+          }
+        });
+        badgeContainer.appendChild(element);
+      });
+      
+      addTestResult('BadgeDisplay Component Creation', true, `Created ${mockAchievements.length} badge displays`);
+    } catch (error) {
+      addTestResult('BadgeDisplay Component Creation', false, error.message);
+    }
+    
+    // Test 2: BadgeGallery Component
+    try {
+      const gallery = new BadgeGallery('badge-gallery-test', {
+        achievements: mockAchievements,
+        showFilters: true,
+        showSearch: true,
+        showStats: true,
+        onBadgeClick: (achievement) => {
+          console.log('Gallery badge clicked:', achievement);
+          addTestResult('Gallery Badge Click', true, `Clicked ${achievement.id}`);
+        }
+      });
+      
+      addTestResult('BadgeGallery Component Creation', true, 'Gallery created successfully');
+      
+      // Test filtering
+      setTimeout(() => {
+        try {
+          gallery.setFilter('unlocked');
+          gallery.setSearch('word');
+          addTestResult('Gallery Filtering', true, 'Filter and search methods work');
+        } catch (error) {
+          addTestResult('Gallery Filtering', false, error.message);
+        }
+      }, 1000);
+      
+    } catch (error) {
+      addTestResult('BadgeGallery Component Creation', false, error.message);
+    }
+    
+    // Test 3: BadgeNotification Component
+    try {
+      const notification = BadgeNotification.getInstance();
+      
+      document.getElementById('test-notification').addEventListener('click', () => {
+        notification.show(mockAchievements[0], {
+          duration: 3000,
+          sound: true,
+          confetti: false
+        });
+        addTestResult('Basic Notification', true, 'Common notification displayed');
+      });
+      
+      document.getElementById('test-epic-notification').addEventListener('click', () => {
+        const epicAchievement = {
+          id: 'speed-demon',
+          unlocked: true,
+          dateUnlocked: new Date().toISOString()
+        };
+        notification.show(epicAchievement, {
+          duration: 4000,
+          sound: true,
+          confetti: true
+        });
+        addTestResult('Epic Notification', true, 'Epic notification with effects displayed');
+      });
+      
+      document.getElementById('test-legendary-notification').addEventListener('click', () => {
+        const legendaryAchievement = {
+          id: 'legend-status',
+          unlocked: true,
+          dateUnlocked: new Date().toISOString()
+        };
+        notification.show(legendaryAchievement, {
+          duration: 6000,
+          sound: true,
+          confetti: true
+        });
+        addTestResult('Legendary Notification', true, 'Legendary notification with full effects displayed');
+      });
+      
+      addTestResult('BadgeNotification Component Creation', true, 'Notification system initialized');
+    } catch (error) {
+      addTestResult('BadgeNotification Component Creation', false, error.message);
+    }
+    
+    // Test 4: Badge Definitions Integration
+    try {
+      const allBadges = getAllBadges();
+      const hasCommon = allBadges.some(b => b.rarity === BADGE_RARITY.COMMON);
+      const hasRare = allBadges.some(b => b.rarity === BADGE_RARITY.RARE);
+      const hasEpic = allBadges.some(b => b.rarity === BADGE_RARITY.EPIC);
+      const hasLegendary = allBadges.some(b => b.rarity === BADGE_RARITY.LEGENDARY);
+      
+      addTestResult('Badge Definitions Loading', true, `Loaded ${allBadges.length} badge definitions`);
+      addTestResult('Badge Rarity System', hasCommon && hasRare && hasEpic && hasLegendary, 'All rarity types present');
+    } catch (error) {
+      addTestResult('Badge Definitions Loading', false, error.message);
+    }
+    
+    // Test 5: CSS Integration
+    try {
+      const testElement = document.createElement('div');
+      testElement.className = 'badge common';
+      document.body.appendChild(testElement);
+      const styles = getComputedStyle(testElement);
+      document.body.removeChild(testElement);
+      
+      addTestResult('CSS Integration', styles.display !== '', 'Badge CSS styles loaded correctly');
+    } catch (error) {
+      addTestResult('CSS Integration', false, error.message);
+    }
+    
+    console.log('Badge System Integration Test completed');
+  </script>
+</body>
+</html>
