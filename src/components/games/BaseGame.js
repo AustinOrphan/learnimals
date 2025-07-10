@@ -1,14 +1,28 @@
 /**
  * BaseGame - Base class for all Learnimals games
  * Provides common functionality for game state management, scoring, and UI integration
+ * Enhanced with progress tracking, mobile-first design, and analytics
  */
 import logger from '../../utils/logger.js';
+import ProgressTracker from '../../features/progress/ProgressTracker.js';
+import AchievementSystem from '../../features/progress/AchievementSystem.js';
 
 export default class BaseGame {
-  constructor(canvasId, options = {}) {
+  constructor(containerId, options = {}) {
     // Core properties
-    this.canvasId = canvasId;
-    this.canvas = document.getElementById(canvasId);
+    this.containerId = containerId;
+    this.useDOMContainer = options.useDOMContainer || false;
+    
+    if (this.useDOMContainer) {
+      this.container = document.getElementById(containerId);
+      this.canvas = null;
+      this.ctx = null;
+    } else {
+      this.canvasId = containerId; // Backward compatibility
+      this.canvas = document.getElementById(containerId);
+      this.container = this.canvas;
+    }
+    
     this.options = options;
         
     // Game state with atomic operations for thread safety
@@ -19,6 +33,37 @@ export default class BaseGame {
     this.isActive = false;
     this.isPaused = false;
     this.stateTransitionInProgress = false;
+    
+    // Enhanced game metadata
+    this.gameType = options.gameType || 'unknown';
+    this.subject = options.subject || 'general';
+    this.difficulty = options.difficulty || 'medium';
+    this.sessionId = `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Progress tracking integration
+    this.progressTracker = null;
+    this.achievementSystem = null;
+    this.enableProgressTracking = options.enableProgressTracking !== false;
+    
+    // Analytics and metrics
+    this.analytics = {
+      sessionStartTime: null,
+      totalPlayTime: 0,
+      pauseCount: 0,
+      restartCount: 0,
+      questionsAnswered: 0,
+      correctAnswers: 0,
+      incorrectAnswers: 0,
+      streakRecord: 0,
+      currentStreak: 0,
+      timeSpentPerLevel: new Map(),
+      difficultyChanges: []
+    };
+    
+    // Mobile-first enhancements
+    this.isMobile = this.detectMobileDevice();
+    this.touchSensitivity = options.touchSensitivity || (this.isMobile ? 0.8 : 1.0);
+    this.hapticFeedback = options.hapticFeedback !== false && 'vibrate' in navigator;
         
     // Timing
     this.startTime = null;
@@ -58,10 +103,17 @@ export default class BaseGame {
      */
   async initialize() {
     try {
-      this.validateCanvas();
-      this.setupCanvas();
+      if (this.useDOMContainer) {
+        this.validateContainer();
+        this.setupDOMContainer();
+      } else {
+        this.validateCanvas();
+        this.setupCanvas();
+      }
       this.setupEventListeners();
       this.setupAudio();
+      this.setupProgressTracking();
+      this.setupMobileOptimizations();
       await this.loadAssets();
       this.setState('ready');
       this.onInitialized();
@@ -91,10 +143,47 @@ export default class BaseGame {
   }
     
   /**
+     * Validate DOM container element exists and is accessible
+     */
+  validateContainer() {
+    if (!this.container) {
+      throw new Error(`Container element with ID '${this.containerId}' not found`);
+    }
+  }
+    
+  /**
+     * Set up DOM container for DOM-based games
+     */
+  setupDOMContainer() {
+    if (!this.container) {
+      throw new Error('DOM container not found');
+    }
+    
+    // Add mobile-optimized CSS classes
+    this.container.classList.add('game-container');
+    if (this.isMobile) {
+      this.container.classList.add('mobile-optimized');
+    }
+    
+    // Set up container properties for mobile-first design
+    this.container.style.touchAction = 'manipulation';
+    this.container.style.userSelect = 'none';
+    this.container.style.webkitUserSelect = 'none';
+    this.container.style.webkitTapHighlightColor = 'transparent';
+    
+    // Ensure container can handle focus for accessibility
+    if (!this.container.hasAttribute('tabindex')) {
+      this.container.setAttribute('tabindex', '0');
+    }
+    
+    logger.debug('DOM container setup completed');
+  }
+    
+  /**
      * Set up canvas properties and responsive sizing
      */
   setupCanvas() {
-    // Set canvas size
+    // Set canvas size with mobile-first responsive approach
     this.resizeCanvas();
         
     // Enable high DPI support
@@ -108,10 +197,19 @@ export default class BaseGame {
       this.canvas.style.height = rect.height + 'px';
     }
         
-    // Set default canvas styles
+    // Set default canvas styles with mobile optimizations
     this.ctx.imageSmoothingEnabled = true;
     this.ctx.textAlign = 'left';
     this.ctx.textBaseline = 'top';
+    
+    // Mobile-specific canvas optimizations
+    if (this.isMobile) {
+      // Optimize for touch interactions
+      this.canvas.style.touchAction = 'manipulation';
+      this.canvas.style.userSelect = 'none';
+      this.canvas.style.webkitUserSelect = 'none';
+      this.canvas.style.webkitTapHighlightColor = 'transparent';
+    }
   }
     
   /**
@@ -139,16 +237,20 @@ export default class BaseGame {
     document.addEventListener('keydown', this.boundHandlers.keydown);
     document.addEventListener('keyup', this.boundHandlers.keyup);
         
-    // Mouse events
-    this.canvas.addEventListener('click', this.boundHandlers.click);
-    this.canvas.addEventListener('mousemove', this.boundHandlers.mousemove);
-    this.canvas.addEventListener('mousedown', this.boundHandlers.mousedown);
-    this.canvas.addEventListener('mouseup', this.boundHandlers.mouseup);
-        
-    // Touch events
-    this.canvas.addEventListener('touchstart', this.boundHandlers.touchstart, { passive: false });
-    this.canvas.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
-    this.canvas.addEventListener('touchend', this.boundHandlers.touchend, { passive: false });
+    // Mouse and touch events - use container for DOM games, canvas for canvas games
+    const eventTarget = this.useDOMContainer ? this.container : this.canvas;
+    
+    if (eventTarget) {
+      eventTarget.addEventListener('click', this.boundHandlers.click);
+      eventTarget.addEventListener('mousemove', this.boundHandlers.mousemove);
+      eventTarget.addEventListener('mousedown', this.boundHandlers.mousedown);
+      eventTarget.addEventListener('mouseup', this.boundHandlers.mouseup);
+      
+      // Touch events
+      eventTarget.addEventListener('touchstart', this.boundHandlers.touchstart, { passive: false });
+      eventTarget.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
+      eventTarget.addEventListener('touchend', this.boundHandlers.touchend, { passive: false });
+    }
         
     // Window events
     window.addEventListener('resize', this.boundHandlers.resize);
@@ -170,6 +272,102 @@ export default class BaseGame {
       logger.warn('Audio not supported:', error);
       this.soundEnabled = false;
     }
+  }
+  
+  /**
+   * Set up progress tracking integration
+   */
+  setupProgressTracking() {
+    if (!this.enableProgressTracking) {
+      logger.debug('Progress tracking disabled for this game');
+      return;
+    }
+    
+    try {
+      // Initialize progress tracker
+      this.progressTracker = new ProgressTracker();
+      
+      // Initialize achievement system  
+      this.achievementSystem = new AchievementSystem();
+      
+      logger.debug('Progress tracking initialized successfully');
+    } catch (error) {
+      logger.warn('Failed to initialize progress tracking:', error);
+      this.enableProgressTracking = false;
+    }
+  }
+  
+  /**
+   * Set up mobile-specific optimizations
+   */
+  setupMobileOptimizations() {
+    if (!this.isMobile) {
+      return;
+    }
+    
+    // Prevent zoom on double tap for game canvas
+    let lastTouchEnd = 0;
+    this.canvas.addEventListener('touchend', (e) => {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
+    
+    // Optimize viewport for mobile gaming
+    this.setupMobileViewport();
+    
+    // Setup mobile-specific event listeners
+    this.setupMobileEventListeners();
+    
+    logger.debug('Mobile optimizations applied');
+  }
+  
+  /**
+   * Detect if running on mobile device
+   */
+  detectMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           ('ontouchstart' in window) ||
+           (navigator.maxTouchPoints > 0);
+  }
+  
+  /**
+   * Setup mobile viewport optimizations
+   */
+  setupMobileViewport() {
+    // Ensure proper mobile viewport
+    let viewport = document.querySelector('meta[name=viewport]');
+    if (!viewport) {
+      viewport = document.createElement('meta');
+      viewport.name = 'viewport';
+      document.head.appendChild(viewport);
+    }
+    viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+    
+    // Prevent pull-to-refresh on mobile
+    document.body.style.overscrollBehavior = 'none';
+  }
+  
+  /**
+   * Setup mobile-specific event listeners
+   */
+  setupMobileEventListeners() {
+    // Prevent context menu on long press
+    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => this.handleOrientationChange(), 500);
+    });
+    
+    // Handle focus changes for mobile keyboards
+    window.addEventListener('resize', () => {
+      if (this.isMobile) {
+        setTimeout(() => this.resizeCanvas(), 100);
+      }
+    });
   }
     
   /**
@@ -239,6 +437,13 @@ export default class BaseGame {
     this.isPaused = false;
     this.startTime = performance.now();
     this.lastFrameTime = this.startTime;
+    
+    // Analytics tracking
+    this.analytics.sessionStartTime = this.startTime;
+    this.analytics.timeSpentPerLevel.set(this.level, performance.now());
+    
+    // Progress tracking
+    this.trackGameStart();
         
     this.onStart();
     this.startGameLoop();
@@ -261,6 +466,10 @@ export default class BaseGame {
     
     this.isPaused = true;
     this.pausedTime = performance.now();
+    
+    // Analytics tracking
+    this.analytics.pauseCount++;
+    this.updatePlayTime();
     
     // Stop the game loop
     this.stopGameLoop();
@@ -314,6 +523,13 @@ export default class BaseGame {
     this.isActive = false;
     this.isPaused = false;
     
+    // Update analytics with final session data
+    this.updatePlayTime();
+    this.finalizeGameSession();
+    
+    // Track progress and achievements
+    this.trackGameEnd();
+    
     // Stop the game loop
     this.stopGameLoop();
         
@@ -330,6 +546,9 @@ export default class BaseGame {
     // Stop any running game loop immediately
     this.stopGameLoop();
     
+    // Analytics tracking
+    this.analytics.restartCount++;
+    
     this.setState('loading');
     this.score = 0;
     this.level = 1;
@@ -345,6 +564,9 @@ export default class BaseGame {
     this.lastFrameTime = 0;
     this.gameLoopId = null; // Clear any existing game loop
     this.gameLoopRunning = false; // Ensure loop is not running
+    
+    // Reset analytics for new session
+    this.resetAnalytics();
         
     this.onScoreUpdate(this.score);
     this.onLevelUpdate(this.level);
@@ -410,7 +632,7 @@ export default class BaseGame {
   }
     
   /**
-     * Main game loop
+     * Main game loop - supports both canvas and DOM-based games
      */
   gameLoop(timestamp = performance.now()) {
     // Exit immediately if loop should not be running
@@ -430,8 +652,10 @@ export default class BaseGame {
     // Update game logic
     this.update(deltaTime, timestamp);
         
-    // Render game
-    this.render();
+    // Render game (canvas games override this, DOM games may not need it)
+    if (!this.useDOMContainer) {
+      this.render();
+    }
         
     // Continue loop and store the ID - only if still should be running
     if (this.gameLoopRunning && this.isActive && !this.isPaused) {
@@ -501,25 +725,40 @@ export default class BaseGame {
      * Get normalized pointer position (0-1 range)
      */
   getPointerPosition(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
-        
+    const target = this.useDOMContainer ? this.container : this.canvas;
+    const rect = target.getBoundingClientRect();
+    
     let x, y;
         
     if (event.touches && event.touches.length > 0) {
-      x = (event.touches[0].clientX - rect.left) * scaleX;
-      y = (event.touches[0].clientY - rect.top) * scaleY;
+      x = event.touches[0].clientX - rect.left;
+      y = event.touches[0].clientY - rect.top;
     } else {
-      x = (event.clientX - rect.left) * scaleX;
-      y = (event.clientY - rect.top) * scaleY;
+      x = event.clientX - rect.left;
+      y = event.clientY - rect.top;
     }
-        
+    
+    // For canvas games, apply scaling
+    if (!this.useDOMContainer && this.canvas) {
+      const scaleX = this.canvas.width / rect.width;
+      const scaleY = this.canvas.height / rect.height;
+      x *= scaleX;
+      y *= scaleY;
+      
+      return {
+        x: x,
+        y: y,
+        normalizedX: x / this.canvas.width,
+        normalizedY: y / this.canvas.height
+      };
+    }
+    
+    // For DOM games, use container dimensions
     return {
       x: x,
       y: y,
-      normalizedX: x / this.canvas.width,
-      normalizedY: y / this.canvas.height
+      normalizedX: x / rect.width,
+      normalizedY: y / rect.height
     };
   }
     
@@ -581,8 +820,10 @@ export default class BaseGame {
     
   render() {
     // Override in subclasses
-    // Clear canvas
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // Clear canvas (only for canvas-based games)
+    if (!this.useDOMContainer && this.ctx) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   }
     
   // Input event handlers - override in subclasses
@@ -687,6 +928,313 @@ export default class BaseGame {
   getAverageFPS() {
     if (this.fpsHistory.length === 0) return 0;
     return this.fpsHistory.reduce((a, b) => a + b) / this.fpsHistory.length;
+  }
+  
+  /**
+   * Enhanced analytics and progress tracking methods
+   */
+  
+  /**
+   * Track correct answer with analytics and progress
+   */
+  trackCorrectAnswer(questionData = {}) {
+    this.analytics.questionsAnswered++;
+    this.analytics.correctAnswers++;
+    this.analytics.currentStreak++;
+    
+    if (this.analytics.currentStreak > this.analytics.streakRecord) {
+      this.analytics.streakRecord = this.analytics.currentStreak;
+    }
+    
+    // Mobile haptic feedback for correct answers
+    if (this.hapticFeedback) {
+      navigator.vibrate(50);
+    }
+    
+    // Progress tracking
+    if (this.enableProgressTracking && this.progressTracker) {
+      this.progressTracker.recordActivity({
+        type: 'question_correct',
+        subject: this.subject,
+        gameType: this.gameType,
+        difficulty: this.difficulty,
+        level: this.level,
+        score: this.score,
+        questionData
+      });
+    }
+    
+    // Check for achievements
+    this.checkAchievements();
+  }
+  
+  /**
+   * Track incorrect answer with analytics
+   */
+  trackIncorrectAnswer(questionData = {}) {
+    this.analytics.questionsAnswered++;
+    this.analytics.incorrectAnswers++;
+    this.analytics.currentStreak = 0;
+    
+    // Different haptic feedback for incorrect answers
+    if (this.hapticFeedback) {
+      navigator.vibrate([100, 50, 100]);
+    }
+    
+    // Progress tracking
+    if (this.enableProgressTracking && this.progressTracker) {
+      this.progressTracker.recordActivity({
+        type: 'question_incorrect',
+        subject: this.subject,
+        gameType: this.gameType,
+        difficulty: this.difficulty,
+        level: this.level,
+        score: this.score,
+        questionData
+      });
+    }
+  }
+  
+  /**
+   * Track level completion
+   */
+  trackLevelComplete(levelData = {}) {
+    const levelTime = this.analytics.timeSpentPerLevel.get(this.level);
+    const timeSpent = levelTime ? performance.now() - levelTime : 0;
+    
+    if (this.enableProgressTracking && this.progressTracker) {
+      this.progressTracker.recordActivity({
+        type: 'level_complete',
+        subject: this.subject,
+        gameType: this.gameType,
+        difficulty: this.difficulty,
+        level: this.level,
+        score: this.score,
+        timeSpent,
+        levelData
+      });
+    }
+    
+    this.checkAchievements();
+  }
+  
+  /**
+   * Track game start
+   */
+  trackGameStart() {
+    if (this.enableProgressTracking && this.progressTracker) {
+      this.progressTracker.recordActivity({
+        type: 'game_start',
+        subject: this.subject,
+        gameType: this.gameType,
+        difficulty: this.difficulty,
+        sessionId: this.sessionId
+      });
+    }
+  }
+  
+  /**
+   * Track game end with final statistics
+   */
+  trackGameEnd() {
+    const accuracy = this.analytics.questionsAnswered > 0 
+      ? (this.analytics.correctAnswers / this.analytics.questionsAnswered) * 100 
+      : 0;
+      
+    if (this.enableProgressTracking && this.progressTracker) {
+      this.progressTracker.recordActivity({
+        type: 'game_end',
+        subject: this.subject,
+        gameType: this.gameType,
+        difficulty: this.difficulty,
+        sessionId: this.sessionId,
+        finalScore: this.score,
+        finalLevel: this.level,
+        totalPlayTime: this.analytics.totalPlayTime,
+        accuracy,
+        questionsAnswered: this.analytics.questionsAnswered,
+        streakRecord: this.analytics.streakRecord
+      });
+    }
+    
+    this.saveGameStatistics();
+  }
+  
+  /**
+   * Check and unlock achievements
+   */
+  checkAchievements() {
+    if (!this.enableProgressTracking || !this.achievementSystem) {
+      return;
+    }
+    
+    // Check for streak achievements
+    if (this.analytics.currentStreak >= 5) {
+      this.achievementSystem.checkAchievement('streak_5', { streak: this.analytics.currentStreak });
+    }
+    
+    if (this.analytics.currentStreak >= 10) {
+      this.achievementSystem.checkAchievement('streak_10', { streak: this.analytics.currentStreak });
+    }
+    
+    // Check for score achievements
+    if (this.score >= 100) {
+      this.achievementSystem.checkAchievement('score_100', { score: this.score });
+    }
+    
+    if (this.score >= 500) {
+      this.achievementSystem.checkAchievement('score_500', { score: this.score });
+    }
+    
+    // Check for level achievements
+    if (this.level >= 5) {
+      this.achievementSystem.checkAchievement('level_5', { level: this.level });
+    }
+    
+    if (this.level >= 10) {
+      this.achievementSystem.checkAchievement('level_10', { level: this.level });
+    }
+  }
+  
+  /**
+   * Update total play time
+   */
+  updatePlayTime() {
+    if (this.analytics.sessionStartTime) {
+      this.analytics.totalPlayTime = performance.now() - this.analytics.sessionStartTime;
+    }
+  }
+  
+  /**
+   * Reset analytics for new session
+   */
+  resetAnalytics() {
+    const restartCount = this.analytics.restartCount;
+    this.analytics = {
+      sessionStartTime: null,
+      totalPlayTime: 0,
+      pauseCount: 0,
+      restartCount,
+      questionsAnswered: 0,
+      correctAnswers: 0,
+      incorrectAnswers: 0,
+      streakRecord: 0,
+      currentStreak: 0,
+      timeSpentPerLevel: new Map(),
+      difficultyChanges: []
+    };
+  }
+  
+  /**
+   * Finalize game session data
+   */
+  finalizeGameSession() {
+    const sessionData = {
+      sessionId: this.sessionId,
+      gameType: this.gameType,
+      subject: this.subject,
+      finalScore: this.score,
+      finalLevel: this.level,
+      totalPlayTime: this.analytics.totalPlayTime,
+      accuracy: this.analytics.questionsAnswered > 0 
+        ? (this.analytics.correctAnswers / this.analytics.questionsAnswered) * 100 
+        : 0,
+      ...this.analytics
+    };
+    
+    logger.debug('Game session completed:', sessionData);
+    return sessionData;
+  }
+  
+  /**
+   * Save game statistics to localStorage
+   */
+  saveGameStatistics() {
+    try {
+      const stats = this.finalizeGameSession();
+      const key = `${this.gameType}_stats`;
+      const existingStats = JSON.parse(localStorage.getItem(key) || '[]');
+      existingStats.push(stats);
+      
+      // Keep only last 50 sessions to prevent storage bloat
+      if (existingStats.length > 50) {
+        existingStats.splice(0, existingStats.length - 50);
+      }
+      
+      localStorage.setItem(key, JSON.stringify(existingStats));
+    } catch (error) {
+      logger.warn('Failed to save game statistics:', error);
+    }
+  }
+  
+  /**
+   * Handle orientation change for mobile devices
+   */
+  handleOrientationChange() {
+    if (!this.isMobile) return;
+    
+    // Pause game during orientation change
+    if (this.state === 'playing') {
+      this.pause();
+    }
+    
+    // Resize canvas after orientation change
+    setTimeout(() => {
+      this.resizeCanvas();
+      this.onOrientationChange();
+    }, 100);
+    
+    logger.debug('Orientation changed, game paused and canvas resized');
+  }
+  
+  /**
+   * Called when orientation changes - override in subclasses
+   */
+  onOrientationChange() {
+    // Base implementation - subclasses can override
+  }
+  
+  /**
+   * Enhanced mobile-friendly scoring with visual feedback
+   */
+  addScoreWithFeedback(points, position = null) {
+    this.addScore(points);
+    
+    // Mobile haptic feedback
+    if (this.hapticFeedback && points > 0) {
+      navigator.vibrate(25);
+    }
+    
+    // Visual score feedback (to be implemented by subclasses)
+    this.showScoreFeedback(points, position);
+  }
+  
+  /**
+   * Show visual score feedback - override in subclasses
+   */
+  showScoreFeedback(points, position) {
+    // Base implementation - subclasses should override for visual effects
+    logger.debug(`Score feedback: +${points} points`, position);
+  }
+  
+  /**
+   * Get game analytics summary
+   */
+  getAnalyticsSummary() {
+    const accuracy = this.analytics.questionsAnswered > 0 
+      ? (this.analytics.correctAnswers / this.analytics.questionsAnswered) * 100 
+      : 0;
+      
+    return {
+      score: this.score,
+      level: this.level,
+      accuracy: Math.round(accuracy),
+      questionsAnswered: this.analytics.questionsAnswered,
+      streakRecord: this.analytics.streakRecord,
+      totalPlayTime: Math.round(this.analytics.totalPlayTime / 1000), // Convert to seconds
+      pauseCount: this.analytics.pauseCount,
+      restartCount: this.analytics.restartCount
+    };
   }
     
   /**

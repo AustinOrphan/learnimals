@@ -62,7 +62,14 @@
       "Bash(cd:*)",
       "Bash(cd:*)",
       "Bash(cd:*)",
-      "mcp__serena__find_symbol"
+      "mcp__serena__find_symbol",
+      "Bash(git pull:*)",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__read_multiple_files",
+      "mcp__filesystem__search_files",
+      "mcp__filesystem__edit_file",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }
