@@ -10,7 +10,7 @@
  *   node scripts/generateSubjects.js --batch-file=subjects.json
  */
 
-import fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -243,7 +243,7 @@ class SubjectGenerator {
         <meta name="description" content="${subject.description}" />
         <title>${subject.name} with ${subject.character.name} - Learnimals</title>
         <script type="module">
-            import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
+            import SubjectTemplateLoader from '../src/utils/subjectTemplateLoader.js';
             
             // Define content for ${subjectKey} page
             const ${subjectKey}Options = {
@@ -892,7 +892,11 @@ async function main() {
   }
 }
 
+<<<<<<< HEAD
 // Run the script (ES modules equivalent of require.main === module)
+=======
+// Run the script
+>>>>>>> 54ce3d5 (feat: Add comprehensive component testing framework and development roadmap)
 if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }

@@ -45,7 +45,22 @@
       "mcp__Context7__get-library-docs",
       "mcp__serena__summarize_changes",
       "Bash(gh run view:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__serena__initial_instructions",
+      "mcp__serena__list_dir",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__restart_language_server",
+      "mcp__serena__find_file",
+      "mcp__serena__list_memories",
+      "mcp__serena__write_memory",
+      "mcp__serena__get_current_config",
+      "gh label:*",
+      "gh milestone:*",
+      "git remote get-url:*",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__filesystem__read_file",
+      "mcp__filesystem__write_file",
+      "mcp__Context7__resolve-library-id"
     ],
     "deny": []
   }

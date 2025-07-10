@@ -1,66 +1,9 @@
 // Card Component
 // Reusable card component for consistent UI across the site
 
-(function() {
-  'use strict';
+import BaseComponent from '../BaseComponent.js';
 
-  // Use BaseComponent if available, otherwise create a minimal version
-  const BaseComponent = window.BaseComponent || class {
-    constructor(options = {}) {
-      this.options = {
-        id: options.id || this.generateId(),
-        cssClasses: options.cssClasses || [],
-        ...options
-      };
-      this.element = null;
-      this.isRendered = false;
-    }
-    
-    generateId() {
-      const className = this.constructor.name.toLowerCase();
-      return `${className}-${Math.random().toString(36).substr(2, 9)}`;
-    }
-    
-    render(container) {
-      const targetContainer = container || this.options.container;
-      const containerEl = typeof targetContainer === 'string' 
-        ? document.querySelector(targetContainer) 
-        : targetContainer;
-      
-      if (!containerEl) {
-        console.error('Container not found:', targetContainer);
-        return this;
-      }
-
-      const html = this.generateHTML();
-      containerEl.innerHTML += html;
-      
-      this.element = document.getElementById(this.options.id);
-      
-      if (this.element) {
-        this.attachEventListeners();
-        this.isRendered = true;
-      }
-      
-      return this;
-    }
-    
-    attachEventListeners() {}
-    
-    emit(eventName, detail) {
-      if (this.element) {
-        const event = new CustomEvent(eventName, {
-          detail,
-          bubbles: true,
-          cancelable: true
-        });
-        this.element.dispatchEvent(event);
-      }
-      return this;
-    }
-  };
-
-  class Card extends BaseComponent {
+class Card extends BaseComponent {
   /**
    * Create a card component
    * @param {Object} options - Card options
@@ -165,13 +108,14 @@
       </a>
     `;
     }
-  }
+}
 
-  // Export for module usage
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Card;
-  } else {
-    window.Card = Card;
-  }
+// Export for module usage
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Card;
+} else {
+  window.Card = Card;
+}
 
-})();
+// ES module export
+export default Card;
