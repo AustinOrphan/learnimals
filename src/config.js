@@ -107,12 +107,43 @@ const config = {
     }
   },
   
+  // Storage configuration
+  storage: {
+    // Default storage type
+    type: 'localStorage',
+    
+    // localStorage settings
+    localStorage: {
+      prefix: 'learnimals_',
+      compressed: false,
+      encrypted: false
+    },
+    
+    // Data migration settings
+    migration: {
+      enabled: true,
+      backupBeforeMigration: true,
+      autoMigrate: true
+    },
+    
+    // Error handling for storage operations
+    errorHandling: {
+      retryFailedOperations: true,
+      maxRetries: 3,
+      retryDelay: 1000,
+      fallbackOnError: true
+    }
+  },
+  
   // API endpoints (if any)
   api: {
     baseUrl: '/api',
     endpoints: {
       userProgress: '/progress',
-      gameScores: '/scores'
+      gameScores: '/scores',
+      users: '/users',
+      families: '/families',
+      achievements: '/achievements'
     }
   },
 };
