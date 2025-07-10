@@ -2,20 +2,27 @@
   "name": "learnimals",
   "version": "1.0.0",
   "description": "Educational web application featuring interactive games and activities for children",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "generate-subjects": "node scripts/generateSubjects.js",
     "list-templates": "node scripts/generateSubjects.js --list-templates",
     "lint": "eslint src/ --ext .js",
     "lint:fix": "eslint src/ --ext .js --fix",
-    "test:unit": "echo \"No unit tests configured yet\" && exit 0",
-    "test:components": "echo \"No component tests configured yet\" && exit 0",
-    "test:integration": "echo \"No integration tests configured yet\" && exit 0"
+    "test": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:components": "vitest run tests/components",
+    "test:integration": "vitest run tests/integration",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": ["education", "children", "games", "learning"],
   "private": true,
   "devDependencies": {
     "eslint": "^8.57.0",
-    "@eslint/js": "^8.57.0"
+    "@eslint/js": "^8.57.0",
+    "vitest": "^1.6.0",
+    "@vitest/ui": "^1.6.0",
+    "jsdom": "^24.1.0"
   }
 }

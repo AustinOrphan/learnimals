@@ -103,6 +103,10 @@ class Modal extends BaseComponent {
       // Append to body
       document.body.appendChild(modalContainer.firstElementChild);
       
+      // Set element reference
+      this.element = document.getElementById(this.options.id);
+      this.isRendered = true;
+      
       // Attach event listeners
       this.attachEventListeners();
     }
