@@ -1,6 +1,15 @@
 // src/components/layout/navbarLoader.js
 // Get the current script's path to determine the correct navbar.html location
-import logger from '../../utils/logger.js';
+
+// Simple logger fallback for non-module script loading
+const logger = {
+  debug: (...args) => {
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      console.log('[NavbarLoader DEBUG]', ...args);
+    }
+  },
+  error: (...args) => console.error('[NavbarLoader ERROR]', ...args)
+};
 
 const currentScript = document.currentScript;
 const scriptPath = currentScript.src;
