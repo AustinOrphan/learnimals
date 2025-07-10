@@ -135,6 +135,36 @@ class RegistrationForm extends FormComponent {
           ],
           value: 'default',
           helpText: 'Choose your favorite animal avatar'
+        },
+        {
+          name: 'securityQuestion',
+          type: 'select',
+          label: 'Security Question',
+          options: [
+            { value: '', label: 'Choose a security question' },
+            { value: 'pet', label: 'What was the name of your first pet?' },
+            { value: 'school', label: 'What elementary school did you attend?' },
+            { value: 'city', label: 'In what city were you born?' },
+            { value: 'book', label: 'What is your favorite book?' },
+            { value: 'teacher', label: 'What was your favorite teacher\'s name?' },
+            { value: 'food', label: 'What is your favorite food?' }
+          ],
+          required: true,
+          helpText: 'This will help you reset your password if you forget it'
+        },
+        {
+          name: 'securityAnswer',
+          type: 'text',
+          label: 'Security Answer',
+          placeholder: 'Enter your answer',
+          required: true,
+          helpText: 'Remember this answer - you\'ll need it to reset your password',
+          validate: (value) => {
+            if (!value || value.trim().length < 2) {
+              return 'Security answer must be at least 2 characters long';
+            }
+            return true;
+          }
         }
       ],
       submitButtonText: 'Create Account',
@@ -177,7 +207,9 @@ class RegistrationForm extends FormComponent {
         name: data.name,
         age: data.age ? parseInt(data.age) : null,
         grade: data.grade || null,
-        avatar: data.avatar || 'default'
+        avatar: data.avatar || 'default',
+        securityQuestion: data.securityQuestion,
+        securityAnswer: data.securityAnswer
       };
       
       // Attempt registration

@@ -62,7 +62,10 @@
       "Bash(cd:*)",
       "Bash(cd:*)",
       "Bash(cd:*)",
-      "mcp__serena__find_symbol"
+      "mcp__serena__find_symbol",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(git branch:*)"
     ],
     "deny": []
   }

@@ -4,6 +4,7 @@
 import Modal from '../../components/ui/Modal.js';
 import LoginForm from './loginForm.js';
 import RegistrationForm from './registrationForm.js';
+import PasswordResetForm from './passwordResetForm.js';
 import authService from './authService.js';
 
 class AuthModal extends Modal {
@@ -22,9 +23,10 @@ class AuthModal extends Modal {
     super({ ...defaultOptions, ...options });
     
     this.authService = authService;
-    this.currentMode = 'login'; // 'login' or 'register'
+    this.currentMode = 'login'; // 'login', 'register', or 'reset'
     this.loginForm = null;
     this.registrationForm = null;
+    this.passwordResetForm = null;
     this.isInitialized = false;
   }
 
@@ -57,10 +59,12 @@ class AuthModal extends Modal {
       <div class="auth-tabs">
         <button class="auth-tab auth-tab--active" data-mode="login">Log In</button>
         <button class="auth-tab" data-mode="register">Create Account</button>
+        <button class="auth-tab" data-mode="reset">Reset Password</button>
       </div>
       <div class="auth-form-container">
         <div id="login-form-container" class="auth-form-panel auth-form-panel--active"></div>
         <div id="registration-form-container" class="auth-form-panel"></div>
+        <div id="reset-form-container" class="auth-form-panel"></div>
       </div>
     `;
     
@@ -98,6 +102,16 @@ class AuthModal extends Modal {
     if (registrationContainer) {
       this.registrationForm.render(registrationContainer);
     }
+    
+    // Initialize password reset form
+    this.passwordResetForm = new PasswordResetForm({
+      id: 'auth-reset-form'
+    });
+    
+    const resetContainer = this.element.querySelector('#reset-form-container');
+    if (resetContainer) {
+      this.passwordResetForm.render(resetContainer);
+    }
   }
 
   attachTabEventListeners() {
@@ -117,12 +131,24 @@ class AuthModal extends Modal {
       this.loginForm.element.addEventListener('loginSuccess', (e) => {
         this.handleAuthSuccess(e.detail, 'login');
       });
+      
+      // Listen for forgot password request
+      this.loginForm.element.addEventListener('showPasswordReset', (_e) => {
+        this.switchMode('reset');
+      });
     }
     
     // Listen for successful registration
     if (this.registrationForm && this.registrationForm.element) {
       this.registrationForm.element.addEventListener('registrationSuccess', (e) => {
         this.handleAuthSuccess(e.detail, 'registration');
+      });
+    }
+    
+    // Listen for successful password reset
+    if (this.passwordResetForm && this.passwordResetForm.element) {
+      this.passwordResetForm.element.addEventListener('passwordResetSuccess', (e) => {
+        this.handlePasswordResetSuccess(e.detail);
       });
     }
     
@@ -170,6 +196,12 @@ class AuthModal extends Modal {
         registerPanel.classList.add('auth-form-panel--active');
       }
       this.updateTitle('Join Learnimals');
+    } else if (mode === 'reset') {
+      const resetPanel = this.element.querySelector('#reset-form-container');
+      if (resetPanel) {
+        resetPanel.classList.add('auth-form-panel--active');
+      }
+      this.updateTitle('Reset Password');
     }
   }
 
@@ -192,6 +224,25 @@ class AuthModal extends Modal {
     setTimeout(() => {
       this.close();
     }, 1500);
+  }
+
+  handlePasswordResetSuccess(data) {
+    // Show success message
+    this.showSuccessMessage(
+      `Password reset successfully for ${data.username}! You can now log in with your new password.`
+    );
+    
+    // Switch to login form after delay
+    setTimeout(() => {
+      this.switchMode('login');
+      // Pre-fill username if available
+      if (this.loginForm && this.loginForm.element) {
+        const usernameField = this.loginForm.element.querySelector('[name="username"]');
+        if (usernameField) {
+          usernameField.value = data.username;
+        }
+      }
+    }, 2000);
   }
 
   showSuccessMessage(message) {
@@ -223,6 +274,12 @@ class AuthModal extends Modal {
     return this;
   }
 
+  openPasswordReset() {
+    this.switchMode('reset');
+    this.open();
+    return this;
+  }
+
   handleClose() {
     // Clear any success messages
     if (this.element) {
@@ -236,6 +293,9 @@ class AuthModal extends Modal {
     }
     if (this.registrationForm) {
       this.registrationForm.reset();
+    }
+    if (this.passwordResetForm) {
+      this.passwordResetForm.resetForm();
     }
     
     // Reset to login mode
@@ -251,6 +311,10 @@ class AuthModal extends Modal {
     if (this.registrationForm) {
       this.registrationForm.destroy();
       this.registrationForm = null;
+    }
+    if (this.passwordResetForm) {
+      this.passwordResetForm.destroy();
+      this.passwordResetForm = null;
     }
     
     this.isInitialized = false;
@@ -277,6 +341,11 @@ class AuthModal extends Modal {
   static showRegistration() {
     const instance = AuthModal.getInstance();
     return instance.openRegistration();
+  }
+
+  static showPasswordReset() {
+    const instance = AuthModal.getInstance();
+    return instance.openPasswordReset();
   }
 
   // Check if user is already authenticated and show appropriate UI

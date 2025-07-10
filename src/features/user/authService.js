@@ -61,7 +61,7 @@ class AuthService {
   
   // Register a new user
   async register(registrationData) {
-    const { username, email, password, name, age, grade, avatar } = registrationData;
+    const { username, email, password, name, age, grade, avatar, securityQuestion, securityAnswer } = registrationData;
     
     // Validation
     const validation = this.validateRegistration(registrationData);
@@ -87,6 +87,8 @@ class AuthService {
         username: username,
         email: email,
         passwordHash: await this.hashPassword(password),
+        securityQuestion: securityQuestion,
+        securityAnswerHash: await this.hashSecurityAnswer(securityAnswer),
         profile: {
           name: name || username,
           age: age || null,
@@ -255,6 +257,20 @@ class AuthService {
   async verifyPassword(password, hash) {
     const passwordHash = await this.hashPassword(password);
     return passwordHash === hash;
+  }
+
+  async hashSecurityAnswer(answer) {
+    // Hash security answer with different salt for additional security
+    const encoder = new TextEncoder();
+    const data = encoder.encode(answer.toLowerCase().trim() + 'learnimals_security_salt');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async verifySecurityAnswer(answer, hash) {
+    const answerHash = await this.hashSecurityAnswer(answer);
+    return answerHash === hash;
   }
   
   isValidEmail(email) {
@@ -473,6 +489,74 @@ class AuthService {
     }
   }
   
+  // Password reset request
+  async requestPasswordReset(username) {
+    try {
+      const user = this.getUserByUsername(username);
+      if (!user) {
+        return { success: false, error: 'Username not found' };
+      }
+
+      if (!user.securityQuestion) {
+        return { success: false, error: 'No security question set for this account' };
+      }
+
+      return { 
+        success: true, 
+        securityQuestion: this.getSecurityQuestionText(user.securityQuestion),
+        username: username
+      };
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      return { success: false, error: 'Failed to process password reset request' };
+    }
+  }
+
+  // Reset password with security question verification
+  async resetPassword(username, securityAnswer, newPassword) {
+    try {
+      const user = this.getUserByUsername(username);
+      if (!user) {
+        return { success: false, error: 'Username not found' };
+      }
+
+      // Verify security answer
+      const answerValid = await this.verifySecurityAnswer(securityAnswer, user.securityAnswerHash);
+      if (!answerValid) {
+        return { success: false, error: 'Security answer is incorrect' };
+      }
+
+      // Validate new password
+      if (!newPassword || newPassword.length < 6) {
+        return { success: false, error: 'New password must be at least 6 characters long' };
+      }
+
+      // Update password
+      user.passwordHash = await this.hashPassword(newPassword);
+      this.updateUser(user);
+
+      this.dispatchAuthEvent('userPasswordReset', { username });
+
+      return { success: true };
+    } catch (error) {
+      console.error('Password reset error:', error);
+      return { success: false, error: 'Failed to reset password' };
+    }
+  }
+
+  // Get security question text from key
+  getSecurityQuestionText(questionKey) {
+    const questions = {
+      'pet': 'What was the name of your first pet?',
+      'school': 'What elementary school did you attend?',
+      'city': 'In what city were you born?',
+      'book': 'What is your favorite book?',
+      'teacher': 'What was your favorite teacher\'s name?',
+      'food': 'What is your favorite food?'
+    };
+    return questions[questionKey] || 'Security question not found';
+  }
+
   // Delete account
   deleteAccount(_password) {
     // Implementation for account deletion

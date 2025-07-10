@@ -376,12 +376,14 @@
 
 /* Form Field Styling for Auth Forms */
 .login-form .form-field,
-.registration-form .form-field {
+.registration-form .form-field,
+.password-reset-form .form-field {
   margin-bottom: 1rem;
 }
 
 .login-form .form-label,
-.registration-form .form-label {
+.registration-form .form-label,
+.password-reset-form .form-label {
   display: block;
   margin-bottom: 0.375rem;
   font-weight: 500;
@@ -391,10 +393,13 @@
 
 .login-form .form-input,
 .registration-form .form-input,
+.password-reset-form .form-input,
 .login-form .form-select,
 .registration-form .form-select,
+.password-reset-form .form-select,
 .login-form .form-textarea,
-.registration-form .form-textarea {
+.registration-form .form-textarea,
+.password-reset-form .form-textarea {
   width: 100%;
   padding: 0.625rem 0.75rem;
   border: 2px solid var(--border-color);
@@ -498,4 +503,78 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Forgot Password Link */
+.forgot-password-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.forgot-password-btn {
+  color: var(--accent-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-btn:hover {
+  color: var(--accent-secondary);
+  text-decoration: underline;
+}
+
+/* Password Reset Form Specific Styles */
+.password-reset-form {
+  max-width: 100%;
+}
+
+.password-reset-form .form-help {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background-color: var(--bg-secondary);
+  border-radius: 0.375rem;
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* Step indicator for password reset */
+.password-reset-form::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(to right, var(--accent-primary), var(--bg-secondary));
+  margin-bottom: 1.5rem;
+  border-radius: 1px;
+}
+
+/* Enhanced form styling for all auth forms */
+.login-form .form-submit,
+.registration-form .form-submit,
+.password-reset-form .form-submit {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--accent-primary);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.login-form .form-submit:hover,
+.registration-form .form-submit:hover,
+.password-reset-form .form-submit:hover {
+  background-color: var(--accent-secondary);
+}
+
+.login-form .form-submit:disabled,
+.registration-form .form-submit:disabled,
+.password-reset-form .form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

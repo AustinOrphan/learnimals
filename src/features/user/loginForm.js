@@ -181,7 +181,40 @@ class LoginForm extends FormComponent {
       this.element.classList.add('login-form');
     }
     
+    // Add forgot password link
+    this.addForgotPasswordLink();
+    
     return this;
+  }
+
+  addForgotPasswordLink() {
+    if (!this.element) return;
+    
+    // Find submit button
+    const submitButton = this.element.querySelector('[type="submit"]');
+    if (!submitButton) return;
+    
+    // Create forgot password link
+    const forgotPasswordLink = document.createElement('div');
+    forgotPasswordLink.className = 'forgot-password-link';
+    forgotPasswordLink.innerHTML = `
+      <a href="#" class="forgot-password-btn">Forgot your password?</a>
+    `;
+    
+    // Insert after submit button
+    submitButton.parentNode.insertBefore(forgotPasswordLink, submitButton.nextSibling);
+    
+    // Add click handler
+    const forgotBtn = forgotPasswordLink.querySelector('.forgot-password-btn');
+    forgotBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.handleForgotPassword();
+    });
+  }
+
+  handleForgotPassword() {
+    // Dispatch event to switch to password reset
+    this.dispatchEvent('showPasswordReset', {});
   }
 
   // Dispatch custom events
