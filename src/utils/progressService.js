@@ -18,20 +18,20 @@
  * @see Issue #225
  */
 
-// Import dependencies - these should be available in the global scope
-// UserProgress from '../features/user/userProgress.js'
-// EnhancedProgressTracker from './EnhancedProgressTracker.js'
+// Import dependencies
+import userProgress from '../features/user/userProgress.js';
+import EnhancedProgressTracker from './EnhancedProgressTracker.js';
 
 class ProgressService {
   constructor(options = {}) {
-    // eslint-disable-next-line no-undef
-    this.userProgress = options.userProgress || new UserProgress();
-    // eslint-disable-next-line no-undef
+    this.userProgress = options.userProgress || userProgress;
     this.enhancedTracker = options.enhancedTracker || new EnhancedProgressTracker();
     this.eventListeners = new Map();
     this.sessionId = this.generateSessionId();
     this.cache = new Map();
     this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
+    this.cacheCleanupInterval = null; // Store interval ID for cleanup
+    this.documentListeners = []; // Track document listeners for cleanup
     
     this.init();
   }
@@ -43,9 +43,9 @@ class ProgressService {
     // Set up event forwarding from underlying services
     this.setupEventForwarding();
     
-    // Initialize cache
+    // Initialize cache cleanup interval
     this.clearExpiredCache();
-    setInterval(() => this.clearExpiredCache(), this.cacheExpiry);
+    this.cacheCleanupInterval = setInterval(() => this.clearExpiredCache(), this.cacheExpiry);
   }
 
   /**
@@ -59,14 +59,50 @@ class ProgressService {
    * Set up event forwarding from underlying services
    */
   setupEventForwarding() {
-    // Forward events from UserProgress
-    document.addEventListener('userDataUpdated', (event) => {
+    // Forward events from UserProgress with tracked listeners
+    const userDataHandler = (event) => {
       this.emit('progress:updated', event.detail);
-    });
-    
-    document.addEventListener('achievementUnlocked', (event) => {
+    };
+    const achievementHandler = (event) => {
       this.emit('achievement:unlocked', event.detail);
+    };
+    
+    document.addEventListener('userDataUpdated', userDataHandler);
+    document.addEventListener('achievementUnlocked', achievementHandler);
+    
+    // Track listeners for cleanup
+    this.documentListeners.push(
+      { type: 'userDataUpdated', handler: userDataHandler },
+      { type: 'achievementUnlocked', handler: achievementHandler }
+    );
+  }
+
+  /**
+   * Clean up all resources and event listeners
+   * Call this when the service is no longer needed
+   */
+  destroy() {
+    // Clear cache cleanup interval
+    if (this.cacheCleanupInterval) {
+      clearInterval(this.cacheCleanupInterval);
+      this.cacheCleanupInterval = null;
+    }
+    
+    // Remove all document event listeners
+    this.documentListeners.forEach(({ type, handler }) => {
+      document.removeEventListener(type, handler);
     });
+    this.documentListeners = [];
+    
+    // Clear all event listeners
+    this.eventListeners.clear();
+    
+    // Clear cache
+    this.clearCache();
+    
+    // Clear references
+    this.userProgress = null;
+    this.enhancedTracker = null;
   }
 
   // ============================================================================
@@ -81,6 +117,14 @@ class ProgressService {
    * @returns {Promise<boolean>} Success status
    */
   async trackActivityStart(activityId, subjectId, metadata = {}) {
+    // Input validation
+    if (!activityId || typeof activityId !== 'string') {
+      throw new Error('Valid activityId is required');
+    }
+    if (!subjectId || typeof subjectId !== 'string') {
+      throw new Error('Valid subjectId is required');
+    }
+    
     try {
       const startTime = Date.now();
       
@@ -130,6 +174,17 @@ class ProgressService {
    * @returns {Promise<boolean>} Success status
    */
   async trackActivityComplete(activityId, score, timeSpent, metadata = {}) {
+    // Input validation
+    if (!activityId || typeof activityId !== 'string') {
+      throw new Error('Valid activityId is required');
+    }
+    if (typeof score !== 'number' || score < 0 || score > 100) {
+      throw new Error('Score must be a number between 0 and 100');
+    }
+    if (typeof timeSpent !== 'number' || timeSpent < 0) {
+      throw new Error('TimeSpent must be a positive number');
+    }
+    
     try {
       const completionTime = Date.now();
       
@@ -199,6 +254,11 @@ class ProgressService {
    * @returns {Promise<Object>} Subject progress data
    */
   async getSubjectProgress(subjectId) {
+    // Input validation
+    if (!subjectId || typeof subjectId !== 'string') {
+      throw new Error('Valid subjectId is required');
+    }
+    
     try {
       const cacheKey = `subject_progress_${subjectId}`;
       
@@ -242,53 +302,114 @@ class ProgressService {
    * @returns {Object} Calculated progress data
    */
   calculateSubjectProgress(subjectId) {
-    const userData = this.userProgress.userData;
-    const subjectProgress = userData.progress[subjectId];
+    try {
+      const userData = this.userProgress.userData;
+      if (!userData || !userData.progress) {
+        console.warn('No user data available for progress calculation');
+        return this.getEmptyProgress(subjectId);
+      }
+      
+      const subjectProgress = userData.progress[subjectId];
     
-    if (!subjectProgress) {
+      if (!subjectProgress) {
+        return this.getEmptyProgress(subjectId);
+      }
+    
+      // Calculate metrics based on subject type
+      let completedActivities = 0;
+      let totalTime = 0;
+      let scores = [];
+    
+      if (subjectId === 'math') {
+        completedActivities = subjectProgress.lessonsCompleted || 0;
+        totalTime = subjectProgress.totalTimeSpent || 0;
+        if (subjectProgress.questionsAnswered > 0) {
+          const accuracy = (subjectProgress.correctAnswers || 0) / subjectProgress.questionsAnswered;
+          scores.push(accuracy * 100);
+        }
+      } else if (subjectId === 'reading') {
+        completedActivities = subjectProgress.storiesRead || 0;
+        totalTime = subjectProgress.readingTime || 0;
+        if (subjectProgress.comprehensionScores) {
+          scores = subjectProgress.comprehensionScores;
+        }
+      } else if (subjectId === 'science') {
+        completedActivities = subjectProgress.experimentsCompleted || 0;
+        totalTime = subjectProgress.labTime || 0;
+        if (subjectProgress.experimentScores) {
+          scores = subjectProgress.experimentScores;
+        }
+      } else if (subjectId === 'art') {
+        completedActivities = subjectProgress.projectsCompleted || 0;
+        totalTime = subjectProgress.creativeTime || 0;
+        if (subjectProgress.projectRatings) {
+          scores = subjectProgress.projectRatings;
+        }
+      } else if (subjectId === 'coding') {
+        completedActivities = subjectProgress.challengesCompleted || 0;
+        totalTime = subjectProgress.codingTime || 0;
+        if (subjectProgress.challengeScores) {
+          scores = subjectProgress.challengeScores;
+        }
+      }
+    
+      const averageScore = scores.length > 0 
+        ? scores.reduce((a, b) => a + b, 0) / scores.length 
+        : 0;
+    
+      // Calculate completion rate based on predefined curriculum sizes
+      const curriculumSizes = {
+        math: 50,      // 50 lessons
+        reading: 30,   // 30 stories
+        science: 25,   // 25 experiments
+        art: 20,       // 20 projects
+        coding: 40     // 40 challenges
+      };
+    
+      const totalActivities = curriculumSizes[subjectId] || 30;
+      const completionRate = totalActivities > 0 
+        ? Math.min((completedActivities / totalActivities) * 100, 100)
+        : 0;
+    
       return {
         subjectId,
-        level: 1,
-        completionRate: 0,
-        completedActivities: 0,
-        totalActivities: 0,
-        averageScore: 0,
-        totalTime: 0,
-        lastActivity: null
+        level: subjectProgress.level || 1,
+        completionRate: Math.round(completionRate * 100) / 100, // Round to 2 decimals
+        completedActivities,
+        totalActivities,
+        averageScore: Math.round(averageScore * 100) / 100, // Round to 2 decimals
+        totalTime,
+        lastActivity: subjectProgress.lastActivity
       };
+    } catch (error) {
+      console.error(`Error calculating progress for ${subjectId}:`, error);
+      return this.getEmptyProgress(subjectId);
     }
-    
-    // Calculate metrics based on subject type
-    let completedActivities = 0;
-    const totalTime = 0;
-    let scores = [];
-    
-    if (subjectId === 'math') {
-      completedActivities = subjectProgress.lessonsCompleted || 0;
-      scores = Array(subjectProgress.questionsAnswered || 0).fill(
-        ((subjectProgress.correctAnswers || 0) / Math.max(subjectProgress.questionsAnswered || 1, 1)) * 100
-      );
-    } else if (subjectId === 'reading') {
-      completedActivities = subjectProgress.storiesRead || 0;
-    } else if (subjectId === 'science') {
-      completedActivities = subjectProgress.experimentsCompleted || 0;
-    } else if (subjectId === 'art') {
-      completedActivities = subjectProgress.projectsCompleted || 0;
-    }
-    
-    const averageScore = scores.length > 0 
-      ? scores.reduce((a, b) => a + b, 0) / scores.length 
-      : 0;
+  }
+
+  /**
+   * Get empty progress object for a subject
+   * @param {string} subjectId - Subject identifier
+   * @returns {Object} Empty progress data
+   */
+  getEmptyProgress(subjectId) {
+    const curriculumSizes = {
+      math: 50,
+      reading: 30,
+      science: 25,
+      art: 20,
+      coding: 40
+    };
     
     return {
       subjectId,
-      level: subjectProgress.level || 1,
-      completionRate: completedActivities > 0 ? 100 : 0, // Simplified for now
-      completedActivities,
-      totalActivities: completedActivities * 1.5, // Estimated total
-      averageScore,
-      totalTime,
-      lastActivity: subjectProgress.lastActivity
+      level: 1,
+      completionRate: 0,
+      completedActivities: 0,
+      totalActivities: curriculumSizes[subjectId] || 30,
+      averageScore: 0,
+      totalTime: 0,
+      lastActivity: null
     };
   }
 
