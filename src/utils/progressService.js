@@ -222,6 +222,9 @@ class ProgressService {
       // Update streak
       await this.updateStreak();
       
+      // Check if this is the first completion of this activity
+      const isFirstCompletion = this.isFirstActivityCompletion(activityId);
+      
       // Clear session cache
       this.removeCache(`session_${activityId}`);
       
@@ -234,13 +237,46 @@ class ProgressService {
         sessionId: this.sessionId,
         timestamp: completionTime,
         metadata,
-        isFirstCompletion: !session?.previousCompletions
+        isFirstCompletion
       });
       
       return true;
     } catch (error) {
       console.error('Error tracking activity completion:', error);
       return false;
+    }
+  }
+
+  /**
+   * Check if this is the first time an activity has been completed
+   * @param {string} activityId - Activity identifier
+   * @returns {boolean} True if this is the first completion
+   */
+  isFirstActivityCompletion(activityId) {
+    try {
+      const userData = this.userProgress.userData;
+      if (!userData || !userData.progress) {
+        return true; // No progress data means first completion
+      }
+      
+      // Check across all subjects for any record of this activity
+      for (const subjectData of Object.values(userData.progress)) {
+        if (subjectData.completedActivities && 
+            subjectData.completedActivities.includes(activityId)) {
+          return false; // Found previous completion
+        }
+        
+        // Also check in activities array if it exists
+        if (subjectData.activities && 
+            subjectData.activities.find(a => a.id === activityId && a.completed)) {
+          return false; // Found previous completion
+        }
+      }
+      
+      return true; // No previous completion found
+    } catch (error) {
+      console.error('Error checking first completion:', error);
+      return true; // Default to true on error
     }
   }
 
@@ -286,14 +322,27 @@ class ProgressService {
    * @returns {Promise<Object>} All subjects progress data
    */
   async getAllSubjectsProgress() {
-    const subjects = ['math', 'reading', 'science', 'art', 'coding'];
-    const progressData = {};
-    
-    for (const subject of subjects) {
-      progressData[subject] = await this.getSubjectProgress(subject);
+    try {
+      // Get subjects dynamically from user progress data
+      const userData = this.userProgress.userData;
+      const subjects = userData && userData.progress 
+        ? Object.keys(userData.progress)
+        : ['math', 'reading', 'science', 'art', 'coding']; // Fallback to default subjects
+      
+      // Run progress fetching in parallel for better performance
+      const promises = subjects.map(subject => this.getSubjectProgress(subject));
+      const results = await Promise.all(promises);
+      
+      const progressData = {};
+      subjects.forEach((subject, index) => {
+        progressData[subject] = results[index];
+      });
+      
+      return progressData;
+    } catch (error) {
+      console.error('Error getting all subjects progress:', error);
+      return {};
     }
-    
-    return progressData;
   }
 
   /**
@@ -421,28 +470,66 @@ class ProgressService {
    */
   async updateSubjectProgress(subjectId, progressData) {
     try {
-      const updateData = {
-        [subjectId === 'math' ? 'lessonCompleted' : 'activityCompleted']: true,
-        score: progressData.score,
-        timeSpent: progressData.timeSpent,
-        ...progressData
-      };
-      
-      // Update via UserProgress based on subject
+      // Create subject-specific updateData based on what each method expects
+      let updateData;
       let success = false;
       
       switch (subjectId) {
       case 'math':
+        updateData = {
+          lessonCompleted: true,
+          score: progressData.score,
+          timeSpent: progressData.timeSpent,
+          correctAnswers: progressData.correctAnswers || 1,
+          questionsAnswered: progressData.questionsAnswered || 1,
+          ...progressData
+        };
         success = this.userProgress.updateMathProgress(updateData);
         break;
       case 'reading':
+        updateData = {
+          storyRead: true,
+          comprehensionScore: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          bookData: progressData.bookData || { title: progressData.activityId },
+          ...progressData
+        };
         success = this.userProgress.updateReadingProgress(updateData);
         break;
       case 'science':
+        updateData = {
+          experimentCompleted: true,
+          score: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          experimentData: progressData.experimentData || { name: progressData.activityId },
+          ...progressData
+        };
         success = this.userProgress.updateScienceProgress(updateData);
         break;
       case 'art':
+        updateData = {
+          projectCompleted: true,
+          rating: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          projectData: progressData.projectData || { name: progressData.activityId },
+          ...progressData
+        };
         success = this.userProgress.updateArtProgress(updateData);
+        break;
+      case 'coding':
+        updateData = {
+          challengeCompleted: true,
+          score: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          challengeData: progressData.challengeData || { name: progressData.activityId },
+          ...progressData
+        };
+        // Fallback to generic activity completed if coding-specific method doesn't exist
+        if (typeof this.userProgress.updateCodingProgress === 'function') {
+          success = this.userProgress.updateCodingProgress(updateData);
+        } else {
+          success = this.userProgress.updateProgress(subjectId, updateData);
+        }
         break;
       default:
         console.warn(`Unknown subject: ${subjectId}`);
@@ -520,10 +607,8 @@ class ProgressService {
         after => !beforeAchievements.find(before => before.id === after.id)
       );
       
-      // Emit events for new achievements
-      newAchievements.forEach(achievement => {
-        this.emit('achievement:unlocked', { achievement });
-      });
+      // Note: Achievement events are automatically emitted by setupEventForwarding
+      // when the underlying UserProgress emits 'achievementUnlocked' events
       
       return newAchievements;
     } catch (error) {
@@ -650,28 +735,45 @@ class ProgressService {
   }
 
   /**
-   * Convert data to CSV format
+   * Convert data to CSV format with proper escaping
    * @param {Object} data - Data to convert
    * @returns {string} CSV formatted data
    */
   convertToCSV(data) {
-    // Simplified CSV export - implement as needed
     const rows = [];
     rows.push('Subject,Level,Completed Activities,Average Score,Last Activity');
     
     Object.entries(data.progress).forEach(([subject, progress]) => {
       if (progress) {
         rows.push([
-          subject,
+          this.escapeCSVField(subject),
           progress.level,
           progress.completedActivities,
           Math.round(progress.averageScore),
-          progress.lastActivity || 'Never'
+          this.escapeCSVField(progress.lastActivity || 'Never')
         ].join(','));
       }
     });
     
     return rows.join('\n');
+  }
+
+  /**
+   * Escape CSV field to handle commas, quotes, and newlines
+   * @param {*} field - Field value to escape
+   * @returns {string} Escaped field value
+   */
+  escapeCSVField(field) {
+    if (field == null) return '';
+    
+    const stringField = String(field);
+    
+    // If field contains comma, quote, or newline, wrap in quotes and escape internal quotes
+    if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
+      return `"${stringField.replace(/"/g, '""')}"`;
+    }
+    
+    return stringField;
   }
 
   // ============================================================================
