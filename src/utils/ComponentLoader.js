@@ -109,7 +109,7 @@ class ComponentLoader {
    * @param {HTMLElement} container - Container element
    * @param {string} componentPath - Path to the component
    */
-  processComponentScripts(container, componentPath) {
+  processComponentScripts(container, _componentPath) {
     // Find all scripts in the component
     const scripts = container.querySelectorAll('script');
     
@@ -163,7 +163,7 @@ class ComponentLoader {
       link.href = fullPath;
       
       link.onload = () => resolve(link);
-      link.onerror = (err) => reject(new Error(`Failed to load stylesheet: ${fullPath}`));
+      link.onerror = (_err) => reject(new Error(`Failed to load stylesheet: ${fullPath}`));
       
       document.head.appendChild(link);
     });

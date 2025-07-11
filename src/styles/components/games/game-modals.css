@@ -1,0 +1,430 @@
+/* Game Modals Styles */
+/* Provides modal dialogs for game states (pause, game over, instructions) */
+
+.game-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  padding: 1rem;
+}
+
+.game-modal[aria-hidden="false"] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.game-modal[aria-hidden="true"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.modal-content {
+  background: var(--bg-card, #fff);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04));
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.game-modal[aria-hidden="false"] .modal-content {
+  transform: scale(1) translateY(0);
+}
+
+.modal-content h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary, #333);
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-secondary, #666);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  color: var(--text-primary, #333);
+}
+
+.modal-close:focus {
+  outline: 2px solid var(--accent-primary, #007bff);
+  outline-offset: 2px;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-actions .btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.modal-actions .btn-primary {
+  background: var(--accent-primary, #007bff);
+  border: 1px solid var(--accent-primary, #007bff);
+  color: white;
+}
+
+.modal-actions .btn-primary:hover {
+  background: var(--accent-primary-hover, #0056b3);
+  border-color: var(--accent-primary-hover, #0056b3);
+  transform: translateY(-1px);
+}
+
+.modal-actions .btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color, #e0e0e0);
+  color: var(--text-primary, #333);
+}
+
+.modal-actions .btn-outline:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  border-color: var(--border-hover, #adb5bd);
+  transform: translateY(-1px);
+}
+
+/* Game Over Modal Specific */
+.final-score {
+  text-align: center;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.final-score p {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.final-score span {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent-primary, #007bff);
+}
+
+.high-score {
+  color: var(--text-secondary, #666);
+}
+
+.high-score span {
+  color: var(--success-color, #28a745);
+}
+
+/* Achievement Section */
+.achievement-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, 
+    var(--accent-primary, #007bff) 0%, 
+    var(--accent-secondary, #6f42c1) 100%);
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+}
+
+.achievement-section.hidden {
+  display: none;
+}
+
+.achievement-badge {
+  display: inline-block;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.achievement-description {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Instructions Modal Specific */
+.instructions-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.instructions-content h2 {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.instructions-list {
+  list-style: none;
+  counter-reset: step-counter;
+  margin: 0 0 1.5rem 0;
+  padding: 0;
+}
+
+.instructions-list li {
+  counter-increment: step-counter;
+  margin-bottom: 1rem;
+  padding-left: 2.5rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.instructions-list li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2rem;
+  background: var(--accent-primary, #007bff);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.controls-info {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.controls-info h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: var(--text-primary, #333);
+}
+
+.controls-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.controls-list li {
+  background: var(--bg-secondary, #f8f9fa);
+  padding: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.controls-list li::before {
+  content: "🎮";
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 1.5rem;
+    margin: 0.5rem;
+    max-height: 90vh;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .modal-actions .btn {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .final-score {
+    padding: 1rem;
+  }
+  
+  .final-score p {
+    font-size: 1.1rem;
+  }
+  
+  .final-score span {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-modal {
+    padding: 0.5rem;
+  }
+  
+  .modal-content {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .instructions-list li {
+    padding-left: 2rem;
+  }
+  
+  .instructions-list li::before {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .game-modal {
+    background: rgba(0, 0, 0, 0.8);
+  }
+  
+  .modal-content {
+    border: 2px solid var(--text-primary, #333);
+  }
+  
+  .modal-actions .btn {
+    border-width: 2px;
+    font-weight: 700;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .game-modal,
+  .modal-content {
+    transition: none;
+  }
+  
+  .game-modal[aria-hidden="false"] .modal-content {
+    transform: none;
+  }
+  
+  .modal-actions .btn:hover {
+    transform: none;
+  }
+}
+
+/* Dark Theme Adjustments */
+@media (prefers-color-scheme: dark) {
+  .game-modal {
+    background: rgba(0, 0, 0, 0.8);
+  }
+  
+  .modal-content {
+    background: var(--bg-card, #2a2a2a);
+    color: var(--text-primary, #fff);
+  }
+  
+  .modal-close {
+    color: var(--text-secondary, #aaa);
+  }
+  
+  .modal-close:hover {
+    background: var(--bg-secondary, #3a3a3a);
+    color: var(--text-primary, #fff);
+  }
+}
+
+/* Focus Management */
+.game-modal[aria-hidden="false"] {
+  overflow: hidden;
+}
+
+.modal-content:focus {
+  outline: none;
+}
+
+/* Animation for modal entrance */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.game-modal[aria-hidden="false"] .modal-content {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Scrollbar Styling for Instructions */
+.instructions-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.instructions-content::-webkit-scrollbar-track {
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: 3px;
+}
+
+.instructions-content::-webkit-scrollbar-thumb {
+  background: var(--border-color, #e0e0e0);
+  border-radius: 3px;
+}
+
+.instructions-content::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover, #adb5bd);
+}

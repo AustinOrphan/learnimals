@@ -8,7 +8,6 @@
             content="Fun math tools and games for children featuring Mango the Shark"
         />
         <title>Math Tools - Learnimals</title>
-        <script src="/src/features/subjects/math/math.js"></script>
         <script type="module">
             import SubjectTemplateLoader from "/src/utils/subjectTemplateLoader.js";
 
@@ -44,6 +43,12 @@
                         <h3>Mango's Bubble Pop</h3>
                         <p>Pop bubbles with the right math answer to help Mango learn!</p>
                         <a href="bubblepop.html" class="game-link"><button>Play Now</button></a>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Pizza Maker</h3>
+                        <p>Make delicious pizzas by counting and adding toppings!</p>
+                        <a href="/src/pages/pizza-maker.html" class="game-link"><button>Make Pizza</button></a>
                     </div>
 
                     <div class="feature-card">
@@ -85,6 +90,17 @@
                     },
                     {
                         isLinked: true,
+                        title: "Pizza Maker",
+                        content:
+                            "<p>Make delicious pizzas by counting and adding toppings!</p>",
+                        linkUrl: "/src/pages/pizza-maker.html",
+                        linkText: "Make Pizza",
+                        imageUrl: "/public/images/pizza-chef.png",
+                        imageAlt: "Pizza chef with fresh toppings",
+                        theme: "default",
+                    },
+                    {
+                        isLinked: true,
                         title: "Place Value Activities",
                         content:
                             "<p>Learn place value with interactive manipulatives and visual exercises!</p>",
@@ -118,28 +134,31 @@
             window.addEventListener("load", function () {
                 console.log("Math page load event fired");
 
-                if (typeof convertNumber !== "function") {
-                    console.warn(
-                        "convertNumber function not found. Loading fallback.",
-                    );
+                // Add a small delay to ensure scripts have loaded
+                setTimeout(function() {
+                    if (typeof convertNumber !== "function") {
+                        console.warn(
+                            "convertNumber function not found. Loading fallback.",
+                        );
 
-                    // Fallback implementation of convertNumber
-                    window.convertNumber = function () {
-                        console.log("Fallback convertNumber called");
-                        const input =
-                            document.getElementById("numberInput").value;
-                        const output = document.getElementById("numberOutput");
+                        // Fallback implementation of convertNumber
+                        window.convertNumber = function () {
+                            console.log("Fallback convertNumber called");
+                            const input =
+                                document.getElementById("numberInput").value;
+                            const output = document.getElementById("numberOutput");
 
-                        if (!input) {
-                            output.textContent = "Please enter a number";
-                            return;
-                        }
+                            if (!input) {
+                                output.textContent = "Please enter a number";
+                                return;
+                            }
 
-                        output.textContent = `Fallback: You entered ${input}`;
-                    };
-                } else {
-                    console.log("Original convertNumber function found");
-                }
+                            output.textContent = `Fallback: You entered ${input}`;
+                        };
+                    } else {
+                        console.log("Original convertNumber function found");
+                    }
+                }, 100); // Small delay to ensure scripts are loaded
 
                 // Attach event listener to all buttons that might need it
                 setTimeout(function () {

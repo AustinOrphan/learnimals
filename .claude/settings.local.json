@@ -16,7 +16,24 @@
       "Bash(git rm:*)",
       "Bash(git reset:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git fetch:*)",
+      "mcp__serena__read_memory",
+      "mcp__serena__think_about_collected_information",
+      "Bash(diff:*)",
+      "Bash(mv:*)",
+      "mcp__todos__Get-Todo",
+      "mcp__serena__create_text_file",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "mcp__github__get_pull_request",
+      "Bash(cd:*)",
+      "mcp__github__get_pull_request_comments",
+      "Bash(cd:*)"
     ],
     "deny": []
   }
