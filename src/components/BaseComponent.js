@@ -334,12 +334,10 @@ class BaseComponent {
   }
 }
 
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = BaseComponent;
-} else {
+// ES module export (standardized to ES modules)
+export default BaseComponent;
+
+// Fallback for browser environments without module support
+if (typeof window !== 'undefined') {
   window.BaseComponent = BaseComponent;
 }
-
-// ES module export
-export default BaseComponent;

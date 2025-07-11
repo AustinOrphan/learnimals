@@ -244,7 +244,7 @@ class SubjectGenerator {
         <meta name="description" content="${subject.description}" />
         <title>${subject.name} with ${subject.character.name} - Learnimals</title>
         <script type="module">
-            import SubjectTemplateLoader from '../src/utils/subjectTemplateLoader.js';
+            import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
             
             // Define content for ${subjectKey} page
             const ${subjectKey}Options = {
