@@ -633,45 +633,45 @@ export default class PizzaMakerGame {
       gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
       
       switch (type) {
-        case 'pickup':
-          oscillator.frequency.value = 600;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-          break;
-        case 'drop':
-          oscillator.frequency.value = 800;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-          break;
-        case 'success':
-          // Happy arpeggio
-          oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-          oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
-          oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-          break;
-        case 'star':
-          oscillator.frequency.value = 1047; // High C
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-          break;
-        case 'levelComplete':
-          // Victory fanfare
-          oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-          oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-          oscillator.frequency.setValueAtTime(1047, audioContext.currentTime + 0.4);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
-          break;
-        case 'gameOver':
-          // Sad sound
-          oscillator.frequency.value = 200;
-          oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-          break;
-        case 'trash':
-          oscillator.frequency.value = 150;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-          break;
-        default:
-          oscillator.frequency.value = 440;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      case 'pickup':
+        oscillator.frequency.value = 600;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        break;
+      case 'drop':
+        oscillator.frequency.value = 800;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        break;
+      case 'success':
+        // Happy arpeggio
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        break;
+      case 'star':
+        oscillator.frequency.value = 1047; // High C
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        break;
+      case 'levelComplete':
+        // Victory fanfare
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+        oscillator.frequency.setValueAtTime(1047, audioContext.currentTime + 0.4);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+        break;
+      case 'gameOver':
+        // Sad sound
+        oscillator.frequency.value = 200;
+        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        break;
+      case 'trash':
+        oscillator.frequency.value = 150;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        break;
+      default:
+        oscillator.frequency.value = 440;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
       }
       
       oscillator.start(audioContext.currentTime);

@@ -117,50 +117,50 @@ class GeographySubject {
       'Click on any activity to get started!'
     ];
 
-        // Create and show message modal or toast
-        this.displayMessage(displayMessage);
-    }
+    // Create and show message modal or toast
+    this.displayMessage(displayMessage);
+  }
 
-    displayMessage(message) {
-        // Use custom modal component with character theming
-        // SECURITY: Escape HTML to prevent XSS attacks
-        const modal = new Modal({
-            id: 'geography-message-modal',
-            title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
-            content: `<div class="character-message">
+  displayMessage(message) {
+    // Use custom modal component with character theming
+    // SECURITY: Escape HTML to prevent XSS attacks
+    const modal = new Modal({
+      id: 'geography-message-modal',
+      title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
+      content: `<div class="character-message">
                 <div class="character-icon">🦅</div>
                 <p>${escapeHTML(message)}</p>
             </div>`,
-            confirmButtonText: 'Understood!',
-            showClose: true,
-            size: 'medium',
-            onConfirm: () => modal.hide()
-        });
-        modal.show();
-    }
+      confirmButtonText: 'Understood!',
+      showClose: true,
+      size: 'medium',
+      onConfirm: () => modal.hide()
+    });
+    modal.show();
+  }
 
-    onThemeChange(theme) {
-        console.log(`🎨 Theme changed to: ${theme}`);
-        // Update character appearance or animations based on theme
-        // This can be used to change character expressions, colors, etc.
-    }
+  onThemeChange(theme) {
+    console.log(`🎨 Theme changed to: ${theme}`);
+    // Update character appearance or animations based on theme
+    // This can be used to change character expressions, colors, etc.
+  }
 
-    // Utility methods for future enhancements
-    getProgress() {
-        // Return user progress for this subject
-        return {
-            subject: this.subjectName,
-            completedFeatures: [],
-            totalFeatures: this.features.length,
-            level: 1
-        };
-    }
+  // Utility methods for future enhancements
+  getProgress() {
+    // Return user progress for this subject
+    return {
+      subject: this.subjectName,
+      completedFeatures: [],
+      totalFeatures: this.features.length,
+      level: 1
+    };
+  }
 
-    saveProgress(featureCompleted) {
-        // Save user progress
-        console.log(`💾 Saving progress: ${featureCompleted}`);
-        // Implement progress saving logic
-    }
+  saveProgress(featureCompleted) {
+    // Save user progress
+    console.log(`💾 Saving progress: ${featureCompleted}`);
+    // Implement progress saving logic
+  }
 }
 
 // Initialize the subject when script loads

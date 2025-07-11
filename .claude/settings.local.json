@@ -33,7 +33,21 @@
       "mcp__github__get_pull_request",
       "Bash(cd:*)",
       "mcp__github__get_pull_request_comments",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "mcp__serena__find_symbol",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__read_file",
+      "mcp__serena__replace_regex",
+      "Bash(git merge:*)",
+      "Bash(npm run lint)",
+      "Bash(npx eslint:*)",
+      "Bash(npm test)",
+      "mcp__serena__think_about_task_adherence",
+      "Bash(npx vitest run:*)",
+      "mcp__serena__think_about_whether_you_are_done",
+      "mcp__serena__activate_project",
+      "Bash(git push:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }
