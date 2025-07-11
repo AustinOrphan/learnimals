@@ -2,7 +2,6 @@
 // Reusable modal component for consistent UI across the site
 
 import BaseComponent from '../BaseComponent.js';
-import animationManager from '../../utils/AnimationManager.js';
 import { escapeHTML } from '../../utils/htmlEscape.js';
 
 class Modal extends BaseComponent {
