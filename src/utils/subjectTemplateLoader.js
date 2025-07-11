@@ -6,6 +6,8 @@
  * for customization of content.
  */
 
+import { escapeHTML } from './htmlEscape.js';
+
 class SubjectTemplateLoader {    /**
      * Load the subject template with custom content
      * 
