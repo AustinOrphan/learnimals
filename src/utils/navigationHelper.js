@@ -1,8 +1,8 @@
 // Navigation Helper for Learnimals
 // Provides absolute URL resolution for navigation links
 
-// Simple logger fallback for non-module script loading
-const logger = {
+// Use shared logger factory created by navbarLoader.js
+const logger = window.createLogger ? window.createLogger('NavigationHelper') : {
   debug: (...args) => {
     if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
       console.log('[NavigationHelper DEBUG]', ...args);

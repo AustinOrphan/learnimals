@@ -31,6 +31,8 @@
       "Bash(cd:*)",
       "Bash(cd:*)",
       "mcp__github__get_pull_request",
+      "Bash(cd:*)",
+      "mcp__github__get_pull_request_comments",
       "Bash(cd:*)"
     ],
     "deny": []

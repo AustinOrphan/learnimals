@@ -1,15 +1,20 @@
 // src/components/layout/navbarLoader.js
 // Get the current script's path to determine the correct navbar.html location
 
-// Simple logger fallback for non-module script loading
-const logger = {
-  debug: (...args) => {
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      console.log('[NavbarLoader DEBUG]', ...args);
-    }
-  },
-  error: (...args) => console.error('[NavbarLoader ERROR]', ...args)
-};
+// Simple logger fallback for non-module script loading.
+// This factory will be reused by other scripts like navigationHelper.js.
+if (!window.createLogger) {
+  window.createLogger = (prefix) => {
+    const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    return {
+      debug: (...args) => isDev && console.log(`[${prefix} DEBUG]`, ...args),
+      error: (...args) => console.error(`[${prefix} ERROR]`, ...args),
+      warn: (...args) => console.warn(`[${prefix} WARN]`, ...args),
+      info: (...args) => console.info(`[${prefix} INFO]`, ...args),
+    };
+  };
+}
+const logger = window.createLogger('NavbarLoader');
 
 const currentScript = document.currentScript;
 const scriptPath = currentScript.src;
