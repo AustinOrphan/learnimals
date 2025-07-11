@@ -675,3 +675,406 @@
     transform: scale(0.95);
   }
 }
+
+/* =============================================
+   COLOR MIXING ANIMATIONS
+   ============================================= */
+
+/* Color liquid flow animation */
+@keyframes colorFlow {
+  0% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(10px) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Color swirl mixing animation */
+@keyframes colorSwirl {
+  0% {
+    transform: rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.2);
+    filter: blur(2px);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.3);
+    filter: blur(4px);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.2);
+    filter: blur(2px);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Color transformation animation */
+@keyframes colorTransform {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.6;
+    transform: scale(1.3) rotate(180deg);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.5) rotate(360deg);
+  }
+  75% {
+    opacity: 0.6;
+    transform: scale(1.3) rotate(540deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(720deg);
+  }
+}
+
+/* Paint splatter effect */
+@keyframes paintSplatter {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Brush stroke animation */
+@keyframes brushStroke {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0;
+  }
+  50% {
+    stroke-dasharray: 50 50;
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100 0;
+    opacity: 1;
+  }
+}
+
+/* Color wheel rotation */
+@keyframes colorWheelRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Palette slot fill animation */
+@keyframes paletteFill {
+  0% {
+    transform: scale(0);
+    border-radius: 50%;
+  }
+  50% {
+    transform: scale(1.2);
+    border-radius: 30%;
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 10%;
+  }
+}
+
+/* Color pulse animation */
+@keyframes colorPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.3) saturate(1.5);
+  }
+}
+
+/* Paint drip animation */
+@keyframes paintDrip {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+  100% {
+    transform: translateY(50px) scaleY(2);
+    opacity: 0;
+  }
+}
+
+/* Mixing bowl bubble animation */
+@keyframes mixingBubble {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Canvas texture animation */
+@keyframes canvasTexture {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Art creation celebration */
+@keyframes artCelebration {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(90deg);
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(270deg);
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Color drop animation */
+@keyframes colorDrop {
+  0% {
+    transform: translateY(-100px) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(0) scale(1.2);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(-10px) scale(0.9);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =============================================
+   ANIMATION CLASSES
+   ============================================= */
+
+.color-flowing {
+  animation: colorFlow 0.8s ease-out;
+}
+
+.color-swirling {
+  animation: colorSwirl 2s ease-in-out;
+}
+
+.color-transforming {
+  animation: colorTransform 1.5s ease-in-out;
+}
+
+.paint-splattering {
+  animation: paintSplatter 1s ease-out;
+}
+
+.brush-stroking {
+  animation: brushStroke 1.2s ease-in-out;
+}
+
+.wheel-rotating {
+  animation: colorWheelRotate 20s linear infinite;
+}
+
+.palette-filling {
+  animation: paletteFill 0.6s ease-out;
+}
+
+.color-pulsing {
+  animation: colorPulse 2s ease-in-out infinite;
+}
+
+.paint-dripping {
+  animation: paintDrip 1.5s ease-in forwards;
+}
+
+.mixing-bubbling {
+  animation: mixingBubble 2s ease-out infinite;
+}
+
+.canvas-animating {
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.05) 10px,
+      rgba(255, 255, 255, 0.05) 20px
+    );
+  background-size: 200% 200%;
+  animation: canvasTexture 10s linear infinite;
+}
+
+.art-celebrating {
+  animation: artCelebration 2s ease-in-out;
+}
+
+.color-dropping {
+  animation: colorDrop 0.8s ease-out;
+}
+
+/* Mixing area enhancements */
+.mixing-area-active {
+  position: relative;
+  overflow: hidden;
+}
+
+.mixing-area-active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent, rgba(255, 255, 255, 0.2));
+  transform: translate(-50%, -50%);
+  animation: colorSwirl 3s ease-in-out infinite;
+}
+
+/* Color blend overlay effect */
+.color-blend-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.color-blend-overlay.active {
+  opacity: 0.8;
+}
+
+/* Paint particle effects */
+.paint-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: paintSplatter 1s ease-out forwards;
+}
+
+/* Brush cursor effect */
+.brush-cursor {
+  cursor: crosshair;
+  position: relative;
+}
+
+.brush-cursor::after {
+  content: '🎨';
+  position: absolute;
+  pointer-events: none;
+  font-size: 24px;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
+}
+
+/* Color transition states */
+.color-transition-in {
+  animation: colorDrop 0.6s ease-out;
+}
+
+.color-transition-out {
+  animation: colorFlow 0.6s ease-in reverse;
+}
+
+/* Enhanced loading animation */
+@keyframes paintLoading {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.loading-palette {
+  background: linear-gradient(
+    270deg,
+    #FF6B6B,
+    #FFE66D,
+    #4ECDC4,
+    #556270,
+    #FF6B6B
+  );
+  background-size: 400% 400%;
+  animation: paintLoading 3s ease infinite;
+}
+
+/* Enhanced reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .color-flowing,
+  .color-swirling,
+  .color-transforming,
+  .paint-splattering,
+  .brush-stroking,
+  .wheel-rotating,
+  .palette-filling,
+  .color-pulsing,
+  .paint-dripping,
+  .mixing-bubbling,
+  .canvas-animating,
+  .art-celebrating,
+  .color-dropping,
+  .loading-spinner,
+  .character-avatar,
+  .mix-success,
+  .mix-error,
+  .rainbow-effect,
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
