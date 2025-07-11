@@ -23,7 +23,15 @@
       "Bash(diff:*)",
       "Bash(mv:*)",
       "mcp__todos__Get-Todo",
-      "mcp__serena__create_text_file"
+      "mcp__serena__create_text_file",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "Bash(cd:*)",
+      "mcp__github__get_pull_request",
+      "Bash(cd:*)"
     ],
     "deny": []
   }
