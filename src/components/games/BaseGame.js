@@ -57,7 +57,8 @@ export default class BaseGame {
       streakRecord: 0,
       currentStreak: 0,
       timeSpentPerLevel: new Map(),
-      difficultyChanges: []
+      difficultyChanges: [],
+      feedbackEvents: []
     };
     
     // Mobile-first enhancements
@@ -93,6 +94,37 @@ export default class BaseGame {
     // Audio context (if supported)
     this.audioContext = null;
     this.soundEnabled = true;
+    
+    // Feedback system configuration
+    this.feedbackConfig = {
+      enabled: options.enableFeedback !== false,
+      character: options.character || this.getDefaultCharacter(),
+      audioEnabled: options.enableAudio !== false,
+      hapticEnabled: options.enableHaptic !== false && this.hapticFeedback,
+      accessibilityEnabled: options.enableA11y !== false,
+      reducedMotion: this.detectReducedMotion(),
+      feedbackDuration: options.feedbackDuration || 2000,
+      debugMode: options.debugFeedback || false
+    };
+    
+    // Feedback state management
+    this.feedbackState = {
+      activeFeedbacks: new Map(),
+      feedbackQueue: [],
+      lastFeedbackTime: 0,
+      feedbackCounter: 0,
+      ariaLiveRegion: null,
+      feedbackContainer: null
+    };
+    
+    // Character audio libraries (lazy loaded)
+    this.characterAudio = {
+      bella: null,   // Reading bunny
+      max: null,     // Math bear  
+      zara: null,    // Science zebra
+      aria: null,    // Art owl
+      codecat: null  // Coding cat
+    };
         
     // Initialize the game
     this.initialize();
@@ -112,6 +144,7 @@ export default class BaseGame {
       }
       this.setupEventListeners();
       this.setupAudio();
+      this.setupFeedbackSystem();
       this.setupProgressTracking();
       this.setupMobileOptimizations();
       await this.loadAssets();
@@ -271,6 +304,145 @@ export default class BaseGame {
     } catch (error) {
       logger.warn('Audio not supported:', error);
       this.soundEnabled = false;
+    }
+  }
+  
+  /**
+   * Set up feedback system infrastructure
+   */
+  setupFeedbackSystem() {
+    if (!this.feedbackConfig.enabled) {
+      logger.debug('Feedback system disabled for this game');
+      return;
+    }
+    
+    try {
+      // Create ARIA live region for accessibility
+      this.createAriaLiveRegion();
+      
+      // Create feedback container for visual feedback
+      this.createFeedbackContainer();
+      
+      // Initialize character audio system
+      this.initializeCharacterAudio();
+      
+      // Set up accessibility event listeners
+      this.setupAccessibilityListeners();
+      
+      logger.debug('Feedback system initialized successfully');
+    } catch (error) {
+      logger.error('Feedback system setup failed:', error);
+      this.feedbackConfig.enabled = false;
+    }
+  }
+  
+  /**
+   * Get default character based on subject
+   */
+  getDefaultCharacter() {
+    const characterMap = {
+      'reading': 'bella',
+      'math': 'max', 
+      'science': 'zara',
+      'art': 'aria',
+      'coding': 'codecat'
+    };
+    return characterMap[this.subject] || 'bella';
+  }
+  
+  /**
+   * Detect reduced motion preference
+   */
+  detectReducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  
+  /**
+   * Create ARIA live region for screen reader announcements
+   */
+  createAriaLiveRegion() {
+    if (this.feedbackState.ariaLiveRegion) return;
+    
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.setAttribute('class', 'visually-hidden');
+    liveRegion.style.cssText = `
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    `;
+    
+    document.body.appendChild(liveRegion);
+    this.feedbackState.ariaLiveRegion = liveRegion;
+  }
+  
+  /**
+   * Create feedback container for visual feedback elements
+   */
+  createFeedbackContainer() {
+    if (this.feedbackState.feedbackContainer) return;
+    
+    const container = document.createElement('div');
+    container.setAttribute('class', 'game-feedback-container');
+    container.setAttribute('aria-hidden', 'true');
+    container.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    `;
+    
+    // Append to game container or body
+    const parent = this.container || document.body;
+    parent.appendChild(container);
+    this.feedbackState.feedbackContainer = container;
+  }
+  
+  /**
+   * Initialize character audio system (lazy loading)
+   */
+  initializeCharacterAudio() {
+    // Character audio will be loaded on-demand when first needed
+    // This prevents blocking the game initialization
+    this.characterAudio[this.feedbackConfig.character] = {
+      loaded: false,
+      loading: false,
+      sounds: new Map()
+    };
+  }
+  
+  /**
+   * Set up accessibility event listeners
+   */
+  setupAccessibilityListeners() {
+    // Listen for reduced motion changes
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      mediaQuery.addListener((e) => {
+        this.feedbackConfig.reducedMotion = e.matches;
+        logger.debug('Reduced motion preference changed:', e.matches);
+      });
+    }
+    
+    // Listen for focus events to manage feedback properly
+    if (this.container) {
+      this.container.addEventListener('focus', () => {
+        this.feedbackState.containerHasFocus = true;
+      });
+      
+      this.container.addEventListener('blur', () => {
+        this.feedbackState.containerHasFocus = false;
+      });
     }
   }
   
@@ -1218,6 +1390,461 @@ export default class BaseGame {
   }
   
   /**
+   * Main feedback system method - provides consistent feedback across all games
+   * @param {string} type - Feedback type: 'success', 'error', 'hint', 'progress', 'achievement'
+   * @param {string} message - Primary feedback message
+   * @param {Object} options - Configuration options
+   */
+  showFeedback(type, message, options = {}) {
+    if (!this.feedbackConfig.enabled) {
+      logger.debug('Feedback disabled, skipping:', type, message);
+      return;
+    }
+    
+    // Validate feedback type
+    const validTypes = ['success', 'error', 'hint', 'progress', 'achievement'];
+    if (!validTypes.includes(type)) {
+      logger.warn('Invalid feedback type:', type);
+      return;
+    }
+    
+    // Merge options with defaults
+    const config = {
+      character: options.character || this.feedbackConfig.character,
+      animation: options.animation || this.getDefaultAnimation(type),
+      sound: options.sound || this.getDefaultSound(type),
+      duration: options.duration || this.feedbackConfig.feedbackDuration,
+      priority: options.priority || this.getFeedbackPriority(type),
+      ariaLabel: options.ariaLabel || message,
+      hint: options.hint || null,
+      achievement: options.achievement || null,
+      position: options.position || 'center',
+      ...options
+    };
+    
+    try {
+      // Generate unique feedback ID
+      const feedbackId = `feedback_${++this.feedbackState.feedbackCounter}_${Date.now()}`;
+      
+      // Create feedback object
+      const feedback = {
+        id: feedbackId,
+        type,
+        message,
+        config,
+        startTime: performance.now(),
+        active: true
+      };
+      
+      // Store active feedback
+      this.feedbackState.activeFeedbacks.set(feedbackId, feedback);
+      
+      // Execute feedback components
+      this.executeFeedbackPipeline(feedback);
+      
+      // Schedule cleanup
+      setTimeout(() => {
+        this.cleanupFeedback(feedbackId);
+      }, config.duration);
+      
+      // Debug logging
+      if (this.feedbackConfig.debugMode) {
+        logger.debug('Feedback triggered:', feedback);
+      }
+      
+      return feedbackId;
+      
+    } catch (error) {
+      logger.error('Feedback execution failed:', error);
+    }
+  }
+  
+  /**
+   * Execute the complete feedback pipeline
+   */
+  executeFeedbackPipeline(feedback) {
+    const { type, message, config } = feedback;
+    
+    // 1. Accessibility announcement (highest priority)
+    this.announceToScreenReader(message, config.ariaLabel, type);
+    
+    // 2. Audio feedback
+    if (this.feedbackConfig.audioEnabled && config.sound) {
+      this.playFeedbackAudio(config.sound, config.character, type);
+    }
+    
+    // 3. Visual feedback (respects reduced motion)
+    if (!this.feedbackConfig.reducedMotion || type === 'error') {
+      this.showVisualFeedback(feedback);
+    }
+    
+    // 4. Haptic feedback (mobile)
+    if (this.feedbackConfig.hapticEnabled && this.isMobile) {
+      this.triggerHapticFeedback(type);
+    }
+    
+    // 5. Character-specific reactions
+    this.triggerCharacterReaction(config.character, type, message);
+    
+    // 6. Analytics tracking
+    this.trackFeedbackEvent(feedback);
+  }
+  
+  /**
+   * Get default animation for feedback type
+   */
+  getDefaultAnimation(type) {
+    const animations = {
+      'success': 'celebrate',
+      'error': 'encourage', 
+      'hint': 'thinking',
+      'progress': 'levelup',
+      'achievement': 'achievement-sparkle'
+    };
+    return animations[type] || 'default';
+  }
+  
+  /**
+   * Get default sound for feedback type
+   */
+  getDefaultSound(type) {
+    const sounds = {
+      'success': 'success-chime',
+      'error': 'gentle-error',
+      'hint': 'hint-bell', 
+      'progress': 'progress-up',
+      'achievement': 'achievement-fanfare'
+    };
+    return sounds[type] || 'default';
+  }
+  
+  /**
+   * Get feedback priority for queue management
+   */
+  getFeedbackPriority(type) {
+    const priorities = {
+      'error': 3,        // Highest - user needs to know immediately
+      'achievement': 2,  // High - celebrate accomplishments
+      'success': 2,      // High - positive reinforcement
+      'progress': 1,     // Medium - good to know
+      'hint': 1          // Medium - helpful but not critical
+    };
+    return priorities[type] || 1;
+  }
+  
+  /**
+   * Announce feedback to screen readers
+   */
+  announceToScreenReader(message, ariaLabel, type) {
+    if (!this.feedbackConfig.accessibilityEnabled || !this.feedbackState.ariaLiveRegion) {
+      return;
+    }
+    
+    // Use assertive for errors, polite for others
+    const liveMode = (type === 'error') ? 'assertive' : 'polite';
+    this.feedbackState.ariaLiveRegion.setAttribute('aria-live', liveMode);
+    
+    // Clear previous announcement
+    this.feedbackState.ariaLiveRegion.textContent = '';
+    
+    // Announce after a brief delay to ensure screen readers pick it up
+    setTimeout(() => {
+      if (this.feedbackState.ariaLiveRegion) {
+        this.feedbackState.ariaLiveRegion.textContent = ariaLabel || message;
+      }
+    }, 100);
+  }
+  
+  /**
+   * Play character-specific audio feedback
+   */
+  playFeedbackAudio(soundId, character, type) {
+    // Try character-specific sound first, fall back to generic
+    this.loadCharacterAudio(character).then(() => {
+      const characterAudio = this.characterAudio[character];
+      if (characterAudio && characterAudio.sounds.has(soundId)) {
+        this.playCharacterSound(character, soundId);
+      } else {
+        // Fall back to synthetic audio
+        this.playDefaultFeedbackSound(type);
+      }
+    }).catch(() => {
+      // Audio loading failed, use synthetic fallback
+      this.playDefaultFeedbackSound(type);
+    });
+  }
+  
+  /**
+   * Play default synthetic feedback sound
+   */
+  playDefaultFeedbackSound(type) {
+    const audioMap = {
+      'success': { frequency: 600, duration: 200, type: 'sine' },
+      'error': { frequency: 200, duration: 300, type: 'sawtooth' },
+      'hint': { frequency: 400, duration: 150, type: 'sine' },
+      'progress': { frequency: 800, duration: 250, type: 'triangle' },
+      'achievement': { frequency: 1000, duration: 500, type: 'sine' }
+    };
+    
+    const audio = audioMap[type] || audioMap.success;
+    this.playSound(audio.frequency, audio.duration, audio.type);
+  }
+  
+  /**
+   * Show visual feedback element
+   */
+  showVisualFeedback(feedback) {
+    if (!this.feedbackState.feedbackContainer) return;
+    
+    const { type, message, config } = feedback;
+    
+    // Create feedback element
+    const element = document.createElement('div');
+    element.className = `game-feedback game-feedback-${type}`;
+    element.setAttribute('data-feedback-id', feedback.id);
+    element.textContent = message;
+    
+    // Apply styles
+    element.style.cssText = `
+      position: absolute;
+      background: ${this.getFeedbackColor(type)};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 1001;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    `;
+    
+    // Position feedback
+    this.positionFeedback(element, config.position);
+    
+    // Add to container
+    this.feedbackState.feedbackContainer.appendChild(element);
+    
+    // Trigger animation
+    requestAnimationFrame(() => {
+      element.style.opacity = '1';
+      element.style.transform = 'translateY(0)';
+    });
+    
+    // Auto-remove after duration
+    setTimeout(() => {
+      if (element.parentNode) {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          if (element.parentNode) {
+            element.parentNode.removeChild(element);
+          }
+        }, 300);
+      }
+    }, config.duration - 300);
+  }
+  
+  /**
+   * Get color for feedback type
+   */
+  getFeedbackColor(type) {
+    const colors = {
+      'success': '#28a745',
+      'error': '#dc3545', 
+      'hint': '#17a2b8',
+      'progress': '#ffc107',
+      'achievement': '#6f42c1'
+    };
+    return colors[type] || colors.success;
+  }
+  
+  /**
+   * Position feedback element
+   */
+  positionFeedback(element, position) {
+    const positions = {
+      'top': { top: '20px', left: '50%', transform: 'translateX(-50%)' },
+      'center': { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
+      'bottom': { bottom: '20px', left: '50%', transform: 'translateX(-50%)' }
+    };
+    
+    const pos = positions[position] || positions.center;
+    Object.assign(element.style, pos);
+  }
+  
+  /**
+   * Trigger haptic feedback for mobile devices
+   */
+  triggerHapticFeedback(type) {
+    if (!navigator.vibrate) return;
+    
+    const patterns = {
+      'success': [50],
+      'error': [100, 50, 100],
+      'hint': [25],
+      'progress': [50, 25, 50],
+      'achievement': [100, 50, 100, 50, 100]
+    };
+    
+    const pattern = patterns[type] || patterns.success;
+    navigator.vibrate(pattern);
+  }
+  
+  /**
+   * Trigger character-specific reaction
+   */
+  triggerCharacterReaction(character, type, _message) {
+    const characterEmojis = {
+      bella: '🐰',
+      max: '🐻', 
+      zara: '🦓',
+      aria: '🦉',
+      codecat: '🐱'
+    };
+    
+    const reactions = {
+      success: {
+        bella: ['Great reading! 📚', 'Perfect sentence! ✨', 'You\'re a reading star! 🌟'],
+        max: ['Math magic! 🎩', 'Numbers are your friend! 🔢', 'Calculating success! 📊'],
+        zara: ['Science rocks! 🧪', 'Discovery achieved! 🔬', 'Lab experiment success! ⚗️'],
+        aria: ['Artistic brilliance! 🎨', 'Creative masterpiece! 🖼️', 'Paint the world beautiful! 🌈'],
+        codecat: ['Code executed! 💻', 'Debug successful! 🐛', 'Program complete! ⚡']
+      },
+      error: {
+        bella: ['Let\'s try again! 📖', 'Reading takes practice! 💪', 'Every mistake teaches us! 🌱'],
+        max: ['Math puzzles need patience! 🧩', 'Numbers can be tricky! 🤔', 'Let\'s solve this together! 🤝'],
+        zara: ['Science is about testing! 🧬', 'Experiments teach us! 📋', 'Discovery needs tries! 🔍'],
+        aria: ['Art is about expression! 🎭', 'Every brushstroke counts! 🖌️', 'Creativity flows freely! 🌊'],
+        codecat: ['Debugging is learning! 🔧', 'Code evolves with fixes! 📝', 'Logic needs refinement! 🧠']
+      },
+      hint: {
+        bella: ['Here\'s a reading tip! 💡', 'Grammar clue coming up! 🔤', 'Word wisdom ahead! 📝'],
+        max: ['Math hint incoming! 🎯', 'Number strategy here! 📐', 'Calculation clue! 🧮'],
+        zara: ['Science hint available! 🔬', 'Research reminder! 📊', 'Discovery direction! 🧭'],
+        aria: ['Art inspiration here! ✨', 'Creative guidance! 🎨', 'Artistic advice! 🖼️'],
+        codecat: ['Code hint ready! 💡', 'Programming pointer! 👆', 'Logic guidance! 🧩']
+      },
+      progress: {
+        bella: ['Reading level up! 📈', 'Vocabulary growing! 🌱', 'Comprehension building! 🏗️'],
+        max: ['Math skills advancing! 📊', 'Problem-solving improved! 🎯', 'Calculation power up! ⚡'],
+        zara: ['Scientific thinking grows! 🧪', 'Research skills develop! 📋', 'Discovery abilities rise! 🚀'],
+        aria: ['Artistic vision expands! 👁️', 'Creative skills bloom! 🌸', 'Imagination soars! 🦋'],
+        codecat: ['Coding prowess increases! 💻', 'Programming logic sharpens! 🔪', 'Debug skills level up! 🐛']
+      },
+      achievement: {
+        bella: ['Reading champion! 🏆', 'Literary legend! 📚', 'Word wizard achieved! 🧙'],
+        max: ['Mathematics master! 🎓', 'Number ninja unlocked! 🥷', 'Calculation champion! 🏅'],
+        zara: ['Science superstar! ⭐', 'Research rockstar! 🎸', 'Discovery dynamo! 💫'],
+        aria: ['Art virtuoso! 🎨', 'Creative genius! 🧠', 'Masterpiece maker! 🖼️'],
+        codecat: ['Code commander! 👑', 'Programming prodigy! 🌟', 'Debug deity! ⚡']
+      }
+    };
+    
+    // Get character emoji and random reaction
+    const emoji = characterEmojis[character] || '🎮';
+    const characterReactions = reactions[type]?.[character] || [`${emoji} Great job!`];
+    const reaction = characterReactions[Math.floor(Math.random() * characterReactions.length)];
+    
+    // Trigger character animation/reaction in UI if available
+    this.animateCharacterReaction(character, type, emoji, reaction);
+    
+    if (this.feedbackConfig.debugMode) {
+      logger.debug(`Character reaction: ${character} - ${type} - ${reaction}`);
+    }
+  }
+  
+  /**
+   * Animate character reaction in UI
+   */
+  animateCharacterReaction(character, type, emoji, reaction) {
+    // Find character element in the game UI
+    const characterElement = this.container?.querySelector(`.${character}-character, .character-avatar, #${character}-character`);
+    
+    if (characterElement) {
+      // Add reaction animation class
+      characterElement.classList.add(`reaction-${type}`);
+      
+      // Update character speech/tooltip if available
+      const speechElement = characterElement.querySelector('.character-speech, .speech-bubble');
+      if (speechElement) {
+        speechElement.textContent = reaction;
+        speechElement.classList.add('reaction-active');
+      }
+      
+      // Remove animation classes after duration
+      setTimeout(() => {
+        characterElement.classList.remove(`reaction-${type}`);
+        if (speechElement) {
+          speechElement.classList.remove('reaction-active');
+        }
+      }, this.feedbackConfig.feedbackDuration);
+    }
+  }
+  
+  /**
+   * Track feedback event for analytics
+   */
+  trackFeedbackEvent(feedback) {
+    // Add to analytics tracking
+    if (this.analytics && this.analytics.feedbackEvents) {
+      this.analytics.feedbackEvents.push({
+        type: feedback.type,
+        timestamp: feedback.startTime,
+        character: feedback.config.character,
+        sessionId: this.sessionId
+      });
+    }
+  }
+  
+  /**
+   * Clean up feedback resources
+   */
+  cleanupFeedback(feedbackId) {
+    this.feedbackState.activeFeedbacks.delete(feedbackId);
+    
+    // Remove visual elements
+    const element = this.feedbackState.feedbackContainer?.querySelector(`[data-feedback-id="${feedbackId}"]`);
+    if (element && element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+  }
+  
+  /**
+   * Load character audio assets (async)
+   */
+  async loadCharacterAudio(character) {
+    const audio = this.characterAudio[character];
+    if (!audio || audio.loaded || audio.loading) {
+      return Promise.resolve();
+    }
+    
+    audio.loading = true;
+    
+    try {
+      // Character audio loading will be implemented in the audio system issue
+      // For now, mark as loaded
+      audio.loaded = true;
+      audio.loading = false;
+      logger.debug(`Character audio loaded: ${character}`);
+    } catch (error) {
+      audio.loading = false;
+      logger.warn(`Failed to load character audio: ${character}`, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Play character-specific sound
+   */
+  playCharacterSound(character, soundId) {
+    // Character sound playing will be implemented in the audio system issue
+    logger.debug(`Playing character sound: ${character} - ${soundId}`);
+  }
+  
+  /**
    * Get game analytics summary
    */
   getAnalyticsSummary() {
@@ -1337,5 +1964,108 @@ export default class BaseGame {
       cancelAnimationFrame(this.gameLoopId);
       this.gameLoopId = null;
     }
+  }
+  
+  // ==========================================
+  // BACKWARD COMPATIBILITY METHODS
+  // ==========================================
+  
+  /**
+   * Legacy feedback method for existing games (SentenceBuilder, etc.)
+   * Maps to new feedback system while maintaining API compatibility
+   */
+  displayMessage(message, type = 'info', duration = 2000) {
+    const feedbackType = this.mapLegacyType(type);
+    return this.showFeedback(feedbackType, message, { duration });
+  }
+  
+  /**
+   * Legacy success feedback method
+   */
+  showSuccessMessage(message, options = {}) {
+    return this.showFeedback('success', message, options);
+  }
+  
+  /**
+   * Legacy error feedback method  
+   */
+  showErrorMessage(message, options = {}) {
+    return this.showFeedback('error', message, options);
+  }
+  
+  /**
+   * Legacy hint feedback method
+   */
+  showHintMessage(message, options = {}) {
+    return this.showFeedback('hint', message, options);
+  }
+  
+  /**
+   * Legacy progress feedback method
+   */
+  showProgressMessage(message, options = {}) {
+    return this.showFeedback('progress', message, options);
+  }
+  
+  /**
+   * Map legacy feedback types to new system
+   */
+  mapLegacyType(legacyType) {
+    const typeMap = {
+      'info': 'hint',
+      'warning': 'hint', 
+      'success': 'success',
+      'error': 'error',
+      'correct': 'success',
+      'incorrect': 'error',
+      'level-up': 'progress',
+      'achievement': 'achievement'
+    };
+    return typeMap[legacyType] || 'hint';
+  }
+  
+  /**
+   * Legacy method for games that call addMessage directly
+   */
+  addMessage(message, type = 'info', duration = 2000) {
+    return this.displayMessage(message, type, duration);
+  }
+  
+  /**
+   * Legacy method for simple text announcements
+   */
+  announce(message, options = {}) {
+    return this.showFeedback('hint', message, options);
+  }
+  
+  /**
+   * Simplified feedback for quick integration
+   */
+  feedback(message, isSuccess = true, options = {}) {
+    const type = isSuccess ? 'success' : 'error';
+    return this.showFeedback(type, message, options);
+  }
+  
+  /**
+   * Character-specific feedback shorthand methods
+   */
+  bellaFeedback(message, type = 'hint', options = {}) {
+    return this.showFeedback(type, message, { character: 'bella', ...options });
+  }
+  
+  maxFeedback(message, type = 'hint', options = {}) {
+    return this.showFeedback(type, message, { character: 'max', ...options });
+  }
+  
+  zaraFeedback(message, type = 'hint', options = {}) {
+    return this.showFeedback(type, message, { character: 'zara', ...options });
+  }
+  
+  ariaFeedback(message, type = 'hint', options = {}) {
+    return this.showFeedback(type, message, { character: 'aria', ...options });
+  }
+  
+  codecatFeedback(message, type = 'hint', options = {}) {
+    return this.showFeedback(type, message, { character: 'codecat', ...options });
   }
 }

@@ -58,6 +58,11 @@ class ColorPaletteGame extends BaseGame {
     this.colorTransitions = [];
     this.brushStrokes = [];
     
+    // Animation state
+    this.isMixing = false;
+    this.mixingAnimation = null;
+    this.currentAnimations = [];
+    
     // Colors and styling
     this.colors = {
       background: '#F5F3E7',
@@ -246,15 +251,22 @@ class ColorPaletteGame extends BaseGame {
     const mixResult = mixColors(color1.id, color2.id);
     this.attempts++;
     
-    if (mixResult.success) {
-      this.handleSuccessfulMix(mixResult);
-    } else {
-      this.handleFailedMix(mixResult);
-    }
+    // Start mixing animation
+    this.startMixingAnimation(color1, color2, mixResult);
     
-    // Clear mixing bowl after a moment
+    // Delay result to allow animation to play
+    setTimeout(() => {
+      if (mixResult.success) {
+        this.handleSuccessfulMix(mixResult);
+      } else {
+        this.handleFailedMix(mixResult);
+      }
+    }, 1500);
+    
+    // Clear mixing bowl after animation
     setTimeout(() => {
       this.mixingBowl = [];
+      this.stopMixingAnimation();
     }, 2000);
   }
   
@@ -285,8 +297,9 @@ class ColorPaletteGame extends BaseGame {
         attempts: this.attempts
       });
       
-      // Add success particles
+      // Add success particles and animations
       this.addColorMixingParticles(mixResult.result.hex);
+      this.addSuccessAnimation(mixResult.result);
       
       // Play success sound
       this.playSound(600, 200, 'sine');
@@ -304,6 +317,7 @@ class ColorPaletteGame extends BaseGame {
       // Partial success - created a color but not the target
       this.addScore(25);
       this.addColorMixingParticles(mixResult.result.hex);
+      this.addPartialSuccessAnimation(mixResult.result);
     }
   }
   
@@ -442,8 +456,9 @@ class ColorPaletteGame extends BaseGame {
       timeToComplete: performance.now() - this.challengeStartTime
     });
     
-    // Add rainbow particles
+    // Add rainbow particles and art celebration
     this.addRainbowParticles();
+    this.addArtCelebration();
     
     // Play success sound
     this.playSound(600, 300, 'sine');
@@ -451,7 +466,7 @@ class ColorPaletteGame extends BaseGame {
     // Complete challenge
     setTimeout(() => {
       this.completeChallenge();
-    }, 1500);
+    }, 2500);
   }
   
   /**
@@ -539,8 +554,159 @@ class ColorPaletteGame extends BaseGame {
         life: 1.0,
         decay: 0.02,
         color: color,
-        size: Math.random() * 8 + 4
+        size: Math.random() * 8 + 4,
+        type: 'paint-splatter'
       });
+    }
+  }
+  
+  /**
+   * Start mixing animation
+   */
+  startMixingAnimation(color1, color2, mixResult) {
+    this.isMixing = true;
+    
+    // Add CSS animation classes if using DOM mode
+    if (this.container && !this.canvas) {
+      const gameContainer = this.container.querySelector('.game-container');
+      if (gameContainer) {
+        gameContainer.classList.add('color-swirling');
+      }
+      
+      // Find mixing area or create visual feedback
+      const mixingElement = this.container.querySelector('.mixing-area, .work-area');
+      if (mixingElement) {
+        mixingElement.classList.add('mixing-area-active');
+        
+        // Add color blend overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'color-blend-overlay active';
+        overlay.style.background = `linear-gradient(45deg, ${color1.hex}, ${color2.hex})`;
+        mixingElement.appendChild(overlay);
+      }
+    }
+    
+    // Store animation state
+    this.mixingAnimation = {
+      color1: color1,
+      color2: color2,
+      result: mixResult,
+      startTime: performance.now()
+    };
+  }
+  
+  /**
+   * Stop mixing animation
+   */
+  stopMixingAnimation() {
+    this.isMixing = false;
+    
+    // Remove CSS animation classes if using DOM mode
+    if (this.container && !this.canvas) {
+      const gameContainer = this.container.querySelector('.game-container');
+      if (gameContainer) {
+        gameContainer.classList.remove('color-swirling');
+      }
+      
+      const mixingElement = this.container.querySelector('.mixing-area, .work-area');
+      if (mixingElement) {
+        mixingElement.classList.remove('mixing-area-active');
+        const overlay = mixingElement.querySelector('.color-blend-overlay');
+        if (overlay) {
+          overlay.remove();
+        }
+      }
+    }
+    
+    this.mixingAnimation = null;
+  }
+  
+  /**
+   * Add success animation effects
+   */
+  addSuccessAnimation(resultColor) {
+    // Add paint splatter effect
+    if (this.container && !this.canvas) {
+      const workArea = this.container.querySelector('.game-container');
+      if (workArea) {
+        // Create multiple paint particles
+        for (let i = 0; i < 5; i++) {
+          const splatter = document.createElement('div');
+          splatter.className = 'paint-particle paint-splattering';
+          splatter.style.backgroundColor = resultColor.hex;
+          splatter.style.left = `${40 + Math.random() * 20}%`;
+          splatter.style.top = `${40 + Math.random() * 20}%`;
+          splatter.style.animationDelay = `${i * 100}ms`;
+          workArea.appendChild(splatter);
+          
+          // Remove after animation
+          setTimeout(() => splatter.remove(), 1000 + i * 100);
+        }
+      }
+      
+      // Add palette fill animation to the entire game
+      const gameElement = this.container.querySelector('.color-palette-game');
+      if (gameElement) {
+        gameElement.classList.add('palette-filling');
+        setTimeout(() => gameElement.classList.remove('palette-filling'), 600);
+      }
+      
+      // Add color transformation effect
+      const canvas = this.container.querySelector('.game-canvas');
+      if (canvas) {
+        canvas.classList.add('color-transforming');
+        setTimeout(() => canvas.classList.remove('color-transforming'), 1500);
+      }
+    }
+    
+    // Add extra particles for celebration
+    for (let i = 0; i < 10; i++) {
+      this.particles.push({
+        x: this.workArea.x + this.workArea.width / 2,
+        y: this.workArea.y + this.workArea.height / 2,
+        vx: (Math.random() - 0.5) * 8,
+        vy: -Math.random() * 8 - 2,
+        life: 1.0,
+        decay: 0.015,
+        color: resultColor.hex,
+        size: Math.random() * 10 + 5,
+        type: 'celebration'
+      });
+    }
+  }
+  
+  /**
+   * Add partial success animation
+   */
+  addPartialSuccessAnimation(resultColor) {
+    if (this.container && !this.canvas) {
+      // Add gentle color flowing animation
+      const gameElement = this.container.querySelector('.color-palette-game');
+      if (gameElement) {
+        gameElement.classList.add('color-flowing');
+        setTimeout(() => gameElement.classList.remove('color-flowing'), 800);
+      }
+    }
+  }
+  
+  /**
+   * Add art celebration animation
+   */
+  addArtCelebration() {
+    if (this.container && !this.canvas) {
+      // Add art celebration to main game container
+      const gameElement = this.container.querySelector('.color-palette-game');
+      if (gameElement) {
+        gameElement.classList.add('art-celebrating');
+        setTimeout(() => gameElement.classList.remove('art-celebrating'), 2000);
+      }
+      
+      // Add canvas texture animation
+      const workArea = this.container.querySelector('.game-container');
+      if (workArea) {
+        workArea.classList.add('canvas-animating');
+        setTimeout(() => workArea.classList.remove('canvas-animating'), 10000);
+      }
     }
   }
   
