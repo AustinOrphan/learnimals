@@ -33,6 +33,24 @@ class NumberLineJumpGame extends BaseGame {
     this.targetLeoPosition = { x: 0, y: 0 };
     this.leoAnimationSpeed = 0.15;
     this.isAnimating = false;
+    this.jumpHeight = 0;
+    this.jumpProgress = 0;
+    this.jumpDuration = 600; // milliseconds
+    this.jumpStartTime = 0;
+    this.isJumping = false;
+    this.jumpDirection = 1; // 1 for forward, -1 for backward
+    this.jumpAmount = 0;
+    
+    // Character state animations
+    this.characterScale = { x: 1, y: 1 };
+    this.characterRotation = 0;
+    this.characterExpression = 'idle'; // idle, jumping, happy, thinking
+    
+    // Visual effects
+    this.particles = [];
+    this.trailPositions = [];
+    this.maxTrailLength = 5;
+    this.numberHighlights = [];
     
     // Visual elements
     this.numberLineY = 0;
@@ -280,7 +298,7 @@ class NumberLineJumpGame extends BaseGame {
    * Make a jump on the number line
    */
   makeJump(amount, direction) {
-    if (this.isAnimating || this.state !== 'playing') {
+    if (this.isAnimating || this.state !== 'playing' || this.isJumping) {
       return;
     }
     
@@ -290,8 +308,12 @@ class NumberLineJumpGame extends BaseGame {
     // Check bounds
     if (newPosition < 0 || newPosition > this.maxNumber) {
       this.playSound(200, 200, 'sawtooth'); // Error sound
+      this.shakeCharacter();
       return;
     }
+    
+    // Start jump animation
+    this.startJumpAnimation(amount, direction);
     
     // Record the jump
     this.currentEquation.push({
@@ -314,10 +336,19 @@ class NumberLineJumpGame extends BaseGame {
     // Update undo button
     this.updateUndoButton();
     
+    // Create jump trail
+    this.createJumpTrail();
+    
+    // Schedule landing effects
+    setTimeout(() => {
+      this.createLandingEffects(newPosition);
+      this.highlightNumber(newPosition);
+    }, this.jumpDuration * 0.8);
+    
     // Check win condition after animation
     setTimeout(() => {
       this.checkWinCondition();
-    }, 500);
+    }, this.jumpDuration);
   }
   
   /**
@@ -382,6 +413,15 @@ class NumberLineJumpGame extends BaseGame {
       
       this.addScore(totalPoints);
       
+      // Set character to happy expression
+      this.characterExpression = 'happy';
+      
+      // Create celebration effects
+      this.createCelebrationEffects();
+      
+      // Use BaseGame celebration method
+      this.celebrateCompletion('bronze'); // Could be bronze, silver, gold based on efficiency
+      
       // Track successful completion
       this.trackCorrectAnswer({
         targetNumber: this.targetNumber,
@@ -401,8 +441,9 @@ class NumberLineJumpGame extends BaseGame {
       
       // Show success animation and continue to next problem
       setTimeout(() => {
+        this.characterExpression = 'idle';
         this.generateNewProblem();
-      }, 1500);
+      }, 2000);
     } else if (this.jumpsUsed >= this.maxJumpsAllowed) {
       // Too many jumps - track as incorrect attempt
       this.trackIncorrectAnswer({
@@ -412,8 +453,14 @@ class NumberLineJumpGame extends BaseGame {
         equation: this.getEquationString()
       });
       
+      // Set character to thinking expression
+      this.characterExpression = 'thinking';
+      
       // Give another chance or move to next problem
-      this.generateNewProblem();
+      setTimeout(() => {
+        this.characterExpression = 'idle';
+        this.generateNewProblem();
+      }, 1000);
     }
   }
   
@@ -447,7 +494,14 @@ class NumberLineJumpGame extends BaseGame {
   update(deltaTime, timestamp) {
     super.update(deltaTime, timestamp);
     
-    // Update Leo animation
+    // Update jump animation
+    if (this.isJumping) {
+      this.updateJumpAnimation(timestamp);
+    } else if (this.characterExpression === 'idle') {
+      this.updateIdleAnimation(timestamp);
+    }
+    
+    // Update Leo position animation
     if (this.isAnimating) {
       const dx = this.targetLeoPosition.x - this.leoPosition.x;
       const dy = this.targetLeoPosition.y - this.leoPosition.y;
@@ -461,6 +515,11 @@ class NumberLineJumpGame extends BaseGame {
         this.isAnimating = false;
       }
     }
+    
+    // Update particle effects
+    this.updateParticles(deltaTime);
+    this.updateTrail();
+    this.updateNumberHighlights(deltaTime);
   }
   
   /**
@@ -475,11 +534,14 @@ class NumberLineJumpGame extends BaseGame {
     
     this.renderBackground();
     this.renderNumberLine();
+    this.renderTrail(); // Render trail before character
     this.renderLeoCharacter();
     this.renderTarget();
     this.renderEquation();
     this.renderButtons();
     this.renderGameInfo();
+    this.renderParticles(); // Render particles on top
+    this.renderNumberHighlights(); // Render number highlights
   }
   
   /**
@@ -529,28 +591,38 @@ class NumberLineJumpGame extends BaseGame {
    * Render Leo character
    */
   renderLeoCharacter() {
-    const centerX = this.leoPosition.x;
-    const centerY = this.leoPosition.y + this.leoSize.height / 2;
+    this.ctx.save();
     
-    // Simple Leo representation (could be replaced with sprite)
+    // Calculate position with jump height
+    const centerX = this.leoPosition.x;
+    const baseY = this.leoPosition.y + this.leoSize.height / 2;
+    const centerY = baseY - this.jumpHeight;
+    
+    // Apply transformations for animations
+    this.ctx.translate(centerX, centerY);
+    
+    // Apply character scaling and rotation
+    this.ctx.scale(this.characterScale.x, this.characterScale.y);
+    this.ctx.rotate(this.characterRotation);
+    
+    // Draw character body with Leo color
     this.ctx.fillStyle = this.colors.leo;
     this.ctx.beginPath();
-    this.ctx.arc(centerX, centerY, this.leoSize.width / 2, 0, Math.PI * 2);
+    this.ctx.arc(0, 0, this.leoSize.width / 2, 0, Math.PI * 2);
     this.ctx.fill();
     
-    // Eyes
-    this.ctx.fillStyle = 'white';
-    this.ctx.beginPath();
-    this.ctx.arc(centerX - 8, centerY - 5, 4, 0, Math.PI * 2);
-    this.ctx.arc(centerX + 8, centerY - 5, 4, 0, Math.PI * 2);
-    this.ctx.fill();
+    // Add stroke for better definition
+    this.ctx.strokeStyle = '#E67E22';
+    this.ctx.lineWidth = 2;
+    this.ctx.stroke();
     
-    // Pupils
-    this.ctx.fillStyle = 'black';
-    this.ctx.beginPath();
-    this.ctx.arc(centerX - 8, centerY - 5, 2, 0, Math.PI * 2);
-    this.ctx.arc(centerX + 8, centerY - 5, 2, 0, Math.PI * 2);
-    this.ctx.fill();
+    // Render eyes based on expression
+    this.renderEyes(0, 0);
+    
+    // Render mouth based on expression
+    this.renderMouth(0, 0);
+    
+    this.ctx.restore();
   }
   
   /**
@@ -710,6 +782,393 @@ class NumberLineJumpGame extends BaseGame {
         finalScore: this.score
       });
     }
+  }
+  
+  /**
+   * Start jump animation
+   */
+  startJumpAnimation(jumpAmount, direction) {
+    this.isJumping = true;
+    this.jumpStartTime = performance.now();
+    this.jumpDirection = direction;
+    this.jumpAmount = jumpAmount;
+    this.jumpProgress = 0;
+    this.characterExpression = 'jumping';
+    
+    // Different animation types based on jump size
+    if (jumpAmount >= 10) {
+      this.jumpDuration = 800; // Longer for big jumps
+    } else if (jumpAmount >= 5) {
+      this.jumpDuration = 700;
+    } else {
+      this.jumpDuration = 600;
+    }
+  }
+  
+  /**
+   * Update jump animation
+   */
+  updateJumpAnimation(timestamp) {
+    if (!this.isJumping) return;
+    
+    const elapsed = timestamp - this.jumpStartTime;
+    this.jumpProgress = Math.min(elapsed / this.jumpDuration, 1);
+    
+    // Calculate jump height using parabolic arc
+    if (this.jumpProgress < 1) {
+      const t = this.jumpProgress;
+      this.jumpHeight = 4 * (this.jumpAmount + 20) * t * (1 - t); // Parabolic arc
+      
+      // Apply squash and stretch
+      const stretchFactor = 1 + Math.sin(t * Math.PI) * 0.3;
+      this.characterScale.y = stretchFactor;
+      this.characterScale.x = 2 - stretchFactor;
+      
+      // Apply rotation for big jumps
+      if (this.jumpAmount >= 10) {
+        this.characterRotation = t * Math.PI * 2 * this.jumpDirection;
+      } else if (this.jumpAmount >= 5) {
+        this.characterRotation = Math.sin(t * Math.PI) * 0.3 * this.jumpDirection;
+      }
+    } else {
+      // Landing
+      this.jumpHeight = 0;
+      this.characterScale = { x: 1, y: 1 };
+      this.characterRotation = 0;
+      this.isJumping = false;
+      this.characterExpression = 'idle';
+    }
+  }
+  
+  /**
+   * Update idle animation
+   */
+  updateIdleAnimation(timestamp) {
+    const floatSpeed = 0.003;
+    const floatAmount = 3;
+    this.characterScale.y = 1 + Math.sin(timestamp * floatSpeed) * 0.05;
+    this.jumpHeight = Math.sin(timestamp * floatSpeed) * floatAmount;
+  }
+  
+  /**
+   * Shake character for invalid moves
+   */
+  shakeCharacter() {
+    const originalX = this.leoPosition.x;
+    const shakeAmount = 10;
+    const shakeDuration = 300;
+    const startTime = performance.now();
+    
+    const shake = () => {
+      const elapsed = performance.now() - startTime;
+      if (elapsed < shakeDuration) {
+        const progress = elapsed / shakeDuration;
+        const shakeX = Math.sin(progress * Math.PI * 8) * shakeAmount * (1 - progress);
+        this.leoPosition.x = originalX + shakeX;
+        requestAnimationFrame(shake);
+      } else {
+        this.leoPosition.x = originalX;
+      }
+    };
+    shake();
+  }
+  
+  /**
+   * Create jump trail effect
+   */
+  createJumpTrail() {
+    this.trailPositions.push({
+      x: this.leoPosition.x,
+      y: this.leoPosition.y,
+      life: 1.0,
+      decay: 0.05
+    });
+    
+    if (this.trailPositions.length > this.maxTrailLength) {
+      this.trailPositions.shift();
+    }
+  }
+  
+  /**
+   * Update trail positions
+   */
+  updateTrail() {
+    this.trailPositions.forEach(trail => {
+      trail.life -= trail.decay;
+    });
+    this.trailPositions = this.trailPositions.filter(trail => trail.life > 0);
+  }
+  
+  /**
+   * Render trail effect
+   */
+  renderTrail() {
+    this.trailPositions.forEach((trail, _index) => {
+      this.ctx.save();
+      this.ctx.globalAlpha = trail.life * 0.6;
+      this.ctx.fillStyle = this.colors.leo;
+      this.ctx.beginPath();
+      this.ctx.arc(
+        trail.x, 
+        trail.y + this.leoSize.height / 2, 
+        this.leoSize.width / 2 * trail.life, 
+        0, Math.PI * 2
+      );
+      this.ctx.fill();
+      this.ctx.restore();
+    });
+  }
+  
+  /**
+   * Create landing effects
+   */
+  createLandingEffects(position) {
+    const landingX = this.canvas.width * 0.1 + (position * this.tickSpacing);
+    const landingY = this.numberLineY;
+    
+    // Create dust particles
+    for (let i = 0; i < 6; i++) {
+      this.particles.push({
+        x: landingX,
+        y: landingY,
+        vx: (Math.random() - 0.5) * 4,
+        vy: -Math.random() * 3,
+        life: 1.0,
+        decay: 0.03,
+        size: Math.random() * 4 + 2,
+        color: 'rgba(139, 90, 43, 0.6)',
+        type: 'dust'
+      });
+    }
+    
+    // Create ripple effect
+    this.particles.push({
+      x: landingX,
+      y: landingY,
+      life: 1.0,
+      decay: 0.02,
+      size: 0,
+      maxSize: 50,
+      color: 'rgba(255, 215, 0, 0.8)',
+      type: 'ripple'
+    });
+    
+    // Play landing sound
+    this.playSound(150, 100, 'square');
+  }
+  
+  /**
+   * Highlight number when landed
+   */
+  highlightNumber(position) {
+    const highlightX = this.canvas.width * 0.1 + (position * this.tickSpacing);
+    const highlightY = this.numberLineY;
+    
+    this.numberHighlights.push({
+      x: highlightX,
+      y: highlightY,
+      life: 1.0,
+      decay: 0.02,
+      size: 40,
+      color: 'rgba(255, 215, 0, 0.6)'
+    });
+  }
+  
+  /**
+   * Update particles
+   */
+  updateParticles(_deltaTime) {
+    this.particles.forEach(particle => {
+      switch (particle.type) {
+      case 'dust':
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vy += 0.1; // gravity
+        break;
+      case 'ripple':
+        particle.size += (particle.maxSize - particle.size) * 0.1;
+        break;
+      }
+      particle.life -= particle.decay;
+    });
+    
+    this.particles = this.particles.filter(p => p.life > 0);
+  }
+  
+  /**
+   * Update number highlights
+   */
+  updateNumberHighlights(_deltaTime) {
+    this.numberHighlights.forEach(highlight => {
+      highlight.life -= highlight.decay;
+    });
+    this.numberHighlights = this.numberHighlights.filter(h => h.life > 0);
+  }
+  
+  /**
+   * Render eyes based on expression
+   */
+  renderEyes(centerX, centerY) {
+    // Eye whites
+    this.ctx.fillStyle = 'white';
+    this.ctx.beginPath();
+    this.ctx.arc(centerX - 8, centerY - 5, 4, 0, Math.PI * 2);
+    this.ctx.arc(centerX + 8, centerY - 5, 4, 0, Math.PI * 2);
+    this.ctx.fill();
+    
+    // Pupils based on expression
+    this.ctx.fillStyle = 'black';
+    if (this.characterExpression === 'happy') {
+      // Happy eyes (crescents)
+      this.ctx.beginPath();
+      this.ctx.arc(centerX - 8, centerY - 3, 3, 0, Math.PI);
+      this.ctx.arc(centerX + 8, centerY - 3, 3, 0, Math.PI);
+      this.ctx.fill();
+    } else if (this.characterExpression === 'thinking') {
+      // Thinking eyes (looking up)
+      this.ctx.beginPath();
+      this.ctx.arc(centerX - 8, centerY - 7, 2, 0, Math.PI * 2);
+      this.ctx.arc(centerX + 8, centerY - 7, 2, 0, Math.PI * 2);
+      this.ctx.fill();
+    } else {
+      // Normal eyes
+      this.ctx.beginPath();
+      this.ctx.arc(centerX - 8, centerY - 5, 2, 0, Math.PI * 2);
+      this.ctx.arc(centerX + 8, centerY - 5, 2, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+  }
+  
+  /**
+   * Render mouth based on expression
+   */
+  renderMouth(centerX, centerY) {
+    this.ctx.strokeStyle = 'black';
+    this.ctx.lineWidth = 2;
+    this.ctx.lineCap = 'round';
+    
+    if (this.characterExpression === 'happy') {
+      // Happy smile
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY + 2, 8, 0, Math.PI);
+      this.ctx.stroke();
+    } else if (this.characterExpression === 'thinking') {
+      // Neutral line
+      this.ctx.beginPath();
+      this.ctx.moveTo(centerX - 5, centerY + 5);
+      this.ctx.lineTo(centerX + 5, centerY + 5);
+      this.ctx.stroke();
+    } else {
+      // Small smile
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY + 3, 5, 0, Math.PI);
+      this.ctx.stroke();
+    }
+  }
+
+  /**
+   * Render particle effects
+   */
+  renderParticles() {
+    this.particles.forEach(particle => {
+      this.ctx.save();
+      this.ctx.globalAlpha = particle.life;
+      
+      switch (particle.type) {
+      case 'dust': {
+        this.ctx.fillStyle = particle.color;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+        break;
+      }
+      case 'ripple': {
+        this.ctx.strokeStyle = particle.color;
+        this.ctx.lineWidth = 3;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.stroke();
+        break;
+      }
+      }
+      
+      this.ctx.restore();
+    });
+  }
+  
+  /**
+   * Render number highlights
+   */
+  renderNumberHighlights() {
+    this.numberHighlights.forEach(highlight => {
+      this.ctx.save();
+      this.ctx.globalAlpha = highlight.life;
+      
+      // Create radial gradient for glow effect
+      const gradient = this.ctx.createRadialGradient(
+        highlight.x, highlight.y, 0,
+        highlight.x, highlight.y, highlight.size
+      );
+      gradient.addColorStop(0, highlight.color);
+      gradient.addColorStop(1, 'transparent');
+      
+      this.ctx.fillStyle = gradient;
+      this.ctx.beginPath();
+      this.ctx.arc(highlight.x, highlight.y, highlight.size, 0, Math.PI * 2);
+      this.ctx.fill();
+      
+      this.ctx.restore();
+    });
+  }
+
+  /**
+   * Create celebration effects when reaching target
+   */
+  createCelebrationEffects() {
+    const targetX = this.canvas.width * 0.1 + (this.targetNumber * this.tickSpacing);
+    const targetY = this.numberLineY;
+    
+    // Create star burst particles
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 * i) / 12;
+      this.particles.push({
+        x: targetX,
+        y: targetY - 20,
+        vx: Math.cos(angle) * 6,
+        vy: Math.sin(angle) * 6 - 2,
+        life: 1.0,
+        decay: 0.02,
+        size: Math.random() * 8 + 4,
+        color: '#FFD700',
+        type: 'dust'
+      });
+    }
+    
+    // Create celebration ripples
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        this.particles.push({
+          x: targetX,
+          y: targetY,
+          life: 1.0,
+          decay: 0.015,
+          size: 0,
+          maxSize: 80 + i * 20,
+          color: `rgba(255, 215, 0, ${0.8 - i * 0.2})`,
+          type: 'ripple'
+        });
+      }, i * 200);
+    }
+    
+    // Highlight the target number with a special glow
+    this.numberHighlights.push({
+      x: targetX,
+      y: targetY,
+      life: 1.5, // Longer life for celebration
+      decay: 0.01,
+      size: 60,
+      color: 'rgba(46, 204, 113, 0.8)'
+    });
   }
 }
 

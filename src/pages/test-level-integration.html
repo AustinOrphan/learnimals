@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level System Integration Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/reset.css">
+  <link rel="stylesheet" href="../styles/base/variables.css">
+  <link rel="stylesheet" href="../styles/base/typography.css">
+  <link rel="stylesheet" href="../styles/base/utilities.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="../styles/components/navbar.css">
+  <link rel="stylesheet" href="../styles/components/card.css">
+  <link rel="stylesheet" href="../styles/components/modal.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: var(--accent-primary);
+      border-bottom: 2px solid var(--accent-primary);
+      padding-bottom: 8px;
+    }
+    
+    .test-controls {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: var(--accent-primary);
+      color: white;
+    }
+    
+    .btn:hover {
+      background-color: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn.secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    
+    .btn.danger {
+      background-color: #e74c3c;
+    }
+    
+    .level-displays {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .level-test-container {
+      min-height: 120px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      background-color: var(--bg-secondary);
+    }
+    
+    .test-info {
+      background-color: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .test-info h4 {
+      margin: 0 0 8px 0;
+      color: var(--accent-primary);
+    }
+    
+    .test-info p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+    }
+    
+    .test-log {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 16px 0;
+    }
+    
+    .milestone-info {
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      border: 1px solid var(--border-color);
+    }
+    
+    .milestone-info h5 {
+      margin: 0 0 8px 0;
+      color: var(--accent-primary);
+    }
+    
+    .reward-list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0;
+    }
+    
+    .reward-list li {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .animation-test-area {
+      position: relative;
+      height: 200px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    
+    .animation-target {
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 2px dashed rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+      .test-controls {
+        flex-direction: column;
+      }
+      
+      .level-displays {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Level System Integration Test</h1>
+    <p>This page tests all level system components: LevelProgressDisplay, LevelUpNotification, XPGainAnimation, and LevelMilestones.</p>
+    
+    <!-- Level Progress Display Tests -->
+    <div class="test-section">
+      <h2>Level Progress Display Component</h2>
+      <p>Tests the enhanced level and XP progress display with different configurations.</p>
+      
+      <div class="test-controls">
+        <button class="btn" id="test-normal-display">Normal Display</button>
+        <button class="btn" id="test-mini-display">Mini Display</button>
+        <button class="btn" id="test-large-display">Large Display</button>
+        <button class="btn secondary" id="test-gaming-theme">Gaming Theme</button>
+        <button class="btn secondary" id="test-minimal-theme">Minimal Theme</button>
+      </div>
+      
+      <div class="level-displays">
+        <div class="level-test-container">
+          <h4>Normal Size</h4>
+          <div id="level-display-normal"></div>
+        </div>
+        <div class="level-test-container">
+          <h4>Mini Size</h4>
+          <div id="level-display-mini"></div>
+        </div>
+        <div class="level-test-container">
+          <h4>Large Size</h4>
+          <div id="level-display-large"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- XP Gain Animation Tests -->
+    <div class="test-section">
+      <h2>XP Gain Animation Component</h2>
+      <p>Tests floating XP gain animations with different amounts and types.</p>
+      
+      <div class="test-controls">
+        <button class="btn" id="test-xp-small">+10 XP</button>
+        <button class="btn" id="test-xp-medium">+25 XP</button>
+        <button class="btn" id="test-xp-large">+50 XP</button>
+        <button class="btn" id="test-xp-mega">+100 XP</button>
+        <button class="btn secondary" id="test-xp-special">Special XP</button>
+        <button class="btn secondary" id="test-xp-breakdown">XP Breakdown</button>
+      </div>
+      
+      <div class="animation-test-area">
+        <div class="animation-target" id="xp-target">
+          Click XP buttons above
+        </div>
+      </div>
+    </div>
+    
+    <!-- Level-Up Notification Tests -->
+    <div class="test-section">
+      <h2>Level-Up Notification Component</h2>
+      <p>Tests level-up celebration notifications with different level types.</p>
+      
+      <div class="test-controls">
+        <button class="btn" id="test-levelup-5">Level 5 (Milestone)</button>
+        <button class="btn" id="test-levelup-10">Level 10 (Rare)</button>
+        <button class="btn" id="test-levelup-25">Level 25 (Epic)</button>
+        <button class="btn" id="test-levelup-50">Level 50 (Legendary)</button>
+        <button class="btn" id="test-levelup-100">Level 100 (Prestige)</button>
+      </div>
+    </div>
+    
+    <!-- Level Milestones Tests -->
+    <div class="test-section">
+      <h2>Level Milestones Component</h2>
+      <p>Tests milestone rewards and special unlocks system.</p>
+      
+      <div class="test-controls">
+        <button class="btn" id="test-milestone-info">Show Milestone Info</button>
+        <button class="btn" id="test-next-milestone">Next Milestone</button>
+        <button class="btn" id="test-milestone-progress">Milestone Progress</button>
+        <button class="btn secondary" id="test-apply-rewards">Apply Test Rewards</button>
+      </div>
+      
+      <div id="milestone-display" class="milestone-info" style="display: none;">
+        <h5>Milestone Information</h5>
+        <div id="milestone-content"></div>
+      </div>
+    </div>
+    
+    <!-- Integrated System Test -->
+    <div class="test-section">
+      <h2>Integrated Level System Test</h2>
+      <p>Tests the complete level system flow with XP gain, level-ups, and milestone rewards.</p>
+      
+      <div class="test-info">
+        <h4>Current Status</h4>
+        <p><strong>Level:</strong> <span id="current-level">1</span></p>
+        <p><strong>Total XP:</strong> <span id="current-xp">0</span></p>
+        <p><strong>Next Level XP:</strong> <span id="next-level-xp">100</span></p>
+        <p><strong>Progress:</strong> <span id="current-progress">0%</span></p>
+      </div>
+      
+      <div class="test-controls">
+        <button class="btn" id="simulate-small-gain">Simulate Small Game (+15 XP)</button>
+        <button class="btn" id="simulate-medium-gain">Simulate Medium Game (+35 XP)</button>
+        <button class="btn" id="simulate-large-gain">Simulate Large Game (+75 XP)</button>
+        <button class="btn secondary" id="simulate-achievement">Achievement Bonus (+50 XP)</button>
+        <button class="btn danger" id="reset-progress">Reset Progress</button>
+      </div>
+      
+      <div class="level-test-container">
+        <h4>Integrated Level Display</h4>
+        <div id="integrated-level-display"></div>
+      </div>
+      
+      <div class="test-log" id="test-log">
+        === Level System Test Log ===<br>
+        Ready for testing...<br>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import LevelProgressDisplay from '../components/level/LevelProgressDisplay.js';
+    import LevelUpNotification from '../components/level/LevelUpNotification.js';
+    import XPGainAnimation from '../components/level/XPGainAnimation.js';
+    import LevelMilestones from '../components/level/LevelMilestones.js';
+    import xpCalculator from '../utils/xpCalculator.js';
+    import Modal from '../components/ui/Modal.js';
+
+    class LevelSystemTest {
+      constructor() {
+        this.currentXP = 0;
+        this.currentLevel = 1;
+        
+        // Initialize components
+        this.levelDisplays = {};
+        this.levelMilestones = LevelMilestones.getInstance();
+        this.xpGainAnimation = XPGainAnimation.getInstance();
+        this.levelUpNotification = LevelUpNotification.getInstance();
+        
+        this.init();
+      }
+      
+      init() {
+        this.setupLevelDisplays();
+        this.setupEventListeners();
+        this.updateIntegratedDisplay();
+        this.log('Level system test initialized');
+      }
+      
+      setupLevelDisplays() {
+        // Normal display
+        this.levelDisplays.normal = new LevelProgressDisplay('level-display-normal', {
+          size: 'normal',
+          theme: 'default',
+          animated: true,
+          onClick: (data) => this.showLevelDetails(data, 'Normal Display')
+        });
+        
+        // Mini display
+        this.levelDisplays.mini = new LevelProgressDisplay('level-display-mini', {
+          size: 'mini',
+          theme: 'default',
+          animated: true,
+          showTitle: false,
+          showEstimate: false,
+          onClick: (data) => this.showLevelDetails(data, 'Mini Display')
+        });
+        
+        // Large display
+        this.levelDisplays.large = new LevelProgressDisplay('level-display-large', {
+          size: 'large',
+          theme: 'default',
+          animated: true,
+          onClick: (data) => this.showLevelDetails(data, 'Large Display')
+        });
+        
+        // Integrated display
+        this.levelDisplays.integrated = new LevelProgressDisplay('integrated-level-display', {
+          size: 'normal',
+          theme: 'default',
+          animated: true,
+          onClick: (data) => this.showLevelDetails(data, 'Integrated Display')
+        });
+        
+        // Set initial XP
+        this.updateAllDisplays();
+      }
+      
+      setupEventListeners() {
+        // Level display tests
+        document.getElementById('test-normal-display').addEventListener('click', () => {
+          this.testLevelDisplay('normal', Math.floor(Math.random() * 1000));
+        });
+        
+        document.getElementById('test-mini-display').addEventListener('click', () => {
+          this.testLevelDisplay('mini', Math.floor(Math.random() * 1000));
+        });
+        
+        document.getElementById('test-large-display').addEventListener('click', () => {
+          this.testLevelDisplay('large', Math.floor(Math.random() * 1000));
+        });
+        
+        document.getElementById('test-gaming-theme').addEventListener('click', () => {
+          this.changeTheme('gaming');
+        });
+        
+        document.getElementById('test-minimal-theme').addEventListener('click', () => {
+          this.changeTheme('minimal');
+        });
+        
+        // XP Animation tests
+        document.getElementById('test-xp-small').addEventListener('click', () => {
+          this.testXPAnimation(10, 'gain');
+        });
+        
+        document.getElementById('test-xp-medium').addEventListener('click', () => {
+          this.testXPAnimation(25, 'gain');
+        });
+        
+        document.getElementById('test-xp-large').addEventListener('click', () => {
+          this.testXPAnimation(50, 'gain');
+        });
+        
+        document.getElementById('test-xp-mega').addEventListener('click', () => {
+          this.testXPAnimation(100, 'total');
+        });
+        
+        document.getElementById('test-xp-special').addEventListener('click', () => {
+          this.testXPAnimation(30, 'special');
+        });
+        
+        document.getElementById('test-xp-breakdown').addEventListener('click', () => {
+          this.testXPBreakdown();
+        });
+        
+        // Level-up notification tests
+        document.getElementById('test-levelup-5').addEventListener('click', () => {
+          this.testLevelUpNotification(5);
+        });
+        
+        document.getElementById('test-levelup-10').addEventListener('click', () => {
+          this.testLevelUpNotification(10);
+        });
+        
+        document.getElementById('test-levelup-25').addEventListener('click', () => {
+          this.testLevelUpNotification(25);
+        });
+        
+        document.getElementById('test-levelup-50').addEventListener('click', () => {
+          this.testLevelUpNotification(50);
+        });
+        
+        document.getElementById('test-levelup-100').addEventListener('click', () => {
+          this.testLevelUpNotification(100);
+        });
+        
+        // Milestone tests
+        document.getElementById('test-milestone-info').addEventListener('click', () => {
+          this.showMilestoneInfo();
+        });
+        
+        document.getElementById('test-next-milestone').addEventListener('click', () => {
+          this.showNextMilestone();
+        });
+        
+        document.getElementById('test-milestone-progress').addEventListener('click', () => {
+          this.showMilestoneProgress();
+        });
+        
+        document.getElementById('test-apply-rewards').addEventListener('click', () => {
+          this.testApplyRewards();
+        });
+        
+        // Integrated system tests
+        document.getElementById('simulate-small-gain').addEventListener('click', () => {
+          this.simulateXPGain(15, 'Small game completed');
+        });
+        
+        document.getElementById('simulate-medium-gain').addEventListener('click', () => {
+          this.simulateXPGain(35, 'Medium game completed');
+        });
+        
+        document.getElementById('simulate-large-gain').addEventListener('click', () => {
+          this.simulateXPGain(75, 'Large game completed');
+        });
+        
+        document.getElementById('simulate-achievement').addEventListener('click', () => {
+          this.simulateXPGain(50, 'Achievement unlocked', 'special');
+        });
+        
+        document.getElementById('reset-progress').addEventListener('click', () => {
+          this.resetProgress();
+        });
+      }
+      
+      testLevelDisplay(displayType, xp) {
+        if (this.levelDisplays[displayType]) {
+          this.levelDisplays[displayType].setXP(xp, { animate: true });
+          this.log(`Updated ${displayType} display to ${xp} XP`);
+        }
+      }
+      
+      changeTheme(theme) {
+        Object.values(this.levelDisplays).forEach(display => {
+          display.setTheme(theme);
+        });
+        this.log(`Changed theme to ${theme}`);
+      }
+      
+      testXPAnimation(amount, type) {
+        this.xpGainAnimation.show(amount, {
+          target: '#xp-target',
+          type: type,
+          position: { x: 50, y: 50 }
+        });
+        this.log(`Showed ${amount} XP animation (${type})`);
+      }
+      
+      testXPBreakdown() {
+        const breakdown = {
+          base: 20,
+          timeBonus: 5,
+          accuracyBonus: 10,
+          streakBonus: 8,
+          difficultyBonus: 7,
+          total: 50
+        };
+        
+        this.xpGainAnimation.showBreakdown(breakdown, {
+          target: '#xp-target',
+          baseDelay: 0,
+          staggerDelay: 400
+        });
+        this.log('Showed XP breakdown animation');
+      }
+      
+      testLevelUpNotification(level) {
+        const levelData = xpCalculator.calculateLevelProgress(xpCalculator.calculateXPForLevel(level));
+        const milestone = this.levelMilestones.getMilestone(level);
+        
+        this.levelUpNotification.show(levelData, {
+          rewards: milestone ? milestone.rewards : [],
+          confetti: level >= 25
+        });
+        this.log(`Showed level ${level} notification`);
+      }
+      
+      showMilestoneInfo() {
+        const milestones = [5, 10, 25, 50, 100];
+        const milestone = milestones[Math.floor(Math.random() * milestones.length)];
+        const info = this.levelMilestones.getMilestone(milestone);
+        
+        if (info) {
+          const content = `
+            <h5>Level ${info.level} Milestone</h5>
+            <p><strong>Message:</strong> ${info.message}</p>
+            <p><strong>Celebration:</strong> ${info.celebration}</p>
+            <h6>Rewards:</h6>
+            <ul class="reward-list">
+              ${info.rewards.map(reward => `<li>${reward.icon} ${reward.text}</li>`).join('')}
+            </ul>
+          `;
+          
+          document.getElementById('milestone-content').innerHTML = content;
+          document.getElementById('milestone-display').style.display = 'block';
+          this.log(`Showed info for level ${milestone} milestone`);
+        }
+      }
+      
+      showNextMilestone() {
+        const currentLevel = this.currentLevel;
+        const nextMilestone = this.levelMilestones.getNextMilestone(currentLevel);
+        
+        if (nextMilestone) {
+          const content = `
+            <h5>Next Milestone: Level ${nextMilestone.level}</h5>
+            <p><strong>Levels to go:</strong> ${nextMilestone.levelsToGo}</p>
+            <p><strong>Message:</strong> ${nextMilestone.message}</p>
+            <h6>Rewards:</h6>
+            <ul class="reward-list">
+              ${nextMilestone.rewards.map(reward => `<li>${reward.icon} ${reward.text}</li>`).join('')}
+            </ul>
+          `;
+          
+          document.getElementById('milestone-content').innerHTML = content;
+          document.getElementById('milestone-display').style.display = 'block';
+          this.log(`Showed next milestone info (Level ${nextMilestone.level})`);
+        }
+      }
+      
+      showMilestoneProgress() {
+        const progress = this.levelMilestones.getMilestoneProgress(this.currentLevel);
+        
+        if (progress) {
+          const content = `
+            <h5>Milestone Progress</h5>
+            <p><strong>Current Level:</strong> ${this.currentLevel}</p>
+            <p><strong>Previous Milestone:</strong> Level ${progress.previousMilestone}</p>
+            <p><strong>Next Milestone:</strong> Level ${progress.next.level}</p>
+            <p><strong>Progress:</strong> ${progress.completedLevels}/${progress.totalLevels} levels (${progress.percentage}%)</p>
+            <div style="background: #333; height: 8px; border-radius: 4px; margin: 8px 0;">
+              <div style="background: var(--accent-primary); height: 100%; width: ${progress.percentage}%; border-radius: 4px;"></div>
+            </div>
+          `;
+          
+          document.getElementById('milestone-content').innerHTML = content;
+          document.getElementById('milestone-display').style.display = 'block';
+          this.log(`Showed milestone progress (${progress.percentage}%)`);
+        }
+      }
+      
+      testApplyRewards() {
+        const testMilestone = {
+          level: 5,
+          rewards: [
+            { type: 'badge', id: 'test-badge', icon: '🏅', text: 'Test Badge' },
+            { type: 'feature', id: 'test-feature', icon: '🔓', text: 'Test Feature Unlocked' },
+            { type: 'boost', id: 'test-boost', icon: '⚡', text: '10% XP Boost' }
+          ]
+        };
+        
+        const appliedRewards = this.levelMilestones.applyRewards(testMilestone);
+        this.log(`Applied ${appliedRewards.length} test rewards`);
+        
+        appliedRewards.forEach(reward => {
+          this.log(`- ${reward.icon} ${reward.text}: ${reward.applied ? 'Success' : 'Failed'}`);
+        });
+      }
+      
+      simulateXPGain(amount, reason, type = 'gain') {
+        const oldLevel = this.currentLevel;
+        const oldXP = this.currentXP;
+        
+        // Add XP
+        this.currentXP += amount;
+        
+        // Calculate new level
+        const newLevelData = xpCalculator.calculateLevelProgress(this.currentXP);
+        const newLevel = newLevelData.level;
+        
+        this.log(`${reason}: +${amount} XP (${oldXP} → ${this.currentXP})`);
+        
+        // Check for level up
+        if (newLevel > oldLevel) {
+          this.currentLevel = newLevel;
+          this.log(`🎉 LEVEL UP! ${oldLevel} → ${newLevel}`);
+          
+          // Check for milestone rewards
+          const milestones = this.levelMilestones.checkLevelUp(oldLevel, newLevel);
+          
+          if (milestones.length > 0) {
+            this.log(`🏆 Milestone achieved! Level ${milestones[0].level}`);
+            milestones.forEach(milestone => {
+              milestone.rewards.forEach(reward => {
+                this.log(`  - Reward: ${reward.icon} ${reward.text}`);
+              });
+            });
+          }
+          
+          // Show level-up notification
+          this.levelUpNotification.show(newLevelData, {
+            rewards: milestones.length > 0 ? milestones[0].rewards : []
+          });
+        }
+        
+        // Show XP animation
+        this.xpGainAnimation.show(amount, {
+          target: '#integrated-level-display',
+          type: type
+        });
+        
+        // Update displays
+        this.updateIntegratedDisplay();
+        this.updateAllDisplays();
+      }
+      
+      resetProgress() {
+        this.currentXP = 0;
+        this.currentLevel = 1;
+        this.updateIntegratedDisplay();
+        this.updateAllDisplays();
+        this.log('Progress reset to level 1, 0 XP');
+      }
+      
+      updateIntegratedDisplay() {
+        const levelData = xpCalculator.calculateLevelProgress(this.currentXP);
+        
+        document.getElementById('current-level').textContent = levelData.level;
+        document.getElementById('current-xp').textContent = this.currentXP;
+        document.getElementById('next-level-xp').textContent = Math.floor(levelData.xpForLevel);
+        document.getElementById('current-progress').textContent = `${Math.floor(levelData.progress * 100)}%`;
+        
+        if (this.levelDisplays.integrated) {
+          this.levelDisplays.integrated.setXP(this.currentXP, { animate: false });
+        }
+      }
+      
+      updateAllDisplays() {
+        Object.values(this.levelDisplays).forEach(display => {
+          if (display) {
+            display.setXP(this.currentXP, { animate: false });
+          }
+        });
+      }
+      
+      showLevelDetails(progressData, displayType) {
+        const content = `
+          <div style="padding: 16px;">
+            <h3>${displayType} - Level ${progressData.level}</h3>
+            <p><strong>XP Progress:</strong> ${Math.floor(progressData.xpIntoLevel)}/${Math.floor(progressData.xpForLevel)}</p>
+            <p><strong>Total XP:</strong> ${Math.floor(progressData.totalXP)}</p>
+            <p><strong>Progress:</strong> ${Math.floor(progressData.progress * 100)}%</p>
+            <p><strong>Title:</strong> ${xpCalculator.getLevelTitle(progressData.level)}</p>
+          </div>
+        `;
+        
+        Modal.show({
+          title: 'Level Details',
+          content: content,
+          buttons: [{ text: 'Close', primary: true }]
+        });
+        
+        this.log(`Showed level details for ${displayType}`);
+      }
+      
+      log(message) {
+        const logElement = document.getElementById('test-log');
+        const timestamp = new Date().toLocaleTimeString();
+        logElement.innerHTML += `[${timestamp}] ${message}<br>`;
+        logElement.scrollTop = logElement.scrollHeight;
+      }
+    }
+
+    // Initialize the test system
+    window.levelSystemTest = new LevelSystemTest();
+  </script>
+</body>
+</html>

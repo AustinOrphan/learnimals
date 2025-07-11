@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Interaction Animations Test - Learnimals</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../styles/components/animations.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .test-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-bottom: 1.5rem;
+      color: var(--accent-primary);
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .test-element {
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      border-radius: 1rem;
+      color: white;
+      font-size: 1rem;
+      text-align: center;
+      margin: 0 auto;
+    }
+    
+    .test-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .drag-drop-area {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+      min-height: 300px;
+    }
+    
+    .drag-source {
+      background: var(--bg-section);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .drag-source h3 {
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    .drag-playground {
+      background: var(--bg-section);
+      border-radius: 1rem;
+      padding: 2rem;
+      position: relative;
+      border: 2px dashed var(--border-color);
+    }
+    
+    .drag-targets {
+      background: var(--bg-section);
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+    
+    .draggable-item {
+      width: 80px;
+      height: 80px;
+      margin: 0.5rem;
+      border-radius: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
+      cursor: grab;
+    }
+    
+    .drop-zone {
+      width: 100%;
+      height: 80px;
+      margin: 0.5rem 0;
+      border-radius: 0.5rem;
+      border: 2px dashed var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .game-area {
+      position: relative;
+      min-height: 400px;
+      background: var(--bg-section);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .info-panel {
+      background: var(--bg-hover);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    
+    .color-palette {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    
+    .color-swatch {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .keyboard-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Game Interaction Animations Test</h1>
+      <p>Test hover, click, drag, and touch interactions for educational game elements</p>
+    </div>
+    
+    <!-- Hover Effects Test -->
+    <div class="test-section">
+      <h2>Hover Effects</h2>
+      <p>Hover over each element to see different animation effects</p>
+      
+      <div class="test-grid">
+        <div class="test-element game-interactive hover-scale" style="background: #4CAF50;">
+          Scale
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+        <div class="test-element game-interactive hover-lift" style="background: #2196F3;">
+          Lift
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+        <div class="test-element game-interactive hover-glow" style="background: #FF9800;">
+          Glow
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+        <div class="test-element game-interactive hover-rotate" style="background: #9C27B0;">
+          Rotate
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+        <div class="test-element game-interactive hover-bounce" style="background: #F44336;">
+          Bounce
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+        <div class="test-element game-interactive hover-float" style="background: #607D8B;">
+          Float
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+        <div class="test-element game-interactive hover-wobble" style="background: #795548;">
+          Wobble
+          <div class="keyboard-hint">Tab + Enter</div>
+        </div>
+      </div>
+      
+      <div class="info-panel">
+        <strong>Accessibility:</strong> All elements are keyboard accessible. Use Tab to navigate and Enter/Space to activate.
+        On touch devices, hover effects are disabled for better mobile experience.
+      </div>
+    </div>
+    
+    <!-- Click Effects Test -->
+    <div class="test-section">
+      <h2>Click & Tap Effects</h2>
+      <p>Click or tap each element to see different feedback animations</p>
+      
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="resetClickElements()">
+          Reset All
+        </button>
+        <button class="component-button component-button--outline" onclick="toggleMobileMode()">
+          Toggle Mobile Mode
+        </button>
+      </div>
+      
+      <div class="test-grid">
+        <div class="test-element game-interactive click-press" style="background: #4CAF50;" data-click-type="press">
+          Press
+        </div>
+        <div class="test-element game-interactive click-ripple" style="background: #2196F3;" data-click-type="ripple">
+          Ripple
+        </div>
+        <div class="test-element game-interactive click-pulse" style="background: #FF9800;" data-click-type="pulse">
+          Pulse
+        </div>
+        <div class="test-element game-interactive click-flash" style="background: #9C27B0;" data-click-type="flash">
+          Flash
+        </div>
+        <div class="test-element game-interactive click-shake" style="background: #F44336;" data-click-type="shake">
+          Shake
+        </div>
+      </div>
+    </div>
+    
+    <!-- Drag and Drop Test -->
+    <div class="test-section">
+      <h2>Drag & Drop</h2>
+      <p>Drag items from the source to the drop zones. Items validate based on color matching.</p>
+      
+      <div class="drag-drop-area">
+        <div class="drag-source">
+          <h3>Draggable Items</h3>
+          <div class="draggable-item game-draggable" style="background: #F44336;" data-type="red">Red</div>
+          <div class="draggable-item game-draggable" style="background: #4CAF50;" data-type="green">Green</div>
+          <div class="draggable-item game-draggable" style="background: #2196F3;" data-type="blue">Blue</div>
+          <div class="draggable-item game-draggable" style="background: #FF9800;" data-type="orange">Orange</div>
+        </div>
+        
+        <div class="drag-playground">
+          <h3 style="text-align: center; margin-bottom: 2rem;">Playground Area</h3>
+          <p style="text-align: center; color: var(--text-secondary);">Drag items here to see animations</p>
+        </div>
+        
+        <div class="drag-targets">
+          <h3>Drop Zones</h3>
+          <div class="drop-zone game-drop-zone" data-accept="red" style="border-color: #F44336;">
+            Red Zone
+          </div>
+          <div class="drop-zone game-drop-zone" data-accept="green" style="border-color: #4CAF50;">
+            Green Zone
+          </div>
+          <div class="drop-zone game-drop-zone" data-accept="blue" style="border-color: #2196F3;">
+            Blue Zone
+          </div>
+          <div class="drop-zone game-drop-zone" data-accept="orange,red" style="border-color: #FF9800;">
+            Orange/Red Zone
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-panel">
+        <strong>Drag Instructions:</strong> Items will validate based on color. Orange/Red zone accepts both orange and red items.
+        Watch for visual feedback during drag operations including ghost elements and drop zone highlighting.
+      </div>
+    </div>
+    
+    <!-- Selection and State Test -->
+    <div class="test-section">
+      <h2>Selection & States</h2>
+      <p>Test element selection, highlighting, loading states, and disabled states</p>
+      
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="selectRandomElement()">
+          Select Random
+        </button>
+        <button class="component-button component-button--primary" onclick="highlightRandomElement()">
+          Highlight Random
+        </button>
+        <button class="component-button component-button--outline" onclick="toggleLoadingState()">
+          Toggle Loading
+        </button>
+        <button class="component-button component-button--outline" onclick="toggleDisabledState()">
+          Toggle Disabled
+        </button>
+      </div>
+      
+      <div class="test-grid" id="selection-grid">
+        <div class="test-element game-interactive hover-scale" style="background: #4CAF50;" data-index="0">
+          Item 1
+        </div>
+        <div class="test-element game-interactive hover-scale" style="background: #2196F3;" data-index="1">
+          Item 2
+        </div>
+        <div class="test-element game-interactive hover-scale" style="background: #FF9800;" data-index="2">
+          Item 3
+        </div>
+        <div class="test-element game-interactive hover-scale" style="background: #9C27B0;" data-index="3">
+          Item 4
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game-Specific Elements -->
+    <div class="test-section">
+      <h2>Game-Specific Elements</h2>
+      <p>Test animations on different types of educational game elements</p>
+      
+      <div class="game-area">
+        <h3>Math Numbers</h3>
+        <div class="test-grid">
+          <div class="test-element game-interactive game-number hover-scale click-pulse" style="background: #4CAF50;">1</div>
+          <div class="test-element game-interactive game-number hover-scale click-pulse" style="background: #2196F3;">2</div>
+          <div class="test-element game-interactive game-number hover-scale click-pulse" style="background: #FF9800;">3</div>
+          <div class="test-element game-interactive game-number hover-scale click-pulse" style="background: #F44336;">4</div>
+        </div>
+        
+        <h3>Letters</h3>
+        <div class="test-grid">
+          <div class="test-element game-interactive game-letter hover-lift click-ripple" style="background: #9C27B0;">A</div>
+          <div class="test-element game-interactive game-letter hover-lift click-ripple" style="background: #607D8B;">B</div>
+          <div class="test-element game-interactive game-letter hover-lift click-ripple" style="background: #795548;">C</div>
+          <div class="test-element game-interactive game-letter hover-lift click-ripple" style="background: #E91E63;">D</div>
+        </div>
+        
+        <h3>Color Swatches (Art)</h3>
+        <div class="color-palette">
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #F44336;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #E91E63;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #9C27B0;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #673AB7;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #3F51B5;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #2196F3;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #03A9F4;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #00BCD4;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #009688;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #4CAF50;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #8BC34A;"></div>
+          <div class="color-swatch game-interactive game-color-swatch hover-lift click-flash" style="background: #CDDC39;"></div>
+        </div>
+        
+        <h3>Science Elements</h3>
+        <div class="test-grid">
+          <div class="test-element game-interactive game-element hover-glow click-pulse" style="background: linear-gradient(135deg, #FF6B6B, #4ECDC4);">H₂O</div>
+          <div class="test-element game-interactive game-element hover-glow click-pulse" style="background: linear-gradient(135deg, #45B7D1, #96CEB4);">CO₂</div>
+          <div class="test-element game-interactive game-element hover-glow click-pulse" style="background: linear-gradient(135deg, #FFEAA7, #DDA0DD);">NaCl</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Performance Test -->
+    <div class="test-section">
+      <h2>Performance Test</h2>
+      <p>Test animation performance with many interactive elements</p>
+      
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="createPerformanceTest()">
+          Create 50 Elements
+        </button>
+        <button class="component-button component-button--outline" onclick="clearPerformanceTest()">
+          Clear Test
+        </button>
+        <button class="component-button component-button--secondary" onclick="togglePerformanceMode()">
+          Toggle Performance Mode
+        </button>
+      </div>
+      
+      <div id="performance-area" class="game-area" style="max-height: 300px; overflow-y: auto;">
+        <p>Click "Create 50 Elements" to test animation performance with many interactive elements</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script src="../../components/games/BaseGame.js"></script>
+  
+  <script>
+    // Test game instance
+    let testGame;
+    let isMobileMode = false;
+    let isPerformanceMode = false;
+    
+    // Initialize test
+    window.addEventListener('DOMContentLoaded', () => {
+      testGame = new BaseGame('test-container', {
+        useDOMContainer: true,
+        gameType: 'interaction-test',
+        subject: 'testing',
+        enableAnimations: true,
+        enableProgressTracking: false,
+        enableXPSystem: false
+      });
+      
+      setupInteractiveElements();
+      setupDragAndDrop();
+    });
+    
+    function setupInteractiveElements() {
+      // Setup click handlers for click test elements
+      document.querySelectorAll('[data-click-type]').forEach(element => {
+        testGame.makeInteractive(element, {
+          hover: null, // Preserve existing hover classes
+          click: element.dataset.clickType,
+          onClick: async (e) => {
+            console.log(`Clicked ${element.dataset.clickType} element`);
+            
+            // Add some visual feedback
+            const originalText = element.textContent;
+            element.textContent = 'Clicked!';
+            
+            setTimeout(() => {
+              element.textContent = originalText;
+            }, 1000);
+          }
+        });
+      });
+      
+      // Setup selection elements
+      document.querySelectorAll('#selection-grid .test-element').forEach(element => {
+        testGame.makeInteractive(element, {
+          selectable: true,
+          onSelect: (e) => {
+            console.log(`Selected element ${element.dataset.index}`);
+          }
+        });
+      });
+      
+      // Setup game-specific elements
+      document.querySelectorAll('.game-number, .game-letter, .game-color-swatch, .game-element').forEach(element => {
+        testGame.makeInteractive(element, {
+          onClick: async (e) => {
+            console.log(`Clicked game element: ${element.textContent || 'color swatch'}`);
+            
+            // Simulate game logic with feedback
+            if (Math.random() > 0.5) {
+              await testGame.showCorrectFeedback(element, { 
+                points: 10,
+                showScore: true,
+                showParticles: true 
+              });
+            } else {
+              await testGame.showIncorrectFeedback(element, {
+                showX: true
+              });
+            }
+          }
+        });
+      });
+    }
+    
+    function setupDragAndDrop() {
+      // Make draggable items interactive
+      document.querySelectorAll('.draggable-item').forEach(item => {
+        testGame.makeInteractive(item, {
+          hover: 'scale',
+          click: 'press',
+          draggable: true,
+          onDragStart: (e) => {
+            console.log(`Started dragging ${item.dataset.type} item`);
+          },
+          onDragEnd: (e) => {
+            console.log(`Finished dragging ${item.dataset.type} item`);
+          }
+        });
+      });
+    }
+    
+    function resetClickElements() {
+      document.querySelectorAll('[data-click-type]').forEach(element => {
+        element.textContent = element.textContent.replace('Clicked!', element.dataset.clickType || '');
+        element.classList.remove('selected', 'highlighted', 'loading', 'disabled');
+      });
+    }
+    
+    function toggleMobileMode() {
+      isMobileMode = !isMobileMode;
+      document.body.classList.toggle('mobile-simulation', isMobileMode);
+      
+      if (isMobileMode) {
+        // Simulate mobile by forcing touch behavior
+        document.body.style.setProperty('--hover', 'none');
+      } else {
+        document.body.style.removeProperty('--hover');
+      }
+      
+      console.log(`Mobile mode: ${isMobileMode ? 'ON' : 'OFF'}`);
+    }
+    
+    function selectRandomElement() {
+      const elements = document.querySelectorAll('#selection-grid .test-element');
+      const randomElement = elements[Math.floor(Math.random() * elements.length)];
+      testGame.selectElement(randomElement);
+    }
+    
+    function highlightRandomElement() {
+      const elements = document.querySelectorAll('#selection-grid .test-element');
+      const randomElement = elements[Math.floor(Math.random() * elements.length)];
+      testGame.highlightElement(randomElement, 2000);
+    }
+    
+    function toggleLoadingState() {
+      const elements = document.querySelectorAll('#selection-grid .test-element');
+      const randomElement = elements[Math.floor(Math.random() * elements.length)];
+      const isLoading = randomElement.classList.contains('loading');
+      testGame.setElementLoading(randomElement, !isLoading);
+    }
+    
+    function toggleDisabledState() {
+      const elements = document.querySelectorAll('#selection-grid .test-element');
+      const randomElement = elements[Math.floor(Math.random() * elements.length)];
+      const isDisabled = randomElement.classList.contains('disabled');
+      testGame.setElementEnabled(randomElement, isDisabled);
+    }
+    
+    function createPerformanceTest() {
+      const performanceArea = document.getElementById('performance-area');
+      performanceArea.innerHTML = ''; // Clear existing content
+      
+      const colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50'];
+      const hoverTypes = ['scale', 'lift', 'glow', 'rotate', 'bounce'];
+      const clickTypes = ['press', 'ripple', 'pulse', 'flash'];
+      
+      for (let i = 0; i < 50; i++) {
+        const element = document.createElement('div');
+        element.className = 'test-element';
+        element.style.cssText = `
+          background: ${colors[i % colors.length]};
+          margin: 0.5rem;
+          display: inline-flex;
+          width: 80px;
+          height: 80px;
+        `;
+        element.textContent = i + 1;
+        
+        performanceArea.appendChild(element);
+        
+        // Make interactive with random animations
+        testGame.makeInteractive(element, {
+          hover: hoverTypes[i % hoverTypes.length],
+          click: clickTypes[i % clickTypes.length],
+          onClick: async (e) => {
+            console.log(`Performance test element ${i + 1} clicked`);
+          }
+        });
+      }
+      
+      console.log('Created 50 interactive elements for performance testing');
+    }
+    
+    function clearPerformanceTest() {
+      document.getElementById('performance-area').innerHTML = '<p>Performance test cleared</p>';
+    }
+    
+    function togglePerformanceMode() {
+      isPerformanceMode = !isPerformanceMode;
+      document.body.classList.toggle('performance-mode', isPerformanceMode);
+      console.log(`Performance mode: ${isPerformanceMode ? 'ON' : 'OFF'}`);
+    }
+    
+    // Sound effect simulation
+    testGame.onSoundEffect = (type) => {
+      console.log(`🔊 Sound effect: ${type}`);
+    };
+    
+    // Keyboard shortcuts for testing
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'r':
+            e.preventDefault();
+            resetClickElements();
+            break;
+          case 'm':
+            e.preventDefault();
+            toggleMobileMode();
+            break;
+          case 'p':
+            e.preventDefault();
+            togglePerformanceMode();
+            break;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

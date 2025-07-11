@@ -842,4 +842,274 @@
   .achievements-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
+  
+  /* Level system components mobile optimization */
+  .level-display {
+    padding: var(--spacing-medium);
+  }
+  
+  .level-display.size-large {
+    padding: var(--spacing-small);
+  }
+  
+  .level-display .level-info {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-small);
+  }
+  
+  /* Modal improvements for mobile */
+  .modal-content {
+    margin: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  /* Settings form mobile optimization */
+  .settings-section {
+    padding: var(--spacing-medium);
+  }
+  
+  .setting-group {
+    margin-bottom: var(--spacing-medium);
+  }
+  
+  /* Friends section mobile */
+  .friend-code-display {
+    flex-direction: column;
+    gap: var(--spacing-small);
+  }
+  
+  .btn-copy {
+    align-self: stretch;
+  }
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 481px) and (max-width: 768px) {
+  .profile-hero {
+    grid-template-columns: auto 1fr;
+    gap: var(--spacing-large);
+  }
+  
+  .profile-tabs {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  
+  .profile-tabs::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .profile-tabs::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 2px;
+  }
+  
+  .profile-tabs::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 2px;
+  }
+  
+  .achievements-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+  
+  .badge-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+/* Large desktop enhancements */
+@media (min-width: 1200px) {
+  .profile-hero {
+    padding: 0 var(--spacing-xlarge);
+  }
+  
+  .profile-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .overview-grid {
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-xlarge);
+  }
+  
+  .achievements-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  /* Enhanced hover effects for desktop */
+  .profile-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+  
+  .badge-item:hover {
+    transform: scale(1.1) rotate(2deg);
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .profile-hero {
+    grid-template-columns: auto 1fr auto;
+    gap: var(--spacing-medium);
+  }
+  
+  .profile-level-section {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-medium);
+  }
+  
+  .profile-quick-stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-small);
+  }
+  
+  .quick-stat {
+    padding: var(--spacing-small);
+  }
+  
+  .quick-stat-label {
+    font-size: 0.8rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .profile-tab {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn {
+    min-height: 44px;
+    padding: var(--spacing-medium) var(--spacing-large);
+  }
+  
+  .badge-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .profile-card:hover {
+    transform: none;
+  }
+  
+  .badge-item:hover {
+    transform: none;
+  }
+  
+  /* Add tap feedback instead */
+  .profile-tab:active {
+    background-color: var(--bg-hover);
+    transform: scale(0.98);
+  }
+  
+  .btn:active {
+    transform: scale(0.95);
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .avatar-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  .badge-icon {
+    filter: contrast(1.1) brightness(1.05);
+  }
+}
+
+/* Print styles for profile pages */
+@media print {
+  .profile-tabs,
+  .btn,
+  .profile-nav,
+  .edit-controls {
+    display: none !important;
+  }
+  
+  .profile-hero {
+    grid-template-columns: auto 1fr;
+    break-inside: avoid;
+  }
+  
+  .tab-content {
+    display: block !important;
+  }
+  
+  .achievements-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-small);
+  }
+  
+  .profile-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .profile-card,
+  .badge-item,
+  .profile-tab,
+  .btn {
+    transition: none;
+  }
+  
+  .level-progress-bar {
+    transition: none;
+  }
+  
+  /* Keep essential transitions but reduce duration */
+  .modal-overlay {
+    transition: opacity 0.1s ease;
+  }
+  
+  .modal-content {
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Dark mode specific responsive adjustments */
+@media (prefers-color-scheme: dark) {
+  @media (max-width: 768px) {
+    .profile-hero {
+      background: linear-gradient(135deg, var(--bg-secondary), rgba(255, 255, 255, 0.03));
+    }
+    
+    .modal-content {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+
+/* High contrast mode responsive adjustments */
+@media (prefers-contrast: high) {
+  .profile-tab {
+    border: 2px solid currentColor;
+  }
+  
+  .profile-tab.active {
+    background-color: currentColor;
+  }
+  
+  .badge-item {
+    border: 2px solid currentColor;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-tab {
+      border-width: 3px;
+    }
+  }
 }

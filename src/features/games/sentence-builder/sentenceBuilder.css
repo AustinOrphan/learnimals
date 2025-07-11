@@ -573,12 +573,397 @@
   }
 }
 
+/* =============================================
+   ENHANCED WORD PLACEMENT ANIMATIONS
+   ============================================= */
+
+/* Word placement animations */
+@keyframes wordPlacement {
+  0% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-5px) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wordRemoval {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.8) rotate(-5deg);
+    opacity: 0;
+  }
+}
+
+/* Sentence building progress */
+@keyframes sentenceProgress {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+/* Grammar validation animations */
+@keyframes grammarCorrect {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+  }
+  25% {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+  }
+  50% {
+    transform: scale(1.1) rotate(2deg);
+    box-shadow: 0 12px 30px rgba(76, 175, 80, 0.8);
+  }
+  75% {
+    transform: scale(1.05) rotate(-1deg);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  }
+}
+
+@keyframes grammarIncorrect {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-8px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.5);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(8px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.5);
+  }
+}
+
+/* Word flow animation */
+@keyframes wordFlow {
+  0% {
+    transform: translateX(-100px) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(10px) rotate(2deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Sentence completion celebration */
+@keyframes sentenceComplete {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  25% {
+    transform: scale(1.02);
+    filter: brightness(1.2);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.4) saturate(1.3);
+  }
+  75% {
+    transform: scale(1.02);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* Grammar category glow */
+@keyframes grammarGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+  }
+}
+
+/* Word connection lines */
+@keyframes connectionLine {
+  0% {
+    stroke-dasharray: 0, 100;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100, 0;
+    opacity: 1;
+  }
+}
+
+/* Reading flow indicator */
+@keyframes readingFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Bella encouragement animation */
+@keyframes bellaEncourage {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-5px) scale(1.05);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.1);
+  }
+  75% {
+    transform: translateY(-5px) scale(1.05);
+  }
+}
+
+/* Word discovery animation */
+@keyframes wordDiscovery {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotateY(-90deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1) rotateY(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+}
+
+/* Punctuation emphasis */
+@keyframes punctuationEmphasis {
+  0% {
+    transform: scale(1);
+    color: inherit;
+  }
+  50% {
+    transform: scale(1.3);
+    color: #E91E63;
+  }
+  100% {
+    transform: scale(1);
+    color: inherit;
+  }
+}
+
+/* =============================================
+   ANIMATION CLASSES
+   ============================================= */
+
+.word-placed {
+  animation: wordPlacement 0.5s ease-out;
+}
+
+.word-removed {
+  animation: wordRemoval 0.4s ease-in;
+}
+
+.grammar-correct {
+  animation: grammarCorrect 0.8s ease-in-out;
+}
+
+.grammar-incorrect {
+  animation: grammarIncorrect 0.6s ease-in-out;
+}
+
+.word-flow {
+  animation: wordFlow 0.6s ease-out;
+}
+
+.sentence-complete {
+  animation: sentenceComplete 1.2s ease-in-out;
+}
+
+.grammar-glow {
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+.bella-encourage {
+  animation: bellaEncourage 1s ease-in-out;
+}
+
+.word-discovery {
+  animation: wordDiscovery 0.7s ease-out;
+}
+
+.punctuation-emphasis {
+  animation: punctuationEmphasis 0.8s ease-in-out;
+}
+
+/* Enhanced grammar category animations */
+.grammar-articles.active {
+  background: linear-gradient(45deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.2));
+  border-left-width: 6px;
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+.grammar-nouns.active {
+  background: linear-gradient(45deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.2));
+  border-left-width: 6px;
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+.grammar-verbs.active {
+  background: linear-gradient(45deg, rgba(255, 87, 34, 0.1), rgba(255, 87, 34, 0.2));
+  border-left-width: 6px;
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+.grammar-adjectives.active {
+  background: linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(156, 39, 176, 0.2));
+  border-left-width: 6px;
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+.grammar-adverbs.active {
+  background: linear-gradient(45deg, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.2));
+  border-left-width: 6px;
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+.grammar-prepositions.active {
+  background: linear-gradient(45deg, rgba(121, 85, 72, 0.1), rgba(121, 85, 72, 0.2));
+  border-left-width: 6px;
+  animation: grammarGlow 2s ease-in-out infinite;
+}
+
+/* Reading pattern visualization */
+.sentence-area.reading-pattern {
+  background: linear-gradient(
+    90deg,
+    #F8F9FF 0%,
+    rgba(76, 175, 80, 0.1) 20%,
+    rgba(76, 175, 80, 0.2) 40%,
+    rgba(76, 175, 80, 0.1) 60%,
+    #F8F9FF 100%
+  );
+  background-size: 200% 100%;
+  animation: readingFlow 3s ease-in-out infinite;
+}
+
+/* Word bank shuffle animation */
+.word-tiles.shuffling .word-tile {
+  animation: wordDiscovery 0.8s ease-out;
+}
+
+.word-tiles.shuffling .word-tile:nth-child(1) { animation-delay: 0.1s; }
+.word-tiles.shuffling .word-tile:nth-child(2) { animation-delay: 0.2s; }
+.word-tiles.shuffling .word-tile:nth-child(3) { animation-delay: 0.3s; }
+.word-tiles.shuffling .word-tile:nth-child(4) { animation-delay: 0.4s; }
+.word-tiles.shuffling .word-tile:nth-child(5) { animation-delay: 0.5s; }
+.word-tiles.shuffling .word-tile:nth-child(6) { animation-delay: 0.6s; }
+.word-tiles.shuffling .word-tile:nth-child(7) { animation-delay: 0.7s; }
+.word-tiles.shuffling .word-tile:nth-child(8) { animation-delay: 0.8s; }
+
+/* Progress bar enhancement */
+.progress-fill.building {
+  background: linear-gradient(
+    90deg,
+    #32CD32,
+    #00FF7F,
+    #32CD32,
+    #00FF7F
+  );
+  background-size: 200% 100%;
+  animation: sentenceProgress 2s ease-in-out infinite;
+}
+
+/* Sentence validation states */
+.sentence-area.validating {
+  border-color: #FF9800;
+  background: rgba(255, 152, 0, 0.1);
+  animation: grammarGlow 1s ease-in-out;
+}
+
+.sentence-area.valid {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+  animation: grammarCorrect 0.8s ease-in-out;
+}
+
+.sentence-area.invalid {
+  border-color: #F44336;
+  background: rgba(244, 67, 54, 0.1);
+  animation: grammarIncorrect 0.6s ease-in-out;
+}
+
+/* Educational feedback enhancements */
+.feedback.grammar-lesson {
+  background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+  color: #0D47A1;
+  border: 2px solid #2196F3;
+  position: relative;
+  overflow: hidden;
+}
+
+.feedback.grammar-lesson::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(33, 150, 243, 0.1),
+    transparent
+  );
+  animation: readingFlow 3s ease-in-out infinite;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .bella-avatar,
   .bella-speech.new-message,
   .word-tile.highlight,
   .feedback,
+  .word-placed,
+  .word-removed,
+  .grammar-correct,
+  .grammar-incorrect,
+  .word-flow,
+  .sentence-complete,
+  .grammar-glow,
+  .bella-encourage,
+  .word-discovery,
+  .punctuation-emphasis,
+  .reading-pattern,
+  .progress-fill.building,
   * {
     animation: none !important;
     transition: none !important;

@@ -56,6 +56,9 @@ class ElementMatchGame extends BaseGame {
     this.cardAnimations = new Map();
     this.matchLines = [];
     this.particles = [];
+    this.connectionLines = new Map();
+    this.atomicOrbitals = new Map();
+    this.elementDiscoveryQueue = [];
     
     // Game state
     this.roundStartTime = null;
@@ -128,6 +131,9 @@ class ElementMatchGame extends BaseGame {
     this.cardAnimations.clear();
     this.matchLines = [];
     this.particles = [];
+    this.connectionLines.clear();
+    this.atomicOrbitals.clear();
+    this.elementDiscoveryQueue = [];
     this.roundStartTime = null;
     this.matchAttempts = 0;
     this.hintsUsed = 0;
@@ -200,6 +206,9 @@ class ElementMatchGame extends BaseGame {
     this.cardAnimations.clear();
     this.matchLines = [];
     this.particles = [];
+    this.connectionLines.clear();
+    this.atomicOrbitals.clear();
+    this.elementDiscoveryQueue = [];
     this.matchAttempts = 0;
     this.roundStartTime = performance.now();
     
@@ -247,6 +256,7 @@ class ElementMatchGame extends BaseGame {
     
     // If same card is selected, deselect it
     if (this.selectedCard && this.selectedCard.id === cardId && this.selectedCard.type === cardType) {
+      this.addCardAnimation(cardId, cardType, 'deselect');
       this.selectedCard = null;
       return;
     }
@@ -256,12 +266,28 @@ class ElementMatchGame extends BaseGame {
     // If no card is selected, select this one
     if (!this.selectedCard) {
       this.selectedCard = newSelection;
+      this.addCardAnimation(cardId, cardType, 'select');
+      
+      // Add atomic orbital animation for elements
+      if (cardType === 'element') {
+        this.addAtomicOrbital(cardId);
+      }
       return;
     }
     
     // If cards are of same type, replace selection
     if (this.selectedCard.type === cardType) {
+      // Deselect previous card
+      this.addCardAnimation(this.selectedCard.id, this.selectedCard.type, 'deselect');
+      
+      // Select new card
       this.selectedCard = newSelection;
+      this.addCardAnimation(cardId, cardType, 'select');
+      
+      // Add atomic orbital for new element
+      if (cardType === 'element') {
+        this.addAtomicOrbital(cardId);
+      }
       return;
     }
     
@@ -298,6 +324,12 @@ class ElementMatchGame extends BaseGame {
       // Add success animation
       this.addMatchAnimation(elementCard.id, answerCard.id, true);
       
+      // Create animated connection line
+      this.createConnectionLine(elementCard.id, answerCard.id);
+      
+      // Enhanced particle effects for correct match
+      this.createEnhancedParticleEffect(elementCard.id, answerCard.id, 'success');
+      
       // Play success sound
       this.playSound(600, 200, 'sine');
       
@@ -313,9 +345,12 @@ class ElementMatchGame extends BaseGame {
       
       // Check if round is complete
       if (this.playerMatches.size === this.elementsToMatch.length) {
+        // Trigger round completion celebration
+        this.celebrateRoundCompletion();
+        
         setTimeout(() => {
           this.completeRound();
-        }, 1000);
+        }, 2000);
       }
     } else {
       // Incorrect match
@@ -328,6 +363,9 @@ class ElementMatchGame extends BaseGame {
       
       // Add error animation
       this.addMatchAnimation(elementCard.id, answerCard.id, false);
+      
+      // Enhanced particle effects for incorrect match
+      this.createEnhancedParticleEffect(elementCard.id, answerCard.id, 'error');
       
       // Play error sound
       this.playSound(200, 300, 'sawtooth');
@@ -363,21 +401,174 @@ class ElementMatchGame extends BaseGame {
   }
   
   /**
-   * Add particle effect for successful matches
+   * Add card animation
    */
-  addParticleEffect(_elementId, _answerId) {
-    // Create particles at card positions
-    for (let i = 0; i < 10; i++) {
+  addCardAnimation(cardId, cardType, animationType) {
+    const animationKey = `${cardId}-${cardType}`;
+    this.cardAnimations.set(animationKey, {
+      cardId,
+      cardType,
+      type: animationType,
+      startTime: performance.now(),
+      duration: animationType === 'select' ? 300 : 200
+    });
+  }
+  
+  /**
+   * Add atomic orbital animation for elements
+   */
+  addAtomicOrbital(elementId) {
+    this.atomicOrbitals.set(elementId, {
+      startTime: performance.now(),
+      rotationSpeed: 0.02 + Math.random() * 0.01,
+      radius: 30 + Math.random() * 20
+    });
+  }
+  
+  /**
+   * Create animated connection line
+   */
+  createConnectionLine(elementId, answerId) {
+    const connectionKey = `${elementId}-${answerId}`;
+    this.connectionLines.set(connectionKey, {
+      elementId,
+      answerId,
+      startTime: performance.now(),
+      duration: 800,
+      progress: 0
+    });
+  }
+  
+  /**
+   * Create enhanced particle effects
+   */
+  createEnhancedParticleEffect(elementId, answerId, effectType) {
+    const elementIndex = this.elementsToMatch.findIndex(e => e.symbol === elementId);
+    const answerIndex = this.matchOptions.findIndex(o => o.id === answerId);
+    
+    if (elementIndex === -1 || answerIndex === -1) return;
+    
+    const elementX = this.elementCardsArea.x + elementIndex * (this.cardWidth + this.cardSpacing) + this.cardWidth/2;
+    const elementY = this.elementCardsArea.y + this.cardHeight/2;
+    const answerX = this.optionCardsArea.x + answerIndex * (this.cardWidth + this.cardSpacing) + this.cardWidth/2;
+    const answerY = this.optionCardsArea.y + this.cardHeight/2;
+    
+    if (effectType === 'success') {
+      // Create electron particles
+      for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8;
+        this.particles.push({
+          x: elementX,
+          y: elementY,
+          vx: Math.cos(angle) * 3,
+          vy: Math.sin(angle) * 3,
+          life: 1.0,
+          decay: 0.015,
+          size: 2 + Math.random() * 2,
+          color: '#4ECDC4',
+          type: 'electron'
+        });
+      }
+      
+      // Create proton burst at answer
+      for (let i = 0; i < 6; i++) {
+        this.particles.push({
+          x: answerX,
+          y: answerY,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6,
+          life: 1.0,
+          decay: 0.02,
+          size: 3 + Math.random() * 3,
+          color: '#2ECC71',
+          type: 'proton'
+        });
+      }
+      
+      // Create neutron vibrations
+      for (let i = 0; i < 4; i++) {
+        this.particles.push({
+          x: (elementX + answerX) / 2 + (Math.random() - 0.5) * 20,
+          y: (elementY + answerY) / 2 + (Math.random() - 0.5) * 20,
+          vx: 0,
+          vy: 0,
+          life: 1.0,
+          decay: 0.025,
+          size: 4,
+          color: '#FFD700',
+          type: 'neutron'
+        });
+      }
+    } else if (effectType === 'error') {
+      // Create error sparks
+      for (let i = 0; i < 6; i++) {
+        this.particles.push({
+          x: elementX,
+          y: elementY,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          life: 1.0,
+          decay: 0.03,
+          size: 2,
+          color: '#E74C3C',
+          type: 'spark'
+        });
+      }
+      
+      for (let i = 0; i < 6; i++) {
+        this.particles.push({
+          x: answerX,
+          y: answerY,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          life: 1.0,
+          decay: 0.03,
+          size: 2,
+          color: '#E74C3C',
+          type: 'spark'
+        });
+      }
+    }
+  }
+  
+  /**
+   * Add particle effect for successful matches (legacy compatibility)
+   */
+  addParticleEffect(elementId, answerId) {
+    this.createEnhancedParticleEffect(elementId, answerId, 'success');
+  }
+  
+  /**
+   * Celebrate round completion with enhanced effects
+   */
+  celebrateRoundCompletion() {
+    // Create celebration burst from center
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
+    
+    // Create molecular burst effect
+    for (let i = 0; i < 16; i++) {
+      const angle = (Math.PI * 2 * i) / 16;
       this.particles.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
-        vx: (Math.random() - 0.5) * 4,
-        vy: (Math.random() - 0.5) * 4,
-        life: 1.0,
-        decay: 0.02,
-        color: this.colors.correctMatch
+        x: centerX,
+        y: centerY,
+        vx: Math.cos(angle) * 8,
+        vy: Math.sin(angle) * 8,
+        life: 1.5,
+        decay: 0.015,
+        size: 4 + Math.random() * 4,
+        color: '#FFD700',
+        type: 'proton'
       });
     }
+    
+    // Add Sage celebration animation
+    this.sageAnimationFrame += 2; // Speed up animation
+    
+    // Use BaseGame celebration method
+    const tier = this.matchAttempts <= this.elementsToMatch.length ? 'gold' : 
+                 this.matchAttempts <= this.elementsToMatch.length * 1.5 ? 'silver' : 'bronze';
+    this.celebrateCompletion(tier);
   }
   
   /**
@@ -433,8 +624,17 @@ class ElementMatchGame extends BaseGame {
     // Update card animations
     this.updateCardAnimations(timestamp);
     
+    // Update connection lines
+    this.updateConnectionLines(timestamp);
+    
+    // Update atomic orbitals
+    this.updateAtomicOrbitals(timestamp);
+    
     // Update particles
     this.updateParticles();
+    
+    // Process element discovery queue
+    this.processElementDiscovery();
   }
   
   /**
@@ -450,12 +650,82 @@ class ElementMatchGame extends BaseGame {
   }
   
   /**
+   * Update connection lines
+   */
+  updateConnectionLines(timestamp) {
+    for (const [key, connection] of this.connectionLines.entries()) {
+      const elapsed = timestamp - connection.startTime;
+      connection.progress = Math.min(elapsed / connection.duration, 1);
+      
+      if (connection.progress >= 1) {
+        this.connectionLines.delete(key);
+      }
+    }
+  }
+  
+  /**
+   * Update atomic orbitals
+   */
+  updateAtomicOrbitals(timestamp) {
+    for (const [elementId, orbital] of this.atomicOrbitals.entries()) {
+      orbital.currentAngle = (timestamp - orbital.startTime) * orbital.rotationSpeed;
+      
+      // Remove orbital if element is no longer selected
+      if (!this.selectedCard || this.selectedCard.id !== elementId) {
+        this.atomicOrbitals.delete(elementId);
+      }
+    }
+  }
+  
+  /**
+   * Process element discovery queue
+   */
+  processElementDiscovery() {
+    // Add discovery animations for newly revealed elements
+    if (this.elementDiscoveryQueue.length > 0) {
+      const element = this.elementDiscoveryQueue.shift();
+      this.addCardAnimation(element.symbol, 'element', 'discovery');
+    }
+  }
+  
+  /**
    * Update particle effects
    */
   updateParticles() {
     this.particles = this.particles.filter(particle => {
-      particle.x += particle.vx;
-      particle.y += particle.vy;
+      // Update position based on type
+      switch (particle.type) {
+      case 'electron':
+        // Orbital motion
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vy += 0.1; // slight gravity
+        break;
+      case 'proton':
+        // Burst motion
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vx *= 0.98;
+        particle.vy *= 0.98;
+        break;
+      case 'neutron':
+        // Vibration (minimal movement)
+        particle.x += Math.sin(performance.now() * 0.01) * 0.5;
+        particle.y += Math.cos(performance.now() * 0.01) * 0.5;
+        break;
+      case 'spark':
+        // Quick dissipation
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.vx *= 0.95;
+        particle.vy *= 0.95;
+        break;
+      default:
+        // Standard motion
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+      }
+      
       particle.life -= particle.decay;
       return particle.life > 0;
     });
@@ -474,9 +744,11 @@ class ElementMatchGame extends BaseGame {
     this.renderBackground();
     this.renderSageCharacter();
     this.renderRoundInfo();
+    this.renderAtomicOrbitals(); // Render orbitals behind cards
     this.renderElementCards();
     this.renderMatchOptions();
     this.renderMatchLines();
+    this.renderConnectionLines(); // Render animated connection lines
     this.renderParticles();
     this.renderGameInfo();
   }
@@ -700,16 +972,141 @@ class ElementMatchGame extends BaseGame {
   }
   
   /**
+   * Render atomic orbitals
+   */
+  renderAtomicOrbitals() {
+    for (const [elementId, orbital] of this.atomicOrbitals.entries()) {
+      const elementIndex = this.elementsToMatch.findIndex(e => e.symbol === elementId);
+      if (elementIndex === -1) continue;
+      
+      const centerX = this.elementCardsArea.x + elementIndex * (this.cardWidth + this.cardSpacing) + this.cardWidth/2;
+      const centerY = this.elementCardsArea.y + this.cardHeight/2;
+      
+      this.ctx.save();
+      this.ctx.globalAlpha = 0.3;
+      this.ctx.strokeStyle = '#4ECDC4';
+      this.ctx.lineWidth = 2;
+      this.ctx.setLineDash([5, 5]);
+      
+      // Draw orbital paths
+      for (let i = 0; i < 3; i++) {
+        const radius = orbital.radius + i * 15;
+        this.ctx.beginPath();
+        this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        this.ctx.stroke();
+        
+        // Draw electron
+        const electronAngle = orbital.currentAngle + (i * Math.PI * 2 / 3);
+        const electronX = centerX + Math.cos(electronAngle) * radius;
+        const electronY = centerY + Math.sin(electronAngle) * radius;
+        
+        this.ctx.fillStyle = '#FFD700';
+        this.ctx.beginPath();
+        this.ctx.arc(electronX, electronY, 2, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      
+      this.ctx.restore();
+    }
+  }
+  
+  /**
+   * Render animated connection lines
+   */
+  renderConnectionLines() {
+    for (const [key, connection] of this.connectionLines.entries()) {
+      const elementIndex = this.elementsToMatch.findIndex(e => e.symbol === connection.elementId);
+      const answerIndex = this.matchOptions.findIndex(o => o.id === connection.answerId);
+      
+      if (elementIndex === -1 || answerIndex === -1) continue;
+      
+      const startX = this.elementCardsArea.x + elementIndex * (this.cardWidth + this.cardSpacing) + this.cardWidth/2;
+      const startY = this.elementCardsArea.y + this.cardHeight;
+      const endX = this.optionCardsArea.x + answerIndex * (this.cardWidth + this.cardSpacing) + this.cardWidth/2;
+      const endY = this.optionCardsArea.y;
+      
+      // Calculate animated end point
+      const currentEndX = startX + (endX - startX) * connection.progress;
+      const currentEndY = startY + (endY - startY) * connection.progress;
+      
+      this.ctx.save();
+      this.ctx.strokeStyle = '#2ECC71';
+      this.ctx.lineWidth = 4;
+      this.ctx.setLineDash([10, 5]);
+      this.ctx.lineDashOffset = -performance.now() * 0.05;
+      
+      // Add glow effect
+      this.ctx.shadowColor = '#2ECC71';
+      this.ctx.shadowBlur = 10;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(startX, startY);
+      this.ctx.lineTo(currentEndX, currentEndY);
+      this.ctx.stroke();
+      
+      this.ctx.restore();
+    }
+  }
+  
+  /**
    * Render particle effects
    */
   renderParticles() {
     this.particles.forEach(particle => {
       this.ctx.save();
       this.ctx.globalAlpha = particle.life;
-      this.ctx.fillStyle = particle.color;
-      this.ctx.beginPath();
-      this.ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
-      this.ctx.fill();
+      
+      switch (particle.type) {
+      case 'electron':
+        // Blue glowing particles
+        this.ctx.fillStyle = particle.color;
+        this.ctx.shadowColor = particle.color;
+        this.ctx.shadowBlur = 5;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+        break;
+        
+      case 'proton':
+        // Green burst particles
+        this.ctx.fillStyle = particle.color;
+        this.ctx.shadowColor = particle.color;
+        this.ctx.shadowBlur = 8;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+        break;
+        
+      case 'neutron':
+        // Golden vibrating particles
+        this.ctx.fillStyle = particle.color;
+        this.ctx.shadowColor = particle.color;
+        this.ctx.shadowBlur = 6;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+        break;
+        
+      case 'spark':
+        // Red error sparks
+        this.ctx.strokeStyle = particle.color;
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(particle.x - particle.size, particle.y);
+        this.ctx.lineTo(particle.x + particle.size, particle.y);
+        this.ctx.moveTo(particle.x, particle.y - particle.size);
+        this.ctx.lineTo(particle.x, particle.y + particle.size);
+        this.ctx.stroke();
+        break;
+        
+      default:
+        // Standard circular particles
+        this.ctx.fillStyle = particle.color;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      
       this.ctx.restore();
     });
   }

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Element Match Game - Animation Test</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../features/games/element-match/elementMatch.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-info {
+      background: var(--bg-section);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .animation-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .animation-demo {
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .demo-canvas {
+      width: 100%;
+      height: 200px;
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      margin: 1rem 0;
+      background: linear-gradient(135deg, #2C3E50 0%, #3498DB 100%);
+    }
+    
+    .demo-button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      margin: 0.25rem;
+      transition: all 0.2s ease;
+    }
+    
+    .demo-button:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .game-container {
+      margin: 2rem 0;
+      height: 600px;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .controls-panel {
+      background: var(--bg-hover);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    #element-match-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, #2C3E50 0%, #3498DB 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Enhanced Element Match Game</h1>
+      <p>Testing atomic animations, matching effects, and scientific visualizations</p>
+    </div>
+    
+    <div class="test-info">
+      <h3>🧪 Animation Features</h3>
+      <ul>
+        <li><strong>Card Selection:</strong> Atomic orbital effects when selecting elements</li>
+        <li><strong>Matching Animations:</strong> Chemical bond formation between matched pairs</li>
+        <li><strong>Particle Systems:</strong> Electron, proton, and neutron particles with type-based behavior</li>
+        <li><strong>Connection Lines:</strong> Animated lines drawing progressively between matches</li>
+        <li><strong>Discovery Effects:</strong> Element cards reveal with 3D rotation</li>
+        <li><strong>Celebration Bursts:</strong> Molecular explosions for round completion</li>
+        <li><strong>Scientific Themes:</strong> Periodic table glow and atomic structure animations</li>
+        <li><strong>Accessibility:</strong> Respects prefers-reduced-motion</li>
+      </ul>
+    </div>
+    
+    <!-- Animation Showcase -->
+    <div class="animation-showcase">
+      <div class="animation-demo">
+        <h4>Card Selection & Orbital</h4>
+        <canvas id="demo-selection" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoCardSelection()">Demo Selection</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Chemical Bond Formation</h4>
+        <canvas id="demo-bond" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoBondFormation()">Demo Bond</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Particle Effects</h4>
+        <canvas id="demo-particles" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoParticleEffect()">Demo Particles</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Molecular Celebration</h4>
+        <canvas id="demo-celebration" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoCelebrationEffect()">Demo Celebration</button>
+      </div>
+    </div>
+    
+    <!-- Game Controls -->
+    <div class="controls-panel">
+      <h3>Game Controls</h3>
+      <div class="controls-grid">
+        <button class="demo-button" onclick="changeGameDifficulty('easy')">Easy Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('medium')">Medium Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('hard')">Hard Mode</button>
+        <button class="demo-button" onclick="toggleAnimations()">Toggle Animations</button>
+        <button class="demo-button" onclick="simulateMatch()">Simulate Match</button>
+        <button class="demo-button" onclick="showAllEffects()">Show All Effects</button>
+      </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div class="game-container">
+      <canvas id="element-match-canvas"></canvas>
+    </div>
+    
+    <!-- Performance Info -->
+    <div class="test-info">
+      <h3>⚛️ Scientific Animation Notes</h3>
+      <ul>
+        <li>Atomic orbital animations use circular motion equations</li>
+        <li>Particle systems differentiate between electron, proton, and neutron behavior</li>
+        <li>Connection lines draw using stroke-dasharray animation techniques</li>
+        <li>Chemical bond animations simulate real molecular interactions</li>
+        <li>Periodic table glow effects enhance element recognition</li>
+        <li>All scientific animations maintain educational accuracy</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script type="module">
+    import ElementMatchGame from '../../features/games/element-match/elementMatch.js';
+    
+    let game;
+    let animationsEnabled = true;
+    const demoCanvases = {};
+    
+    // Initialize demo canvases
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set up demo canvases
+      demoCanvases.selection = document.getElementById('demo-selection').getContext('2d');
+      demoCanvases.bond = document.getElementById('demo-bond').getContext('2d');
+      demoCanvases.particles = document.getElementById('demo-particles').getContext('2d');
+      demoCanvases.celebration = document.getElementById('demo-celebration').getContext('2d');
+      
+      // Initialize main game
+      try {
+        game = new ElementMatchGame('element-match-canvas', {
+          difficulty: 'medium',
+          enableAnimations: true
+        });
+        
+        console.log('Enhanced Element Match game initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Element Match game:', error);
+      }
+    });
+    
+    // Demo: Card Selection with Atomic Orbital
+    window.demoCardSelection = function() {
+      const canvas = document.getElementById('demo-selection');
+      const ctx = demoCanvases.selection;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw element card
+      const cardX = canvas.width / 2;
+      const cardY = canvas.height / 2;
+      const cardSize = 80;
+      
+      // Card background
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#3498DB';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(cardX - cardSize/2, cardY - cardSize/2, cardSize, cardSize, 8);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Element symbol
+      ctx.fillStyle = '#2C3E50';
+      ctx.font = 'bold 24px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('H', cardX, cardY - 10);
+      
+      // Atomic number
+      ctx.font = '12px Arial';
+      ctx.fillText('1', cardX - 25, cardY - 25);
+      
+      // Animate orbital electrons
+      let orbitAngle = 0;
+      function animateOrbital() {
+        // Clear only the orbital area
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Redraw card
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#3498DB';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(cardX - cardSize/2, cardY - cardSize/2, cardSize, cardSize, 8);
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.fillStyle = '#2C3E50';
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('H', cardX, cardY - 10);
+        ctx.font = '12px Arial';
+        ctx.fillText('1', cardX - 25, cardY - 25);
+        
+        // Draw orbital path
+        ctx.strokeStyle = 'rgba(76, 205, 196, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.ellipse(cardX, cardY, 50, 30, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // Draw electron
+        const electronX = cardX + Math.cos(orbitAngle) * 50;
+        const electronY = cardY + Math.sin(orbitAngle) * 30;
+        
+        ctx.fillStyle = '#4ECDC4';
+        ctx.beginPath();
+        ctx.arc(electronX, electronY, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Electron trail
+        ctx.strokeStyle = 'rgba(76, 205, 196, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(electronX, electronY, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        orbitAngle += 0.1;
+        
+        if (orbitAngle < Math.PI * 4) { // 2 full rotations
+          requestAnimationFrame(animateOrbital);
+        }
+      }
+      animateOrbital();
+    };
+    
+    // Demo: Chemical Bond Formation
+    window.demoBondFormation = function() {
+      const canvas = document.getElementById('demo-bond');
+      const ctx = demoCanvases.bond;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw two elements
+      const element1X = canvas.width / 3;
+      const element2X = (canvas.width * 2) / 3;
+      const elementY = canvas.height / 2;
+      const elementSize = 60;
+      
+      // Element 1 (Hydrogen)
+      ctx.fillStyle = '#FF6B6B';
+      ctx.beginPath();
+      ctx.arc(element1X, elementY, elementSize/2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 20px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('H', element1X, elementY);
+      
+      // Element 2 (Oxygen)
+      ctx.fillStyle = '#4ECDC4';
+      ctx.beginPath();
+      ctx.arc(element2X, elementY, elementSize/2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = 'white';
+      ctx.fillText('O', element2X, elementY);
+      
+      // Animate bond formation
+      let bondProgress = 0;
+      function animateBond() {
+        // Clear bond area
+        ctx.clearRect(element1X + elementSize/2, elementY - 10, element2X - element1X - elementSize, 20);
+        
+        // Draw animated bond line
+        const bondLength = element2X - element1X - elementSize;
+        const currentLength = bondLength * bondProgress;
+        
+        ctx.strokeStyle = '#2ECC71';
+        ctx.lineWidth = 6;
+        ctx.lineCap = 'round';
+        
+        // Main bond
+        ctx.beginPath();
+        ctx.moveTo(element1X + elementSize/2, elementY);
+        ctx.lineTo(element1X + elementSize/2 + currentLength, elementY);
+        ctx.stroke();
+        
+        // Energy sparkles along bond
+        if (bondProgress > 0.5) {
+          for (let i = 0; i < 3; i++) {
+            const sparkleX = element1X + elementSize/2 + (currentLength * (i + 1) / 4);
+            const sparkleOffset = Math.sin(Date.now() * 0.01 + i) * 3;
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(sparkleX, elementY + sparkleOffset, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        
+        bondProgress += 0.02;
+        
+        if (bondProgress < 1) {
+          requestAnimationFrame(animateBond);
+        }
+      }
+      
+      setTimeout(animateBond, 500);
+    };
+    
+    // Demo: Particle Effect
+    window.demoParticleEffect = function() {
+      const canvas = document.getElementById('demo-particles');
+      const ctx = demoCanvases.particles;
+      const particles = [];
+      
+      // Create different particle types
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      // Electrons (blue, fast orbiting)
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI * 2 * i) / 6;
+        particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 4,
+          vy: Math.sin(angle) * 4,
+          life: 1.0,
+          decay: 0.015,
+          size: 3,
+          color: '#4ECDC4',
+          type: 'electron'
+        });
+      }
+      
+      // Protons (red, slower, larger)
+      for (let i = 0; i < 3; i++) {
+        const angle = (Math.PI * 2 * i) / 3;
+        particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 2,
+          vy: Math.sin(angle) * 2,
+          life: 1.0,
+          decay: 0.01,
+          size: 5,
+          color: '#FF6B6B',
+          type: 'proton'
+        });
+      }
+      
+      // Neutrons (gray, medium)
+      for (let i = 0; i < 4; i++) {
+        const angle = (Math.PI * 2 * i) / 4 + Math.PI / 4;
+        particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 3,
+          vy: Math.sin(angle) * 3,
+          life: 1.0,
+          decay: 0.012,
+          size: 4,
+          color: '#95A5A6',
+          type: 'neutron'
+        });
+      }
+      
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw nucleus
+        ctx.fillStyle = 'rgba(52, 73, 94, 0.3)';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
+        ctx.fill();
+        
+        particles.forEach((particle, index) => {
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          particle.life -= particle.decay;
+          
+          // Different behaviors by type
+          if (particle.type === 'electron') {
+            particle.vy += 0.1; // slight gravity
+          } else if (particle.type === 'proton') {
+            particle.vx *= 0.98; // slow down
+            particle.vy *= 0.98;
+          }
+          
+          if (particle.life > 0) {
+            ctx.save();
+            ctx.globalAlpha = particle.life;
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add glow effect
+            ctx.shadowColor = particle.color;
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+          }
+        });
+        
+        if (particles.some(p => p.life > 0)) {
+          requestAnimationFrame(animateParticles);
+        }
+      }
+      animateParticles();
+    };
+    
+    // Demo: Celebration Effect
+    window.demoCelebrationEffect = function() {
+      const canvas = document.getElementById('demo-celebration');
+      const ctx = demoCanvases.celebration;
+      const molecules = [];
+      
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      // Create molecular burst effect
+      for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8;
+        molecules.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 6,
+          vy: Math.sin(angle) * 6,
+          rotation: 0,
+          rotationSpeed: 0.2,
+          life: 1.0,
+          decay: 0.02,
+          size: 20,
+          bonds: []
+        });
+        
+        // Add bonds to each molecule
+        for (let j = 0; j < 3; j++) {
+          molecules[i].bonds.push({
+            length: Math.random() * 15 + 10,
+            angle: (Math.PI * 2 * j) / 3,
+            atomSize: 3 + Math.random() * 3
+          });
+        }
+      }
+      
+      function animateCelebration() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        molecules.forEach(molecule => {
+          molecule.x += molecule.vx;
+          molecule.y += molecule.vy;
+          molecule.rotation += molecule.rotationSpeed;
+          molecule.life -= molecule.decay;
+          
+          if (molecule.life > 0) {
+            ctx.save();
+            ctx.globalAlpha = molecule.life;
+            ctx.translate(molecule.x, molecule.y);
+            ctx.rotate(molecule.rotation);
+            
+            // Draw central atom
+            ctx.fillStyle = '#E74C3C';
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw bonds and atoms
+            molecule.bonds.forEach(bond => {
+              const bondX = Math.cos(bond.angle) * bond.length;
+              const bondY = Math.sin(bond.angle) * bond.length;
+              
+              // Bond line
+              ctx.strokeStyle = '#2ECC71';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.lineTo(bondX, bondY);
+              ctx.stroke();
+              
+              // Bonded atom
+              ctx.fillStyle = '#3498DB';
+              ctx.beginPath();
+              ctx.arc(bondX, bondY, bond.atomSize, 0, Math.PI * 2);
+              ctx.fill();
+            });
+            
+            ctx.restore();
+          }
+        });
+        
+        if (molecules.some(m => m.life > 0)) {
+          requestAnimationFrame(animateCelebration);
+        }
+      }
+      animateCelebration();
+    };
+    
+    // Game control functions
+    window.changeGameDifficulty = function(difficulty) {
+      if (game) {
+        game.difficulty = difficulty;
+        game.elementsPerRound = game.getElementsPerRound();
+        game.availableMatchTypes = game.getMatchTypesForDifficulty();
+        console.log(`Difficulty changed to: ${difficulty}`);
+      }
+    };
+    
+    window.toggleAnimations = function() {
+      animationsEnabled = !animationsEnabled;
+      console.log(`Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
+      
+      if (!animationsEnabled) {
+        document.body.classList.add('prefers-reduced-motion');
+      } else {
+        document.body.classList.remove('prefers-reduced-motion');
+      }
+    };
+    
+    window.simulateMatch = function() {
+      if (game && game.state === 'playing') {
+        // Simulate finding a match by selecting first two elements
+        const elementKeys = Array.from(game.correctMatches.keys());
+        if (elementKeys.length >= 2) {
+          const element1 = elementKeys[0];
+          const element2 = elementKeys[1];
+          
+          game.selectedCard = element1;
+          game.addToAtomicOrbitals(element1);
+          
+          setTimeout(() => {
+            game.createConnectionLine(element1, element2);
+            game.createEnhancedParticleEffect(element1, element2, 'success');
+            game.playerMatches.set(element1, element2);
+            game.matchedPairs.add(element1);
+            game.matchedPairs.add(element2);
+          }, 500);
+        }
+      }
+    };
+    
+    window.showAllEffects = function() {
+      if (game && game.state === 'playing') {
+        // Show card selection animation
+        setTimeout(() => {
+          const elementKeys = Array.from(game.correctMatches.keys());
+          if (elementKeys.length > 0) {
+            game.addToAtomicOrbitals(elementKeys[0]);
+          }
+        }, 500);
+        
+        // Show connection line
+        setTimeout(() => {
+          const elementKeys = Array.from(game.correctMatches.keys());
+          if (elementKeys.length >= 2) {
+            game.createConnectionLine(elementKeys[0], elementKeys[1]);
+          }
+        }, 1000);
+        
+        // Show particle effects
+        setTimeout(() => {
+          const elementKeys = Array.from(game.correctMatches.keys());
+          if (elementKeys.length >= 2) {
+            game.createEnhancedParticleEffect(elementKeys[0], elementKeys[1], 'success');
+          }
+        }, 1500);
+        
+        // Show celebration
+        setTimeout(() => {
+          game.celebrateRoundCompletion();
+        }, 2000);
+      }
+    };
+    
+    // Add custom CSS for reduced motion
+    const style = document.createElement('style');
+    style.textContent = `
+      .prefers-reduced-motion *,
+      .prefers-reduced-motion *::before,
+      .prefers-reduced-motion *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+  
+  <!-- Instructions overlay -->
+  <div style="position: fixed; bottom: 20px; right: 20px; background: var(--bg-card); padding: 1rem; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 300px; font-size: 0.9rem;">
+    <strong>Tips:</strong><br>
+    • Select an element card to see atomic orbitals<br>
+    • Match elements to watch bond formation<br>
+    • Notice different particle behaviors by type<br>
+    • Complete rounds for molecular celebrations!
+  </div>
+</body>
+</html>

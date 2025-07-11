@@ -18,9 +18,120 @@
   <link rel="stylesheet" href="../styles/components/avatar.css">
   <link rel="stylesheet" href="../styles/components/profileEnhanced.css">
   <link rel="stylesheet" href="../styles/components/badges.css">
+  <link rel="stylesheet" href="../styles/components/animations.css">
   
   <!-- Theme Styles -->
   <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <!-- Profile-specific styles -->
+  <style>
+    .demo-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .demo-controls .btn {
+      min-width: 80px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    
+    .demo-controls .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .level-details {
+      padding: 16px;
+    }
+    
+    .level-summary {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .level-icon {
+      font-size: 3rem;
+      text-align: center;
+    }
+    
+    .level-info h3 {
+      margin: 0 0 8px 0;
+      color: var(--text-primary);
+    }
+    
+    .xp-info {
+      margin-top: 8px;
+    }
+    
+    .progress-bar {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    
+    .progress-fill {
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      height: 100%;
+      border-radius: 8px;
+      transition: width 0.3s ease;
+    }
+    
+    .next-milestone {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .next-milestone h4 {
+      margin: 0 0 8px 0;
+      color: var(--accent-primary);
+    }
+    
+    .milestone-rewards ul {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0;
+    }
+    
+    .milestone-rewards li {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .level-actions {
+      text-align: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+      .demo-controls {
+        justify-content: center;
+      }
+      
+      .level-summary {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+      
+      .level-icon {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation -->
@@ -59,18 +170,7 @@
         </div>
         
         <div class="profile-level-section">
-          <div class="level-display">
-            <div class="level-number">1</div>
-            <div class="level-label">Level</div>
-          </div>
-          <div class="xp-progress">
-            <div class="xp-bar">
-              <div class="xp-fill" style="width: 0%"></div>
-            </div>
-            <div class="xp-text">
-              <span class="current-xp">0</span> / <span class="next-level-xp">100</span> XP
-            </div>
-          </div>
+          <div id="profile-level-display"></div>
         </div>
         
         <div class="profile-quick-stats">
@@ -180,6 +280,18 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Level System Demo -->
+          <div class="overview-section">
+            <h3>Level System Demo</h3>
+            <div class="demo-controls">
+              <button class="btn btn-secondary" id="demo-xp-small">+10 XP</button>
+              <button class="btn btn-secondary" id="demo-xp-medium">+25 XP</button>
+              <button class="btn btn-secondary" id="demo-xp-large">+50 XP</button>
+              <button class="btn btn-secondary" id="demo-xp-mega">+100 XP</button>
+            </div>
+            <small>Click buttons to test XP gain animations and level-up notifications</small>
           </div>
         </div>
       </div>
@@ -401,6 +513,13 @@
     import BadgeDisplay from '../components/badges/BadgeDisplay.js';
     import BadgeGallery from '../components/badges/BadgeGallery.js';
     import BadgeNotification from '../components/badges/BadgeNotification.js';
+    import LevelProgressDisplay from '../components/level/LevelProgressDisplay.js';
+    import LevelUpNotification from '../components/level/LevelUpNotification.js';
+    import XPGainAnimation from '../components/level/XPGainAnimation.js';
+    import LevelMilestones from '../components/level/LevelMilestones.js';
+    import xpCalculator from '../utils/xpCalculator.js';
+    import animationHelpers from '../utils/animationHelpers.js';
+    import errorHandler from '../utils/errorHandler.js';
 
     class EnhancedProfilePage {
       constructor() {
@@ -410,6 +529,15 @@
         this.mainAvatar = null;
         this.currentTab = 'overview';
         
+        // Level system components
+        this.levelProgressDisplay = null;
+        this.levelMilestones = LevelMilestones.getInstance();
+        this.levelUpNotification = LevelUpNotification.getInstance();
+        this.xpGainAnimation = XPGainAnimation.getInstance();
+        
+        // Animation helpers
+        this.animations = animationHelpers;
+        
         this.init();
       }
       
@@ -417,18 +545,49 @@
         this.loadProfile();
         this.setupEventListeners();
         this.setupAvatar();
+        this.setupLevelDisplay();
+        this.enhanceInteractiveElements();
       }
       
       loadProfile() {
-        this.currentProfile = this.profileManager.getActiveProfile();
-        if (!this.currentProfile) {
-          // Redirect to profile creation or login
-          window.location.href = 'profile.html';
-          return;
+        try {
+          this.currentProfile = this.profileManager.getActiveProfile();
+          
+          if (!this.currentProfile) {
+            // Log the issue and redirect to profile creation
+            errorHandler.logError('Profile Load', {
+              message: 'No active profile found',
+              action: 'redirecting_to_profile_creation'
+            }, 'warning');
+            
+            window.location.href = 'profile.html';
+            return;
+          }
+          
+          // Validate profile data integrity
+          const validationResult = this.validateProfileData(this.currentProfile);
+          if (!validationResult.isValid) {
+            errorHandler.logError('Profile Data Validation', {
+              profileId: this.currentProfile.id,
+              errors: validationResult.errors
+            }, 'warning');
+            
+            // Attempt to repair profile data
+            this.currentProfile = this.repairProfileData(this.currentProfile);
+          }
+          
+          this.updateProfileDisplay();
+          this.loadTabContent(this.currentTab);
+          
+        } catch (error) {
+          const errorResponse = errorHandler.handleProfileError(error, 'profile_load', {
+            profileId: this.currentProfile?.id,
+            currentTab: this.currentTab
+          });
+          
+          // Show fallback UI
+          this.showErrorFallback('Unable to load your profile', errorResponse.error.id);
         }
-        
-        this.updateProfileDisplay();
-        this.loadTabContent(this.currentTab);
       }
       
       setupEventListeners() {
@@ -450,6 +609,9 @@
         
         // Friends
         this.setupFriendsEventListeners();
+        
+        // Level system demo
+        this.setupLevelDemoEventListeners();
       }
       
       setupAvatar() {
@@ -462,47 +624,161 @@
         this.mainAvatar.updateFromProfile(this.currentProfile);
       }
       
-      updateProfileDisplay() {
-        // Update header info
-        document.querySelector('.profile-name').textContent = this.currentProfile.name;
-        document.querySelector('.profile-title').textContent = this.currentProfile.selectedTitle || 'Learner';
-        document.getElementById('member-date').textContent = new Date(this.currentProfile.createdAt).toLocaleDateString();
+      setupLevelDisplay() {
+        this.levelProgressDisplay = new LevelProgressDisplay('profile-level-display', {
+          showLevel: true,
+          showXP: true,
+          showTitle: true,
+          showEstimate: true,
+          size: 'normal',
+          theme: 'default',
+          animated: true,
+          onClick: (progressData) => {
+            this.showLevelDetails(progressData);
+          }
+        });
         
-        // Update level and XP
-        const levelDisplay = document.querySelector('.level-number');
-        levelDisplay.textContent = this.currentProfile.level;
-        
-        const currentXP = this.currentProfile.xp;
-        const nextLevelXP = this.calculateXPForNextLevel(this.currentProfile.level);
-        const currentLevelXP = this.calculateXPForLevel(this.currentProfile.level);
-        const xpIntoLevel = currentXP - currentLevelXP;
-        const xpForLevel = nextLevelXP - currentLevelXP;
-        const progress = (xpIntoLevel / xpForLevel) * 100;
-        
-        document.querySelector('.xp-fill').style.width = `${progress}%`;
-        document.querySelector('.current-xp').textContent = xpIntoLevel;
-        document.querySelector('.next-level-xp').textContent = xpForLevel;
-        
-        // Update quick stats
-        const progressSummary = this.progressTracker.getProgressSummary();
-        document.getElementById('total-score').textContent = progressSummary.crossGame.totalScore.toLocaleString();
-        document.getElementById('games-played').textContent = progressSummary.crossGame.gamesPlayed.length;
-        document.getElementById('achievements-earned').textContent = progressSummary.achievements.unlocked;
-        document.getElementById('streak-days').textContent = this.currentProfile.streakDays;
+        this.updateLevelDisplay();
       }
       
-      switchTab(tabId) {
+      async updateProfileDisplay() {
+        // Update header info with animations
+        const nameElement = document.querySelector('.profile-name');
+        const titleElement = document.querySelector('.profile-title');
+        const memberDateElement = document.getElementById('member-date');
+        
+        // Animate text updates
+        if (nameElement.textContent !== this.currentProfile.name) {
+          await this.animations.animateIn(nameElement, 'fadeInUp', { duration: 400 });
+          nameElement.textContent = this.currentProfile.name;
+        }
+        
+        titleElement.textContent = this.currentProfile.selectedTitle || 'Learner';
+        memberDateElement.textContent = new Date(this.currentProfile.createdAt).toLocaleDateString();
+        
+        // Update level display using enhanced component
+        this.updateLevelDisplay();
+        
+        // Update quick stats with stagger animation
+        const progressSummary = this.progressTracker.getProgressSummary();
+        const statElements = [
+          { el: document.getElementById('total-score'), value: progressSummary.crossGame.totalScore },
+          { el: document.getElementById('games-played'), value: progressSummary.crossGame.gamesPlayed.length },
+          { el: document.getElementById('achievements-earned'), value: progressSummary.achievements.unlocked },
+          { el: document.getElementById('streak-days'), value: this.currentProfile.streakDays }
+        ];
+        
+        // Animate stat updates
+        statElements.forEach(({ el, value }, index) => {
+          if (el) {
+            const currentValue = parseInt(el.textContent) || 0;
+            if (currentValue !== value) {
+              setTimeout(() => {
+                this.animations.animateNumber(el, currentValue, value, {
+                  duration: 800,
+                  formatter: (num) => Math.floor(num).toLocaleString()
+                });
+              }, index * 100);
+            }
+          }
+        });
+      }
+      
+      updateLevelDisplay() {
+        if (this.levelProgressDisplay && this.currentProfile) {
+          const totalXP = this.currentProfile.xp || 0;
+          this.levelProgressDisplay.setXP(totalXP, { animate: false });
+        }
+      }
+      
+      showLevelDetails(progressData) {
+        // Get next milestone info
+        const nextMilestone = this.levelMilestones.getNextMilestone(progressData.level);
+        const milestoneProgress = this.levelMilestones.getMilestoneProgress(progressData.level);
+        
+        const content = `
+          <div class="level-details">
+            <div class="level-summary">
+              <div class="level-icon">${progressData.level >= 100 ? '👑' : progressData.level >= 50 ? '🏆' : progressData.level >= 25 ? '🥈' : progressData.level >= 10 ? '🥉' : '⭐'}</div>
+              <div class="level-info">
+                <h3>Level ${progressData.level}</h3>
+                <p>${xpCalculator.getLevelTitle(progressData.level)}</p>
+                <div class="xp-info">
+                  <strong>${Math.floor(progressData.xpIntoLevel)}/${Math.floor(progressData.xpForLevel)} XP</strong>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progressData.progress * 100}%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            ${nextMilestone ? `
+              <div class="next-milestone">
+                <h4>Next Milestone: Level ${nextMilestone.level}</h4>
+                <p>${nextMilestone.message}</p>
+                <div class="milestone-rewards">
+                  <strong>Rewards:</strong>
+                  <ul>
+                    ${nextMilestone.rewards.map(reward => `<li>${reward.icon} ${reward.text}</li>`).join('')}
+                  </ul>
+                </div>
+                ${milestoneProgress ? `
+                  <div class="milestone-progress">
+                    <p><strong>Progress:</strong> ${milestoneProgress.completedLevels}/${milestoneProgress.totalLevels} levels (${milestoneProgress.percentage}%)</p>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: ${milestoneProgress.percentage}%"></div>
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''}
+            
+            <div class="level-actions">
+              <p><em>Keep playing games to earn more XP and level up!</em></p>
+            </div>
+          </div>
+        `;
+        
+        Modal.show({
+          title: 'Level Progress Details',
+          content: content,
+          buttons: [
+            { text: 'Close', primary: true }
+          ]
+        });
+      }
+      
+      async switchTab(tabId) {
         this.currentTab = tabId;
         
-        // Update tab buttons
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-          tab.classList.toggle('active', tab.dataset.tab === tabId);
+        // Animate tab buttons with smooth transitions
+        document.querySelectorAll('.profile-tab').forEach(async (tab, index) => {
+          const isActive = tab.dataset.tab === tabId;
+          
+          if (isActive) {
+            // Add active class with animation
+            tab.classList.add('active');
+            await this.animations.animateIn(tab, 'fadeInScale', { delay: index * 50 });
+          } else {
+            tab.classList.remove('active');
+          }
         });
         
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-          content.classList.toggle('active', content.id === `tab-${tabId}`);
-        });
+        // Animate tab content transition
+        const currentActiveContent = document.querySelector('.tab-content.active');
+        const newActiveContent = document.getElementById(`tab-${tabId}`);
+        
+        if (currentActiveContent && currentActiveContent !== newActiveContent) {
+          // Fade out current content
+          await this.animations.animateOut(currentActiveContent, 'fadeOut', { duration: 200 });
+          currentActiveContent.classList.remove('active');
+        }
+        
+        // Fade in new content
+        if (newActiveContent) {
+          newActiveContent.classList.add('active');
+          await this.animations.animateIn(newActiveContent, 'fadeInUp', { duration: 300 });
+        }
         
         // Load content if needed
         this.loadTabContent(tabId);
@@ -528,18 +804,28 @@
         }
       }
       
-      loadOverviewContent() {
-        // Load recent activity
-        this.loadRecentActivity();
+      async loadOverviewContent() {
+        // Load content with stagger animations
+        const contentSections = [
+          { fn: () => this.loadRecentActivity(), selector: '#recent-activity' },
+          { fn: () => this.loadLatestAchievements(), selector: '#latest-achievements' },
+          { fn: () => this.loadProgressOverview(), selector: '#progress-overview' },
+          { fn: () => this.loadNextGoals(), selector: '#next-goals' }
+        ];
         
-        // Load latest achievements
-        this.loadLatestAchievements();
-        
-        // Load progress overview
-        this.loadProgressOverview();
-        
-        // Load next goals
-        this.loadNextGoals();
+        // Load content with staggered animations
+        for (let i = 0; i < contentSections.length; i++) {
+          const { fn, selector } = contentSections[i];
+          fn();
+          
+          const element = document.querySelector(selector);
+          if (element) {
+            await this.animations.animateIn(element, 'fadeInUp', { 
+              delay: i * 150,
+              duration: 400 
+            });
+          }
+        }
       }
       
       loadRecentActivity() {
@@ -610,24 +896,96 @@
       // (Implementation continues with other tab content loaders)
       
       openAvatarBuilder() {
-        AvatarBuilder.showModal(this.currentProfile, (avatarConfig) => {
+        AvatarBuilder.showModal(this.currentProfile, async (avatarConfig) => {
           // Update profile with new avatar
           this.profileManager.updateProfile(this.currentProfile.id, { avatar: avatarConfig });
           this.currentProfile.avatar = avatarConfig;
           
-          // Update display
+          // Animate avatar update
+          const avatarContainer = document.querySelector('.avatar-container');
+          
+          // Add pulse animation to indicate change
+          await this.animations.animateIn(avatarContainer, 'pulse', { duration: 600 });
+          
+          // Update display with a smooth transition
+          await this.animations.animateOut(avatarContainer, 'fadeOut', { duration: 200 });
           this.mainAvatar.updateFromProfile(this.currentProfile);
+          await this.animations.animateIn(avatarContainer, 'bounceIn', { duration: 500 });
+          
+          // Show success feedback
+          this.showToast('Avatar updated successfully! ✨', 'success');
         });
       }
       
-      // Helper methods
-      calculateXPForLevel(level) {
-        return level > 1 ? 100 * Math.pow(level - 1, 2) : 0;
+      // Level system integration methods
+      
+      async simulateXPGain(amount, source = 'profile') {
+        if (!this.currentProfile) return;
+        
+        const oldLevel = this.currentProfile.level;
+        const oldXP = this.currentProfile.xp || 0;
+        const newXP = oldXP + amount;
+        
+        // Show immediate XP gain animation
+        await this.animations.animateXPGain(
+          document.querySelector('.profile-level-section'), 
+          amount, 
+          {
+            isMilestone: source === 'achievement',
+            color: source === 'achievement' ? '#9B59B6' : '#4ECDC4'
+          }
+        );
+        
+        // Update profile
+        this.profileManager.updateProfile(this.currentProfile.id, { xp: newXP });
+        this.currentProfile.xp = newXP;
+        
+        // Calculate new level
+        const newLevelData = xpCalculator.calculateLevelProgress(newXP);
+        const newLevel = newLevelData.level;
+        
+        // Update level in profile if changed
+        if (newLevel !== oldLevel) {
+          this.profileManager.updateProfile(this.currentProfile.id, { level: newLevel });
+          this.currentProfile.level = newLevel;
+          
+          // Celebrate level up with enhanced animations
+          await this.animations.celebrateLevelUp(
+            document.querySelector('.profile-level-section'),
+            { 
+              glowDuration: 2000,
+              onComplete: () => {
+                // Check for milestone rewards
+                const milestones = this.levelMilestones.checkLevelUp(oldLevel, newLevel);
+                
+                // Show level-up notification
+                this.levelUpNotification.show(newLevelData, {
+                  rewards: milestones.length > 0 ? milestones[0].rewards : []
+                });
+                
+                // Apply milestone rewards
+                milestones.forEach(milestone => {
+                  this.levelMilestones.applyRewards(milestone);
+                });
+              }
+            }
+          );
+        }
+        
+        // Show traditional XP gain animation
+        this.xpGainAnimation.show(amount, {
+          target: '#profile-level-display',
+          type: source === 'achievement' ? 'special' : 'gain'
+        });
+        
+        // Update displays with animations
+        this.updateLevelDisplay();
+        await this.updateProfileDisplay();
+        
+        return newLevelData;
       }
       
-      calculateXPForNextLevel(level) {
-        return 100 * Math.pow(level, 2);
-      }
+      // Helper methods
       
       getActivityIcon(gameType) {
         const icons = {
@@ -652,43 +1010,53 @@
       }
       
       setupSettingsEventListeners() {
-        // Profile settings
+        // Profile settings with visual feedback
         document.getElementById('profile-name').addEventListener('input', (e) => {
           this.updateProfileSetting('name', e.target.value);
+          this.animations.animateIn(e.target, 'fadeInScale', { duration: 200 });
         });
         
         document.getElementById('profile-bio').addEventListener('input', (e) => {
           this.updateProfileSetting('bio', e.target.value);
+          this.animations.animateIn(e.target, 'fadeInScale', { duration: 200 });
         });
         
         document.getElementById('favorite-subject').addEventListener('change', (e) => {
           this.updateProfileSetting('favoriteSubject', e.target.value);
+          this.animations.animateIn(e.target.parentElement, 'pulse', { duration: 300 });
+          this.showToast('Favorite subject updated! 📚', 'success');
         });
         
-        // Preferences
+        // Preferences with enhanced feedback
         document.getElementById('sound-enabled').addEventListener('change', (e) => {
           this.updatePreference('soundEnabled', e.target.checked);
+          this.animateSettingChange(e.target, e.target.checked ? 'Sound enabled 🔊' : 'Sound disabled 🔇');
         });
         
         document.getElementById('hints-enabled').addEventListener('change', (e) => {
           this.updatePreference('hintsEnabled', e.target.checked);
+          this.animateSettingChange(e.target, e.target.checked ? 'Hints enabled 💡' : 'Hints disabled');
         });
         
         document.getElementById('animations-enabled').addEventListener('change', (e) => {
           this.updatePreference('animationsEnabled', e.target.checked);
+          this.animateSettingChange(e.target, e.target.checked ? 'Animations enabled ✨' : 'Animations disabled');
         });
         
-        // Privacy settings
+        // Privacy settings with animations
         document.getElementById('show-profile').addEventListener('change', (e) => {
           this.updatePrivacySetting('showProfile', e.target.checked);
+          this.animateSettingChange(e.target, e.target.checked ? 'Profile visible to friends 👥' : 'Profile set to private 🔒');
         });
         
         document.getElementById('show-achievements').addEventListener('change', (e) => {
           this.updatePrivacySetting('showAchievements', e.target.checked);
+          this.animateSettingChange(e.target, e.target.checked ? 'Achievements visible 🏆' : 'Achievements hidden');
         });
         
         document.getElementById('allow-friend-requests').addEventListener('change', (e) => {
           this.updatePrivacySetting('allowFriendRequests', e.target.checked);
+          this.animateSettingChange(e.target, e.target.checked ? 'Friend requests enabled 👋' : 'Friend requests disabled');
         });
         
         // Data actions
@@ -729,6 +1097,25 @@
         });
       }
       
+      setupLevelDemoEventListeners() {
+        // XP gain demo buttons
+        document.getElementById('demo-xp-small')?.addEventListener('click', () => {
+          this.simulateXPGain(10, 'demo');
+        });
+        
+        document.getElementById('demo-xp-medium')?.addEventListener('click', () => {
+          this.simulateXPGain(25, 'demo');
+        });
+        
+        document.getElementById('demo-xp-large')?.addEventListener('click', () => {
+          this.simulateXPGain(50, 'demo');
+        });
+        
+        document.getElementById('demo-xp-mega')?.addEventListener('click', () => {
+          this.simulateXPGain(100, 'demo');
+        });
+      }
+      
       loadProgressOverview() {
         const container = document.getElementById('progress-overview');
         const progressSummary = this.progressTracker.getProgressSummary();
@@ -751,25 +1138,44 @@
       loadNextGoals() {
         const container = document.getElementById('next-goals');
         const currentLevel = this.currentProfile.level;
-        const currentXP = this.currentProfile.xp;
-        const nextLevelXP = this.calculateXPForNextLevel(currentLevel);
+        const totalXP = this.currentProfile.xp || 0;
+        
+        // Use enhanced XP calculator
+        const currentLevelData = xpCalculator.calculateLevelProgress(totalXP);
+        const nextMilestone = this.levelMilestones.getNextMilestone(currentLevel);
+        const milestoneProgress = this.levelMilestones.getMilestoneProgress(currentLevel);
         
         const goals = [
           {
             icon: '🎯',
             title: `Reach Level ${currentLevel + 1}`,
-            current: currentXP - this.calculateXPForLevel(currentLevel),
-            target: nextLevelXP - this.calculateXPForLevel(currentLevel),
-            text: `${nextLevelXP - currentXP} XP to go`
-          },
-          {
-            icon: '🏆',
-            title: 'Unlock 5 Achievements',
-            current: this.progressTracker.getProgressSummary().achievements.unlocked,
-            target: Math.ceil((this.progressTracker.getProgressSummary().achievements.unlocked + 5) / 5) * 5,
-            text: `${Math.ceil((this.progressTracker.getProgressSummary().achievements.unlocked + 5) / 5) * 5 - this.progressTracker.getProgressSummary().achievements.unlocked} to go`
+            current: currentLevelData.xpIntoLevel,
+            target: currentLevelData.xpForLevel,
+            text: `${Math.floor(currentLevelData.xpForLevel - currentLevelData.xpIntoLevel)} XP to go`
           }
         ];
+        
+        // Add milestone goal if applicable
+        if (nextMilestone && nextMilestone.level !== currentLevel + 1) {
+          goals.push({
+            icon: '🏆',
+            title: `Reach Level ${nextMilestone.level} Milestone`,
+            current: milestoneProgress ? milestoneProgress.completedLevels : 0,
+            target: milestoneProgress ? milestoneProgress.totalLevels : 1,
+            text: `${nextMilestone.levelsToGo} levels to go`
+          });
+        }
+        
+        // Add achievement goal
+        const achievementStats = this.progressTracker.getProgressSummary().achievements;
+        const nextAchievementTarget = Math.ceil((achievementStats.unlocked + 5) / 5) * 5;
+        goals.push({
+          icon: '🏅',
+          title: `Unlock ${nextAchievementTarget} Achievements`,
+          current: achievementStats.unlocked,
+          target: nextAchievementTarget,
+          text: `${nextAchievementTarget - achievementStats.unlocked} to go`
+        });
         
         container.innerHTML = goals.map(goal => `
           <div class="goal-item">
@@ -778,7 +1184,7 @@
               <div class="goal-title">${goal.title}</div>
               <div class="goal-progress">
                 <div class="goal-bar">
-                  <div class="goal-fill" style="width: ${(goal.current / goal.target) * 100}%"></div>
+                  <div class="goal-fill" style="width: ${Math.min(100, (goal.current / goal.target) * 100)}%"></div>
                 </div>
                 <span class="goal-text">${goal.text}</span>
               </div>
@@ -1007,65 +1413,359 @@
       }
       
       updateProfileSetting(key, value) {
-        this.profileManager.updateProfile(this.currentProfile.id, { [key]: value });
-        this.currentProfile[key] = value;
-        
-        if (key === 'name') {
-          document.querySelector('.profile-name').textContent = value;
+        try {
+          // Validate input based on the setting type
+          const validationRules = this.getValidationRules(key);
+          const validationResult = errorHandler.validateInput(value, validationRules);
+          
+          if (!validationResult.isValid) {
+            const errorResponse = errorHandler.handleValidationError(validationResult.errors, key);
+            this.showToast(`Invalid ${key}: ${validationResult.errors[0]}`, 'error');
+            return false;
+          }
+          
+          // Sanitize input to prevent XSS
+          const sanitizedValue = errorHandler.sanitizeInput(value);
+          
+          this.profileManager.updateProfile(this.currentProfile.id, { [key]: sanitizedValue });
+          this.currentProfile[key] = sanitizedValue;
+          
+          if (key === 'name') {
+            const nameElement = document.querySelector('.profile-name');
+            if (nameElement) {
+              nameElement.textContent = sanitizedValue;
+            }
+          }
+          
+          errorHandler.logError('Profile Setting Update', {
+            profileId: this.currentProfile.id,
+            key,
+            valueLength: String(sanitizedValue).length
+          }, 'info');
+          
+          return true;
+          
+        } catch (error) {
+          const errorResponse = errorHandler.handleProfileError(error, 'settings_save', {
+            profileId: this.currentProfile.id,
+            settingKey: key
+          });
+          return false;
         }
       }
       
       updatePreference(key, value) {
-        const preferences = { ...this.currentProfile.preferences, [key]: value };
-        this.profileManager.updateProfile(this.currentProfile.id, { preferences });
-        this.currentProfile.preferences = preferences;
+        try {
+          const preferences = { ...this.currentProfile.preferences, [key]: value };
+          this.profileManager.updateProfile(this.currentProfile.id, { preferences });
+          this.currentProfile.preferences = preferences;
+          
+          errorHandler.logError('Preference Update', {
+            profileId: this.currentProfile.id,
+            preference: key,
+            value
+          }, 'info');
+          
+          return true;
+          
+        } catch (error) {
+          const errorResponse = errorHandler.handleProfileError(error, 'settings_save', {
+            profileId: this.currentProfile.id,
+            preferenceKey: key
+          });
+          return false;
+        }
       }
       
       updatePrivacySetting(key, value) {
-        const privacy = { ...this.currentProfile.privacy, [key]: value };
-        this.profileManager.updateProfile(this.currentProfile.id, { privacy });
-        this.currentProfile.privacy = privacy;
+        try {
+          const privacy = { ...this.currentProfile.privacy, [key]: value };
+          this.profileManager.updateProfile(this.currentProfile.id, { privacy });
+          this.currentProfile.privacy = privacy;
+          
+          errorHandler.logError('Privacy Setting Update', {
+            profileId: this.currentProfile.id,
+            setting: key,
+            value
+          }, 'info');
+          
+          return true;
+          
+        } catch (error) {
+          const errorResponse = errorHandler.handleProfileError(error, 'settings_save', {
+            profileId: this.currentProfile.id,
+            privacyKey: key
+          });
+          return false;
+        }
+      }
+      
+      /**
+       * Get validation rules for profile settings
+       * @param {string} key - Setting key
+       * @returns {Object} Validation rules
+       */
+      getValidationRules(key) {
+        const rules = {
+          name: {
+            required: true,
+            minLength: 1,
+            maxLength: 50,
+            pattern: /^[a-zA-Z0-9\s\-_'\.]+$/,
+            patternMessage: 'Name can only contain letters, numbers, spaces, and basic punctuation'
+          },
+          bio: {
+            maxLength: 200,
+            pattern: /^[^<>]*$/,
+            patternMessage: 'Bio cannot contain HTML tags'
+          },
+          favoriteSubject: {
+            pattern: /^(math|science|reading|art|coding)$/,
+            patternMessage: 'Please select a valid subject'
+          }
+        };
+        
+        return rules[key] || {};
       }
       
       exportProfile() {
-        const profileData = {
-          profile: this.currentProfile,
-          progress: this.progressTracker.exportData()
-        };
-        
-        const blob = new Blob([JSON.stringify(profileData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `learnimals-profile-${this.currentProfile.name}-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        
-        this.showToast('Profile exported successfully!');
+        try {
+          if (!this.currentProfile) {
+            throw new Error('No profile data to export');
+          }
+          
+          const profileData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            profile: this.currentProfile,
+            progress: this.progressTracker?.exportData() || {}
+          };
+          
+          const jsonString = JSON.stringify(profileData, null, 2);
+          const blob = new Blob([jsonString], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `learnimals-profile-${this.sanitizeFilename(this.currentProfile.name)}-${new Date().toISOString().split('T')[0]}.json`;
+          
+          // Trigger download
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          errorHandler.logError('Profile Export', {
+            profileId: this.currentProfile.id,
+            dataSize: jsonString.length
+          }, 'info');
+          
+          this.showToast('Profile exported successfully! 📥', 'success');
+          
+        } catch (error) {
+          const errorResponse = errorHandler.handleProfileError(error, 'data_export', {
+            profileId: this.currentProfile?.id
+          });
+        }
       }
       
       importProfile() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              try {
-                const data = JSON.parse(e.target.result);
-                this.profileManager.importProfile(data);
-                this.loadProfile();
-                this.showToast('Profile imported successfully!');
-              } catch (error) {
-                this.showToast('Error importing profile. Please check the file format.');
+        try {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = '.json';
+          input.style.display = 'none';
+          
+          input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+              // Validate file size (max 5MB)
+              if (file.size > 5 * 1024 * 1024) {
+                throw new Error('File too large. Maximum size is 5MB.');
               }
-            };
-            reader.readAsText(file);
+              
+              // Validate file type
+              if (!file.name.endsWith('.json')) {
+                throw new Error('Invalid file type. Please select a JSON file.');
+              }
+              
+              const text = await this.readFileAsync(file);
+              const data = JSON.parse(text);
+              
+              // Validate import data structure
+              const validationResult = this.validateImportData(data);
+              if (!validationResult.isValid) {
+                throw new Error(`Invalid file format: ${validationResult.errors.join(', ')}`);
+              }
+              
+              // Show confirmation dialog
+              const confirmed = await this.confirmImport(data);
+              if (!confirmed) return;
+              
+              // Perform import
+              await this.performImport(data);
+              
+              errorHandler.logError('Profile Import', {
+                originalProfileId: this.currentProfile?.id,
+                importedProfileId: data.profile?.id,
+                fileSize: file.size
+              }, 'info');
+              
+              this.showToast('Profile imported successfully! 🎉', 'success');
+              
+            } catch (error) {
+              errorHandler.handleProfileError(error, 'data_import', {
+                fileName: file?.name,
+                fileSize: file?.size
+              });
+            } finally {
+              // Clean up
+              document.body.removeChild(input);
+            }
+          };
+          
+          input.onerror = () => {
+            errorHandler.logError('File Input Error', {
+              message: 'Failed to open file dialog'
+            }, 'error');
+            document.body.removeChild(input);
+          };
+          
+          document.body.appendChild(input);
+          input.click();
+          
+        } catch (error) {
+          errorHandler.handleProfileError(error, 'data_import');
+        }
+      }
+      
+      /**
+       * Read file asynchronously
+       * @param {File} file - File to read
+       * @returns {Promise<string>} File content
+       */
+      readFileAsync(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.onerror = () => reject(new Error('Failed to read file'));
+          reader.readAsText(file);
+        });
+      }
+      
+      /**
+       * Validate import data structure
+       * @param {Object} data - Import data
+       * @returns {Object} Validation result
+       */
+      validateImportData(data) {
+        const errors = [];
+        
+        if (!data || typeof data !== 'object') {
+          errors.push('File does not contain valid JSON data');
+          return { isValid: false, errors };
+        }
+        
+        if (!data.profile) {
+          errors.push('Missing profile data');
+        } else {
+          // Validate profile structure
+          const profileValidation = this.validateProfileData(data.profile);
+          if (!profileValidation.isValid) {
+            errors.push(`Invalid profile data: ${profileValidation.errors.join(', ')}`);
           }
+        }
+        
+        // Check if it's a valid Learnimals export
+        if (data.version && !data.version.match(/^\d+\.\d+$/)) {
+          errors.push('Invalid version format');
+        }
+        
+        return {
+          isValid: errors.length === 0,
+          errors
         };
-        input.click();
+      }
+      
+      /**
+       * Show import confirmation dialog
+       * @param {Object} data - Import data
+       * @returns {Promise<boolean>} User confirmation
+       */
+      confirmImport(data) {
+        return new Promise((resolve) => {
+          const profileName = data.profile?.name || 'Unknown';
+          const exportDate = data.exportDate ? new Date(data.exportDate).toLocaleDateString() : 'Unknown';
+          
+          Modal.show({
+            title: 'Confirm Profile Import',
+            content: `
+              <div style="padding: 16px;">
+                <p>⚠️ This will replace your current profile with the imported data.</p>
+                <div style="background-color: var(--bg-secondary); padding: 16px; border-radius: 8px; margin: 16px 0;">
+                  <p><strong>Profile Name:</strong> ${errorHandler.sanitizeInput(profileName)}</p>
+                  <p><strong>Export Date:</strong> ${exportDate}</p>
+                  <p><strong>Current Profile:</strong> ${errorHandler.sanitizeInput(this.currentProfile?.name || 'Unknown')}</p>
+                </div>
+                <p><strong>This action cannot be undone!</strong></p>
+              </div>
+            `,
+            buttons: [
+              { 
+                text: 'Cancel', 
+                secondary: true, 
+                onClick: () => resolve(false) 
+              },
+              { 
+                text: 'Import Profile', 
+                primary: true, 
+                onClick: () => resolve(true) 
+              }
+            ]
+          });
+        });
+      }
+      
+      /**
+       * Perform the actual import
+       * @param {Object} data - Import data
+       */
+      async performImport(data) {
+        try {
+          // Import profile data
+          if (data.profile) {
+            const repairedProfile = this.repairProfileData(data.profile);
+            this.profileManager.importProfile({ profile: repairedProfile });
+          }
+          
+          // Import progress data if available
+          if (data.progress && this.progressTracker?.importData) {
+            this.progressTracker.importData(data.progress);
+          }
+          
+          // Reload the page to reflect changes
+          setTimeout(() => {
+            this.loadProfile();
+          }, 500);
+          
+        } catch (error) {
+          throw new Error(`Import failed: ${error.message}`);
+        }
+      }
+      
+      /**
+       * Sanitize filename for download
+       * @param {string} filename - Original filename
+       * @returns {string} Sanitized filename
+       */
+      sanitizeFilename(filename) {
+        return filename
+          .replace(/[^a-zA-Z0-9\-_]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+          .substring(0, 50) || 'profile';
       }
       
       resetProgress() {
@@ -1126,29 +1826,347 @@
         this.showToast(`Added ${mockFriend.name} as a friend!`);
       }
       
-      showToast(message) {
+      enhanceInteractiveElements() {
+        // Add hover effects to buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+          this.animations.addHoverEffect(btn, 'lift');
+          this.animations.addClickEffect(btn, 'shrink');
+        });
+        
+        // Add hover effects to cards
+        document.querySelectorAll('.card, .profile-card, .stat-card, .achievement-card').forEach(card => {
+          this.animations.addHoverEffect(card, 'lift');
+        });
+        
+        // Add hover effects to tabs
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+          this.animations.addHoverEffect(tab, 'scale');
+        });
+        
+        // Add pulse animation to avatar
+        const avatarContainer = document.querySelector('.avatar-container');
+        if (avatarContainer) {
+          this.animations.addHoverEffect(avatarContainer, 'scale');
+        }
+        
+        // Add animations to progress bars
+        document.querySelectorAll('.progress-bar').forEach(progressBar => {
+          const fill = progressBar.querySelector('.progress-fill');
+          if (fill) {
+            // Add shimmer effect on hover
+            progressBar.addEventListener('mouseenter', () => {
+              if (this.animations.shouldAnimate()) {
+                fill.classList.add('animate-shimmer');
+              }
+            });
+            progressBar.addEventListener('mouseleave', () => {
+              fill.classList.remove('animate-shimmer');
+            });
+          }
+        });
+        
+        // Add stagger animation to navigation and initial content
+        setTimeout(() => {
+          this.animations.staggerAnimation(
+            document.querySelectorAll('.profile-nav .profile-tab'),
+            'fadeInDown',
+            { staggerDelay: 100, baseDelay: 200 }
+          );
+        }, 100);
+      }
+      
+      async animateSettingChange(element, message) {
+        // Add visual feedback to the setting element
+        const settingGroup = element.closest('.setting-group');
+        if (settingGroup) {
+          await this.animations.animateIn(settingGroup, 'pulse', { duration: 300 });
+        }
+        
+        // Show toast with the message
+        this.showToast(message, 'success');
+      }
+      
+      showToast(message, type = 'info') {
         const toast = document.createElement('div');
-        toast.className = 'toast';
+        toast.className = `toast toast-${type}`;
         toast.textContent = message;
+        
+        // Determine background color based on type
+        const colors = {
+          success: '#4ECDC4',
+          error: '#e74c3c',
+          warning: '#f39c12',
+          info: 'var(--accent-primary)'
+        };
+        
         toast.style.cssText = `
           position: fixed;
           top: 20px;
           right: 20px;
-          background-color: var(--accent-primary);
+          background-color: ${colors[type] || colors.info};
           color: white;
           padding: 12px 24px;
           border-radius: 6px;
           z-index: 10000;
           opacity: 0;
-          transition: opacity 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform: translateX(100px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          font-weight: 500;
         `;
         
         document.body.appendChild(toast);
-        setTimeout(() => toast.style.opacity = '1', 100);
+        
+        // Animate in with slide and fade
+        setTimeout(() => {
+          toast.style.opacity = '1';
+          toast.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Animate out after delay
         setTimeout(() => {
           toast.style.opacity = '0';
+          toast.style.transform = 'translateX(100px)';
           setTimeout(() => toast.remove(), 300);
         }, 3000);
+      }
+      
+      /**
+       * Validate profile data integrity
+       * @param {Object} profile - Profile data to validate
+       * @returns {Object} Validation result
+       */
+      validateProfileData(profile) {
+        const errors = [];
+        
+        if (!profile) {
+          errors.push('Profile is null or undefined');
+          return { isValid: false, errors };
+        }
+        
+        // Required fields
+        if (!profile.id) errors.push('Missing profile ID');
+        if (!profile.name || typeof profile.name !== 'string') errors.push('Invalid or missing name');
+        if (!profile.createdAt) errors.push('Missing creation date');
+        
+        // Data type validation
+        if (profile.xp !== undefined && (typeof profile.xp !== 'number' || profile.xp < 0)) {
+          errors.push('Invalid XP value');
+        }
+        
+        if (profile.level !== undefined && (typeof profile.level !== 'number' || profile.level < 1)) {
+          errors.push('Invalid level value');
+        }
+        
+        if (profile.streakDays !== undefined && (typeof profile.streakDays !== 'number' || profile.streakDays < 0)) {
+          errors.push('Invalid streak days');
+        }
+        
+        // Validate preferences if present
+        if (profile.preferences && typeof profile.preferences !== 'object') {
+          errors.push('Invalid preferences format');
+        }
+        
+        // Validate privacy settings if present
+        if (profile.privacy && typeof profile.privacy !== 'object') {
+          errors.push('Invalid privacy settings format');
+        }
+        
+        // Validate friends array if present
+        if (profile.friends && !Array.isArray(profile.friends)) {
+          errors.push('Invalid friends list format');
+        }
+        
+        return {
+          isValid: errors.length === 0,
+          errors
+        };
+      }
+      
+      /**
+       * Attempt to repair corrupted profile data
+       * @param {Object} profile - Profile data to repair
+       * @returns {Object} Repaired profile data
+       */
+      repairProfileData(profile) {
+        const repaired = { ...profile };
+        
+        // Set default values for missing required fields
+        if (!repaired.id) {
+          repaired.id = `profile_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        }
+        
+        if (!repaired.name || typeof repaired.name !== 'string') {
+          repaired.name = 'Learner';
+        }
+        
+        if (!repaired.createdAt) {
+          repaired.createdAt = new Date().toISOString();
+        }
+        
+        // Fix numeric values
+        if (typeof repaired.xp !== 'number' || repaired.xp < 0) {
+          repaired.xp = 0;
+        }
+        
+        if (typeof repaired.level !== 'number' || repaired.level < 1) {
+          repaired.level = 1;
+        }
+        
+        if (typeof repaired.streakDays !== 'number' || repaired.streakDays < 0) {
+          repaired.streakDays = 0;
+        }
+        
+        // Fix object fields
+        if (!repaired.preferences || typeof repaired.preferences !== 'object') {
+          repaired.preferences = {
+            soundEnabled: true,
+            hintsEnabled: true,
+            animationsEnabled: true
+          };
+        }
+        
+        if (!repaired.privacy || typeof repaired.privacy !== 'object') {
+          repaired.privacy = {
+            showProfile: true,
+            showAchievements: true,
+            allowFriendRequests: true
+          };
+        }
+        
+        if (!Array.isArray(repaired.friends)) {
+          repaired.friends = [];
+        }
+        
+        // Generate friend code if missing
+        if (!repaired.friendCode) {
+          repaired.friendCode = this.generateFriendCode();
+        }
+        
+        // Save repaired profile
+        try {
+          this.profileManager.updateProfile(repaired.id, repaired);
+          errorHandler.logError('Profile Repair', {
+            profileId: repaired.id,
+            message: 'Profile data successfully repaired'
+          }, 'info');
+        } catch (saveError) {
+          errorHandler.handleStorageError(saveError, 'profile_repair');
+        }
+        
+        return repaired;
+      }
+      
+      /**
+       * Generate a friend code
+       * @returns {string} Friend code in format ABCD-1234
+       */
+      generateFriendCode() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        
+        let code = '';
+        for (let i = 0; i < 4; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        code += '-';
+        for (let i = 0; i < 4; i++) {
+          code += nums.charAt(Math.floor(Math.random() * nums.length));
+        }
+        
+        return code;
+      }
+      
+      /**
+       * Show error fallback UI
+       * @param {string} message - Error message to display
+       * @param {string} errorId - Error ID for reference
+       */
+      showErrorFallback(message, errorId) {
+        const container = document.querySelector('main') || document.body;
+        
+        const fallbackHTML = `
+          <div class="error-fallback">
+            <div class="error-fallback-content">
+              <div class="error-icon">⚠️</div>
+              <h2>Oops! Something went wrong</h2>
+              <p>${message}</p>
+              <div class="error-actions">
+                <button class="btn btn-primary" onclick="window.location.reload()">
+                  🔄 Refresh Page
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                  🏠 Go Home
+                </button>
+              </div>
+              <details class="error-details">
+                <summary>Technical Details</summary>
+                <p>Error ID: <code>${errorId}</code></p>
+                <p>If this problem persists, please contact support with the error ID above.</p>
+              </details>
+            </div>
+          </div>
+        `;
+        
+        container.innerHTML = fallbackHTML;
+        
+        // Add fallback styles
+        const style = document.createElement('style');
+        style.textContent = `
+          .error-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            padding: 40px 20px;
+          }
+          .error-fallback-content {
+            text-align: center;
+            max-width: 500px;
+            background-color: var(--bg-card);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          .error-fallback .error-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+          }
+          .error-fallback h2 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+          }
+          .error-fallback p {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+          }
+          .error-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+          }
+          .error-details {
+            text-align: left;
+            background-color: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+          }
+          .error-details summary {
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 8px;
+          }
+          .error-details code {
+            background-color: var(--bg-primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+          }
+        `;
+        document.head.appendChild(style);
       }
     }
 

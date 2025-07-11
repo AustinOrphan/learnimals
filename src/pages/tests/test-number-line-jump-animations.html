@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Number Line Jump Game - Animation Test</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../features/games/number-line-jump/numberLineJump.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-info {
+      background: var(--bg-section);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .animation-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .animation-demo {
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .demo-canvas {
+      width: 100%;
+      height: 200px;
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      margin: 1rem 0;
+      background: var(--bg-primary);
+    }
+    
+    .demo-button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      margin: 0.25rem;
+      transition: all 0.2s ease;
+    }
+    
+    .demo-button:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .game-container {
+      margin: 2rem 0;
+      height: 600px;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .controls-panel {
+      background: var(--bg-hover);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    #number-line-canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Enhanced Number Line Jump Game</h1>
+      <p>Testing jump animations, character expressions, and visual effects</p>
+    </div>
+    
+    <div class="test-info">
+      <h3>🦁 Animation Features</h3>
+      <ul>
+        <li><strong>Jump Physics:</strong> Parabolic arc with squash and stretch</li>
+        <li><strong>Character Expressions:</strong> Happy, thinking, jumping, and idle states</li>
+        <li><strong>Landing Effects:</strong> Dust particles and impact ripples</li>
+        <li><strong>Trail System:</strong> Motion blur for character movement</li>
+        <li><strong>Number Highlighting:</strong> Glow effects when landing on numbers</li>
+        <li><strong>Celebration Animations:</strong> Star bursts and victory effects</li>
+        <li><strong>Rotation Effects:</strong> Character spins during big jumps</li>
+        <li><strong>Accessibility:</strong> Respects prefers-reduced-motion</li>
+      </ul>
+    </div>
+    
+    <!-- Animation Showcase -->
+    <div class="animation-showcase">
+      <div class="animation-demo">
+        <h4>Jump Arc Animation</h4>
+        <canvas id="demo-jump" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoJumpAnimation()">Demo Jump</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Landing Effects</h4>
+        <canvas id="demo-landing" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoLandingEffect()">Demo Landing</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Character Expressions</h4>
+        <canvas id="demo-expressions" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoExpressions()">Demo Expressions</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Celebration Effects</h4>
+        <canvas id="demo-celebration" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoCelebrationEffect()">Demo Celebration</button>
+      </div>
+    </div>
+    
+    <!-- Game Controls -->
+    <div class="controls-panel">
+      <h3>Game Controls</h3>
+      <div class="controls-grid">
+        <button class="demo-button" onclick="changeGameDifficulty('easy')">Easy Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('medium')">Medium Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('hard')">Hard Mode</button>
+        <button class="demo-button" onclick="toggleAnimations()">Toggle Animations</button>
+        <button class="demo-button" onclick="simulateVictory()">Simulate Victory</button>
+        <button class="demo-button" onclick="showAllEffects()">Show All Effects</button>
+      </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div class="game-container">
+      <canvas id="number-line-canvas"></canvas>
+    </div>
+    
+    <!-- Performance Info -->
+    <div class="test-info">
+      <h3>📊 Performance Notes</h3>
+      <ul>
+        <li>Jump animations use parabolic equations for realistic physics</li>
+        <li>Particle systems are optimized with object pooling</li>
+        <li>Trail effects only appear during fast movements</li>
+        <li>Character expressions change contextually based on game state</li>
+        <li>All animations can be disabled for accessibility</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script type="module">
+    import NumberLineJumpGame from '../../features/games/number-line-jump/numberLineJump.js';
+    
+    let game;
+    let animationsEnabled = true;
+    const demoCanvases = {};
+    
+    // Initialize demo canvases
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set up demo canvases
+      demoCanvases.jump = document.getElementById('demo-jump').getContext('2d');
+      demoCanvases.landing = document.getElementById('demo-landing').getContext('2d');
+      demoCanvases.expressions = document.getElementById('demo-expressions').getContext('2d');
+      demoCanvases.celebration = document.getElementById('demo-celebration').getContext('2d');
+      
+      // Initialize main game
+      try {
+        game = new NumberLineJumpGame('number-line-canvas', {
+          difficulty: 'medium',
+          enableAnimations: true
+        });
+        
+        console.log('Enhanced Number Line Jump game initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Number Line Jump game:', error);
+      }
+    });
+    
+    // Demo: Jump Arc Animation
+    window.demoJumpAnimation = function() {
+      const canvas = document.getElementById('demo-jump');
+      const ctx = demoCanvases.jump;
+      
+      let character = {
+        x: 50,
+        y: canvas.height - 50,
+        jumpHeight: 0,
+        scaleX: 1,
+        scaleY: 1,
+        rotation: 0
+      };
+      
+      let progress = 0;
+      const duration = 1000; // 1 second
+      const startTime = performance.now();
+      
+      function animate() {
+        const currentTime = performance.now();
+        progress = Math.min((currentTime - startTime) / duration, 1);
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw ground line
+        ctx.strokeStyle = '#2C3E50';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height - 30);
+        ctx.lineTo(canvas.width, canvas.height - 30);
+        ctx.stroke();
+        
+        // Calculate jump physics
+        const jumpHeight = 4 * 60 * progress * (1 - progress); // Parabolic arc
+        character.jumpHeight = jumpHeight;
+        
+        // Squash and stretch
+        const stretchFactor = 1 + Math.sin(progress * Math.PI) * 0.3;
+        character.scaleY = stretchFactor;
+        character.scaleX = 2 - stretchFactor;
+        
+        // Rotation for big jump
+        character.rotation = progress * Math.PI * 2;
+        
+        // Move character horizontally
+        character.x = 50 + (progress * (canvas.width - 100));
+        
+        // Draw character
+        ctx.save();
+        ctx.translate(character.x, character.y - character.jumpHeight);
+        ctx.scale(character.scaleX, character.scaleY);
+        ctx.rotate(character.rotation);
+        
+        // Character body
+        ctx.fillStyle = '#FF6B35';
+        ctx.beginPath();
+        ctx.arc(0, 0, 15, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    };
+    
+    // Demo: Landing Effects
+    window.demoLandingEffect = function() {
+      const canvas = document.getElementById('demo-landing');
+      const ctx = demoCanvases.landing;
+      const particles = [];
+      
+      // Create landing point
+      const landingX = canvas.width / 2;
+      const landingY = canvas.height - 50;
+      
+      // Create dust particles
+      for (let i = 0; i < 8; i++) {
+        particles.push({
+          x: landingX,
+          y: landingY,
+          vx: (Math.random() - 0.5) * 6,
+          vy: -Math.random() * 4,
+          life: 1.0,
+          decay: 0.03,
+          size: Math.random() * 6 + 2,
+          color: 'rgba(139, 90, 43, 0.8)',
+          type: 'dust'
+        });
+      }
+      
+      // Create ripple
+      particles.push({
+        x: landingX,
+        y: landingY,
+        life: 1.0,
+        decay: 0.02,
+        size: 0,
+        maxSize: 80,
+        color: 'rgba(255, 215, 0, 0.6)',
+        type: 'ripple'
+      });
+      
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw ground
+        ctx.strokeStyle = '#2C3E50';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, landingY);
+        ctx.lineTo(canvas.width, landingY);
+        ctx.stroke();
+        
+        // Update and draw particles
+        particles.forEach((particle, index) => {
+          ctx.save();
+          ctx.globalAlpha = particle.life;
+          
+          if (particle.type === 'dust') {
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            particle.vy += 0.2; // gravity
+            
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (particle.type === 'ripple') {
+            particle.size += (particle.maxSize - particle.size) * 0.1;
+            
+            ctx.strokeStyle = particle.color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          
+          particle.life -= particle.decay;
+          ctx.restore();
+        });
+        
+        // Continue if particles exist
+        if (particles.some(p => p.life > 0)) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    };
+    
+    // Demo: Character Expressions
+    window.demoExpressions = function() {
+      const canvas = document.getElementById('demo-expressions');
+      const ctx = demoCanvases.expressions;
+      const expressions = ['idle', 'happy', 'thinking', 'jumping'];
+      let currentExpression = 0;
+      
+      function drawCharacter(expression) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        
+        // Character body
+        ctx.fillStyle = '#FF6B35';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 40, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Eyes
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(centerX - 12, centerY - 8, 6, 0, Math.PI * 2);
+        ctx.arc(centerX + 12, centerY - 8, 6, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Pupils based on expression
+        ctx.fillStyle = 'black';
+        if (expression === 'happy') {
+          ctx.beginPath();
+          ctx.arc(centerX - 12, centerY - 5, 4, 0, Math.PI);
+          ctx.arc(centerX + 12, centerY - 5, 4, 0, Math.PI);
+          ctx.fill();
+        } else if (expression === 'thinking') {
+          ctx.beginPath();
+          ctx.arc(centerX - 12, centerY - 12, 3, 0, Math.PI * 2);
+          ctx.arc(centerX + 12, centerY - 12, 3, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(centerX - 12, centerY - 8, 3, 0, Math.PI * 2);
+          ctx.arc(centerX + 12, centerY - 8, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        // Mouth
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        
+        if (expression === 'happy') {
+          ctx.beginPath();
+          ctx.arc(centerX, centerY + 5, 12, 0, Math.PI);
+          ctx.stroke();
+        } else if (expression === 'thinking') {
+          ctx.beginPath();
+          ctx.moveTo(centerX - 8, centerY + 8);
+          ctx.lineTo(centerX + 8, centerY + 8);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(centerX, centerY + 6, 8, 0, Math.PI);
+          ctx.stroke();
+        }
+        
+        // Expression label
+        ctx.fillStyle = '#2C3E50';
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(expression.toUpperCase(), centerX, canvas.height - 20);
+      }
+      
+      function cycleExpressions() {
+        drawCharacter(expressions[currentExpression]);
+        currentExpression = (currentExpression + 1) % expressions.length;
+        
+        setTimeout(cycleExpressions, 1500);
+      }
+      
+      cycleExpressions();
+    };
+    
+    // Demo: Celebration Effects
+    window.demoCelebrationEffect = function() {
+      const canvas = document.getElementById('demo-celebration');
+      const ctx = demoCanvases.celebration;
+      const particles = [];
+      
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      // Create star burst
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 * i) / 12;
+        particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 8,
+          vy: Math.sin(angle) * 8,
+          life: 1.0,
+          decay: 0.02,
+          size: Math.random() * 8 + 4,
+          color: '#FFD700'
+        });
+      }
+      
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(particle => {
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          particle.life -= particle.decay;
+          
+          if (particle.life > 0) {
+            ctx.save();
+            ctx.globalAlpha = particle.life;
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+        
+        if (particles.some(p => p.life > 0)) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    };
+    
+    // Game control functions
+    window.changeGameDifficulty = function(difficulty) {
+      if (game) {
+        game.difficulty = difficulty;
+        game.maxNumber = game.getMaxNumberForDifficulty();
+        game.availableJumps = game.getJumpsForDifficulty();
+        game.restart();
+        console.log(`Difficulty changed to: ${difficulty}`);
+      }
+    };
+    
+    window.toggleAnimations = function() {
+      animationsEnabled = !animationsEnabled;
+      console.log(`Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
+      
+      if (!animationsEnabled) {
+        document.body.classList.add('prefers-reduced-motion');
+      } else {
+        document.body.classList.remove('prefers-reduced-motion');
+      }
+    };
+    
+    window.simulateVictory = function() {
+      if (game && game.state === 'playing') {
+        // Set position to target for instant victory
+        game.currentPosition = game.targetNumber;
+        game.characterExpression = 'happy';
+        game.createCelebrationEffects();
+        game.celebrateCompletion('gold');
+        console.log('Victory simulated!');
+      }
+    };
+    
+    window.showAllEffects = function() {
+      if (game && game.state === 'playing') {
+        const centerX = game.canvas.width / 2;
+        const centerY = game.canvas.height / 2;
+        
+        // Show landing effects
+        game.createLandingEffects(5);
+        
+        // Show number highlighting
+        game.highlightNumber(3);
+        game.highlightNumber(7);
+        
+        // Show celebration effects
+        setTimeout(() => {
+          game.createCelebrationEffects();
+        }, 500);
+        
+        // Cycle through expressions
+        setTimeout(() => {
+          game.characterExpression = 'happy';
+        }, 1000);
+        
+        setTimeout(() => {
+          game.characterExpression = 'thinking';
+        }, 2000);
+        
+        setTimeout(() => {
+          game.characterExpression = 'idle';
+        }, 3000);
+      }
+    };
+    
+    // Add custom CSS for reduced motion
+    const style = document.createElement('style');
+    style.textContent = `
+      .prefers-reduced-motion *,
+      .prefers-reduced-motion *::before,
+      .prefers-reduced-motion *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+  
+  <!-- Instructions overlay -->
+  <div style="position: fixed; bottom: 20px; right: 20px; background: var(--bg-card); padding: 1rem; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 300px; font-size: 0.9rem;">
+    <strong>Tips:</strong><br>
+    • Select jump amount and direction to move Leo<br>
+    • Watch Leo's animations during jumps<br>
+    • Try different jump sizes for different effects<br>
+    • Reach the target number to see celebrations!
+  </div>
+</body>
+</html>

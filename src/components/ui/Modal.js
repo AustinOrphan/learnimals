@@ -2,6 +2,7 @@
 // Reusable modal component for consistent UI across the site
 
 import BaseComponent from '../BaseComponent.js';
+import animationManager from '../../utils/AnimationManager.js';
 
 class Modal extends BaseComponent {
   /**
@@ -31,10 +32,13 @@ class Modal extends BaseComponent {
       size: options.size || 'medium',
       showConfirmButton: options.showConfirmButton !== undefined ? options.showConfirmButton : true,
       showCancelButton: options.showCancelButton !== undefined ? options.showCancelButton : false,
+      enableAnimations: options.enableAnimations !== undefined ? options.enableAnimations : true,
+      animationType: options.animationType || 'fadeInScale',
       ...options
     });
     
     this.isOpen = false;
+    this.isAnimating = false;
   }
 
   /**
@@ -42,17 +46,20 @@ class Modal extends BaseComponent {
    * @returns {string} - Modal HTML
    */
   generateHTML() {
-    const { id, title, content, confirmButtonText, cancelButtonText, showClose, size, showConfirmButton, showCancelButton } = this.options;
+    const { id, title, content, confirmButtonText, cancelButtonText, showClose, size, showConfirmButton, showCancelButton, enableAnimations } = this.options;
     
     // Size class
     const sizeClass = `modal--${size}`;
     
+    // Animation classes
+    const animationClasses = enableAnimations ? 'modal-animated' : '';
+    
     let html = `
-      <div id="${id}" class="component modal-overlay" aria-hidden="true">
+      <div id="${id}" class="component modal-overlay ${animationClasses}" aria-hidden="true" data-animate="${enableAnimations}">
         <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${id}-title" aria-modal="true">
           <div class="modal-header">
             <h3 id="${id}-title" class="modal-title">${title}</h3>
-            ${showClose ? '<button class="modal-close component-button component-button--ghost" aria-label="Close">&times;</button>' : ''}
+            ${showClose ? '<button class="modal-close component-button component-button--ghost btn-ripple" aria-label="Close">&times;</button>' : ''}
           </div>
           <div class="modal-content">
             ${content}
@@ -67,13 +74,13 @@ class Modal extends BaseComponent {
       
       if (showCancelButton) {
         html += `
-          <button class="modal-cancel component-button component-button--outline">${cancelButtonText}</button>
+          <button class="modal-cancel component-button component-button--outline btn-ripple">${cancelButtonText}</button>
         `;
       }
       
       if (showConfirmButton) {
         html += `
-          <button class="modal-confirm component-button component-button--primary">${confirmButtonText}</button>
+          <button class="modal-confirm component-button component-button--primary btn-ripple">${confirmButtonText}</button>
         `;
       }
       
@@ -156,25 +163,77 @@ class Modal extends BaseComponent {
   /**
    * Open the modal
    */
-  open() {
+  async open() {
+    if (this.isAnimating) return this;
+    
     const modal = document.getElementById(this.options.id);
     if (!modal) {
       this.create();
     }
     
-    document.getElementById(this.options.id).setAttribute('aria-hidden', 'false');
-    document.body.classList.add('modal-open');
+    this.isAnimating = true;
     this.isOpen = true;
     
+    const modalElement = document.getElementById(this.options.id);
+    modalElement.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    
+    // Add interaction effects to buttons
+    if (this.options.enableAnimations) {
+      const buttons = modalElement.querySelectorAll('button');
+      buttons.forEach(button => {
+        animationManager.addInteractionEffects(button, {
+          hover: 'lift',
+          click: 'shrink'
+        });
+      });
+      
+      // Animate modal entrance
+      try {
+        const modalContent = modalElement.querySelector('.modal');
+        await animationManager.fadeIn(modalElement, { duration: 200 });
+        await animationManager.bounceIn(modalContent, { duration: 300 });
+      } catch (error) {
+        console.error('Modal open animation failed:', error);
+      }
+    }
+    
+    this.isAnimating = false;
     return this;
   }
 
   /**
    * Close the modal
    */
-  close() {
+  async close() {
+    if (this.isAnimating || !this.isOpen) return this;
+    
+    this.isAnimating = true;
+    
     const modal = document.getElementById(this.options.id);
     if (modal) {
+      // Animate modal exit
+      if (this.options.enableAnimations) {
+        try {
+          const modalContent = modal.querySelector('.modal');
+          // Quick scale down and fade out
+          await Promise.all([
+            animationManager.createAnimation(modalContent, {
+              type: 'exit',
+              animation: 'scaleOut',
+              options: { duration: 200, easing: 'easeIn' }
+            }),
+            animationManager.createAnimation(modal, {
+              type: 'exit', 
+              animation: 'fadeOut',
+              options: { duration: 250, delay: 100 }
+            })
+          ]);
+        } catch (error) {
+          console.error('Modal close animation failed:', error);
+        }
+      }
+      
       modal.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
       this.isOpen = false;
@@ -184,6 +243,7 @@ class Modal extends BaseComponent {
       }
     }
     
+    this.isAnimating = false;
     return this;
   }
 

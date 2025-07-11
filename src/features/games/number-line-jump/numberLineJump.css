@@ -234,6 +234,306 @@
   animation: shake 0.5s ease-in-out;
 }
 
+/* =============================================
+   ENHANCED JUMP ANIMATIONS
+   ============================================= */
+
+/* Character jump arc animation */
+@keyframes characterJump {
+  0% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+  20% {
+    transform: translateY(5px) scaleY(0.8) scaleX(1.2);
+    /* Squash before jump */
+  }
+  50% {
+    transform: translateY(-40px) scaleY(1.1) scaleX(0.9);
+    /* Stretch at peak */
+  }
+  80% {
+    transform: translateY(3px) scaleY(0.9) scaleX(1.1);
+    /* Prepare for landing */
+  }
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+}
+
+/* Big jump animation for larger numbers */
+@keyframes characterBigJump {
+  0% {
+    transform: translateY(0) scaleY(1) scaleX(1) rotate(0deg);
+  }
+  15% {
+    transform: translateY(5px) scaleY(0.7) scaleX(1.3);
+  }
+  50% {
+    transform: translateY(-80px) scaleY(1.2) scaleX(0.8) rotate(360deg);
+    /* Flip during big jump */
+  }
+  85% {
+    transform: translateY(3px) scaleY(0.8) scaleX(1.2);
+  }
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+}
+
+/* Backward jump animation */
+@keyframes characterBackJump {
+  0% {
+    transform: translateY(0) scaleY(1) scaleX(1) rotate(0deg);
+  }
+  20% {
+    transform: translateY(5px) scaleY(0.8) scaleX(1.2) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-30px) scaleY(1.1) scaleX(0.9) rotate(-20deg);
+  }
+  80% {
+    transform: translateY(3px) scaleY(0.9) scaleX(1.1) rotate(-5deg);
+  }
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1) rotate(0deg);
+  }
+}
+
+/* =============================================
+   LANDING EFFECTS
+   ============================================= */
+
+/* Landing dust particles */
+.landing-dust {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(139, 90, 43, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: landingDust 0.8s ease-out forwards;
+}
+
+@keyframes landingDust {
+  0% {
+    opacity: 1;
+    transform: scale(0) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2) translate(var(--dx, 0), var(--dy, -20px));
+  }
+}
+
+/* Landing impact ripple */
+.landing-ripple {
+  position: absolute;
+  border: 2px solid rgba(255, 215, 0, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: landingRipple 1s ease-out forwards;
+}
+
+@keyframes landingRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+  }
+}
+
+/* Star particles for successful jumps */
+.jump-star {
+  position: absolute;
+  color: #FFD700;
+  font-size: 20px;
+  pointer-events: none;
+  animation: jumpStar 1.2s ease-out forwards;
+}
+
+@keyframes jumpStar {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-30px) rotate(180deg) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) rotate(360deg) scale(0.5);
+  }
+}
+
+/* =============================================
+   NUMBER HIGHLIGHTING
+   ============================================= */
+
+/* Number platform highlight */
+.number-highlight {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: numberHighlight 0.6s ease-out;
+}
+
+@keyframes numberHighlight {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+}
+
+/* Correct landing glow */
+.correct-landing {
+  animation: correctLandingGlow 1s ease-out;
+}
+
+@keyframes correctLandingGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(46, 204, 113, 0);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(46, 204, 113, 0);
+  }
+}
+
+/* =============================================
+   CHARACTER EXPRESSIONS
+   ============================================= */
+
+/* Happy bounce for correct answer */
+.character-happy {
+  animation: happyBounce 0.8s ease-out;
+}
+
+@keyframes happyBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-10px) scale(1.1) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.05) rotate(5deg);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.08) rotate(-3deg);
+  }
+}
+
+/* Idle animation */
+.character-idle {
+  animation: idleFloat 3s ease-in-out infinite;
+}
+
+@keyframes idleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Thinking animation */
+.character-thinking {
+  animation: thinkingWobble 2s ease-in-out infinite;
+}
+
+@keyframes thinkingWobble {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+/* =============================================
+   TRAIL EFFECTS
+   ============================================= */
+
+.jump-trail {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.6) 0%, transparent 70%);
+  pointer-events: none;
+  animation: jumpTrail 0.5s ease-out forwards;
+}
+
+@keyframes jumpTrail {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+/* =============================================
+   TARGET ANIMATIONS
+   ============================================= */
+
+/* Target star pulsing */
+.target-star {
+  animation: targetPulse 2s ease-in-out infinite;
+}
+
+@keyframes targetPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    filter: brightness(1.3);
+  }
+}
+
+/* Target reached celebration */
+.target-reached {
+  animation: targetCelebration 1s ease-out;
+}
+
+@keyframes targetCelebration {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(2) rotate(360deg);
+  }
+  100% {
+    transform: scale(0) rotate(720deg);
+    opacity: 0;
+  }
+}
+
 /* Accessibility improvements */
 .game-container:focus {
   outline: 3px solid #4ECDC4;

@@ -263,40 +263,272 @@
 .difficulty-badge.medium { background: #F39C12; }
 .difficulty-badge.hard { background: #E74C3C; }
 
-/* Success/Error animations */
+/* =============================================
+   ENHANCED MATCHING ANIMATIONS
+   ============================================= */
+
+/* Card selection animations */
+@keyframes cardSelect {
+  0% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  100% {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+  }
+}
+
+@keyframes cardDeselect {
+  0% {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+}
+
+/* Successful match animations */
 @keyframes elementMatch {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  25% {
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(46, 204, 113, 0.6);
+  }
+  50% {
+    transform: scale(1.15) rotate(2deg);
+    box-shadow: 0 15px 35px rgba(46, 204, 113, 0.8);
+  }
+  75% {
+    transform: scale(1.1) rotate(-1deg);
+    box-shadow: 0 12px 30px rgba(46, 204, 113, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+  }
 }
 
+/* Incorrect match animations */
 @keyframes elementError {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-  20%, 40%, 60%, 80% { transform: translateX(3px); }
+  0%, 100% {
+    transform: translateX(0) scale(1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.5);
+  }
 }
 
-@keyframes particleFloat {
-  0% { 
-    transform: translateY(0) rotate(0deg);
+/* Card hover effects */
+@keyframes cardHover {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    transform: scale(1.02) translateY(-1px);
+  }
+}
+
+/* Element discovery animation */
+@keyframes elementDiscovery {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotateY(-90deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1) rotateY(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+}
+
+/* Atomic structure animation */
+@keyframes atomicOrbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Chemical bond formation */
+@keyframes bondFormation {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  50% {
     opacity: 1;
   }
-  100% { 
-    transform: translateY(-50px) rotate(360deg);
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Electron particle effects */
+@keyframes electronFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-30px) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-60px) scale(0.5);
     opacity: 0;
   }
 }
 
+/* Molecular vibration */
+@keyframes molecularVibration {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(1px, -1px) rotate(0.5deg);
+  }
+  50% {
+    transform: translate(-1px, 1px) rotate(-0.5deg);
+  }
+  75% {
+    transform: translate(1px, 1px) rotate(0.5deg);
+  }
+}
+
+/* Periodic table glow */
+@keyframes periodicGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.8);
+  }
+}
+
+/* Element symbol pulse */
+@keyframes symbolPulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    text-shadow: 0 0 15px rgba(255,255,255,0.8);
+  }
+}
+
+/* Connection line drawing */
+@keyframes connectionDraw {
+  0% {
+    stroke-dasharray: 0, 1000;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 1000, 0;
+    opacity: 1;
+  }
+}
+
+/* Celebration burst */
+@keyframes celebrationBurst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   ANIMATION CLASSES
+   ============================================= */
+
+.card-selected {
+  animation: cardSelect 0.3s ease-out forwards;
+}
+
+.card-deselected {
+  animation: cardDeselect 0.2s ease-in forwards;
+}
+
+.card-hover {
+  animation: cardHover 0.2s ease-out forwards;
+}
+
 .match-success {
-  animation: elementMatch 0.6s ease-in-out;
+  animation: elementMatch 0.8s ease-in-out;
 }
 
 .match-error {
-  animation: elementError 0.5s ease-in-out;
+  animation: elementError 0.6s ease-in-out;
 }
 
-.particle-effect {
-  animation: particleFloat 2s ease-out forwards;
+.element-discovery {
+  animation: elementDiscovery 0.8s ease-out;
+}
+
+.atomic-orbit {
+  animation: atomicOrbit 4s linear infinite;
+}
+
+.molecular-vibration {
+  animation: molecularVibration 0.5s ease-in-out infinite;
+}
+
+.periodic-glow {
+  animation: periodicGlow 2s ease-in-out infinite;
+}
+
+.symbol-pulse {
+  animation: symbolPulse 1.5s ease-in-out infinite;
+}
+
+.connection-draw {
+  animation: connectionDraw 0.8s ease-out forwards;
+}
+
+.celebration-burst {
+  animation: celebrationBurst 1s ease-out forwards;
+}
+
+/* Particle system enhancements */
+.particle-electron {
+  animation: electronFloat 1.5s ease-out forwards;
+}
+
+.particle-proton {
+  animation: celebrationBurst 2s ease-out forwards;
+}
+
+.particle-neutron {
+  animation: molecularVibration 1s ease-in-out forwards;
 }
 
 /* Scientific theme enhancements */

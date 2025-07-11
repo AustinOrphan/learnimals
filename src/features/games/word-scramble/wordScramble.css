@@ -1,3 +1,6 @@
+/* Import base animations */
+@import '../../../styles/components/animations.css';
+
 .word-scramble-game {
   font-family: 'Comic Sans MS', cursive, sans-serif;
   max-width: 600px;
@@ -81,14 +84,7 @@
   cursor: grab;
   user-select: none;
   transition: transform 0.2s;
-}
-
-.letter-tile:hover {
-  transform: scale(1.1);
-}
-
-.letter-tile.dragging {
-  opacity: 0.5;
+  /* Animation properties are added below */
 }
 
 .empty-tile {
@@ -139,4 +135,403 @@
 
 .game-results {
   text-align: center;
+}
+
+/* =============================================
+   WORD SCRAMBLE SPECIFIC ANIMATIONS
+   ============================================= */
+
+/* Letter tile entrance animations */
+.letter-tile {
+  opacity: 0;
+  animation: letterEntrance 0.6s ease-out forwards;
+}
+
+.letter-tile:nth-child(1) { animation-delay: 0.1s; }
+.letter-tile:nth-child(2) { animation-delay: 0.2s; }
+.letter-tile:nth-child(3) { animation-delay: 0.3s; }
+.letter-tile:nth-child(4) { animation-delay: 0.4s; }
+.letter-tile:nth-child(5) { animation-delay: 0.5s; }
+.letter-tile:nth-child(6) { animation-delay: 0.6s; }
+.letter-tile:nth-child(7) { animation-delay: 0.7s; }
+.letter-tile:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes letterEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.5) rotate(180deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(5px) scale(1.1) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* Letter tile hover effects */
+.letter-tile:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 12px rgba(108, 92, 231, 0.4);
+  z-index: 10;
+}
+
+/* Enhanced dragging state */
+.letter-tile.dragging {
+  opacity: 0.8;
+  transform: scale(1.15) rotate(10deg);
+  box-shadow: 0 8px 16px rgba(108, 92, 231, 0.6);
+  z-index: 20;
+  transition: none;
+}
+
+/* Letter tile placement animation */
+.letter-tile.placing {
+  animation: letterPlace 0.4s ease-out;
+}
+
+@keyframes letterPlace {
+  0% {
+    transform: scale(1.2) rotate(15deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(0.9) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Letter tile return animation */
+.letter-tile.returning {
+  animation: letterReturn 0.5s ease-in-out;
+}
+
+@keyframes letterReturn {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1) translateY(-10px);
+  }
+  50% {
+    transform: scale(0.9) translateY(5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Empty tile hover effect */
+.empty-tile {
+  transition: all 0.2s ease;
+}
+
+.empty-tile:hover,
+.empty-tile.drop-target {
+  background-color: rgba(255, 183, 77, 0.3);
+  border-color: #ffb74d;
+  border-width: 3px;
+  transform: scale(1.05);
+}
+
+/* Word completion animation */
+.solution-area.word-complete {
+  animation: wordComplete 0.8s ease-out;
+}
+
+@keyframes wordComplete {
+  0% {
+    background-color: #fff8e1;
+  }
+  50% {
+    background-color: rgba(76, 175, 80, 0.2);
+    transform: scale(1.02);
+  }
+  100% {
+    background-color: #e8f5e9;
+    transform: scale(1);
+  }
+}
+
+/* Letter wiggle animation for hints */
+.letter-tile.hint-wiggle {
+  animation: letterWiggle 0.6s ease-in-out;
+}
+
+@keyframes letterWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+/* Letter bounce for correct answers */
+.letter-tile.correct-bounce {
+  animation: correctBounce 0.6s ease-out;
+}
+
+@keyframes correctBounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.2) translateY(-10px); }
+  60% { transform: scale(0.95) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+/* Letter shake for incorrect answers */
+.letter-tile.incorrect-shake {
+  animation: incorrectShake 0.5s ease-in-out;
+}
+
+@keyframes incorrectShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+/* Scrambled area animations */
+.scrambled-letters {
+  transition: all 0.3s ease;
+}
+
+.scrambled-letters.letters-depleted {
+  background-color: rgba(227, 242, 253, 0.5);
+  border: 2px dashed #90caf9;
+}
+
+/* Solution area glow effect */
+.solution-area.ready-to-check {
+  background-color: rgba(255, 248, 225, 1);
+  border-color: #ff9800;
+  box-shadow: 0 0 15px rgba(255, 152, 0, 0.3);
+  animation: readyGlow 2s ease-in-out infinite;
+}
+
+@keyframes readyGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 152, 0, 0.6);
+  }
+}
+
+/* New word transition */
+.word-scramble-game.new-word {
+  animation: newWordTransition 0.8s ease-out;
+}
+
+@keyframes newWordTransition {
+  0% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  75% {
+    opacity: 0.7;
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Word hint animation */
+.word-hint {
+  opacity: 0;
+  animation: hintReveal 0.8s ease-out 0.5s forwards;
+}
+
+@keyframes hintReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Letter connection line effect */
+.letter-connection {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, #6c5ce7, transparent);
+  opacity: 0;
+  animation: connectionLine 0.3s ease-out;
+  pointer-events: none;
+}
+
+@keyframes connectionLine {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+/* Score animation overlay */
+.score-popup {
+  position: absolute;
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 1.5rem;
+  z-index: 100;
+  pointer-events: none;
+  animation: scorePopup 1.5s ease-out forwards;
+}
+
+@keyframes scorePopup {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) scale(1);
+  }
+}
+
+/* Mobile touch feedback */
+.letter-tile.touch-feedback {
+  animation: touchFeedback 0.2s ease-out;
+}
+
+@keyframes touchFeedback {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+/* Level transition effects */
+.game-area.level-transition {
+  animation: levelTransition 1s ease-in-out;
+}
+
+@keyframes levelTransition {
+  0% { opacity: 1; filter: blur(0px); }
+  50% { opacity: 0.3; filter: blur(2px); }
+  100% { opacity: 1; filter: blur(0px); }
+}
+
+/* Success message animation */
+.success-message {
+  animation: successMessage 0.6s ease-out;
+}
+
+@keyframes successMessage {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Error message animation */
+.error-message {
+  animation: errorMessage 0.5s ease-out;
+}
+
+@keyframes errorMessage {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  25% {
+    opacity: 1;
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* =============================================
+   RESPONSIVE ANIMATIONS
+   ============================================= */
+
+@media (max-width: 768px) {
+  .letter-tile {
+    width: 35px;
+    height: 35px;
+    font-size: 1.3rem;
+  }
+  
+  /* Reduced animation intensity for mobile */
+  .letter-tile:hover {
+    transform: scale(1.05) rotate(3deg);
+  }
+  
+  .letter-tile.dragging {
+    transform: scale(1.1) rotate(5deg);
+  }
+  
+  /* Simplify mobile animations */
+  @keyframes letterEntrance {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+/* =============================================
+   ACCESSIBILITY SUPPORT
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-tile,
+  .empty-tile,
+  .word-hint,
+  .solution-area,
+  .scrambled-letters {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .letter-tile:hover {
+    transform: scale(1.02);
+  }
+  
+  .letter-tile.dragging {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
 }

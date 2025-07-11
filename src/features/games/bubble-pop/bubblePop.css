@@ -1,0 +1,419 @@
+/* Import base animations */
+@import '../../../styles/components/animations.css';
+
+/* =============================================
+   BUBBLE POP GAME CONTAINER
+   ============================================= */
+
+.bubble-pop-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.bubble-pop-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* =============================================
+   BUBBLE PARTICLE EFFECTS
+   ============================================= */
+
+.bubble-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: bubbleParticle 1.5s ease-out forwards;
+}
+
+@keyframes bubbleParticle {
+  0% {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translate(var(--tx, 0), var(--ty, -50px));
+  }
+}
+
+/* Sparkle particle effect */
+.sparkle-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  pointer-events: none;
+  animation: sparkle 0.8s ease-out forwards;
+}
+
+.sparkle-particle::before,
+.sparkle-particle::after {
+  content: '';
+  position: absolute;
+  background: white;
+  width: 100%;
+  height: 100%;
+}
+
+.sparkle-particle::before {
+  transform: rotate(90deg);
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 1;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+}
+
+/* =============================================
+   BUBBLE ANIMATIONS
+   ============================================= */
+
+/* Bubble spawn animation */
+.bubble-spawn {
+  animation: bubbleSpawn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bubbleSpawn {
+  0% {
+    transform: scale(0) translateY(20px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Bubble float animation */
+.bubble-float {
+  animation: bubbleFloat 4s ease-in-out infinite;
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+/* Bubble pop animation */
+.bubble-pop {
+  animation: bubblePop 0.4s ease-out forwards;
+}
+
+@keyframes bubblePop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Correct bubble glow */
+.bubble-correct-glow {
+  animation: correctGlow 0.8s ease-in-out;
+}
+
+@keyframes correctGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(76, 175, 80, 0);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* Wrong bubble shake */
+.bubble-wrong-shake {
+  animation: wrongShake 0.5s ease-in-out;
+}
+
+@keyframes wrongShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-10px) rotate(-5deg);
+  }
+  40% {
+    transform: translateX(10px) rotate(5deg);
+  }
+  60% {
+    transform: translateX(-5px) rotate(-3deg);
+  }
+  80% {
+    transform: translateX(5px) rotate(3deg);
+  }
+}
+
+/* =============================================
+   POWER-UP EFFECTS
+   ============================================= */
+
+.power-up-freeze {
+  animation: freezeEffect 2s ease-in-out;
+}
+
+@keyframes freezeEffect {
+  0% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    filter: hue-rotate(180deg) brightness(1.5) saturate(2);
+  }
+  100% {
+    filter: hue-rotate(360deg) brightness(1);
+  }
+}
+
+.power-up-slow-motion {
+  animation: slowMotionEffect 3s ease-in-out;
+}
+
+@keyframes slowMotionEffect {
+  0% {
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(2px) sepia(0.3);
+  }
+  100% {
+    filter: blur(0px);
+  }
+}
+
+/* =============================================
+   STREAK EFFECTS
+   ============================================= */
+
+.streak-fire {
+  position: absolute;
+  font-size: 2rem;
+  animation: streakFire 2s ease-out forwards;
+}
+
+@keyframes streakFire {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   COMBO EFFECTS
+   ============================================= */
+
+.combo-burst {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, transparent 70%);
+  animation: comboBurst 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes comboBurst {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   RIPPLE EFFECTS
+   ============================================= */
+
+.water-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(135, 206, 235, 0.8);
+  animation: waterRipple 1.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes waterRipple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   SCORE MULTIPLIER EFFECTS
+   ============================================= */
+
+.multiplier-display {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #FFD700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  animation: multiplierPop 1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes multiplierPop {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg) translateY(-30px);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   WAVE TRANSITION EFFECTS
+   ============================================= */
+
+.wave-transition {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(135, 206, 235, 0.3), transparent);
+  animation: waveTransition 1.5s ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes waveTransition {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   MOBILE OPTIMIZATIONS
+   ============================================= */
+
+@media (max-width: 768px) {
+  /* Reduce particle counts on mobile */
+  .bubble-particle,
+  .sparkle-particle {
+    animation-duration: 1s;
+  }
+  
+  @keyframes bubbleFloat {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-5px);
+    }
+  }
+}
+
+/* =============================================
+   ACCESSIBILITY
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble-spawn,
+  .bubble-float,
+  .bubble-pop,
+  .bubble-correct-glow,
+  .bubble-wrong-shake,
+  .power-up-freeze,
+  .power-up-slow-motion,
+  .streak-fire,
+  .combo-burst,
+  .water-ripple,
+  .multiplier-display,
+  .wave-transition {
+    animation: none !important;
+  }
+  
+  /* Provide static visual feedback */
+  .bubble-pop {
+    opacity: 0;
+  }
+  
+  .bubble-correct-glow {
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  }
+}
+
+/* =============================================
+   THEME SUPPORT
+   ============================================= */
+
+[data-theme="dark"] .bubble-particle {
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+}
+
+[data-theme="dark"] .water-ripple {
+  border-color: rgba(173, 216, 230, 0.9);
+}
+
+[data-theme="dark"] .multiplier-display {
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+}

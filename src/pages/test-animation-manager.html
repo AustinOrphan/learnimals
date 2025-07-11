@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation Manager Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/styles.css">
+  <link rel="stylesheet" href="../styles/components/animations.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-section {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .test-card {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: var(--accent-primary);
+      color: white;
+      margin: 8px 8px 8px 0;
+    }
+    
+    .stats-display {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 16px 0;
+      white-space: pre-wrap;
+    }
+    
+    .demo-element {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin: 16px auto;
+    }
+    
+    .progress-demo {
+      width: 100%;
+      height: 8px;
+      background-color: var(--bg-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1s ease;
+    }
+    
+    .number-display {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--accent-primary);
+      text-align: center;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-section">
+      <h1>Animation Manager Test Suite</h1>
+      <p>Testing the enhanced animation system with centralized control and performance monitoring.</p>
+      
+      <div style="display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap;">
+        <button class="btn" id="enable-debug">Enable Debug Mode</button>
+        <button class="btn" id="performance-mode">Performance Mode</button>
+        <button class="btn" id="quality-mode">Quality Mode</button>
+        <button class="btn" id="clear-animations">Clear All</button>
+        <button class="btn" id="show-stats">Show Stats</button>
+      </div>
+    </div>
+    
+    <!-- Entrance Animations -->
+    <div class="test-section">
+      <h2>Entrance Animations</h2>
+      <p>Test different entrance animation types with the AnimationManager.</p>
+      
+      <div class="test-grid">
+        <div class="test-card">
+          <h4>Fade In</h4>
+          <div class="demo-element" id="fade-demo">Fade</div>
+          <button class="btn" onclick="testFadeIn()">Animate</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Slide Up</h4>
+          <div class="demo-element" id="slide-demo">Slide</div>
+          <button class="btn" onclick="testSlideIn()">Animate</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Bounce In</h4>
+          <div class="demo-element" id="bounce-demo">Bounce</div>
+          <button class="btn" onclick="testBounceIn()">Animate</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Stagger Animation</h4>
+          <div id="stagger-container">
+            <div class="demo-element" style="width: 60px; height: 60px; margin: 8px; display: inline-block;">1</div>
+            <div class="demo-element" style="width: 60px; height: 60px; margin: 8px; display: inline-block;">2</div>
+            <div class="demo-element" style="width: 60px; height: 60px; margin: 8px; display: inline-block;">3</div>
+          </div>
+          <button class="btn" onclick="testStagger()">Animate</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Progress Animations -->
+    <div class="test-section">
+      <h2>Progress & Number Animations</h2>
+      <p>Test progress bars and number counting animations.</p>
+      
+      <div class="test-grid">
+        <div class="test-card">
+          <h4>Progress Bar</h4>
+          <div class="progress-demo">
+            <div class="progress-fill" id="progress-demo"></div>
+          </div>
+          <button class="btn" onclick="testProgress()">Animate to 75%</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Number Counter</h4>
+          <div class="number-display" id="number-demo">0</div>
+          <button class="btn" onclick="testCounter()">Count to 1500</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>XP Gain</h4>
+          <div class="demo-element" id="xp-container" style="position: relative;">XP</div>
+          <button class="btn" onclick="testXPGain()">+250 XP</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Level Up Celebration</h4>
+          <div class="demo-element" id="level-demo">⭐</div>
+          <button class="btn" onclick="testLevelUp()">Level Up!</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Interactive Elements -->
+    <div class="test-section">
+      <h2>Interactive Elements</h2>
+      <p>Test hover effects, click animations, and loading states.</p>
+      
+      <div class="test-grid">
+        <div class="test-card">
+          <h4>Hover Effects</h4>
+          <div class="demo-element hover-lift">Lift</div>
+          <div class="demo-element hover-scale">Scale</div>
+          <button class="btn" onclick="addHoverEffects()">Add Effects</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Click Ripple</h4>
+          <div class="demo-element btn-ripple click-shrink" onclick="this.classList.add('clicked')">Click Me</div>
+          <button class="btn" onclick="setupRipple()">Setup Ripple</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Loading States</h4>
+          <div class="demo-element" id="loading-demo">Content</div>
+          <button class="btn" onclick="testLoading()">Show Loading</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Game Feedback</h4>
+          <div class="demo-element" id="feedback-demo">Answer</div>
+          <button class="btn" onclick="testCorrect()">Correct</button>
+          <button class="btn" onclick="testIncorrect()">Wrong</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Performance Stats -->
+    <div class="test-section">
+      <h2>Performance Monitoring</h2>
+      <p>Real-time animation performance statistics and monitoring.</p>
+      
+      <div class="stats-display" id="performance-stats">
+        Animation Manager statistics will appear here...
+      </div>
+      
+      <button class="btn" id="refresh-stats">Refresh Stats</button>
+      <button class="btn" id="analyze-performance">Analyze Performance</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import animationManager from '../utils/AnimationManager.js';
+
+    // Global reference for testing
+    window.animationManager = animationManager;
+    
+    class AnimationManagerTest {
+      constructor() {
+        this.setupEventListeners();
+        this.updateStats();
+        
+        // Auto-refresh stats
+        setInterval(() => {
+          this.updateStats();
+        }, 2000);
+      }
+      
+      setupEventListeners() {
+        document.getElementById('enable-debug').addEventListener('click', () => {
+          animationManager.setConfig({ debugMode: true });
+        });
+        
+        document.getElementById('performance-mode').addEventListener('click', () => {
+          animationManager.enablePerformanceMode();
+        });
+        
+        document.getElementById('quality-mode').addEventListener('click', () => {
+          animationManager.enableQualityMode();
+        });
+        
+        document.getElementById('clear-animations').addEventListener('click', () => {
+          animationManager.stopAllAnimations();
+        });
+        
+        document.getElementById('show-stats').addEventListener('click', () => {
+          this.updateStats();
+        });
+        
+        document.getElementById('refresh-stats').addEventListener('click', () => {
+          this.updateStats();
+        });
+        
+        document.getElementById('analyze-performance').addEventListener('click', async () => {
+          const analysis = await animationManager.analyzePerformance();
+          this.displayAnalysis(analysis);
+        });
+      }
+      
+      updateStats() {
+        const stats = animationManager.getStats();
+        const config = animationManager.getConfig();
+        
+        let output = 'ANIMATION MANAGER STATISTICS\n';
+        output += '==============================\n\n';
+        
+        output += 'Performance:\n';
+        output += `  Frame Rate: ${stats.frameRate} FPS\n`;
+        output += `  Performance Score: ${stats.performanceScore}%\n`;
+        output += `  Active Animations: ${stats.activeAnimations}\n`;
+        output += `  Queued Animations: ${stats.queuedAnimations}\n\n`;
+        
+        output += 'Animation Stats:\n';
+        output += `  Total Animations: ${stats.totalAnimations}\n`;
+        output += `  Completed: ${stats.completedAnimations}\n`;
+        output += `  Average Duration: ${Math.round(stats.averageDuration)}ms\n`;
+        output += `  Dropped Frames: ${stats.droppedFrames}\n\n`;
+        
+        output += 'Configuration:\n';
+        output += `  Global Enabled: ${config.globalEnabled}\n`;
+        output += `  Performance Mode: ${config.performanceMode}\n`;
+        output += `  Debug Mode: ${config.debugMode}\n`;
+        output += `  Max Concurrent: ${config.maxConcurrentAnimations}\n\n`;
+        
+        output += 'Device Capabilities:\n';
+        if (stats.deviceCapabilities) {
+          output += `  Mobile: ${stats.deviceCapabilities.isMobile}\n`;
+          output += `  Low-end: ${stats.deviceCapabilities.isLowEnd}\n`;
+          output += `  Limited Memory: ${stats.deviceCapabilities.hasLimitedMemory}\n`;
+          output += `  Supports Transform3D: ${stats.deviceCapabilities.supportsTransform3d}\n`;
+        }
+        
+        document.getElementById('performance-stats').textContent = output;
+      }
+      
+      displayAnalysis(analysis) {
+        let output = 'PERFORMANCE ANALYSIS\n';
+        output += '==================\n\n';
+        
+        output += `Overall: ${analysis.overall}\n`;
+        output += `Frame Rate: ${analysis.frameRate}\n`;
+        output += `Completion Rate: ${analysis.completionRate}\n\n`;
+        
+        if (analysis.recommendations.length > 0) {
+          output += 'Recommendations:\n';
+          analysis.recommendations.forEach(rec => {
+            output += `  - ${rec}\n`;
+          });
+        }
+        
+        document.getElementById('performance-stats').textContent = output;
+      }
+    }
+    
+    // Global test functions
+    window.testFadeIn = () => {
+      const element = document.getElementById('fade-demo');
+      element.style.opacity = '0';
+      animationManager.fadeIn(element);
+    };
+    
+    window.testSlideIn = () => {
+      const element = document.getElementById('slide-demo');
+      element.style.opacity = '0';
+      animationManager.slideInUp(element);
+    };
+    
+    window.testBounceIn = () => {
+      const element = document.getElementById('bounce-demo');
+      element.style.opacity = '0';
+      animationManager.bounceIn(element);
+    };
+    
+    window.testStagger = () => {
+      const elements = document.querySelectorAll('#stagger-container .demo-element');
+      elements.forEach(el => el.style.opacity = '0');
+      animationManager.staggerIn(elements, 'fadeInUp', { staggerDelay: 200 });
+    };
+    
+    window.testProgress = () => {
+      const element = document.getElementById('progress-demo');
+      animationManager.animateProgress(element, 75);
+    };
+    
+    window.testCounter = () => {
+      const element = document.getElementById('number-demo');
+      animationManager.countUp(element, 0, 1500, {
+        formatter: (num) => Math.floor(num).toLocaleString()
+      });
+    };
+    
+    window.testXPGain = () => {
+      const container = document.getElementById('xp-container');
+      animationManager.showXPGain(container, 250, {
+        color: '#4ECDC4'
+      });
+    };
+    
+    window.testLevelUp = () => {
+      const element = document.getElementById('level-demo');
+      animationManager.celebrateLevelUp(element);
+    };
+    
+    window.addHoverEffects = () => {
+      const elements = document.querySelectorAll('.test-card .demo-element');
+      elements.forEach(el => {
+        animationManager.addInteractionEffects(el, {
+          hover: 'lift',
+          click: 'shrink'
+        });
+      });
+    };
+    
+    window.setupRipple = () => {
+      const element = document.querySelector('.btn-ripple');
+      element.classList.add('btn-ripple');
+    };
+    
+    window.testLoading = () => {
+      const element = document.getElementById('loading-demo');
+      animationManager.showLoadingState(element, 'spinner');
+      
+      setTimeout(() => {
+        animationManager.hideLoadingState(element);
+      }, 3000);
+    };
+    
+    window.testCorrect = () => {
+      const element = document.getElementById('feedback-demo');
+      element.className = 'demo-element game-correct-feedback';
+      element.textContent = 'Correct!';
+      
+      setTimeout(() => {
+        element.className = 'demo-element';
+        element.textContent = 'Answer';
+      }, 2000);
+    };
+    
+    window.testIncorrect = () => {
+      const element = document.getElementById('feedback-demo');
+      element.className = 'demo-element game-incorrect-feedback';
+      element.textContent = 'Try Again!';
+      
+      setTimeout(() => {
+        element.className = 'demo-element';
+        element.textContent = 'Answer';
+      }, 2000);
+    };
+    
+    // Initialize the test
+    window.animationTest = new AnimationManagerTest();
+  </script>
+</body>
+</html>

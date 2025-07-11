@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Sentence Builder Game - Animation Test</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../features/games/sentence-builder/sentenceBuilder.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-info {
+      background: var(--bg-section);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .animation-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .animation-demo {
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .demo-area {
+      min-height: 150px;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #F8F9FF;
+      border: 2px dashed #DDA0DD;
+      border-radius: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .demo-button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      margin: 0.25rem;
+      transition: all 0.2s ease;
+    }
+    
+    .demo-button:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .game-container {
+      margin: 2rem 0;
+      height: 700px;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .controls-panel {
+      background: var(--bg-hover);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .demo-word {
+      background: linear-gradient(135deg, #FFFFFF, #F8F9FA);
+      border: 2px solid #E0E0E0;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-weight: bold;
+      color: #2C3E50;
+      cursor: grab;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .demo-word.grammar-articles { border-left: 4px solid #2196F3; }
+    .demo-word.grammar-nouns { border-left: 4px solid #4CAF50; }
+    .demo-word.grammar-verbs { border-left: 4px solid #FF5722; }
+    .demo-word.grammar-adjectives { border-left: 4px solid #9C27B0; }
+    .demo-word.grammar-adverbs { border-left: 4px solid #FF9800; }
+    .demo-word.grammar-prepositions { border-left: 4px solid #795548; }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Enhanced Sentence Builder Game</h1>
+      <p>Testing word placement animations and educational feedback</p>
+    </div>
+    
+    <div class="test-info">
+      <h3>📚 Animation Features</h3>
+      <ul>
+        <li><strong>Word Placement:</strong> Smooth animations when dragging words into sentences</li>
+        <li><strong>Grammar Validation:</strong> Real-time grammar checking with visual feedback</li>
+        <li><strong>Reading Flow:</strong> Visual indication of left-to-right reading pattern</li>
+        <li><strong>Word Discovery:</strong> Engaging animations when new words appear</li>
+        <li><strong>Sentence Completion:</strong> Celebration effects with grammar highlighting</li>
+        <li><strong>Bella's Reactions:</strong> Character animations for encouragement</li>
+        <li><strong>Educational Feedback:</strong> Grammar lessons with visual emphasis</li>
+        <li><strong>Accessibility:</strong> Respects prefers-reduced-motion</li>
+      </ul>
+    </div>
+    
+    <!-- Animation Showcase -->
+    <div class="animation-showcase">
+      <div class="animation-demo">
+        <h4>Word Placement Animation</h4>
+        <div class="demo-area" id="demo-placement">
+          <div class="demo-word grammar-articles">The</div>
+          <div class="demo-word grammar-nouns">cat</div>
+          <div class="demo-word grammar-verbs">sits</div>
+        </div>
+        <button class="demo-button" onclick="demoWordPlacement()">Demo Placement</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Grammar Categories</h4>
+        <div class="demo-area" id="demo-grammar">
+          <div class="demo-word grammar-articles">a</div>
+          <div class="demo-word grammar-adjectives">happy</div>
+          <div class="demo-word grammar-nouns">dog</div>
+          <div class="demo-word grammar-verbs">runs</div>
+          <div class="demo-word grammar-adverbs">quickly</div>
+        </div>
+        <button class="demo-button" onclick="demoGrammarHighlight()">Demo Grammar</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Sentence Completion</h4>
+        <div class="demo-area" id="demo-completion">
+          <div class="word-slot filled">I</div>
+          <div class="word-slot filled">love</div>
+          <div class="word-slot filled">reading</div>
+          <div class="word-slot filled">books!</div>
+        </div>
+        <button class="demo-button" onclick="demoSentenceCompletion()">Demo Completion</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Reading Flow Pattern</h4>
+        <div class="demo-area" id="demo-flow" style="position: relative;">
+          <div class="word-slot filled">Follow</div>
+          <div class="word-slot filled">the</div>
+          <div class="word-slot filled">reading</div>
+          <div class="word-slot filled">flow</div>
+        </div>
+        <button class="demo-button" onclick="demoReadingFlow()">Demo Flow</button>
+      </div>
+    </div>
+    
+    <!-- Game Controls -->
+    <div class="controls-panel">
+      <h3>Game Controls</h3>
+      <div class="controls-grid">
+        <button class="demo-button" onclick="changeGameDifficulty('easy')">Easy Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('medium')">Medium Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('hard')">Hard Mode</button>
+        <button class="demo-button" onclick="toggleAnimations()">Toggle Animations</button>
+        <button class="demo-button" onclick="simulateSentence()">Simulate Building</button>
+        <button class="demo-button" onclick="showGrammarLesson()">Show Grammar Lesson</button>
+      </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div class="game-container" id="sentence-builder-container"></div>
+    
+    <!-- Grammar Notes -->
+    <div class="test-info">
+      <h3>✏️ Educational Animation Notes</h3>
+      <ul>
+        <li>Grammar categories are color-coded with animated borders</li>
+        <li>Word placement provides immediate visual feedback</li>
+        <li>Reading flow animations help reinforce left-to-right patterns</li>
+        <li>Punctuation emphasis teaches proper sentence endings</li>
+        <li>Bella's encouragement animations provide positive reinforcement</li>
+        <li>Grammar validation helps identify common mistakes early</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script type="module">
+    import SentenceBuilderGame from '../../features/games/sentence-builder/sentenceBuilder.js';
+    
+    let game;
+    let animationsEnabled = true;
+    
+    // Initialize game
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        game = new SentenceBuilderGame('sentence-builder-container', {
+          difficulty: 'easy',
+          enableAnimations: true
+        });
+        
+        console.log('Sentence Builder game initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Sentence Builder game:', error);
+      }
+    });
+    
+    // Demo: Word Placement Animation
+    window.demoWordPlacement = function() {
+      const demoArea = document.getElementById('demo-placement');
+      const words = demoArea.querySelectorAll('.demo-word');
+      
+      words.forEach((word, index) => {
+        setTimeout(() => {
+          word.classList.add('word-placed');
+          word.style.transform = 'scale(1.1)';
+          
+          // Grammar highlight
+          const grammarClass = Array.from(word.classList).find(c => c.startsWith('grammar-'));
+          if (grammarClass) {
+            word.classList.add('active');
+          }
+          
+          setTimeout(() => {
+            word.style.transform = 'scale(1)';
+            word.classList.remove('active');
+          }, 1000);
+        }, index * 300);
+      });
+    };
+    
+    // Demo: Grammar Highlighting
+    window.demoGrammarHighlight = function() {
+      const demoArea = document.getElementById('demo-grammar');
+      const words = demoArea.querySelectorAll('.demo-word');
+      
+      // Highlight each grammar category in sequence
+      const categories = ['articles', 'adjectives', 'nouns', 'verbs', 'adverbs'];
+      
+      categories.forEach((category, catIndex) => {
+        setTimeout(() => {
+          words.forEach(word => {
+            if (word.classList.contains(`grammar-${category}`)) {
+              word.classList.add('grammar-glow', 'active');
+              word.style.transform = 'translateY(-5px)';
+              
+              setTimeout(() => {
+                word.classList.remove('grammar-glow', 'active');
+                word.style.transform = 'translateY(0)';
+              }, 1500);
+            }
+          });
+        }, catIndex * 800);
+      });
+    };
+    
+    // Demo: Sentence Completion
+    window.demoSentenceCompletion = function() {
+      const demoArea = document.getElementById('demo-completion');
+      const slots = demoArea.querySelectorAll('.word-slot');
+      
+      // Add completion animation
+      demoArea.classList.add('sentence-complete', 'valid');
+      
+      slots.forEach((slot, index) => {
+        setTimeout(() => {
+          slot.classList.add('grammar-correct');
+          
+          // Punctuation emphasis on last word
+          if (index === slots.length - 1) {
+            setTimeout(() => {
+              slot.classList.add('punctuation-emphasis');
+            }, 200);
+          }
+        }, index * 150);
+      });
+      
+      // Clean up after animation
+      setTimeout(() => {
+        demoArea.classList.remove('sentence-complete', 'valid');
+        slots.forEach(slot => {
+          slot.classList.remove('grammar-correct', 'punctuation-emphasis');
+        });
+      }, 3000);
+    };
+    
+    // Demo: Reading Flow
+    window.demoReadingFlow = function() {
+      const demoArea = document.getElementById('demo-flow');
+      demoArea.classList.add('reading-pattern');
+      
+      // Create visual flow indicator
+      const flowIndicator = document.createElement('div');
+      flowIndicator.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #4CAF50, transparent);
+        transform: translateY(-50%);
+        animation: flowProgress 2s ease-in-out;
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes flowProgress {
+          0% { width: 0; opacity: 0; }
+          20% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { width: 100%; opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      demoArea.appendChild(flowIndicator);
+      
+      setTimeout(() => {
+        demoArea.classList.remove('reading-pattern');
+        flowIndicator.remove();
+        style.remove();
+      }, 3000);
+    };
+    
+    // Game control functions
+    window.changeGameDifficulty = function(difficulty) {
+      if (game) {
+        game.difficulty = difficulty;
+        console.log(`Difficulty changed to: ${difficulty}`);
+        // Reload sentences for new difficulty
+        game.loadSentences();
+        game.currentSentenceIndex = 0;
+        game.loadCurrentSentence();
+      }
+    };
+    
+    window.toggleAnimations = function() {
+      animationsEnabled = !animationsEnabled;
+      console.log(`Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
+      
+      if (game) {
+        game.animationEnabled = animationsEnabled;
+      }
+      
+      if (!animationsEnabled) {
+        document.body.classList.add('prefers-reduced-motion');
+      } else {
+        document.body.classList.remove('prefers-reduced-motion');
+      }
+    };
+    
+    window.simulateSentence = function() {
+      if (game && game.state === 'playing') {
+        // Simulate building a sentence word by word
+        const words = ['The', 'quick', 'brown', 'fox', 'jumps.'];
+        
+        words.forEach((word, index) => {
+          setTimeout(() => {
+            game.addWordToSentence(word);
+            
+            // Remove word from bank (simulated)
+            const wordTiles = game.wordBankElement.querySelectorAll('.word-tile');
+            wordTiles.forEach(tile => {
+              if (tile.textContent === word) {
+                tile.remove();
+              }
+            });
+          }, index * 600);
+        });
+        
+        // Check sentence after all words placed
+        setTimeout(() => {
+          if (game.sentenceArea.length === words.length) {
+            game.checkSentence();
+          }
+        }, words.length * 600 + 500);
+      }
+    };
+    
+    window.showGrammarLesson = function() {
+      if (game) {
+        // Show educational feedback
+        game.showFeedback('success grammar-lesson', 
+          'Perfect sentence structure!', 
+          'This sentence follows the pattern: Article + Adjective + Noun + Verb. ' +
+          'Notice how it starts with a capital letter and ends with proper punctuation.'
+        );
+        
+        // Animate Bella's encouragement
+        game.animateBellaEncouragement();
+        game.updateBellaSpeech('📚 Great job! You\'re becoming a sentence-building expert!');
+      }
+    };
+    
+    // Add word shuffle demo
+    function demoWordShuffle() {
+      const wordTiles = document.querySelectorAll('.word-tiles');
+      wordTiles.forEach(container => {
+        container.classList.add('shuffling');
+        setTimeout(() => {
+          container.classList.remove('shuffling');
+        }, 1000);
+      });
+    }
+    
+    // Add custom CSS for reduced motion
+    const style = document.createElement('style');
+    style.textContent = `
+      .prefers-reduced-motion *,
+      .prefers-reduced-motion *::before,
+      .prefers-reduced-motion *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      
+      .word-slot {
+        position: relative;
+        display: inline-block;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+  
+  <!-- Instructions overlay -->
+  <div style="position: fixed; bottom: 20px; right: 20px; background: var(--bg-card); padding: 1rem; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 300px; font-size: 0.9rem;">
+    <strong>Tips:</strong><br>
+    • Drag words to build sentences<br>
+    • Watch for grammar color coding<br>
+    • Capital letters start sentences<br>
+    • Punctuation ends sentences<br>
+    • Bella gives helpful hints!
+  </div>
+</body>
+</html>

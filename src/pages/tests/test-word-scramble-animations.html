@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Word Scramble Game - Animation Test</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../features/games/word-scramble/wordScramble.css">
+  
+  <style>
+    .test-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-info {
+      background: var(--bg-section);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .animation-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .animation-demo {
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .demo-button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      margin: 0.25rem;
+      transition: all 0.2s ease;
+    }
+    
+    .demo-button:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .game-container {
+      margin: 2rem 0;
+      min-height: 600px;
+    }
+    
+    .controls-panel {
+      background: var(--bg-hover);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    /* Demo letter tiles for showcasing animations */
+    .demo-letter-area {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 1rem 0;
+      min-height: 60px;
+      align-items: center;
+    }
+    
+    .demo-letter {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #6c5ce7;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Enhanced Word Scramble Game</h1>
+      <p>Testing letter animation effects and visual feedback improvements</p>
+    </div>
+    
+    <div class="test-info">
+      <h3>🎮 Animation Features</h3>
+      <ul>
+        <li><strong>Letter Entrance:</strong> Staggered bouncing entrance with rotation</li>
+        <li><strong>Drag Interactions:</strong> Enhanced hover, drag, and drop feedback</li>
+        <li><strong>Correct Answers:</strong> Bouncing letters and area completion animation</li>
+        <li><strong>Incorrect Answers:</strong> Shaking letters and animated return</li>
+        <li><strong>Score Feedback:</strong> Floating score popups</li>
+        <li><strong>Visual Hints:</strong> Letter wiggle animations and area glow effects</li>
+        <li><strong>Mobile Support:</strong> Touch feedback and optimized animations</li>
+        <li><strong>Accessibility:</strong> Reduced motion support</li>
+      </ul>
+    </div>
+    
+    <!-- Animation Showcase -->
+    <div class="animation-showcase">
+      <div class="animation-demo">
+        <h4>Letter Bounce</h4>
+        <div class="demo-letter-area">
+          <div class="demo-letter" id="demo-bounce">C</div>
+        </div>
+        <button class="demo-button" onclick="demoCorrectBounce()">Demo Correct</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Letter Shake</h4>
+        <div class="demo-letter-area">
+          <div class="demo-letter" id="demo-shake">A</div>
+        </div>
+        <button class="demo-button" onclick="demoIncorrectShake()">Demo Incorrect</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Letter Wiggle Hint</h4>
+        <div class="demo-letter-area">
+          <div class="demo-letter" id="demo-wiggle">T</div>
+        </div>
+        <button class="demo-button" onclick="demoHintWiggle()">Demo Hint</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Letter Return</h4>
+        <div class="demo-letter-area">
+          <div class="demo-letter" id="demo-return">S</div>
+        </div>
+        <button class="demo-button" onclick="demoLetterReturn()">Demo Return</button>
+      </div>
+    </div>
+    
+    <!-- Game Controls -->
+    <div class="controls-panel">
+      <h3>Game Controls</h3>
+      <div class="controls-grid">
+        <button class="demo-button" onclick="resetGame()">Reset Game</button>
+        <button class="demo-button" onclick="showHint()">Show Hint</button>
+        <button class="demo-button" onclick="triggerNewWord()">New Word Animation</button>
+        <button class="demo-button" onclick="toggleAnimations()">Toggle Animations</button>
+      </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div class="game-container">
+      <div id="word-scramble-container"></div>
+    </div>
+    
+    <!-- Performance Info -->
+    <div class="test-info">
+      <h3>📊 Performance Notes</h3>
+      <ul>
+        <li>Animations use CSS transforms for hardware acceleration</li>
+        <li>Reduced motion preferences are respected for accessibility</li>
+        <li>Mobile animations are optimized for lower-powered devices</li>
+        <li>All animations include proper cleanup to prevent memory leaks</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script type="module">
+    import WordScrambleGame from '../../features/games/word-scramble/wordScramble.js';
+    
+    let game;
+    let animationsEnabled = true;
+    
+    // Initialize the game
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        game = new WordScrambleGame('word-scramble-container', {
+          difficulty: 'easy',
+          enableAnimations: true,
+          enableProgressTracking: false,
+          enableXPSystem: false
+        });
+        
+        console.log('Enhanced Word Scramble game initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Word Scramble game:', error);
+      }
+    });
+    
+    // Demo animation functions
+    window.demoCorrectBounce = function() {
+      const element = document.getElementById('demo-bounce');
+      element.classList.add('correct-bounce');
+      setTimeout(() => element.classList.remove('correct-bounce'), 600);
+    };
+    
+    window.demoIncorrectShake = function() {
+      const element = document.getElementById('demo-shake');
+      element.classList.add('incorrect-shake');
+      setTimeout(() => element.classList.remove('incorrect-shake'), 500);
+    };
+    
+    window.demoHintWiggle = function() {
+      const element = document.getElementById('demo-wiggle');
+      element.classList.add('hint-wiggle');
+      setTimeout(() => element.classList.remove('hint-wiggle'), 600);
+    };
+    
+    window.demoLetterReturn = function() {
+      const element = document.getElementById('demo-return');
+      element.classList.add('returning');
+      setTimeout(() => element.classList.remove('returning'), 500);
+    };
+    
+    // Game control functions
+    window.resetGame = function() {
+      if (game) {
+        game.restart();
+      }
+    };
+    
+    window.showHint = function() {
+      if (game && game.showHintAnimation) {
+        game.showHintAnimation();
+      }
+    };
+    
+    window.triggerNewWord = function() {
+      if (game) {
+        const container = document.getElementById('word-scramble-container');
+        container.classList.add('new-word');
+        setTimeout(() => container.classList.remove('new-word'), 800);
+      }
+    };
+    
+    window.toggleAnimations = function() {
+      animationsEnabled = !animationsEnabled;
+      const container = document.getElementById('word-scramble-container');
+      
+      if (animationsEnabled) {
+        container.classList.remove('prefers-reduced-motion');
+        console.log('Animations enabled');
+      } else {
+        container.classList.add('prefers-reduced-motion');
+        console.log('Animations disabled');
+      }
+    };
+    
+    // Add custom CSS for reduced motion simulation
+    const style = document.createElement('style');
+    style.textContent = `
+      .prefers-reduced-motion *,
+      .prefers-reduced-motion *::before,
+      .prefers-reduced-motion *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'r':
+            e.preventDefault();
+            resetGame();
+            break;
+          case 'h':
+            e.preventDefault();
+            showHint();
+            break;
+          case 'n':
+            e.preventDefault();
+            triggerNewWord();
+            break;
+          case 'a':
+            e.preventDefault();
+            toggleAnimations();
+            break;
+        }
+      }
+    });
+    
+    // Performance monitoring
+    let animationCount = 0;
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          const target = mutation.target;
+          const classList = target.classList;
+          
+          // Count animation classes being added
+          const animationClasses = [
+            'correct-bounce', 'incorrect-shake', 'hint-wiggle', 
+            'returning', 'placing', 'dragging', 'word-complete'
+          ];
+          
+          animationClasses.forEach(className => {
+            if (classList.contains(className)) {
+              animationCount++;
+            }
+          });
+        }
+      });
+    });
+    
+    // Start observing for performance tracking
+    observer.observe(document.body, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class']
+    });
+    
+    // Log performance stats every 10 seconds
+    setInterval(() => {
+      if (animationCount > 0) {
+        console.log(`Animation performance: ${animationCount} animations triggered`);
+        animationCount = 0;
+      }
+    }, 10000);
+  </script>
+  
+  <!-- Instructions overlay -->
+  <div style="position: fixed; bottom: 20px; right: 20px; background: var(--bg-card); padding: 1rem; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 300px; font-size: 0.9rem;">
+    <strong>Keyboard Shortcuts:</strong><br>
+    Ctrl+R: Reset Game<br>
+    Ctrl+H: Show Hint<br>
+    Ctrl+N: New Word Animation<br>
+    Ctrl+A: Toggle Animations
+  </div>
+</body>
+</html>

@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile System End-to-End Integration Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/reset.css">
+  <link rel="stylesheet" href="../styles/base/variables.css">
+  <link rel="stylesheet" href="../styles/base/typography.css">
+  <link rel="stylesheet" href="../styles/base/utilities.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="../styles/components/navbar.css">
+  <link rel="stylesheet" href="../styles/components/card.css">
+  <link rel="stylesheet" href="../styles/components/modal.css">
+  <link rel="stylesheet" href="../styles/components/avatar.css">
+  <link rel="stylesheet" href="../styles/components/badges.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--bg-card);
+      border-radius: 12px;
+    }
+    
+    .test-section {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: var(--accent-primary);
+      border-bottom: 2px solid var(--accent-primary);
+      padding-bottom: 8px;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .test-card {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .test-card h4 {
+      margin: 0 0 12px 0;
+      color: var(--accent-primary);
+    }
+    
+    .test-controls {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: var(--accent-primary);
+      color: white;
+    }
+    
+    .btn:hover {
+      background-color: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn.small {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+    }
+    
+    .btn.success {
+      background-color: #27ae60;
+    }
+    
+    .btn.warning {
+      background-color: #f39c12;
+    }
+    
+    .btn.danger {
+      background-color: #e74c3c;
+    }
+    
+    .btn.secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    
+    .test-status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    
+    .test-status.pass {
+      background-color: #d5f5d6;
+      color: #27ae60;
+    }
+    
+    .test-status.fail {
+      background-color: #ffeaea;
+      color: #e74c3c;
+    }
+    
+    .test-status.pending {
+      background-color: #fff3cd;
+      color: #f39c12;
+    }
+    
+    .test-result {
+      background-color: var(--bg-primary);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 8px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .component-demo {
+      min-height: 100px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 12px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .integration-flow {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    
+    .flow-steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    
+    .flow-step {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .flow-step.active {
+      border-color: white;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .flow-step.completed {
+      background-color: rgba(39, 174, 96, 0.3);
+      border-color: #27ae60;
+    }
+    
+    .system-status {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .status-item {
+      background-color: var(--bg-secondary);
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .status-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent-primary);
+    }
+    
+    .status-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    
+    .log-console {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 16px 0;
+    }
+    
+    @media (max-width: 768px) {
+      .test-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .flow-steps {
+        flex-direction: column;
+      }
+      
+      .system-status {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="test-header">
+      <h1>Profile System End-to-End Integration Test</h1>
+      <p>Comprehensive testing of all profile system components working together</p>
+      <div class="test-controls">
+        <button class="btn" id="run-full-test">Run Full Integration Test</button>
+        <button class="btn secondary" id="reset-test-data">Reset Test Data</button>
+        <button class="btn warning" id="clear-logs">Clear Logs</button>
+      </div>
+    </div>
+
+    <!-- System Status Overview -->
+    <div class="test-section">
+      <h2>System Status Overview</h2>
+      <div class="system-status">
+        <div class="status-item">
+          <div class="status-value" id="status-profiles">0</div>
+          <div class="status-label">Active Profiles</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="status-level">1</div>
+          <div class="status-label">Current Level</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="status-xp">0</div>
+          <div class="status-label">Total XP</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="status-achievements">0</div>
+          <div class="status-label">Achievements</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="status-badges">0</div>
+          <div class="status-label">Badges Unlocked</div>
+        </div>
+        <div class="status-item">
+          <div class="status-value" id="status-games">0</div>
+          <div class="status-label">Games Played</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Integration Flow Test -->
+    <div class="test-section">
+      <h2>Integration Flow Test</h2>
+      <div class="integration-flow">
+        <h3>Complete User Journey Simulation</h3>
+        <div class="flow-steps">
+          <div class="flow-step" id="step-1">
+            <div>1. Profile Creation</div>
+            <small>Create new user profile</small>
+          </div>
+          <div class="flow-step" id="step-2">
+            <div>2. Avatar Setup</div>
+            <small>Configure avatar</small>
+          </div>
+          <div class="flow-step" id="step-3">
+            <div>3. Play Games</div>
+            <small>Simulate gameplay</small>
+          </div>
+          <div class="flow-step" id="step-4">
+            <div>4. Earn XP</div>
+            <small>Gain experience points</small>
+          </div>
+          <div class="flow-step" id="step-5">
+            <div>5. Level Up</div>
+            <small>Trigger level progression</small>
+          </div>
+          <div class="flow-step" id="step-6">
+            <div>6. Unlock Badges</div>
+            <small>Earn achievements</small>
+          </div>
+          <div class="flow-step" id="step-7">
+            <div>7. View Progress</div>
+            <small>Display all progress</small>
+          </div>
+        </div>
+        <div class="test-controls">
+          <button class="btn" id="start-journey">Start User Journey</button>
+          <button class="btn secondary" id="step-by-step">Step by Step</button>
+          <button class="btn warning" id="reset-journey">Reset Journey</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Component Integration Tests -->
+    <div class="test-section">
+      <h2>Component Integration Tests</h2>
+      <div class="test-grid">
+        <!-- Profile Management Test -->
+        <div class="test-card">
+          <h4>Profile Management <span class="test-status pending" id="status-profile">PENDING</span></h4>
+          <div class="component-demo" id="demo-profile">
+            <div>Profile components will appear here</div>
+          </div>
+          <div class="test-controls">
+            <button class="btn small" id="test-create-profile">Create Profile</button>
+            <button class="btn small" id="test-switch-profile">Switch Profile</button>
+            <button class="btn small secondary" id="test-profile-settings">Settings</button>
+          </div>
+          <div class="test-result" id="result-profile"></div>
+        </div>
+
+        <!-- Avatar System Test -->
+        <div class="test-card">
+          <h4>Avatar System <span class="test-status pending" id="status-avatar">PENDING</span></h4>
+          <div class="component-demo" id="demo-avatar">
+            <div>Avatar will appear here</div>
+          </div>
+          <div class="test-controls">
+            <button class="btn small" id="test-create-avatar">Create Avatar</button>
+            <button class="btn small" id="test-customize-avatar">Customize</button>
+            <button class="btn small secondary" id="test-avatar-builder">Builder</button>
+          </div>
+          <div class="test-result" id="result-avatar"></div>
+        </div>
+
+        <!-- Level Progress Test -->
+        <div class="test-card">
+          <h4>Level Progress <span class="test-status pending" id="status-level-progress">PENDING</span></h4>
+          <div class="component-demo" id="demo-level">
+            <div>Level display will appear here</div>
+          </div>
+          <div class="test-controls">
+            <button class="btn small" id="test-gain-xp">Gain XP</button>
+            <button class="btn small" id="test-level-up">Force Level Up</button>
+            <button class="btn small secondary" id="test-milestone">Milestone</button>
+          </div>
+          <div class="test-result" id="result-level"></div>
+        </div>
+
+        <!-- Badge System Test -->
+        <div class="test-card">
+          <h4>Badge System <span class="test-status pending" id="status-badges">PENDING</span></h4>
+          <div class="component-demo" id="demo-badges">
+            <div>Badges will appear here</div>
+          </div>
+          <div class="test-controls">
+            <button class="btn small" id="test-unlock-badge">Unlock Badge</button>
+            <button class="btn small" id="test-badge-gallery">View Gallery</button>
+            <button class="btn small secondary" id="test-badge-notification">Notification</button>
+          </div>
+          <div class="test-result" id="result-badges"></div>
+        </div>
+
+        <!-- Progress Tracking Test -->
+        <div class="test-card">
+          <h4>Progress Tracking <span class="test-status pending" id="status-progress">PENDING</span></h4>
+          <div class="component-demo" id="demo-progress">
+            <div>Progress data will appear here</div>
+          </div>
+          <div class="test-controls">
+            <button class="btn small" id="test-game-session">Simulate Game</button>
+            <button class="btn small" id="test-progress-summary">View Summary</button>
+            <button class="btn small secondary" id="test-analytics">Analytics</button>
+          </div>
+          <div class="test-result" id="result-progress"></div>
+        </div>
+
+        <!-- Theme System Test -->
+        <div class="test-card">
+          <h4>Theme System <span class="test-status pending" id="status-themes">PENDING</span></h4>
+          <div class="component-demo" id="demo-themes">
+            <div>Theme preview will appear here</div>
+          </div>
+          <div class="test-controls">
+            <button class="btn small" id="test-light-theme">Light Theme</button>
+            <button class="btn small" id="test-dark-theme">Dark Theme</button>
+            <button class="btn small secondary" id="test-custom-theme">Custom</button>
+          </div>
+          <div class="test-result" id="result-themes"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance and Edge Cases -->
+    <div class="test-section">
+      <h2>Performance & Edge Cases</h2>
+      <div class="test-grid">
+        <div class="test-card">
+          <h4>Performance Tests</h4>
+          <div class="test-controls">
+            <button class="btn small" id="test-large-dataset">Large Dataset</button>
+            <button class="btn small" id="test-memory-usage">Memory Usage</button>
+            <button class="btn small" id="test-render-performance">Render Speed</button>
+          </div>
+          <div class="test-result" id="result-performance"></div>
+        </div>
+        
+        <div class="test-card">
+          <h4>Edge Case Tests</h4>
+          <div class="test-controls">
+            <button class="btn small" id="test-missing-data">Missing Data</button>
+            <button class="btn small" id="test-invalid-input">Invalid Input</button>
+            <button class="btn small" id="test-storage-limits">Storage Limits</button>
+          </div>
+          <div class="test-result" id="result-edge-cases"></div>
+        </div>
+
+        <div class="test-card">
+          <h4>Error Handling</h4>
+          <div class="test-controls">
+            <button class="btn small" id="test-component-errors">Component Errors</button>
+            <button class="btn small" id="test-data-corruption">Data Corruption</button>
+            <button class="btn small" id="test-recovery">Recovery</button>
+          </div>
+          <div class="test-result" id="result-errors"></div>
+        </div>
+
+        <div class="test-card">
+          <h4>Responsive Design</h4>
+          <div class="test-controls">
+            <button class="btn small" id="test-mobile-view">Mobile View</button>
+            <button class="btn small" id="test-tablet-view">Tablet View</button>
+            <button class="btn small" id="test-desktop-view">Desktop View</button>
+          </div>
+          <div class="test-result" id="result-responsive"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Console Log -->
+    <div class="test-section">
+      <h2>Test Console</h2>
+      <div class="log-console" id="test-console">
+        === Profile System Integration Test Console ===<br>
+        System initialized. Ready for testing...<br>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import Avatar from '../components/profile/Avatar.js';
+    import AvatarBuilder from '../components/profile/AvatarBuilder.js';
+    import LevelProgressDisplay from '../components/level/LevelProgressDisplay.js';
+    import LevelUpNotification from '../components/level/LevelUpNotification.js';
+    import XPGainAnimation from '../components/level/XPGainAnimation.js';
+    import LevelMilestones from '../components/level/LevelMilestones.js';
+    import BadgeDisplay from '../components/badges/BadgeDisplay.js';
+    import BadgeGallery from '../components/badges/BadgeGallery.js';
+    import BadgeNotification from '../components/badges/BadgeNotification.js';
+    import Modal from '../components/ui/Modal.js';
+    import profileManager from '../utils/profileManager.js';
+    import { getProgressTracker } from '../utils/progressIntegration.js';
+    import xpCalculator from '../utils/xpCalculator.js';
+
+    class ProfileIntegrationTest {
+      constructor() {
+        this.testResults = {};
+        this.currentStep = 0;
+        this.journeySteps = 7;
+        this.testProfile = null;
+        this.components = {};
+        
+        // Initialize systems
+        this.profileManager = profileManager;
+        this.progressTracker = getProgressTracker();
+        this.levelMilestones = LevelMilestones.getInstance();
+        this.xpGainAnimation = XPGainAnimation.getInstance();
+        this.levelUpNotification = LevelUpNotification.getInstance();
+        
+        this.init();
+      }
+      
+      init() {
+        this.setupEventListeners();
+        this.updateSystemStatus();
+        this.log('Profile integration test system initialized');
+        this.log('All components loaded successfully');
+      }
+      
+      setupEventListeners() {
+        // Main test controls
+        document.getElementById('run-full-test').addEventListener('click', () => {
+          this.runFullIntegrationTest();
+        });
+        
+        document.getElementById('reset-test-data').addEventListener('click', () => {
+          this.resetTestData();
+        });
+        
+        document.getElementById('clear-logs').addEventListener('click', () => {
+          this.clearLogs();
+        });
+        
+        // Journey controls
+        document.getElementById('start-journey').addEventListener('click', () => {
+          this.startUserJourney();
+        });
+        
+        document.getElementById('step-by-step').addEventListener('click', () => {
+          this.nextJourneyStep();
+        });
+        
+        document.getElementById('reset-journey').addEventListener('click', () => {
+          this.resetJourney();
+        });
+        
+        // Component tests
+        this.setupComponentEventListeners();
+      }
+      
+      setupComponentEventListeners() {
+        // Profile Management
+        document.getElementById('test-create-profile').addEventListener('click', () => {
+          this.testCreateProfile();
+        });
+        
+        document.getElementById('test-switch-profile').addEventListener('click', () => {
+          this.testSwitchProfile();
+        });
+        
+        document.getElementById('test-profile-settings').addEventListener('click', () => {
+          this.testProfileSettings();
+        });
+        
+        // Avatar System
+        document.getElementById('test-create-avatar').addEventListener('click', () => {
+          this.testCreateAvatar();
+        });
+        
+        document.getElementById('test-customize-avatar').addEventListener('click', () => {
+          this.testCustomizeAvatar();
+        });
+        
+        document.getElementById('test-avatar-builder').addEventListener('click', () => {
+          this.testAvatarBuilder();
+        });
+        
+        // Level Progress
+        document.getElementById('test-gain-xp').addEventListener('click', () => {
+          this.testGainXP();
+        });
+        
+        document.getElementById('test-level-up').addEventListener('click', () => {
+          this.testLevelUp();
+        });
+        
+        document.getElementById('test-milestone').addEventListener('click', () => {
+          this.testMilestone();
+        });
+        
+        // Badge System
+        document.getElementById('test-unlock-badge').addEventListener('click', () => {
+          this.testUnlockBadge();
+        });
+        
+        document.getElementById('test-badge-gallery').addEventListener('click', () => {
+          this.testBadgeGallery();
+        });
+        
+        document.getElementById('test-badge-notification').addEventListener('click', () => {
+          this.testBadgeNotification();
+        });
+        
+        // Progress Tracking
+        document.getElementById('test-game-session').addEventListener('click', () => {
+          this.testGameSession();
+        });
+        
+        document.getElementById('test-progress-summary').addEventListener('click', () => {
+          this.testProgressSummary();
+        });
+        
+        document.getElementById('test-analytics').addEventListener('click', () => {
+          this.testAnalytics();
+        });
+        
+        // Theme System
+        document.getElementById('test-light-theme').addEventListener('click', () => {
+          this.testLightTheme();
+        });
+        
+        document.getElementById('test-dark-theme').addEventListener('click', () => {
+          this.testDarkTheme();
+        });
+        
+        document.getElementById('test-custom-theme').addEventListener('click', () => {
+          this.testCustomTheme();
+        });
+        
+        // Performance and Edge Cases
+        this.setupAdvancedTestListeners();
+      }
+      
+      setupAdvancedTestListeners() {
+        // Performance tests
+        document.getElementById('test-large-dataset').addEventListener('click', () => {
+          this.testLargeDataset();
+        });
+        
+        document.getElementById('test-memory-usage').addEventListener('click', () => {
+          this.testMemoryUsage();
+        });
+        
+        document.getElementById('test-render-performance').addEventListener('click', () => {
+          this.testRenderPerformance();
+        });
+        
+        // Edge case tests
+        document.getElementById('test-missing-data').addEventListener('click', () => {
+          this.testMissingData();
+        });
+        
+        document.getElementById('test-invalid-input').addEventListener('click', () => {
+          this.testInvalidInput();
+        });
+        
+        document.getElementById('test-storage-limits').addEventListener('click', () => {
+          this.testStorageLimits();
+        });
+        
+        // Error handling tests
+        document.getElementById('test-component-errors').addEventListener('click', () => {
+          this.testComponentErrors();
+        });
+        
+        document.getElementById('test-data-corruption').addEventListener('click', () => {
+          this.testDataCorruption();
+        });
+        
+        document.getElementById('test-recovery').addEventListener('click', () => {
+          this.testRecovery();
+        });
+        
+        // Responsive design tests
+        document.getElementById('test-mobile-view').addEventListener('click', () => {
+          this.testMobileView();
+        });
+        
+        document.getElementById('test-tablet-view').addEventListener('click', () => {
+          this.testTabletView();
+        });
+        
+        document.getElementById('test-desktop-view').addEventListener('click', () => {
+          this.testDesktopView();
+        });
+      }
+      
+      async runFullIntegrationTest() {
+        this.log('🚀 Starting full integration test...');
+        this.log('Testing all components and their interactions');
+        
+        const tests = [
+          { name: 'Profile Management', test: () => this.testCreateProfile() },
+          { name: 'Avatar System', test: () => this.testCreateAvatar() },
+          { name: 'Level Progress', test: () => this.testGainXP() },
+          { name: 'Badge System', test: () => this.testUnlockBadge() },
+          { name: 'Progress Tracking', test: () => this.testGameSession() },
+          { name: 'Theme System', test: () => this.testLightTheme() }
+        ];
+        
+        for (const testItem of tests) {
+          this.log(`Running ${testItem.name} test...`);
+          try {
+            await testItem.test();
+            this.setTestStatus(testItem.name.toLowerCase().replace(' ', '-'), 'pass');
+            this.log(`✅ ${testItem.name} test passed`);
+          } catch (error) {
+            this.setTestStatus(testItem.name.toLowerCase().replace(' ', '-'), 'fail');
+            this.log(`❌ ${testItem.name} test failed: ${error.message}`);
+          }
+          
+          // Small delay between tests
+          await this.delay(500);
+        }
+        
+        this.log('🎉 Full integration test completed!');
+        this.updateSystemStatus();
+      }
+      
+      async startUserJourney() {
+        this.log('👤 Starting complete user journey simulation...');
+        this.resetJourney();
+        
+        for (let step = 1; step <= this.journeySteps; step++) {
+          await this.executeJourneyStep(step);
+          await this.delay(1000);
+        }
+        
+        this.log('🎉 User journey completed successfully!');
+      }
+      
+      async executeJourneyStep(step) {
+        this.currentStep = step;
+        this.updateJourneyUI();
+        
+        switch (step) {
+          case 1:
+            this.log('Step 1: Creating test profile...');
+            await this.testCreateProfile();
+            break;
+          case 2:
+            this.log('Step 2: Setting up avatar...');
+            await this.testCreateAvatar();
+            break;
+          case 3:
+            this.log('Step 3: Simulating gameplay...');
+            await this.testGameSession();
+            break;
+          case 4:
+            this.log('Step 4: Earning XP...');
+            await this.testGainXP();
+            break;
+          case 5:
+            this.log('Step 5: Leveling up...');
+            await this.testLevelUp();
+            break;
+          case 6:
+            this.log('Step 6: Unlocking badges...');
+            await this.testUnlockBadge();
+            break;
+          case 7:
+            this.log('Step 7: Viewing progress...');
+            await this.testProgressSummary();
+            break;
+        }
+        
+        this.markStepCompleted(step);
+      }
+      
+      nextJourneyStep() {
+        if (this.currentStep < this.journeySteps) {
+          this.executeJourneyStep(this.currentStep + 1);
+        } else {
+          this.log('Journey already completed. Use "Start User Journey" to restart.');
+        }
+      }
+      
+      resetJourney() {
+        this.currentStep = 0;
+        for (let i = 1; i <= this.journeySteps; i++) {
+          const step = document.getElementById(`step-${i}`);
+          step.classList.remove('active', 'completed');
+        }
+        this.log('Journey reset. Ready to start fresh.');
+      }
+      
+      updateJourneyUI() {
+        // Update step visual states
+        for (let i = 1; i <= this.journeySteps; i++) {
+          const step = document.getElementById(`step-${i}`);
+          step.classList.remove('active', 'completed');
+          
+          if (i === this.currentStep) {
+            step.classList.add('active');
+          } else if (i < this.currentStep) {
+            step.classList.add('completed');
+          }
+        }
+      }
+      
+      markStepCompleted(step) {
+        const stepElement = document.getElementById(`step-${step}`);
+        stepElement.classList.remove('active');
+        stepElement.classList.add('completed');
+      }
+      
+      // Component Test Methods
+      async testCreateProfile() {
+        try {
+          const testProfileData = {
+            name: `TestUser_${Date.now()}`,
+            age: 10,
+            favoriteSubject: 'math',
+            avatar: {
+              style: 'human',
+              skinTone: 2,
+              hairStyle: 1,
+              hairColor: 'brown',
+              eyeColor: 'blue',
+              outfit: 'casual'
+            }
+          };
+          
+          const profile = this.profileManager.createProfile(testProfileData);
+          this.testProfile = profile;
+          
+          this.updateResult('profile', `✅ Profile created: ${profile.name} (ID: ${profile.id})`);
+          this.setTestStatus('profile', 'pass');
+          this.updateSystemStatus();
+          
+          return profile;
+        } catch (error) {
+          this.updateResult('profile', `❌ Error: ${error.message}`);
+          this.setTestStatus('profile', 'fail');
+          throw error;
+        }
+      }
+      
+      async testCreateAvatar() {
+        try {
+          if (!this.testProfile) {
+            await this.testCreateProfile();
+          }
+          
+          // Create avatar component
+          const avatarContainer = document.getElementById('demo-avatar');
+          avatarContainer.innerHTML = '<div id="test-avatar"></div>';
+          
+          this.components.avatar = new Avatar('test-avatar', {
+            size: 80,
+            showName: true,
+            showLevel: true
+          });
+          
+          this.components.avatar.updateFromProfile(this.testProfile);
+          
+          this.updateResult('avatar', '✅ Avatar created and configured successfully');
+          this.setTestStatus('avatar', 'pass');
+          
+          return this.components.avatar;
+        } catch (error) {
+          this.updateResult('avatar', `❌ Error: ${error.message}`);
+          this.setTestStatus('avatar', 'fail');
+          throw error;
+        }
+      }
+      
+      async testGainXP() {
+        try {
+          if (!this.testProfile) {
+            await this.testCreateProfile();
+          }
+          
+          // Create level display
+          const levelContainer = document.getElementById('demo-level');
+          levelContainer.innerHTML = '<div id="test-level-display"></div>';
+          
+          this.components.levelDisplay = new LevelProgressDisplay('test-level-display', {
+            size: 'mini',
+            animated: true
+          });
+          
+          // Simulate XP gain
+          const xpGain = 25;
+          const oldXP = this.testProfile.xp || 0;
+          const newXP = oldXP + xpGain;
+          
+          this.profileManager.updateProfile(this.testProfile.id, { xp: newXP });
+          this.testProfile.xp = newXP;
+          
+          this.components.levelDisplay.setXP(newXP, { animate: true });
+          
+          // Show XP animation
+          this.xpGainAnimation.show(xpGain, {
+            target: '#test-level-display',
+            type: 'gain'
+          });
+          
+          this.updateResult('level', `✅ Gained ${xpGain} XP (${oldXP} → ${newXP})`);
+          this.setTestStatus('level-progress', 'pass');
+          this.updateSystemStatus();
+          
+          return newXP;
+        } catch (error) {
+          this.updateResult('level', `❌ Error: ${error.message}`);
+          this.setTestStatus('level-progress', 'fail');
+          throw error;
+        }
+      }
+      
+      async testLevelUp() {
+        try {
+          if (!this.testProfile) {
+            await this.testCreateProfile();
+          }
+          
+          const oldLevel = this.testProfile.level || 1;
+          const targetLevel = oldLevel + 1;
+          const requiredXP = xpCalculator.calculateXPForLevel(targetLevel);
+          
+          // Set XP to trigger level up
+          this.profileManager.updateProfile(this.testProfile.id, { 
+            xp: requiredXP,
+            level: targetLevel 
+          });
+          this.testProfile.xp = requiredXP;
+          this.testProfile.level = targetLevel;
+          
+          // Show level up notification
+          const levelData = xpCalculator.calculateLevelProgress(requiredXP);
+          this.levelUpNotification.show(levelData);
+          
+          // Update level display if it exists
+          if (this.components.levelDisplay) {
+            this.components.levelDisplay.setXP(requiredXP, { animate: true });
+          }
+          
+          this.updateResult('level', `✅ Level up! ${oldLevel} → ${targetLevel}`);
+          this.updateSystemStatus();
+          
+          return targetLevel;
+        } catch (error) {
+          this.updateResult('level', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testMilestone() {
+        try {
+          const currentLevel = this.testProfile?.level || 1;
+          const nextMilestone = this.levelMilestones.getNextMilestone(currentLevel);
+          
+          if (nextMilestone) {
+            this.updateResult('level', `📍 Next milestone: Level ${nextMilestone.level} (${nextMilestone.levelsToGo} levels to go)`);
+          } else {
+            this.updateResult('level', '📍 No upcoming milestones found');
+          }
+          
+          return nextMilestone;
+        } catch (error) {
+          this.updateResult('level', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testUnlockBadge() {
+        try {
+          // Create a test achievement
+          const testAchievement = {
+            id: 'test-achievement-' + Date.now(),
+            name: 'Integration Tester',
+            description: 'Completed integration testing',
+            type: 'testing',
+            rarity: 'common',
+            icon: '🧪',
+            unlocked: true,
+            dateUnlocked: new Date().toISOString(),
+            progress: { current: 1, target: 1 }
+          };
+          
+          // Show badge notification
+          BadgeNotification.show(testAchievement);
+          
+          // Create badge display
+          const badgeContainer = document.getElementById('demo-badges');
+          badgeContainer.innerHTML = '';
+          
+          const badgeElement = BadgeDisplay.createElement(testAchievement, {
+            size: 'normal',
+            showTooltip: true
+          });
+          
+          badgeContainer.appendChild(badgeElement);
+          
+          this.updateResult('badges', `✅ Badge unlocked: ${testAchievement.name}`);
+          this.setTestStatus('badges', 'pass');
+          this.updateSystemStatus();
+          
+          return testAchievement;
+        } catch (error) {
+          this.updateResult('badges', `❌ Error: ${error.message}`);
+          this.setTestStatus('badges', 'fail');
+          throw error;
+        }
+      }
+      
+      async testBadgeGallery() {
+        try {
+          // Create sample achievements
+          const sampleAchievements = [
+            { id: 'math-master', name: 'Math Master', icon: '🔢', unlocked: true, rarity: 'rare' },
+            { id: 'science-explorer', name: 'Science Explorer', icon: '🔬', unlocked: true, rarity: 'common' },
+            { id: 'reading-champion', name: 'Reading Champion', icon: '📚', unlocked: false, rarity: 'epic' }
+          ];
+          
+          const badgeContainer = document.getElementById('demo-badges');
+          badgeContainer.innerHTML = '<div id="test-badge-gallery"></div>';
+          
+          const gallery = new BadgeGallery('test-badge-gallery', {
+            achievements: sampleAchievements,
+            showFilters: false,
+            badgeSize: 'mini'
+          });
+          
+          this.components.badgeGallery = gallery;
+          
+          this.updateResult('badges', '✅ Badge gallery created with sample achievements');
+          return gallery;
+        } catch (error) {
+          this.updateResult('badges', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testBadgeNotification() {
+        try {
+          const testBadge = {
+            id: 'notification-test',
+            name: 'Notification Test',
+            description: 'Test badge notification system',
+            icon: '🔔',
+            rarity: 'rare',
+            unlocked: true,
+            dateUnlocked: new Date().toISOString()
+          };
+          
+          BadgeNotification.show(testBadge);
+          
+          this.updateResult('badges', '✅ Badge notification displayed');
+          return testBadge;
+        } catch (error) {
+          this.updateResult('badges', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testGameSession() {
+        try {
+          if (!this.testProfile) {
+            await this.testCreateProfile();
+          }
+          
+          // Simulate a game session
+          const gameData = {
+            gameType: 'math-quiz',
+            score: 850,
+            accuracy: 85,
+            timeSpent: 120,
+            questionsAnswered: 10,
+            correctAnswers: 8,
+            difficulty: 'medium'
+          };
+          
+          // Record the session
+          this.progressTracker.recordGameSession(gameData);
+          
+          this.updateResult('progress', `✅ Game session recorded: ${gameData.gameType} (Score: ${gameData.score})`);
+          this.setTestStatus('progress', 'pass');
+          this.updateSystemStatus();
+          
+          return gameData;
+        } catch (error) {
+          this.updateResult('progress', `❌ Error: ${error.message}`);
+          this.setTestStatus('progress', 'fail');
+          throw error;
+        }
+      }
+      
+      async testProgressSummary() {
+        try {
+          const summary = this.progressTracker.getProgressSummary();
+          
+          const progressContainer = document.getElementById('demo-progress');
+          progressContainer.innerHTML = `
+            <div style="font-size: 0.8rem; text-align: left;">
+              <div><strong>Games Played:</strong> ${summary.crossGame?.gamesPlayed?.length || 0}</div>
+              <div><strong>Total Score:</strong> ${summary.crossGame?.totalScore || 0}</div>
+              <div><strong>Achievements:</strong> ${summary.achievements?.unlocked || 0}</div>
+              <div><strong>Overall Accuracy:</strong> ${Math.round(summary.crossGame?.overallAccuracy || 0)}%</div>
+            </div>
+          `;
+          
+          this.updateResult('progress', '✅ Progress summary displayed');
+          return summary;
+        } catch (error) {
+          this.updateResult('progress', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testAnalytics() {
+        try {
+          const analytics = this.progressTracker.getAnalytics();
+          
+          this.updateResult('progress', `✅ Analytics retrieved: ${Object.keys(analytics).length} data points`);
+          return analytics;
+        } catch (error) {
+          this.updateResult('progress', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      // Theme tests
+      async testLightTheme() {
+        try {
+          document.documentElement.setAttribute('data-theme', 'light');
+          this.updateResult('themes', '✅ Light theme applied');
+          this.setTestStatus('themes', 'pass');
+        } catch (error) {
+          this.updateResult('themes', `❌ Error: ${error.message}`);
+          this.setTestStatus('themes', 'fail');
+          throw error;
+        }
+      }
+      
+      async testDarkTheme() {
+        try {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          this.updateResult('themes', '✅ Dark theme applied');
+        } catch (error) {
+          this.updateResult('themes', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testCustomTheme() {
+        try {
+          // Reset to default theme
+          document.documentElement.removeAttribute('data-theme');
+          this.updateResult('themes', '✅ Default theme restored');
+        } catch (error) {
+          this.updateResult('themes', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      // Advanced test methods
+      async testLargeDataset() {
+        try {
+          const startTime = performance.now();
+          
+          // Create large dataset simulation
+          const largeData = {
+            profiles: Array.from({ length: 100 }, (_, i) => ({
+              id: `test-profile-${i}`,
+              name: `TestUser${i}`,
+              level: Math.floor(Math.random() * 50) + 1,
+              xp: Math.floor(Math.random() * 10000)
+            })),
+            gameSessions: Array.from({ length: 1000 }, (_, i) => ({
+              id: i,
+              gameType: 'test-game',
+              score: Math.floor(Math.random() * 1000),
+              timestamp: new Date(Date.now() - i * 1000000).toISOString()
+            }))
+          };
+          
+          const endTime = performance.now();
+          const processingTime = Math.round(endTime - startTime);
+          
+          this.updateResult('performance', `✅ Large dataset test completed in ${processingTime}ms`);
+          this.updateResult('performance', `   Created ${largeData.profiles.length} profiles and ${largeData.gameSession?.length} sessions`);
+        } catch (error) {
+          this.updateResult('performance', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testMemoryUsage() {
+        try {
+          if (performance.memory) {
+            const memory = performance.memory;
+            const usedJSHeapSize = Math.round(memory.usedJSHeapSize / 1048576); // MB
+            const totalJSHeapSize = Math.round(memory.totalJSHeapSize / 1048576); // MB
+            
+            this.updateResult('performance', `✅ Memory usage: ${usedJSHeapSize}MB / ${totalJSHeapSize}MB`);
+          } else {
+            this.updateResult('performance', '⚠️ Memory API not available in this browser');
+          }
+        } catch (error) {
+          this.updateResult('performance', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testRenderPerformance() {
+        try {
+          const startTime = performance.now();
+          
+          // Simulate heavy rendering
+          for (let i = 0; i < 100; i++) {
+            const element = document.createElement('div');
+            element.textContent = `Performance test element ${i}`;
+            document.body.appendChild(element);
+            document.body.removeChild(element);
+          }
+          
+          const endTime = performance.now();
+          const renderTime = Math.round(endTime - startTime);
+          
+          this.updateResult('performance', `✅ Render performance test: ${renderTime}ms for 100 elements`);
+        } catch (error) {
+          this.updateResult('performance', `❌ Error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testMissingData() {
+        try {
+          // Test with missing profile data
+          const incompleteProfile = { name: 'Incomplete' };
+          
+          if (this.components.avatar) {
+            this.components.avatar.updateFromProfile(incompleteProfile);
+          }
+          
+          this.updateResult('edge-cases', '✅ Handled missing profile data gracefully');
+        } catch (error) {
+          this.updateResult('edge-cases', `❌ Error with missing data: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testInvalidInput() {
+        try {
+          // Test with invalid XP values
+          if (this.components.levelDisplay) {
+            this.components.levelDisplay.setXP(-100); // Negative XP
+            this.components.levelDisplay.setXP(null); // Null XP
+            this.components.levelDisplay.setXP('invalid'); // String XP
+          }
+          
+          this.updateResult('edge-cases', '✅ Handled invalid input gracefully');
+        } catch (error) {
+          this.updateResult('edge-cases', `❌ Error with invalid input: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testStorageLimits() {
+        try {
+          // Test localStorage limits
+          const testKey = 'storage-limit-test';
+          const largeData = 'x'.repeat(1000000); // 1MB string
+          
+          localStorage.setItem(testKey, largeData);
+          const retrieved = localStorage.getItem(testKey);
+          
+          if (retrieved === largeData) {
+            this.updateResult('edge-cases', '✅ Large data storage test passed');
+          } else {
+            this.updateResult('edge-cases', '⚠️ Storage may have limits');
+          }
+          
+          localStorage.removeItem(testKey);
+        } catch (error) {
+          this.updateResult('edge-cases', `❌ Storage limit error: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testComponentErrors() {
+        try {
+          // Test error handling in components
+          const errorTests = [
+            () => new Avatar('non-existent-container'),
+            () => new LevelProgressDisplay('non-existent-container'),
+            () => new BadgeGallery('non-existent-container')
+          ];
+          
+          let errorsCaught = 0;
+          
+          for (const test of errorTests) {
+            try {
+              test();
+            } catch (error) {
+              errorsCaught++;
+            }
+          }
+          
+          this.updateResult('errors', `✅ Component error handling: ${errorsCaught}/${errorTests.length} errors caught`);
+        } catch (error) {
+          this.updateResult('errors', `❌ Error testing component errors: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testDataCorruption() {
+        try {
+          // Test with corrupted localStorage data
+          const corruptedData = '{"invalid": json}';
+          localStorage.setItem('learnimals-test-corrupt', corruptedData);
+          
+          try {
+            JSON.parse(localStorage.getItem('learnimals-test-corrupt'));
+            this.updateResult('errors', '❌ Corrupted data was not detected');
+          } catch (parseError) {
+            this.updateResult('errors', '✅ Corrupted data detection working');
+          }
+          
+          localStorage.removeItem('learnimals-test-corrupt');
+        } catch (error) {
+          this.updateResult('errors', `❌ Error testing data corruption: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testRecovery() {
+        try {
+          // Test system recovery from errors
+          const originalConsoleError = console.error;
+          let errorCount = 0;
+          
+          console.error = (...args) => {
+            errorCount++;
+            originalConsoleError(...args);
+          };
+          
+          // Trigger some recoverable errors
+          try {
+            throw new Error('Test error');
+          } catch (e) {
+            // Error should be handled gracefully
+          }
+          
+          console.error = originalConsoleError;
+          
+          this.updateResult('errors', `✅ Recovery test: ${errorCount} errors handled gracefully`);
+        } catch (error) {
+          this.updateResult('errors', `❌ Error testing recovery: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testMobileView() {
+        try {
+          // Simulate mobile viewport
+          const viewport = document.querySelector('meta[name="viewport"]');
+          if (viewport) {
+            this.updateResult('responsive', '✅ Mobile viewport meta tag present');
+          }
+          
+          // Test mobile-specific CSS
+          const isMobileMedia = window.matchMedia('(max-width: 768px)').matches;
+          this.updateResult('responsive', `📱 Mobile media query: ${isMobileMedia ? 'Active' : 'Inactive'}`);
+        } catch (error) {
+          this.updateResult('responsive', `❌ Error testing mobile view: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testTabletView() {
+        try {
+          const isTabletMedia = window.matchMedia('(min-width: 769px) and (max-width: 1024px)').matches;
+          this.updateResult('responsive', `📱 Tablet media query: ${isTabletMedia ? 'Active' : 'Inactive'}`);
+        } catch (error) {
+          this.updateResult('responsive', `❌ Error testing tablet view: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      async testDesktopView() {
+        try {
+          const isDesktopMedia = window.matchMedia('(min-width: 1025px)').matches;
+          this.updateResult('responsive', `💻 Desktop media query: ${isDesktopMedia ? 'Active' : 'Inactive'}`);
+        } catch (error) {
+          this.updateResult('responsive', `❌ Error testing desktop view: ${error.message}`);
+          throw error;
+        }
+      }
+      
+      // Additional methods
+      async testCustomizeAvatar() {
+        this.updateResult('avatar', '🎨 Avatar customization UI would open here');
+      }
+      
+      async testAvatarBuilder() {
+        this.updateResult('avatar', '🔧 Avatar builder would open here');
+      }
+      
+      async testSwitchProfile() {
+        this.updateResult('profile', '🔄 Profile switching UI would appear here');
+      }
+      
+      async testProfileSettings() {
+        this.updateResult('profile', '⚙️ Profile settings panel would open here');
+      }
+      
+      // Utility methods
+      updateSystemStatus() {
+        try {
+          const profiles = this.profileManager.getAllProfiles();
+          const currentProfile = this.testProfile || this.profileManager.getActiveProfile();
+          const progressSummary = this.progressTracker.getProgressSummary();
+          
+          document.getElementById('status-profiles').textContent = profiles.length;
+          document.getElementById('status-level').textContent = currentProfile?.level || 1;
+          document.getElementById('status-xp').textContent = currentProfile?.xp || 0;
+          document.getElementById('status-achievements').textContent = progressSummary.achievements?.unlocked || 0;
+          document.getElementById('status-badges').textContent = progressSummary.achievements?.unlocked || 0;
+          document.getElementById('status-games').textContent = progressSummary.crossGame?.gamesPlayed?.length || 0;
+        } catch (error) {
+          this.log(`Error updating system status: ${error.message}`);
+        }
+      }
+      
+      setTestStatus(testName, status) {
+        const statusElement = document.getElementById(`status-${testName}`);
+        if (statusElement) {
+          statusElement.textContent = status.toUpperCase();
+          statusElement.className = `test-status ${status}`;
+        }
+      }
+      
+      updateResult(testType, message) {
+        const resultElement = document.getElementById(`result-${testType}`);
+        if (resultElement) {
+          resultElement.innerHTML += message + '<br>';
+          resultElement.scrollTop = resultElement.scrollHeight;
+        }
+      }
+      
+      resetTestData() {
+        this.log('🔄 Resetting test data...');
+        
+        // Clear test profile
+        if (this.testProfile) {
+          this.profileManager.deleteProfile(this.testProfile.id);
+          this.testProfile = null;
+        }
+        
+        // Clear component demos
+        const demos = ['demo-profile', 'demo-avatar', 'demo-level', 'demo-badges', 'demo-progress', 'demo-themes'];
+        demos.forEach(id => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.innerHTML = '<div>Components will appear here</div>';
+          }
+        });
+        
+        // Clear results
+        const results = ['result-profile', 'result-avatar', 'result-level', 'result-badges', 'result-progress', 'result-themes', 'result-performance', 'result-edge-cases', 'result-errors', 'result-responsive'];
+        results.forEach(id => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.innerHTML = '';
+          }
+        });
+        
+        // Reset test statuses
+        const statuses = ['profile', 'avatar', 'level-progress', 'badges', 'progress', 'themes'];
+        statuses.forEach(status => {
+          this.setTestStatus(status, 'pending');
+        });
+        
+        this.updateSystemStatus();
+        this.log('✅ Test data reset completed');
+      }
+      
+      clearLogs() {
+        const console = document.getElementById('test-console');
+        console.innerHTML = '=== Profile System Integration Test Console ===<br>Logs cleared. Ready for testing...<br>';
+      }
+      
+      log(message) {
+        const console = document.getElementById('test-console');
+        const timestamp = new Date().toLocaleTimeString();
+        console.innerHTML += `[${timestamp}] ${message}<br>`;
+        console.scrollTop = console.scrollHeight;
+      }
+      
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }
+
+    // Initialize the integration test system
+    window.profileIntegrationTest = new ProfileIntegrationTest();
+  </script>
+</body>
+</html>

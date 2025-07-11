@@ -1,0 +1,703 @@
+/* Game Victory and Celebration Animations */
+/* Comprehensive animations for game completion celebrations */
+
+/* =============================================
+   VICTORY CONTAINER ANIMATIONS
+   ============================================= */
+
+.victory-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.victory-content {
+  text-align: center;
+  color: white;
+  position: relative;
+  max-width: 80%;
+}
+
+/* Basic victory bounce animation */
+.victory-bounce {
+  animation: victoryBounce 2s ease-out;
+}
+
+@keyframes victoryBounce {
+  0% {
+    transform: scale(0.3) rotate(-15deg);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.95) rotate(-2deg);
+  }
+  70% {
+    transform: scale(1.05) rotate(1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* =============================================
+   CELEBRATION TEXT ANIMATIONS
+   ============================================= */
+
+.celebration-text {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.celebration-text.golden {
+  background: linear-gradient(45deg, #FFD700, #FFA500, #FF8C00);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+.celebration-text.silver {
+  background: linear-gradient(45deg, #C0C0C0, #E5E5E5, #DCDCDC);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.celebration-text.bronze {
+  background: linear-gradient(45deg, #CD7F32, #DAA520, #B8860B);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 165, 0, 0.6);
+  }
+}
+
+.celebration-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  animation: subtitleFadeIn 1s ease-out 0.5s both;
+}
+
+@keyframes subtitleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 0.9;
+    transform: translateY(0);
+  }
+}
+
+/* =============================================
+   TROPHY AND MEDAL ANIMATIONS
+   ============================================= */
+
+.trophy-container {
+  position: relative;
+  margin: 2rem auto;
+  width: 120px;
+  height: 120px;
+}
+
+.trophy {
+  width: 100%;
+  height: 100%;
+  font-size: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: trophyEntrance 1.5s ease-out;
+}
+
+.trophy.gold {
+  color: #FFD700;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+  animation: trophyEntrance 1.5s ease-out, trophyGlow 3s ease-in-out infinite;
+}
+
+.trophy.silver {
+  color: #C0C0C0;
+  text-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
+  animation: trophyEntrance 1.5s ease-out, silverShimmer 2s ease-in-out infinite;
+}
+
+.trophy.bronze {
+  color: #CD7F32;
+  text-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+  animation: trophyEntrance 1.5s ease-out;
+}
+
+@keyframes trophyEntrance {
+  0% {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(-10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes trophyGlow {
+  0%, 100% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 165, 0, 0.6);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes silverShimmer {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* =============================================
+   CONFETTI ANIMATIONS
+   ============================================= */
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  animation: confettiFall 3s ease-out forwards;
+  pointer-events: none;
+}
+
+.confetti-piece.red { background: #FF6B6B; }
+.confetti-piece.blue { background: #4ECDC4; }
+.confetti-piece.green { background: #45B7D1; }
+.confetti-piece.yellow { background: #FFD700; }
+.confetti-piece.purple { background: #9B59B6; }
+.confetti-piece.orange { background: #F39C12; }
+
+.confetti-piece.rectangle {
+  width: 12px;
+  height: 6px;
+  border-radius: 2px;
+}
+
+.confetti-piece.circle {
+  border-radius: 50%;
+}
+
+.confetti-piece.triangle {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid;
+  background: transparent;
+}
+
+.confetti-piece.triangle.red { border-bottom-color: #FF6B6B; }
+.confetti-piece.triangle.blue { border-bottom-color: #4ECDC4; }
+.confetti-piece.triangle.green { border-bottom-color: #45B7D1; }
+.confetti-piece.triangle.yellow { border-bottom-color: #FFD700; }
+.confetti-piece.triangle.purple { border-bottom-color: #9B59B6; }
+.confetti-piece.triangle.orange { border-bottom-color: #F39C12; }
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Confetti variants for different directions */
+.confetti-piece.left {
+  animation: confettiFallLeft 3s ease-out forwards;
+}
+
+.confetti-piece.right {
+  animation: confettiFallRight 3s ease-out forwards;
+}
+
+@keyframes confettiFallLeft {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) translateX(-200px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confettiFallRight {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) translateX(200px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   STAR BURST ANIMATIONS
+   ============================================= */
+
+.star-burst-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.star-particle {
+  position: absolute;
+  font-size: 2rem;
+  color: #FFD700;
+  animation: starBurst 2s ease-out forwards;
+  pointer-events: none;
+}
+
+.star-particle.large {
+  font-size: 3rem;
+  animation-duration: 2.5s;
+}
+
+.star-particle.small {
+  font-size: 1.5rem;
+  animation-duration: 1.5s;
+}
+
+@keyframes starBurst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Star burst with directional movement */
+.star-particle.north { animation: starBurstNorth 2s ease-out forwards; }
+.star-particle.northeast { animation: starBurstNorthEast 2s ease-out forwards; }
+.star-particle.east { animation: starBurstEast 2s ease-out forwards; }
+.star-particle.southeast { animation: starBurstSouthEast 2s ease-out forwards; }
+.star-particle.south { animation: starBurstSouth 2s ease-out forwards; }
+.star-particle.southwest { animation: starBurstSouthWest 2s ease-out forwards; }
+.star-particle.west { animation: starBurstWest 2s ease-out forwards; }
+.star-particle.northwest { animation: starBurstNorthWest 2s ease-out forwards; }
+
+@keyframes starBurstNorth {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(0, -100px) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstNorthEast {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(70px, -70px) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstEast {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(100px, 0) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstSouthEast {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(70px, 70px) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstSouth {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(0, 100px) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstSouthWest {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(-70px, 70px) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstWest {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(-100px, 0) scale(0.5); opacity: 0; }
+}
+
+@keyframes starBurstNorthWest {
+  0% { transform: translate(0, 0) scale(0); opacity: 1; }
+  100% { transform: translate(-70px, -70px) scale(0.5); opacity: 0; }
+}
+
+/* =============================================
+   FIREWORK ANIMATIONS
+   ============================================= */
+
+.firework {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  animation: fireworkExplode 1.5s ease-out forwards;
+}
+
+.firework.red { background: #FF6B6B; box-shadow: 0 0 10px #FF6B6B; }
+.firework.blue { background: #4ECDC4; box-shadow: 0 0 10px #4ECDC4; }
+.firework.green { background: #45B7D1; box-shadow: 0 0 10px #45B7D1; }
+.firework.yellow { background: #FFD700; box-shadow: 0 0 10px #FFD700; }
+.firework.purple { background: #9B59B6; box-shadow: 0 0 10px #9B59B6; }
+
+@keyframes fireworkExplode {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(20);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   ACHIEVEMENT TIER CELEBRATIONS
+   ============================================= */
+
+.celebration-tier-bronze {
+  background: radial-gradient(circle, rgba(205, 127, 50, 0.3), transparent 70%);
+}
+
+.celebration-tier-silver {
+  background: radial-gradient(circle, rgba(192, 192, 192, 0.3), transparent 70%);
+}
+
+.celebration-tier-gold {
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent 70%);
+  animation: goldPulse 2s ease-in-out infinite;
+}
+
+.celebration-tier-platinum {
+  background: radial-gradient(circle, rgba(229, 228, 226, 0.3), transparent 70%);
+  animation: platinumShimmer 3s ease-in-out infinite;
+}
+
+@keyframes goldPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+  }
+}
+
+@keyframes platinumShimmer {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(229, 228, 226, 0.4);
+  }
+  33% {
+    box-shadow: 0 0 35px rgba(255, 255, 255, 0.6);
+  }
+  66% {
+    box-shadow: 0 0 30px rgba(192, 192, 192, 0.5);
+  }
+}
+
+/* =============================================
+   SCORE DISPLAY ANIMATIONS
+   ============================================= */
+
+.victory-score {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  animation: scoreCountUp 2s ease-out;
+}
+
+.victory-score.perfect {
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  animation: scoreCountUp 2s ease-out, perfectGlow 3s ease-in-out infinite;
+}
+
+@keyframes scoreCountUp {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes perfectGlow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 165, 0, 0.6);
+  }
+}
+
+/* =============================================
+   RIBBON AND BANNER ANIMATIONS
+   ============================================= */
+
+.victory-ribbon {
+  position: relative;
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  padding: 1rem 2rem;
+  margin: 1rem auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: ribbonUnfurl 1s ease-out;
+  max-width: 300px;
+}
+
+.victory-ribbon::before,
+.victory-ribbon::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  width: 0;
+  height: 0;
+  border-top: 15px solid #FFA500;
+}
+
+.victory-ribbon::before {
+  left: 0;
+  border-right: 15px solid transparent;
+}
+
+.victory-ribbon::after {
+  right: 0;
+  border-left: 15px solid transparent;
+}
+
+@keyframes ribbonUnfurl {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scaleX(1.1);
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* =============================================
+   PARTICLE EFFECTS
+   ============================================= */
+
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: particleFloat 4s ease-out forwards;
+  opacity: 0.8;
+}
+
+.particle.sparkle {
+  animation: particleSparkle 2s ease-out forwards;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateY(90vh) scale(1);
+  }
+  100% {
+    transform: translateY(-10vh) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes particleSparkle {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* =============================================
+   MOBILE OPTIMIZATIONS
+   ============================================= */
+
+@media (max-width: 768px) {
+  .celebration-text {
+    font-size: 2rem;
+  }
+  
+  .trophy {
+    font-size: 4rem;
+  }
+  
+  .trophy-container {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .victory-score {
+    font-size: 1.5rem;
+  }
+  
+  .victory-ribbon {
+    padding: 0.8rem 1.5rem;
+    max-width: 250px;
+  }
+  
+  .star-particle {
+    font-size: 1.5rem;
+  }
+  
+  .star-particle.large {
+    font-size: 2rem;
+  }
+  
+  .star-particle.small {
+    font-size: 1rem;
+  }
+}
+
+/* =============================================
+   ACCESSIBILITY AND REDUCED MOTION
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .victory-bounce,
+  .celebration-text,
+  .trophy,
+  .confetti-piece,
+  .star-particle,
+  .firework,
+  .particle {
+    animation: none;
+  }
+  
+  .celebration-text.golden,
+  .trophy.gold,
+  .celebration-tier-gold {
+    animation: none;
+  }
+  
+  /* Provide static visual feedback instead */
+  .victory-container {
+    opacity: 1;
+  }
+  
+  .celebration-text {
+    transform: scale(1);
+    opacity: 1;
+  }
+  
+  .trophy {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .victory-container {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .celebration-text {
+    color: #FFFFFF;
+    text-shadow: none;
+  }
+  
+  .trophy {
+    color: #FFFFFF;
+    text-shadow: none;
+  }
+  
+  .victory-ribbon {
+    background: #FFFFFF;
+    color: #000000;
+    border: 2px solid #000000;
+  }
+}
+
+/* =============================================
+   THEME ADJUSTMENTS
+   ============================================= */
+
+[data-theme="dark"] .victory-container {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+[data-theme="dark"] .celebration-text {
+  text-shadow: 0 0 20px rgba(255, 215, 0, 1);
+}
+
+[data-theme="light"] .victory-container {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+}
+
+[data-theme="light"] .celebration-text {
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}

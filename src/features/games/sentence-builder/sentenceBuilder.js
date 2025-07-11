@@ -52,6 +52,12 @@ class SentenceBuilderGame extends BaseGame {
     this.maxStreak = 0;
     this.totalWordsPlaced = 0;
     this.correctPlacements = 0;
+    
+    // Animation state
+    this.animationEnabled = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.wordAnimations = new Map();
+    this.connectionLines = [];
+    this.readingFlowActive = false;
   }
   
   /**
@@ -221,7 +227,12 @@ class SentenceBuilderGame extends BaseGame {
     this.attempts = 0;
     this.sentenceStartTime = performance.now();
     
-    // Update UI
+    // Clear animations
+    this.wordAnimations.clear();
+    this.connectionLines = [];
+    
+    // Update UI with animation
+    this.animateWordBankShuffle();
     this.renderWordBank();
     this.renderSentenceArea();
     this.showSentenceHint();
@@ -432,6 +443,10 @@ class SentenceBuilderGame extends BaseGame {
   addWordToSentence(word) {
     this.sentenceArea.push(word);
     this.totalWordsPlaced++;
+    
+    // Animate word placement
+    this.animateWordPlacement(word, this.sentenceArea.length - 1);
+    
     this.renderSentenceArea();
     
     // Provide audio feedback
@@ -439,6 +454,9 @@ class SentenceBuilderGame extends BaseGame {
     
     // Track word placement
     this.trackProgress();
+    
+    // Check grammar as words are placed
+    this.checkGrammarProgress();
   }
   
   /**
@@ -447,8 +465,14 @@ class SentenceBuilderGame extends BaseGame {
   removeWordFromSentence(word) {
     const index = this.sentenceArea.indexOf(word);
     if (index > -1) {
+      // Animate word removal
+      this.animateWordRemoval(word, index);
+      
       this.sentenceArea.splice(index, 1);
-      this.renderSentenceArea();
+      
+      setTimeout(() => {
+        this.renderSentenceArea();
+      }, 400);
     }
   }
   
@@ -535,9 +559,13 @@ class SentenceBuilderGame extends BaseGame {
       streakCount: this.streakCount
     });
     
-    // Show success feedback
-    this.showFeedback('success', 'Excellent! You built the sentence perfectly!', this.currentSentence.explanation);
+    // Animate sentence completion
+    this.animateSentenceCompletion();
+    
+    // Show success feedback with grammar lesson
+    this.showFeedback('success grammar-lesson', 'Excellent! You built the sentence perfectly!', this.currentSentence.explanation);
     this.updateBellaSpeech('🎉 Wonderful! That sentence is perfect!');
+    this.animateBellaEncouragement();
     
     // Play success sound
     this.playSound(600, 200, 'sine');
@@ -547,8 +575,10 @@ class SentenceBuilderGame extends BaseGame {
       navigator.vibrate(100);
     }
     
-    // Show next button
-    this.container.querySelector('#next-btn').classList.remove('hidden');
+    // Show next button after animation
+    setTimeout(() => {
+      this.container.querySelector('#next-btn').classList.remove('hidden');
+    }, 800);
   }
   
   /**
@@ -666,6 +696,13 @@ class SentenceBuilderGame extends BaseGame {
     const progressPercentage = ((this.currentSentenceIndex + 1) / this.sentences.length) * 100;
     this.progressElement.style.width = `${progressPercentage}%`;
     
+    // Add building animation when active
+    if (this.sentenceArea.length > 0) {
+      this.progressElement.classList.add('building');
+    } else {
+      this.progressElement.classList.remove('building');
+    }
+    
     this.container.querySelector('#current-sentence').textContent = this.currentSentenceIndex + 1;
     this.container.querySelector('#total-sentences').textContent = this.sentences.length;
   }
@@ -719,6 +756,182 @@ class SentenceBuilderGame extends BaseGame {
     
     // Show final message
     this.updateBellaSpeech(`🎉 Great job! You completed ${this.currentSentenceIndex} sentences with ${Math.round(accuracy)}% accuracy!`);
+  }
+  
+  /**
+   * Animate word placement effect
+   */
+  animateWordPlacement(word, position) {
+    if (!this.animationEnabled) return;
+    
+    // Track animation state
+    this.wordAnimations.set(word, {
+      position,
+      timestamp: Date.now(),
+      type: 'placement'
+    });
+    
+    // Apply animation class to sentence area
+    const slots = this.sentenceAreaElement.querySelectorAll('.word-slot');
+    if (slots[position]) {
+      slots[position].classList.add('word-placed');
+      
+      // Grammar highlight animation
+      const grammarClass = getGrammarCategory(word);
+      slots[position].classList.add(`grammar-${grammarClass}`, 'active');
+      
+      setTimeout(() => {
+        slots[position].classList.remove('active');
+      }, 1000);
+    }
+    
+    // Update reading flow
+    this.updateReadingFlow();
+  }
+  
+  /**
+   * Animate word removal effect
+   */
+  animateWordRemoval(word, position) {
+    if (!this.animationEnabled) return;
+    
+    const slots = this.sentenceAreaElement.querySelectorAll('.word-slot');
+    if (slots[position]) {
+      slots[position].classList.add('word-removed');
+    }
+  }
+  
+  /**
+   * Animate word bank shuffle
+   */
+  animateWordBankShuffle() {
+    if (!this.animationEnabled) return;
+    
+    this.wordBankElement.classList.add('shuffling');
+    
+    setTimeout(() => {
+      this.wordBankElement.classList.remove('shuffling');
+    }, 800);
+  }
+  
+  /**
+   * Animate sentence completion celebration
+   */
+  animateSentenceCompletion() {
+    if (!this.animationEnabled) return;
+    
+    // Animate sentence area
+    this.sentenceAreaElement.classList.add('sentence-complete', 'valid');
+    
+    // Animate each word in sequence
+    const slots = this.sentenceAreaElement.querySelectorAll('.word-slot');
+    slots.forEach((slot, index) => {
+      setTimeout(() => {
+        slot.classList.add('grammar-correct');
+      }, index * 100);
+    });
+    
+    // Punctuation emphasis
+    const lastSlot = slots[slots.length - 1];
+    if (lastSlot && lastSlot.textContent.match(/[.!?]$/)) {
+      setTimeout(() => {
+        lastSlot.classList.add('punctuation-emphasis');
+      }, slots.length * 100);
+    }
+    
+    // Clean up classes after animation
+    setTimeout(() => {
+      this.sentenceAreaElement.classList.remove('sentence-complete');
+      slots.forEach(slot => {
+        slot.classList.remove('grammar-correct', 'punctuation-emphasis');
+      });
+    }, 2000);
+  }
+  
+  /**
+   * Animate Bella's encouragement
+   */
+  animateBellaEncouragement() {
+    if (!this.animationEnabled) return;
+    
+    const bellaAvatar = this.container.querySelector('.bella-avatar');
+    bellaAvatar.classList.add('bella-encourage');
+    
+    setTimeout(() => {
+      bellaAvatar.classList.remove('bella-encourage');
+    }, 1000);
+  }
+  
+  /**
+   * Update reading flow visualization
+   */
+  updateReadingFlow() {
+    if (!this.animationEnabled || this.sentenceArea.length < 2) return;
+    
+    this.sentenceAreaElement.classList.add('reading-pattern');
+    
+    setTimeout(() => {
+      this.sentenceAreaElement.classList.remove('reading-pattern');
+    }, 3000);
+  }
+  
+  /**
+   * Check grammar progress as words are placed
+   */
+  checkGrammarProgress() {
+    if (this.sentenceArea.length === 0) return;
+    
+    // Check if first word is capitalized
+    const firstWord = this.sentenceArea[0];
+    const shouldCapitalize = this.currentSentence.correctOrder[0];
+    
+    if (firstWord === shouldCapitalize) {
+      // Correct placement
+      this.animateGrammarValidation(0, true);
+    } else if (firstWord.toLowerCase() === shouldCapitalize.toLowerCase()) {
+      // Capitalization issue
+      this.updateBellaSpeech('💡 Remember, sentences start with a capital letter!');
+      this.animateGrammarValidation(0, false);
+    }
+    
+    // Check word order validity
+    if (this.sentenceArea.length >= 2) {
+      const isValidOrder = this.checkPartialOrder();
+      if (!isValidOrder) {
+        this.sentenceAreaElement.classList.add('invalid');
+        setTimeout(() => {
+          this.sentenceAreaElement.classList.remove('invalid');
+        }, 600);
+      }
+    }
+  }
+  
+  /**
+   * Animate grammar validation feedback
+   */
+  animateGrammarValidation(position, isCorrect) {
+    if (!this.animationEnabled) return;
+    
+    const slots = this.sentenceAreaElement.querySelectorAll('.word-slot');
+    if (slots[position]) {
+      slots[position].classList.add(isCorrect ? 'grammar-correct' : 'grammar-incorrect');
+      
+      setTimeout(() => {
+        slots[position].classList.remove('grammar-correct', 'grammar-incorrect');
+      }, 800);
+    }
+  }
+  
+  /**
+   * Check partial sentence order validity
+   */
+  checkPartialOrder() {
+    for (let i = 0; i < this.sentenceArea.length; i++) {
+      if (this.sentenceArea[i].toLowerCase() !== this.currentSentence.correctOrder[i].toLowerCase()) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

@@ -1,0 +1,549 @@
+/* Game Element Interaction Animations */
+/* Comprehensive animations for hover, click, drag, and touch interactions in educational games */
+
+/* =============================================
+   INTERACTIVE ELEMENT BASE STYLES
+   ============================================= */
+
+.game-interactive {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  will-change: transform, box-shadow, filter;
+}
+
+.game-interactive:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.3);
+}
+
+/* =============================================
+   HOVER ANIMATIONS
+   ============================================= */
+
+/* Lift effect - element rises slightly */
+.game-interactive.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Scale effect - element grows slightly */
+.game-interactive.hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Glow effect - element gets a soft glow */
+.game-interactive.hover-glow:hover {
+  box-shadow: 
+    0 0 20px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.4),
+    0 4px 15px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.1);
+}
+
+/* Rotate effect - element tilts slightly */
+.game-interactive.hover-rotate:hover {
+  transform: rotate(3deg) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Bounce effect - element has a spring animation */
+.game-interactive.hover-bounce:hover {
+  animation: hoverBounce 0.6s ease-out;
+}
+
+@keyframes hoverBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1.05); }
+}
+
+/* Float effect - element moves up and down */
+.game-interactive.hover-float {
+  animation: elementFloat 3s ease-in-out infinite;
+}
+
+@keyframes elementFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Wobble effect - element shakes gently */
+.game-interactive.hover-wobble:hover {
+  animation: elementWobble 0.8s ease-in-out;
+}
+
+@keyframes elementWobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-2deg); }
+}
+
+/* =============================================
+   CLICK/TAP ANIMATIONS
+   ============================================= */
+
+/* Press down effect */
+.game-interactive.click-press:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Ripple effect container */
+.game-interactive.click-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.game-interactive.click-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.game-interactive.click-ripple:active::after {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+  transition: width 0.1s ease, height 0.1s ease, opacity 0.1s ease;
+}
+
+/* Pulse effect on click */
+.game-interactive.click-pulse:active {
+  animation: clickPulse 0.3s ease-out;
+}
+
+@keyframes clickPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Flash effect on click */
+.game-interactive.click-flash:active {
+  animation: clickFlash 0.2s ease-out;
+}
+
+@keyframes clickFlash {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
+  100% { filter: brightness(1); }
+}
+
+/* Shake effect on wrong click */
+.game-interactive.click-shake {
+  animation: clickShake 0.5s ease-in-out;
+}
+
+@keyframes clickShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* =============================================
+   DRAG AND DROP ANIMATIONS
+   ============================================= */
+
+/* Draggable element styles */
+.game-draggable {
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.game-draggable:active {
+  cursor: grabbing;
+}
+
+.game-draggable.dragging {
+  transform: scale(1.1) rotate(3deg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  opacity: 0.9;
+  filter: brightness(1.1);
+}
+
+/* Ghost element for drag preview */
+.game-drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1001;
+  opacity: 0.7;
+  transform: scale(0.9);
+  filter: blur(1px);
+  transition: none;
+}
+
+/* Drop zone styles */
+.game-drop-zone {
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px dashed transparent;
+}
+
+.game-drop-zone.drag-over {
+  border-color: var(--accent-primary);
+  background: rgba(var(--accent-primary-rgb, 74, 144, 226), 0.1);
+  transform: scale(1.02);
+  box-shadow: inset 0 0 20px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.2);
+}
+
+.game-drop-zone.drop-valid {
+  border-color: var(--success-color, #4CAF50);
+  background: rgba(76, 175, 80, 0.1);
+  animation: dropZonePulse 1s ease-in-out infinite;
+}
+
+.game-drop-zone.drop-invalid {
+  border-color: var(--error-color, #f44336);
+  background: rgba(244, 67, 54, 0.1);
+  animation: dropZoneShake 0.5s ease-in-out;
+}
+
+@keyframes dropZonePulse {
+  0%, 100% { 
+    box-shadow: inset 0 0 20px rgba(76, 175, 80, 0.2);
+  }
+  50% { 
+    box-shadow: inset 0 0 30px rgba(76, 175, 80, 0.4);
+  }
+}
+
+@keyframes dropZoneShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Drop success animation */
+.game-drop-success {
+  animation: dropSuccess 0.6s ease-out;
+}
+
+@keyframes dropSuccess {
+  0% { 
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+  100% { 
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* =============================================
+   SELECTION AND FOCUS ANIMATIONS
+   ============================================= */
+
+.game-interactive.selected {
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 0 3px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.4),
+    0 6px 20px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.game-interactive.highlighted {
+  animation: elementHighlight 2s ease-in-out infinite;
+}
+
+@keyframes elementHighlight {
+  0%, 100% { 
+    box-shadow: 0 0 10px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 25px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.6);
+  }
+}
+
+/* Keyboard focus animation */
+.game-interactive:focus-visible {
+  animation: focusGlow 0.3s ease-out;
+}
+
+@keyframes focusGlow {
+  from {
+    box-shadow: 0 0 0 0 rgba(var(--accent-primary-rgb, 74, 144, 226), 0.7);
+  }
+  to {
+    box-shadow: 0 0 0 6px rgba(var(--accent-primary-rgb, 74, 144, 226), 0);
+  }
+}
+
+/* =============================================
+   MATCHING GAME ANIMATIONS
+   ============================================= */
+
+.game-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.game-card.flipping {
+  transform: rotateY(90deg);
+}
+
+.game-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.game-card.matched {
+  animation: cardMatch 0.8s ease-out;
+}
+
+@keyframes cardMatch {
+  0% { transform: scale(1) rotateY(180deg); }
+  50% { transform: scale(1.2) rotateY(180deg); }
+  100% { transform: scale(1) rotateY(180deg); }
+}
+
+/* =============================================
+   LOADING AND TRANSITION STATES
+   ============================================= */
+
+.game-interactive.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.game-interactive.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(var(--accent-primary-rgb, 74, 144, 226), 0.3);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: loadingSpin 1s linear infinite;
+}
+
+@keyframes loadingSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.game-interactive.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(50%);
+  pointer-events: none;
+}
+
+/* =============================================
+   MOBILE TOUCH OPTIMIZATIONS
+   ============================================= */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Disable hover effects on touch devices */
+  .game-interactive.hover-lift:hover,
+  .game-interactive.hover-scale:hover,
+  .game-interactive.hover-glow:hover,
+  .game-interactive.hover-rotate:hover,
+  .game-interactive.hover-wobble:hover {
+    transform: none;
+    box-shadow: none;
+    filter: none;
+    animation: none;
+  }
+  
+  /* Enhanced touch feedback */
+  .game-interactive:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Larger tap targets */
+  .game-interactive {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Touch ripple effect */
+.touch-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: touchRipple 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes touchRipple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================= */
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .game-interactive:focus {
+    box-shadow: 0 0 0 4px var(--accent-primary);
+  }
+  
+  .game-drop-zone.drag-over {
+    border-width: 4px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .game-interactive,
+  .game-draggable,
+  .game-drop-zone,
+  .game-card {
+    transition: none;
+    animation: none;
+  }
+  
+  .game-interactive.hover-float {
+    animation: none;
+  }
+  
+  .game-interactive.highlighted {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.6);
+  }
+  
+  /* Keep essential feedback but remove motion */
+  .game-interactive:focus {
+    box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.8);
+  }
+  
+  .game-interactive.selected {
+    border: 3px solid var(--accent-primary);
+  }
+}
+
+/* =============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================= */
+
+/* GPU acceleration for smooth animations */
+.game-interactive,
+.game-draggable,
+.game-drop-zone {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize for 60fps animations */
+.game-interactive.hover-lift,
+.game-interactive.hover-scale,
+.game-interactive.click-press {
+  will-change: transform, box-shadow;
+}
+
+.game-interactive.hover-glow {
+  will-change: filter, box-shadow;
+}
+
+/* Performance mode - simplified animations */
+.performance-mode .game-interactive {
+  transition-duration: 0.1s;
+}
+
+.performance-mode .game-interactive.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.performance-mode .game-interactive.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.performance-mode .game-interactive.hover-bounce:hover,
+.performance-mode .game-interactive.hover-wobble:hover,
+.performance-mode .game-interactive.highlighted {
+  animation: none;
+}
+
+/* =============================================
+   THEME-AWARE ANIMATIONS
+   ============================================= */
+
+/* Dark theme adjustments */
+[data-theme="dark"] .game-interactive.hover-glow:hover {
+  box-shadow: 
+    0 0 20px rgba(var(--accent-primary-rgb, 74, 144, 226), 0.6),
+    0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .game-drop-zone.drag-over {
+  background: rgba(var(--accent-primary-rgb, 74, 144, 226), 0.2);
+}
+
+/* Light theme optimizations */
+[data-theme="light"] .game-interactive.click-ripple::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================
+   GAME-SPECIFIC ELEMENT TYPES
+   ============================================= */
+
+/* Math game elements */
+.game-number {
+  font-weight: 700;
+  text-align: center;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-number.hover-scale:hover {
+  transform: scale(1.15);
+}
+
+/* Letter/word elements */
+.game-letter {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 0.5rem;
+}
+
+/* Science elements */
+.game-element {
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-section));
+  border: 2px solid var(--border-color);
+}
+
+.game-element.hover-glow:hover {
+  border-color: var(--accent-primary);
+}
+
+/* Art/creative elements */
+.game-color-swatch {
+  border-radius: 50%;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-color-swatch.hover-lift:hover {
+  transform: translateY(-6px) scale(1.1);
+}

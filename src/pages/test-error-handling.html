@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Handling Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/reset.css">
+  <link rel="stylesheet" href="../styles/base/variables.css">
+  <link rel="stylesheet" href="../styles/base/typography.css">
+  <link rel="stylesheet" href="../styles/base/utilities.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="../styles/components/card.css">
+  <link rel="stylesheet" href="../styles/components/modal.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--bg-card);
+      border-radius: 12px;
+    }
+    
+    .test-section {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: var(--accent-primary);
+      border-bottom: 2px solid var(--accent-primary);
+      padding-bottom: 8px;
+    }
+    
+    .test-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    
+    .test-card {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .test-card h4 {
+      margin: 0 0 12px 0;
+      color: var(--accent-primary);
+    }
+    
+    .test-card p {
+      margin: 0 0 16px 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: var(--accent-primary);
+      color: white;
+      width: 100%;
+    }
+    
+    .btn:hover {
+      background-color: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn.danger {
+      background-color: #e74c3c;
+    }
+    
+    .btn.warning {
+      background-color: #f39c12;
+    }
+    
+    .btn.secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    
+    .error-log {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 16px 0;
+      white-space: pre-wrap;
+    }
+    
+    .validation-demo {
+      display: grid;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-input {
+      padding: 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: border-color 0.2s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+    
+    .form-input.error {
+      border-color: #e74c3c;
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    
+    .stat-card {
+      background-color: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--accent-primary);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .recovery-demo {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Error Handling & Edge Case Management Test</h1>
+      <p>Testing comprehensive error handling, validation, and recovery mechanisms</p>
+    </div>
+    
+    <!-- Error Types Test -->
+    <div class="test-section">
+      <h2>Error Simulation Tests</h2>
+      <p>Test different types of errors and their handling mechanisms.</p>
+      
+      <div class="test-controls">
+        <div class="test-card">
+          <h4>Profile Errors</h4>
+          <p>Test profile loading and saving error scenarios</p>
+          <button class="btn danger" id="test-profile-load-error">Simulate Profile Load Error</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Storage Errors</h4>
+          <p>Test localStorage quota and access errors</p>
+          <button class="btn danger" id="test-storage-error">Simulate Storage Quota Error</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Network Errors</h4>
+          <p>Test network-related error handling</p>
+          <button class="btn danger" id="test-network-error">Simulate Network Error</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Component Errors</h4>
+          <p>Test component rendering error boundaries</p>
+          <button class="btn danger" id="test-component-error">Simulate Component Error</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>XP Calculation Errors</h4>
+          <p>Test XP and level calculation error handling</p>
+          <button class="btn warning" id="test-xp-error">Simulate XP Error</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Global JavaScript Error</h4>
+          <p>Test unhandled JavaScript error catching</p>
+          <button class="btn danger" id="test-global-error">Trigger Global Error</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Validation Test -->
+    <div class="test-section">
+      <h2>Input Validation Tests</h2>
+      <p>Test input validation and sanitization mechanisms.</p>
+      
+      <div class="validation-demo">
+        <div class="form-group">
+          <label>Profile Name (1-50 chars, alphanumeric only)</label>
+          <input type="text" class="form-input" id="name-input" placeholder="Enter name">
+          <div class="error-message" id="name-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" class="form-input" id="email-input" placeholder="Enter email">
+          <div class="error-message" id="email-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label>XP Value (numeric, 0-999999)</label>
+          <input type="text" class="form-input" id="xp-input" placeholder="Enter XP">
+          <div class="error-message" id="xp-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label>Bio (max 200 chars, no HTML)</label>
+          <textarea class="form-input" id="bio-input" rows="3" placeholder="Enter bio"></textarea>
+          <div class="error-message" id="bio-error"></div>
+        </div>
+        
+        <button class="btn" id="validate-all">Validate All Fields</button>
+      </div>
+    </div>
+    
+    <!-- Data Corruption Recovery -->
+    <div class="test-section">
+      <h2>Data Recovery Tests</h2>
+      <p>Test corrupted data detection and automatic repair mechanisms.</p>
+      
+      <div class="test-controls">
+        <div class="test-card">
+          <h4>Missing Profile Fields</h4>
+          <p>Test recovery from missing required profile fields</p>
+          <button class="btn warning" id="test-missing-fields">Corrupt Profile Fields</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Invalid Data Types</h4>
+          <p>Test recovery from invalid data type corruption</p>
+          <button class="btn warning" id="test-invalid-types">Corrupt Data Types</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Malformed JSON</h4>
+          <p>Test recovery from corrupted JSON data</p>
+          <button class="btn warning" id="test-malformed-json">Corrupt JSON Data</button>
+        </div>
+        
+        <div class="test-card">
+          <h4>Reset to Defaults</h4>
+          <p>Test complete data reset and default restoration</p>
+          <button class="btn secondary" id="test-reset-defaults">Reset to Defaults</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Error Statistics -->
+    <div class="test-section">
+      <h2>Error Statistics & Monitoring</h2>
+      <p>View error logs and statistics for debugging and monitoring.</p>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="total-errors">0</div>
+          <div class="stat-label">Total Errors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="recent-errors">0</div>
+          <div class="stat-label">Recent Errors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="error-types">0</div>
+          <div class="stat-label">Error Types</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="validation-errors">0</div>
+          <div class="stat-label">Validation Errors</div>
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap;">
+        <button class="btn secondary" id="refresh-stats">Refresh Statistics</button>
+        <button class="btn secondary" id="export-error-log">Export Error Log</button>
+        <button class="btn danger" id="clear-error-log">Clear Error Log</button>
+      </div>
+      
+      <div class="error-log" id="error-log">
+        Error log will appear here...
+      </div>
+    </div>
+    
+    <!-- Recovery Demo -->
+    <div class="test-section">
+      <h2>Error Recovery Demonstration</h2>
+      <p>Demonstrate graceful error recovery and fallback mechanisms.</p>
+      
+      <div class="recovery-demo">
+        <h4>Recovery Test Status</h4>
+        <p id="recovery-status">Click "Test Recovery" to begin recovery simulation</p>
+        <button class="btn" id="test-recovery">Test Error Recovery Flow</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import errorHandler from '../utils/errorHandler.js';
+
+    class ErrorHandlingTest {
+      constructor() {
+        this.init();
+      }
+      
+      init() {
+        this.setupEventListeners();
+        this.updateStats();
+        
+        // Update stats every 5 seconds
+        setInterval(() => this.updateStats(), 5000);
+      }
+      
+      setupEventListeners() {
+        // Error simulation tests
+        document.getElementById('test-profile-load-error').addEventListener('click', () => {
+          this.simulateProfileLoadError();
+        });
+        
+        document.getElementById('test-storage-error').addEventListener('click', () => {
+          this.simulateStorageError();
+        });
+        
+        document.getElementById('test-network-error').addEventListener('click', () => {
+          this.simulateNetworkError();
+        });
+        
+        document.getElementById('test-component-error').addEventListener('click', () => {
+          this.simulateComponentError();
+        });
+        
+        document.getElementById('test-xp-error').addEventListener('click', () => {
+          this.simulateXPError();
+        });
+        
+        document.getElementById('test-global-error').addEventListener('click', () => {
+          this.simulateGlobalError();
+        });
+        
+        // Validation tests
+        document.getElementById('validate-all').addEventListener('click', () => {
+          this.validateAllFields();
+        });
+        
+        // Add real-time validation
+        ['name-input', 'email-input', 'xp-input', 'bio-input'].forEach(id => {
+          document.getElementById(id).addEventListener('input', (e) => {
+            this.validateField(id, e.target.value);
+          });
+        });
+        
+        // Data corruption tests
+        document.getElementById('test-missing-fields').addEventListener('click', () => {
+          this.corruptMissingFields();
+        });
+        
+        document.getElementById('test-invalid-types').addEventListener('click', () => {
+          this.corruptDataTypes();
+        });
+        
+        document.getElementById('test-malformed-json').addEventListener('click', () => {
+          this.corruptJSON();
+        });
+        
+        document.getElementById('test-reset-defaults').addEventListener('click', () => {
+          this.resetToDefaults();
+        });
+        
+        // Statistics controls
+        document.getElementById('refresh-stats').addEventListener('click', () => {
+          this.updateStats();
+        });
+        
+        document.getElementById('export-error-log').addEventListener('click', () => {
+          this.exportErrorLog();
+        });
+        
+        document.getElementById('clear-error-log').addEventListener('click', () => {
+          this.clearErrorLog();
+        });
+        
+        // Recovery test
+        document.getElementById('test-recovery').addEventListener('click', () => {
+          this.testRecoveryFlow();
+        });
+      }
+      
+      simulateProfileLoadError() {
+        const error = new Error('Failed to load profile data from localStorage');
+        error.name = 'ProfileLoadError';
+        errorHandler.handleProfileError(error, 'profile_load', {
+          profileId: 'test_profile_123',
+          storageAvailable: errorHandler.isStorageAvailable()
+        });
+      }
+      
+      simulateStorageError() {
+        const error = new Error('QuotaExceededError: localStorage quota exceeded');
+        error.name = 'QuotaExceededError';
+        errorHandler.handleStorageError(error, 'profile_save');
+      }
+      
+      simulateNetworkError() {
+        const error = new Error('Network request failed: fetch is not defined');
+        error.name = 'NetworkError';
+        errorHandler.handleProfileError(error, 'data_sync', {
+          operation: 'sync_achievements',
+          url: 'https://api.learnimals.com/sync'
+        });
+      }
+      
+      simulateComponentError() {
+        const error = new Error('Cannot read property of null');
+        const errorInfo = {
+          componentStack: 'at BadgeGallery at ProfilePage'
+        };
+        errorHandler.handleComponentError(error, errorInfo, 'BadgeGallery');
+      }
+      
+      simulateXPError() {
+        const error = new Error('XP calculation resulted in NaN');
+        errorHandler.handleProfileError(error, 'xp_calculation', {
+          currentXP: 'invalid',
+          gainAmount: 50,
+          operation: 'game_complete'
+        });
+      }
+      
+      simulateGlobalError() {
+        // This will trigger the global error handler
+        setTimeout(() => {
+          throw new Error('Uncaught TypeError: Cannot read property of undefined');
+        }, 100);
+      }
+      
+      validateField(fieldId, value) {
+        const rules = this.getValidationRules(fieldId);
+        const result = errorHandler.validateInput(value, rules);
+        
+        const input = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId.replace('-input', '-error'));
+        
+        if (result.isValid) {
+          input.classList.remove('error');
+          errorDiv.textContent = '';
+        } else {
+          input.classList.add('error');
+          errorDiv.textContent = result.errors[0];
+        }
+        
+        return result.isValid;
+      }
+      
+      validateAllFields() {
+        const fields = [
+          { id: 'name-input', value: document.getElementById('name-input').value },
+          { id: 'email-input', value: document.getElementById('email-input').value },
+          { id: 'xp-input', value: document.getElementById('xp-input').value },
+          { id: 'bio-input', value: document.getElementById('bio-input').value }
+        ];
+        
+        let allValid = true;
+        fields.forEach(field => {
+          const isValid = this.validateField(field.id, field.value);
+          if (!isValid) allValid = false;
+        });
+        
+        if (allValid) {
+          this.showToast('All fields are valid! ✅', 'success');
+        } else {
+          this.showToast('Please fix validation errors', 'error');
+        }
+      }
+      
+      getValidationRules(fieldId) {
+        const rules = {
+          'name-input': {
+            required: true,
+            minLength: 1,
+            maxLength: 50,
+            pattern: /^[a-zA-Z0-9\s\-_'\.]+$/,
+            patternMessage: 'Name can only contain letters, numbers, spaces, and basic punctuation'
+          },
+          'email-input': {
+            email: true
+          },
+          'xp-input': {
+            numeric: true,
+            min: 0,
+            max: 999999
+          },
+          'bio-input': {
+            maxLength: 200,
+            pattern: /^[^<>]*$/,
+            patternMessage: 'Bio cannot contain HTML tags'
+          }
+        };
+        
+        return rules[fieldId] || {};
+      }
+      
+      corruptMissingFields() {
+        // Simulate corrupted profile data in localStorage
+        const corruptProfile = {
+          // Missing required id and name fields
+          createdAt: new Date().toISOString(),
+          xp: 'invalid_xp', // Wrong type
+          level: -5 // Invalid value
+        };
+        
+        localStorage.setItem('learnimals_active_profile', JSON.stringify(corruptProfile));
+        
+        errorHandler.logError('Data Corruption Test', {
+          type: 'missing_fields',
+          corruptedData: corruptProfile
+        }, 'warning');
+        
+        this.showToast('Corrupted profile data with missing fields', 'warning');
+      }
+      
+      corruptDataTypes() {
+        const corruptProfile = {
+          id: 'test_profile',
+          name: 'Test User',
+          createdAt: new Date().toISOString(),
+          xp: 'not_a_number',
+          level: 'also_not_a_number',
+          preferences: 'should_be_object',
+          friends: 'should_be_array'
+        };
+        
+        localStorage.setItem('learnimals_active_profile', JSON.stringify(corruptProfile));
+        
+        errorHandler.logError('Data Corruption Test', {
+          type: 'invalid_types',
+          corruptedData: corruptProfile
+        }, 'warning');
+        
+        this.showToast('Corrupted profile data with invalid types', 'warning');
+      }
+      
+      corruptJSON() {
+        // Store malformed JSON
+        localStorage.setItem('learnimals_active_profile', '{"invalid": json, "missing": quote}');
+        
+        errorHandler.logError('Data Corruption Test', {
+          type: 'malformed_json',
+          action: 'stored_invalid_json'
+        }, 'warning');
+        
+        this.showToast('Corrupted JSON data stored', 'warning');
+      }
+      
+      resetToDefaults() {
+        localStorage.removeItem('learnimals_active_profile');
+        localStorage.removeItem('learnimals_profiles');
+        
+        errorHandler.logError('Data Reset', {
+          type: 'manual_reset',
+          action: 'cleared_all_profile_data'
+        }, 'info');
+        
+        this.showToast('All profile data cleared', 'info');
+      }
+      
+      async testRecoveryFlow() {
+        const statusElement = document.getElementById('recovery-status');
+        
+        try {
+          statusElement.textContent = '🔄 Step 1: Simulating error...';
+          await this.delay(1000);
+          
+          // Simulate an error
+          const error = new Error('Simulated recovery test error');
+          const errorId = errorHandler.logError('Recovery Test', { step: 1 }, 'error');
+          
+          statusElement.textContent = '🔍 Step 2: Detecting error and logging...';
+          await this.delay(1000);
+          
+          statusElement.textContent = '🛠️ Step 3: Attempting recovery...';
+          await this.delay(1500);
+          
+          // Simulate recovery action
+          errorHandler.logError('Recovery Test', { 
+            step: 3, 
+            action: 'recovery_attempted',
+            originalErrorId: errorId 
+          }, 'info');
+          
+          statusElement.textContent = '✅ Step 4: Recovery successful! Error handled gracefully.';
+          
+          this.showToast('Recovery flow completed successfully! 🎉', 'success');
+          
+        } catch (error) {
+          statusElement.textContent = '❌ Recovery flow failed';
+          errorHandler.handleProfileError(error, 'recovery_test');
+        }
+      }
+      
+      updateStats() {
+        const stats = errorHandler.getErrorStats();
+        
+        document.getElementById('total-errors').textContent = stats.total;
+        document.getElementById('recent-errors').textContent = stats.recent.length;
+        document.getElementById('error-types').textContent = Object.keys(stats.byType).length;
+        document.getElementById('validation-errors').textContent = stats.byType['Validation Error'] || 0;
+        
+        // Update error log display
+        const logElement = document.getElementById('error-log');
+        const recentLogs = stats.recent.slice(-10).reverse();
+        
+        if (recentLogs.length === 0) {
+          logElement.textContent = 'No recent errors logged.';
+        } else {
+          logElement.textContent = recentLogs.map(error => 
+            `[${new Date(error.timestamp).toLocaleTimeString()}] ${error.type}: ${JSON.stringify(error.details, null, 2)}`
+          ).join('\n\n');
+        }
+      }
+      
+      exportErrorLog() {
+        const exportData = errorHandler.exportErrorLog();
+        const blob = new Blob([exportData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `learnimals-error-log-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        
+        URL.revokeObjectURL(url);
+        this.showToast('Error log exported', 'info');
+      }
+      
+      clearErrorLog() {
+        errorHandler.clearErrorLog();
+        this.updateStats();
+        this.showToast('Error log cleared', 'info');
+      }
+      
+      showToast(message, type = 'info') {
+        const colors = {
+          success: '#4ECDC4',
+          error: '#e74c3c',
+          warning: '#f39c12',
+          info: 'var(--accent-primary)'
+        };
+        
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background-color: ${colors[type]};
+          color: white;
+          padding: 12px 24px;
+          border-radius: 6px;
+          z-index: 10000;
+          opacity: 0;
+          transition: all 0.3s ease;
+          transform: translateX(100px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.style.opacity = '1';
+          toast.style.transform = 'translateX(0)';
+        }, 100);
+        
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(100px)';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+      
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }
+
+    // Initialize the error handling test
+    window.errorHandlingTest = new ErrorHandlingTest();
+  </script>
+</body>
+</html>

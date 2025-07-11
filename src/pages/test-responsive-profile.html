@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Profile Design Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/reset.css">
+  <link rel="stylesheet" href="../styles/base/variables.css">
+  <link rel="stylesheet" href="../styles/base/typography.css">
+  <link rel="stylesheet" href="../styles/base/utilities.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="../styles/components/navbar.css">
+  <link rel="stylesheet" href="../styles/components/card.css">
+  <link rel="stylesheet" href="../styles/components/modal.css">
+  <link rel="stylesheet" href="../styles/components/avatar.css">
+  <link rel="stylesheet" href="../styles/components/profileEnhanced.css">
+  <link rel="stylesheet" href="../styles/components/badges.css">
+  <link rel="stylesheet" href="../styles/components/animations.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+    }
+    
+    .test-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--bg-card);
+      border-radius: 12px;
+    }
+    
+    .responsive-test-section {
+      margin: 24px 0;
+      padding: 20px;
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .responsive-test-section h2 {
+      margin-top: 0;
+      color: var(--accent-primary);
+      border-bottom: 2px solid var(--accent-primary);
+      padding-bottom: 8px;
+    }
+    
+    .viewport-simulation {
+      margin: 20px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    
+    .viewport-frame {
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: var(--bg-secondary);
+    }
+    
+    .viewport-header {
+      background-color: var(--accent-primary);
+      color: white;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .viewport-content {
+      padding: 16px;
+      overflow: auto;
+    }
+    
+    .mobile-frame {
+      width: 320px;
+      height: 500px;
+    }
+    
+    .tablet-frame {
+      width: 768px;
+      height: 400px;
+    }
+    
+    .desktop-frame {
+      width: 1200px;
+      height: 300px;
+    }
+    
+    .breakpoint-indicator {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: var(--accent-primary);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      z-index: 1000;
+    }
+    
+    .test-controls {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: var(--accent-primary);
+      color: white;
+    }
+    
+    .btn:hover {
+      background-color: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn.secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    
+    .test-component {
+      margin: 16px 0;
+      padding: 16px;
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
+    }
+    
+    .test-component h4 {
+      margin: 0 0 12px 0;
+      color: var(--accent-primary);
+    }
+    
+    .layout-debug {
+      outline: 1px solid rgba(255, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    .layout-debug::after {
+      content: attr(data-component);
+      position: absolute;
+      top: -20px;
+      left: 0;
+      background-color: rgba(255, 0, 0, 0.8);
+      color: white;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      border-radius: 2px;
+    }
+    
+    /* Component test styles */
+    .profile-hero-test {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+      border-radius: 12px;
+    }
+    
+    .profile-tabs-test {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    
+    .profile-tab-test {
+      padding: 12px 20px;
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    
+    .profile-tab-test.active {
+      background-color: var(--accent-primary);
+      color: white;
+    }
+    
+    .level-display-test {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    
+    .badge-gallery-test {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    
+    .badge-test {
+      aspect-ratio: 1;
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .badge-test:hover {
+      transform: scale(1.05);
+    }
+    
+    .settings-form-test {
+      display: grid;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    
+    .form-group-test {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .form-input-test {
+      padding: 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    
+    /* Responsive test overrides */
+    @media (max-width: 768px) {
+      .profile-hero-test {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .profile-tabs-test {
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .badge-gallery-test {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .viewport-simulation {
+        grid-template-columns: 1fr;
+      }
+      
+      .mobile-frame,
+      .tablet-frame,
+      .desktop-frame {
+        width: 100%;
+        height: auto;
+        min-height: 300px;
+      }
+      
+      .badge-gallery-test {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="breakpoint-indicator" id="breakpoint-indicator">
+    Desktop (1200px+)
+  </div>
+  
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Responsive Profile Design Test</h1>
+      <p>Testing profile components across different screen sizes and breakpoints</p>
+    </div>
+    
+    <div class="test-controls">
+      <button class="btn" id="toggle-debug">Toggle Layout Debug</button>
+      <button class="btn secondary" id="simulate-mobile">Simulate Mobile</button>
+      <button class="btn secondary" id="simulate-tablet">Simulate Tablet</button>
+      <button class="btn secondary" id="simulate-desktop">Simulate Desktop</button>
+    </div>
+    
+    <!-- Profile Header Component Test -->
+    <div class="responsive-test-section">
+      <h2>Profile Header Component</h2>
+      <p>Tests the profile header layout with avatar, name, level, and stats across different screen sizes.</p>
+      
+      <div class="test-component" data-component="profile-hero">
+        <h4>Profile Hero Section</h4>
+        <div class="profile-hero-test">
+          <div class="profile-avatar-section">
+            <div class="avatar-container" style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(45deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">🦊</div>
+            <button class="btn-edit-avatar" style="padding: 8px 12px; background-color: var(--accent-primary); color: white; border: none; border-radius: 6px; cursor: pointer;">✏️ Edit Avatar</button>
+          </div>
+          <div class="profile-info">
+            <h2 style="margin: 0 0 8px 0; font-size: 2.5rem; color: var(--text-primary);">Alex Explorer</h2>
+            <p style="margin: 0 0 16px 0; font-size: 1.4rem; color: var(--text-secondary);">Young Learner</p>
+            <div class="level-display-test">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+                <div style="font-size: 2.5rem;">⭐</div>
+                <div>
+                  <div style="font-size: 2rem; font-weight: bold; color: var(--accent-primary);">Level 15</div>
+                  <div style="color: var(--text-secondary);">Curious Explorer</div>
+                </div>
+              </div>
+              <div style="background-color: var(--bg-secondary); border-radius: 8px; height: 8px; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); height: 100%; width: 67%; border-radius: 8px; transition: width 0.3s ease;"></div>
+              </div>
+              <div style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-secondary);">
+                <span>1,340 / 2,000 XP</span>
+                <span>67% to Level 16</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation Tabs Test -->
+    <div class="responsive-test-section">
+      <h2>Navigation Tabs</h2>
+      <p>Tests tab navigation responsiveness and overflow handling.</p>
+      
+      <div class="test-component" data-component="profile-tabs">
+        <h4>Profile Navigation Tabs</h4>
+        <div class="profile-tabs-test">
+          <div class="profile-tab-test active">📊 Overview</div>
+          <div class="profile-tab-test">🏆 Achievements</div>
+          <div class="profile-tab-test">📈 Statistics</div>
+          <div class="profile-tab-test">⚙️ Settings</div>
+          <div class="profile-tab-test">👥 Friends</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Badge Gallery Test -->
+    <div class="responsive-test-section">
+      <h2>Badge Gallery</h2>
+      <p>Tests badge display grid responsiveness and touch interactions.</p>
+      
+      <div class="test-component" data-component="badge-gallery">
+        <h4>Achievement Badges Grid</h4>
+        <div class="badge-gallery-test">
+          <div class="badge-test">🥇</div>
+          <div class="badge-test">🎯</div>
+          <div class="badge-test">🔥</div>
+          <div class="badge-test">💎</div>
+          <div class="badge-test">🚀</div>
+          <div class="badge-test">⚡</div>
+          <div class="badge-test">🌟</div>
+          <div class="badge-test">🎨</div>
+          <div class="badge-test">📚</div>
+          <div class="badge-test">🧪</div>
+          <div class="badge-test" style="opacity: 0.3;">🔒</div>
+          <div class="badge-test" style="opacity: 0.3;">🔒</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Settings Form Test -->
+    <div class="responsive-test-section">
+      <h2>Settings Form</h2>
+      <p>Tests form layout and input responsiveness.</p>
+      
+      <div class="test-component" data-component="settings-form">
+        <h4>Profile Settings Form</h4>
+        <div class="settings-form-test">
+          <div class="form-group-test">
+            <label>Display Name</label>
+            <input type="text" class="form-input-test" value="Alex Explorer" placeholder="Enter your display name">
+          </div>
+          <div class="form-group-test">
+            <label>Bio</label>
+            <textarea class="form-input-test" rows="3" placeholder="Tell us about yourself...">I love learning new things and exploring different subjects!</textarea>
+          </div>
+          <div class="form-group-test">
+            <label>Favorite Subject</label>
+            <select class="form-input-test">
+              <option>Math</option>
+              <option>Science</option>
+              <option selected>Art</option>
+              <option>Reading</option>
+              <option>Coding</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn">Save Changes</button>
+            <button class="btn secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal and Overlay Test -->
+    <div class="responsive-test-section">
+      <h2>Modal and Overlay Components</h2>
+      <p>Tests modal responsiveness and overlay behavior.</p>
+      
+      <div class="test-component" data-component="modal-test">
+        <h4>Modal Window Test</h4>
+        <button class="btn" id="show-modal-test">Show Modal</button>
+        <button class="btn secondary" id="show-toast-test">Show Toast</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Test Modal -->
+  <div id="test-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 10000; align-items: center; justify-content: center;">
+    <div style="background-color: var(--bg-card); border-radius: 12px; padding: 24px; margin: 20px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;">
+      <h3 style="margin: 0 0 16px 0;">Level Details</h3>
+      <p>This is a test modal to check responsive behavior across different screen sizes.</p>
+      <div style="margin: 16px 0;">
+        <div class="level-display-test">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem;">🏆</div>
+            <h4>Level 15 - Curious Explorer</h4>
+            <p>1,340 / 2,000 XP (67%)</p>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+        <button class="btn secondary" id="close-modal-test">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    class ResponsiveTest {
+      constructor() {
+        this.debugMode = false;
+        this.init();
+      }
+      
+      init() {
+        this.setupEventListeners();
+        this.updateBreakpointIndicator();
+        
+        // Listen for window resize
+        window.addEventListener('resize', () => {
+          this.updateBreakpointIndicator();
+        });
+      }
+      
+      setupEventListeners() {
+        // Debug toggle
+        document.getElementById('toggle-debug').addEventListener('click', () => {
+          this.toggleDebugMode();
+        });
+        
+        // Viewport simulation
+        document.getElementById('simulate-mobile').addEventListener('click', () => {
+          this.simulateViewport(375);
+        });
+        
+        document.getElementById('simulate-tablet').addEventListener('click', () => {
+          this.simulateViewport(768);
+        });
+        
+        document.getElementById('simulate-desktop').addEventListener('click', () => {
+          this.simulateViewport(1200);
+        });
+        
+        // Modal test
+        document.getElementById('show-modal-test').addEventListener('click', () => {
+          this.showModal();
+        });
+        
+        document.getElementById('close-modal-test').addEventListener('click', () => {
+          this.hideModal();
+        });
+        
+        document.getElementById('show-toast-test').addEventListener('click', () => {
+          this.showToast();
+        });
+        
+        // Tab test
+        document.querySelectorAll('.profile-tab-test').forEach(tab => {
+          tab.addEventListener('click', () => {
+            document.querySelectorAll('.profile-tab-test').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+          });
+        });
+      }
+      
+      toggleDebugMode() {
+        this.debugMode = !this.debugMode;
+        
+        document.querySelectorAll('[data-component]').forEach(element => {
+          if (this.debugMode) {
+            element.classList.add('layout-debug');
+          } else {
+            element.classList.remove('layout-debug');
+          }
+        });
+      }
+      
+      simulateViewport(width) {
+        // This is a simple simulation - in a real test you'd use browser dev tools
+        document.body.style.maxWidth = `${width}px`;
+        document.body.style.margin = '0 auto';
+        document.body.style.border = '2px solid #ff6b6b';
+        
+        this.showToast(`Simulating ${width}px viewport`, 'info');
+        
+        // Remove simulation after 5 seconds
+        setTimeout(() => {
+          document.body.style.maxWidth = '';
+          document.body.style.margin = '';
+          document.body.style.border = '';
+        }, 5000);
+      }
+      
+      updateBreakpointIndicator() {
+        const width = window.innerWidth;
+        const indicator = document.getElementById('breakpoint-indicator');
+        
+        let breakpoint;
+        if (width <= 480) {
+          breakpoint = `Mobile (${width}px)`;
+        } else if (width <= 768) {
+          breakpoint = `Mobile Large (${width}px)`;
+        } else if (width <= 1024) {
+          breakpoint = `Tablet (${width}px)`;
+        } else if (width <= 1200) {
+          breakpoint = `Desktop Small (${width}px)`;
+        } else {
+          breakpoint = `Desktop (${width}px)`;
+        }
+        
+        indicator.textContent = breakpoint;
+      }
+      
+      showModal() {
+        const modal = document.getElementById('test-modal');
+        modal.style.display = 'flex';
+        
+        // Test modal responsiveness
+        setTimeout(() => {
+          const modalContent = modal.querySelector('div');
+          modalContent.style.transform = 'scale(0.95)';
+          modalContent.style.transition = 'transform 0.3s ease';
+          
+          setTimeout(() => {
+            modalContent.style.transform = 'scale(1)';
+          }, 100);
+        }, 100);
+      }
+      
+      hideModal() {
+        const modal = document.getElementById('test-modal');
+        modal.style.display = 'none';
+      }
+      
+      showToast(message = 'Test toast notification', type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        
+        const colors = {
+          success: '#4ECDC4',
+          error: '#e74c3c',
+          warning: '#f39c12',
+          info: 'var(--accent-primary)'
+        };
+        
+        toast.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background-color: ${colors[type] || colors.info};
+          color: white;
+          padding: 12px 24px;
+          border-radius: 6px;
+          z-index: 10001;
+          opacity: 0;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transform: translateX(100px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          font-weight: 500;
+          max-width: 300px;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.style.opacity = '1';
+          toast.style.transform = 'translateX(0)';
+        }, 100);
+        
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(100px)';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+    }
+
+    // Initialize the responsive test
+    window.responsiveTest = new ResponsiveTest();
+  </script>
+</body>
+</html>

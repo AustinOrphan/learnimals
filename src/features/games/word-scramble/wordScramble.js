@@ -299,11 +299,17 @@ class WordScrambleGame extends BaseGame {
       return;
     }
     
+    // Trigger new word transition animation
+    this.container.classList.add('new-word');
+    setTimeout(() => {
+      this.container.classList.remove('new-word');
+    }, 800);
+    
     // Clear previous content
     scrambledArea.innerHTML = '';
     solutionArea.innerHTML = '';
     
-    // Add letter tiles to scrambled area
+    // Add letter tiles to scrambled area with staggered animation
     this.scrambledLetters.forEach((letter, index) => {
       const tile = document.createElement('div');
       tile.className = 'letter-tile';
@@ -311,6 +317,14 @@ class WordScrambleGame extends BaseGame {
       tile.setAttribute('draggable', 'true');
       tile.setAttribute('data-letter', letter);
       tile.setAttribute('data-index', index);
+      
+      // Add touch feedback for mobile
+      if (this.isMobile) {
+        tile.addEventListener('touchstart', () => {
+          tile.classList.add('touch-feedback');
+          setTimeout(() => tile.classList.remove('touch-feedback'), 200);
+        });
+      }
       
       scrambledArea.appendChild(tile);
     });
@@ -339,10 +353,16 @@ class WordScrambleGame extends BaseGame {
     
     // Check if answer is correct
     if (answer === this.currentWord) {
+      // Animate correct answer
+      this.animateCorrectAnswer(letterTiles, solutionArea);
+      
       // Correct answer - use BaseGame's scoring system
       const points = this.difficultyLevel === 'easy' ? 10 : 
         this.difficultyLevel === 'medium' ? 20 : 30;
       this.addScore(points);
+      
+      // Show score popup animation
+      this.showScorePopup(points, solutionArea);
       
       // Track correct answer with analytics and progress
       this.trackCorrectAnswer({
@@ -352,24 +372,32 @@ class WordScrambleGame extends BaseGame {
         round: this.round
       });
       
-      // Update UI
-      this.updateScoreDisplay();
-      if (this.elements.gameMessage) {
-        this.elements.gameMessage.textContent = 'Correct! Well done!';
-        this.elements.gameMessage.className = 'game-message success-message';
-      }
+      // Update UI with delay for animations
+      setTimeout(() => {
+        this.updateScoreDisplay();
+        if (this.elements.gameMessage) {
+          this.elements.gameMessage.textContent = 'Correct! Well done!';
+          this.elements.gameMessage.className = 'game-message success-message';
+        }
+        
+        // Hide check button and show next button
+        if (this.elements.checkWord) {
+          this.elements.checkWord.style.display = 'none';
+        }
+        if (this.elements.newWord) {
+          this.elements.newWord.style.display = 'block';
+        }
+      }, 600);
       
-      // Hide check button and show next button
-      if (this.elements.checkWord) {
-        this.elements.checkWord.style.display = 'none';
-      }
-      if (this.elements.newWord) {
-        this.elements.newWord.style.display = 'block';
-      }
+      // Use BaseGame's correct feedback animation
+      this.showCorrectFeedback('Correct! Well done!');
       
       // Play success sound using BaseGame's audio system
       this.playSound(800, 200, 'sine'); // High pitch success sound
     } else {
+      // Animate incorrect answer
+      this.animateIncorrectAnswer(letterTiles);
+      
       // Wrong answer - track with analytics
       this.trackIncorrectAnswer({
         word: this.currentWord,
@@ -384,8 +412,13 @@ class WordScrambleGame extends BaseGame {
         this.elements.gameMessage.className = 'game-message error-message';
       }
       
-      // Return letters to scrambled area
-      this.returnLettersToScrambledArea();
+      // Return letters to scrambled area with animation
+      setTimeout(() => {
+        this.returnLettersToScrambledAreaAnimated();
+      }, 500);
+      
+      // Use BaseGame's incorrect feedback animation
+      this.showIncorrectFeedback('Not quite right, try again!');
       
       // Play error sound using BaseGame's audio system
       this.playSound(200, 300, 'sawtooth'); // Low pitch error sound
@@ -533,70 +566,7 @@ class WordScrambleGame extends BaseGame {
    * Enhanced mobile-friendly drag and drop with BaseGame optimizations
    */
   setupDragAndDrop() {
-    // Use event delegation for better performance
-    this.container.addEventListener('dragstart', (e) => {
-      if (e.target.classList.contains('letter-tile')) {
-        e.target.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', e.target.getAttribute('data-index'));
-        
-        // Mobile haptic feedback for drag start
-        if (this.hapticFeedback) {
-          navigator.vibrate(25);
-        }
-      }
-    });
-    
-    this.container.addEventListener('dragend', (e) => {
-      if (e.target.classList.contains('letter-tile')) {
-        e.target.classList.remove('dragging');
-      }
-    });
-    
-    this.container.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      
-      if (e.target.classList.contains('empty-tile')) {
-        e.target.style.backgroundColor = '#ffecb3';
-      }
-    });
-    
-    this.container.addEventListener('dragleave', (e) => {
-      if (e.target.classList.contains('empty-tile')) {
-        e.target.style.backgroundColor = '';
-      }
-    });
-    
-    this.container.addEventListener('drop', (e) => {
-      e.preventDefault();
-      
-      if (e.target.classList.contains('empty-tile')) {
-        const letterIndex = e.dataTransfer.getData('text/plain');
-        const letter = document.querySelector(`.letter-tile[data-index="${letterIndex}"]`);
-        
-        if (letter) {
-          // Clone the letter tile
-          const clone = letter.cloneNode(true);
-          clone.setAttribute('draggable', 'false');
-          
-          // Replace the empty tile with the letter
-          e.target.parentNode.replaceChild(clone, e.target);
-          
-          // Remove the original letter from scrambled area
-          letter.remove();
-          
-          // Mobile haptic feedback for successful drop
-          if (this.hapticFeedback) {
-            navigator.vibrate(50);
-          }
-        }
-      }
-      
-      // Check if all letters have been placed
-      const scrambledArea = this.elements.scrambledArea;
-      if (scrambledArea && scrambledArea.children.length === 0) {
-        setTimeout(() => this.checkAnswer(), 100); // Small delay for smooth animation
-      }
-    });
+    this.enhanceDragAndDrop();
     
     // Enhanced touch support for mobile devices
     if (this.isMobile) {
@@ -676,6 +646,232 @@ class WordScrambleGame extends BaseGame {
       }
     });
   }
+  
+  /**
+   * Animation Methods for Enhanced Visual Feedback
+   */
+  
+  /**
+   * Animate correct answer with bouncing letters and area completion
+   */
+  animateCorrectAnswer(letterTiles, solutionArea) {
+    // Add bounce animation to each letter
+    letterTiles.forEach((tile, index) => {
+      setTimeout(() => {
+        tile.classList.add('correct-bounce');
+        setTimeout(() => tile.classList.remove('correct-bounce'), 600);
+      }, index * 100);
+    });
+    
+    // Animate solution area completion
+    setTimeout(() => {
+      solutionArea.classList.add('word-complete');
+      setTimeout(() => solutionArea.classList.remove('word-complete'), 800);
+    }, 200);
+  }
+  
+  /**
+   * Animate incorrect answer with shaking letters
+   */
+  animateIncorrectAnswer(letterTiles) {
+    letterTiles.forEach((tile, index) => {
+      setTimeout(() => {
+        tile.classList.add('incorrect-shake');
+        setTimeout(() => tile.classList.remove('incorrect-shake'), 500);
+      }, index * 50);
+    });
+  }
+  
+  /**
+   * Show animated score popup
+   */
+  showScorePopup(points, parentElement) {
+    const popup = document.createElement('div');
+    popup.className = 'score-popup';
+    popup.textContent = `+${points}`;
+    
+    // Position relative to parent
+    const rect = parentElement.getBoundingClientRect();
+    popup.style.position = 'fixed';
+    popup.style.left = `${rect.left + rect.width / 2}px`;
+    popup.style.top = `${rect.top + rect.height / 2}px`;
+    popup.style.transform = 'translate(-50%, -50%)';
+    
+    document.body.appendChild(popup);
+    
+    // Remove after animation
+    setTimeout(() => {
+      if (popup.parentNode) {
+        popup.parentNode.removeChild(popup);
+      }
+    }, 1500);
+  }
+  
+  /**
+   * Return letters to scrambled area with animation
+   */
+  returnLettersToScrambledAreaAnimated() {
+    const scrambledArea = this.elements.scrambledArea;
+    const solutionArea = this.elements.solutionArea;
+    
+    if (!scrambledArea || !solutionArea) {
+      return;
+    }
+    
+    // Get all letter tiles in solution area
+    const letterTiles = Array.from(solutionArea.querySelectorAll('.letter-tile'));
+    
+    // Animate return of each letter
+    letterTiles.forEach((tile, index) => {
+      setTimeout(() => {
+        const letter = tile.getAttribute('data-letter');
+        
+        // Add return animation
+        tile.classList.add('returning');
+        
+        setTimeout(() => {
+          // Create a new letter tile in scrambled area
+          const newTile = document.createElement('div');
+          newTile.className = 'letter-tile';
+          newTile.textContent = letter;
+          newTile.setAttribute('draggable', 'true');
+          newTile.setAttribute('data-letter', letter);
+          newTile.setAttribute('data-index', this.scrambledLetters.length);
+          
+          // Add touch feedback for mobile
+          if (this.isMobile) {
+            newTile.addEventListener('touchstart', () => {
+              newTile.classList.add('touch-feedback');
+              setTimeout(() => newTile.classList.remove('touch-feedback'), 200);
+            });
+          }
+          
+          scrambledArea.appendChild(newTile);
+        }, 250);
+      }, index * 100);
+    });
+    
+    // Clean up solution area and reset after animations
+    setTimeout(() => {
+      // Update scrambled letters array
+      this.scrambledLetters = Array.from(scrambledArea.querySelectorAll('.letter-tile')).map(tile => 
+        tile.getAttribute('data-letter')
+      );
+      
+      // Reset solution area
+      solutionArea.innerHTML = '';
+      for (let i = 0; i < this.currentWord.length; i++) {
+        const emptyTile = document.createElement('div');
+        emptyTile.className = 'empty-tile';
+        emptyTile.setAttribute('data-position', i);
+        
+        solutionArea.appendChild(emptyTile);
+      }
+      
+      // Remove depleted state from scrambled area
+      scrambledArea.classList.remove('letters-depleted');
+    }, letterTiles.length * 100 + 300);
+  }
+  
+  /**
+   * Enhanced drag and drop with visual effects
+   */
+  enhanceDragAndDrop() {
+    // Override the original setupDragAndDrop with enhanced animations
+    this.container.addEventListener('dragstart', (e) => {
+      if (e.target.classList.contains('letter-tile')) {
+        e.target.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', e.target.getAttribute('data-index'));
+        
+        // Mobile haptic feedback for drag start
+        if (this.hapticFeedback) {
+          navigator.vibrate(25);
+        }
+        
+        // Highlight all empty tiles
+        document.querySelectorAll('.empty-tile').forEach(tile => {
+          tile.classList.add('drop-target');
+        });
+      }
+    });
+    
+    this.container.addEventListener('dragend', (e) => {
+      if (e.target.classList.contains('letter-tile')) {
+        e.target.classList.remove('dragging');
+        
+        // Remove highlights from empty tiles
+        document.querySelectorAll('.empty-tile').forEach(tile => {
+          tile.classList.remove('drop-target');
+        });
+      }
+    });
+    
+    this.container.addEventListener('drop', (e) => {
+      e.preventDefault();
+      
+      if (e.target.classList.contains('empty-tile')) {
+        const letterIndex = e.dataTransfer.getData('text/plain');
+        const letter = document.querySelector(`.letter-tile[data-index="${letterIndex}"]`);
+        
+        if (letter) {
+          // Clone the letter tile
+          const clone = letter.cloneNode(true);
+          clone.setAttribute('draggable', 'false');
+          clone.classList.add('placing'); // Add placement animation
+          
+          // Replace the empty tile with the letter
+          e.target.parentNode.replaceChild(clone, e.target);
+          
+          // Remove the original letter from scrambled area
+          letter.remove();
+          
+          // Mobile haptic feedback for successful drop
+          if (this.hapticFeedback) {
+            navigator.vibrate(50);
+          }
+          
+          // Check if scrambled area is depleted
+          const scrambledArea = this.elements.scrambledArea;
+          if (scrambledArea && scrambledArea.children.length === 0) {
+            scrambledArea.classList.add('letters-depleted');
+            
+            // Add ready-to-check glow to solution area
+            const solutionArea = this.elements.solutionArea;
+            if (solutionArea) {
+              solutionArea.classList.add('ready-to-check');
+              setTimeout(() => solutionArea.classList.remove('ready-to-check'), 3000);
+            }
+            
+            setTimeout(() => this.checkAnswer(), 100); // Small delay for smooth animation
+          }
+          
+          // Remove placement animation
+          setTimeout(() => {
+            clone.classList.remove('placing');
+          }, 400);
+        }
+      }
+      
+      // Remove highlights
+      document.querySelectorAll('.empty-tile').forEach(tile => {
+        tile.classList.remove('drop-target');
+      });
+    });
+  }
+  
+  /**
+   * Add hint animation to suggest next letter
+   */
+  showHintAnimation() {
+    const scrambledLetters = this.elements.scrambledArea.querySelectorAll('.letter-tile');
+    if (scrambledLetters.length > 0) {
+      // Pick a random letter to wiggle as a hint
+      const randomLetter = scrambledLetters[Math.floor(Math.random() * scrambledLetters.length)];
+      randomLetter.classList.add('hint-wiggle');
+      setTimeout(() => randomLetter.classList.remove('hint-wiggle'), 600);
+    }
+  }
+  
 }
 
 // Export the enhanced game class

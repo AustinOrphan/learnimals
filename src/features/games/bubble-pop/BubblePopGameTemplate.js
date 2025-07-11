@@ -403,20 +403,37 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.streakCount++;
     this.maxStreak = Math.max(this.maxStreak, this.streakCount);
         
-    // Create explosion particles for the clicked bubble
-    this.createExplosion(bubble.x, bubble.y, this.themeColors.success);
+    // Enhanced bubble animations before popping
+    bubble.setGlow(1);
+    bubble.wobble(0.15, 0.2);
         
-    // Pop all remaining bubbles simultaneously
-    this.popAllBubbles();
+    // Create enhanced explosion particles for the clicked bubble
+    this.createEnhancedExplosion(bubble.x, bubble.y, this.themeColors.success);
         
-    // Play success sound
+    // Create ripple effect
+    this.createRippleEffect(bubble.x, bubble.y);
+        
+    // Pop all remaining bubbles simultaneously with delay
+    setTimeout(() => {
+      this.popAllBubbles();
+    }, 200);
+        
+    // Play success sound with harmony
     this.playSound(523.25, 200); // C5 note
+    setTimeout(() => this.playSound(659.25, 150), 100); // E5 harmony
         
-    // Show feedback message
+    // Show feedback message with animation
     this.addMessage(`Correct! +${totalPoints}`, this.themeColors.success);
         
+    // Show streak effects
     if (this.streakCount >= 3) {
+      this.showStreakEffect(this.streakCount);
       this.addMessage(`${this.streakCount} in a row!`, this.themeColors.warning);
+    }
+        
+    // Show power-up effect for high streaks
+    if (this.streakCount >= 5) {
+      this.showPowerUpEffect();
     }
         
     // Next round
@@ -429,26 +446,34 @@ export default class BubblePopGameTemplate extends BaseGame {
   handleWrongAnswer(bubble) {
     this.streakCount = 0;
         
-    // Create failure particles
-    this.createExplosion(bubble.x, bubble.y, this.themeColors.danger);
+    // Add shake effect to wrong bubble
+    bubble.shake(15);
         
-    // Play error sound
+    // Create failure particles with smaller explosion
+    this.createExplosion(bubble.x, bubble.y, this.themeColors.danger, 10);
+        
+    // Play error sound with vibrato effect
     this.playSound(196, 300, 'square'); // G3 note
+    setTimeout(() => this.playSound(185, 100, 'square'), 150); // Lower pitch echo
         
-    // Show feedback
+    // Show feedback with shake animation
     this.addMessage('Try again!', this.themeColors.danger);
         
-    // Remove the wrong bubble with animation
-    bubble.remove();
+    // Remove the wrong bubble with animation after shake
+    setTimeout(() => {
+      bubble.remove();
+    }, 300);
         
     // If no bubbles left except correct one, hint at it
     const remainingBubbles = this.bubbles.filter(b => b.active);
     if (remainingBubbles.length <= 2) {
       this.addMessage('Almost there!', this.themeColors.warning);
-      // Make correct bubble pulse
+      // Make correct bubble pulse and glow
       const correctBubble = this.bubbles.find(b => b.isCorrect);
       if (correctBubble) {
         correctBubble.pulse();
+        correctBubble.setGlow(0.5);
+        correctBubble.wobble(0.05, 0.1);
       }
     }
   }
@@ -480,8 +505,8 @@ export default class BubblePopGameTemplate extends BaseGame {
   /**
      * Create particle explosion effect
      */
-  createExplosion(x, y, color) {
-    for (let i = 0; i < 15; i++) {
+  createExplosion(x, y, color, particleCount = 15) {
+    for (let i = 0; i < particleCount; i++) {
       this.particles.push({
         x: x,
         y: y,
@@ -491,6 +516,127 @@ export default class BubblePopGameTemplate extends BaseGame {
         decay: 0.02,
         color: color,
         size: Math.random() * 4 + 2
+      });
+    }
+  }
+    
+  /**
+     * Create enhanced explosion with multiple particle types
+     */
+  createEnhancedExplosion(x, y, color) {
+    // Regular particles
+    this.createExplosion(x, y, color, 20);
+        
+    // Sparkle particles
+    for (let i = 0; i < 10; i++) {
+      const angle = (Math.PI * 2 * i) / 10;
+      this.particles.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * 12,
+        vy: Math.sin(angle) * 12,
+        life: 1.0,
+        decay: 0.03,
+        color: '#FFD700', // Gold sparkles
+        size: 3,
+        type: 'sparkle'
+      });
+    }
+        
+    // Ring particles
+    for (let i = 0; i < 8; i++) {
+      const angle = (Math.PI * 2 * i) / 8;
+      this.particles.push({
+        x: x + Math.cos(angle) * 10,
+        y: y + Math.sin(angle) * 10,
+        vx: Math.cos(angle) * 4,
+        vy: Math.sin(angle) * 4,
+        life: 1.0,
+        decay: 0.025,
+        color: color,
+        size: 5,
+        type: 'ring'
+      });
+    }
+  }
+    
+  /**
+     * Create ripple effect on canvas
+     */
+  createRippleEffect(x, y) {
+    // Add to particles for rendering
+    this.particles.push({
+      x: x,
+      y: y,
+      vx: 0,
+      vy: 0,
+      life: 1.0,
+      decay: 0.04,
+      color: this.themeColors.primary,
+      size: 10,
+      type: 'ripple',
+      maxSize: 100
+    });
+  }
+    
+  /**
+     * Show streak effect animation
+     */
+  showStreakEffect(streakCount) {
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 3;
+        
+    // Create fire emoji particles
+    for (let i = 0; i < streakCount; i++) {
+      setTimeout(() => {
+        this.particles.push({
+          x: centerX + (Math.random() - 0.5) * 100,
+          y: centerY,
+          vx: (Math.random() - 0.5) * 2,
+          vy: -3 - Math.random() * 2,
+          life: 1.0,
+          decay: 0.015,
+          color: '🔥',
+          size: 30,
+          type: 'emoji'
+        });
+      }, i * 100);
+    }
+  }
+    
+  /**
+     * Show power-up effect for high streaks
+     */
+  showPowerUpEffect() {
+    // Create screen flash effect
+    this.particles.push({
+      x: this.canvas.width / 2,
+      y: this.canvas.height / 2,
+      vx: 0,
+      vy: 0,
+      life: 1.0,
+      decay: 0.1,
+      color: this.themeColors.warning,
+      size: Math.max(this.canvas.width, this.canvas.height),
+      type: 'flash'
+    });
+        
+    // Create star burst
+    const starCount = 12;
+    for (let i = 0; i < starCount; i++) {
+      const angle = (Math.PI * 2 * i) / starCount;
+      this.particles.push({
+        x: this.canvas.width / 2,
+        y: this.canvas.height / 2,
+        vx: Math.cos(angle) * 15,
+        vy: Math.sin(angle) * 15,
+        life: 1.0,
+        decay: 0.02,
+        color: '⭐',
+        size: 25,
+        type: 'emoji',
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: 0.1
       });
     }
   }
@@ -813,12 +959,93 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.particles.forEach(particle => {
       this.ctx.save();
       this.ctx.globalAlpha = particle.life;
-      this.ctx.fillStyle = particle.color;
-      this.ctx.beginPath();
-      this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-      this.ctx.fill();
+      
+      switch (particle.type) {
+      case 'sparkle':
+        // Draw sparkle as a star
+        this.drawSparkle(particle.x, particle.y, particle.size, particle.color);
+        break;
+          
+      case 'ring':
+        // Draw expanding ring
+        this.ctx.strokeStyle = particle.color;
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size * (2 - particle.life), 0, Math.PI * 2);
+        this.ctx.stroke();
+        break;
+          
+      case 'ripple': {
+        // Draw expanding ripple
+        const rippleSize = particle.size + (particle.maxSize - particle.size) * (1 - particle.life);
+        this.ctx.strokeStyle = particle.color;
+        this.ctx.lineWidth = 3 * particle.life;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, rippleSize, 0, Math.PI * 2);
+        this.ctx.stroke();
+        break;
+      }
+          
+      case 'emoji':
+        // Draw emoji
+        this.ctx.font = `${particle.size}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        if (particle.rotation) {
+          this.ctx.translate(particle.x, particle.y);
+          this.ctx.rotate(particle.rotation);
+          this.ctx.fillText(particle.color, 0, 0);
+          particle.rotation += particle.rotationSpeed || 0;
+        } else {
+          this.ctx.fillText(particle.color, particle.x, particle.y);
+        }
+        break;
+          
+      case 'flash':
+        // Screen flash effect
+        this.ctx.fillStyle = particle.color;
+        this.ctx.globalAlpha = particle.life * 0.2;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        break;
+          
+      default:
+        // Regular particle
+        this.ctx.fillStyle = particle.color;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+      
       this.ctx.restore();
     });
+  }
+    
+  /**
+     * Draw a sparkle shape
+     */
+  drawSparkle(x, y, size, color) {
+    this.ctx.fillStyle = color;
+    this.ctx.beginPath();
+    
+    // Draw 4-pointed star
+    for (let i = 0; i < 4; i++) {
+      const angle = (Math.PI / 2) * i;
+      const outerX = x + Math.cos(angle) * size;
+      const outerY = y + Math.sin(angle) * size;
+      
+      if (i === 0) {
+        this.ctx.moveTo(outerX, outerY);
+      } else {
+        const innerAngle = angle - Math.PI / 4;
+        const innerX = x + Math.cos(innerAngle) * (size * 0.5);
+        const innerY = y + Math.sin(innerAngle) * (size * 0.5);
+        this.ctx.lineTo(innerX, innerY);
+        this.ctx.lineTo(outerX, outerY);
+      }
+    }
+    
+    this.ctx.closePath();
+    this.ctx.fill();
   }
     
   /**

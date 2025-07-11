@@ -1,0 +1,479 @@
+/**
+ * Virtual Scroll Badge Gallery Styles
+ * Optimized for performance with large datasets
+ */
+
+.virtual-badge-gallery {
+  width: 100%;
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Gallery Stats */
+.virtual-badge-gallery .gallery-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-medium);
+  padding: var(--spacing-large);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.virtual-badge-gallery .stat-item {
+  text-align: center;
+  padding: var(--spacing-small);
+}
+
+.virtual-badge-gallery .stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.virtual-badge-gallery .stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.virtual-badge-gallery .performance-stat {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+/* Gallery Controls */
+.virtual-badge-gallery .gallery-controls {
+  padding: var(--spacing-large);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.virtual-badge-gallery .gallery-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.virtual-badge-gallery .filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+}
+
+.virtual-badge-gallery .filter-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+  min-width: 80px;
+}
+
+.virtual-badge-gallery .filter-buttons {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.virtual-badge-gallery .filter-btn,
+.virtual-badge-gallery .rarity-btn {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  border-radius: var(--border-radius-small);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.virtual-badge-gallery .filter-btn:hover,
+.virtual-badge-gallery .rarity-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.virtual-badge-gallery .filter-btn.active,
+.virtual-badge-gallery .rarity-btn.active {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+/* Rarity-specific styling */
+.virtual-badge-gallery .rarity-btn.common.active {
+  background-color: #95a5a6;
+  border-color: #95a5a6;
+}
+
+.virtual-badge-gallery .rarity-btn.rare.active {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+.virtual-badge-gallery .rarity-btn.epic.active {
+  background-color: #9b59b6;
+  border-color: #9b59b6;
+}
+
+.virtual-badge-gallery .rarity-btn.legendary.active {
+  background-color: #f39c12;
+  border-color: #f39c12;
+}
+
+.virtual-badge-gallery .category-select {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: var(--border-radius-small);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 160px;
+}
+
+.virtual-badge-gallery .category-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+/* Search */
+.virtual-badge-gallery .gallery-search {
+  margin-top: var(--spacing-medium);
+}
+
+.virtual-badge-gallery .search-container {
+  position: relative;
+  max-width: 300px;
+}
+
+.virtual-badge-gallery .search-input {
+  width: 100%;
+  padding: var(--spacing-small) var(--spacing-medium);
+  padding-right: 40px;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.virtual-badge-gallery .search-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(var(--accent-primary-rgb), 0.1);
+}
+
+.virtual-badge-gallery .search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  display: none;
+  transition: all 0.2s ease;
+}
+
+.virtual-badge-gallery .search-clear:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Virtual Scroll Container */
+.virtual-scroll-container {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  /* Optimize scrolling performance */
+  will-change: scroll-position;
+  contain: layout style paint;
+}
+
+/* Custom scrollbar */
+.virtual-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.virtual-scroll-container::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+.virtual-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.virtual-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+/* Virtual Content */
+.virtual-content {
+  position: relative;
+  width: 100%;
+  /* GPU acceleration for smooth scrolling */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.virtual-spacer-top,
+.virtual-spacer-bottom {
+  width: 100%;
+  pointer-events: none;
+  /* Optimize rendering */
+  contain: layout style;
+}
+
+/* Virtual Viewport */
+.virtual-viewport {
+  position: relative;
+  width: 100%;
+  /* Optimize rendering performance */
+  contain: layout style paint;
+}
+
+/* Virtual Badge Grid */
+.virtual-badge-grid {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  /* Optimize grid rendering */
+  contain: layout style;
+  will-change: contents;
+}
+
+/* Badge items within virtual grid */
+.virtual-badge-grid .badge-item {
+  /* Optimize individual badge rendering */
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Empty State */
+.virtual-badge-gallery .empty-state {
+  padding: var(--spacing-xlarge);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.virtual-badge-gallery .empty-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-medium);
+  opacity: 0.5;
+}
+
+.virtual-badge-gallery .empty-message {
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing-small);
+  color: var(--text-primary);
+}
+
+.virtual-badge-gallery .empty-suggestion {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Performance Info */
+.virtual-badge-gallery .performance-info {
+  padding: var(--spacing-small);
+  background-color: var(--bg-tertiary);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Loading States */
+.virtual-badge-gallery.loading .virtual-viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.virtual-badge-gallery .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .virtual-badge-gallery .gallery-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: var(--spacing-medium);
+  }
+  
+  .virtual-badge-gallery .gallery-controls {
+    padding: var(--spacing-medium);
+  }
+  
+  .virtual-badge-gallery .gallery-filters {
+    gap: var(--spacing-small);
+  }
+  
+  .virtual-badge-gallery .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-small);
+  }
+  
+  .virtual-badge-gallery .filter-group label {
+    min-width: auto;
+    font-size: 0.9rem;
+  }
+  
+  .virtual-badge-gallery .filter-btn,
+  .virtual-badge-gallery .rarity-btn {
+    padding: var(--spacing-xsmall);
+    font-size: 0.8rem;
+  }
+  
+  .virtual-badge-gallery .category-select {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .virtual-badge-gallery .search-container {
+    max-width: none;
+  }
+  
+  .virtual-badge-grid {
+    padding: var(--spacing-small);
+    gap: var(--spacing-small);
+  }
+}
+
+@media (max-width: 480px) {
+  .virtual-badge-gallery .gallery-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-small);
+  }
+  
+  .virtual-badge-gallery .stat-value {
+    font-size: 1.4rem;
+  }
+  
+  .virtual-badge-gallery .stat-label {
+    font-size: 0.8rem;
+  }
+  
+  .virtual-badge-gallery .filter-buttons {
+    gap: var(--spacing-xsmall);
+  }
+  
+  .virtual-badge-gallery .empty-icon {
+    font-size: 3rem;
+  }
+  
+  .virtual-badge-gallery .empty-message {
+    font-size: 1rem;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .virtual-badge-gallery .filter-btn,
+  .virtual-badge-gallery .rarity-btn {
+    border-width: 3px;
+  }
+  
+  .virtual-badge-gallery .filter-btn.active,
+  .virtual-badge-gallery .rarity-btn.active {
+    border-width: 3px;
+    box-shadow: 0 0 0 2px var(--bg-primary);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .virtual-scroll-container {
+    scroll-behavior: auto;
+  }
+  
+  .virtual-badge-gallery .filter-btn,
+  .virtual-badge-gallery .rarity-btn,
+  .virtual-badge-gallery .search-input,
+  .virtual-badge-gallery .search-clear {
+    transition: none;
+  }
+  
+  .virtual-badge-gallery .filter-btn:hover,
+  .virtual-badge-gallery .rarity-btn:hover {
+    transform: none;
+  }
+}
+
+/* Dark theme optimizations */
+[data-theme="dark"] .virtual-badge-gallery {
+  /* Enhance contrast in dark mode */
+}
+
+[data-theme="dark"] .virtual-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .virtual-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .virtual-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Performance optimizations */
+.virtual-badge-gallery * {
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hardware acceleration for smooth animations */
+.virtual-badge-gallery .filter-btn,
+.virtual-badge-gallery .rarity-btn {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize for large datasets */
+@media (min-width: 1200px) {
+  .virtual-badge-gallery .gallery-stats {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .virtual-badge-gallery .gallery-filters {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-xlarge);
+  }
+  
+  .virtual-badge-gallery .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-small);
+  }
+}

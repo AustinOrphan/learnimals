@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Feedback Animations Test - Learnimals</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../styles/components/animations.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .test-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-bottom: 1.5rem;
+      color: var(--accent-primary);
+    }
+    
+    .test-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .test-game-area {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: var(--bg-section);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    .test-game-element {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: var(--accent-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .test-game-element:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .test-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border-radius: 0.5rem;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+    
+    .test-clickable {
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    .test-info {
+      padding: 1rem;
+      background: var(--bg-hover);
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Player Feedback Animations Test</h1>
+      <p>Test comprehensive feedback animations including scores, streaks, lives, and celebrations</p>
+    </div>
+    
+    <!-- Score Animations Test -->
+    <div class="test-section">
+      <h2>Score Animations</h2>
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="testScoreAnimation(10)">
+          +10 Points
+        </button>
+        <button class="component-button component-button--primary" onclick="testScoreAnimation(50, true)">
+          +50 Bonus!
+        </button>
+        <button class="component-button component-button--primary" onclick="testScoreAnimation(100, true)">
+          +100 Super Bonus!
+        </button>
+        <button class="component-button component-button--outline" onclick="testScoreAnimation(-10)">
+          -10 Points
+        </button>
+      </div>
+      
+      <div id="score-test-area" class="test-game-area game-container">
+        <div class="test-game-element test-clickable" style="top: 50%; left: 50%; transform: translate(-50%, -50%);" onclick="testScoreAtPosition(event, this)">
+          Click Me!
+        </div>
+      </div>
+    </div>
+    
+    <!-- Feedback Animations Test -->
+    <div class="test-section">
+      <h2>Answer Feedback</h2>
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="testCorrectAnswer()">
+          Correct Answer
+        </button>
+        <button class="component-button component-button--primary" onclick="testCorrectWithScore()">
+          Correct + Score
+        </button>
+        <button class="component-button component-button--outline" onclick="testIncorrectAnswer()">
+          Incorrect Answer
+        </button>
+        <button class="component-button component-button--outline" onclick="testIncorrectWithLife()">
+          Incorrect + Lose Life
+        </button>
+      </div>
+      
+      <div id="feedback-test-area" class="test-game-area game-container">
+        <div class="test-game-element test-clickable" 
+             style="top: 30%; left: 30%; background: #4CAF50;" 
+             onclick="testCorrectElement(this)">
+          Correct
+        </div>
+        <div class="test-game-element test-clickable" 
+             style="top: 30%; right: 30%; background: #f44336;" 
+             onclick="testIncorrectElement(this)">
+          Incorrect
+        </div>
+      </div>
+    </div>
+    
+    <!-- Streak Animations Test -->
+    <div class="test-section">
+      <h2>Streak System</h2>
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="incrementStreak()">
+          Add to Streak
+        </button>
+        <button class="component-button component-button--outline" onclick="resetStreak()">
+          Reset Streak
+        </button>
+        <button class="component-button component-button--secondary" onclick="testMilestoneStreak(5)">
+          5 Streak
+        </button>
+        <button class="component-button component-button--secondary" onclick="testMilestoneStreak(10)">
+          10 Streak
+        </button>
+        <button class="component-button component-button--secondary" onclick="testMilestoneStreak(25)">
+          25 Streak
+        </button>
+      </div>
+      
+      <div id="streak-test-area" class="test-game-area game-container">
+        <div class="test-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="streak-count">0</div>
+            <div class="stat-label">Current Streak</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="score-display">0</div>
+            <div class="stat-label">Score</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="lives-display">3</div>
+            <div class="stat-label">Lives</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Life System Test -->
+    <div class="test-section">
+      <h2>Life/Heart System</h2>
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="testGainLife()">
+          Gain Life
+        </button>
+        <button class="component-button component-button--outline" onclick="testLoseLife()">
+          Lose Life
+        </button>
+        <button class="component-button component-button--secondary" onclick="resetLives()">
+          Reset Lives
+        </button>
+      </div>
+      
+      <div id="life-test-area" class="test-game-area game-container">
+        <!-- Lives will be displayed here -->
+      </div>
+    </div>
+    
+    <!-- Celebration Test -->
+    <div class="test-section">
+      <h2>Celebrations</h2>
+      <div class="test-controls">
+        <button class="component-button component-button--primary" onclick="testCelebration()">
+          Victory Celebration
+        </button>
+        <button class="component-button component-button--primary" onclick="testPerfectScore()">
+          Perfect Score
+        </button>
+        <button class="component-button component-button--secondary" onclick="testAllAnimations()">
+          Demo All Animations
+        </button>
+      </div>
+      
+      <div id="celebration-test-area" class="test-game-area game-container">
+        <div class="test-info">
+          Click buttons to trigger celebration animations. These would typically appear when completing levels or achieving high scores.
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script src="../../features/progress/ProgressTracker.js"></script>
+  <script src="../../features/progress/AchievementSystem.js"></script>
+  <script src="../../utils/xpCalculator.js"></script>
+  <script src="../../components/level/XPGainAnimation.js"></script>
+  <script src="../../components/level/LevelUpNotification.js"></script>
+  <script src="../../components/level/LevelMilestones.js"></script>
+  <script src="../../components/games/BaseGame.js"></script>
+  
+  <script>
+    // Test game instance for animations
+    let testGame;
+    let currentStreak = 0;
+    let currentScore = 0;
+    let currentLives = 3;
+    
+    // Initialize test game
+    window.addEventListener('DOMContentLoaded', () => {
+      // Create test games for each area
+      createTestGame('score-test-area');
+      createTestGame('feedback-test-area');
+      createTestGame('streak-test-area');
+      createTestGame('life-test-area');
+      createTestGame('celebration-test-area');
+    });
+    
+    function createTestGame(containerId) {
+      const game = new BaseGame(containerId, {
+        useDOMContainer: true,
+        gameType: 'test-feedback',
+        subject: 'testing',
+        enableAnimations: true,
+        enableProgressTracking: false,
+        enableXPSystem: false
+      });
+      
+      if (!testGame) {
+        testGame = game; // Use first as main test game
+      }
+      
+      return game;
+    }
+    
+    // Score animation tests
+    function testScoreAnimation(points, isBonus = false) {
+      const container = document.getElementById('score-test-area');
+      const game = new BaseGame('score-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      game.showScoreAnimation(points, {
+        x: container.offsetWidth / 2,
+        y: container.offsetHeight / 2,
+        isBonus
+      });
+      
+      currentScore += points;
+      updateDisplay();
+    }
+    
+    function testScoreAtPosition(event, element) {
+      const container = document.getElementById('score-test-area');
+      const rect = element.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      
+      const game = new BaseGame('score-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      const points = Math.floor(Math.random() * 50 + 10);
+      game.showScoreAnimation(points, {
+        x: rect.left + rect.width / 2 - containerRect.left,
+        y: rect.top + rect.height / 2 - containerRect.top,
+        isBonus: points >= 40
+      });
+      
+      currentScore += points;
+      updateDisplay();
+    }
+    
+    // Feedback animation tests
+    async function testCorrectAnswer() {
+      const game = new BaseGame('feedback-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      await game.showCorrectFeedback(null, {
+        showCheckmark: true,
+        showParticles: true
+      });
+    }
+    
+    async function testCorrectWithScore() {
+      const game = new BaseGame('feedback-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      await game.showCorrectFeedback(null, {
+        showCheckmark: true,
+        showParticles: true,
+        points: 25,
+        showScore: true
+      });
+      
+      currentScore += 25;
+      updateDisplay();
+    }
+    
+    async function testIncorrectAnswer() {
+      const game = new BaseGame('feedback-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      await game.showIncorrectFeedback(null, {
+        showX: true
+      });
+    }
+    
+    async function testIncorrectWithLife() {
+      const game = new BaseGame('life-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      game.lives = currentLives;
+      
+      await game.showIncorrectFeedback(null, {
+        showX: true,
+        loseLife: true,
+        points: -5,
+        showScore: true
+      });
+      
+      currentLives = Math.max(0, currentLives - 1);
+      currentScore = Math.max(0, currentScore - 5);
+      updateDisplay();
+    }
+    
+    async function testCorrectElement(element) {
+      const game = new BaseGame('feedback-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      await game.showCorrectFeedback(element, {
+        showCheckmark: true,
+        showParticles: true,
+        points: 15,
+        showScore: true
+      });
+      
+      currentScore += 15;
+      incrementStreak();
+    }
+    
+    async function testIncorrectElement(element) {
+      const game = new BaseGame('feedback-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      await game.showIncorrectFeedback(element, {
+        showX: true
+      });
+      
+      resetStreak();
+    }
+    
+    // Streak tests
+    function incrementStreak() {
+      currentStreak++;
+      
+      const game = new BaseGame('streak-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      game.showStreakAnimation(currentStreak);
+      updateDisplay();
+    }
+    
+    function resetStreak() {
+      currentStreak = 0;
+      updateDisplay();
+      
+      // Remove streak indicator if exists
+      const indicators = document.querySelectorAll('.streak-indicator');
+      indicators.forEach(ind => ind.remove());
+    }
+    
+    function testMilestoneStreak(count) {
+      currentStreak = count;
+      
+      const game = new BaseGame('streak-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      game.showStreakAnimation(currentStreak);
+      updateDisplay();
+    }
+    
+    // Life system tests
+    function testGainLife() {
+      if (currentLives < 5) {
+        currentLives++;
+        
+        const game = new BaseGame('life-test-area', {
+          useDOMContainer: true,
+          enableAnimations: true
+        });
+        game.lives = currentLives;
+        
+        game.showLifeAnimation(1);
+        updateDisplay();
+      }
+    }
+    
+    function testLoseLife() {
+      if (currentLives > 0) {
+        currentLives--;
+        
+        const game = new BaseGame('life-test-area', {
+          useDOMContainer: true,
+          enableAnimations: true
+        });
+        game.lives = currentLives;
+        
+        game.showLifeAnimation(-1);
+        updateDisplay();
+      }
+    }
+    
+    function resetLives() {
+      currentLives = 3;
+      
+      const game = new BaseGame('life-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      game.lives = currentLives;
+      
+      game.showLifeAnimation(0);
+      updateDisplay();
+    }
+    
+    // Celebration tests
+    async function testCelebration() {
+      const game = new BaseGame('celebration-test-area', {
+        useDOMContainer: true,
+        enableAnimations: true
+      });
+      
+      await game.celebrateCompletion({
+        showConfetti: true,
+        showStars: true,
+        celebrationText: 'Level Complete!',
+        duration: 2000
+      });
+    }
+    
+    function testPerfectScore() {
+      const container = document.getElementById('celebration-test-area');
+      const perfect = document.createElement('div');
+      perfect.className = 'perfect-score';
+      perfect.textContent = 'PERFECT! 💯';
+      container.appendChild(perfect);
+      
+      // Remove after animation
+      setTimeout(() => {
+        if (perfect.parentNode) {
+          perfect.remove();
+        }
+      }, 2000);
+    }
+    
+    // Demo all animations
+    async function testAllAnimations() {
+      // Score animation
+      await testScoreAnimation(50, true);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Correct answer
+      await testCorrectWithScore();
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Streak
+      for (let i = 0; i < 5; i++) {
+        incrementStreak();
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
+      // Celebration
+      await testCelebration();
+    }
+    
+    // Update display
+    function updateDisplay() {
+      document.getElementById('streak-count').textContent = currentStreak;
+      document.getElementById('score-display').textContent = currentScore;
+      document.getElementById('lives-display').textContent = currentLives;
+    }
+  </script>
+</body>
+</html>

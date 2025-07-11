@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debounced Profile Operations Test - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/reset.css">
+  <link rel="stylesheet" href="../styles/base/variables.css">
+  <link rel="stylesheet" href="../styles/base/typography.css">
+  <link rel="stylesheet" href="../styles/base/utilities.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="../styles/components/card.css">
+  <link rel="stylesheet" href="../styles/components/modal.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 20px;
+    }
+    
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--bg-card);
+      border-radius: 12px;
+    }
+    
+    .test-section {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: var(--accent-primary);
+      border-bottom: 2px solid var(--accent-primary);
+      padding-bottom: 8px;
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .demo-card {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .demo-card h4 {
+      margin: 0 0 12px 0;
+      color: var(--accent-primary);
+    }
+    
+    .demo-card p {
+      margin: 0 0 16px 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: border-color 0.2s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+    }
+    
+    .form-input.success {
+      border-color: #27ae60;
+    }
+    
+    .form-input.error {
+      border-color: #e74c3c;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: var(--accent-primary);
+      color: white;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .btn:hover {
+      background-color: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .btn.secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    
+    .stats-display {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 16px 0;
+      white-space: pre-wrap;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: var(--bg-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+    
+    .operation-counter {
+      display: inline-block;
+      background-color: var(--accent-primary);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .status-indicator.pending {
+      background-color: #f39c12;
+      animation: pulse 1s infinite;
+    }
+    
+    .status-indicator.success {
+      background-color: #27ae60;
+    }
+    
+    .status-indicator.idle {
+      background-color: #95a5a6;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Debounced Profile Operations Test</h1>
+      <p>Testing performance optimizations with debouncing and throttling</p>
+    </div>
+    
+    <!-- Search Debouncing Test -->
+    <div class="test-section">
+      <h2>Search Operations Debouncing</h2>
+      <p>Test search input debouncing to prevent excessive API calls and filtering operations.</p>
+      
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h4>Achievement Search <span class="operation-counter" id="search-counter">0</span></h4>
+          <p>Type to search achievements. Notice how the search only executes after you stop typing.</p>
+          
+          <div class="form-group">
+            <label class="form-label">Search Achievements:</label>
+            <input type="text" class="form-input" id="achievement-search" placeholder="Type to search...">
+          </div>
+          
+          <div>
+            <span class="status-indicator idle" id="search-status"></span>
+            <span id="search-status-text">Ready to search</span>
+          </div>
+          
+          <div class="stats-display" id="search-results">
+            Search results will appear here...
+          </div>
+        </div>
+        
+        <div class="demo-card">
+          <h4>Badge Filtering <span class="operation-counter" id="filter-counter">0</span></h4>
+          <p>Filter badges by rarity. Filtering is debounced for better performance.</p>
+          
+          <div class="form-group">
+            <label class="form-label">Filter by Rarity:</label>
+            <select class="form-input" id="badge-filter">
+              <option value="">All Rarities</option>
+              <option value="common">Common</option>
+              <option value="rare">Rare</option>
+              <option value="epic">Epic</option>
+              <option value="legendary">Legendary</option>
+            </select>
+          </div>
+          
+          <div>
+            <span class="status-indicator idle" id="filter-status"></span>
+            <span id="filter-status-text">Ready to filter</span>
+          </div>
+          
+          <div class="stats-display" id="filter-results">
+            Filter results will appear here...
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Progress Updates Test -->
+    <div class="test-section">
+      <h2>Progress Updates Debouncing</h2>
+      <p>Test XP gain and level calculation debouncing for smooth animations without performance issues.</p>
+      
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h4>XP Gain Simulation <span class="operation-counter" id="xp-counter">0</span></h4>
+          <p>Click rapidly to simulate XP gains. Updates are debounced for performance.</p>
+          
+          <div>
+            <button class="btn" id="add-xp-small">+10 XP</button>
+            <button class="btn" id="add-xp-medium">+25 XP</button>
+            <button class="btn" id="add-xp-large">+100 XP</button>
+          </div>
+          
+          <div style="margin: 16px 0;">
+            <div>Current XP: <span id="current-xp">0</span></div>
+            <div>Level: <span id="current-level">1</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="xp-progress" style="width: 0%"></div>
+            </div>
+          </div>
+          
+          <div>
+            <span class="status-indicator idle" id="xp-status"></span>
+            <span id="xp-status-text">Ready for XP gains</span>
+          </div>
+        </div>
+        
+        <div class="demo-card">
+          <h4>Achievement Checks <span class="operation-counter" id="achievement-counter">0</span></h4>
+          <p>Achievement validation is debounced to prevent excessive checking.</p>
+          
+          <div>
+            <button class="btn" id="trigger-achievement">Trigger Achievement Check</button>
+            <button class="btn secondary" id="reset-achievements">Reset</button>
+          </div>
+          
+          <div style="margin: 16px 0;">
+            <div>Achievements Unlocked: <span id="achievement-count">0</span></div>
+          </div>
+          
+          <div>
+            <span class="status-indicator idle" id="achievement-status"></span>
+            <span id="achievement-status-text">Ready to check achievements</span>
+          </div>
+          
+          <div class="stats-display" id="achievement-log">
+            Achievement check log will appear here...
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Auto-Save Test -->
+    <div class="test-section">
+      <h2>Auto-Save Debouncing</h2>
+      <p>Test auto-save functionality with debouncing to prevent excessive storage operations.</p>
+      
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h4>Profile Settings <span class="operation-counter" id="settings-counter">0</span></h4>
+          <p>Changes are auto-saved with debouncing. Multiple rapid changes result in fewer save operations.</p>
+          
+          <div class="form-group">
+            <label class="form-label">Profile Name:</label>
+            <input type="text" class="form-input" id="profile-name" placeholder="Enter profile name">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Bio:</label>
+            <textarea class="form-input" id="profile-bio" rows="3" placeholder="Tell us about yourself"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Favorite Subject:</label>
+            <select class="form-input" id="favorite-subject">
+              <option value="">Select...</option>
+              <option value="math">Math</option>
+              <option value="science">Science</option>
+              <option value="reading">Reading</option>
+              <option value="art">Art</option>
+              <option value="coding">Coding</option>
+            </select>
+          </div>
+          
+          <div>
+            <span class="status-indicator idle" id="settings-status"></span>
+            <span id="settings-status-text">All changes saved</span>
+          </div>
+        </div>
+        
+        <div class="demo-card">
+          <h4>Game Progress <span class="operation-counter" id="progress-counter">0</span></h4>
+          <p>Game progress is auto-saved with smart debouncing during gameplay.</p>
+          
+          <div>
+            <button class="btn" id="play-game">Start Game Session</button>
+            <button class="btn secondary" id="stop-game">Stop Session</button>
+          </div>
+          
+          <div style="margin: 16px 0;">
+            <div>Session Time: <span id="session-time">0</span>s</div>
+            <div>Score: <span id="game-score">0</span></div>
+            <div>Auto-saves: <span id="save-count">0</span></div>
+          </div>
+          
+          <div>
+            <span class="status-indicator idle" id="progress-status"></span>
+            <span id="progress-status-text">Progress saved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Performance Stats -->
+    <div class="test-section">
+      <h2>Performance Statistics</h2>
+      <p>View debouncing effectiveness and operation statistics.</p>
+      
+      <div style="display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap;">
+        <button class="btn secondary" id="refresh-stats">Refresh Stats</button>
+        <button class="btn secondary" id="clear-stats">Clear Stats</button>
+        <button class="btn secondary" id="flush-pending">Flush Pending Operations</button>
+      </div>
+      
+      <div class="stats-display" id="performance-stats">
+        Performance statistics will appear here...
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import debouncedOperations from '../utils/debouncedOperations.js';
+
+    class DebouncedProfileTest {
+      constructor() {
+        this.counters = {
+          search: 0,
+          filter: 0,
+          xp: 0,
+          achievement: 0,
+          settings: 0,
+          progress: 0
+        };
+        
+        this.gameSession = {
+          active: false,
+          startTime: null,
+          score: 0,
+          interval: null
+        };
+        
+        this.profile = {
+          xp: 0,
+          level: 1,
+          achievements: []
+        };
+        
+        this.init();
+      }
+      
+      init() {
+        this.setupSearchDebouncing();
+        this.setupProgressDebouncing();
+        this.setupAutoSaveDebouncing();
+        this.setupEventListeners();
+        this.updateStats();
+      }
+      
+      setupSearchDebouncing() {
+        // Debounced achievement search
+        const searchAchievements = (query) => {
+          this.updateCounter('search');
+          this.updateStatus('search', 'pending', 'Searching...');
+          
+          // Simulate API call delay
+          setTimeout(() => {
+            const results = this.mockSearchResults(query);
+            document.getElementById('search-results').textContent = 
+              `Found ${results.length} achievements matching "${query}":\n${results.join('\n')}`;
+            this.updateStatus('search', 'success', 'Search completed');
+            
+            setTimeout(() => {
+              this.updateStatus('search', 'idle', 'Ready to search');
+            }, 2000);
+          }, 200);
+        };
+        
+        const debouncedSearch = debouncedOperations.search.input(searchAchievements);
+        
+        document.getElementById('achievement-search').addEventListener('input', (e) => {
+          if (e.target.value.trim()) {
+            debouncedSearch(e.target.value.trim());
+          } else {
+            document.getElementById('search-results').textContent = 'Search results will appear here...';
+            this.updateStatus('search', 'idle', 'Ready to search');
+          }
+        });
+        
+        // Debounced badge filtering
+        const filterBadges = (rarity) => {
+          this.updateCounter('filter');
+          this.updateStatus('filter', 'pending', 'Filtering...');
+          
+          setTimeout(() => {
+            const results = this.mockFilterResults(rarity);
+            document.getElementById('filter-results').textContent = 
+              `Filtered badges (${rarity || 'all'}):\n${results.join('\n')}`;
+            this.updateStatus('filter', 'success', 'Filter applied');
+            
+            setTimeout(() => {
+              this.updateStatus('filter', 'idle', 'Ready to filter');
+            }, 2000);
+          }, 100);
+        };
+        
+        const debouncedFilter = debouncedOperations.search.filter(filterBadges, 200);
+        
+        document.getElementById('badge-filter').addEventListener('change', (e) => {
+          debouncedFilter(e.target.value);
+        });
+      }
+      
+      setupProgressDebouncing() {
+        // Debounced XP updates
+        const updateXPDisplay = () => {
+          this.updateCounter('xp');
+          this.updateStatus('xp', 'pending', 'Calculating XP...');
+          
+          // Calculate level from XP
+          const newLevel = Math.floor(this.profile.xp / 100) + 1;
+          const levelProgress = (this.profile.xp % 100);
+          
+          document.getElementById('current-xp').textContent = this.profile.xp;
+          document.getElementById('current-level').textContent = newLevel;
+          document.getElementById('xp-progress').style.width = `${levelProgress}%`;
+          
+          if (newLevel > this.profile.level) {
+            this.profile.level = newLevel;
+            this.checkAchievements();
+          }
+          
+          this.updateStatus('xp', 'success', 'XP updated');
+          setTimeout(() => {
+            this.updateStatus('xp', 'idle', 'Ready for XP gains');
+          }, 1000);
+        };
+        
+        const debouncedXPUpdate = debouncedOperations.progress.xpGain(updateXPDisplay);
+        
+        // XP gain buttons
+        document.getElementById('add-xp-small').addEventListener('click', () => {
+          this.profile.xp += 10;
+          debouncedXPUpdate();
+        });
+        
+        document.getElementById('add-xp-medium').addEventListener('click', () => {
+          this.profile.xp += 25;
+          debouncedXPUpdate();
+        });
+        
+        document.getElementById('add-xp-large').addEventListener('click', () => {
+          this.profile.xp += 100;
+          debouncedXPUpdate();
+        });
+        
+        // Debounced achievement checking
+        const checkAchievements = () => {
+          this.updateCounter('achievement');
+          this.updateStatus('achievement', 'pending', 'Checking achievements...');
+          
+          const newAchievements = this.mockAchievementCheck();
+          this.profile.achievements.push(...newAchievements);
+          
+          document.getElementById('achievement-count').textContent = this.profile.achievements.length;
+          
+          const log = document.getElementById('achievement-log');
+          if (newAchievements.length > 0) {
+            log.textContent += `\n[${new Date().toLocaleTimeString()}] Unlocked: ${newAchievements.join(', ')}`;
+          } else {
+            log.textContent += `\n[${new Date().toLocaleTimeString()}] No new achievements`;
+          }
+          log.scrollTop = log.scrollHeight;
+          
+          this.updateStatus('achievement', 'success', `Checked achievements`);
+          setTimeout(() => {
+            this.updateStatus('achievement', 'idle', 'Ready to check achievements');
+          }, 1500);
+        };
+        
+        this.checkAchievements = debouncedOperations.progress.achievementCheck(checkAchievements);
+      }
+      
+      setupAutoSaveDebouncing() {
+        // Debounced settings save
+        const saveSettings = () => {
+          this.updateCounter('settings');
+          this.updateStatus('settings', 'pending', 'Saving changes...');
+          
+          setTimeout(() => {
+            this.updateStatus('settings', 'success', 'Changes saved');
+            setTimeout(() => {
+              this.updateStatus('settings', 'idle', 'All changes saved');
+            }, 1500);
+          }, 300);
+        };
+        
+        const debouncedSettingsSave = debouncedOperations.autoSave.settings(saveSettings);
+        
+        // Auto-save on settings changes
+        ['profile-name', 'profile-bio', 'favorite-subject'].forEach(id => {
+          const element = document.getElementById(id);
+          element.addEventListener('input', debouncedSettingsSave);
+          element.addEventListener('change', debouncedSettingsSave);
+        });
+        
+        // Debounced game progress save
+        const saveGameProgress = () => {
+          this.updateCounter('progress');
+          this.updateStatus('progress', 'pending', 'Saving progress...');
+          
+          setTimeout(() => {
+            document.getElementById('save-count').textContent = this.counters.progress;
+            this.updateStatus('progress', 'success', 'Progress saved');
+            setTimeout(() => {
+              this.updateStatus('progress', 'idle', 'Progress saved');
+            }, 1000);
+          }, 200);
+        };
+        
+        this.saveGameProgress = debouncedOperations.autoSave.gameProgress(saveGameProgress);
+      }
+      
+      setupEventListeners() {
+        // Game session controls
+        document.getElementById('play-game').addEventListener('click', () => {
+          this.startGameSession();
+        });
+        
+        document.getElementById('stop-game').addEventListener('click', () => {
+          this.stopGameSession();
+        });
+        
+        // Achievement controls
+        document.getElementById('trigger-achievement').addEventListener('click', () => {
+          this.checkAchievements();
+        });
+        
+        document.getElementById('reset-achievements').addEventListener('click', () => {
+          this.profile.achievements = [];
+          document.getElementById('achievement-count').textContent = '0';
+          document.getElementById('achievement-log').textContent = 'Achievement check log will appear here...';
+        });
+        
+        // Stats controls
+        document.getElementById('refresh-stats').addEventListener('click', () => {
+          this.updateStats();
+        });
+        
+        document.getElementById('clear-stats').addEventListener('click', () => {
+          Object.keys(this.counters).forEach(key => {
+            this.counters[key] = 0;
+            document.getElementById(`${key}-counter`).textContent = '0';
+          });
+          this.updateStats();
+        });
+        
+        document.getElementById('flush-pending').addEventListener('click', () => {
+          debouncedOperations.flushAll();
+        });
+      }
+      
+      startGameSession() {
+        if (this.gameSession.active) return;
+        
+        this.gameSession.active = true;
+        this.gameSession.startTime = Date.now();
+        this.gameSession.score = 0;
+        
+        // Simulate game updates every 500ms
+        this.gameSession.interval = setInterval(() => {
+          this.gameSession.score += Math.floor(Math.random() * 20) + 5;
+          const elapsed = Math.floor((Date.now() - this.gameSession.startTime) / 1000);
+          
+          document.getElementById('session-time').textContent = elapsed;
+          document.getElementById('game-score').textContent = this.gameSession.score;
+          
+          // Trigger auto-save
+          this.saveGameProgress();
+        }, 500);
+      }
+      
+      stopGameSession() {
+        if (!this.gameSession.active) return;
+        
+        this.gameSession.active = false;
+        if (this.gameSession.interval) {
+          clearInterval(this.gameSession.interval);
+          this.gameSession.interval = null;
+        }
+        
+        // Final save
+        this.saveGameProgress();
+      }
+      
+      updateCounter(type) {
+        this.counters[type]++;
+        document.getElementById(`${type}-counter`).textContent = this.counters[type];
+      }
+      
+      updateStatus(type, status, text) {
+        const indicator = document.getElementById(`${type}-status`);
+        const textElement = document.getElementById(`${type}-status-text`);
+        
+        indicator.className = `status-indicator ${status}`;
+        textElement.textContent = text;
+      }
+      
+      updateStats() {
+        const stats = debouncedOperations.getOperationStats();
+        const statsElement = document.getElementById('performance-stats');
+        
+        let output = 'DEBOUNCING PERFORMANCE STATISTICS\n';
+        output += '=====================================\n\n';
+        
+        output += 'Operation Counters:\n';
+        Object.entries(this.counters).forEach(([type, count]) => {
+          output += `  ${type}: ${count} operations\n`;
+        });
+        
+        output += '\nDebouncing Stats:\n';
+        Object.entries(stats).forEach(([key, stat]) => {
+          output += `  ${key}:\n`;
+          output += `    Executions: ${stat.count}\n`;
+          output += `    Avg Interval: ${Math.round(stat.averageInterval)}ms\n`;
+          output += `    Last: ${stat.lastExecution ? new Date(stat.lastExecution).toLocaleTimeString() : 'Never'}\n`;
+        });
+        
+        output += '\nMemory Usage:\n';
+        output += `  Functions cached: ${debouncedOperations.debouncedFunctions.size}\n`;
+        output += `  Stats entries: ${debouncedOperations.operationStats.size}\n`;
+        
+        statsElement.textContent = output;
+      }
+      
+      mockSearchResults(query) {
+        const achievements = [
+          'First Steps', 'Quick Learner', 'Math Master', 'Science Explorer',
+          'Reading Champion', 'Art Creator', 'Code Warrior', 'Level 10',
+          'Perfect Score', 'Speed Demon', 'Dedicated Student', 'Achievement Hunter'
+        ];
+        
+        return achievements.filter(a => 
+          a.toLowerCase().includes(query.toLowerCase())
+        ).slice(0, 5);
+      }
+      
+      mockFilterResults(rarity) {
+        const badges = {
+          common: ['Beginner', 'First Try', 'Getting Started'],
+          rare: ['Good Progress', 'Consistent Player', 'Week Streak'],
+          epic: ['Master Level', 'Perfect Week', 'Speed Runner'],
+          legendary: ['Ultimate Champion', 'Perfect Month', 'Legendary Status']
+        };
+        
+        if (!rarity) {
+          return Object.values(badges).flat().slice(0, 8);
+        }
+        
+        return badges[rarity] || [];
+      }
+      
+      mockAchievementCheck() {
+        const newAchievements = [];
+        
+        if (this.profile.level >= 5 && !this.profile.achievements.includes('Level 5')) {
+          newAchievements.push('Level 5');
+        }
+        
+        if (this.profile.level >= 10 && !this.profile.achievements.includes('Level 10')) {
+          newAchievements.push('Level 10');
+        }
+        
+        if (this.profile.xp >= 500 && !this.profile.achievements.includes('XP Master')) {
+          newAchievements.push('XP Master');
+        }
+        
+        return newAchievements;
+      }
+    }
+
+    // Initialize the test
+    window.debouncedProfileTest = new DebouncedProfileTest();
+  </script>
+</body>
+</html>

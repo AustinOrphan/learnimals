@@ -2,6 +2,7 @@
 // Reusable form component for consistent UI and validation across the site
 
 import BaseComponent from '../BaseComponent.js';
+import animationManager from '../../utils/AnimationManager.js';
 
 class FormComponent extends BaseComponent {
   /**
@@ -25,6 +26,7 @@ class FormComponent extends BaseComponent {
       onValidate: options.onValidate || null,
       submitButtonText: options.submitButtonText || 'Submit',
       useLocalStorage: options.useLocalStorage || false,
+      enableAnimations: options.enableAnimations !== undefined ? options.enableAnimations : true,
       ...options
     });
 
@@ -182,10 +184,12 @@ class FormComponent extends BaseComponent {
    * @returns {string} - Form HTML
    */
   generateHTML() {
-    const { method, action, fields, submitButtonText } = this.options;
+    const { method, action, fields, submitButtonText, enableAnimations } = this.options;
+    
+    const animationClass = enableAnimations ? 'form-animated' : '';
     
     let html = `
-      <form id="${this.options.id}" class="component" method="${method}" action="${action}" novalidate>
+      <form id="${this.options.id}" class="component ${animationClass}" method="${method}" action="${action}" novalidate data-animate="${enableAnimations}">
     `;
     
     // Generate fields
@@ -195,8 +199,8 @@ class FormComponent extends BaseComponent {
     
     // Submit button
     html += `
-        <div class="form-actions">
-          <button type="submit" class="component-button component-button--primary">${submitButtonText}</button>
+        <div class="form-actions animate-fade-in">
+          <button type="submit" class="component-button component-button--primary btn-ripple">${submitButtonText}</button>
         </div>
       </form>
     `;
@@ -332,10 +336,36 @@ class FormComponent extends BaseComponent {
       errorElement.style.display = 'block';
       input.classList.add('invalid');
       
+      // Add shake animation for invalid input
+      if (this.options.enableAnimations) {
+        input.classList.add('shake-animation');
+        setTimeout(() => {
+          input.classList.remove('shake-animation');
+        }, 600);
+        
+        // Animate error message
+        if (errorElement) {
+          animationManager.fadeIn(errorElement, { duration: 200 });
+        }
+      }
+      
       // Store error
       this.errors[fieldName] = errorMessage;
     } else {
       // Clear error
+      if (errorElement && errorElement.style.display !== 'none') {
+        if (this.options.enableAnimations) {
+          animationManager.createAnimation(errorElement, {
+            type: 'exit',
+            animation: 'fadeOut',
+            options: { duration: 150 }
+          }).then(() => {
+            errorElement.style.display = 'none';
+          });
+        } else {
+          errorElement.style.display = 'none';
+        }
+      }
       delete this.errors[fieldName];
     }
     
@@ -388,8 +418,10 @@ class FormComponent extends BaseComponent {
   /**
    * Handle form submission
    */
-  handleSubmit() {
+  async handleSubmit() {
     const data = this.getFormData();
+    const form = document.getElementById(this.options.id);
+    const submitButton = form.querySelector('button[type="submit"]');
     
     // Validate form
     if (!this.validate()) {
@@ -397,26 +429,63 @@ class FormComponent extends BaseComponent {
     }
     
     // Clear general error if it exists
-    const form = document.getElementById(this.options.id);
     const generalError = form.querySelector('.form-general-error');
     if (generalError) {
       generalError.style.display = 'none';
     }
     
+    // Show loading state on submit button
+    if (this.options.enableAnimations && submitButton) {
+      animationManager.showLoadingState(submitButton, 'spinner', {
+        text: 'Submitting...'
+      });
+    }
+    
     // Call onSubmit handler if provided
     if (this.options.onSubmit) {
       try {
-        this.options.onSubmit(data, form);
+        await this.options.onSubmit(data, form);
+        
+        // Show success animation
+        if (this.options.enableAnimations) {
+          const successEl = document.createElement('div');
+          successEl.className = 'form-success-message';
+          successEl.textContent = '✓ Form submitted successfully!';
+          form.insertBefore(successEl, form.querySelector('.form-actions'));
+          
+          await animationManager.fadeIn(successEl, { duration: 300 });
+          
+          setTimeout(() => {
+            animationManager.createAnimation(successEl, {
+              type: 'exit',
+              animation: 'fadeOut',
+              options: { duration: 200 }
+            }).then(() => {
+              successEl.remove();
+            });
+          }, 3000);
+        }
+        
       } catch (err) {
         console.error('Submit error:', err);
         
         // Show error
-        if (!generalError) {
-          const errorEl = document.createElement('div');
+        let errorEl = form.querySelector('.form-general-error');
+        if (!errorEl) {
+          errorEl = document.createElement('div');
           errorEl.className = 'form-general-error';
           form.insertBefore(errorEl, form.querySelector('.form-actions'));
-          errorEl.textContent = 'Form submission failed';
-          errorEl.style.display = 'block';
+        }
+        errorEl.textContent = 'Form submission failed';
+        errorEl.style.display = 'block';
+        
+        if (this.options.enableAnimations) {
+          animationManager.fadeIn(errorEl, { duration: 200 });
+        }
+      } finally {
+        // Hide loading state
+        if (this.options.enableAnimations && submitButton) {
+          animationManager.hideLoadingState(submitButton);
         }
       }
     } else {

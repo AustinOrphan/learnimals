@@ -1,0 +1,415 @@
+/* Game State Animations */
+/* Animations for different game states: loading, playing, paused, game-over */
+
+/* Base game container states */
+.game-container[data-game-state="loading"] {
+  filter: blur(2px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.game-container[data-game-state="playing"] {
+  filter: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.game-container[data-game-state="paused"] {
+  filter: grayscale(50%) brightness(0.8);
+  transform: scale(0.98);
+}
+
+.game-container[data-game-state="game-over"] {
+  filter: grayscale(30%);
+  transform: scale(0.95);
+}
+
+/* Loading State Animations */
+.game-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--bg-overlay-rgb, 0, 0, 0), 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.game-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(var(--accent-primary-rgb, 74, 144, 226), 0.2);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: gameSpinner 1s linear infinite;
+}
+
+.game-loading-text {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes gameSpinner {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Pause State Overlay */
+.game-pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--bg-overlay-rgb, 0, 0, 0), 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
+  animation: pauseSlideIn 0.3s ease-out;
+  backdrop-filter: blur(4px);
+}
+
+.game-pause-content {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: pauseBounce 0.4s ease-out;
+}
+
+.game-pause-icon {
+  font-size: 3rem;
+  color: var(--accent-primary);
+  margin-bottom: 1rem;
+  animation: pauseIconPulse 2s ease-in-out infinite;
+}
+
+.game-pause-title {
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.game-pause-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+@keyframes pauseSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pauseBounce {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pauseIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Game Over State */
+.game-over-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, 
+    rgba(var(--bg-overlay-rgb, 0, 0, 0), 0.8) 0%, 
+    rgba(var(--bg-overlay-rgb, 0, 0, 0), 0.9) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 102;
+  animation: gameOverFadeIn 0.5s ease-out;
+}
+
+.game-over-content {
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-section));
+  padding: 3rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  animation: gameOverSlideUp 0.6s ease-out;
+}
+
+.game-over-title {
+  font-size: 2.5rem;
+  color: var(--accent-primary);
+  margin-bottom: 1rem;
+  font-weight: 700;
+  animation: gameOverTitleBounce 0.8s ease-out;
+}
+
+.game-over-score {
+  font-size: 3rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  animation: scoreCountUp 1s ease-out;
+}
+
+.game-over-score-label {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.game-over-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(var(--accent-primary-rgb, 74, 144, 226), 0.1);
+  border-radius: 0.5rem;
+}
+
+.game-over-stat {
+  flex: 1;
+  animation: statFadeIn 0.8s ease-out backwards;
+}
+
+.game-over-stat:nth-child(1) { animation-delay: 0.2s; }
+.game-over-stat:nth-child(2) { animation-delay: 0.4s; }
+.game-over-stat:nth-child(3) { animation-delay: 0.6s; }
+
+.game-over-stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.game-over-stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+@keyframes gameOverFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gameOverSlideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes gameOverTitleBounce {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes scoreCountUp {
+  from {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes statFadeIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* State Transition Effects */
+.game-state-transition {
+  animation: stateTransition 0.4s ease-in-out;
+}
+
+@keyframes stateTransition {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Ready State Animation */
+.game-ready-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  animation: readyCountdown 1s ease-in-out;
+  pointer-events: none;
+  z-index: 103;
+}
+
+@keyframes readyCountdown {
+  0% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Button animations for game states */
+.game-pause-button {
+  animation: buttonPulse 2s ease-in-out infinite;
+}
+
+.game-resume-button {
+  animation: buttonBounce 0.6s ease-out;
+}
+
+.game-restart-button {
+  animation: buttonShake 0.5s ease-out;
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes buttonBounce {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes buttonShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .game-loading-spinner {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .game-pause-content,
+  .game-over-content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+  
+  .game-over-title {
+    font-size: 2rem;
+  }
+  
+  .game-over-score {
+    font-size: 2.5rem;
+  }
+  
+  .game-ready-animation {
+    font-size: 3rem;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .game-loading-spinner,
+  .game-loading-text,
+  .game-pause-icon,
+  .game-pause-button,
+  .game-resume-button,
+  .game-restart-button {
+    animation: none;
+  }
+  
+  .game-loading-overlay,
+  .game-pause-overlay,
+  .game-over-overlay,
+  .game-pause-content,
+  .game-over-content,
+  .game-over-title,
+  .game-over-score,
+  .game-over-stat,
+  .game-ready-animation,
+  .game-state-transition {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}

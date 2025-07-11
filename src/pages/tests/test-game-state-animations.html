@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game State Animations Test - Learnimals</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../styles/animations/animations.css">
+  <link rel="stylesheet" href="../../styles/games/game-state-animations.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .test-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-game-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      margin: 0 auto;
+      background: var(--bg-section);
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .test-game-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .test-info {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: var(--bg-card);
+      border-radius: 0.5rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .state-indicator {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: var(--accent-primary);
+      color: white;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Game State Animations Test</h1>
+      <p>Test different game state transitions and their animations</p>
+    </div>
+    
+    <div class="test-controls">
+      <button class="component-button component-button--primary" onclick="testGame.setState('loading')">
+        Loading State
+      </button>
+      <button class="component-button component-button--primary" onclick="testGame.setState('ready')">
+        Ready State
+      </button>
+      <button class="component-button component-button--primary" onclick="testGame.start()">
+        Start Game
+      </button>
+      <button class="component-button component-button--primary" onclick="testGame.pause()">
+        Pause Game
+      </button>
+      <button class="component-button component-button--primary" onclick="testGame.resume()">
+        Resume Game
+      </button>
+      <button class="component-button component-button--primary" onclick="testGame.gameOver()">
+        Game Over
+      </button>
+      <button class="component-button component-button--secondary" onclick="testGame.restart()">
+        Restart
+      </button>
+    </div>
+    
+    <div class="test-controls">
+      <button class="component-button component-button--outline" onclick="testCorrectFeedback()">
+        Test Correct Answer
+      </button>
+      <button class="component-button component-button--outline" onclick="testIncorrectFeedback()">
+        Test Incorrect Answer
+      </button>
+      <button class="component-button component-button--outline" onclick="testCelebration()">
+        Test Celebration
+      </button>
+      <button class="component-button component-button--outline" onclick="testHighScore()">
+        Test High Score
+      </button>
+    </div>
+    
+    <div id="test-game-container" class="test-game-container game-container">
+      <div class="test-game-content">
+        <div>
+          <h2>Test Game</h2>
+          <p>Current State: <span class="state-indicator" id="state-display">ready</span></p>
+          <p>Score: <span id="score-display">0</span></p>
+          <p>Level: <span id="level-display">1</span></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="test-info" id="test-info">
+      <strong>Instructions:</strong><br>
+      - Click the buttons above to test different game states<br>
+      - Watch how animations transition between states<br>
+      - Test feedback animations for correct/incorrect answers<br>
+      - Try the celebration animation and high score scenario
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script src="../../features/progress/ProgressTracker.js"></script>
+  <script src="../../features/progress/AchievementSystem.js"></script>
+  <script src="../../utils/xpCalculator.js"></script>
+  <script src="../../components/level/XPGainAnimation.js"></script>
+  <script src="../../components/level/LevelUpNotification.js"></script>
+  <script src="../../components/level/LevelMilestones.js"></script>
+  <script src="../../components/games/BaseGame.js"></script>
+  
+  <script>
+    // Create a test game instance
+    class TestGame extends BaseGame {
+      constructor(containerId) {
+        super(containerId, {
+          useDOMContainer: true,
+          gameType: 'test-game',
+          subject: 'testing',
+          enableAnimations: true,
+          enableProgressTracking: false,
+          enableXPSystem: false
+        });
+      }
+      
+      onStateChange(newState, oldState) {
+        document.getElementById('state-display').textContent = newState;
+        console.log(`State changed: ${oldState} → ${newState}`);
+      }
+      
+      onScoreUpdate(score) {
+        document.getElementById('score-display').textContent = score;
+      }
+      
+      onLevelUpdate(level) {
+        document.getElementById('level-display').textContent = level;
+      }
+    }
+    
+    // Initialize test game
+    let testGame;
+    
+    window.addEventListener('DOMContentLoaded', async () => {
+      testGame = new TestGame('test-game-container');
+      window.testGame = testGame; // Make it globally accessible
+    });
+    
+    // Test functions
+    async function testCorrectFeedback() {
+      testGame.addScore(10);
+      await testGame.showCorrectFeedback(null, {
+        showCheckmark: true,
+        backgroundColor: '#4CAF50',
+        scale: 1.05
+      });
+    }
+    
+    async function testIncorrectFeedback() {
+      await testGame.showIncorrectFeedback(null, {
+        showX: true,
+        backgroundColor: '#f44336',
+        shakeIntensity: 10
+      });
+    }
+    
+    async function testCelebration() {
+      await testGame.celebrateCompletion({
+        showConfetti: true,
+        showStars: true,
+        celebrationText: 'Amazing!',
+        duration: 2000
+      });
+    }
+    
+    async function testHighScore() {
+      // Set a high score
+      testGame.score = 1000;
+      testGame.onScoreUpdate(testGame.score);
+      
+      // Clear previous high score for testing
+      localStorage.removeItem(`${testGame.gameType}_highScore`);
+      
+      // Trigger game over with high score
+      await testGame.gameOver();
+    }
+  </script>
+</body>
+</html>

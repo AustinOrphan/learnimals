@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Bubble Pop Game - Animation Test</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../features/games/bubble-pop/bubblePop.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-info {
+      background: var(--bg-section);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin: 2rem 0;
+      border-left: 4px solid var(--accent-primary);
+    }
+    
+    .animation-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .animation-demo {
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .demo-canvas {
+      width: 100%;
+      height: 200px;
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      margin: 1rem 0;
+      background: var(--bg-primary);
+    }
+    
+    .demo-button {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      margin: 0.25rem;
+      transition: all 0.2s ease;
+    }
+    
+    .demo-button:hover {
+      background: var(--accent-secondary);
+      transform: translateY(-1px);
+    }
+    
+    .game-container {
+      margin: 2rem 0;
+      height: 600px;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .controls-panel {
+      background: var(--bg-hover);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+    
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .effect-preview {
+      position: relative;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Enhanced Bubble Pop Game</h1>
+      <p>Testing particle effects, animations, and visual enhancements</p>
+    </div>
+    
+    <div class="test-info">
+      <h3>🎮 Animation Features</h3>
+      <ul>
+        <li><strong>Bubble Animations:</strong> Spawn with bounce, float with wobble, pulse hints</li>
+        <li><strong>Trail Effects:</strong> Fast-moving bubbles leave particle trails</li>
+        <li><strong>Interaction Feedback:</strong> Shake on wrong answer, glow on correct</li>
+        <li><strong>Enhanced Particles:</strong> Sparkles, rings, ripples, and emoji effects</li>
+        <li><strong>Streak Effects:</strong> Fire animations and power-up bursts</li>
+        <li><strong>Audio Harmony:</strong> Layered sound effects for success/failure</li>
+        <li><strong>Mobile Optimized:</strong> Reduced particles and simplified effects on mobile</li>
+        <li><strong>Accessibility:</strong> Respects prefers-reduced-motion</li>
+      </ul>
+    </div>
+    
+    <!-- Animation Showcase -->
+    <div class="animation-showcase">
+      <div class="animation-demo">
+        <h4>Bubble Spawn Animation</h4>
+        <canvas id="demo-spawn" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoSpawnAnimation()">Demo Spawn</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Bubble Pop Effects</h4>
+        <canvas id="demo-pop" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoPopEffect()">Demo Pop</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Streak Effects</h4>
+        <canvas id="demo-streak" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoStreakEffect()">Demo Streak</button>
+      </div>
+      
+      <div class="animation-demo">
+        <h4>Power-Up Burst</h4>
+        <canvas id="demo-powerup" class="demo-canvas"></canvas>
+        <button class="demo-button" onclick="demoPowerUpEffect()">Demo Power-Up</button>
+      </div>
+    </div>
+    
+    <!-- Game Controls -->
+    <div class="controls-panel">
+      <h3>Game Controls</h3>
+      <div class="controls-grid">
+        <button class="demo-button" onclick="changeGameDifficulty('easy')">Easy Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('medium')">Medium Mode</button>
+        <button class="demo-button" onclick="changeGameDifficulty('hard')">Hard Mode</button>
+        <button class="demo-button" onclick="toggleAnimations()">Toggle Animations</button>
+        <button class="demo-button" onclick="simulateStreak()">Simulate Streak</button>
+        <button class="demo-button" onclick="showAllEffects()">Show All Effects</button>
+      </div>
+    </div>
+    
+    <!-- Main Game Container -->
+    <div class="game-container">
+      <canvas id="bubble-pop-canvas"></canvas>
+    </div>
+    
+    <!-- Performance Info -->
+    <div class="test-info">
+      <h3>📊 Performance Notes</h3>
+      <ul>
+        <li>Canvas rendering optimized with pre-rendered bubble backgrounds</li>
+        <li>Particle systems use object pooling to reduce garbage collection</li>
+        <li>Trail effects only appear on fast-moving bubbles to conserve resources</li>
+        <li>Mobile devices receive reduced particle counts automatically</li>
+        <li>All animations can be disabled for accessibility</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script type="module">
+    import BubblePopGameTemplate from '../../features/games/bubble-pop/BubblePopGameTemplate.js';
+    import Bubble from '../../features/games/bubble-pop/Bubble.js';
+    
+    let game;
+    let animationsEnabled = true;
+    const demoCanvases = {};
+    
+    // Initialize demo canvases
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set up demo canvases
+      demoCanvases.spawn = document.getElementById('demo-spawn').getContext('2d');
+      demoCanvases.pop = document.getElementById('demo-pop').getContext('2d');
+      demoCanvases.streak = document.getElementById('demo-streak').getContext('2d');
+      demoCanvases.powerup = document.getElementById('demo-powerup').getContext('2d');
+      
+      // Initialize main game
+      try {
+        game = new BubblePopGameTemplate('bubble-pop-canvas', {
+          difficulty: 'medium',
+          enableAnimations: true
+        });
+        
+        console.log('Enhanced Bubble Pop game initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Bubble Pop game:', error);
+      }
+    });
+    
+    // Demo: Spawn Animation
+    window.demoSpawnAnimation = function() {
+      const canvas = document.getElementById('demo-spawn');
+      const ctx = demoCanvases.spawn;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Create demo bubble
+      const bubble = new Bubble({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        radius: 40,
+        answer: '42',
+        isCorrect: true,
+        bubbleBackground: null,
+        ctx: ctx,
+        color: '#4ECDC4'
+      });
+      
+      // Animate spawn
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw bubble
+        bubble.update(16.67);
+        bubble.draw();
+        
+        frame++;
+        if (frame < 60) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    };
+    
+    // Demo: Pop Effect
+    window.demoPopEffect = function() {
+      const canvas = document.getElementById('demo-pop');
+      const ctx = demoCanvases.pop;
+      const particles = [];
+      
+      // Create explosion particles
+      const x = canvas.width / 2;
+      const y = canvas.height / 2;
+      
+      for (let i = 0; i < 20; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.5) * 10,
+          life: 1.0,
+          decay: 0.02,
+          color: '#FFD700',
+          size: Math.random() * 6 + 2
+        });
+      }
+      
+      // Animate particles
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach((particle, index) => {
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          particle.vy += 0.2; // gravity
+          particle.life -= particle.decay;
+          
+          if (particle.life > 0) {
+            ctx.save();
+            ctx.globalAlpha = particle.life;
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        });
+        
+        // Continue animation if particles exist
+        if (particles.some(p => p.life > 0)) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    };
+    
+    // Demo: Streak Effect
+    window.demoStreakEffect = function() {
+      const canvas = document.getElementById('demo-streak');
+      const ctx = demoCanvases.streak;
+      const emojis = [];
+      
+      // Create fire emojis
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          emojis.push({
+            x: canvas.width / 2 + (Math.random() - 0.5) * 50,
+            y: canvas.height / 2,
+            vy: -3,
+            life: 1.0,
+            decay: 0.015,
+            size: 30
+          });
+        }, i * 100);
+      }
+      
+      // Animate emojis
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        emojis.forEach((emoji, index) => {
+          emoji.y += emoji.vy;
+          emoji.life -= emoji.decay;
+          
+          if (emoji.life > 0) {
+            ctx.save();
+            ctx.globalAlpha = emoji.life;
+            ctx.font = `${emoji.size}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🔥', emoji.x, emoji.y);
+            ctx.restore();
+          }
+        });
+        
+        // Continue animation if emojis exist
+        if (emojis.some(e => e.life > 0)) {
+          requestAnimationFrame(animate);
+        }
+      }
+      
+      // Start animation
+      setTimeout(animate, 100);
+    };
+    
+    // Demo: Power-Up Effect
+    window.demoPowerUpEffect = function() {
+      const canvas = document.getElementById('demo-powerup');
+      const ctx = demoCanvases.powerup;
+      let flashAlpha = 0.3;
+      const stars = [];
+      
+      // Create star burst
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      for (let i = 0; i < 8; i++) {
+        const angle = (Math.PI * 2 * i) / 8;
+        stars.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * 8,
+          vy: Math.sin(angle) * 8,
+          rotation: 0,
+          rotationSpeed: 0.2,
+          life: 1.0,
+          decay: 0.02
+        });
+      }
+      
+      // Animate effect
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Flash effect
+        if (flashAlpha > 0) {
+          ctx.fillStyle = '#FFD700';
+          ctx.globalAlpha = flashAlpha;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.globalAlpha = 1;
+          flashAlpha -= 0.05;
+        }
+        
+        // Stars
+        stars.forEach(star => {
+          star.x += star.vx;
+          star.y += star.vy;
+          star.rotation += star.rotationSpeed;
+          star.life -= star.decay;
+          
+          if (star.life > 0) {
+            ctx.save();
+            ctx.globalAlpha = star.life;
+            ctx.translate(star.x, star.y);
+            ctx.rotate(star.rotation);
+            ctx.font = '25px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('⭐', 0, 0);
+            ctx.restore();
+          }
+        });
+        
+        // Continue animation
+        if (flashAlpha > 0 || stars.some(s => s.life > 0)) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    };
+    
+    // Game control functions
+    window.changeGameDifficulty = function(difficulty) {
+      if (game) {
+        game.difficulty = difficulty;
+        game.settings = game.difficultySettings[difficulty];
+        game.restart();
+        console.log(`Difficulty changed to: ${difficulty}`);
+      }
+    };
+    
+    window.toggleAnimations = function() {
+      animationsEnabled = !animationsEnabled;
+      console.log(`Animations ${animationsEnabled ? 'enabled' : 'disabled'}`);
+      
+      if (!animationsEnabled) {
+        document.body.classList.add('prefers-reduced-motion');
+      } else {
+        document.body.classList.remove('prefers-reduced-motion');
+      }
+    };
+    
+    window.simulateStreak = function() {
+      if (game && game.state === 'playing') {
+        // Simulate a streak by artificially incrementing streak count
+        game.streakCount = 5;
+        game.showStreakEffect(5);
+        game.showPowerUpEffect();
+        game.addMessage('5 in a row! 🔥', game.themeColors.warning);
+      }
+    };
+    
+    window.showAllEffects = function() {
+      if (game && game.state === 'playing') {
+        const centerX = game.canvas.width / 2;
+        const centerY = game.canvas.height / 2;
+        
+        // Show various effects
+        game.createEnhancedExplosion(centerX - 100, centerY, game.themeColors.success);
+        game.createRippleEffect(centerX, centerY);
+        
+        setTimeout(() => {
+          game.showStreakEffect(3);
+        }, 500);
+        
+        setTimeout(() => {
+          game.showPowerUpEffect();
+        }, 1000);
+      }
+    };
+    
+    // Add custom CSS for reduced motion
+    const style = document.createElement('style');
+    style.textContent = `
+      .prefers-reduced-motion *,
+      .prefers-reduced-motion *::before,
+      .prefers-reduced-motion *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Performance monitoring
+    let frameCount = 0;
+    let lastTime = performance.now();
+    
+    function updateFPS() {
+      const currentTime = performance.now();
+      const delta = currentTime - lastTime;
+      
+      if (delta >= 1000) {
+        const fps = Math.round((frameCount * 1000) / delta);
+        console.log(`FPS: ${fps}`);
+        frameCount = 0;
+        lastTime = currentTime;
+      }
+      
+      frameCount++;
+      requestAnimationFrame(updateFPS);
+    }
+    
+    // Start FPS monitoring
+    updateFPS();
+  </script>
+  
+  <!-- Instructions overlay -->
+  <div style="position: fixed; bottom: 20px; right: 20px; background: var(--bg-card); padding: 1rem; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 300px; font-size: 0.9rem;">
+    <strong>Tips:</strong><br>
+    • Click on the correct answer bubble<br>
+    • Build streaks for bonus effects<br>
+    • Watch for pulse hints on remaining bubbles<br>
+    • Try all difficulty levels!
+  </div>
+</body>
+</html>

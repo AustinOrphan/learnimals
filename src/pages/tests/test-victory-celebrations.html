@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victory Celebration Animations Test - Learnimals</title>
+  
+  <!-- Base styles -->
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../../styles/themes/themes.css">
+  <link rel="stylesheet" href="../../styles/components/animations.css">
+  
+  <style>
+    .test-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .test-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .test-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .test-section h2 {
+      margin-bottom: 1.5rem;
+      color: var(--accent-primary);
+    }
+    
+    .test-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .tier-button {
+      padding: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .tier-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .tier-button:active {
+      transform: translateY(0);
+    }
+    
+    .tier-bronze {
+      background: linear-gradient(135deg, #CD7F32, #DAA520);
+      color: white;
+    }
+    
+    .tier-silver {
+      background: linear-gradient(135deg, #C0C0C0, #E5E5E5);
+      color: #333;
+    }
+    
+    .tier-gold {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #333;
+    }
+    
+    .tier-platinum {
+      background: linear-gradient(135deg, #E5E4E2, #FFFFFF);
+      color: #333;
+      box-shadow: 0 0 20px rgba(229, 228, 226, 0.5);
+    }
+    
+    .tier-icon {
+      font-size: 2rem;
+    }
+    
+    .tier-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    
+    .tier-description {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+    
+    .option-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0;
+      align-items: center;
+    }
+    
+    .option-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .option-group label {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .option-group input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+    
+    .option-group input[type="number"] {
+      width: 80px;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    
+    .option-group select {
+      padding: 0.25rem 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+    
+    .custom-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .info-panel {
+      background: var(--bg-hover);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    
+    .demo-area {
+      position: relative;
+      min-height: 300px;
+      background: var(--bg-section);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 2px dashed var(--border-color);
+    }
+    
+    .demo-placeholder {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+    }
+    
+    .log-output {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    
+    .log-entry {
+      margin-bottom: 0.25rem;
+      color: var(--text-secondary);
+    }
+    
+    .log-entry.celebration {
+      color: var(--success-color);
+      font-weight: 600;
+    }
+    
+    .clear-log {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+    
+    .stats-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: var(--bg-hover);
+      border-radius: 0.5rem;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent-primary);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <div class="test-header">
+      <h1>Victory Celebration Animations Test</h1>
+      <p>Test different achievement tiers and celebration effects for game completions</p>
+    </div>
+    
+    <!-- Tier Selection -->
+    <div class="test-section">
+      <h2>Achievement Tiers</h2>
+      <p>Click a tier to trigger its celebration animation</p>
+      
+      <div class="test-controls">
+        <button class="tier-button tier-bronze" onclick="celebrateTier('bronze')">
+          <div class="tier-icon">🥉</div>
+          <div class="tier-name">Bronze</div>
+          <div class="tier-description">Good effort!</div>
+        </button>
+        
+        <button class="tier-button tier-silver" onclick="celebrateTier('silver')">
+          <div class="tier-icon">🥈</div>
+          <div class="tier-name">Silver</div>
+          <div class="tier-description">Great job!</div>
+        </button>
+        
+        <button class="tier-button tier-gold" onclick="celebrateTier('gold')">
+          <div class="tier-icon">🥇</div>
+          <div class="tier-name">Gold</div>
+          <div class="tier-description">Excellent!</div>
+        </button>
+        
+        <button class="tier-button tier-platinum" onclick="celebrateTier('platinum')">
+          <div class="tier-icon">🏆</div>
+          <div class="tier-name">Platinum</div>
+          <div class="tier-description">Legendary!</div>
+        </button>
+      </div>
+      
+      <div class="info-panel">
+        <strong>Tier Features:</strong>
+        <ul>
+          <li><strong>Bronze:</strong> Basic confetti and star burst</li>
+          <li><strong>Silver:</strong> Enhanced effects with particles</li>
+          <li><strong>Gold:</strong> Fireworks and golden glow effects</li>
+          <li><strong>Platinum:</strong> Maximum spectacle with premium animations</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Custom Options -->
+    <div class="test-section">
+      <h2>Customization Options</h2>
+      <p>Modify celebration parameters for testing</p>
+      
+      <div class="option-controls">
+        <div class="option-group">
+          <input type="checkbox" id="perfectScore" checked>
+          <label for="perfectScore">Perfect Score Bonus</label>
+        </div>
+        
+        <div class="option-group">
+          <input type="checkbox" id="showTrophy" checked>
+          <label for="showTrophy">Show Trophy</label>
+        </div>
+        
+        <div class="option-group">
+          <input type="checkbox" id="showConfetti" checked>
+          <label for="showConfetti">Show Confetti</label>
+        </div>
+        
+        <div class="option-group">
+          <input type="checkbox" id="showStars" checked>
+          <label for="showStars">Show Stars</label>
+        </div>
+        
+        <div class="option-group">
+          <input type="checkbox" id="showFireworks">
+          <label for="showFireworks">Force Fireworks</label>
+        </div>
+        
+        <div class="option-group">
+          <label for="celebrationText">Text:</label>
+          <select id="celebrationText">
+            <option value="Awesome!">Awesome!</option>
+            <option value="Fantastic!">Fantastic!</option>
+            <option value="Perfect!">Perfect!</option>
+            <option value="Outstanding!">Outstanding!</option>
+            <option value="Incredible!">Incredible!</option>
+            <option value="Amazing!">Amazing!</option>
+          </select>
+        </div>
+        
+        <div class="option-group">
+          <label for="scoreValue">Score:</label>
+          <input type="number" id="scoreValue" value="85" min="0" max="100">
+        </div>
+        
+        <div class="option-group">
+          <label for="duration">Duration (ms):</label>
+          <input type="number" id="duration" value="2000" min="500" max="5000" step="100">
+        </div>
+      </div>
+      
+      <div class="custom-controls">
+        <button class="component-button component-button--primary" onclick="testCustomCelebration()">
+          Test Custom Celebration
+        </button>
+        
+        <button class="component-button component-button--secondary" onclick="testRandomCelebration()">
+          Random Celebration
+        </button>
+        
+        <button class="component-button component-button--outline" onclick="testSequentialTiers()">
+          Test All Tiers Sequence
+        </button>
+        
+        <button class="component-button component-button--outline" onclick="stopAllCelebrations()">
+          Stop All Celebrations
+        </button>
+      </div>
+    </div>
+    
+    <!-- Demo Area -->
+    <div class="test-section">
+      <h2>Demo Area</h2>
+      <div class="demo-area" id="demo-area">
+        <div class="demo-placeholder">
+          🎮 Click any tier button above to see celebrations in action!
+        </div>
+      </div>
+    </div>
+    
+    <!-- Statistics and Logging -->
+    <div class="test-section">
+      <h2>Test Statistics</h2>
+      
+      <div class="stats-display">
+        <div class="stat-item">
+          <div class="stat-value" id="totalCelebrations">0</div>
+          <div class="stat-label">Total Celebrations</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="bronzeCelebrations">0</div>
+          <div class="stat-label">Bronze</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="silverCelebrations">0</div>
+          <div class="stat-label">Silver</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="goldCelebrations">0</div>
+          <div class="stat-label">Gold</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="platinumCelebrations">0</div>
+          <div class="stat-label">Platinum</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="perfectScores">0</div>
+          <div class="stat-label">Perfect Scores</div>
+        </div>
+      </div>
+      
+      <h3>Event Log</h3>
+      <div class="log-output" id="logOutput">
+        <div class="log-entry">Ready to test victory celebrations...</div>
+      </div>
+      <button class="clear-log" onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <!-- Performance Test -->
+    <div class="test-section">
+      <h2>Performance Test</h2>
+      <p>Test celebration animations under different performance conditions</p>
+      
+      <div class="option-controls">
+        <button class="component-button component-button--primary" onclick="performanceTest()">
+          Run Performance Test
+        </button>
+        
+        <button class="component-button component-button--secondary" onclick="stressTest()">
+          Stress Test (Multiple Celebrations)
+        </button>
+        
+        <button class="component-button component-button--outline" onclick="enablePerformanceMode()">
+          Toggle Performance Mode
+        </button>
+      </div>
+      
+      <div class="info-panel">
+        <strong>Performance Test Instructions:</strong>
+        <ul>
+          <li>Performance Test: Measures celebration rendering times and frame rates</li>
+          <li>Stress Test: Triggers multiple celebrations simultaneously</li>
+          <li>Performance Mode: Reduces animation complexity for lower-end devices</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="../../utils/logger.js"></script>
+  <script src="../../utils/AnimationManager.js"></script>
+  <script src="../../components/games/BaseGame.js"></script>
+  
+  <script>
+    // Test game instance
+    let testGame;
+    let celebrationStats = {
+      total: 0,
+      bronze: 0,
+      silver: 0,
+      gold: 0,
+      platinum: 0,
+      perfect: 0
+    };
+    let performanceMode = false;
+    
+    // Initialize test
+    window.addEventListener('DOMContentLoaded', () => {
+      testGame = new BaseGame('demo-area', {
+        useDOMContainer: true,
+        gameType: 'victory-test',
+        subject: 'testing',
+        enableAnimations: true,
+        enableProgressTracking: false,
+        enableXPSystem: false
+      });
+      
+      // Setup sound effect logging
+      testGame.onSoundEffect = (type) => {
+        logEvent(`🔊 Sound effect: ${type}`);
+      };
+      
+      logEvent('Victory celebration test initialized');
+    });
+    
+    async function celebrateTier(tier) {
+      const options = getCelebrationOptions();
+      options.tier = tier;
+      
+      logEvent(`🎉 Starting ${tier.toUpperCase()} celebration...`, 'celebration');
+      
+      try {
+        await testGame.celebrateCompletion(options);
+        
+        // Update statistics
+        celebrationStats.total++;
+        celebrationStats[tier]++;
+        if (options.perfectScore) celebrationStats.perfect++;
+        
+        updateStatistics();
+        logEvent(`✅ ${tier.toUpperCase()} celebration completed successfully`);
+        
+      } catch (error) {
+        logEvent(`❌ Celebration failed: ${error.message}`);
+        console.error('Celebration error:', error);
+      }
+    }
+    
+    function getCelebrationOptions() {
+      return {
+        duration: parseInt(document.getElementById('duration').value),
+        showConfetti: document.getElementById('showConfetti').checked,
+        showStars: document.getElementById('showStars').checked,
+        celebrationText: document.getElementById('celebrationText').value,
+        score: parseInt(document.getElementById('scoreValue').value),
+        perfectScore: document.getElementById('perfectScore').checked,
+        showTrophy: document.getElementById('showTrophy').checked,
+        showFireworks: document.getElementById('showFireworks').checked
+      };
+    }
+    
+    async function testCustomCelebration() {
+      const tier = ['bronze', 'silver', 'gold', 'platinum'][Math.floor(Math.random() * 4)];
+      const options = getCelebrationOptions();
+      options.tier = tier;
+      
+      logEvent(`🎨 Testing custom celebration (${tier})...`, 'celebration');
+      
+      try {
+        await testGame.celebrateCompletion(options);
+        celebrationStats.total++;
+        celebrationStats[tier]++;
+        if (options.perfectScore) celebrationStats.perfect++;
+        updateStatistics();
+        logEvent(`✅ Custom celebration completed`);
+      } catch (error) {
+        logEvent(`❌ Custom celebration failed: ${error.message}`);
+      }
+    }
+    
+    async function testRandomCelebration() {
+      const tiers = ['bronze', 'silver', 'gold', 'platinum'];
+      const texts = ['Awesome!', 'Fantastic!', 'Perfect!', 'Outstanding!', 'Incredible!', 'Amazing!'];
+      
+      const randomOptions = {
+        tier: tiers[Math.floor(Math.random() * tiers.length)],
+        duration: 1000 + Math.random() * 3000,
+        showConfetti: Math.random() > 0.2,
+        showStars: Math.random() > 0.3,
+        celebrationText: texts[Math.floor(Math.random() * texts.length)],
+        score: Math.floor(Math.random() * 101),
+        perfectScore: Math.random() > 0.8,
+        showTrophy: Math.random() > 0.1,
+        showFireworks: Math.random() > 0.6
+      };
+      
+      logEvent(`🎲 Random celebration: ${randomOptions.tier} tier, ${randomOptions.score} score`, 'celebration');
+      
+      try {
+        await testGame.celebrateCompletion(randomOptions);
+        celebrationStats.total++;
+        celebrationStats[randomOptions.tier]++;
+        if (randomOptions.perfectScore) celebrationStats.perfect++;
+        updateStatistics();
+        logEvent(`✅ Random celebration completed`);
+      } catch (error) {
+        logEvent(`❌ Random celebration failed: ${error.message}`);
+      }
+    }
+    
+    async function testSequentialTiers() {
+      const tiers = ['bronze', 'silver', 'gold', 'platinum'];
+      
+      logEvent(`🔄 Starting sequential tier test...`, 'celebration');
+      
+      for (let i = 0; i < tiers.length; i++) {
+        const tier = tiers[i];
+        const options = {
+          tier,
+          duration: 1500,
+          showConfetti: true,
+          showStars: true,
+          celebrationText: `${tier.charAt(0).toUpperCase() + tier.slice(1)} Achievement!`,
+          score: 25 + (i * 25),
+          perfectScore: i === 3,
+          showTrophy: true,
+          showFireworks: i >= 2
+        };
+        
+        logEvent(`  • ${tier.toUpperCase()} tier (${i + 1}/4)...`);
+        
+        try {
+          await testGame.celebrateCompletion(options);
+          celebrationStats.total++;
+          celebrationStats[tier]++;
+          if (options.perfectScore) celebrationStats.perfect++;
+          
+          // Wait between celebrations
+          if (i < tiers.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        } catch (error) {
+          logEvent(`❌ ${tier} tier failed: ${error.message}`);
+        }
+      }
+      
+      updateStatistics();
+      logEvent(`✅ Sequential tier test completed`);
+    }
+    
+    function stopAllCelebrations() {
+      // Remove all victory overlays
+      document.querySelectorAll('.victory-container').forEach(overlay => {
+        overlay.remove();
+      });
+      
+      // Remove all celebration particles
+      document.querySelectorAll('.confetti-piece, .star-particle, .firework, .particle').forEach(particle => {
+        particle.remove();
+      });
+      
+      logEvent(`🛑 All celebrations stopped`);
+    }
+    
+    async function performanceTest() {
+      logEvent(`⚡ Starting performance test...`, 'celebration');
+      
+      const startTime = performance.now();
+      let frameCount = 0;
+      let animationId;
+      
+      // Frame counter
+      function countFrames() {
+        frameCount++;
+        animationId = requestAnimationFrame(countFrames);
+      }
+      countFrames();
+      
+      try {
+        // Test with gold tier (moderate complexity)
+        await testGame.celebrateCompletion({
+          tier: 'gold',
+          duration: 2000,
+          showConfetti: true,
+          showStars: true,
+          celebrationText: 'Performance Test!',
+          score: 95,
+          perfectScore: true,
+          showTrophy: true,
+          showFireworks: true
+        });
+        
+        const endTime = performance.now();
+        cancelAnimationFrame(animationId);
+        
+        const duration = endTime - startTime;
+        const fps = Math.round((frameCount / duration) * 1000);
+        
+        logEvent(`📊 Performance Results:`);
+        logEvent(`  • Duration: ${Math.round(duration)}ms`);
+        logEvent(`  • Average FPS: ${fps}`);
+        logEvent(`  • Frame Count: ${frameCount}`);
+        
+        if (fps >= 30) {
+          logEvent(`✅ Performance: GOOD (${fps} FPS)`);
+        } else if (fps >= 20) {
+          logEvent(`⚠️ Performance: OK (${fps} FPS)`);
+        } else {
+          logEvent(`❌ Performance: POOR (${fps} FPS)`);
+        }
+        
+      } catch (error) {
+        cancelAnimationFrame(animationId);
+        logEvent(`❌ Performance test failed: ${error.message}`);
+      }
+    }
+    
+    async function stressTest() {
+      logEvent(`🔥 Starting stress test (5 simultaneous celebrations)...`, 'celebration');
+      
+      const promises = [];
+      const tiers = ['bronze', 'silver', 'gold', 'platinum', 'gold'];
+      
+      for (let i = 0; i < 5; i++) {
+        const promise = testGame.celebrateCompletion({
+          tier: tiers[i],
+          duration: 3000,
+          showConfetti: true,
+          showStars: true,
+          celebrationText: `Stress ${i + 1}!`,
+          score: Math.floor(Math.random() * 101),
+          perfectScore: Math.random() > 0.5,
+          showTrophy: true,
+          showFireworks: i >= 2
+        });
+        promises.push(promise);
+        
+        // Slight delay between starts
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+      
+      try {
+        await Promise.all(promises);
+        celebrationStats.total += 5;
+        updateStatistics();
+        logEvent(`✅ Stress test completed successfully`);
+      } catch (error) {
+        logEvent(`❌ Stress test failed: ${error.message}`);
+      }
+    }
+    
+    function enablePerformanceMode() {
+      performanceMode = !performanceMode;
+      document.body.classList.toggle('performance-mode', performanceMode);
+      
+      logEvent(`⚙️ Performance mode: ${performanceMode ? 'ENABLED' : 'DISABLED'}`);
+    }
+    
+    function updateStatistics() {
+      document.getElementById('totalCelebrations').textContent = celebrationStats.total;
+      document.getElementById('bronzeCelebrations').textContent = celebrationStats.bronze;
+      document.getElementById('silverCelebrations').textContent = celebrationStats.silver;
+      document.getElementById('goldCelebrations').textContent = celebrationStats.gold;
+      document.getElementById('platinumCelebrations').textContent = celebrationStats.platinum;
+      document.getElementById('perfectScores').textContent = celebrationStats.perfect;
+    }
+    
+    function logEvent(message, type = 'default') {
+      const logOutput = document.getElementById('logOutput');
+      const timestamp = new Date().toLocaleTimeString();
+      const logEntry = document.createElement('div');
+      logEntry.className = `log-entry ${type}`;
+      logEntry.textContent = `[${timestamp}] ${message}`;
+      
+      logOutput.appendChild(logEntry);
+      logOutput.scrollTop = logOutput.scrollHeight;
+      
+      // Keep log reasonable size
+      const entries = logOutput.children;
+      if (entries.length > 50) {
+        logOutput.removeChild(entries[0]);
+      }
+    }
+    
+    function clearLog() {
+      const logOutput = document.getElementById('logOutput');
+      logOutput.innerHTML = '<div class="log-entry">Log cleared...</div>';
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case '1':
+            e.preventDefault();
+            celebrateTier('bronze');
+            break;
+          case '2':
+            e.preventDefault();
+            celebrateTier('silver');
+            break;
+          case '3':
+            e.preventDefault();
+            celebrateTier('gold');
+            break;
+          case '4':
+            e.preventDefault();
+            celebrateTier('platinum');
+            break;
+          case 'r':
+            e.preventDefault();
+            testRandomCelebration();
+            break;
+          case 's':
+            e.preventDefault();
+            stopAllCelebrations();
+            break;
+        }
+      }
+    });
+    
+    // Auto-update demo area placeholder
+    setInterval(() => {
+      const placeholder = document.querySelector('.demo-placeholder');
+      if (placeholder && !document.querySelector('.victory-container')) {
+        const tips = [
+          '🎮 Click any tier button above to see celebrations!',
+          '🎨 Try the custom celebration options!',
+          '🎲 Use the random celebration button!',
+          '⚡ Test performance with the stress test!',
+          '⌨️ Use Ctrl+1-4 for quick tier testing!'
+        ];
+        placeholder.textContent = tips[Math.floor(Math.random() * tips.length)];
+      }
+    }, 3000);
+  </script>
+</body>
+</html>

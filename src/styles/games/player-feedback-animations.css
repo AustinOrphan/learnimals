@@ -1,0 +1,569 @@
+/* Player Feedback Animations */
+/* Comprehensive animations for player feedback including correct/incorrect answers, scores, lives, and streaks */
+
+/* =============================================
+   SCORE ANIMATIONS
+   ============================================= */
+
+/* Floating score numbers that appear and float up */
+.score-float {
+  position: absolute;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--success-color, #4CAF50);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1000;
+  animation: scoreFloat 1.5s ease-out forwards;
+}
+
+.score-float.bonus {
+  color: var(--warning-color, #FFD700);
+  font-size: 2.5rem;
+  animation: bonusScoreFloat 2s ease-out forwards;
+}
+
+.score-float.negative {
+  color: var(--error-color, #f44336);
+}
+
+@keyframes scoreFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80px) scale(1);
+  }
+}
+
+@keyframes bonusScoreFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.3) rotate(-15deg);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.3) rotate(15deg);
+  }
+  50% {
+    transform: translateY(-50px) scale(1.1) rotate(-5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.9) rotate(5deg);
+  }
+}
+
+/* Score counter animation */
+.score-counter {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.score-counter.updating {
+  animation: scoreUpdate 0.6s ease-out;
+}
+
+@keyframes scoreUpdate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    color: var(--accent-primary);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* =============================================
+   LIFE/HEART ANIMATIONS
+   ============================================= */
+
+.game-lives-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.game-life {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.game-life.heart {
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff4757"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') center/contain no-repeat;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.game-life.heart.losing {
+  animation: heartBreak 0.8s ease-out forwards;
+}
+
+.game-life.heart.gaining {
+  animation: heartGain 0.8s ease-out;
+}
+
+@keyframes heartBreak {
+  0% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(-15deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes heartGain {
+  0% {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3) rotate(90deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* =============================================
+   CORRECT ANSWER FEEDBACK
+   ============================================= */
+
+.correct-feedback-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, 
+    rgba(76, 175, 80, 0.3) 0%, 
+    transparent 70%);
+  pointer-events: none;
+  z-index: 99;
+  animation: correctFlash 0.6s ease-out;
+}
+
+.correct-checkmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: #4CAF50;
+  animation: checkmarkBounce 0.8s ease-out;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.correct-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #4CAF50;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleBurst 1s ease-out forwards;
+}
+
+@keyframes correctFlash {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes checkmarkBounce {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes particleBurst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx, 100px), var(--ty, -100px)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   INCORRECT ANSWER FEEDBACK
+   ============================================= */
+
+.incorrect-feedback-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, 
+    rgba(244, 67, 54, 0.3) 0%, 
+    transparent 70%);
+  pointer-events: none;
+  z-index: 99;
+  animation: incorrectFlash 0.6s ease-out;
+}
+
+.incorrect-x {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: #f44336;
+  animation: xShake 0.8s ease-out;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.shake-element {
+  animation: elementShake 0.6s ease-out;
+}
+
+@keyframes incorrectFlash {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes xShake {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(-15deg);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(1) rotate(15deg);
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1) rotate(-10deg);
+  }
+  80% {
+    transform: translate(-50%, -50%) scale(1) rotate(5deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0);
+    opacity: 0;
+  }
+}
+
+@keyframes elementShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(10px);
+  }
+}
+
+/* =============================================
+   STREAK ANIMATIONS
+   ============================================= */
+
+.streak-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: white;
+  font-weight: 700;
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+  z-index: 101;
+  animation: streakPulse 2s ease-in-out infinite;
+}
+
+.streak-indicator.new {
+  animation: streakAppear 0.6s ease-out, streakPulse 2s ease-in-out infinite 0.6s;
+}
+
+.streak-fire {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1.5rem;
+  animation: fireWiggle 1s ease-in-out infinite;
+}
+
+@keyframes streakAppear {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes streakPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 165, 0, 0.6);
+  }
+}
+
+@keyframes fireWiggle {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(5deg);
+  }
+  75% {
+    transform: translateY(2px) rotate(-3deg);
+  }
+}
+
+/* Combo multiplier */
+.combo-multiplier {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  animation: comboGrow 0.5s ease-out;
+}
+
+@keyframes comboGrow {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* =============================================
+   PERFECT SCORE ANIMATION
+   ============================================= */
+
+.perfect-score {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: perfectScore 2s ease-out;
+  pointer-events: none;
+  z-index: 102;
+}
+
+@keyframes perfectScore {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(-360deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   ACHIEVEMENT UNLOCK INLINE
+   ============================================= */
+
+.inline-achievement {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-section));
+  border: 2px solid var(--accent-primary);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: achievementSlideIn 0.6s ease-out;
+  z-index: 101;
+}
+
+@keyframes achievementSlideIn {
+  0% {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* =============================================
+   SOUND EFFECT VISUAL INDICATORS
+   ============================================= */
+
+.sound-wave {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--accent-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: soundWave 1s ease-out;
+}
+
+@keyframes soundWave {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================= */
+
+@media (max-width: 768px) {
+  .score-float {
+    font-size: 1.5rem;
+  }
+  
+  .score-float.bonus {
+    font-size: 2rem;
+  }
+  
+  .correct-checkmark,
+  .incorrect-x {
+    font-size: 3rem;
+  }
+  
+  .streak-indicator {
+    top: 10px;
+    right: 10px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .perfect-score {
+    font-size: 2rem;
+  }
+}
+
+/* =============================================
+   PERFORMANCE MODE
+   ============================================= */
+
+.performance-mode .score-float,
+.performance-mode .correct-checkmark,
+.performance-mode .incorrect-x,
+.performance-mode .streak-indicator,
+.performance-mode .perfect-score {
+  animation-duration: 0.3s;
+}
+
+.performance-mode .correct-particle,
+.performance-mode .sound-wave {
+  display: none;
+}
+
+/* =============================================
+   REDUCED MOTION
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .score-float,
+  .score-counter.updating,
+  .game-life.heart,
+  .game-life.heart.losing,
+  .game-life.heart.gaining,
+  .correct-feedback-flash,
+  .correct-checkmark,
+  .correct-particle,
+  .incorrect-feedback-flash,
+  .incorrect-x,
+  .shake-element,
+  .streak-indicator,
+  .streak-indicator.new,
+  .streak-fire,
+  .combo-multiplier,
+  .perfect-score,
+  .inline-achievement,
+  .sound-wave {
+    animation: none;
+  }
+  
+  .score-float {
+    opacity: 1;
+    transform: translateY(-40px);
+    transition: opacity 0.5s ease-out;
+  }
+  
+  .correct-checkmark,
+  .incorrect-x {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    transition: opacity 0.5s ease-out;
+  }
+}
