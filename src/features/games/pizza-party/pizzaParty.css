@@ -15,6 +15,11 @@
   font-family: 'Nunito', 'Segoe UI', sans-serif;
   overflow: hidden;
   user-select: none;
+  
+  /* Custom properties for gradient colors */
+  --bg-gradient-start: #FFE4E1;
+  --bg-gradient-middle: #FFF8DC;
+  --bg-gradient-end: #F0E68C;
 }
 
 .pizza-party-canvas {
