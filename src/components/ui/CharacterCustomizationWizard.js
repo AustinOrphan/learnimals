@@ -10,6 +10,7 @@ import CharacterRenderer from './CharacterRenderer.js';
 import { createCharacter, validateCharacter } from '../../data/characterSchema.js';
 import { CharacterStorage } from '../../services/character/CharacterStorage.js';
 import { generateCharacterMessage } from '../../utils/characterIntegration.js';
+import EventDelegation from '../../utils/EventDelegation.js';
 
 class CharacterCustomizationWizard extends BaseComponent {
   constructor(options = {}) {
@@ -37,6 +38,7 @@ class CharacterCustomizationWizard extends BaseComponent {
     
     // Event listeners
     this.listeners = new Map();
+    this.eventDelegation = null;
   }
   
   generateHTML() {
@@ -58,16 +60,16 @@ class CharacterCustomizationWizard extends BaseComponent {
             <h3>Character Preview</h3>
             <div id="character-preview-container" class="preview-container"></div>
             <div class="preview-controls">
-              <button class="preview-btn" onclick="this.testAnimation('happy')">
+              <button class="preview-btn" data-action="test-animation" data-animation="happy">
                 <span class="btn-icon">😊</span> Happy
               </button>
-              <button class="preview-btn" onclick="this.testAnimation('celebrating')">
+              <button class="preview-btn" data-action="test-animation" data-animation="celebrating">
                 <span class="btn-icon">🎉</span> Celebrate
               </button>
-              <button class="preview-btn" onclick="this.testAnimation('thinking')">
+              <button class="preview-btn" data-action="test-animation" data-animation="thinking">
                 <span class="btn-icon">🤔</span> Think
               </button>
-              <button class="preview-btn" onclick="this.hearVoice()">
+              <button class="preview-btn" data-action="hear-voice">
                 <span class="btn-icon">🔊</span> Hear Voice
               </button>
             </div>
@@ -80,11 +82,11 @@ class CharacterCustomizationWizard extends BaseComponent {
         </div>
         
         <div class="wizard-footer">
-          <button class="btn-secondary" onclick="this.previousStep()" 
+          <button class="btn-secondary" data-action="previous-step"
                   ${this.currentStep === 0 ? 'disabled' : ''}>
             Previous
           </button>
-          <button class="btn-primary" onclick="this.nextStep()">
+          <button class="btn-primary" data-action="next-step">
             ${this.currentStep === this.steps.length - 1 ? 'Create Character' : 'Next'}
           </button>
         </div>
@@ -920,8 +922,18 @@ class CharacterCustomizationWizard extends BaseComponent {
   }
   
   bindEvents() {
-    // Make component methods available globally for onclick handlers
-    window.characterWizard = this;
+    // Initialize event delegation system (CSP-compliant)
+    if (this.eventDelegation) {
+      this.eventDelegation.destroy();
+    }
+    
+    this.eventDelegation = new EventDelegation(this.element, {
+      stopPropagation: false,
+      preventDefault: false
+    });
+    
+    // Initialize for click, input, and change events
+    this.eventDelegation.init(['click', 'input', 'change', 'keyup']);
     
     // Bind this context to methods
     this.selectSpecies = this.selectSpecies.bind(this);
@@ -941,21 +953,151 @@ class CharacterCustomizationWizard extends BaseComponent {
     this.saveCharacter = this.saveCharacter.bind(this);
     this.exportCharacter = this.exportCharacter.bind(this);
     this.shareCharacter = this.shareCharacter.bind(this);
+    this.filterSpecies = this.filterSpecies.bind(this);
     
-    // Bind tab switching
-    const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        this.switchTab(e.target.dataset.tab);
-      });
+    // Register event handlers using event delegation
+    this.registerEventHandlers();
+  }
+  
+  registerEventHandlers() {
+    // Preview controls
+    this.eventDelegation.onAction('test-animation', (event, element) => {
+      const animationType = element.dataset.animation || 'happy';
+      this.testAnimation(animationType);
     });
     
-    // Bind category filters
-    const categoryChips = document.querySelectorAll('.category-chip');
-    categoryChips.forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        this.filterByCategory(e.target.dataset.category);
-      });
+    this.eventDelegation.onAction('hear-voice', () => {
+      this.hearVoice();
+    });
+    
+    // Navigation
+    this.eventDelegation.onAction('previous-step', () => {
+      this.previousStep();
+    });
+    
+    this.eventDelegation.onAction('next-step', () => {
+      this.nextStep();
+    });
+    
+    // Species selection
+    this.eventDelegation.onAction('select-species', (event, element) => {
+      const speciesId = element.dataset.speciesId;
+      if (speciesId) {
+        this.selectSpecies(speciesId);
+      }
+    });
+    
+    // Search/filter
+    this.eventDelegation.onClass('species-search', (event, element) => {
+      this.filterSpecies(event.originalEvent);
+    });
+    
+    // Color updates
+    this.eventDelegation.on('input[data-color-type]', (event, element) => {
+      const colorType = element.dataset.colorType;
+      const value = element.value;
+      this.updateColor(colorType, value);
+    });
+    
+    this.eventDelegation.on('select[data-color-type]', (event, element) => {
+      const colorType = element.dataset.colorType;
+      const value = element.value;
+      this.updateColor(colorType, value);
+    });
+    
+    // Color preset buttons
+    this.eventDelegation.onAction('color-preset', (event, element) => {
+      const colorType = element.dataset.colorType;
+      const color = element.dataset.color;
+      if (colorType && color) {
+        this.updateColor(colorType, color);
+      }
+    });
+    
+    // Pattern updates
+    this.eventDelegation.onAction('update-pattern', (event, element) => {
+      const pattern = element.dataset.pattern;
+      if (pattern) {
+        this.updatePattern(pattern);
+      }
+    });
+    
+    // Feature updates (sliders)
+    this.eventDelegation.on('input[data-feature]', (event, element) => {
+      const feature = element.dataset.feature;
+      const value = parseFloat(element.value);
+      this.updateFeature(feature, value);
+    });
+    
+    // Accessory toggles
+    this.eventDelegation.onAction('toggle-accessory', (event, element) => {
+      const category = element.dataset.category;
+      const item = element.dataset.item;
+      if (category && item) {
+        this.toggleAccessory(category, item);
+      }
+    });
+    
+    // Trait sliders
+    this.eventDelegation.on('input[data-trait]', (event, element) => {
+      const trait = element.dataset.trait;
+      const value = parseFloat(element.value);
+      this.updateTrait(trait, value);
+    });
+    
+    // Learning style selection
+    this.eventDelegation.onAction('update-learning-style', (event, element) => {
+      const style = element.dataset.style;
+      if (style) {
+        this.updateLearningStyle(style);
+      }
+    });
+    
+    // Voice controls
+    this.eventDelegation.on('input[data-voice-property]', (event, element) => {
+      const property = element.dataset.voiceProperty;
+      const value = parseFloat(element.value);
+      this.updateVoice(property, value);
+    });
+    
+    // Name input
+    this.eventDelegation.on('input[data-name-input]', (event, element) => {
+      this.updateName(element.value);
+    });
+    
+    // Message preview
+    this.eventDelegation.onAction('preview-message', (event, element) => {
+      const messageType = element.dataset.messageType || 'greeting';
+      this.previewMessage(messageType);
+    });
+    
+    // Save/Export/Share actions
+    this.eventDelegation.onAction('save-character', () => {
+      this.saveCharacter();
+    });
+    
+    this.eventDelegation.onAction('export-character', () => {
+      this.exportCharacter();
+    });
+    
+    this.eventDelegation.onAction('share-character', () => {
+      this.shareCharacter();
+    });
+    
+    // Tab switching
+    this.eventDelegation.onClass('tab-button', (event, element) => {
+      const tab = element.dataset.tab;
+      if (tab) {
+        this.switchTab(tab);
+      }
+    });
+    
+    // Category filtering
+    this.eventDelegation.onClass('category-chip', (event, element) => {
+      const category = element.dataset.category;
+      if (category) {
+        this.filterByCategory(category);
+      }
     });
   }
   
@@ -1041,17 +1183,18 @@ class CharacterCustomizationWizard extends BaseComponent {
   }
   
   destroy() {
+    // Clean up event delegation
+    if (this.eventDelegation) {
+      this.eventDelegation.destroy();
+      this.eventDelegation = null;
+    }
+    
     // Clean up event listeners
     this.listeners.clear();
     
     // Clean up preview renderer
     if (this.previewRenderer) {
       this.previewRenderer.destroy();
-    }
-    
-    // Clean up global reference
-    if (window.characterWizard === this) {
-      delete window.characterWizard;
     }
     
     super.destroy();
