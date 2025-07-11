@@ -6,8 +6,8 @@
   "scripts": {
     "generate-subjects": "node scripts/generateSubjects.js",
     "list-templates": "node scripts/generateSubjects.js --list-templates",
-    "lint": "eslint src/ --ext .js",
-    "lint:fix": "eslint src/ --ext .js --fix",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
@@ -16,14 +16,19 @@
     "test:integration": "vitest run tests/integration",
     "test:coverage": "vitest run --coverage"
   },
-  "keywords": ["education", "children", "games", "learning"],
+  "keywords": [
+    "education",
+    "children",
+    "games",
+    "learning"
+  ],
   "private": true,
   "devDependencies": {
-    "eslint": "^8.57.0",
     "@eslint/js": "^8.57.0",
-    "vitest": "^1.6.0",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^8.57.0",
+    "happy-dom": "^18.0.1",
     "jsdom": "^24.1.0",
-    "@vitest/ui": "^1.6.0",
-    "happy-dom": "^14.12.0"
+    "vitest": "^3.2.4"
   }
 }
