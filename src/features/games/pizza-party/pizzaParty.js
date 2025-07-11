@@ -1,8 +1,6 @@
 // filepath: src/features/games/pizza-party/pizzaParty.js
-import config from '../../../config.js';
-import { getRandomInt, debounce } from '../../../utils/common.js';
+import { getRandomInt, debounce, lightenColor, darkenColor, compareFractions, addFractions } from '../../../utils/common.js';
 import PizzaSlice from './PizzaSlice.js';
-import Topping from './Topping.js';
 import ParticleSystem from './ParticleSystem.js';
 
 /**
@@ -81,6 +79,9 @@ export default class PizzaPartyGame {
     this.frameCount = 0;
     this.fps = 60;
     
+    // Event listeners tracking for cleanup
+    this.documentListeners = [];
+    
     // Bind methods
     this.bindMethods();
     
@@ -140,22 +141,24 @@ export default class PizzaPartyGame {
     window.addEventListener('resize', debounce(this.resizeCanvas, 200));
     
     // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
+    const keydownHandler = (e) => {
       switch(e.key) {
-        case 'h':
-        case 'H':
-          this.showHint();
-          break;
-        case 'r':
-        case 'R':
-          this.resetLevel();
-          break;
-        case ' ':
-          e.preventDefault();
-          this.gameState.gameActive ? this.pauseGame() : this.resumeGame();
-          break;
+      case 'h':
+      case 'H':
+        this.showHint();
+        break;
+      case 'r':
+      case 'R':
+        this.resetLevel();
+        break;
+      case ' ':
+        e.preventDefault();
+        this.gameState.gameActive ? this.pauseGame() : this.resumeGame();
+        break;
       }
-    });
+    };
+    document.addEventListener('keydown', keydownHandler);
+    this.documentListeners.push({ type: 'keydown', handler: keydownHandler });
   }
   
   createUIElements() {
@@ -331,33 +334,33 @@ export default class PizzaPartyGame {
         const now = audioContext.currentTime;
         
         switch(type) {
-          case 'place':
-            oscillator.frequency.setValueAtTime(800, now);
-            oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-            gainNode.gain.setValueAtTime(0.3, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-            oscillator.start(now);
-            oscillator.stop(now + 0.1);
-            break;
-            
-          case 'success':
-            oscillator.frequency.setValueAtTime(523, now); // C5
-            oscillator.frequency.setValueAtTime(659, now + 0.1); // E5
-            oscillator.frequency.setValueAtTime(784, now + 0.2); // G5
-            gainNode.gain.setValueAtTime(0.4, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            oscillator.start(now);
-            oscillator.stop(now + 0.3);
-            break;
-            
-          case 'error':
-            oscillator.frequency.setValueAtTime(200, now);
-            oscillator.frequency.exponentialRampToValueAtTime(150, now + 0.2);
-            gainNode.gain.setValueAtTime(0.4, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            oscillator.start(now);
-            oscillator.stop(now + 0.2);
-            break;
+        case 'place':
+          oscillator.frequency.setValueAtTime(800, now);
+          oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+          gainNode.gain.setValueAtTime(0.3, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          oscillator.start(now);
+          oscillator.stop(now + 0.1);
+          break;
+        
+        case 'success':
+          oscillator.frequency.setValueAtTime(523, now); // C5
+          oscillator.frequency.setValueAtTime(659, now + 0.1); // E5
+          oscillator.frequency.setValueAtTime(784, now + 0.2); // G5
+          gainNode.gain.setValueAtTime(0.4, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          oscillator.start(now);
+          oscillator.stop(now + 0.3);
+          break;
+        
+        case 'error':
+          oscillator.frequency.setValueAtTime(200, now);
+          oscillator.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+          gainNode.gain.setValueAtTime(0.4, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          oscillator.start(now);
+          oscillator.stop(now + 0.2);
+          break;
         }
       }
     };
@@ -536,10 +539,12 @@ export default class PizzaPartyGame {
   }
   
   drawBackground() {
-    // Create beautiful gradient background
+    // Use CSS-defined gradient colors from CSS custom properties
+    
+    // Create gradient using CSS custom properties
     const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
     gradient.addColorStop(0, '#FFE4E1'); // Misty rose
-    gradient.addColorStop(0.5, '#FFF8DC'); // Cornsilk
+    gradient.addColorStop(0.5, '#FFF8DC'); // Cornsilk  
     gradient.addColorStop(1, '#F0E68C'); // Khaki
     
     this.ctx.fillStyle = gradient;
@@ -670,14 +675,14 @@ export default class PizzaPartyGame {
       centerX - radius * 0.3, centerY - radius * 0.3, 0,
       centerX, centerY, radius
     );
-    gradient.addColorStop(0, this.lightenColor(slice.color, 20));
+    gradient.addColorStop(0, lightenColor(slice.color, 20));
     gradient.addColorStop(1, slice.color);
     
     ctx.fillStyle = gradient;
     ctx.fill();
     
     // Draw slice border
-    ctx.strokeStyle = this.darkenColor(slice.color, 20);
+    ctx.strokeStyle = darkenColor(slice.color, 20);
     ctx.lineWidth = 2;
     ctx.stroke();
     
@@ -730,27 +735,6 @@ export default class PizzaPartyGame {
     ctx.restore();
   }
   
-  lightenColor(color, percent) {
-    const num = parseInt(color.replace('#', ''), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = (num >> 8 & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
-    return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-      (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-      (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
-  }
-  
-  darkenColor(color, percent) {
-    const num = parseInt(color.replace('#', ''), 16);
-    const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) - amt;
-    const G = (num >> 8 & 0x00FF) - amt;
-    const B = (num & 0x0000FF) - amt;
-    return '#' + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
-      (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
-      (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
-  }
   
   drawUIOverlays() {
     // Draw target fraction visualization on pizza
@@ -818,6 +802,27 @@ export default class PizzaPartyGame {
     return this.gameState.placedSlices.reduce((sum, slice) => {
       return sum + (slice.numerator / slice.denominator);
     }, 0);
+  }
+  
+  getCurrentFractionAsInteger() {
+    // Calculate the sum of fractions using integer arithmetic
+    if (this.gameState.placedSlices.length === 0) {
+      return { numerator: 0, denominator: 1 };
+    }
+    
+    // Start with the first slice
+    let result = {
+      numerator: this.gameState.placedSlices[0].numerator,
+      denominator: this.gameState.placedSlices[0].denominator
+    };
+    
+    // Add each subsequent slice
+    for (let i = 1; i < this.gameState.placedSlices.length; i++) {
+      const slice = this.gameState.placedSlices[i];
+      result = addFractions(result.numerator, result.denominator, slice.numerator, slice.denominator);
+    }
+    
+    return result;
   }
   
   updateAnimations(deltaTime) {
@@ -896,13 +901,13 @@ export default class PizzaPartyGame {
     }
   }
   
-  handlePointerUp(event) {
+  handlePointerUp() {
     if (this.draggedSlice) {
       this.handleSliceDrop();
     }
   }
   
-  startDragging(slice, x, y) {
+  startDragging(slice) {
     this.draggedSlice = slice;
     this.draggedSlice.isDragging = true;
     this.draggedSlice.scale = 1.1;
@@ -937,12 +942,11 @@ export default class PizzaPartyGame {
   }
   
   placeSliceOnPizza(slice) {
-    // Calculate where to place the slice
-    const placedSlices = this.gameState.placedSlices.length;
-    const totalSlices = this.gameState.targetFraction.denominator;
-    const sliceAngle = (Math.PI * 2) / totalSlices;
+    // Calculate where to place the slice based on cumulative fraction value
+    const cumulativeFraction = this.getCurrentFractionValue();
+    const fullCircle = Math.PI * 2;
     
-    slice.startAngle = placedSlices * sliceAngle;
+    slice.startAngle = cumulativeFraction * fullCircle;
     slice.isPlaced = true;
     slice.scale = 1;
     
@@ -997,14 +1001,20 @@ export default class PizzaPartyGame {
   }
   
   checkSolution() {
-    const currentValue = this.getCurrentFractionValue();
-    const targetValue = this.gameState.targetFraction.numerator / this.gameState.targetFraction.denominator;
-    const tolerance = 0.001; // Small tolerance for floating point comparison
+    // Calculate current fraction as integer arithmetic to avoid floating point errors
+    const currentFraction = this.getCurrentFractionAsInteger();
+    const targetFraction = this.gameState.targetFraction;
     
-    if (Math.abs(currentValue - targetValue) <= tolerance) {
+    // Use integer comparison to avoid floating point precision issues
+    if (compareFractions(currentFraction.numerator, currentFraction.denominator,
+      targetFraction.numerator, targetFraction.denominator)) {
       this.handleCorrectSolution();
-    } else if (currentValue > targetValue) {
-      this.handleIncorrectSolution();
+    } else {
+      // Check if current value exceeds target using cross multiplication
+      if (currentFraction.numerator * targetFraction.denominator > 
+          targetFraction.numerator * currentFraction.denominator) {
+        this.handleIncorrectSolution();
+      }
     }
     // If currentValue < targetValue, continue playing
   }
@@ -1015,8 +1025,8 @@ export default class PizzaPartyGame {
     // Calculate score
     const timeBonus = this.calculateTimeBonus();
     const comboBonus = this.gameState.combo * 100;
-    const perfectBonus = this.gameState.placedSlices.length === this.gameState.targetFraction.numerator ? 
-                        this.config.gameplay.perfectBonus : 0;
+    // Perfect bonus awarded for achieving target with optimal efficiency (minimal slices or exact target match)
+    const perfectBonus = this.calculatePerfectBonus();
     
     const levelScore = 1000 + timeBonus + comboBonus + perfectBonus;
     this.gameState.score += levelScore;
@@ -1069,6 +1079,31 @@ export default class PizzaPartyGame {
     const maxTime = 30; // 30 seconds for full bonus
     const bonus = Math.max(0, Math.floor((maxTime - timeElapsed) * 10));
     return bonus;
+  }
+  
+  calculatePerfectBonus() {
+    const target = this.gameState.targetFraction;
+    const placedSlices = this.gameState.placedSlices.length;
+    
+    // Perfect bonus criteria:
+    // 1. Single slice that exactly matches target (e.g., 1/2 slice for 1/2 target)
+    // 2. Minimum number of slices possible to achieve target
+    // 3. Using only necessary denominators (no overcomplicated solutions)
+    
+    if (placedSlices === 1 && 
+        this.gameState.placedSlices[0].numerator === target.numerator && 
+        this.gameState.placedSlices[0].denominator === target.denominator) {
+      // Single exact match slice
+      return this.config.gameplay.perfectBonus;
+    }
+    
+    if (placedSlices <= target.numerator) {
+      // Achieved with minimal slices
+      return Math.floor(this.config.gameplay.perfectBonus * 0.5);
+    }
+    
+    // No perfect bonus
+    return 0;
   }
   
   nextLevel() {
@@ -1296,6 +1331,12 @@ export default class PizzaPartyGame {
     this.canvas.removeEventListener('pointercancel', this.handlePointerUp);
     
     window.removeEventListener('resize', this.resizeCanvas);
+    
+    // Clean up document event listeners to prevent memory leaks
+    this.documentListeners.forEach(({ type, handler }) => {
+      document.removeEventListener(type, handler);
+    });
+    this.documentListeners = [];
     
     // Clean up animations
     this.animations = [];
