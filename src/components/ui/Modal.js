@@ -67,13 +67,13 @@ class Modal extends BaseComponent {
       
       if (showCancelButton) {
         html += `
-          <button class="modal-cancel component-button component-button--outline">${cancelButtonText}</button>
+          <button class="modal-cancel component-button component-button--outline">${escapeHTML(cancelButtonText)}</button>
         `;
       }
       
       if (showConfirmButton) {
         html += `
-          <button class="modal-confirm component-button component-button--primary">${confirmButtonText}</button>
+          <button class="modal-confirm component-button component-button--primary">${escapeHTML(confirmButtonText)}</button>
         `;
       }
       
