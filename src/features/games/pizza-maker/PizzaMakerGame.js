@@ -484,7 +484,7 @@ export default class PizzaMakerGame {
     };
   }
 
-  showOrderFeedback(orderResult, stars, tip) {
+  showOrderFeedback(orderResult, stars, _tip) {
     // Animate stars
     const starElements = this.starRating.querySelectorAll('.star');
     for (let i = 0; i < stars; i++) {

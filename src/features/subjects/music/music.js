@@ -116,6 +116,8 @@ class MusicSubject {
       'Let\'s explore and have fun together!',
       'Click on any activity to get started!'
     ];
+
+    const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
         
     // Create and show message modal or toast
     this.displayMessage(displayMessage);

@@ -166,7 +166,7 @@ class EnvironmentSubject {
 }
 
 // Initialize the subject when script loads
-const environmentSubject = new EnvironmentSubject();
+const _environmentSubject = new EnvironmentSubject();
 
 // Export for potential use by other modules
 export default EnvironmentSubject;

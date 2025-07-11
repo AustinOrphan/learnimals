@@ -81,7 +81,7 @@ export default [
       'no-console': 'off',
       
       // Allow unused variables starting with underscore
-      'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+      'no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
       
       // Prefer const for variables that are never reassigned
       'prefer-const': 'warn',

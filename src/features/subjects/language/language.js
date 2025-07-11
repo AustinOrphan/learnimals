@@ -166,7 +166,7 @@ class LanguageSubject {
 }
 
 // Initialize the subject when script loads
-const languageSubject = new LanguageSubject();
+const _languageSubject = new LanguageSubject();
 
 // Export for potential use by other modules
 export default LanguageSubject;

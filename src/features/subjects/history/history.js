@@ -166,7 +166,7 @@ class HistorySubject {
 }
 
 // Initialize the subject when script loads
-const historySubject = new HistorySubject();
+const _historySubject = new HistorySubject();
 
 // Export for potential use by other modules
 export default HistorySubject;

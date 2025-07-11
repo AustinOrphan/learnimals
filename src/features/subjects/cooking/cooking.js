@@ -166,7 +166,7 @@ class CookingSubject {
 }
 
 // Initialize the subject when script loads
-const cookingSubject = new CookingSubject();
+const _cookingSubject = new CookingSubject();
 
 // Export for potential use by other modules
 export default CookingSubject;

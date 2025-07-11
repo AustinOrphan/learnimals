@@ -166,7 +166,7 @@ class PhysicsSubject {
 }
 
 // Initialize the subject when script loads
-const physicsSubject = new PhysicsSubject();
+const _physicsSubject = new PhysicsSubject();
 
 // Export for potential use by other modules
 export default PhysicsSubject;
