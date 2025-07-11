@@ -150,3 +150,19 @@ export function isPointInCircle(x, y, circleX, circleY, radius) {
   const dy = y - circleY;
   return dx * dx + dy * dy <= radius * radius;
 }
+
+/**
+ * SECURITY: Escape HTML characters to prevent XSS attacks
+ * Converts dangerous HTML characters to safe HTML entities
+ * @param {string} text - Text to escape
+ * @returns {string} - HTML-safe escaped text
+ */
+export function escapeHTML(text) {
+  if (typeof text !== 'string') {
+    return String(text || '');
+  }
+  
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}

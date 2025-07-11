@@ -1,23 +1,23 @@
 /**
- * Geography Subject JavaScript
- * Interactive features for Atlas the Eagle
+ * Cooking Subject JavaScript
+ * Interactive features for Chef the Bear
  */
 import Modal from '../../../components/ui/Modal.js';
 import { escapeHTML } from '../../../utils/common.js';
 
-class GeographySubject {
+class CookingSubject {
   constructor() {
-    this.subjectName = 'Geography';
+    this.subjectName = 'Cooking';
     this.character = {
-      name: 'Atlas',
-      type: 'Eagle',
-      role: 'Geography Guide'
+      name: 'Chef',
+      type: 'Bear',
+      role: 'Head Chef'
     };
     this.features = [
-      'World Map',
-      'Country Explorer',
-      'Capital Quiz',
-      'Culture Corner'
+      'Recipe Maker',
+      'Nutrition Guide',
+      'Kitchen Safety',
+      'Virtual Cooking'
     ];
         
     this.init();
@@ -81,10 +81,10 @@ class GeographySubject {
         
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'world map':
+    case 'recipe maker':
       this.startFirstFeature();
       break;
-    case 'country explorer':
+    case 'nutrition guide':
       this.startSecondFeature();
       break;
     default:
@@ -116,9 +116,9 @@ class GeographySubject {
       'Let\'s explore and have fun together!',
       'Click on any activity to get started!'
     ];
-
+        
     const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
-
+        
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
   }
@@ -127,13 +127,13 @@ class GeographySubject {
     // Use custom modal component with character theming
     // SECURITY: Escape HTML to prevent XSS attacks
     const modal = new Modal({
-      id: 'geography-message-modal',
+      id: 'cooking-message-modal',
       title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
       content: `<div class="character-message">
-                <div class="character-icon">🦅</div>
+                <div class="character-icon">🐻</div>
                 <p>${escapeHTML(message)}</p>
             </div>`,
-      confirmButtonText: 'Understood!',
+      confirmButtonText: 'Got it!',
       showClose: true,
       size: 'medium',
       onConfirm: () => modal.hide()
@@ -166,7 +166,7 @@ class GeographySubject {
 }
 
 // Initialize the subject when script loads
-new GeographySubject();
+const _cookingSubject = new CookingSubject();
 
 // Export for potential use by other modules
-export default GeographySubject;
+export default CookingSubject;

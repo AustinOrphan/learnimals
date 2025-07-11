@@ -1,23 +1,23 @@
 /**
- * Geography Subject JavaScript
- * Interactive features for Atlas the Eagle
+ * History Subject JavaScript
+ * Interactive features for Chrono the Turtle
  */
 import Modal from '../../../components/ui/Modal.js';
 import { escapeHTML } from '../../../utils/common.js';
 
-class GeographySubject {
+class HistorySubject {
   constructor() {
-    this.subjectName = 'Geography';
+    this.subjectName = 'History';
     this.character = {
-      name: 'Atlas',
-      type: 'Eagle',
-      role: 'Geography Guide'
+      name: 'Chrono',
+      type: 'Turtle',
+      role: 'History Keeper'
     };
     this.features = [
-      'World Map',
-      'Country Explorer',
-      'Capital Quiz',
-      'Culture Corner'
+      'Timeline Explorer',
+      'Historical Figures',
+      'Ancient Civilizations',
+      'Time Machine'
     ];
         
     this.init();
@@ -81,10 +81,10 @@ class GeographySubject {
         
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'world map':
+    case 'timeline explorer':
       this.startFirstFeature();
       break;
-    case 'country explorer':
+    case 'historical figures':
       this.startSecondFeature();
       break;
     default:
@@ -116,24 +116,24 @@ class GeographySubject {
       'Let\'s explore and have fun together!',
       'Click on any activity to get started!'
     ];
-
+        
     const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
-
+        
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
   }
 
   displayMessage(message) {
-    // Use custom modal component with character theming
     // SECURITY: Escape HTML to prevent XSS attacks
+    // Use custom modal component with character theming
     const modal = new Modal({
-      id: 'geography-message-modal',
+      id: 'history-message-modal',
       title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
       content: `<div class="character-message">
-                <div class="character-icon">🦅</div>
+                <div class="character-icon">🎓</div>
                 <p>${escapeHTML(message)}</p>
             </div>`,
-      confirmButtonText: 'Understood!',
+      confirmButtonText: 'Got it!',
       showClose: true,
       size: 'medium',
       onConfirm: () => modal.hide()
@@ -166,7 +166,7 @@ class GeographySubject {
 }
 
 // Initialize the subject when script loads
-new GeographySubject();
+const _historySubject = new HistorySubject();
 
 // Export for potential use by other modules
-export default GeographySubject;
+export default HistorySubject;
