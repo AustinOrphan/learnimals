@@ -143,9 +143,8 @@ class CharacterCustomizationWizard extends BaseComponent {
         
         <div class="species-search">
           <input type="text" 
-                 class="search-input" 
-                 placeholder="Search species..."
-                 onkeyup="this.filterSpecies(event)">
+                 class="search-input species-search" 
+                 placeholder="Search species...">
         </div>
         
         <div class="species-categories">
@@ -159,7 +158,7 @@ class CharacterCustomizationWizard extends BaseComponent {
           ${species.map(s => `
             <div class="species-card ${this.characterData.species.primary === s.id ? 'selected' : ''}"
                  data-species="${s.id}"
-                 onclick="this.selectSpecies('${s.id}')"
+                 data-action="select-species" data-species-id="${s.id}"
                  role="button"
                  tabindex="0"
                  aria-label="Select ${s.name}">
@@ -227,7 +226,7 @@ class CharacterCustomizationWizard extends BaseComponent {
                    class="color-input" 
                    id="primary-color"
                    value="${colors.primary}"
-                   onchange="this.updateColor('primary', this.value)">
+                   data-color-type="primary">
           </div>
           <div class="preset-colors">
             ${this.generatePresetColors('primary')}
@@ -244,7 +243,7 @@ class CharacterCustomizationWizard extends BaseComponent {
                    class="color-input" 
                    id="secondary-color"
                    value="${colors.secondary}"
-                   onchange="this.updateColor('secondary', this.value)">
+                   data-color-type="secondary">
           </div>
           <div class="preset-colors">
             ${this.generatePresetColors('secondary')}
@@ -261,7 +260,7 @@ class CharacterCustomizationWizard extends BaseComponent {
                    class="color-input" 
                    id="accent-color"
                    value="${colors.accent}"
-                   onchange="this.updateColor('accent', this.value)">
+                   data-color-type="accent">
           </div>
           <div class="preset-colors">
             ${this.generatePresetColors('accent')}
@@ -281,7 +280,7 @@ class CharacterCustomizationWizard extends BaseComponent {
     return presets[colorType].map(color => `
       <button class="preset-color" 
               style="background: ${color}"
-              onclick="this.updateColor('${colorType}', '${color}')"
+              data-action="color-preset" data-color-type="${colorType}" data-color="${color}"
               aria-label="Select ${color}">
       </button>
     `).join('');
@@ -297,7 +296,7 @@ class CharacterCustomizationWizard extends BaseComponent {
           ${patterns.map(pattern => `
             <div class="pattern-option ${this.characterData.appearance.pattern === pattern ? 'selected' : ''}"
                  data-pattern="${pattern}"
-                 onclick="this.updatePattern('${pattern}')">
+                 data-action="update-pattern" data-pattern="${pattern}">
               <div class="pattern-preview pattern-${pattern}"></div>
               <div class="pattern-name">${pattern.charAt(0).toUpperCase() + pattern.slice(1)}</div>
             </div>
@@ -317,7 +316,7 @@ class CharacterCustomizationWizard extends BaseComponent {
           <input type="range" 
                  min="50" max="150" 
                  value="${this.characterData.appearance.features.earSize || 100}"
-                 onchange="this.updateFeature('earSize', this.value)">
+                 data-feature="earSize">
           <span class="slider-value">${this.characterData.appearance.features.earSize || 100}%</span>
         </div>
         
@@ -326,7 +325,7 @@ class CharacterCustomizationWizard extends BaseComponent {
           <input type="range" 
                  min="80" max="120" 
                  value="${this.characterData.appearance.features.eyeSize || 100}"
-                 onchange="this.updateFeature('eyeSize', this.value)">
+                 data-feature="eyeSize">
           <span class="slider-value">${this.characterData.appearance.features.eyeSize || 100}%</span>
         </div>
         
@@ -335,7 +334,7 @@ class CharacterCustomizationWizard extends BaseComponent {
           <input type="range" 
                  min="0" max="100" 
                  value="${this.characterData.appearance.features.bodyRoundness || 50}"
-                 onchange="this.updateFeature('bodyRoundness', this.value)">
+                 data-feature="bodyRoundness">
           <span class="slider-value">${this.characterData.appearance.features.bodyRoundness || 50}%</span>
         </div>
       </div>
@@ -357,7 +356,7 @@ class CharacterCustomizationWizard extends BaseComponent {
             <div class="accessory-grid">
               ${items.map(item => `
                 <div class="accessory-item ${this.hasAccessory(category, item) ? 'selected' : ''}"
-                     onclick="this.toggleAccessory('${category}', '${item}')">
+                     data-action="toggle-accessory" data-category="${category}" data-item="${item}">
                   <div class="accessory-icon">${this.getAccessoryIcon(item)}</div>
                   <div class="accessory-name">${item}</div>
                 </div>
@@ -405,13 +404,13 @@ class CharacterCustomizationWizard extends BaseComponent {
         <div class="preview-messages">
           <h3>Preview Messages</h3>
           <div class="message-buttons">
-            <button class="message-btn" onclick="this.previewMessage('greeting')">
+            <button class="message-btn" data-action="preview-message" data-message-type="greeting">
               Greeting
             </button>
-            <button class="message-btn" onclick="this.previewMessage('encouragement')">
+            <button class="message-btn" data-action="preview-message" data-message-type="encouragement">
               Encouragement
             </button>
-            <button class="message-btn" onclick="this.previewMessage('celebration')">
+            <button class="message-btn" data-action="preview-message" data-message-type="celebration">
               Celebration
             </button>
           </div>
@@ -439,8 +438,7 @@ class CharacterCustomizationWizard extends BaseComponent {
                  min="0" 
                  max="100" 
                  value="${value}"
-                 step="5"
-                 oninput="this.updateTrait('${trait.key}', this.value)">
+                 step="5">
           <div class="slider-labels">
             <span>Low</span>
             <span>Medium</span>
@@ -464,7 +462,7 @@ class CharacterCustomizationWizard extends BaseComponent {
     
     return styles.map(style => `
       <div class="style-option ${this.characterData.personality.learningStyle === style.id ? 'selected' : ''}"
-           onclick="this.updateLearningStyle('${style.id}')">
+           data-action="update-learning-style" data-style="${style.id}">
         <div class="style-icon">${style.icon}</div>
         <div class="style-name">${style.name}</div>
         <div class="style-description">${style.description}</div>
@@ -482,7 +480,7 @@ class CharacterCustomizationWizard extends BaseComponent {
           <input type="range" 
                  min="0.5" max="2" step="0.1"
                  value="${voice.pitch || 1}"
-                 onchange="this.updateVoice('pitch', this.value)">
+                 data-voice-property="pitch">
           <span class="voice-value">${voice.pitch || 1}</span>
         </div>
         
@@ -491,13 +489,13 @@ class CharacterCustomizationWizard extends BaseComponent {
           <input type="range" 
                  min="0.5" max="1.5" step="0.1"
                  value="${voice.speed || 1}"
-                 onchange="this.updateVoice('speed', this.value)">
+                 data-voice-property="speed">
           <span class="voice-value">${voice.speed || 1}</span>
         </div>
         
         <div class="voice-accent">
           <label>Accent Style</label>
-          <select onchange="this.updateVoice('accent', this.value)">
+          <select data-voice-property="accent">
             <option value="friendly" ${voice.accent === 'friendly' ? 'selected' : ''}>Friendly</option>
             <option value="gentle" ${voice.accent === 'gentle' ? 'selected' : ''}>Gentle</option>
             <option value="energetic" ${voice.accent === 'energetic' ? 'selected' : ''}>Energetic</option>
@@ -520,7 +518,7 @@ class CharacterCustomizationWizard extends BaseComponent {
                    class="name-input" 
                    value="${this.characterData.name}"
                    placeholder="Enter character name..."
-                   onchange="this.updateName(this.value)">
+                   data-name-input="true">
           </div>
           
           <div class="summary-item">
@@ -547,13 +545,13 @@ class CharacterCustomizationWizard extends BaseComponent {
         <div class="save-options">
           <h3>Save Options</h3>
           <div class="save-buttons">
-            <button class="save-btn primary" onclick="this.saveCharacter()">
+            <button class="save-btn primary" data-action="save-character">
               <span class="btn-icon">💾</span> Save Character
             </button>
-            <button class="save-btn secondary" onclick="this.exportCharacter()">
+            <button class="save-btn secondary" data-action="export-character">
               <span class="btn-icon">📤</span> Export Data
             </button>
-            <button class="save-btn secondary" onclick="this.shareCharacter()">
+            <button class="save-btn secondary" data-action="share-character">
               <span class="btn-icon">🔗</span> Share Character
             </button>
           </div>
