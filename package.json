@@ -2,7 +2,7 @@
   "name": "learnimals",
   "version": "1.0.0",
   "description": "Educational web application featuring interactive games and activities for children",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "generate-subjects": "node scripts/generateSubjects.js",
     "list-templates": "node scripts/generateSubjects.js --list-templates",
@@ -25,6 +25,7 @@
   "private": true,
   "devDependencies": {
     "@eslint/js": "^8.57.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "eslint": "^8.57.0",
     "happy-dom": "^18.0.1",

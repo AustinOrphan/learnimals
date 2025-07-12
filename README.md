@@ -1,110 +1,202 @@
-# Learnimals - Educational Games for Kids
+# 🎮 Learnimals - Educational Games for Children
 
-Learnimals is an interactive educational platform featuring fun animal characters who guide children through math, science, reading, and art activities.
+[![CI/CD Pipeline](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml)
+[![Security Scan](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml)
+[![Monitoring](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml)
 
-## Project Overview
+Learnimals is an interactive educational web application featuring fun games and activities designed to help children learn core subjects through play. Each subject area is represented by a friendly animal character, creating an engaging and memorable learning experience.
 
-This website provides a collection of educational games and activities designed to make learning engaging and fun. Each subject area is represented by an animal character:
+## 🌟 Features
 
-- **Math with Mango** (shark) - Numbers, puzzles, and math games
-- **Science with Sky** (parrot) - Experiments and interesting facts
-- **Reading with Ruby** (panda) - Stories and reading comprehension
-- **Art with Leo** (lion) - Creative activities and art projects
+- **🦁 Art with Leo the Lion** - Creative activities and drawing games
+- **🦜 Math with Max the Parrot** - Number games and mathematical concepts
+- **🐼 Reading with Ruby the Panda** - Vocabulary and reading comprehension
+- **🧬 Science with Sam the Shark** - Scientific exploration and experiments
+- **💻 Coding with Cody the Cat** - Introduction to programming concepts
+- **🎵 Music with Melody the Songbird** - Musical theory and rhythm games
+- **🌍 Geography with Geo the Eagle** - World exploration and map skills
+- **🍕 Pizza Maker Game** - Fun cooking game with drag-and-drop mechanics
+- **🎯 Bubble Pop Game** - Engaging arcade-style educational game
+- **📝 Word Scramble** - Vocabulary building through word puzzles
 
-## Project Structure
-
-```
-learnimals-site/
-├── index.html               # Main landing page
-├── about.html               # About page
-├── contact.html             # Contact page
-├── profile.html             # User profile page
-├── manifest.json            # PWA manifest
-├── serviceWorker.js         # Service worker for offline capabilities
-├── assets/                  # Static assets
-│   └── images/              # Images and icons
-├── components/              # Reusable HTML components
-│   └── navbar.html          # Navbar component
-├── css/                     # Stylesheets
-│   ├── styles.css           # Global styles
-│   ├── navbar.css           # Navigation styles
-│   ├── math.css             # Math section styles
-│   ├── bubblepop.css        # Bubble Pop game styles
-│   └── subjects/            # Subject-specific styles
-├── js/                      # JavaScript files
-│   ├── config.js            # Global configuration
-│   ├── main.js              # Main script
-│   ├── bubblepop.js         # Bubble Pop game logic
-│   ├── math.js              # Math section scripts
-│   ├── science.js           # Science section scripts
-│   ├── art.js               # Art section scripts
-│   ├── themeInitializer.js  # Theme initialization
-│   ├── components/          # UI components
-│   ├── games/               # Game modules
-│   ├── user/                # User-related functionality
-│   └── utils/               # Utility functions
-└── subjects/                # Subject pages
-    ├── math.html            # Math section
-    ├── science.html         # Science section
-    ├── reading.html         # Reading section
-    ├── art.html             # Art section
-    └── bubblepop.html       # Bubble Pop game page
-```
-
-## Key Features
-
-- **Responsive Design**: Mobile-friendly interface that works across devices
-- **Interactive Games**: Educational games like Bubble Pop (math) and Word Scramble (reading)
-- **Theme Switching**: Light/dark mode for comfortable viewing
-- **PWA Support**: Works offline with service worker caching
-- **Modular Architecture**: Component-based code organization for maintainability
-
-## Code Organization
-
-### Modular JavaScript Architecture
-
-The JavaScript code follows a modular pattern with ES6 modules:
-
-- **Main App**: Entry point scripts for each section
-- **Components**: Reusable UI elements (navbar, theme switcher)
-- **Games**: Self-contained game modules
-- **Utils**: Shared utility functions
-- **Config**: Centralized configuration
-
-### CSS Organization
-
-- Global styles in `styles.css`
-- Component-specific styles in dedicated files
-- Subject-specific styles in the `subjects/` directory
-- BEM naming convention used for class names
-
-## Games
-
-### Bubble Pop
-
-A math game where players pop bubbles containing the correct answers to simple math problems. Features include:
-
-- Animated bubbles with physics-based movement
-- Score tracking
-- Mobile touch support
-- Performance optimizations (canvas rendering)
-
-## Development
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Modern web browser (Chrome, Firefox, Edge, etc.)
-- Local web server for testing
+- Node.js 18+ (use `.nvmrc` for exact version)
+- npm or yarn
+- Python 3 (for local development server)
 
-### Running Locally
+### Installation
 
-1. Clone this repository
-2. Start a local web server in the project root
-3. Open `index.html` in your browser
+```bash
+# Clone the repository
+git clone https://github.com/AustinOrphan/learnimals.git
+cd learnimals
 
-## Future Improvements
+# Install dependencies
+npm install
 
-- User accounts and progress tracking
-- More games and educational content
-- Accessibility improvements
-- Internationalization
+# Start local development server
+python3 -m http.server 8080
+# or use the Makefile
+make dev-server
+```
+
+Visit `http://localhost:8080` to see the application.
+
+### Using Make Commands
+
+```bash
+# View all available commands
+make help
+
+# Common development tasks
+make install          # Install dependencies
+make test            # Run tests
+make lint            # Run ESLint
+make dev-server      # Start development server
+make docker-run      # Run with Docker
+```
+
+## 🏗️ Architecture
+
+### Project Structure
+
+```
+learnimals/
+├── src/                    # Source code
+│   ├── components/         # Reusable UI components
+│   ├── features/           # Feature-specific code
+│   │   ├── subjects/       # Subject pages (math, science, etc.)
+│   │   └── games/          # Game implementations
+│   ├── styles/             # CSS organization
+│   ├── utils/              # Utility functions
+│   └── pages/              # Main application pages
+├── public/                 # Static assets
+├── tests/                  # Test files
+├── .github/workflows/      # CI/CD pipelines
+├── docker/                 # Docker configurations
+└── k8s/                    # Kubernetes manifests
+```
+
+### Technology Stack
+
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **Testing**: Vitest, Happy DOM
+- **CI/CD**: GitHub Actions, Docker, Kubernetes
+- **Monitoring**: Prometheus, Grafana, Lighthouse CI
+- **Security**: CodeQL, Snyk, Trivy
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run specific test suites
+npm run test:unit
+npm run test:navigation
+npm run test:integration
+
+# Generate coverage report
+npm run test:coverage
+```
+
+## 🐳 Docker Support
+
+### Local Development with Docker
+
+```bash
+# Build and run with Docker Compose
+make docker-run
+
+# Stop containers
+make docker-stop
+
+# View logs
+make docker-logs
+```
+
+### Production Docker Build
+
+```bash
+# Build production image
+docker build -t learnimals:latest .
+
+# Run production container
+docker run -p 8080:8080 learnimals:latest
+```
+
+## 🚀 Deployment
+
+The project uses a **Rolling Deployment** strategy with multi-environment support:
+
+- **Development**: Feature testing and rapid iteration
+- **Staging**: Integration testing and QA
+- **Production**: Live application with high availability
+
+### Deployment Commands
+
+```bash
+# Deploy to staging
+make deploy-staging
+
+# Deploy to production (requires approval)
+make deploy-production
+
+# Validate Kubernetes manifests
+make validate-k8s
+```
+
+See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed deployment procedures.
+
+## 🔒 Security
+
+- **Continuous Security Scanning**: Daily vulnerability scans
+- **Dependency Management**: Automated updates with Dependabot
+- **Container Security**: Multi-stage builds with security hardening
+- **Network Policies**: Kubernetes-native traffic control
+- **HTTPS Only**: Enforced TLS with HSTS
+
+## 📊 Monitoring & Performance
+
+- **Health Checks**: Continuous application monitoring
+- **Performance Metrics**: Core Web Vitals tracking
+- **Accessibility**: WCAG 2.1 AA compliance
+- **User Journey Testing**: Synthetic monitoring
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+See our [PR template](.github/pull_request_template.md) for more details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- All the children who inspire us to create better educational tools
+- The open-source community for amazing tools and libraries
+- Contributors who help make Learnimals better
+
+## 📞 Support
+
+- **Documentation**: [docs/](docs/)
+- **Issues**: [GitHub Issues](https://github.com/AustinOrphan/learnimals/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/AustinOrphan/learnimals/discussions)
+
+---
+
+Made with ❤️ for children's education
