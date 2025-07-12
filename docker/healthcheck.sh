@@ -154,11 +154,8 @@ main() {
     if [ $failures -eq 0 ]; then
         log "${GREEN}✓${NC} All health checks passed - application is healthy"
         exit 0
-    elif [ $failures -le 2 ]; then
-        log "${YELLOW}⚠${NC} Some health checks failed ($failures), but application may still be functional"
-        exit 0
     else
-        log "${RED}✗${NC} Multiple health checks failed ($failures) - application is unhealthy"
+        log "${RED}✗${NC} Some health checks failed ($failures) - application is unhealthy"
         exit 1
     fi
 }

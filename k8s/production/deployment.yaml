@@ -149,7 +149,7 @@ metadata:
     app: learnimals-app
     environment: production
 spec:
-  minAvailable: 3
+  minAvailable: 4
   selector:
     matchLabels:
       app: learnimals-app

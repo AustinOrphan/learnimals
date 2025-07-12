@@ -115,5 +115,5 @@ build/
 tmp/
 temp/
 
-# Package lock files (use npm ci in container)
-package-lock.json
+# Package lock files - KEEP package-lock.json for deterministic builds
+# package-lock.json
