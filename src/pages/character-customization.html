@@ -278,7 +278,7 @@
                         <h2>⚠️ Character Customization Error</h2>
                         <p>${message}</p>
                         <p>
-                            <button onclick="location.reload()" style="
+                            <button class="error-retry-btn" style="
                                 padding: 0.75rem 1.5rem;
                                 background: #4a90e2;
                                 color: white;
@@ -300,6 +300,14 @@
                         </p>
                     </div>
                 `;
+                
+                // Add event listener for retry button
+                const retryBtn = this.container.querySelector('.error-retry-btn');
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => {
+                        window.location.reload();
+                    });
+                }
             }
 
             showSuccessMessage(message) {
