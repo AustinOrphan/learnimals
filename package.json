@@ -2,7 +2,7 @@
   "name": "learnimals",
   "version": "1.0.0",
   "description": "Educational web application featuring interactive games and activities for children",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "generate-subjects": "node scripts/generateSubjects.js",
     "list-templates": "node scripts/generateSubjects.js --list-templates",

@@ -10,10 +10,13 @@
  *   node scripts/generateSubjects.js --batch-file=subjects.json
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Get current directory
+// Get current directory (ES modules equivalent of __dirname)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
 
 // Default subject templates with animal characters
@@ -889,9 +892,9 @@ async function main() {
   }
 }
 
-// Run the script
-if (require.main === module) {
+// Run the script (ES modules equivalent of require.main === module)
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-module.exports = { SubjectGenerator, subjectTemplates };
+export { SubjectGenerator, subjectTemplates };
