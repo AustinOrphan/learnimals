@@ -362,11 +362,13 @@ class CharacterGallery extends BaseComponent {
     this.emit('character:interaction', { character, action, message });
     
     // Reset after delay
-    setTimeout(() => {
-      renderer.setAnimationState('idle');
-      this.clearCharacterMessage(characterId);
-      this.updateCharacterStatus(characterId, 'idle');
-    }, 3000);
+    import('../../../utils/AnimationManager.js').then(({ animationManager }) => {
+      animationManager.delay(() => {
+        renderer.setAnimationState('idle');
+        this.clearCharacterMessage(characterId);
+        this.updateCharacterStatus(characterId, 'idle');
+      }, 3000);
+    });
   }
   
   // Helper Methods
@@ -663,26 +665,34 @@ class CharacterGallery extends BaseComponent {
   }
   
   startAutoplayAnimations() {
-    setInterval(() => {
-      const visibleCards = Array.from(document.querySelectorAll('.character-card'))
-        .filter(card => this.isElementVisible(card));
-      
-      if (visibleCards.length > 0) {
-        const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
-        const characterId = randomCard.dataset.characterId;
-        const renderer = this.renderers.get(characterId);
+    import('../../../utils/AnimationManager.js').then(({ animationManager }) => {
+      const runAutoplay = () => {
+        const visibleCards = Array.from(document.querySelectorAll('.character-card'))
+          .filter(card => this.isElementVisible(card));
         
-        if (renderer) {
-          const animations = ['happy', 'thinking', 'waving'];
-          const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+        if (visibleCards.length > 0) {
+          const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+          const characterId = randomCard.dataset.characterId;
+          const renderer = this.renderers.get(characterId);
           
-          renderer.setAnimationState(randomAnimation);
-          setTimeout(() => {
-            renderer.setAnimationState('idle');
-          }, 2000);
+          if (renderer) {
+            const animations = ['happy', 'thinking', 'waving'];
+            const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+            
+            renderer.setAnimationState(randomAnimation);
+            animationManager.delay(() => {
+              renderer.setAnimationState('idle');
+            }, 2000);
+          }
         }
-      }
-    }, 5000); // Random animation every 5 seconds
+        
+        // Schedule next autoplay
+        animationManager.delay(runAutoplay, 5000);
+      };
+      
+      // Start the autoplay cycle
+      runAutoplay();
+    });
   }
   
   isElementVisible(element) {

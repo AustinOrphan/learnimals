@@ -65,7 +65,11 @@
       "mcp__github__create_pull_request",
       "Bash(npm run lint:*)",
       "Bash(gh label:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(npm run lint:*)",
+      "Bash(node:*)",
+      "mcp__serena__summarize_changes",
+      "mcp__serena__replace_regex"
     ],
     "deny": []
   }
