@@ -37,6 +37,10 @@ class CharacterGallery extends BaseComponent {
     // Event handlers
     this.onCharacterSelect = options.onCharacterSelect || null;
     this.onCharacterInteraction = options.onCharacterInteraction || null;
+    
+    // Memory management
+    this.autoplayInterval = null;
+    this.boundKeydownHandler = null;
   }
   
   generateHTML() {
@@ -93,10 +97,8 @@ class CharacterGallery extends BaseComponent {
           <input type="text" 
                  class="search-input" 
                  placeholder="Search characters, species, or subjects..."
-                 value="${this.searchQuery}"
-                 oninput="this.handleSearch(event)">
+                 value="${this.searchQuery}">
           <button class="search-clear" 
-                  onclick="this.clearSearch()"
                   ${this.searchQuery ? '' : 'style="display: none;"'}>
             ×
           </button>
@@ -113,7 +115,7 @@ class CharacterGallery extends BaseComponent {
       <div class="filter-controls">
         <div class="filter-group">
           <label>Filter by Subject:</label>
-          <select class="filter-select" onchange="this.handleFilter('subject', this.value)">
+          <select class="filter-select" data-filter-type="subject">
             <option value="all" ${this.currentFilter === 'all' ? 'selected' : ''}>All Subjects</option>
             ${subjects.map(subject => `
               <option value="${subject}" ${this.currentFilter === subject ? 'selected' : ''}>
@@ -125,7 +127,7 @@ class CharacterGallery extends BaseComponent {
         
         <div class="filter-group">
           <label>Filter by Species:</label>
-          <select class="filter-select" onchange="this.handleFilter('species', this.value)">
+          <select class="filter-select" data-filter-type="species">
             <option value="all" ${this.currentFilter === 'all' ? 'selected' : ''}>All Species</option>
             ${species.map(s => `
               <option value="${s}" ${this.currentFilter === s ? 'selected' : ''}>
@@ -137,12 +139,12 @@ class CharacterGallery extends BaseComponent {
         
         <div class="filter-chips">
           <button class="filter-chip ${this.currentFilter === 'all' ? 'active' : ''}"
-                  onclick="this.handleFilter('subject', 'all')">
+                  data-filter-type="subject" data-filter-value="all">
             All
           </button>
           ${subjects.slice(0, 4).map(subject => `
             <button class="filter-chip ${this.currentFilter === subject ? 'active' : ''}"
-                    onclick="this.handleFilter('subject', '${subject}')">
+                    data-filter-type="subject" data-filter-value="${subject}">
               ${this.getSubjectIcon(subject)} ${subject.charAt(0).toUpperCase() + subject.slice(1)}
             </button>
           `).join('')}
@@ -155,7 +157,7 @@ class CharacterGallery extends BaseComponent {
     return `
       <div class="sort-controls">
         <label>Sort by:</label>
-        <select class="sort-select" onchange="this.handleSort(this.value)">
+        <select class="sort-select">
           <option value="name" ${this.currentSort === 'name' ? 'selected' : ''}>Name</option>
           <option value="subject" ${this.currentSort === 'subject' ? 'selected' : ''}>Subject</option>
           <option value="species" ${this.currentSort === 'species' ? 'selected' : ''}>Species</option>
@@ -185,7 +187,6 @@ class CharacterGallery extends BaseComponent {
            data-character-id="${character.id}"
            data-subject="${subject}"
            data-species="${character.species.primary}"
-           onclick="this.selectCharacter('${character.id}')"
            role="button"
            tabindex="0"
            aria-label="Select ${character.name} the ${character.species.primary}">
@@ -227,21 +228,18 @@ class CharacterGallery extends BaseComponent {
           <div class="card-actions">
             <button class="interaction-btn" 
                     data-action="greet"
-                    onclick="event.stopPropagation(); this.triggerInteraction('${character.id}', 'greet')"
                     aria-label="Greet ${character.name}">
               <span class="btn-icon">👋</span>
               <span class="btn-text">Say Hi</span>
             </button>
             <button class="interaction-btn" 
                     data-action="celebrate"
-                    onclick="event.stopPropagation(); this.triggerInteraction('${character.id}', 'celebrate')"
                     aria-label="Celebrate with ${character.name}">
               <span class="btn-icon">🎉</span>
               <span class="btn-text">Celebrate</span>
             </button>
             <button class="interaction-btn" 
                     data-action="encourage"
-                    onclick="event.stopPropagation(); this.triggerInteraction('${character.id}', 'encourage')"
                     aria-label="Get encouragement from ${character.name}">
               <span class="btn-icon">💪</span>
               <span class="btn-text">Encourage</span>
@@ -280,7 +278,7 @@ class CharacterGallery extends BaseComponent {
         <div class="empty-icon">🔍</div>
         <h3>No Characters Found</h3>
         <p>Try adjusting your search or filter criteria.</p>
-        <button class="empty-action" onclick="this.clearFilters()">
+        <button class="empty-action">
           Clear All Filters
         </button>
       </div>
@@ -411,25 +409,27 @@ class CharacterGallery extends BaseComponent {
   sortCharacters() {
     this.filteredCharacters.sort((a, b) => {
       switch (this.currentSort) {
-        case 'name':
-          return a.name.localeCompare(b.name);
+      case 'name':
+        return a.name.localeCompare(b.name);
         
-        case 'subject':
-          const subjectA = a.personality?.favoriteSubject || 'general';
-          const subjectB = b.personality?.favoriteSubject || 'general';
-          return subjectA.localeCompare(subjectB);
+      case 'subject': {
+        const subjectA = a.personality?.favoriteSubject || 'general';
+        const subjectB = b.personality?.favoriteSubject || 'general';
+        return subjectA.localeCompare(subjectB);
+      }
         
-        case 'species':
-          return a.species.primary.localeCompare(b.species.primary);
+      case 'species':
+        return a.species.primary.localeCompare(b.species.primary);
         
-        case 'enthusiasm':
-        case 'patience':
-          const valueA = a.personality.traits[this.currentSort] || 0;
-          const valueB = b.personality.traits[this.currentSort] || 0;
-          return valueB - valueA; // Descending order
+      case 'enthusiasm':
+      case 'patience': {
+        const valueA = a.personality.traits[this.currentSort] || 0;
+        const valueB = b.personality.traits[this.currentSort] || 0;
+        return valueB - valueA; // Descending order
+      }
         
-        default:
-          return 0;
+      default:
+        return 0;
       }
     });
   }
@@ -548,13 +548,13 @@ class CharacterGallery extends BaseComponent {
           </div>
           
           <div class="spotlight-actions">
-            <button class="spotlight-btn primary" onclick="this.triggerInteraction('${character.id}', 'greet')">
+            <button class="spotlight-btn primary" data-action="greet" data-character-id="${character.id}">
               <span class="btn-icon">👋</span> Meet ${character.name}
             </button>
-            <button class="spotlight-btn secondary" onclick="this.hearCharacterVoice('${character.id}')">
+            <button class="spotlight-btn secondary" data-action="voice" data-character-id="${character.id}">
               <span class="btn-icon">🔊</span> Hear Voice
             </button>
-            <button class="spotlight-btn secondary" onclick="this.learnMoreAbout('${character.id}')">
+            <button class="spotlight-btn secondary" data-action="learn" data-character-id="${character.id}">
               <span class="btn-icon">ℹ️</span> Learn More
             </button>
           </div>
@@ -589,14 +589,14 @@ class CharacterGallery extends BaseComponent {
     const message = generateCharacterMessage(character, 'greeting');
     
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(message);
+      const utterance = new window.SpeechSynthesisUtterance(message);
       const voice = character.personality.voice || {};
       
       utterance.pitch = voice.pitch || 1;
       utterance.rate = voice.speed || 1;
       utterance.volume = 1;
       
-      speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(utterance);
     }
   }
   
@@ -617,9 +617,6 @@ class CharacterGallery extends BaseComponent {
   }
   
   bindEvents() {
-    // Make component methods available globally for onclick handlers
-    window.characterGallery = this;
-    
     // Bind this context to methods
     this.handleSearch = this.handleSearch.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
@@ -631,15 +628,28 @@ class CharacterGallery extends BaseComponent {
     this.hearCharacterVoice = this.hearCharacterVoice.bind(this);
     this.learnMoreAbout = this.learnMoreAbout.bind(this);
     
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
+    // Event delegation for all click events
+    this.handleDelegatedClick = this.handleDelegatedClick.bind(this);
+    this.element.addEventListener('click', this.handleDelegatedClick);
+    
+    // Event delegation for input events  
+    this.handleDelegatedInput = this.handleDelegatedInput.bind(this);
+    this.element.addEventListener('input', this.handleDelegatedInput);
+    
+    // Event delegation for change events
+    this.handleDelegatedChange = this.handleDelegatedChange.bind(this);
+    this.element.addEventListener('change', this.handleDelegatedChange);
+    
+    // Keyboard navigation - store bound handler for cleanup
+    this.boundKeydownHandler = (e) => {
       if (e.key === 'Escape') {
         this.selectedCharacter = null;
         document.querySelectorAll('.character-card').forEach(card => {
           card.classList.remove('selected');
         });
       }
-    });
+    };
+    document.addEventListener('keydown', this.boundKeydownHandler);
   }
   
   async initializeCharacterRenderers() {
@@ -663,7 +673,12 @@ class CharacterGallery extends BaseComponent {
   }
   
   startAutoplayAnimations() {
-    setInterval(() => {
+    // Clear any existing interval
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+    
+    this.autoplayInterval = setInterval(() => {
       const visibleCards = Array.from(document.querySelectorAll('.character-card'))
         .filter(card => this.isElementVisible(card));
       
@@ -709,22 +724,136 @@ class CharacterGallery extends BaseComponent {
     
     // Update filter chips
     document.querySelectorAll('.filter-chip').forEach(chip => {
-      const isActive = chip.onclick?.toString().includes(this.currentFilter);
+      const filterValue = chip.dataset.filterValue;
+      const isActive = filterValue === this.currentFilter || (filterValue === 'all' && this.currentFilter === 'all');
       chip.classList.toggle('active', isActive);
     });
   }
   
+  // Event delegation handlers
+  handleDelegatedClick(event) {
+    const target = event.target;
+    const characterCard = target.closest('.character-card');
+    const actionBtn = target.closest('[data-action]');
+    
+    // Handle character card selection
+    if (characterCard && !actionBtn) {
+      const characterId = characterCard.dataset.characterId;
+      if (characterId) {
+        this.selectCharacter(characterId);
+      }
+      return;
+    }
+    
+    // Handle interaction buttons
+    if (actionBtn) {
+      event.stopPropagation();
+      const action = actionBtn.dataset.action;
+      
+      // Get characterId from multiple sources for robustness
+      const characterId = actionBtn.dataset.characterId || // Direct on button (spotlight buttons)
+                          characterCard?.dataset.characterId; // From parent card (card buttons)
+      
+      if (characterId && action) {
+        // Handle different action types
+        if (action === 'greet' || action === 'celebrate' || action === 'encourage') {
+          this.triggerInteraction(characterId, action);
+        } else if (action === 'voice') {
+          this.hearCharacterVoice(characterId);
+        } else if (action === 'learn') {
+          this.learnMoreAbout(characterId);
+        }
+      }
+      return;
+    }
+    
+    // Handle search clear button
+    if (target.classList.contains('search-clear')) {
+      this.clearSearch();
+      return;
+    }
+    
+    // Handle filter chips
+    if (target.classList.contains('filter-chip')) {
+      const filterType = target.dataset.filterType || 'subject';
+      const filterValue = target.dataset.filterValue || 'all';
+      this.handleFilter(filterType, filterValue);
+      return;
+    }
+    
+    // Handle clear filters button
+    if (target.classList.contains('empty-action')) {
+      this.clearFilters();
+      return;
+    }
+    
+    // Handle spotlight buttons (legacy support)
+    if (target.classList.contains('spotlight-btn')) {
+      const action = target.dataset.action;
+      const characterId = target.dataset.characterId;
+      if (action === 'greet' && characterId) {
+        this.triggerInteraction(characterId, 'greet');
+      } else if (action === 'voice' && characterId) {
+        this.hearCharacterVoice(characterId);
+      } else if (action === 'learn' && characterId) {
+        this.learnMoreAbout(characterId);
+      }
+      return;
+    }
+  }
+  
+  handleDelegatedInput(event) {
+    const target = event.target;
+    
+    // Handle search input
+    if (target.classList.contains('search-input')) {
+      this.handleSearch(event);
+      return;
+    }
+  }
+  
+  handleDelegatedChange(event) {
+    const target = event.target;
+    
+    // Handle filter selects
+    if (target.classList.contains('filter-select')) {
+      const filterType = target.dataset.filterType || 'subject';
+      this.handleFilter(filterType, target.value);
+      return;
+    }
+    
+    // Handle sort select
+    if (target.classList.contains('sort-select')) {
+      this.handleSort(target.value);
+      return;
+    }
+  }
+  
   destroy() {
+    // Clean up event listeners
+    if (this.element) {
+      this.element.removeEventListener('click', this.handleDelegatedClick);
+      this.element.removeEventListener('input', this.handleDelegatedInput);
+      this.element.removeEventListener('change', this.handleDelegatedChange);
+    }
+    
+    // Clean up document event listener
+    if (this.boundKeydownHandler) {
+      document.removeEventListener('keydown', this.boundKeydownHandler);
+      this.boundKeydownHandler = null;
+    }
+    
+    // Clean up autoplay interval
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    }
+    
     // Clean up renderers
     this.renderers.forEach(renderer => {
       renderer.destroy();
     });
     this.renderers.clear();
-    
-    // Clean up global reference
-    if (window.characterGallery === this) {
-      delete window.characterGallery;
-    }
     
     super.destroy();
   }
