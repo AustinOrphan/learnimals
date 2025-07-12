@@ -37,6 +37,10 @@ class CharacterGallery extends BaseComponent {
     // Event handlers
     this.onCharacterSelect = options.onCharacterSelect || null;
     this.onCharacterInteraction = options.onCharacterInteraction || null;
+    
+    // Memory management
+    this.autoplayInterval = null;
+    this.boundKeydownHandler = null;
   }
   
   generateHTML() {
@@ -407,25 +411,27 @@ class CharacterGallery extends BaseComponent {
   sortCharacters() {
     this.filteredCharacters.sort((a, b) => {
       switch (this.currentSort) {
-        case 'name':
-          return a.name.localeCompare(b.name);
+      case 'name':
+        return a.name.localeCompare(b.name);
         
-        case 'subject':
-          const subjectA = a.personality?.favoriteSubject || 'general';
-          const subjectB = b.personality?.favoriteSubject || 'general';
-          return subjectA.localeCompare(subjectB);
+      case 'subject': {
+        const subjectA = a.personality?.favoriteSubject || 'general';
+        const subjectB = b.personality?.favoriteSubject || 'general';
+        return subjectA.localeCompare(subjectB);
+      }
         
-        case 'species':
-          return a.species.primary.localeCompare(b.species.primary);
+      case 'species':
+        return a.species.primary.localeCompare(b.species.primary);
         
-        case 'enthusiasm':
-        case 'patience':
-          const valueA = a.personality.traits[this.currentSort] || 0;
-          const valueB = b.personality.traits[this.currentSort] || 0;
-          return valueB - valueA; // Descending order
+      case 'enthusiasm':
+      case 'patience': {
+        const valueA = a.personality.traits[this.currentSort] || 0;
+        const valueB = b.personality.traits[this.currentSort] || 0;
+        return valueB - valueA; // Descending order
+      }
         
-        default:
-          return 0;
+      default:
+        return 0;
       }
     });
   }
@@ -585,14 +591,14 @@ class CharacterGallery extends BaseComponent {
     const message = generateCharacterMessage(character, 'greeting');
     
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(message);
+      const utterance = new window.SpeechSynthesisUtterance(message);
       const voice = character.personality.voice || {};
       
       utterance.pitch = voice.pitch || 1;
       utterance.rate = voice.speed || 1;
       utterance.volume = 1;
       
-      speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(utterance);
     }
   }
   
@@ -625,23 +631,27 @@ class CharacterGallery extends BaseComponent {
     this.learnMoreAbout = this.learnMoreAbout.bind(this);
     
     // Event delegation for all click events
-    this.element.addEventListener('click', this.handleDelegatedClick.bind(this));
+    this.handleDelegatedClick = this.handleDelegatedClick.bind(this);
+    this.element.addEventListener('click', this.handleDelegatedClick);
     
     // Event delegation for input events  
-    this.element.addEventListener('input', this.handleDelegatedInput.bind(this));
+    this.handleDelegatedInput = this.handleDelegatedInput.bind(this);
+    this.element.addEventListener('input', this.handleDelegatedInput);
     
     // Event delegation for change events
-    this.element.addEventListener('change', this.handleDelegatedChange.bind(this));
+    this.handleDelegatedChange = this.handleDelegatedChange.bind(this);
+    this.element.addEventListener('change', this.handleDelegatedChange);
     
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
+    // Keyboard navigation - store bound handler for cleanup
+    this.boundKeydownHandler = (e) => {
       if (e.key === 'Escape') {
         this.selectedCharacter = null;
         document.querySelectorAll('.character-card').forEach(card => {
           card.classList.remove('selected');
         });
       }
-    });
+    };
+    document.addEventListener('keydown', this.boundKeydownHandler);
   }
   
   async initializeCharacterRenderers() {
@@ -665,34 +675,33 @@ class CharacterGallery extends BaseComponent {
   }
   
   startAutoplayAnimations() {
-    import('../../../utils/AnimationManager.js').then(({ animationManager }) => {
-      const runAutoplay = () => {
-        const visibleCards = Array.from(document.querySelectorAll('.character-card'))
-          .filter(card => this.isElementVisible(card));
-        
-        if (visibleCards.length > 0) {
-          const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
-          const characterId = randomCard.dataset.characterId;
-          const renderer = this.renderers.get(characterId);
-          
-          if (renderer) {
-            const animations = ['happy', 'thinking', 'waving'];
-            const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-            
-            renderer.setAnimationState(randomAnimation);
-            animationManager.delay(() => {
-              renderer.setAnimationState('idle');
-            }, 2000);
-          }
-        }
-        
-        // Schedule next autoplay
-        animationManager.delay(runAutoplay, 5000);
-      };
+    // Clear any existing interval
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+    
+    this.autoplayInterval = setInterval(() => {
+      const visibleCards = Array.from(document.querySelectorAll('.character-card'))
+        .filter(card => this.isElementVisible(card));
       
-      // Start the autoplay cycle
-      runAutoplay();
-    });
+      if (visibleCards.length > 0) {
+        const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+        const characterId = randomCard.dataset.characterId;
+        const renderer = this.renderers.get(characterId);
+        
+        if (renderer) {
+          const animations = ['happy', 'thinking', 'waving'];
+          const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+          
+          renderer.setAnimationState(randomAnimation);
+          
+          // Reset animation after delay
+          setTimeout(() => {
+            renderer.setAnimationState('idle');
+          }, 2000);
+        }
+      }
+    }, 5000);
   }
   
   isElementVisible(element) {
@@ -744,9 +753,20 @@ class CharacterGallery extends BaseComponent {
     if (actionBtn) {
       event.stopPropagation();
       const action = actionBtn.dataset.action;
-      const characterId = characterCard?.dataset.characterId;
+      
+      // Get characterId from multiple sources for robustness
+      const characterId = actionBtn.dataset.characterId || // Direct on button (spotlight buttons)
+                          characterCard?.dataset.characterId; // From parent card (card buttons)
+      
       if (characterId && action) {
-        this.triggerInteraction(characterId, action);
+        // Handle different action types
+        if (action === 'greet' || action === 'celebrate' || action === 'encourage') {
+          this.triggerInteraction(characterId, action);
+        } else if (action === 'voice') {
+          this.hearCharacterVoice(characterId);
+        } else if (action === 'learn') {
+          this.learnMoreAbout(characterId);
+        }
       }
       return;
     }
@@ -771,7 +791,7 @@ class CharacterGallery extends BaseComponent {
       return;
     }
     
-    // Handle spotlight actions
+    // Handle spotlight buttons (legacy support)
     if (target.classList.contains('spotlight-btn')) {
       const action = target.dataset.action;
       const characterId = target.dataset.characterId;
@@ -819,6 +839,18 @@ class CharacterGallery extends BaseComponent {
       this.element.removeEventListener('click', this.handleDelegatedClick);
       this.element.removeEventListener('input', this.handleDelegatedInput);
       this.element.removeEventListener('change', this.handleDelegatedChange);
+    }
+    
+    // Clean up document event listener
+    if (this.boundKeydownHandler) {
+      document.removeEventListener('keydown', this.boundKeydownHandler);
+      this.boundKeydownHandler = null;
+    }
+    
+    // Clean up autoplay interval
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
     }
     
     // Clean up renderers
