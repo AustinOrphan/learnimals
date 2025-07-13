@@ -10,10 +10,12 @@
  *   node scripts/generateSubjects.js --batch-file=subjects.json
  */
 
-const fs = require('fs').promises;
-const path = require('path');
+import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Get current directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
 
 // Default subject templates with animal characters
@@ -240,7 +242,7 @@ class SubjectGenerator {
         <meta name="description" content="${subject.description}" />
         <title>${subject.name} with ${subject.character.name} - Learnimals</title>
         <script type="module">
-            import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
+            import SubjectTemplateLoader from '../src/utils/subjectTemplateLoader.js';
             
             // Define content for ${subjectKey} page
             const ${subjectKey}Options = {
@@ -890,8 +892,8 @@ async function main() {
 }
 
 // Run the script
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-module.exports = { SubjectGenerator, subjectTemplates };
+export { SubjectGenerator, subjectTemplates };

@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnimals-app
+  namespace: production
+  labels:
+    app: learnimals-app
+    environment: production
+    version: "${GITHUB_SHA}"
+  annotations:
+    deployment.kubernetes.io/revision: "${GITHUB_RUN_NUMBER}"
+    github.com/repo: "${GITHUB_REPOSITORY}"
+    github.com/commit: "${GITHUB_SHA}"
+spec:
+  replicas: 6
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: learnimals-app
+      environment: production
+  template:
+    metadata:
+      labels:
+        app: learnimals-app
+        environment: production
+        version: "${GITHUB_SHA}"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - learnimals-app
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: learnimals-app
+        image: ${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: APP_VERSION
+          value: "${GITHUB_SHA}"
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 20
+          successThreshold: 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1001
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: var-cache-nginx
+          mountPath: /var/cache/nginx
+        - name: var-run-nginx
+          mountPath: /var/run/nginx
+        - name: var-log-nginx
+          mountPath: /var/log/nginx
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: var-cache-nginx
+        emptyDir: {}
+      - name: var-run-nginx
+        emptyDir: {}
+      - name: var-log-nginx
+        emptyDir: {}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      dnsPolicy: ClusterFirst
+      serviceAccountName: learnimals-service-account
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: learnimals-service-account
+  namespace: production
+  labels:
+    app: learnimals-app
+    environment: production
+automountServiceAccountToken: false
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: learnimals-app-pdb
+  namespace: production
+  labels:
+    app: learnimals-app
+    environment: production
+spec:
+  minAvailable: 4
+  selector:
+    matchLabels:
+      app: learnimals-app
+      environment: production

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Line Jump - Leo's Math Adventure</title>
+  <link rel="stylesheet" href="../../../styles/base/reset.css">
+  <link rel="stylesheet" href="../../../styles/base/variables.css">
+  <link rel="stylesheet" href="../../../styles/base/base.css">
+  <link rel="stylesheet" href="./numberLineJump.css">
+</head>
+<body>
+  <div class="page-container">
+    <header class="game-header">
+      <h1>🦁 Leo's Number Line Jump</h1>
+      <p>Help Leo the Lion jump along the number line to learn addition and subtraction!</p>
+    </header>
+
+    <main class="game-main">
+      <div class="game-container" id="game-container">
+        <!-- Game instructions overlay -->
+        <div class="game-instructions" id="game-instructions">
+          <h3>🎯 How to Play</h3>
+          <div class="character-intro">Meet Leo the Lion!</div>
+          <p>🔢 Choose a number to jump by</p>
+          <p>➡️ Click "Add" to jump forward</p>
+          <p>⬅️ Click "Subtract" to jump backward</p>
+          <p>⭐ Reach the target number to win!</p>
+          <p>🔄 Use "Undo" if you make a mistake</p>
+          <button class="start-game-btn" id="start-game">Let's Jump!</button>
+        </div>
+
+        <!-- Game canvas -->
+        <canvas id="gameCanvas" class="game-canvas" width="800" height="500">
+          Your browser doesn't support canvas. Please upgrade to play this game.
+        </canvas>
+
+        <!-- Game UI overlay -->
+        <div class="game-ui-overlay" id="game-ui-overlay">
+          <div class="game-info" id="game-info">
+            <div>Score: <span id="score-value">0</span></div>
+            <div>Round: <span id="level-value">1</span></div>
+          </div>
+        </div>
+
+        <!-- Loading screen -->
+        <div class="game-loading hidden" id="game-loading">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading Leo's Adventure...</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="game-footer">
+      <p>Practice addition and subtraction with visual number lines!</p>
+      <div class="difficulty-info">
+        <strong>Difficulty Levels:</strong>
+        <span>Easy (0-20)</span> | 
+        <span>Medium (0-50)</span> | 
+        <span>Hard (0-100)</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Game Template Loader -->
+  <script type="module">
+    import GameTemplateLoader from '../../../components/games/GameTemplateLoader.js';
+    import NumberLineJumpGame from './numberLineJump.js';
+
+    // Game configuration
+    const gameConfig = {
+      gameTitle: 'Number Line Jump',
+      gameClass: 'NumberLineJumpGame',
+      gameScript: './numberLineJump.js',
+      canvasId: 'gameCanvas',
+      difficulty: 'easy', // Can be changed based on user selection
+      subject: 'math',
+      character: {
+        name: 'Leo',
+        type: 'Lion',
+        subject: 'Math'
+      }
+    };
+
+    // Initialize game when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hide instructions and start game
+      document.getElementById('start-game').addEventListener('click', () => {
+        document.getElementById('game-instructions').style.display = 'none';
+        
+        // Initialize the game
+        const game = new NumberLineJumpGame('gameCanvas', {
+          difficulty: gameConfig.difficulty,
+          onScoreUpdate: (score) => {
+            document.getElementById('score-value').textContent = score;
+          },
+          onLevelUpdate: (level) => {
+            document.getElementById('level-value').textContent = level;
+          },
+          onGameOver: (finalScore) => {
+            setTimeout(() => {
+              alert(`Game Over! Final Score: ${finalScore}`);
+              // Could show a proper game over modal here
+            }, 500);
+          }
+        });
+
+        // Start the game
+        game.start();
+
+        // Make game instance available for debugging
+        window.gameInstance = game;
+      });
+
+      // Add difficulty selector (could be expanded)
+      const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+      difficultyButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          gameConfig.difficulty = btn.dataset.difficulty;
+          difficultyButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .page-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+      min-height: 100vh;
+    }
+
+    .game-header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .game-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .game-header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .game-main {
+      margin-bottom: 30px;
+    }
+
+    .game-footer {
+      text-align: center;
+      color: white;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .difficulty-info {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 10px;
+      }
+
+      .game-header h1 {
+        font-size: 2rem;
+      }
+
+      .game-header p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</body>
+</html>
