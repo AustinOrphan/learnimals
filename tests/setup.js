@@ -40,12 +40,18 @@ global.console = {
 
 // Clean up after each test
 beforeEach(() => {
-  // Reset DOM
-  document.body.innerHTML = '';
-  document.head.innerHTML = '';
+  // Reset DOM - check if body and head exist first
+  if (document.body) {
+    document.body.innerHTML = '';
+  }
+  if (document.head) {
+    document.head.innerHTML = '';
+  }
   
   // Reset fetch mock
-  fetch.mockClear();
+  if (global.fetch && typeof global.fetch.mockClear === 'function') {
+    fetch.mockClear();
+  }
   
   // Reset console mocks
   vi.clearAllMocks();
@@ -79,7 +85,9 @@ global.createMockNavbar = () => {
 global.createNavbarPlaceholder = () => {
   const placeholder = document.createElement('div');
   placeholder.id = 'navbar-placeholder';
-  document.body.appendChild(placeholder);
+  if (document.body) {
+    document.body.appendChild(placeholder);
+  }
   return placeholder;
 };
 
