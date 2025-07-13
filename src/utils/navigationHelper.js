@@ -1,6 +1,17 @@
 // Navigation Helper for Learnimals
 // Provides absolute URL resolution for navigation links
-import logger from './logger.js';
+
+// Use shared logger factory created by navbarLoader.js
+const logger = window.createLogger ? window.createLogger('NavigationHelper') : {
+  debug: (...args) => {
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      console.log('[NavigationHelper DEBUG]', ...args);
+    }
+  },
+  error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
+  warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
+  info: (...args) => console.info('[NavigationHelper INFO]', ...args)
+};
 
 class NavigationHelper {
   constructor() {
@@ -12,16 +23,18 @@ class NavigationHelper {
     // Get the current URL and find the project root  
     const currentPath = window.location.pathname;
     
-    // Find where 'learnimals' appears in the path
-    const learnimalsIndex = currentPath.toLowerCase().indexOf('learnimals');
-    if (learnimalsIndex !== -1) {
+    // Find where 'learnimals' appears as a separate path segment
+    const pathSegments = currentPath.split('/');
+    const learnimalsSegmentIndex = pathSegments.findIndex(segment => segment.toLowerCase() === 'learnimals');
+    
+    if (learnimalsSegmentIndex !== -1) {
       // Extract everything up to and including 'learnimals'
-      const pathToLearnimals = currentPath.substring(0, currentPath.indexOf('learnimals') + 'learnimals'.length);
+      const pathToLearnimals = pathSegments.slice(0, learnimalsSegmentIndex + 1).join('/');
       return window.location.origin + pathToLearnimals;
     }
     
-    // Fallback: assume we're in the project root
-    return window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
+    // Fallback: return just the origin when learnimals not found in path
+    return window.location.origin;
   }
 
   // Get absolute URL for any path within the project
@@ -29,6 +42,11 @@ class NavigationHelper {
     // Remove leading slash if present
     const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
     return this.baseUrl + '/' + cleanPath;
+  }
+
+  // Alias for getUrl (used by tests)
+  resolveUrl(relativePath) {
+    return this.getUrl(relativePath);
   }
 
   // Navigation shortcuts
@@ -113,5 +131,13 @@ if (typeof window !== 'undefined') {
   } else {
     window.navigationHelper.updateNavigationLinks();
   }
+}
+
+// Export for ES6 modules and testing
+export default NavigationHelper;
+
+// Make available for dynamic imports
+if (typeof window !== 'undefined') {
+  window.NavigationHelper = NavigationHelper;
 }
 

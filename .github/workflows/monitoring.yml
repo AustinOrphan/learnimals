@@ -1,0 +1,409 @@
+name: 📊 Monitoring & Observability
+
+on:
+  schedule:
+    # Run health checks every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to monitor'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - staging
+          - production
+      check_type:
+        description: 'Type of check to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - health
+          - performance
+          - accessibility
+
+env:
+  NODE_VERSION: '24'
+
+jobs:
+  # Application Health Monitoring
+  health-check:
+    name: 🔍 Health Check
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'health' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: [staging, production]
+    steps:
+      - name: Set environment URL
+        id: env
+        run: |
+          if [[ "${{ matrix.environment }}" == "production" ]]; then
+            echo "url=https://learnimals.app" >> $GITHUB_OUTPUT
+            echo "name=Production" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://staging.learnimals.app" >> $GITHUB_OUTPUT
+            echo "name=Staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Health Check Endpoint
+        run: |
+          echo "🔍 Checking health of ${{ steps.env.outputs.name }} environment"
+          
+          # Health check with detailed output
+          response=$(curl -s -w "HTTPSTATUS:%{http_code};TIME:%{time_total}" "${{ steps.env.outputs.url }}/health" || echo "HTTPSTATUS:000;TIME:timeout")
+          
+          http_code=$(echo $response | sed -E 's/.*HTTPSTATUS:([0-9]{3}).*/\1/')
+          time_total=$(echo $response | sed -E 's/.*TIME:([0-9.]+).*/\1/')
+          
+          echo "HTTP Status: $http_code"
+          echo "Response Time: ${time_total}s"
+          
+          if [[ "$http_code" == "200" ]]; then
+            echo "✅ Health check passed for ${{ steps.env.outputs.name }}"
+          else
+            echo "❌ Health check failed for ${{ steps.env.outputs.name }}"
+            exit 1
+          fi
+
+      - name: Application Availability Check
+        run: |
+          echo "🌐 Checking application availability"
+          
+          endpoints=(
+            "${{ steps.env.outputs.url }}/"
+            "${{ steps.env.outputs.url }}/src/pages/about.html"
+            "${{ steps.env.outputs.url }}/src/features/subjects/shared/math.html"
+          )
+          
+          failed_endpoints=0
+          
+          for endpoint in "${endpoints[@]}"; do
+            echo "Checking: $endpoint"
+            
+            response=$(curl -s -w "HTTPSTATUS:%{http_code};TIME:%{time_total}" "$endpoint" || echo "HTTPSTATUS:000;TIME:timeout")
+            http_code=$(echo $response | sed -E 's/.*HTTPSTATUS:([0-9]{3}).*/\1/')
+            time_total=$(echo $response | sed -E 's/.*TIME:([0-9.]+).*/\1/')
+            
+            if [[ "$http_code" == "200" ]]; then
+              echo "  ✅ $endpoint - ${time_total}s"
+            else
+              echo "  ❌ $endpoint - HTTP $http_code"
+              failed_endpoints=$((failed_endpoints + 1))
+            fi
+          done
+          
+          if [[ $failed_endpoints -gt 0 ]]; then
+            echo "❌ $failed_endpoints endpoint(s) failed availability check"
+            exit 1
+          else
+            echo "✅ All endpoints passed availability check"
+          fi
+
+      - name: DNS Resolution Check
+        run: |
+          echo "🌍 Checking DNS resolution"
+          
+          if [[ "${{ matrix.environment }}" == "production" ]]; then
+            domains=("learnimals.app" "www.learnimals.app")
+          else
+            domains=("staging.learnimals.app")
+          fi
+          
+          for domain in "${domains[@]}"; do
+            echo "Resolving: $domain"
+            if nslookup "$domain" > /dev/null 2>&1; then
+              echo "  ✅ $domain resolved successfully"
+            else
+              echo "  ❌ $domain failed to resolve"
+              exit 1
+            fi
+          done
+
+      - name: SSL Certificate Check
+        run: |
+          echo "🔒 Checking SSL certificate"
+          
+          domain="${{ steps.env.outputs.url }}"
+          domain="${domain#https://}"
+          
+          # Check SSL certificate expiry
+          cert_info=$(echo | openssl s_client -servername "$domain" -connect "$domain:443" 2>/dev/null | openssl x509 -noout -dates 2>/dev/null)
+          
+          if [[ -n "$cert_info" ]]; then
+            echo "✅ SSL certificate is valid"
+            echo "$cert_info"
+            
+            # Check if certificate expires within 30 days
+            expiry_date=$(echo "$cert_info" | grep "notAfter" | cut -d= -f2)
+            expiry_timestamp=$(date -d "$expiry_date" +%s 2>/dev/null || date -j -f "%b %d %H:%M:%S %Y %Z" "$expiry_date" +%s 2>/dev/null)
+            current_timestamp=$(date +%s)
+            days_until_expiry=$(( (expiry_timestamp - current_timestamp) / 86400 ))
+            
+            if [[ $days_until_expiry -lt 30 ]]; then
+              echo "⚠️ SSL certificate expires in $days_until_expiry days"
+            else
+              echo "✅ SSL certificate expires in $days_until_expiry days"
+            fi
+          else
+            echo "❌ Failed to retrieve SSL certificate information"
+            exit 1
+          fi
+
+  # Performance Monitoring
+  performance-monitoring:
+    name: ⚡ Performance Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'performance' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: [staging, production]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set environment URL
+        id: env
+        run: |
+          if [[ "${{ matrix.environment }}" == "production" ]]; then
+            echo "url=https://learnimals.app" >> $GITHUB_OUTPUT
+            echo "config=.lighthouserc.production.json" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://staging.learnimals.app" >> $GITHUB_OUTPUT
+            echo "config=.lighthouserc.staging.json" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Lighthouse Performance Audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ${{ steps.env.outputs.config }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: WebPageTest Performance Check
+        run: |
+          echo "🏃 Running WebPageTest performance check"
+          
+          # Simple performance timing check using curl
+          url="${{ steps.env.outputs.url }}"
+          
+          echo "Testing: $url"
+          timing=$(curl -w "@-" -o /dev/null -s "$url" <<'EOF'
+          time_namelookup:    %{time_namelookup}s\n
+          time_connect:       %{time_connect}s\n
+          time_appconnect:    %{time_appconnect}s\n
+          time_pretransfer:   %{time_pretransfer}s\n
+          time_redirect:      %{time_redirect}s\n
+          time_starttransfer: %{time_starttransfer}s\n
+          time_total:         %{time_total}s\n
+          EOF
+          )
+          
+          echo "Performance Timing Results:"
+          echo "$timing"
+          
+          # Extract total time and check against threshold
+          total_time=$(echo "$timing" | grep "time_total" | awk '{print $2}' | sed 's/s//')
+          threshold=5.0
+          
+          if (( $(echo "$total_time <= $threshold" | bc -l) )); then
+            echo "✅ Performance check passed (${total_time}s <= ${threshold}s)"
+          else
+            echo "⚠️ Performance check warning (${total_time}s > ${threshold}s)"
+          fi
+
+  # Accessibility Monitoring
+  accessibility-monitoring:
+    name: ♿ Accessibility Monitoring
+    runs-on: ubuntu-latest
+    if: github.event.inputs.check_type == 'all' || github.event.inputs.check_type == 'accessibility' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        environment: [staging, production]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set environment URL
+        id: env
+        run: |
+          if [[ "${{ matrix.environment }}" == "production" ]]; then
+            echo "url=https://learnimals.app" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://staging.learnimals.app" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Accessibility Audit with axe-core
+        run: |
+          echo "♿ Running accessibility audit"
+          
+          # Install axe-core CLI
+          npm install -g @axe-core/cli
+          
+          urls=(
+            "${{ steps.env.outputs.url }}/"
+            "${{ steps.env.outputs.url }}/src/pages/about.html"
+            "${{ steps.env.outputs.url }}/src/features/subjects/shared/math.html"
+          )
+          
+          total_violations=0
+          
+          for url in "${urls[@]}"; do
+            echo "Testing accessibility: $url"
+            
+            # Run axe-core accessibility test
+            axe_output=$(axe "$url" --exit 2>&1 || echo "VIOLATIONS_FOUND")
+            
+            if [[ "$axe_output" == *"VIOLATIONS_FOUND"* ]] || [[ "$axe_output" == *"violations"* ]]; then
+              echo "  ❌ Accessibility violations found"
+              total_violations=$((total_violations + 1))
+              echo "$axe_output"
+            else
+              echo "  ✅ No accessibility violations"
+            fi
+          done
+          
+          if [[ $total_violations -gt 0 ]]; then
+            echo "❌ Accessibility monitoring found violations on $total_violations page(s)"
+            exit 1
+          else
+            echo "✅ All pages passed accessibility monitoring"
+          fi
+
+  # Synthetic User Journey Monitoring
+  user-journey-monitoring:
+    name: 👤 User Journey Monitoring
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event.inputs.check_type == 'all'
+    strategy:
+      matrix:
+        environment: [production]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Set environment URL
+        id: env
+        run: |
+          if [[ "${{ matrix.environment }}" == "production" ]]; then
+            echo "url=https://learnimals.app" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://staging.learnimals.app" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Critical User Journey Test
+        run: |
+          echo "👤 Testing critical user journeys"
+          
+          # Create a simple Playwright test for critical user journeys
+          cat > user-journey-test.js << 'EOF'
+          const { chromium } = require('playwright');
+          
+          (async () => {
+            const browser = await chromium.launch();
+            const context = await browser.newContext();
+            const page = await context.newPage();
+            
+            const baseUrl = process.env.BASE_URL;
+            
+            try {
+              // Test 1: Homepage loads
+              console.log('Testing homepage load...');
+              await page.goto(baseUrl, { waitUntil: 'networkidle' });
+              await page.waitForSelector('h1', { timeout: 10000 });
+              console.log('✅ Homepage loaded successfully');
+              
+              // Test 2: Navigation to Math section
+              console.log('Testing navigation to Math section...');
+              await page.goto(baseUrl + '/src/features/subjects/shared/math.html', { waitUntil: 'networkidle' });
+              await page.waitForSelector('h1', { timeout: 10000 });
+              console.log('✅ Math section loaded successfully');
+              
+              // Test 3: Navigation to Science section
+              console.log('Testing navigation to Science section...');
+              await page.goto(baseUrl + '/src/features/subjects/shared/science.html', { waitUntil: 'networkidle' });
+              await page.waitForSelector('h1', { timeout: 10000 });
+              console.log('✅ Science section loaded successfully');
+              
+              // Test 4: About page
+              console.log('Testing About page...');
+              await page.goto(baseUrl + '/src/pages/about.html', { waitUntil: 'networkidle' });
+              await page.waitForSelector('h1', { timeout: 10000 });
+              console.log('✅ About page loaded successfully');
+              
+              console.log('🎉 All user journey tests passed');
+            } catch (error) {
+              console.error('❌ User journey test failed:', error.message);
+              process.exit(1);
+            } finally {
+              await browser.close();
+            }
+          })();
+          EOF
+          
+          BASE_URL="${{ steps.env.outputs.url }}" node user-journey-test.js
+
+  # Monitoring Summary
+  monitoring-summary:
+    name: 📋 Monitoring Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [health-check, performance-monitoring, accessibility-monitoring, user-journey-monitoring]
+    steps:
+      - name: Generate Monitoring Report
+        run: |
+          echo "# 📊 Monitoring & Observability Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## System Health Overview" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Health Checks | ${{ needs.health-check.result == 'success' && '✅ Healthy' || '❌ Issues Detected' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | ${{ needs.performance-monitoring.result == 'success' && '✅ Good' || '⚠️ Needs Attention' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Accessibility | ${{ needs.accessibility-monitoring.result == 'success' && '✅ Compliant' || '❌ Violations Found' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| User Journeys | ${{ needs.user-journey-monitoring.result == 'success' && '✅ Working' || '❌ Failures Detected' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Monitoring Timestamp" >> $GITHUB_STEP_SUMMARY
+          echo "Report generated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+      - name: Alert on Issues
+        if: needs.health-check.result == 'failure' || needs.user-journey-monitoring.result == 'failure'
+        run: |
+          echo "🚨 CRITICAL: Monitoring detected system issues"
+          echo "Immediate attention required for:"
+          [[ "${{ needs.health-check.result }}" == "failure" ]] && echo "- Application Health Checks"
+          [[ "${{ needs.user-journey-monitoring.result }}" == "failure" ]] && echo "- User Journey Functionality"
+          echo "Please investigate and resolve issues immediately."
