@@ -2,6 +2,7 @@
  * Utility functions for dynamically generating animal educator content
  */
 import config from '../config.js';
+import Card from '../components/ui/Card.js';
 
 /**
  * Generate HTML for all animal educators from config
