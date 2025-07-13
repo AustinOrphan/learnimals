@@ -15,6 +15,17 @@ export default class PizzaMakerGame {
     this.orderTimer = null;
     this.timeRemaining = 30;
     
+    // Store bound event handlers for cleanup
+    this.boundHandlers = {
+      startGame: () => this.startGame(),
+      nextLevel: () => this.nextLevel(),
+      restartGame: () => this.restartGame(),
+      servePizza: () => this.servePizza(),
+      clearPizza: () => this.clearPizza(),
+      handleDrag: (e) => this.handleDrag(e),
+      endDrag: (e) => this.endDrag(e)
+    };
+    
     // Level progression
     this.ordersPerLevel = 3;
     this.ordersCompleted = 0;
@@ -119,13 +130,13 @@ export default class PizzaMakerGame {
 
   setupEventListeners() {
     // Game control buttons
-    this.startGameButton.addEventListener('click', () => this.startGame());
-    this.nextLevelButton.addEventListener('click', () => this.nextLevel());
-    this.restartButton.addEventListener('click', () => this.restartGame());
+    this.startGameButton.addEventListener('click', this.boundHandlers.startGame);
+    this.nextLevelButton.addEventListener('click', this.boundHandlers.nextLevel);
+    this.restartButton.addEventListener('click', this.boundHandlers.restartGame);
     
     // Pizza making buttons
-    this.bakeButton.addEventListener('click', () => this.servePizza());
-    this.trashButton.addEventListener('click', () => this.clearPizza());
+    this.bakeButton.addEventListener('click', this.boundHandlers.servePizza);
+    this.trashButton.addEventListener('click', this.boundHandlers.clearPizza);
     
     // Close modals on backdrop click
     document.querySelectorAll('.game-modal').forEach(modal => {
@@ -154,10 +165,10 @@ export default class PizzaMakerGame {
     });
 
     // Global drag events
-    document.addEventListener('mousemove', (e) => this.handleDrag(e));
-    document.addEventListener('mouseup', (e) => this.endDrag(e));
-    document.addEventListener('touchmove', (e) => this.handleDrag(e), { passive: false });
-    document.addEventListener('touchend', (e) => this.endDrag(e));
+    document.addEventListener('mousemove', this.boundHandlers.handleDrag);
+    document.addEventListener('mouseup', this.boundHandlers.endDrag);
+    document.addEventListener('touchmove', this.boundHandlers.handleDrag, { passive: false });
+    document.addEventListener('touchend', this.boundHandlers.endDrag);
   }
 
   startGame() {
@@ -624,61 +635,154 @@ export default class PizzaMakerGame {
 
   playSound(type) {
     try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      // Reuse audio context if available for better performance
+      if (!this.audioContext || this.audioContext.state === 'closed') {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
       
       oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(this.audioContext.destination);
       
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
       
       switch (type) {
       case 'pickup':
         oscillator.frequency.value = 600;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
         break;
       case 'drop':
         oscillator.frequency.value = 800;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
         break;
       case 'success':
         // Happy arpeggio
-        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
-        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659, this.audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
         break;
       case 'star':
         oscillator.frequency.value = 1047; // High C
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
         break;
       case 'levelComplete':
         // Victory fanfare
-        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-        oscillator.frequency.setValueAtTime(1047, audioContext.currentTime + 0.4);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+        oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
+        oscillator.frequency.setValueAtTime(1047, this.audioContext.currentTime + 0.4);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.6);
         break;
       case 'gameOver':
         // Sad sound
         oscillator.frequency.value = 200;
-        oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        oscillator.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.5);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
         break;
       case 'trash':
         oscillator.frequency.value = 150;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
         break;
       default:
         oscillator.frequency.value = 440;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
       }
       
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + (type === 'levelComplete' ? 0.6 : type === 'gameOver' ? 0.5 : 0.3));
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + (type === 'levelComplete' ? 0.6 : type === 'gameOver' ? 0.5 : 0.3));
     } catch (error) {
       console.log('Audio not available:', error);
     }
+  }
+
+  /**
+   * Clean up all resources and prevent memory leaks
+   */
+  destroy() {
+    // Stop and clear timer
+    if (this.orderTimer) {
+      clearInterval(this.orderTimer);
+      this.orderTimer = null;
+    }
+
+    // Clean up drag state
+    this.cleanupDrag();
+
+    // Remove all event listeners using bound handlers
+    if (this.startGameButton && this.boundHandlers) {
+      this.startGameButton.removeEventListener('click', this.boundHandlers.startGame);
+    }
+    if (this.nextLevelButton && this.boundHandlers) {
+      this.nextLevelButton.removeEventListener('click', this.boundHandlers.nextLevel);
+    }
+    if (this.restartButton && this.boundHandlers) {
+      this.restartButton.removeEventListener('click', this.boundHandlers.restartGame);
+    }
+    if (this.bakeButton && this.boundHandlers) {
+      this.bakeButton.removeEventListener('click', this.boundHandlers.servePizza);
+    }
+    if (this.trashButton && this.boundHandlers) {
+      this.trashButton.removeEventListener('click', this.boundHandlers.clearPizza);
+    }
+
+    // Remove modal event listeners
+    document.querySelectorAll('.game-modal').forEach(modal => {
+      // Create new modal to remove all event listeners
+      const newModal = modal.cloneNode(true);
+      if (modal.parentNode) {
+        modal.parentNode.replaceChild(newModal, modal);
+      }
+    });
+
+    // Remove drag and drop event listeners
+    if (this.boundHandlers) {
+      document.removeEventListener('mousemove', this.boundHandlers.handleDrag);
+      document.removeEventListener('mouseup', this.boundHandlers.endDrag);
+      document.removeEventListener('touchmove', this.boundHandlers.handleDrag);
+      document.removeEventListener('touchend', this.boundHandlers.endDrag);
+    }
+
+    // Close audio context
+    if (this.audioContext && this.audioContext.state !== 'closed') {
+      try {
+        this.audioContext.close();
+      } catch (error) {
+        console.log('Error closing audio context:', error);
+      }
+    }
+
+    // Clear all references to prevent memory leaks
+    this.currentOrder = null;
+    this.currentToppings = [];
+    this.dragElement = null;
+    this.dragClone = null;
+    this.audioContext = null;
+    this.boundHandlers = null;
+    
+    // Clear DOM element references
+    this.pizzaBase = null;
+    this.pizzaToppings = null;
+    this.toppingsGrid = null;
+    this.bakeButton = null;
+    this.trashButton = null;
+    this.totalStarsElement = null;
+    this.currentLevelElement = null;
+    this.totalTipsElement = null;
+    this.orderTimerElement = null;
+    this.customerCharacter = null;
+    this.speechBubble = null;
+    this.orderRequest = null;
+    this.progressBar = null;
+    this.starRating = null;
+    this.startScreen = null;
+    this.levelCompleteModal = null;
+    this.gameOverModal = null;
+    this.startGameButton = null;
+    this.nextLevelButton = null;
+    this.restartButton = null;
+
+    console.log('PizzaMakerGame destroyed and cleaned up');
   }
 }
