@@ -18,6 +18,7 @@ permissions:
   contents: read
   security-events: write
   actions: read
+  pull-requests: write
 
 jobs:
   # SAST - Static Application Security Testing
@@ -33,7 +34,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -75,7 +76,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -95,8 +96,17 @@ jobs:
           args: --severity-threshold=medium --json > snyk-results.json
         continue-on-error: true
 
+      - name: Check if Snyk SARIF exists
+        id: check-snyk-sarif
+        run: |
+          if [ -f "snyk.sarif" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload Snyk results to GitHub
-        if: always()
+        if: always() && steps.check-snyk-sarif.outputs.exists == 'true'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: snyk.sarif
@@ -115,7 +125,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image for scanning
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           load: true
@@ -137,7 +147,8 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
       - name: Grype vulnerability scanner
-        uses: anchore/scan-action@v3
+        id: grype-scan
+        uses: anchore/scan-action@v6
         with:
           image: 'learnimals:security-scan'
           fail-build: false
@@ -148,7 +159,8 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: ${{ steps.grype-scan.outputs.sarif }}
+        continue-on-error: true
 
   # Secrets Detection
   secrets-scan:
@@ -164,9 +176,9 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
+          base: ${{ github.event.pull_request.base.sha || 'main' }}
           head: HEAD
-          extra_args: --debug --only-verified
+          extra_args: --only-verified --exclude-paths=.trufflehogignore
 
       - name: GitLeaks Secrets Detection
         uses: gitleaks/gitleaks-action@v2
@@ -216,7 +228,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies

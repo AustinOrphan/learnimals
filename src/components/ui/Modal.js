@@ -49,10 +49,10 @@ class Modal extends BaseComponent {
     const sizeClass = `modal--${size}`;
     
     let html = `
-      <div id="${id}" class="component modal-overlay" aria-hidden="true">
-        <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${id}-title" aria-modal="true">
+      <div id="${escapeHTML(id)}" class="component modal-overlay" aria-hidden="true">
+        <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${escapeHTML(id)}-title" aria-modal="true">
           <div class="modal-header">
-            <h3 id="${id}-title" class="modal-title">${title}</h3>
+            <h3 id="${escapeHTML(id)}-title" class="modal-title">${escapeHTML(title)}</h3>
             ${showClose ? '<button class="modal-close component-button component-button--ghost" aria-label="Close">&times;</button>' : ''}
           </div>
           <div class="modal-content">

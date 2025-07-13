@@ -3,6 +3,7 @@
 [![CI/CD Pipeline](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml)
 [![Security Scan](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml)
 [![Monitoring](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Learnimals is an interactive educational web application featuring fun games and activities designed to help children learn core subjects through play. Each subject area is represented by a friendly animal character, creating an engaging and memorable learning experience.
 
@@ -98,6 +99,11 @@ npm test
 npm run test:watch
 
 # Run specific test suites
+npm test -- tests/unit/
+npm test -- tests/integration/
+
+# Run with coverage
+npm test -- --coverage
 npm run test:unit
 npm run test:navigation
 npm run test:integration
@@ -168,6 +174,31 @@ See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed deployment procedu
 - **Performance Metrics**: Core Web Vitals tracking
 - **Accessibility**: WCAG 2.1 AA compliance
 - **User Journey Testing**: Synthetic monitoring
+
+## 🔒 Security
+
+### Security Scanning
+
+Our CI/CD pipeline includes comprehensive security scanning:
+
+- **🔍 SAST Analysis**: CodeQL and Semgrep for code vulnerabilities
+- **📦 Dependency Scanning**: npm audit and Snyk for package vulnerabilities  
+- **🐳 Container Security**: Trivy and Grype for Docker image scanning
+- **🔐 Secrets Detection**: Gitleaks and TruffleHog prevent credential leaks
+- **🏗️ Infrastructure Security**: Checkov and Terrascan for IaC scanning
+- **📄 License Compliance**: Automated license checking with FOSSA
+
+### Security Features
+
+- **Content Security Policy (CSP)** enforced via nginx
+- **XSS Prevention** with input sanitization utilities
+- **Security Headers** for defense in depth
+- **Non-root Container** execution for reduced attack surface
+- **Regular Updates** of dependencies and base images
+
+### Reporting Security Issues
+
+Please see our [Security Policy](docs/SECURITY.md) for details on reporting vulnerabilities.
 
 ## 🤝 Contributing
 

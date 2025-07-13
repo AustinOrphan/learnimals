@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-FROM node:18-alpine AS builder
+FROM node:24-alpine3.19 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -18,7 +18,12 @@ RUN npm run lint
 RUN npm run test
 
 # Production stage
-FROM nginx:alpine AS production
+FROM nginx:1.25-alpine3.19 AS production
+
+# Add metadata labels for security scanning
+LABEL maintainer="learnimals-team"
+LABEL description="Learnimals educational web application"
+LABEL version="1.0.0"
 
 # Install security updates
 RUN apk update && apk upgrade && \
