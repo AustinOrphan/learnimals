@@ -14,7 +14,6 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Get current directory (ES modules equivalent of __dirname)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
@@ -892,11 +891,7 @@ async function main() {
   }
 }
 
-<<<<<<< HEAD
-// Run the script (ES modules equivalent of require.main === module)
-=======
 // Run the script
->>>>>>> 54ce3d5 (feat: Add comprehensive component testing framework and development roadmap)
 if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
