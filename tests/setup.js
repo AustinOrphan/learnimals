@@ -1,165 +1,210 @@
 /**
- * Test Setup for Learnimals
- * Global test configuration and mocks
+ * Vitest Test Setup
+ * Global configuration and utilities for all tests
  */
 
-import { vi } from 'vitest';
+import { afterEach, beforeAll, vi } from 'vitest';
 
-// Mock global fetch for navigation tests
+// Auto cleanup after each test
+afterEach(() => {
+  // Clear DOM
+  document.body.innerHTML = '';
+  document.head.innerHTML = '';
+  
+  // Clear all mocks
+  vi.clearAllMocks();
+  
+  // Clear local storage
+  localStorage.clear();
+  sessionStorage.clear();
+  
+  // Reset any global state
+  if (global.window) {
+    delete global.window.LEARNIMALS_LOG_LEVEL;
+  }
+});
+
+// Global test utilities
+global.TestUtils = {
+  /**
+   * Wait for a condition to be true
+   * @param {Function} fn - Function that returns true when condition is met
+   * @param {number} timeout - Maximum time to wait in milliseconds
+   * @returns {Promise}
+   */
+  waitFor: (fn, timeout = 1000) => {
+    return new Promise((resolve, reject) => {
+      const startTime = Date.now();
+      const check = () => {
+        try {
+          const result = fn();
+          if (result) {
+            resolve(result);
+          } else if (Date.now() - startTime > timeout) {
+            reject(new Error(`Timeout waiting for condition after ${timeout}ms`));
+          } else {
+            setTimeout(check, 50);
+          }
+        } catch (error) {
+          if (Date.now() - startTime > timeout) {
+            reject(error);
+          } else {
+            setTimeout(check, 50);
+          }
+        }
+      };
+      check();
+    });
+  },
+
+  /**
+   * Create a mock DOM element
+   * @param {string} tagName - HTML tag name
+   * @param {Object} attributes - Element attributes
+   * @param {string} textContent - Element text content
+   * @returns {HTMLElement}
+   */
+  createElement: (tagName, attributes = {}, textContent = '') => {
+    const element = document.createElement(tagName);
+    Object.entries(attributes).forEach(([key, value]) => {
+      element.setAttribute(key, value);
+    });
+    if (textContent) {
+      element.textContent = textContent;
+    }
+    return element;
+  },
+
+  /**
+   * Simulate user interaction events
+   * @param {HTMLElement} element - Target element
+   * @param {string} eventType - Event type (click, keydown, etc.)
+   * @param {Object} eventOptions - Event options
+   */
+  fireEvent: (element, eventType, eventOptions = {}) => {
+    const event = new Event(eventType, {
+      bubbles: true,
+      cancelable: true,
+      ...eventOptions
+    });
+    element.dispatchEvent(event);
+  },
+
+  /**
+   * Mock window.location
+   * @param {string} hostname - Hostname to mock
+   * @param {Object} additional - Additional location properties
+   */
+  mockLocation: (hostname, additional = {}) => {
+    global.window = {
+      location: {
+        hostname,
+        href: `https://${hostname}/`,
+        origin: `https://${hostname}`,
+        pathname: '/',
+        search: '',
+        hash: '',
+        ...additional
+      }
+    };
+  }
+};
+
+// Mock IntersectionObserver (not available in jsdom)
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn()
+}));
+
+// Mock ResizeObserver (not available in jsdom)
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn()
+}));
+
+// Mock matchMedia (not available in jsdom)
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn()
+  }))
+});
+
+// Mock console methods for testing
+global.console = {
+  ...console,
+  log: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  info: vi.fn(),
+  debug: vi.fn()
+};
+
+// Suppress console output during tests unless explicitly needed
+beforeAll(() => {
+  // Only suppress in test environment
+  if (process.env.NODE_ENV === 'test') {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'info').mockImplementation(() => {});
+    vi.spyOn(console, 'debug').mockImplementation(() => {});
+  }
+});
+
+// Mock fetch for API testing
 global.fetch = vi.fn();
 
-// Mock DOM APIs that may not be available in test environment
-Object.defineProperty(window, 'location', {
+// Mock localStorage and sessionStorage
+Object.defineProperty(window, 'localStorage', {
   value: {
-    hostname: 'localhost',
-    pathname: '/src/pages/index.html',
-    href: 'http://localhost:8080/src/pages/index.html',
-    origin: 'http://localhost:8080'
+    store: {},
+    getItem: vi.fn(function(key) {
+      return this.store[key] || null;
+    }),
+    setItem: vi.fn(function(key, value) {
+      this.store[key] = String(value);
+    }),
+    removeItem: vi.fn(function(key) {
+      delete this.store[key];
+    }),
+    clear: vi.fn(function() {
+      this.store = {};
+    })
   },
   writable: true
 });
 
-// Mock document.currentScript for navbarLoader tests
-Object.defineProperty(document, 'currentScript', {
+Object.defineProperty(window, 'sessionStorage', {
   value: {
-    src: 'http://localhost:8080/src/components/layout/navbarLoader.js'
+    store: {},
+    getItem: vi.fn(function(key) {
+      return this.store[key] || null;
+    }),
+    setItem: vi.fn(function(key, value) {
+      this.store[key] = String(value);
+    }),
+    removeItem: vi.fn(function(key) {
+      delete this.store[key];
+    }),
+    clear: vi.fn(function() {
+      this.store = {};
+    })
   },
-  writable: true,
-  configurable: true
+  writable: true
 });
 
-// Mock console methods to avoid noise in test output
-global.console = {
-  ...console,
-  log: vi.fn(),
-  debug: vi.fn(),
-  info: vi.fn(),
-  warn: vi.fn(),
-  error: vi.fn()
+// Mock CSS.supports
+global.CSS = {
+  supports: vi.fn(() => true)
 };
 
-// Clean up after each test
-beforeEach(() => {
-  // Reset DOM - check if body and head exist first
-  if (document.body) {
-    document.body.innerHTML = '';
-  }
-  if (document.head) {
-    document.head.innerHTML = '';
-  }
-  
-  // Reset fetch mock
-  if (global.fetch && typeof global.fetch.mockClear === 'function') {
-    fetch.mockClear();
-  }
-  
-  // Reset console mocks
-  vi.clearAllMocks();
-});
-
-// Global test utilities
-global.createMockNavbar = () => {
-  return `
-    <header class="navbar">
-      <div class="navbar-logo">
-        <a href="/src/pages/index.html">
-          <img src="/public/images/logo.png" alt="Learnimals Logo" />
-        </a>
-      </div>
-      <button id="mobile-menu" class="mobile-menu-button" aria-label="Toggle mobile menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <nav id="nav-menu" class="navbar-links" aria-label="Main navigation">
-        <ul>
-          <li><a href="/src/pages/index.html">Home</a></li>
-          <li><a href="/src/features/subjects/shared/math.html">Math</a></li>
-          <li><a href="/src/features/subjects/shared/science.html">Science</a></li>
-        </ul>
-      </nav>
-    </header>
-  `;
-};
-
-global.createNavbarPlaceholder = () => {
-  const placeholder = document.createElement('div');
-  placeholder.id = 'navbar-placeholder';
-  if (document.body) {
-    document.body.appendChild(placeholder);
-  }
-  return placeholder;
-};
-
-// Mock file content fetching for tests that read actual files
-global.mockFileContent = (filePath, content) => {
-  fetch.mockImplementation((url) => {
-    if (url.includes(filePath)) {
-      return Promise.resolve({
-        ok: true,
-        text: () => Promise.resolve(content)
-      });
-    }
-    // Default fallback for other URLs
-    return Promise.resolve({
-      ok: true,
-      text: () => Promise.resolve('')
-    });
-  });
-};
-
-// Setup default file content mocks for navigation files
-global.setupNavigationFileMocks = () => {
-  fetch.mockImplementation((url) => {
-    if (url.includes('navbarLoader.js')) {
-      return Promise.resolve({
-        ok: true,
-        text: () => Promise.resolve(`
-// Simple logger fallback for non-module script loading
-const logger = {
-  debug: (...args) => console.log('[NavbarLoader DEBUG]', ...args),
-  error: (...args) => console.error('[NavbarLoader ERROR]', ...args)
-};
-// Rest of navbarLoader code without ES6 imports
-        `)
-      });
-    }
-    if (url.includes('navigationHelper.js')) {
-      return Promise.resolve({
-        ok: true,
-        text: () => Promise.resolve(`
-// Simple logger fallback for non-module script loading
-const logger = {
-  debug: (...args) => console.log('[NavigationHelper DEBUG]', ...args),
-  error: (...args) => console.error('[NavigationHelper ERROR]', ...args)
-};
-class NavigationHelper {
-  // NavigationHelper code without ES6 imports
-}
-        `)
-      });
-    }
-    if (url.includes('navigation.js')) {
-      return Promise.resolve({
-        ok: true,
-        text: () => Promise.resolve(`
-// navigation.js content without ES6 imports
-class NavigationComponent {
-  // Navigation component code
-}
-        `)
-      });
-    }
-    if (url.includes('navbar.html')) {
-      return Promise.resolve({
-        ok: true,
-        text: () => Promise.resolve(global.createMockNavbar())
-      });
-    }
-    // Default fallback
-    return Promise.resolve({
-      ok: true,
-      text: () => Promise.resolve('')
-    });
-  });
-};
+// Set test environment
+process.env.NODE_ENV = 'test';

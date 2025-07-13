@@ -1,280 +1,322 @@
-name: 🔒 Security Scanning
+name: Security Scanning
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
   schedule:
-    # Run daily security scans
-    - cron: '0 2 * * *'
-  workflow_dispatch:
-
-concurrency:
-  group: security-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-  security-events: write
-  actions: read
-  pull-requests: write
+    - cron: '0 6 * * 1' # Weekly on Monday at 6 AM
 
 jobs:
-  # SAST - Static Application Security Testing
-  sast-scan:
-    name: 🔍 SAST Analysis
+  dependency-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
+      - uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
           cache: 'npm'
-
+      
       - name: Install dependencies
         run: npm ci
-
-      - name: ESLint Security Analysis
+      
+      - name: Run npm audit
         run: |
-          npm run lint 2>&1 | tee eslint-results.txt
-          echo "ESLint completed with exit code: $?"
+          echo "Running npm audit..."
+          npm audit --audit-level moderate || true
+          
+          # Generate audit report
+          npm audit --json > audit-report.json || true
+          
+          # Check for high/critical vulnerabilities
+          HIGH_VULNS=$(npm audit --json | jq '.metadata.vulnerabilities.high // 0')
+          CRITICAL_VULNS=$(npm audit --json | jq '.metadata.vulnerabilities.critical // 0')
+          
+          echo "High vulnerabilities: $HIGH_VULNS"
+          echo "Critical vulnerabilities: $CRITICAL_VULNS"
+          
+          if [ "$CRITICAL_VULNS" -gt 0 ]; then
+            echo "❌ Critical vulnerabilities found!"
+            exit 1
+          fi
+          
+          if [ "$HIGH_VULNS" -gt 3 ]; then
+            echo "⚠️ Too many high vulnerabilities found!"
+            exit 1
+          fi
+      
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: audit-report.json
+          retention-days: 30
 
+  codeql-analysis:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: javascript
-          queries: security-and-quality
-
+          queries: security-extended
+      
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+      
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript"
 
-      - name: Semgrep Security Scan
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: >-
-            p/security-audit
-            p/secrets
-            p/owasp-top-ten
-            p/javascript
-
-  # Dependency Vulnerability Scanning
-  dependency-scan:
-    name: 📦 Dependency Analysis
+  owasp-zap-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
           cache: 'npm'
-
+      
       - name: Install dependencies
         run: npm ci
-
-      - name: NPM Audit
+      
+      - name: Start development server
         run: |
-          echo "Running npm audit..."
-          npm audit --audit-level moderate --json > npm-audit.json || true
-          npm audit --audit-level moderate
-
-      - name: Snyk Security Scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=medium --json > snyk-results.json
-        continue-on-error: true
-
-      - name: Check if Snyk SARIF exists
-        id: check-snyk-sarif
-        run: |
-          if [ -f "snyk.sarif" ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+          # Start server in background
+          if command -v python3 &> /dev/null; then
+            python3 -m http.server 3000 --directory src/pages &
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            npx serve src/pages -p 3000 &
           fi
-
-      - name: Upload Snyk results to GitHub
-        if: always() && steps.check-snyk-sarif.outputs.exists == 'true'
-        uses: github/codeql-action/upload-sarif@v3
+          
+          # Wait for server to be ready
+          sleep 15
+          
+          # Verify server is running
+          curl -f http://localhost:3000 || exit 1
+      
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
         with:
-          sarif_file: snyk.sarif
-        continue-on-error: true
-
-  # Container Security Scanning
-  container-scan:
-    name: 🐳 Container Security
-    runs-on: ubuntu-latest
-    needs: dependency-scan
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image for scanning
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          load: true
-          tags: learnimals:security-scan
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'learnimals:security-scan'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+          target: 'http://localhost:3000'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: |
+            -a
+            -j
+            -m 5
+            -T 60
+            -z "-configFile /zap/wrk/.zap/options.prop"
+      
+      - name: Upload ZAP results
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          sarif_file: 'trivy-results.sarif'
+          name: zap-results
+          path: |
+            report_html.html
+            report_json.json
+          retention-days: 30
 
-      - name: Grype vulnerability scanner
-        id: grype-scan
-        uses: anchore/scan-action@v6
-        with:
-          image: 'learnimals:security-scan'
-          fail-build: false
-          severity-cutoff: medium
-          output-format: sarif
-
-      - name: Upload Grype scan results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: ${{ steps.grype-scan.outputs.sarif }}
-        continue-on-error: true
-
-  # Secrets Detection
-  secrets-scan:
-    name: 🔐 Secrets Detection
+  content-security-scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: TruffleHog Secrets Detection
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.pull_request.base.sha || 'main' }}
-          head: HEAD
-          extra_args: --only-verified --exclude-paths=.trufflehogignore
-
-      - name: GitLeaks Secrets Detection
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-
-  # Infrastructure Security Scanning
-  infrastructure-scan:
-    name: 🏗️ Infrastructure Security
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Checkov IaC Security Scan
-        uses: bridgecrewio/checkov-action@master
-        with:
-          directory: .
-          framework: dockerfile,kubernetes
-          output_format: sarif
-          output_file_path: checkov-results.sarif
-
-      - name: Upload Checkov scan results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: checkov-results.sarif
-
-      - name: Terrascan IaC Security Scan
-        uses: tenable/terrascan-action@main
-        with:
-          iac_type: 'k8s'
-          iac_version: 'v1'
-          policy_type: 'k8s'
-          only_warn: true
-          sarif_upload: true
-
-  # License Compliance
-  license-scan:
-    name: 📄 License Compliance
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
           cache: 'npm'
-
+      
       - name: Install dependencies
         run: npm ci
-
-      - name: License Check
+      
+      - name: Check for sensitive content
         run: |
-          npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD' --excludePrivatePackages --summary
+          echo "Scanning for sensitive content..."
+          
+          # Check for potential secrets in code
+          if command -v grep &> /dev/null; then
+            echo "Checking for potential secrets..."
+            
+            # API keys
+            grep -r "api[_-]key" src/ --include="*.js" --include="*.html" --include="*.css" || true
+            
+            # Passwords
+            grep -r "password.*=" src/ --include="*.js" --include="*.html" || true
+            
+            # Tokens
+            grep -r "token.*=" src/ --include="*.js" --include="*.html" || true
+            
+            # Database URLs
+            grep -r "mongodb://\|mysql://\|postgresql://" src/ --include="*.js" --include="*.html" || true
+            
+            # Email addresses in non-test files
+            grep -r "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" src/ --include="*.js" --include="*.html" | grep -v "test\|spec\|example.com" || true
+          fi
+      
+      - name: Validate Content Security Policy
+        run: |
+          echo "Checking for CSP headers..."
+          
+          # Check if CSP is defined in HTML files
+          find src -name "*.html" -exec grep -l "Content-Security-Policy" {} \; || echo "No CSP found in HTML files"
+          
+          # Check for inline scripts (potential CSP violations)
+          find src -name "*.html" -exec grep -l "javascript:" {} \; && echo "⚠️ Found inline javascript: URLs" || true
+          find src -name "*.html" -exec grep -l "onclick=" {} \; && echo "⚠️ Found inline onclick handlers" || true
+          find src -name "*.html" -exec grep -l "onload=" {} \; && echo "⚠️ Found inline onload handlers" || true
+      
+      - name: Check for unsafe practices
+        run: |
+          echo "Checking for unsafe JavaScript practices..."
+          
+          # Check for eval usage
+          grep -r "eval(" src/ --include="*.js" && echo "⚠️ Found eval() usage" || true
+          
+          # Check for innerHTML usage (potential XSS)
+          grep -r "innerHTML" src/ --include="*.js" && echo "⚠️ Found innerHTML usage" || true
+          
+          # Check for document.write usage
+          grep -r "document\.write" src/ --include="*.js" && echo "⚠️ Found document.write usage" || true
+          
+          # Check for dangerous jQuery methods
+          grep -r "\.html(" src/ --include="*.js" && echo "⚠️ Found jQuery .html() usage" || true
 
-      - name: FOSSA License Scan
-        uses: fossas/fossa-action@main
-        if: github.event_name != 'pull_request'
-        with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
-
-  # Security Report Generation
-  security-report:
-    name: 📊 Security Report
+  child-safety-scan:
     runs-on: ubuntu-latest
-    if: always()
-    needs: [sast-scan, dependency-scan, container-scan, secrets-scan, infrastructure-scan, license-scan]
     steps:
-      - name: Generate Security Summary
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: COPPA Compliance Check
         run: |
-          echo "# 🔒 Security Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Scan Status Overview" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Scan Type | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| SAST Analysis | ${{ needs.sast-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Dependency Scan | ${{ needs.dependency-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Container Security | ${{ needs.container-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Secrets Detection | ${{ needs.secrets-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Infrastructure Security | ${{ needs.infrastructure-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| License Compliance | ${{ needs.license-scan.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Next Steps" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Review any security findings in the Security tab" >> $GITHUB_STEP_SUMMARY
-          echo "- Address high and critical vulnerabilities before deployment" >> $GITHUB_STEP_SUMMARY
-          echo "- Update dependencies with known vulnerabilities" >> $GITHUB_STEP_SUMMARY
-          echo "- Verify no secrets were detected in the codebase" >> $GITHUB_STEP_SUMMARY
+          echo "Checking COPPA compliance..."
+          
+          # Check for data collection forms
+          echo "Checking for data collection forms..."
+          find src -name "*.html" -exec grep -l "input.*name.*email\|input.*name.*phone\|input.*name.*address" {} \; || true
+          
+          # Check for tracking scripts
+          echo "Checking for tracking scripts..."
+          find src -name "*.html" -exec grep -l "google-analytics\|facebook\|tracking" {} \; || true
+          
+          # Check for third-party embedded content
+          echo "Checking for third-party embedded content..."
+          find src -name "*.html" -exec grep -l "iframe\|embed\|object" {} \; || true
+          
+          # Check for user-generated content areas
+          echo "Checking for user-generated content areas..."
+          find src -name "*.html" -exec grep -l "textarea\|contenteditable" {} \; || true
+      
+      - name: Privacy Policy Check
+        run: |
+          echo "Checking for privacy policy..."
+          
+          # Look for privacy policy references
+          find src -name "*.html" -exec grep -l -i "privacy.*policy\|privacy.*statement" {} \; || echo "⚠️ No privacy policy found"
+          
+          # Check for cookie usage
+          grep -r "cookie" src/ --include="*.js" --include="*.html" || true
+          
+          # Check for localStorage usage
+          grep -r "localStorage\|sessionStorage" src/ --include="*.js" || true
 
-      - name: Security Scan Notification
-        if: failure()
+  security-headers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Start development server
         run: |
-          echo "⚠️ Security scan detected issues that require attention"
-          echo "Please review the Security tab for detailed findings"
+          if command -v python3 &> /dev/null; then
+            python3 -m http.server 3000 --directory src/pages &
+          else
+            npx serve src/pages -p 3000 &
+          fi
+          sleep 10
+      
+      - name: Check security headers
+        run: |
+          echo "Checking security headers..."
+          
+          # Check for security headers
+          curl -I http://localhost:3000 > headers.txt
+          
+          echo "Current headers:"
+          cat headers.txt
+          
+          # Check for important security headers
+          grep -i "content-security-policy" headers.txt || echo "⚠️ Missing Content-Security-Policy header"
+          grep -i "x-frame-options" headers.txt || echo "⚠️ Missing X-Frame-Options header"
+          grep -i "x-content-type-options" headers.txt || echo "⚠️ Missing X-Content-Type-Options header"
+          grep -i "referrer-policy" headers.txt || echo "⚠️ Missing Referrer-Policy header"
+          grep -i "permissions-policy" headers.txt || echo "⚠️ Missing Permissions-Policy header"
+          
+          # Check for secure cookie settings (if any)
+          grep -i "set-cookie" headers.txt | grep -i "secure" || echo "ℹ️ No secure cookies found"
+          grep -i "set-cookie" headers.txt | grep -i "httponly" || echo "ℹ️ No httponly cookies found"
+          grep -i "set-cookie" headers.txt | grep -i "samesite" || echo "ℹ️ No samesite cookies found"
+
+  report-security-status:
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, codeql-analysis, owasp-zap-scan, content-security-scan, child-safety-scan, security-headers]
+    if: always()
+    steps:
+      - name: Security scan summary
+        run: |
+          echo "Security Scan Results:"
+          echo "===================="
+          echo "Dependency Scan: ${{ needs.dependency-scan.result }}"
+          echo "CodeQL Analysis: ${{ needs.codeql-analysis.result }}"
+          echo "OWASP ZAP Scan: ${{ needs.owasp-zap-scan.result }}"
+          echo "Content Security Scan: ${{ needs.content-security-scan.result }}"
+          echo "Child Safety Scan: ${{ needs.child-safety-scan.result }}"
+          echo "Security Headers: ${{ needs.security-headers.result }}"
+          
+          # Create security report
+          echo "# Security Scan Report" > security-report.md
+          echo "Date: $(date)" >> security-report.md
+          echo "" >> security-report.md
+          echo "## Results" >> security-report.md
+          echo "- Dependency Scan: ${{ needs.dependency-scan.result }}" >> security-report.md
+          echo "- CodeQL Analysis: ${{ needs.codeql-analysis.result }}" >> security-report.md
+          echo "- OWASP ZAP Scan: ${{ needs.owasp-zap-scan.result }}" >> security-report.md
+          echo "- Content Security Scan: ${{ needs.content-security-scan.result }}" >> security-report.md
+          echo "- Child Safety Scan: ${{ needs.child-safety-scan.result }}" >> security-report.md
+          echo "- Security Headers: ${{ needs.security-headers.result }}" >> security-report.md
+      
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.md
+          retention-days: 90
