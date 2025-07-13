@@ -34,7 +34,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -125,7 +125,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image for scanning
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           load: true
@@ -148,19 +148,18 @@ jobs:
 
       - name: Grype vulnerability scanner
         id: grype-scan
-        uses: anchore/scan-action@v3
+        uses: anchore/scan-action@v6
         with:
           image: 'learnimals:security-scan'
           fail-build: false
           severity-cutoff: medium
           output-format: sarif
-          output-file: grype-results.sarif
 
       - name: Upload Grype scan results
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          sarif_file: grype-results.sarif
+          sarif_file: ${{ steps.grype-scan.outputs.sarif }}
         continue-on-error: true
 
   # Secrets Detection
@@ -229,7 +228,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies

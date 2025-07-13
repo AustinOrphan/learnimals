@@ -43,7 +43,9 @@
       "Bash(npm run lint:*)",
       "mcp__sequential-thinking__sequentialthinking",
       "mcp__Context7__get-library-docs",
-      "mcp__serena__summarize_changes"
+      "mcp__serena__summarize_changes",
+      "Bash(gh run view:*)",
+      "Bash(cat:*)"
     ],
     "deny": []
   }
