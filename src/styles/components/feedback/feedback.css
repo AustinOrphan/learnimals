@@ -1,0 +1,132 @@
+/**
+ * Feedback Components - Master CSS
+ * Imports all feedback-related styles and defines shared variables
+ */
+
+/* Import individual component styles */
+@import './feedback-overlay.css';
+@import './feedback-toast.css';
+@import './feedback-progress.css';
+
+/* Shared feedback variables */
+:root {
+  /* Character colors */
+  --reading-primary: #ff6b6b;
+  --reading-secondary: #ff8e8e;
+  --math-primary: #4ecdc4;
+  --math-secondary: #7dd3d8;
+  --science-primary: #45b7d1;
+  --science-secondary: #72c5d8;
+  --art-primary: #f9ca24;
+  --art-secondary: #f0932b;
+  --coding-primary: #6c5ce7;
+  --coding-secondary: #a29bfe;
+  
+  /* Feedback type colors */
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --info-color: #17a2b8;
+  --warning-color: #ffc107;
+  --purple-color: #6f42c1;
+  
+  /* Animation durations */
+  --feedback-transition-fast: 0.2s;
+  --feedback-transition-normal: 0.3s;
+  --feedback-transition-slow: 0.5s;
+  
+  /* Z-index layers */
+  --feedback-overlay-z: 1000;
+  --feedback-toast-z: 500;
+  --feedback-progress-z: 100;
+  
+  /* Border radius */
+  --feedback-border-radius-small: 6px;
+  --feedback-border-radius-medium: 12px;
+  --feedback-border-radius-large: 20px;
+  
+  /* Shadow levels */
+  --feedback-shadow-small: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --feedback-shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --feedback-shadow-large: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* Global feedback utilities */
+.feedback-hidden {
+  display: none !important;
+}
+
+.feedback-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus management for accessibility */
+.feedback-focus-trap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reduced motion utilities */
+@media (prefers-reduced-motion: reduce) {
+  .feedback-animate-none {
+    animation: none !important;
+    transition: opacity var(--feedback-transition-fast) ease !important;
+  }
+}
+
+/* High contrast mode utilities */
+@media (prefers-contrast: high) {
+  .feedback-high-contrast {
+    border-width: 3px !important;
+    box-shadow: 0 0 0 2px currentColor !important;
+  }
+}
+
+/* Dark theme utilities */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --feedback-shadow-small: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --feedback-shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --feedback-shadow-large: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Print utilities */
+@media print {
+  .feedback-no-print {
+    display: none !important;
+  }
+  
+  .feedback-print-only {
+    display: block !important;
+  }
+}
+
+/* Mobile utilities */
+@media (max-width: 768px) {
+  :root {
+    --feedback-border-radius-small: 4px;
+    --feedback-border-radius-medium: 8px;
+    --feedback-border-radius-large: 12px;
+  }
+}
+
+/* Touch device utilities */
+@media (hover: none) and (pointer: coarse) {
+  .feedback-touch-optimized {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

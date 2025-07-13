@@ -2,6 +2,7 @@
 // Reusable modal component for consistent UI across the site
 
 import BaseComponent from '../BaseComponent.js';
+import { escapeHTML } from '../../utils/htmlEscape.js';
 
 class Modal extends BaseComponent {
   /**
@@ -48,10 +49,10 @@ class Modal extends BaseComponent {
     const sizeClass = `modal--${size}`;
     
     let html = `
-      <div id="${id}" class="component modal-overlay" aria-hidden="true">
-        <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${id}-title" aria-modal="true">
+      <div id="${escapeHTML(id)}" class="component modal-overlay" aria-hidden="true">
+        <div class="modal ${sizeClass}" role="dialog" aria-labelledby="${escapeHTML(id)}-title" aria-modal="true">
           <div class="modal-header">
-            <h3 id="${id}-title" class="modal-title">${title}</h3>
+            <h3 id="${escapeHTML(id)}-title" class="modal-title">${escapeHTML(title)}</h3>
             ${showClose ? '<button class="modal-close component-button component-button--ghost" aria-label="Close">&times;</button>' : ''}
           </div>
           <div class="modal-content">
@@ -67,13 +68,13 @@ class Modal extends BaseComponent {
       
       if (showCancelButton) {
         html += `
-          <button class="modal-cancel component-button component-button--outline">${cancelButtonText}</button>
+          <button class="modal-cancel component-button component-button--outline">${escapeHTML(cancelButtonText)}</button>
         `;
       }
       
       if (showConfirmButton) {
         html += `
-          <button class="modal-confirm component-button component-button--primary">${confirmButtonText}</button>
+          <button class="modal-confirm component-button component-button--primary">${escapeHTML(confirmButtonText)}</button>
         `;
       }
       
@@ -102,6 +103,10 @@ class Modal extends BaseComponent {
       
       // Append to body
       document.body.appendChild(modalContainer.firstElementChild);
+      
+      // Set element reference
+      this.element = document.getElementById(this.options.id);
+      this.isRendered = true;
       
       // Attach event listeners
       this.attachEventListeners();

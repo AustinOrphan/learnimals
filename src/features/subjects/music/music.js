@@ -3,6 +3,7 @@
  * Interactive features for Melody the Songbird
  */
 import Modal from '../../../components/ui/Modal.js';
+import { escapeHTML } from '../../../utils/common.js';
 
 class MusicSubject {
   constructor() {
@@ -115,7 +116,7 @@ class MusicSubject {
       'Let\'s explore and have fun together!',
       'Click on any activity to get started!'
     ];
-        
+
     const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
         
     // Create and show message modal or toast
@@ -124,13 +125,14 @@ class MusicSubject {
 
   displayMessage(message) {
     // Use custom modal component with character theming
+    // SECURITY: Escape HTML to prevent XSS attacks
     const modal = new Modal({
       id: 'music-message-modal',
-      title: `${this.character.name} the ${this.character.type}`,
+      title: `${escapeHTML(this.character.name)} the ${escapeHTML(this.character.type)}`,
       content: `<div class="character-message">
-        <div class="character-icon">🎵</div>
-        <p>${message}</p>
-      </div>`,
+                <div class="character-icon">🎵</div>
+                <p>${escapeHTML(message)}</p>
+            </div>`,
       confirmButtonText: 'Got it!',
       showClose: true,
       size: 'medium',

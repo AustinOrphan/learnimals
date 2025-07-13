@@ -1,0 +1,36 @@
+# Gitleaks ignore file for false positives
+
+# Example API keys in documentation
+docs/**/*.md
+
+# Mock credentials in test files
+tests/**/*.test.js
+tests/**/*.spec.js
+tests/setup.js
+
+# Package lock files that may contain hashes
+package-lock.json
+yarn.lock
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Node modules
+node_modules/
+
+# Configuration examples
+*.example
+*.sample
+README.md
+
+# Ignore specific patterns that are known false positives
+# Base64 encoded images in CSS/HTML
+*.css:.*data:image.*base64.*
+*.html:.*data:image.*base64.*
+
+# Mock API endpoints
+*:.*localhost.*
+*:.*127.0.0.1.*
+*:.*example.com.*

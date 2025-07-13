@@ -136,11 +136,6 @@ if (typeof window !== 'undefined') {
 // Export for ES6 modules and testing
 export default NavigationHelper;
 
-// Also make available as CommonJS module for compatibility
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = NavigationHelper;
-}
-
 // Make available for dynamic imports
 if (typeof window !== 'undefined') {
   window.NavigationHelper = NavigationHelper;

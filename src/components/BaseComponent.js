@@ -340,3 +340,6 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.BaseComponent = BaseComponent;
 }
+
+// ES module export
+export default BaseComponent;
