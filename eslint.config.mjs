@@ -62,16 +62,24 @@ export default [
         Card: 'readonly',
         DOMParser: 'readonly',
         Intl: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
         
-        // Node.js globals (for scripts and tests)
-        process: 'readonly',
-        Buffer: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
+        // Speech API
+        SpeechSynthesisUtterance: 'readonly',
+        speechSynthesis: 'readonly',
+        
+        // Module system (for ES modules)
         module: 'readonly',
-        require: 'readonly',
-        exports: 'readonly',
-        global: 'readonly'
+        
+        // Component classes (project-specific)
+        BaseComponent: 'readonly',
+        createCharacter: 'readonly',
+        
+        // Additional browser APIs
+        indexedDB: 'readonly',
+        confirm: 'readonly',
+        Event: 'readonly'
       }
     },
     rules: {
@@ -133,7 +141,13 @@ export default [
         vi: 'readonly',
         
         // JSDOM globals for testing
-        global: 'readonly'
+        global: 'readonly',
+        
+        // Node.js globals for tests
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly'
       }
     }
   }

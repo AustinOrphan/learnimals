@@ -264,4 +264,136 @@ class Particle {
       this.alpha = lifeRatio * 0.6;
       this.scale = 1 + (1 - lifeRatio) * 2;
       break;
-    }\n  }\n  \n  /**\n   * Draw particle to canvas\n   */\n  draw(ctx) {\n    if (this.alpha <= 0) return;\n    \n    ctx.save();\n    ctx.globalAlpha = this.alpha;\n    \n    // Move to particle position\n    ctx.translate(this.x, this.y);\n    \n    // Apply rotation\n    if (this.rotation) {\n      ctx.rotate(this.rotation);\n    }\n    \n    // Apply scale\n    if (this.scale !== 1) {\n      ctx.scale(this.scale, this.scale);\n    }\n    \n    // Draw based on type\n    switch (this.type) {\n      case 'burst':\n      case 'sparkle':\n        this.drawCircle(ctx);\n        break;\n        \n      case 'confetti':\n        this.drawConfetti(ctx);\n        break;\n        \n      case 'text':\n        this.drawText(ctx);\n        break;\n        \n      case 'steam':\n        this.drawSteam(ctx);\n        break;\n        \n      default:\n        this.drawCircle(ctx);\n    }\n    \n    ctx.restore();\n  }\n  \n  /**\n   * Draw a simple circle particle\n   */\n  drawCircle(ctx) {\n    ctx.fillStyle = this.color;\n    ctx.beginPath();\n    ctx.arc(0, 0, this.size, 0, Math.PI * 2);\n    ctx.fill();\n    \n    // Add glow effect for sparkles\n    if (this.type === 'sparkle') {\n      ctx.shadowColor = this.color;\n      ctx.shadowBlur = this.size * 2;\n      ctx.fill();\n    }\n  }\n  \n  /**\n   * Draw confetti as a rectangle\n   */\n  drawConfetti(ctx) {\n    ctx.fillStyle = this.color;\n    ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);\n    \n    // Add highlight\n    ctx.fillStyle = this.lightenColor(this.color, 30);\n    ctx.fillRect(-this.size / 2, -this.size / 4, this.size / 3, this.size / 2);\n  }\n  \n  /**\n   * Draw floating text\n   */\n  drawText(ctx) {\n    ctx.fillStyle = this.color;\n    ctx.font = `bold ${this.size}px Arial`;\n    ctx.textAlign = 'center';\n    ctx.textBaseline = 'middle';\n    \n    // Add text shadow\n    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';\n    ctx.shadowBlur = 4;\n    ctx.shadowOffsetX = 2;\n    ctx.shadowOffsetY = 2;\n    \n    ctx.fillText(this.text, 0, 0);\n  }\n  \n  /**\n   * Draw steam as a soft circle\n   */\n  drawSteam(ctx) {\n    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);\n    gradient.addColorStop(0, this.color);\n    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');\n    \n    ctx.fillStyle = gradient;\n    ctx.beginPath();\n    ctx.arc(0, 0, this.size, 0, Math.PI * 2);\n    ctx.fill();\n  }\n  \n  /**\n   * Lighten a color by a percentage\n   */\n  lightenColor(color, percent) {\n    const num = parseInt(color.replace('#', ''), 16);\n    const amt = Math.round(2.55 * percent);\n    const R = (num >> 16) + amt;\n    const G = (num >> 8 & 0x00FF) + amt;\n    const B = (num & 0x0000FF) + amt;\n    return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +\n      (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +\n      (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);\n  }\n  \n  /**\n   * Check if particle is dead\n   */\n  isDead() {\n    return this.life <= 0;\n  }\n}"
+    }
+  }
+  
+  /**
+   * Draw particle to canvas
+   */
+  draw(ctx) {
+    if (this.alpha <= 0) return;
+    
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    
+    // Move to particle position
+    ctx.translate(this.x, this.y);
+    
+    // Apply rotation
+    if (this.rotation) {
+      ctx.rotate(this.rotation);
+    }
+    
+    // Apply scale
+    if (this.scale !== 1) {
+      ctx.scale(this.scale, this.scale);
+    }
+    
+    // Draw based on type
+    switch (this.type) {
+      case 'burst':
+      case 'sparkle':
+        this.drawCircle(ctx);
+        break;
+        
+      case 'confetti':
+        this.drawConfetti(ctx);
+        break;
+        
+      case 'text':
+        this.drawText(ctx);
+        break;
+        
+      case 'steam':
+        this.drawSteam(ctx);
+        break;
+        
+      default:
+        this.drawCircle(ctx);
+    }
+    
+    ctx.restore();
+  }
+  
+  /**
+   * Draw a simple circle particle
+   */
+  drawCircle(ctx) {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Add glow effect for sparkles
+    if (this.type === 'sparkle') {
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = this.size * 2;
+      ctx.fill();
+    }
+  }
+  
+  /**
+   * Draw confetti as a rectangle
+   */
+  drawConfetti(ctx) {
+    ctx.fillStyle = this.color;
+    ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+    
+    // Add highlight
+    ctx.fillStyle = this.lightenColor(this.color, 30);
+    ctx.fillRect(-this.size / 2, -this.size / 4, this.size / 3, this.size / 2);
+  }
+  
+  /**
+   * Draw floating text
+   */
+  drawText(ctx) {
+    ctx.fillStyle = this.color;
+    ctx.font = `bold ${this.size}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // Add text shadow
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    
+    ctx.fillText(this.text, 0, 0);
+  }
+  
+  /**
+   * Draw steam as a soft circle
+   */
+  drawSteam(ctx) {
+    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size);
+    gradient.addColorStop(0, this.color);
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  
+  /**
+   * Lighten a color by a percentage
+   */
+  lightenColor(color, percent) {
+    const num = parseInt(color.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+    return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+      (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+      (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+  }
+  
+  /**
+   * Check if particle is dead
+   */
+  isDead() {
+    return this.life <= 0;
+  }
+}
