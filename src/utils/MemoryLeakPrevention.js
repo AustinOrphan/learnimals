@@ -118,9 +118,17 @@ export default class MemoryLeakPrevention {
    */
   removeAllEventListeners() {
     this.eventListeners.forEach((listeners, key) => {
-      const [, event] = key.split('-');
+      // Extract event type by finding the last hyphen in the key
+      // This handles cases where tagName might contain hyphens
+      const lastHyphenIndex = key.lastIndexOf('-');
+      const event = lastHyphenIndex !== -1 ? key.substring(lastHyphenIndex + 1) : key;
+      
       listeners.forEach(({ element, handler }) => {
-        element.removeEventListener(event, handler);
+        try {
+          element.removeEventListener(event, handler);
+        } catch (error) {
+          console.warn('Error removing event listener:', error);
+        }
       });
     });
     this.eventListeners.clear();
@@ -189,7 +197,7 @@ export default class MemoryLeakPrevention {
     const exempt = new Set(exemptions);
     
     Object.keys(obj).forEach(key => {
-      if (!exempt.has(key) && obj.hasOwnProperty(key)) {
+      if (!exempt.has(key) && Object.prototype.hasOwnProperty.call(obj, key)) {
         if (obj[key] && typeof obj[key] === 'object') {
           // Clear arrays and objects
           if (Array.isArray(obj[key])) {
@@ -206,11 +214,15 @@ export default class MemoryLeakPrevention {
   }
 
   /**
+   * @deprecated This method uses an unsafe cloneNode pattern that can lead to stale DOM references.
+   * Use proper event listener cleanup with removeEventListener instead.
    * Replace DOM element to remove all event listeners
    * @param {Element} element - Element to clean
    * @returns {Element} New clean element
    */
   cleanDOMElement(element) {
+    console.warn('cleanDOMElement is deprecated. Use proper removeEventListener cleanup instead.');
+    
     if (!element || !element.parentNode) return null;
     
     const newElement = element.cloneNode(true);
@@ -219,10 +231,14 @@ export default class MemoryLeakPrevention {
   }
 
   /**
+   * @deprecated This method uses an unsafe cloneNode pattern that can lead to stale DOM references.
+   * Use proper event listener cleanup with removeEventListener instead.
    * Clean multiple DOM elements by ID
    * @param {Array<string>} elementIds - Array of element IDs to clean
    */
   cleanDOMElementsByIds(elementIds) {
+    console.warn('cleanDOMElementsByIds is deprecated. Use proper removeEventListener cleanup instead.');
+    
     elementIds.forEach(id => {
       const element = document.getElementById(id);
       if (element) {

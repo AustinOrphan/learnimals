@@ -40,6 +40,73 @@ class WordScrambleGame {
     this.remainingTime = 60; // seconds
     this.timer = null;
     
+    // Store bound event handler references for proper cleanup
+    this.boundEventHandlers = {
+      startGame: () => this.startGame(),
+      checkAnswer: () => this.checkAnswer(),
+      nextWord: () => this.nextWord(),
+      difficultyChange: (e) => {
+        this.difficultyLevel = e.target.value;
+        logger.debug(`Difficulty changed to: ${this.difficultyLevel}`);
+      },
+      playAgain: () => {
+        this.score = 0;
+        this.round = 0;
+        this.remainingTime = 60;
+        document.querySelector('.game-results').style.display = 'none';
+        document.querySelector('.game-settings').style.display = 'flex';
+        document.getElementById('score').textContent = this.score;
+        document.getElementById('round').textContent = this.round;
+      },
+      dragStart: (e) => {
+        if (e.target.classList.contains('letter-tile')) {
+          e.target.classList.add('dragging');
+          e.dataTransfer.setData('text/plain', e.target.getAttribute('data-index'));
+        }
+      },
+      dragEnd: (e) => {
+        if (e.target.classList.contains('letter-tile')) {
+          e.target.classList.remove('dragging');
+        }
+      },
+      dragOver: (e) => {
+        e.preventDefault(); // Allow drop
+        if (e.target.classList.contains('empty-tile')) {
+          e.target.style.backgroundColor = '#ffecb3';
+        }
+      },
+      dragLeave: (e) => {
+        if (e.target.classList.contains('empty-tile')) {
+          e.target.style.backgroundColor = '';
+        }
+      },
+      drop: (e) => {
+        e.preventDefault();
+        
+        if (e.target.classList.contains('empty-tile')) {
+          const letterIndex = e.dataTransfer.getData('text/plain');
+          const letter = document.querySelector(`.letter-tile[data-index="${letterIndex}"]`);
+          
+          // Clone the letter tile
+          const clone = letter.cloneNode(true);
+          clone.setAttribute('draggable', 'false');
+          
+          // Replace the empty tile with the letter
+          e.target.parentNode.replaceChild(clone, e.target);
+          
+          // Remove the original letter from scrambled area
+          letter.remove();
+        }
+        
+        // Check if all letters have been placed
+        const scrambledArea = document.getElementById('scrambled-area');
+        if (scrambledArea && scrambledArea.children.length === 0) {
+          // All letters placed, check answer automatically
+          setTimeout(() => this.checkAnswer(), 500);
+        }
+      }
+    };
+    
     this.init();
   }
   
@@ -47,13 +114,11 @@ class WordScrambleGame {
     // Create game UI
     this.createGameUI();
     
-    // Set up event listeners
-    document.getElementById('start-game').addEventListener('click', () => this.startGame());
-    document.getElementById('check-word').addEventListener('click', () => this.checkAnswer());
-    document.getElementById('new-word').addEventListener('click', () => this.nextWord());
-    document.getElementById('difficulty-select').addEventListener('change', (e) => {
-      this.difficultyLevel = e.target.value;
-    });
+    // Set up event listeners using bound handlers for proper cleanup
+    document.getElementById('start-game').addEventListener('click', this.boundEventHandlers.startGame);
+    document.getElementById('check-word').addEventListener('click', this.boundEventHandlers.checkAnswer);
+    document.getElementById('new-word').addEventListener('click', this.boundEventHandlers.nextWord);
+    document.getElementById('difficulty-select').addEventListener('change', this.boundEventHandlers.difficultyChange);
     
     // Set up drag and drop functionality
     this.setupDragAndDrop();
@@ -110,15 +175,8 @@ class WordScrambleGame {
     
     // CSS is now in external file: wordScramble.css
     
-    // Add event listener for the play again button
-    document.getElementById('play-again').addEventListener('click', () => {
-      document.querySelector('.game-results').style.display = 'none';
-      document.querySelector('.game-settings').style.display = 'flex';
-      this.score = 0;
-      this.round = 0;
-      document.getElementById('score').textContent = this.score;
-      document.getElementById('round').textContent = this.round;
-    });
+    // Add event listener for the play again button using bound handler
+    document.getElementById('play-again').addEventListener('click', this.boundEventHandlers.playAgain);
   }
   
   startGame() {
@@ -226,58 +284,12 @@ class WordScrambleGame {
   }
   
   setupDragAndDrop() {
-    // Use event delegation for drag and drop
-    this.container.addEventListener('dragstart', (e) => {
-      if (e.target.classList.contains('letter-tile')) {
-        e.target.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', e.target.getAttribute('data-index'));
-      }
-    });
-    
-    this.container.addEventListener('dragend', (e) => {
-      if (e.target.classList.contains('letter-tile')) {
-        e.target.classList.remove('dragging');
-      }
-    });
-    
-    this.container.addEventListener('dragover', (e) => {
-      e.preventDefault(); // Allow drop
-      
-      if (e.target.classList.contains('empty-tile')) {
-        e.target.style.backgroundColor = '#ffecb3';
-      }
-    });
-    
-    this.container.addEventListener('dragleave', (e) => {
-      if (e.target.classList.contains('empty-tile')) {
-        e.target.style.backgroundColor = '';
-      }
-    });
-    
-    this.container.addEventListener('drop', (e) => {
-      e.preventDefault();
-      
-      if (e.target.classList.contains('empty-tile')) {
-        const letterIndex = e.dataTransfer.getData('text/plain');
-        const letter = document.querySelector(`.letter-tile[data-index="${letterIndex}"]`);
-        
-        // Clone the letter tile
-        const clone = letter.cloneNode(true);
-        clone.setAttribute('draggable', 'false');
-        
-        // Replace the empty tile with the letter
-        e.target.parentNode.replaceChild(clone, e.target);
-        
-        // Remove the original letter from scrambled area
-        letter.remove();
-      }
-      
-      // Check if all letters have been placed
-      const scrambledArea = document.getElementById('scrambled-area');
-      if (scrambledArea.children.length === 0) {
-        this.checkAnswer();
-      }
-    });
+    // Use event delegation for drag and drop with bound handlers for proper cleanup
+    this.container.addEventListener('dragstart', this.boundEventHandlers.dragStart);
+    this.container.addEventListener('dragend', this.boundEventHandlers.dragEnd);
+    this.container.addEventListener('dragover', this.boundEventHandlers.dragOver);
+    this.container.addEventListener('dragleave', this.boundEventHandlers.dragLeave);
+    this.container.addEventListener('drop', this.boundEventHandlers.drop);
   }
   
   checkAnswer() {
@@ -411,56 +423,49 @@ class WordScrambleGame {
     // Set game as inactive
     this.gameActive = false;
 
-    // Remove event listeners
+    // Remove event listeners properly using the bound function references
     const startButton = document.getElementById('start-game');
     if (startButton) {
-      // Clone and replace to remove all event listeners
-      const newStartButton = startButton.cloneNode(true);
-      if (startButton.parentNode) {
-        startButton.parentNode.replaceChild(newStartButton, startButton);
-      }
+      startButton.removeEventListener('click', this.boundEventHandlers.startGame);
     }
 
-    const nextRoundButton = document.getElementById('next-round');
-    if (nextRoundButton) {
-      const newNextButton = nextRoundButton.cloneNode(true);
-      if (nextRoundButton.parentNode) {
-        nextRoundButton.parentNode.replaceChild(newNextButton, nextRoundButton);
-      }
+    const checkButton = document.getElementById('check-word');
+    if (checkButton) {
+      checkButton.removeEventListener('click', this.boundEventHandlers.checkAnswer);
+    }
+
+    const newWordButton = document.getElementById('new-word');
+    if (newWordButton) {
+      newWordButton.removeEventListener('click', this.boundEventHandlers.nextWord);
+    }
+
+    const difficultySelect = document.getElementById('difficulty-select');
+    if (difficultySelect) {
+      difficultySelect.removeEventListener('change', this.boundEventHandlers.difficultyChange);
     }
 
     const playAgainButton = document.getElementById('play-again');
     if (playAgainButton) {
-      const newPlayButton = playAgainButton.cloneNode(true);
-      if (playAgainButton.parentNode) {
-        playAgainButton.parentNode.replaceChild(newPlayButton, playAgainButton);
-      }
+      playAgainButton.removeEventListener('click', this.boundEventHandlers.playAgain);
     }
 
-    // Clear drag and drop event listeners
-    const scrambledContainer = document.getElementById('scrambled-letters');
-    if (scrambledContainer) {
-      const newContainer = scrambledContainer.cloneNode(true);
-      if (scrambledContainer.parentNode) {
-        scrambledContainer.parentNode.replaceChild(newContainer, scrambledContainer);
-      }
-    }
-
-    const answersContainer = document.getElementById('answer-slots');
-    if (answersContainer) {
-      const newAnswerContainer = answersContainer.cloneNode(true);
-      if (answersContainer.parentNode) {
-        answersContainer.parentNode.replaceChild(newAnswerContainer, answersContainer);
-      }
+    // Remove drag and drop event listeners from container
+    if (this.container) {
+      this.container.removeEventListener('dragstart', this.boundEventHandlers.dragStart);
+      this.container.removeEventListener('dragend', this.boundEventHandlers.dragEnd);
+      this.container.removeEventListener('dragover', this.boundEventHandlers.dragOver);
+      this.container.removeEventListener('dragleave', this.boundEventHandlers.dragLeave);
+      this.container.removeEventListener('drop', this.boundEventHandlers.drop);
     }
 
     // Clear all references to prevent memory leaks
     this.currentWord = '';
     this.currentHint = '';
     this.scrambledLetters = [];
+    this.boundEventHandlers = null;
     this.container = null;
 
-    logger.debug('WordScrambleGame destroyed and cleaned up');
+    console.log('WordScrambleGame destroyed and cleaned up properly');
   }
 }
 
