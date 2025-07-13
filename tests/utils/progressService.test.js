@@ -22,6 +22,21 @@ const mockUserProgress = {
         storiesRead: 3,
         level: 1,
         lastActivity: '2024-01-14T15:30:00Z'
+      },
+      science: {
+        experimentsCompleted: 2,
+        level: 1,
+        lastActivity: '2024-01-13T12:00:00Z'
+      },
+      art: {
+        projectsCompleted: 1,
+        level: 1,
+        lastActivity: '2024-01-12T14:30:00Z'
+      },
+      coding: {
+        challengesCompleted: 4,
+        level: 2,
+        lastActivity: '2024-01-16T16:15:00Z'
       }
     }
   },
@@ -66,8 +81,35 @@ describe('ProgressService', () => {
   let mockDocument;
 
   beforeEach(() => {
-    // Reset mocks
+    // Reset mocks but preserve return values
     vi.clearAllMocks();
+    
+    // Re-setup mock return values after clearing
+    mockUserProgress.updateMathProgress = vi.fn(() => true);
+    mockUserProgress.updateReadingProgress = vi.fn(() => true);
+    mockUserProgress.updateScienceProgress = vi.fn(() => true);
+    mockUserProgress.updateArtProgress = vi.fn(() => true);
+    mockUserProgress.getProfile = vi.fn(() => ({ 
+      name: 'Test User',
+      streak: { current: 3, max: 7 }
+    }));
+    mockUserProgress.getProgressSummary = vi.fn(() => ({
+      profile: { name: 'Test User' },
+      stats: { mathProblems: 25 }
+    }));
+    mockUserProgress.getAchievements = vi.fn(() => [
+      { id: 'test_achievement', unlocked: true, name: 'Test Achievement' }
+    ]);
+    mockUserProgress.getRecentActivity = vi.fn(() => []);
+    mockUserProgress.getRecentAchievements = vi.fn(() => []);
+    mockUserProgress.getSettings = vi.fn(() => ({ theme: 'default' }));
+    mockUserProgress.checkDailyStreak = vi.fn();
+    
+    mockEnhancedTracker.trackGameSession = vi.fn();
+    mockEnhancedTracker.checkAchievements = vi.fn();
+    mockEnhancedTracker.updateDailyStreak = vi.fn();
+    mockEnhancedTracker.getProgressSummary = vi.fn(() => ({}));
+    mockEnhancedTracker.getGameAnalyticsSummary = vi.fn(() => ({}));
     
     // Mock document
     mockDocument = {
