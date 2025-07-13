@@ -1,0 +1,39 @@
+# Gitleaks configuration file
+# https://github.com/gitleaks/gitleaks
+
+[extend]
+# Extend the base configuration
+useDefault = true
+
+[allowlist]
+# Global allowlist
+description = "Global allowlist for Learnimals project"
+paths = [
+  '''tests/.*''',
+  '''docs/.*''',
+  '''README\.md''',
+  '''package-lock\.json''',
+  '''yarn\.lock''',
+  '''.*\.example''',
+  '''.*\.sample''',
+  '''node_modules/.*'''
+]
+
+# Allow localhost and example domains
+regexes = [
+  '''localhost:[0-9]+''',
+  '''127\.0\.0\.1:[0-9]+''',
+  '''example\.com''',
+  '''test@example\.com''',
+  '''data:image/.*base64'''
+]
+
+[[rules]]
+# Custom rule to ignore base64 encoded images
+id = "base64-images"
+description = "Ignore base64 encoded images"
+regex = '''data:image/[^;]+;base64,[A-Za-z0-9+/]+=*'''
+allowlist = {
+  description = "Allow base64 images in CSS and HTML files",
+  paths = ['''.*\.(css|html|js)$''']
+}

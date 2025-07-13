@@ -66,10 +66,24 @@
       "Bash(npm run lint:*)",
       "Bash(gh label:*)",
       "Bash(git stash:*)",
-      "Bash(npm run lint:*)",
       "Bash(node:*)",
       "mcp__serena__summarize_changes",
-      "mcp__serena__replace_regex"
+      "mcp__serena__replace_regex",
+      "Bash(gh run view:*)",
+      "Bash(cat:*)",
+      "mcp__serena__restart_language_server",
+      "mcp__serena__find_file",
+      "mcp__serena__list_memories",
+      "mcp__serena__write_memory",
+      "gh label:*",
+      "gh milestone:*",
+      "git remote get-url:*",
+      "mcp__filesystem__read_file",
+      "mcp__filesystem__write_file",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__read_multiple_files",
+      "mcp__filesystem__search_files",
+      "mcp__filesystem__edit_file"
     ],
     "deny": []
   }

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Dashboard - Learnimals</title>
+  
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="../styles/base/reset.css">
+  <link rel="stylesheet" href="../styles/base/variables.css">
+  <link rel="stylesheet" href="../styles/base/typography.css">
+  <link rel="stylesheet" href="../styles/base/utilities.css">
+  
+  <!-- Component Styles -->
+  <link rel="stylesheet" href="../styles/components/navbar.css">
+  <link rel="stylesheet" href="../styles/components/card.css">
+  <link rel="stylesheet" href="../styles/components/modal.css">
+  <link rel="stylesheet" href="../styles/components/gameProgressDashboard.css">
+  <link rel="stylesheet" href="../styles/components/progressIntegration.css">
+  
+  <!-- Theme Styles -->
+  <link rel="stylesheet" href="../styles/themes/theme.css">
+  
+  <!-- Page Specific Styles -->
+  <style>
+    .dashboard-page {
+      min-height: 100vh;
+      background-color: var(--bg-primary);
+    }
+    
+    .dashboard-header {
+      text-align: center;
+      padding: var(--spacing-xlarge) var(--spacing-large);
+      background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+    }
+    
+    .dashboard-header h1 {
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-medium);
+    }
+    
+    .dashboard-header p {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--spacing-xlarge);
+    }
+    
+    .demo-controls {
+      background-color: var(--bg-card);
+      padding: var(--spacing-large);
+      border-radius: var(--border-radius);
+      margin-bottom: var(--spacing-xlarge);
+      text-align: center;
+    }
+    
+    .demo-controls h3 {
+      margin-bottom: var(--spacing-medium);
+      color: var(--text-primary);
+    }
+    
+    .demo-buttons {
+      display: flex;
+      gap: var(--spacing-medium);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .demo-button {
+      padding: var(--spacing-small) var(--spacing-medium);
+      background-color: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .demo-button:hover {
+      background-color: var(--accent-secondary);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="dashboard-page">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="index.html" class="navbar-brand">
+        <img src="../../public/images/logo.png" alt="Learnimals Logo">
+        Learnimals
+      </a>
+      <div class="navbar-links">
+        <a href="index.html">Home</a>
+        <a href="subjects.html">Subjects</a>
+        <a href="games.html">Games</a>
+        <a href="progress-dashboard.html" class="active">Progress</a>
+        <a href="profile.html">Profile</a>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Dashboard Header -->
+  <header class="dashboard-header">
+    <h1>Your Learning Progress</h1>
+    <p>Track your achievements, view your stats, and celebrate your learning journey!</p>
+  </header>
+  
+  <!-- Main Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+      <h3>Demo Actions</h3>
+      <div class="demo-buttons">
+        <button class="demo-button" onclick="simulateGameSession('word-scramble')">
+          Simulate Word Scramble Session
+        </button>
+        <button class="demo-button" onclick="simulateGameSession('number-line-jump')">
+          Simulate Number Line Session
+        </button>
+        <button class="demo-button" onclick="simulateGameSession('element-match')">
+          Simulate Element Match Session
+        </button>
+        <button class="demo-button" onclick="unlockRandomAchievement()">
+          Unlock Random Achievement
+        </button>
+        <button class="demo-button" onclick="resetAllProgress()">
+          Reset All Progress
+        </button>
+      </div>
+    </div>
+    
+    <!-- Progress Dashboard -->
+    <div id="progress-dashboard"></div>
+  </div>
+  
+  <!-- Scripts -->
+  <script type="module">
+    import GameProgressDashboard from '../components/ui/GameProgressDashboard.js';
+    import { 
+      initializeGameProgress, 
+      trackGameEvent, 
+      endGameSession,
+      showAchievementUnlock 
+    } from '../utils/progressIntegration.js';
+    
+    // Initialize dashboard
+    const dashboard = new GameProgressDashboard('progress-dashboard');
+    window.gameProgressDashboard = dashboard;
+    
+    // Demo functions
+    window.simulateGameSession = function(gameId) {
+      const session = initializeGameProgress(gameId, {
+        difficulty: 'medium'
+      });
+      
+      // Simulate some game events
+      const events = Math.floor(Math.random() * 15) + 10;
+      for (let i = 0; i < events; i++) {
+        const correct = Math.random() > 0.2;
+        trackGameEvent(session, {
+          type: 'answer',
+          correct,
+          score: correct ? Math.floor(Math.random() * 20) + 10 : 0
+        });
+        
+        if (correct) {
+          trackGameEvent(session, {
+            type: 'score',
+            score: Math.floor(Math.random() * 50) + 10
+          });
+        }
+        
+        // Sometimes use hints
+        if (Math.random() > 0.8) {
+          trackGameEvent(session, {
+            type: 'hint'
+          });
+        }
+      }
+      
+      // End session
+      const result = endGameSession(session);
+      
+      // Show summary
+      alert(`Session Complete!\nScore: ${result.score}\nAccuracy: ${Math.round(result.accuracy)}%`);
+      
+      // Refresh dashboard
+      dashboard.render();
+    };
+    
+    window.unlockRandomAchievement = function() {
+      const achievements = [
+        { id: 'word-scramble-first-word', name: 'First Word', icon: '📝', description: 'Unscramble your first word' },
+        { id: 'number-line-jump-jumping-jack', name: 'Jumping Jack', icon: '🦘', description: 'Complete 10 jumps' },
+        { id: 'element-match-element-explorer', name: 'Element Explorer', icon: '🔬', description: 'Match 5 different elements' },
+        { id: 'multi-subject-learner', name: 'Multi-Subject Learner', icon: '🎓', description: 'Play all 5 games' }
+      ];
+      
+      const achievement = achievements[Math.floor(Math.random() * achievements.length)];
+      achievement.unlockedAt = Date.now();
+      
+      showAchievementUnlock(achievement);
+    };
+    
+    window.resetAllProgress = function() {
+      if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        localStorage.removeItem('enhancedGameProgress');
+        localStorage.removeItem('userProgress');
+        location.reload();
+      }
+    };
+  </script>
+</body>
+</html>

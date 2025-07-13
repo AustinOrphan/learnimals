@@ -1,0 +1,1080 @@
+/* Color Palette Game Styles */
+
+.color-palette-game {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #FFE4E1 0%, #E6E6FA 50%, #F0F8FF 100%);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  min-height: 600px;
+  position: relative;
+}
+
+/* Game canvas styling */
+.game-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 3px solid #DDA0DD;
+}
+
+/* Game container responsive styling */
+.game-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 10;
+  min-height: 500px;
+  background: linear-gradient(135deg, #F5F3E7 0%, #E6DDD4 100%);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+/* Art studio theme patterns */
+.art-studio-pattern {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(255, 182, 193, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(221, 160, 221, 0.1) 2px, transparent 2px);
+  background-size: 50px 50px;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  .game-container {
+    aspect-ratio: 4 / 3;
+    min-height: 400px;
+  }
+  
+  .color-palette-game {
+    margin: 10px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-container {
+    aspect-ratio: 3 / 4;
+    min-height: 450px;
+  }
+  
+  .color-palette-game {
+    margin: 5px;
+    border-radius: 10px;
+  }
+}
+
+/* Touch-friendly mobile enhancements */
+.mobile-optimized {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Loading states */
+.game-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  font-size: 1.2rem;
+  color: #6B46C1;
+  background: linear-gradient(135deg, #FFE4E1 0%, #E6E6FA 100%);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(107, 70, 193, 0.3);
+  border-top: 5px solid #6B46C1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Game UI overlay styles */
+.game-ui-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.game-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  pointer-events: auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 2px solid #DDA0DD;
+}
+
+.game-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.control-button {
+  background: linear-gradient(135deg, #DA70D6, #BA55D3);
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  box-shadow: 0 4px 12px rgba(218, 112, 214, 0.3);
+}
+
+.control-button:hover {
+  background: linear-gradient(135deg, #BA55D3, #9932CC);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(218, 112, 214, 0.4);
+}
+
+.control-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(218, 112, 214, 0.3);
+}
+
+.control-button:disabled {
+  background: #BDBDBD;
+  color: #757575;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Specialized control buttons */
+.control-button.hint-btn {
+  background: linear-gradient(135deg, #FFB347, #FFA500);
+  box-shadow: 0 4px 12px rgba(255, 179, 71, 0.3);
+}
+
+.control-button.hint-btn:hover {
+  background: linear-gradient(135deg, #FFA500, #FF8C00);
+  box-shadow: 0 6px 18px rgba(255, 179, 71, 0.4);
+}
+
+.control-button.clear-btn {
+  background: linear-gradient(135deg, #FF7F7F, #FF6B6B);
+  box-shadow: 0 4px 12px rgba(255, 127, 127, 0.3);
+}
+
+.control-button.clear-btn:hover {
+  background: linear-gradient(135deg, #FF6B6B, #FF5252);
+  box-shadow: 0 6px 18px rgba(255, 127, 127, 0.4);
+}
+
+.control-button.submit-btn {
+  background: linear-gradient(135deg, #98FB98, #90EE90);
+  box-shadow: 0 4px 12px rgba(152, 251, 152, 0.3);
+  color: #2F4F4F;
+}
+
+.control-button.submit-btn:hover {
+  background: linear-gradient(135deg, #90EE90, #7FFFD4);
+  box-shadow: 0 6px 18px rgba(152, 251, 152, 0.4);
+}
+
+/* Game instructions overlay */
+.game-instructions {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.98);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  pointer-events: auto;
+  z-index: 10;
+  border: 3px solid #DDA0DD;
+}
+
+.game-instructions h3 {
+  color: #8B008B;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.character-intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding: 20px;
+  background: linear-gradient(135deg, #FFE4E1, #E6E6FA);
+  border-radius: 15px;
+}
+
+.character-avatar {
+  font-size: 3.5rem;
+  animation: ariaPaint 3s ease-in-out infinite;
+}
+
+@keyframes ariaPaint {
+  0%, 100% { transform: rotate(-5deg) scale(1); }
+  25% { transform: rotate(5deg) scale(1.05); }
+  50% { transform: rotate(-2deg) scale(1); }
+  75% { transform: rotate(3deg) scale(1.02); }
+}
+
+.character-text {
+  text-align: left;
+  color: #4A4A4A;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+/* Color theory preview */
+.color-theory-preview {
+  margin: 25px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #F0F8FF, #E6E6FA);
+  border-radius: 15px;
+  border: 2px solid #DDA0DD;
+}
+
+.color-wheel-mini {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.color-swatch-mini {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+
+.color-swatch-mini:hover {
+  transform: scale(1.1);
+}
+
+.color-swatch-mini.primary { border-color: #000; border-width: 3px; }
+.color-swatch-mini.secondary { border-color: #666; }
+.color-swatch-mini.tertiary { border-color: #999; }
+
+.preview-text {
+  color: #6B46C1;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Instructions content */
+.instructions-content h4 {
+  color: #8B008B;
+  margin: 20px 0 15px 0;
+  font-size: 1.3rem;
+}
+
+.instruction-steps {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.instruction-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(135deg, #F8F9FF, #F0F4FF);
+  border-radius: 10px;
+  border-left: 4px solid #8B008B;
+}
+
+.step-number {
+  background: #8B008B;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.step-text {
+  color: #4A4A4A;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Color mixing demonstration */
+.mixing-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+}
+
+.demo-color {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.demo-plus {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #8B008B;
+}
+
+.demo-equals {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #8B008B;
+}
+
+/* Difficulty selection */
+.difficulty-selection h4 {
+  color: #8B008B;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.difficulty-options {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.difficulty-btn {
+  background: white;
+  border: 3px solid #E0E0E0;
+  border-radius: 15px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+  text-align: center;
+}
+
+.difficulty-btn:hover {
+  border-color: #8B008B;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(139, 0, 139, 0.2);
+}
+
+.difficulty-btn.selected {
+  border-color: #8B008B;
+  background: linear-gradient(135deg, #FFE4E1, #E6E6FA);
+  box-shadow: 0 4px 15px rgba(139, 0, 139, 0.3);
+}
+
+.difficulty-emoji {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.difficulty-label {
+  display: block;
+  font-weight: bold;
+  color: #4A4A4A;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.difficulty-desc {
+  display: block;
+  color: #757575;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+/* Start game button */
+.start-game-btn {
+  background: linear-gradient(135deg, #8B008B 0%, #DA70D6 100%);
+  color: white;
+  border: none;
+  padding: 18px 45px;
+  border-radius: 30px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(139, 0, 139, 0.3);
+  margin-top: 10px;
+}
+
+.start-game-btn:hover {
+  background: linear-gradient(135deg, #9400D3 0%, #8B008B 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(139, 0, 139, 0.4);
+}
+
+.start-game-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(139, 0, 139, 0.3);
+}
+
+/* Color theory educational content */
+.color-facts {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  border-left: 4px solid #FFD700;
+}
+
+.color-facts h5 {
+  color: #8B008B;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.color-facts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.color-facts li {
+  color: #4A4A4A;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  padding-left: 15px;
+  position: relative;
+}
+
+.color-facts li::before {
+  content: '🎨';
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* Success/Error animations */
+@keyframes colorMix {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(5deg); }
+  50% { transform: scale(1.2) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes colorError {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@keyframes rainbowGlow {
+  0% { box-shadow: 0 0 5px #FF0000; }
+  16% { box-shadow: 0 0 5px #FF7F00; }
+  32% { box-shadow: 0 0 5px #FFFF00; }
+  48% { box-shadow: 0 0 5px #00FF00; }
+  64% { box-shadow: 0 0 5px #0000FF; }
+  80% { box-shadow: 0 0 5px #4B0082; }
+  100% { box-shadow: 0 0 5px #9400D3; }
+}
+
+.mix-success {
+  animation: colorMix 0.8s ease-in-out;
+}
+
+.mix-error {
+  animation: colorError 0.6s ease-in-out;
+}
+
+.rainbow-effect {
+  animation: rainbowGlow 2s linear infinite;
+}
+
+/* Artistic theme enhancements */
+.paint-brush-cursor {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="%23DA70D6"/></svg>'), auto;
+}
+
+.easel-pattern {
+  background-image: 
+    linear-gradient(45deg, rgba(139, 69, 19, 0.1) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(139, 69, 19, 0.1) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(139, 69, 19, 0.1) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(139, 69, 19, 0.1) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Accessibility improvements */
+.game-container:focus {
+  outline: 3px solid #8B008B;
+  outline-offset: 2px;
+}
+
+.control-button:focus,
+.start-game-btn:focus {
+  outline: 2px solid #2F4F4F;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .color-palette-game {
+    background: #FFFFFF;
+    border: 3px solid #000000;
+  }
+  
+  .control-button {
+    background: #000000;
+    color: #FFFFFF;
+    border: 2px solid #000000;
+  }
+  
+  .control-button:hover {
+    background: #FFFFFF;
+    color: #000000;
+  }
+  
+  .game-instructions {
+    background: #FFFFFF;
+    color: #000000;
+    border: 3px solid #000000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner,
+  .character-avatar,
+  .mix-success,
+  .mix-error,
+  .rainbow-effect,
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Print styles for educational materials */
+@media print {
+  .color-palette-game {
+    background: white;
+    color: black;
+    box-shadow: none;
+  }
+  
+  .game-controls,
+  .game-loading {
+    display: none;
+  }
+  
+  .game-instructions,
+  .color-facts {
+    border: 1px solid black;
+    box-shadow: none;
+    background: white;
+  }
+  
+  .color-swatch-mini {
+    border: 2px solid black;
+  }
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Color accessibility helpers */
+.color-name-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: #4A4A4A;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Touch feedback for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .control-button:active,
+  .difficulty-btn:active,
+  .start-game-btn:active {
+    transform: scale(0.95);
+  }
+}
+
+/* =============================================
+   COLOR MIXING ANIMATIONS
+   ============================================= */
+
+/* Color liquid flow animation */
+@keyframes colorFlow {
+  0% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(10px) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Color swirl mixing animation */
+@keyframes colorSwirl {
+  0% {
+    transform: rotate(0deg) scale(1);
+    filter: blur(0px);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.2);
+    filter: blur(2px);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.3);
+    filter: blur(4px);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.2);
+    filter: blur(2px);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Color transformation animation */
+@keyframes colorTransform {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.6;
+    transform: scale(1.3) rotate(180deg);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.5) rotate(360deg);
+  }
+  75% {
+    opacity: 0.6;
+    transform: scale(1.3) rotate(540deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(720deg);
+  }
+}
+
+/* Paint splatter effect */
+@keyframes paintSplatter {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Brush stroke animation */
+@keyframes brushStroke {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0;
+  }
+  50% {
+    stroke-dasharray: 50 50;
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100 0;
+    opacity: 1;
+  }
+}
+
+/* Color wheel rotation */
+@keyframes colorWheelRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Palette slot fill animation */
+@keyframes paletteFill {
+  0% {
+    transform: scale(0);
+    border-radius: 50%;
+  }
+  50% {
+    transform: scale(1.2);
+    border-radius: 30%;
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 10%;
+  }
+}
+
+/* Color pulse animation */
+@keyframes colorPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: brightness(1.3) saturate(1.5);
+  }
+}
+
+/* Paint drip animation */
+@keyframes paintDrip {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+  100% {
+    transform: translateY(50px) scaleY(2);
+    opacity: 0;
+  }
+}
+
+/* Mixing bowl bubble animation */
+@keyframes mixingBubble {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Canvas texture animation */
+@keyframes canvasTexture {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Art creation celebration */
+@keyframes artCelebration {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(90deg);
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(270deg);
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Color drop animation */
+@keyframes colorDrop {
+  0% {
+    transform: translateY(-100px) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(0) scale(1.2);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(-10px) scale(0.9);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =============================================
+   ANIMATION CLASSES
+   ============================================= */
+
+.color-flowing {
+  animation: colorFlow 0.8s ease-out;
+}
+
+.color-swirling {
+  animation: colorSwirl 2s ease-in-out;
+}
+
+.color-transforming {
+  animation: colorTransform 1.5s ease-in-out;
+}
+
+.paint-splattering {
+  animation: paintSplatter 1s ease-out;
+}
+
+.brush-stroking {
+  animation: brushStroke 1.2s ease-in-out;
+}
+
+.wheel-rotating {
+  animation: colorWheelRotate 20s linear infinite;
+}
+
+.palette-filling {
+  animation: paletteFill 0.6s ease-out;
+}
+
+.color-pulsing {
+  animation: colorPulse 2s ease-in-out infinite;
+}
+
+.paint-dripping {
+  animation: paintDrip 1.5s ease-in forwards;
+}
+
+.mixing-bubbling {
+  animation: mixingBubble 2s ease-out infinite;
+}
+
+.canvas-animating {
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 255, 255, 0.05) 10px,
+      rgba(255, 255, 255, 0.05) 20px
+    );
+  background-size: 200% 200%;
+  animation: canvasTexture 10s linear infinite;
+}
+
+.art-celebrating {
+  animation: artCelebration 2s ease-in-out;
+}
+
+.color-dropping {
+  animation: colorDrop 0.8s ease-out;
+}
+
+/* Mixing area enhancements */
+.mixing-area-active {
+  position: relative;
+  overflow: hidden;
+}
+
+.mixing-area-active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent, rgba(255, 255, 255, 0.2));
+  transform: translate(-50%, -50%);
+  animation: colorSwirl 3s ease-in-out infinite;
+}
+
+/* Color blend overlay effect */
+.color-blend-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.color-blend-overlay.active {
+  opacity: 0.8;
+}
+
+/* Paint particle effects */
+.paint-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: paintSplatter 1s ease-out forwards;
+}
+
+/* Brush cursor effect */
+.brush-cursor {
+  cursor: crosshair;
+  position: relative;
+}
+
+.brush-cursor::after {
+  content: '🎨';
+  position: absolute;
+  pointer-events: none;
+  font-size: 24px;
+  transform: translate(-50%, -50%);
+  opacity: 0.8;
+}
+
+/* Color transition states */
+.color-transition-in {
+  animation: colorDrop 0.6s ease-out;
+}
+
+.color-transition-out {
+  animation: colorFlow 0.6s ease-in reverse;
+}
+
+/* Enhanced loading animation */
+@keyframes paintLoading {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.loading-palette {
+  background: linear-gradient(
+    270deg,
+    #FF6B6B,
+    #FFE66D,
+    #4ECDC4,
+    #556270,
+    #FF6B6B
+  );
+  background-size: 400% 400%;
+  animation: paintLoading 3s ease infinite;
+}
+
+/* Enhanced reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .color-flowing,
+  .color-swirling,
+  .color-transforming,
+  .paint-splattering,
+  .brush-stroking,
+  .wheel-rotating,
+  .palette-filling,
+  .color-pulsing,
+  .paint-dripping,
+  .mixing-bubbling,
+  .canvas-animating,
+  .art-celebrating,
+  .color-dropping,
+  .loading-spinner,
+  .character-avatar,
+  .mix-success,
+  .mix-error,
+  .rainbow-effect,
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

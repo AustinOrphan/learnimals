@@ -25,9 +25,11 @@ class FormComponent extends BaseComponent {
       onValidate: options.onValidate || null,
       submitButtonText: options.submitButtonText || 'Submit',
       useLocalStorage: options.useLocalStorage || false,
-      storageKey: options.storageKey || `form-data-${options.id || ''}`,
       ...options
     });
+
+    // Set storageKey AFTER super() call when this.options.id is guaranteed to exist
+    this.options.storageKey = options.storageKey || `form-data-${this.options.id}`;
 
     this.formData = {};
     this.errors = {};
@@ -180,10 +182,10 @@ class FormComponent extends BaseComponent {
    * @returns {string} - Form HTML
    */
   generateHTML() {
-    const { id, method, action, fields, submitButtonText } = this.options;
+    const { method, action, fields, submitButtonText } = this.options;
     
     let html = `
-      <form id="${id}" class="component" method="${method}" action="${action}" novalidate>
+      <form id="${this.options.id}" class="component" method="${method}" action="${action}" novalidate>
     `;
     
     // Generate fields

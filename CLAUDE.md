@@ -20,9 +20,10 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 - `npm run lint:fix` - Run ESLint with auto-fix enabled
 - `npm run generate-subjects` - Generate new subject pages programmatically
 - `npm run list-templates` - List all available subject templates
-- `npm run test:unit` - Placeholder for unit tests (not configured yet)
-- `npm run test:components` - Placeholder for component tests (not configured yet)
-- `npm run test:integration` - Placeholder for integration tests (not configured yet)
+- `npm test` - Run all tests with Vitest
+- `npm run test:unit` - Run unit tests
+- `npm run test:components` - Run component tests
+- `npm run test:integration` - Run integration tests
 
 ### Subject Generation System
 
@@ -159,12 +160,87 @@ Available subject templates: music, geography, history, language, physics, cooki
 - Templates: `src/templates/templateName.html`
 
 ## Testing
-No automated testing framework is currently configured. Test manually by:
+
+The project uses Vitest for automated testing with the following configuration:
+- Test environment: jsdom (for DOM manipulation)
+- Test files: Located in `tests/` directory
+- Coverage provider: @vitest/coverage-v8
+
+### Running Tests
+```bash
+# Run all tests
+npm test
+
+# Run specific test file
+npm test -- tests/unit/logger.test.js
+
+# Run with coverage
+npm test -- --coverage
+```
+
+### Test Structure
+- `tests/unit/` - Unit tests for individual modules
+- `tests/integration/` - Integration tests for system components
+- `tests/navigation/` - Navigation system tests
+- `tests/security/` - Security and XSS prevention tests
+- `tests/utils/` - Utility module tests
+
+### Manual Testing
+Additionally, perform manual testing by:
 1. Loading pages in different browsers
 2. Testing responsive design on mobile devices
 3. Verifying theme switching functionality
 4. Testing offline capabilities (PWA features)
 5. Running `npm run lint` to check code quality
+
+## CI/CD & Security
+
+### GitHub Actions Workflows
+The project includes comprehensive CI/CD pipelines:
+
+- **`.github/workflows/ci.yml`** - Main CI pipeline with security scans, quality gates, and tests
+- **`.github/workflows/security.yml`** - Dedicated security scanning workflow
+- **`.github/workflows/deploy-rolling.yml`** - Rolling deployment workflow for multiple environments
+- **`.github/workflows/monitoring.yml`** - Production monitoring and alerts
+
+### Security Scanning Configuration
+
+#### Secrets Detection
+- **`.gitleaks.toml`** - Gitleaks configuration with rules and allowlists
+- **`.gitleaksignore`** - Legacy ignore file for backward compatibility
+- **`.trufflehogignore`** - TruffleHog exclusion patterns
+
+These files prevent false positives in:
+- Test files with mock credentials
+- Documentation with example API keys
+- Base64 encoded images
+- Localhost URLs and example domains
+
+#### Container Security
+- **`.trivyignore`** - Trivy container vulnerability scanner exclusions
+- **`Dockerfile`** - Multi-stage build with security hardening
+  - Uses specific Alpine versions for reproducibility
+  - Runs as non-root user (appuser:appgroup)
+  - Includes health checks
+
+### Docker Configuration
+- **`docker/nginx.conf`** - Main nginx configuration with security headers
+- **`docker/default.conf`** - Site-specific nginx configuration
+- **`docker/healthcheck.sh`** - Container health check script
+
+### Kubernetes Deployment
+- **`k8s/base/`** - Base Kubernetes manifests
+- **`k8s/overlays/`** - Environment-specific configurations (dev, staging, production)
+- Uses Kustomize for configuration management
+- Implements rolling deployments with PodDisruptionBudgets
+
+### Required GitHub Secrets
+For CI/CD to work properly, configure these secrets:
+- `SNYK_TOKEN` - For dependency vulnerability scanning
+- `GITLEAKS_LICENSE` - For enhanced Gitleaks features (optional)
+- `FOSSA_API_KEY` - For license compliance scanning
+- `DOCKER_USERNAME` / `DOCKER_PASSWORD` - For container registry
+- `KUBECONFIG_DEV` / `KUBECONFIG_STAGING` / `KUBECONFIG_PROD` - For K8s deployments
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
