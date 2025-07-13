@@ -2,6 +2,7 @@
  * Pizza Party Rush! - A fun pizza-making game for kids
  * Players fulfill customer orders by dragging the correct toppings
  */
+import { animationDelay, animationSequence } from '../../../utils/AnimationManager.js';
 export default class PizzaMakerGame {
   constructor() {
     // Game state
@@ -438,8 +439,8 @@ export default class PizzaMakerGame {
     // Show feedback
     this.showOrderFeedback(orderCorrect, stars, tip);
     
-    // Check if level complete
-    setTimeout(() => {
+    // Check if level complete using frame-based timing
+    animationDelay(() => {
       if (this.ordersCompleted >= this.ordersPerLevel) {
         this.levelComplete();
       } else {
@@ -485,10 +486,10 @@ export default class PizzaMakerGame {
   }
 
   showOrderFeedback(orderResult, stars, _tip) {
-    // Animate stars
+    // Animate stars using frame-based timing
     const starElements = this.starRating.querySelectorAll('.star');
     for (let i = 0; i < stars; i++) {
-      setTimeout(() => {
+      animationDelay(() => {
         starElements[i].classList.remove('empty');
         starElements[i].classList.add('filled');
         this.playSound('star');
@@ -597,7 +598,7 @@ export default class PizzaMakerGame {
     });
     
     this.speechBubble.style.transform = 'scale(0)';
-    setTimeout(() => {
+    animationDelay(() => {
       this.speechBubble.style.transition = 'transform 0.3s ease-out';
       this.speechBubble.style.transform = 'scale(1)';
     }, 300);
@@ -615,7 +616,7 @@ export default class PizzaMakerGame {
     reaction.textContent = message;
     this.customerCharacter.appendChild(reaction);
     
-    setTimeout(() => {
+    animationDelay(() => {
       reaction.remove();
       this.customerCharacter.querySelector('.customer-emoji').textContent = originalEmoji;
     }, 1500);

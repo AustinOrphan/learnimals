@@ -1,0 +1,411 @@
+/**
+ * Character Renderer Component Styles
+ * 
+ * Styles for the SVG-based character rendering system
+ */
+
+/* Character Container */
+.character-renderer {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.character-renderer:hover {
+  transform: scale(1.02);
+}
+
+.character-renderer.interactive {
+  cursor: pointer;
+}
+
+/* SVG Styling */
+.character-svg {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  overflow: visible;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+}
+
+/* Character Elements */
+.character-body {
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+.character-eye {
+  transition: transform 0.1s ease;
+  transform-origin: center;
+}
+
+.character-mouth {
+  transition: transform 0.2s ease;
+  transform-origin: center;
+}
+
+.character-nose {
+  transition: transform 0.2s ease;
+}
+
+.character-ear {
+  transition: transform 0.3s ease;
+  transform-origin: bottom center;
+}
+
+.character-shadow {
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
+}
+
+/* Interactive Overlay */
+.character-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.interaction-zones {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.zone {
+  position: absolute;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  pointer-events: auto;
+}
+
+.zone:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.zone-head {
+  top: 10%;
+  left: 25%;
+  width: 50%;
+  height: 40%;
+}
+
+.zone-body {
+  top: 45%;
+  left: 20%;
+  width: 60%;
+  height: 45%;
+}
+
+.zone-tail {
+  top: 70%;
+  right: 10%;
+  width: 20%;
+  height: 20%;
+}
+
+/* Animation States */
+.character-renderer.state-happy .character-body {
+  animation: bounceHappy 0.6s ease-in-out;
+}
+
+.character-renderer.state-thinking .character-body {
+  animation: tiltThinking 2s ease-in-out infinite;
+}
+
+.character-renderer.state-celebrating .character-body {
+  animation: celebrate 1.2s ease-in-out;
+}
+
+/* Animation Keyframes */
+@keyframes bounceHappy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-15px) scale(1.05); }
+  50% { transform: translateY(-8px) scale(1.02); }
+  75% { transform: translateY(-12px) scale(1.03); }
+}
+
+@keyframes tiltThinking {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+@keyframes celebrate {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-10deg) scale(1.1); }
+  50% { transform: rotate(10deg) scale(1.05); }
+  75% { transform: rotate(-5deg) scale(1.08); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+/* Eye Tracking */
+.eye-pupil {
+  transition: cx 0.1s ease, cy 0.1s ease;
+}
+
+/* Pattern Animations */
+.character-body[fill*="stripesPattern"] {
+  animation: patternShimmer 3s ease-in-out infinite;
+}
+
+.character-body[fill*="spotsPattern"] {
+  animation: spotTwinkle 2s ease-in-out infinite;
+}
+
+@keyframes patternShimmer {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.1); }
+}
+
+@keyframes spotTwinkle {
+  0%, 100% { filter: contrast(1); }
+  50% { filter: contrast(1.2); }
+}
+
+/* Size Variants */
+.character-renderer.size-tiny {
+  width: 100px;
+  height: 100px;
+}
+
+.character-renderer.size-small {
+  width: 150px;
+  height: 150px;
+}
+
+.character-renderer.size-medium {
+  width: 200px;
+  height: 200px;
+}
+
+.character-renderer.size-large {
+  width: 300px;
+  height: 300px;
+}
+
+.character-renderer.size-giant {
+  width: 400px;
+  height: 400px;
+}
+
+/* Mood Indicators */
+.character-renderer.mood-happy {
+  filter: brightness(1.1) saturate(1.2);
+}
+
+.character-renderer.mood-sad {
+  filter: brightness(0.9) saturate(0.8);
+}
+
+.character-renderer.mood-excited {
+  filter: brightness(1.15) saturate(1.3) hue-rotate(10deg);
+}
+
+.character-renderer.mood-calm {
+  filter: brightness(0.95) saturate(0.9) hue-rotate(-5deg);
+}
+
+/* Species-specific adjustments */
+.character-renderer.species-shark .character-body {
+  filter: drop-shadow(0 4px 8px rgba(0, 100, 200, 0.2));
+}
+
+.character-renderer.species-cat .character-ear {
+  animation: earTwitch 4s ease-in-out infinite;
+}
+
+.character-renderer.species-dog .character-ear {
+  animation: earFlop 3s ease-in-out infinite;
+}
+
+@keyframes earTwitch {
+  0%, 95%, 100% { transform: rotate(0deg); }
+  97% { transform: rotate(5deg); }
+}
+
+@keyframes earFlop {
+  0%, 90%, 100% { transform: rotate(0deg); }
+  95% { transform: rotate(-10deg); }
+}
+
+/* Accessibility */
+.character-renderer.reduced-motion .character-body,
+.character-renderer.reduced-motion .character-eye,
+.character-renderer.reduced-motion .character-ear {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .character-renderer .character-body,
+  .character-renderer .character-eye,
+  .character-renderer .character-ear {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus states for accessibility */
+.character-renderer:focus-visible {
+  outline: 3px solid var(--accent-primary, #4a90e2);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
+/* Loading state */
+.character-renderer.loading {
+  opacity: 0.6;
+}
+
+.character-renderer.loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid var(--accent-primary, #4a90e2);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 10;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error state */
+.character-renderer.error {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+
+.character-renderer.error::after {
+  content: '⚠️';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  z-index: 10;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .character-renderer {
+    transform: none; /* Reduce hover effects on mobile */
+  }
+  
+  .character-renderer:hover {
+    transform: none;
+  }
+  
+  .zone {
+    pointer-events: none; /* Disable hover zones on mobile */
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .character-svg {
+    filter: contrast(1.5);
+  }
+  
+  .character-body {
+    stroke-width: 3px;
+  }
+  
+  .character-eye {
+    stroke-width: 2px;
+  }
+}
+
+/* Print styles */
+@media print {
+  .character-renderer {
+    break-inside: avoid;
+  }
+  
+  .character-overlay {
+    display: none;
+  }
+  
+  .character-renderer * {
+    animation: none !important;
+  }
+}
+
+/* Theme integration */
+.character-renderer {
+  --character-shadow: rgba(0, 0, 0, 0.1);
+  --character-highlight: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .character-renderer {
+  --character-shadow: rgba(0, 0, 0, 0.3);
+  --character-highlight: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .character-shadow {
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .character-svg {
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 70%
+  );
+}
+
+/* Performance optimizations */
+.character-renderer {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.character-svg {
+  shape-rendering: geometricPrecision;
+}
+
+.character-body {
+  will-change: transform;
+}
+
+/* Special effects */
+.character-renderer.sparkle::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  border-radius: 50%;
+  animation: sparkleFloat 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sparkleFloat {
+  0%, 100% { 
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  50% { 
+    transform: translateY(-20px) scale(1);
+    opacity: 1;
+  }
+}
