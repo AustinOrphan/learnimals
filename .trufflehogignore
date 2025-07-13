@@ -1,0 +1,13 @@
+# TruffleHog ignore patterns
+tests/
+docs/
+*.md
+package-lock.json
+yarn.lock
+node_modules/
+coverage/
+dist/
+build/
+.git/
+*.example
+*.sample

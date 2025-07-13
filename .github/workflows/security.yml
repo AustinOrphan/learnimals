@@ -177,17 +177,15 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: main
+          base: ${{ github.event.pull_request.base.sha || 'main' }}
           head: HEAD
-          extra_args: --debug --only-verified
+          extra_args: --only-verified --exclude-paths=.trufflehogignore
 
       - name: GitLeaks Secrets Detection
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
-        with:
-          config-path: .gitleaksignore
 
   # Infrastructure Security Scanning
   infrastructure-scan:
