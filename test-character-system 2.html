@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character System Test - Phase A</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .test-header {
+            background: #4a90e2;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .test-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-pass {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status-fail {
+            background: #f44336;
+            color: white;
+        }
+        
+        .status-loading {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .test-results {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .character-preview {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .test-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .test-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-btn.primary {
+            background: #4a90e2;
+            color: white;
+        }
+        
+        .test-btn.secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .test-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .performance-metric {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 5px 10px;
+            background: #e3f2fd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .log-output {
+            height: 150px;
+            overflow-y: auto;
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Character System Test Suite - Phase A</h1>
+    <p>Testing the enhanced character system integration with Ruby the Panda on the reading page.</p>
+
+    <div class="test-container">
+        <div class="test-header">
+            <h2>TC-001: Basic Character Rendering</h2>
+            <span class="test-status status-loading" id="tc001-status">LOADING</span>
+        </div>
+        <p><strong>Objective:</strong> Verify Ruby the Panda renders correctly with SVG-based character system</p>
+        
+        <div class="character-preview" id="character-preview">
+            <div>Character will render here...</div>
+        </div>
+        
+        <div class="test-controls">
+            <button class="test-btn primary" onclick="testCharacterRendering()">Test Rendering</button>
+            <button class="test-btn secondary" onclick="testAnimations()">Test Animations</button>
+            <button class="test-btn secondary" onclick="testInteractions()">Test Interactions</button>
+        </div>
+        
+        <div class="test-results" id="tc001-results">
+            Waiting for test execution...
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-header">
+            <h2>TC-002: Performance Monitoring</h2>
+            <span class="test-status status-loading" id="tc002-status">LOADING</span>
+        </div>
+        <p><strong>Objective:</strong> Verify character system performance meets requirements</p>
+        
+        <div id="performance-metrics">
+            <div class="performance-metric">Load Time: <span id="load-time">--</span>ms</div>
+            <div class="performance-metric">Memory Usage: <span id="memory-usage">--</span>MB</div>
+            <div class="performance-metric">Animation FPS: <span id="animation-fps">--</span>fps</div>
+        </div>
+        
+        <div class="test-controls">
+            <button class="test-btn primary" onclick="runPerformanceTest()">Run Performance Test</button>
+            <button class="test-btn secondary" onclick="startMonitoring()">Start Monitoring</button>
+        </div>
+        
+        <div class="test-results" id="tc002-results">
+            Performance data will appear here...
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-header">
+            <h2>TC-003: Integration Test</h2>
+            <span class="test-status status-loading" id="tc003-status">LOADING</span>
+        </div>
+        <p><strong>Objective:</strong> Test character integration with reading activities</p>
+        
+        <div class="test-controls">
+            <button class="test-btn primary" onclick="testCharacterGreeting()">Test Greeting</button>
+            <button class="test-btn primary" onclick="testCharacterCelebration()">Test Celebration</button>
+            <button class="test-btn primary" onclick="testCharacterEncouragement()">Test Encouragement</button>
+            <button class="test-btn secondary" onclick="testGlobalFunctions()">Test Global Functions</button>
+        </div>
+        
+        <div class="test-results" id="tc003-results">
+            Integration test results will appear here...
+        </div>
+    </div>
+
+    <div class="test-container">
+        <div class="test-header">
+            <h2>Test Console</h2>
+        </div>
+        <div class="log-output" id="test-console">
+            Test console output will appear here...\n
+        </div>
+        <div class="test-controls">
+            <button class="test-btn secondary" onclick="clearConsole()">Clear Console</button>
+            <button class="test-btn secondary" onclick="exportResults()">Export Results</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Test execution framework
+        class CharacterSystemTester {
+            constructor() {
+                this.testResults = {};
+                this.performanceMetrics = {};
+                this.startTime = performance.now();
+                this.animationFrames = 0;
+                this.lastFrameTime = 0;
+            }
+
+            log(message, type = 'info') {
+                const console = document.getElementById('test-console');
+                const timestamp = new Date().toLocaleTimeString();
+                const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+                console.innerHTML += `[${timestamp}] ${prefix} ${message}\n`;
+                console.scrollTop = console.scrollHeight;
+            }
+
+            updateStatus(testId, status) {
+                const statusElement = document.getElementById(`${testId}-status`);
+                statusElement.className = `test-status status-${status}`;
+                statusElement.textContent = status.toUpperCase();
+            }
+
+            updateResults(testId, results) {
+                const resultsElement = document.getElementById(`${testId}-results`);
+                resultsElement.innerHTML = results;
+            }
+
+            async testCharacterRendering() {
+                this.log('Starting character rendering test...');
+                this.updateStatus('tc001', 'loading');
+
+                try {
+                    // Test 1: Load character integration utility
+                    const characterIntegration = await import('./src/utils/characterIntegration.js');
+                    this.log('✓ Character integration module loaded');
+
+                    // Test 2: Get Ruby character data
+                    const rubyCharacter = characterIntegration.getCharacterBySubject('reading');
+                    if (rubyCharacter) {
+                        this.log(`✓ Ruby character loaded: ${rubyCharacter.name}`);
+                        this.log(`  - Species: ${rubyCharacter.species.primary}`);
+                        this.log(`  - Colors: ${JSON.stringify(rubyCharacter.appearance.colors)}`);
+                    } else {
+                        this.log('❌ Failed to load Ruby character', 'error');
+                        this.updateStatus('tc001', 'fail');
+                        return;
+                    }
+
+                    // Test 3: Load character renderer
+                    const CharacterRenderer = await import('./src/components/ui/CharacterRenderer.js');
+                    this.log('✓ Character renderer module loaded');
+
+                    // Test 4: Create character renderer instance
+                    const preview = document.getElementById('character-preview');
+                    preview.innerHTML = '<div id="ruby-character"></div>';
+                    
+                    const renderer = new CharacterRenderer.default({
+                        character: rubyCharacter,
+                        size: 150,
+                        interactive: true,
+                        animated: true,
+                        container: document.getElementById('ruby-character')
+                    });
+
+                    await renderer.render();
+                    this.log('✓ Character rendered successfully');
+
+                    // Test 5: Verify SVG structure
+                    const svg = preview.querySelector('svg');
+                    if (svg) {
+                        this.log('✓ SVG element found');
+                        this.log(`  - SVG dimensions: ${svg.getAttribute('width')}x${svg.getAttribute('height')}`);
+                    } else {
+                        this.log('❌ SVG element not found', 'error');
+                        this.updateStatus('tc001', 'fail');
+                        return;
+                    }
+
+                    this.testResults.characterRendering = true;
+                    this.updateStatus('tc001', 'pass');
+                    this.updateResults('tc001', 'Character rendering test passed! Ruby is visible and properly structured.');
+
+                } catch (error) {
+                    this.log(`❌ Character rendering test failed: ${error.message}`, 'error');
+                    this.testResults.characterRendering = false;
+                    this.updateStatus('tc001', 'fail');
+                    this.updateResults('tc001', `Test failed: ${error.message}`);
+                }
+            }
+
+            async testAnimations() {
+                this.log('Testing character animations...');
+                
+                try {
+                    if (window.characterRenderer) {
+                        // Test animation states
+                        const states = ['happy', 'celebrating', 'encouraging', 'idle'];
+                        for (const state of states) {
+                            window.characterRenderer.setAnimationState(state);
+                            this.log(`✓ Animation state '${state}' triggered`);
+                            await new Promise(resolve => setTimeout(resolve, 500));
+                        }
+                        this.log('✓ All animation states tested');
+                    } else {
+                        this.log('❌ Character renderer not available', 'error');
+                    }
+                } catch (error) {
+                    this.log(`❌ Animation test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testInteractions() {
+                this.log('Testing character interactions...');
+                
+                try {
+                    // Test global interaction functions
+                    if (window.testCharacterSystem) {
+                        window.testCharacterSystem.triggerGreeting();
+                        this.log('✓ Greeting interaction tested');
+                        
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
+                        window.testCharacterSystem.triggerCelebration();
+                        this.log('✓ Celebration interaction tested');
+                        
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
+                        window.testCharacterSystem.triggerEncouragement();
+                        this.log('✓ Encouragement interaction tested');
+                    } else {
+                        this.log('❌ Character interaction functions not available', 'error');
+                    }
+                } catch (error) {
+                    this.log(`❌ Interaction test failed: ${error.message}`, 'error');
+                }
+            }
+
+            runPerformanceTest() {
+                this.log('Running performance test...');
+                this.updateStatus('tc002', 'loading');
+
+                const startTime = performance.now();
+                
+                // Measure load time
+                const loadTime = performance.now() - this.startTime;
+                document.getElementById('load-time').textContent = loadTime.toFixed(2);
+
+                // Measure memory (if available)
+                if (performance.memory) {
+                    const memoryMB = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2);
+                    document.getElementById('memory-usage').textContent = memoryMB;
+                    this.log(`Memory usage: ${memoryMB}MB`);
+                }
+
+                // Test animation performance
+                this.measureFPS();
+
+                const testTime = performance.now() - startTime;
+                this.log(`Performance test completed in ${testTime.toFixed(2)}ms`);
+                
+                // Evaluate results
+                const loadTimeGood = loadTime < 3000; // 3 seconds
+                const memoryGood = !performance.memory || (performance.memory.usedJSHeapSize / 1024 / 1024) < 50; // 50MB
+                
+                if (loadTimeGood && memoryGood) {
+                    this.updateStatus('tc002', 'pass');
+                    this.updateResults('tc002', 'Performance test passed! All metrics within acceptable ranges.');
+                } else {
+                    this.updateStatus('tc002', 'fail');
+                    this.updateResults('tc002', 'Performance test failed! Some metrics exceeded thresholds.');
+                }
+            }
+
+            measureFPS() {
+                let frameCount = 0;
+                const startTime = performance.now();
+                
+                const countFrames = () => {
+                    frameCount++;
+                    const elapsed = performance.now() - startTime;
+                    
+                    if (elapsed < 1000) {
+                        requestAnimationFrame(countFrames);
+                    } else {
+                        const fps = (frameCount / elapsed * 1000).toFixed(0);
+                        document.getElementById('animation-fps').textContent = fps;
+                        this.log(`Animation FPS: ${fps}`);
+                    }
+                };
+                
+                requestAnimationFrame(countFrames);
+            }
+
+            async testCharacterGreeting() {
+                this.log('Testing character greeting...');
+                try {
+                    const characterIntegration = await import('./src/utils/characterIntegration.js');
+                    const rubyCharacter = characterIntegration.getCharacterBySubject('reading');
+                    const greeting = characterIntegration.generateCharacterMessage(rubyCharacter, 'greeting');
+                    this.log(`Ruby says: "${greeting}"`);
+                } catch (error) {
+                    this.log(`❌ Greeting test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testCharacterCelebration() {
+                this.log('Testing character celebration...');
+                try {
+                    const characterIntegration = await import('./src/utils/characterIntegration.js');
+                    const rubyCharacter = characterIntegration.getCharacterBySubject('reading');
+                    const celebration = characterIntegration.generateCharacterMessage(rubyCharacter, 'celebration');
+                    this.log(`Ruby celebrates: "${celebration}"`);
+                } catch (error) {
+                    this.log(`❌ Celebration test failed: ${error.message}`, 'error');
+                }
+            }
+
+            async testCharacterEncouragement() {
+                this.log('Testing character encouragement...');
+                try {
+                    const characterIntegration = await import('./src/utils/characterIntegration.js');
+                    const rubyCharacter = characterIntegration.getCharacterBySubject('reading');
+                    const encouragement = characterIntegration.generateCharacterMessage(rubyCharacter, 'encouragement');
+                    this.log(`Ruby encourages: "${encouragement}"`);
+                } catch (error) {
+                    this.log(`❌ Encouragement test failed: ${error.message}`, 'error');
+                }
+            }
+
+            testGlobalFunctions() {
+                this.log('Testing global character functions...');
+                this.updateStatus('tc003', 'loading');
+
+                let passedTests = 0;
+                let totalTests = 0;
+
+                // Test if character data is available
+                totalTests++;
+                if (window.characterData) {
+                    this.log('✓ Global characterData available');
+                    passedTests++;
+                } else {
+                    this.log('❌ Global characterData not found', 'error');
+                }
+
+                // Test if character messages are available
+                totalTests++;
+                if (window.characterMessages) {
+                    this.log('✓ Global characterMessages available');
+                    passedTests++;
+                } else {
+                    this.log('❌ Global characterMessages not found', 'error');
+                }
+
+                // Test interaction functions
+                const functions = ['triggerCharacterCelebration', 'triggerCharacterEncouragement', 'getCharacterMessage'];
+                functions.forEach(funcName => {
+                    totalTests++;
+                    if (window[funcName]) {
+                        this.log(`✓ Global function ${funcName} available`);
+                        passedTests++;
+                    } else {
+                        this.log(`❌ Global function ${funcName} not found`, 'error');
+                    }
+                });
+
+                // Update results
+                const passed = passedTests === totalTests;
+                this.updateStatus('tc003', passed ? 'pass' : 'fail');
+                this.updateResults('tc003', `Integration test: ${passedTests}/${totalTests} tests passed`);
+            }
+
+            clearConsole() {
+                document.getElementById('test-console').innerHTML = '';
+            }
+
+            exportResults() {
+                const results = {
+                    timestamp: new Date().toISOString(),
+                    testResults: this.testResults,
+                    performanceMetrics: this.performanceMetrics,
+                    console: document.getElementById('test-console').innerHTML
+                };
+
+                const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `character-system-test-results-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Initialize tester
+        const tester = new CharacterSystemTester();
+        
+        // Make functions globally available
+        window.testCharacterRendering = () => tester.testCharacterRendering();
+        window.testAnimations = () => tester.testAnimations();
+        window.testInteractions = () => tester.testInteractions();
+        window.runPerformanceTest = () => tester.runPerformanceTest();
+        window.startMonitoring = () => tester.measureFPS();
+        window.testCharacterGreeting = () => tester.testCharacterGreeting();
+        window.testCharacterCelebration = () => tester.testCharacterCelebration();
+        window.testCharacterEncouragement = () => tester.testCharacterEncouragement();
+        window.testGlobalFunctions = () => tester.testGlobalFunctions();
+        window.clearConsole = () => tester.clearConsole();
+        window.exportResults = () => tester.exportResults();
+
+        // Auto-start basic tests
+        document.addEventListener('DOMContentLoaded', () => {
+            tester.log('Character System Test Suite initialized');
+            tester.log('Ready to begin testing...');
+            
+            // Auto-run basic rendering test
+            setTimeout(() => {
+                tester.testCharacterRendering();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

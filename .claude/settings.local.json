@@ -94,6 +94,10 @@
       "mcp__playwright__playwright_screenshot",
       "mcp__playwright__playwright_close",
       "Bash(npm test:*)",
+      "mcp__serena__summarize_changes",
+      "mcp__serena__write_memory",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
       "Bash(git rebase:*)",
       "Bash(rm:*)",
       "Bash(kill:*)"
