@@ -46,7 +46,8 @@
       "mcp__serena__summarize_changes",
       "Bash(gh run view:*)",
       "Bash(cat:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
