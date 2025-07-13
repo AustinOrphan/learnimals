@@ -676,6 +676,71 @@ class WordScrambleGame extends BaseGame {
       }
     });
   }
+
+  /**
+   * Clean up all resources and prevent memory leaks
+   */
+  destroy() {
+    // Stop and clear timer
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+
+    // Set game as inactive
+    this.gameActive = false;
+
+    // Remove event listeners
+    const startButton = document.getElementById('start-game');
+    if (startButton) {
+      // Clone and replace to remove all event listeners
+      const newStartButton = startButton.cloneNode(true);
+      if (startButton.parentNode) {
+        startButton.parentNode.replaceChild(newStartButton, startButton);
+      }
+    }
+
+    const nextRoundButton = document.getElementById('next-round');
+    if (nextRoundButton) {
+      const newNextButton = nextRoundButton.cloneNode(true);
+      if (nextRoundButton.parentNode) {
+        nextRoundButton.parentNode.replaceChild(newNextButton, nextRoundButton);
+      }
+    }
+
+    const playAgainButton = document.getElementById('play-again');
+    if (playAgainButton) {
+      const newPlayButton = playAgainButton.cloneNode(true);
+      if (playAgainButton.parentNode) {
+        playAgainButton.parentNode.replaceChild(newPlayButton, playAgainButton);
+      }
+    }
+
+    // Clear drag and drop event listeners
+    const scrambledContainer = document.getElementById('scrambled-letters');
+    if (scrambledContainer) {
+      const newContainer = scrambledContainer.cloneNode(true);
+      if (scrambledContainer.parentNode) {
+        scrambledContainer.parentNode.replaceChild(newContainer, scrambledContainer);
+      }
+    }
+
+    const answersContainer = document.getElementById('answer-slots');
+    if (answersContainer) {
+      const newAnswerContainer = answersContainer.cloneNode(true);
+      if (answersContainer.parentNode) {
+        answersContainer.parentNode.replaceChild(newAnswerContainer, answersContainer);
+      }
+    }
+
+    // Clear all references to prevent memory leaks
+    this.currentWord = '';
+    this.currentHint = '';
+    this.scrambledLetters = [];
+    this.container = null;
+
+    logger.debug('WordScrambleGame destroyed and cleaned up');
+  }
 }
 
 // Export the enhanced game class
