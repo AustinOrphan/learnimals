@@ -6,6 +6,8 @@
  * for customization of content.
  */
 
+import { escapeHTML } from './htmlEscape.js';
+
 class SubjectTemplateLoader {    /**
      * Load the subject template with custom content
      * 
@@ -29,13 +31,13 @@ class SubjectTemplateLoader {    /**
       }
             
       let template = await response.text();
-      // Replace placeholders with actual content
-      template = template.replace(/{{subjectName}}/g, options.subjectName);
-      template = template.replace(/{{subjectLower}}/g, options.subjectLower);
-      template = template.replace(/{{subjectDescription}}/g, options.subjectDescription);
-      template = template.replace(/{{characterName}}/g, options.characterName);
-      template = template.replace(/{{characterType}}/g, options.characterType);
-      template = template.replace(/{{heroSubtitle}}/g, options.heroSubtitle);
+      // Replace placeholders with actual content (with HTML escaping for security)
+      template = template.replace(/{{subjectName}}/g, escapeHTML(options.subjectName));
+      template = template.replace(/{{subjectLower}}/g, escapeHTML(options.subjectLower));
+      template = template.replace(/{{subjectDescription}}/g, escapeHTML(options.subjectDescription));
+      template = template.replace(/{{characterName}}/g, escapeHTML(options.characterName));
+      template = template.replace(/{{characterType}}/g, escapeHTML(options.characterType));
+      template = template.replace(/{{heroSubtitle}}/g, escapeHTML(options.heroSubtitle));
       template = template.replace(/{{featureCards}}/g, options.featureCards);
             
       // Handle feature cards data for Card.js

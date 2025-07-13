@@ -16,8 +16,6 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Get current directory
 const rootDir = path.join(__dirname, '..');
 
 // Default subject templates with animal characters
@@ -481,6 +479,7 @@ class SubjectGenerator {
  * Interactive features for ${subject.character.name} the ${subject.character.type}
  */
 import Modal from '../../../components/ui/Modal.js';
+import { escapeHTML } from '../../../utils/common.js';
 
 class ${subject.name.replace(/\s+/g, '')}Subject {
     constructor() {
@@ -597,12 +596,13 @@ class ${subject.name.replace(/\s+/g, '')}Subject {
 
     displayMessage(message) {
         // Use custom modal component with character theming
+        // SECURITY: Escape HTML to prevent XSS attacks
         const modal = new Modal({
-            id: '${subjectKey}-message-modal',
-            title: \`\${this.character.name} the \${this.character.type}\`,
+            id: '${subjectKey.toLowerCase()}-message-modal',
+            title: \`\${escapeHTML(this.character.name)} the \${escapeHTML(this.character.type)}\`,
             content: \`<div class="character-message">
-                <div class="character-icon">${subject.character.emoji || '🎓'}</div>
-                <p>\${message}</p>
+                <div class="character-icon">${subject.character.icon || '🎓'}</div>
+                <p>\${escapeHTML(message)}</p>
             </div>\`,
             confirmButtonText: 'Got it!',
             showClose: true,
