@@ -334,11 +334,12 @@ class BaseComponent {
   }
 }
 
+// Always make globally available 
+window.BaseComponent = BaseComponent;
+
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = BaseComponent;
-} else {
-  window.BaseComponent = BaseComponent;
 }
 
 // ES module export

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Button Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { margin: 10px; padding: 15px 25px; font-size: 16px; cursor: pointer; }
+        .log { margin: 5px 0; padding: 8px; background: #f5f5f5; border-left: 3px solid #007bff; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        #container { border: 2px solid #333; padding: 20px; margin: 20px 0; min-height: 200px; background: #fff; }
+    </style>
+</head>
+<body>
+    <h1>Direct Button Test for Character Customization Demo</h1>
+    
+    <div>
+        <button id="test-basic">Test Basic Click</button>
+        <button id="test-imports">Test Imports</button>
+        <button id="test-basecomponent">Test BaseComponent</button>
+        <button id="test-customizer-import">Test Customizer Import</button>
+        <button id="test-customizer-create">Test Customizer Creation</button>
+        <button id="test-demo-page">Open Demo Page</button>
+    </div>
+    
+    <div id="logs"></div>
+    <div id="container"></div>
+
+    <!-- Load BaseComponent globally first -->
+    <script src="./src/components/BaseComponent.js"></script>
+    <script src="./src/components/ui/Modal.js"></script>
+
+    <script type="module">
+        const logs = document.getElementById('logs');
+        const container = document.getElementById('container');
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        // Test 1: Basic click
+        document.getElementById('test-basic').addEventListener('click', () => {
+            log('✅ Basic button click works!', 'success');
+        });
+
+        // Test 2: Test imports
+        document.getElementById('test-imports').addEventListener('click', async () => {
+            try {
+                log('Testing character generation imports...');
+                const module = await import('./src/features/character-generation/index.js');
+                log('✅ Character generation module imported', 'success');
+                
+                const { CharacterGenerationAPI, CharacterUtils } = module;
+                if (CharacterUtils && CharacterUtils.generateId) {
+                    const id = CharacterUtils.generateId();
+                    log(`✅ Generated ID: ${id}`, 'success');
+                } else {
+                    log('❌ CharacterUtils.generateId not available', 'error');
+                }
+            } catch (error) {
+                log(`❌ Import failed: ${error.message}`, 'error');
+            }
+        });
+
+        // Test 3: Test BaseComponent
+        document.getElementById('test-basecomponent').addEventListener('click', () => {
+            try {
+                if (typeof window.BaseComponent !== 'undefined') {
+                    log('✅ BaseComponent available globally', 'success');
+                    
+                    const testComponent = new window.BaseComponent({
+                        tagName: 'div',
+                        className: 'test',
+                        innerHTML: '<p>BaseComponent test successful!</p>'
+                    });
+                    
+                    container.innerHTML = '';
+                    container.appendChild(testComponent.element);
+                    log('✅ BaseComponent instance created and rendered', 'success');
+                } else {
+                    log('❌ BaseComponent not available globally', 'error');
+                }
+            } catch (error) {
+                log(`❌ BaseComponent error: ${error.message}`, 'error');
+            }
+        });
+
+        // Test 4: Test CustomizationStudio import
+        document.getElementById('test-customizer-import').addEventListener('click', async () => {
+            try {
+                log('Importing CharacterCustomizer...');
+                const { default: CharacterCustomizer } = await import('./src/features/character-generation/ui/CharacterCustomizer.js');
+                log('✅ CharacterCustomizer imported successfully', 'success');
+                
+                // Check if it can access BaseComponent
+                if (window.BaseComponent) {
+                    log('✅ BaseComponent is available for import', 'success');
+                } else {
+                    log('❌ BaseComponent not available when importing', 'error');
+                }
+                
+                window.testCustomizer = CharacterCustomizer;
+                log('✅ CharacterCustomizer stored in window.testCustomizer', 'success');
+                
+            } catch (error) {
+                log(`❌ Import error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        });
+
+        // Test 5: Test Customizer creation
+        document.getElementById('test-customizer-create').addEventListener('click', async () => {
+            try {
+                if (!window.testCustomizer) {
+                    log('❌ CharacterCustomizer not imported yet. Run "Test Customizer Import" first.', 'error');
+                    return;
+                }
+                
+                log('Creating CharacterCustomizer instance...');
+                const customizer = new window.testCustomizer({
+                    container: container
+                });
+                
+                log('✅ CharacterCustomizer instance created', 'success');
+                
+                log('Attempting to render...');
+                customizer.render();
+                log('✅ Render method called', 'success');
+                
+                setTimeout(() => {
+                    if (container.children.length > 0) {
+                        log('✅ Container has content after render', 'success');
+                    } else {
+                        log('❌ Container is still empty after render', 'error');
+                    }
+                }, 500);
+                
+            } catch (error) {
+                log(`❌ Creation error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        });
+
+        // Test 6: Open demo page
+        document.getElementById('test-demo-page').addEventListener('click', () => {
+            window.open('http://localhost:8000/src/pages/character-customization-demo.html', '_blank');
+        });
+
+        log('🚀 Direct button test page loaded. Click buttons to test individual components.');
+    </script>
+</body>
+</html>

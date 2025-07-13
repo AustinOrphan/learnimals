@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Character Customization Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        button { 
+            margin: 10px; 
+            padding: 15px 25px; 
+            font-size: 16px; 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        button:hover { background: #0056b3; }
+        button.secondary { background: #6c757d; }
+        button.secondary:hover { background: #545b62; }
+        .log { margin: 5px 0; padding: 8px; background: #f5f5f5; border-left: 3px solid #007bff; font-family: monospace; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        #status { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        #container { border: 2px solid #ddd; padding: 20px; margin: 20px 0; min-height: 300px; background: #fff; }
+    </style>
+</head>
+<body>
+    <h1>Minimal Character Customization Demo</h1>
+    
+    <div id="status">Initializing...</div>
+    
+    <div>
+        <h3>Character Customization Components</h3>
+        <button id="open-customizer">Character Customizer</button>
+        <button class="secondary" id="open-preview">Preview Component</button>
+        <button class="secondary" id="open-presets">Preset Manager</button>
+        <button class="secondary" id="create-test-data">Create Test Data</button>
+    </div>
+    
+    <div id="logs"></div>
+    <div id="container"></div>
+
+    <!-- Load BaseComponent globally -->
+    <script src="./src/components/BaseComponent.js"></script>
+    <script src="./src/components/ui/Modal.js"></script>
+
+    <script type="module">
+        const logs = document.getElementById('logs');
+        const container = document.getElementById('container');
+        const status = document.getElementById('status');
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        function updateStatus(message, type = 'info') {
+            status.textContent = message;
+            status.className = type;
+        }
+
+        // Store components globally for debugging
+        window.demoComponents = {};
+
+        async function initializeDemo() {
+            try {
+                log('🚀 Initializing minimal demo...');
+                updateStatus('Loading character generation system...', 'warning');
+
+                // Import character generation system
+                const { CharacterGenerationAPI, CharacterUtils, characterEvents } = 
+                    await import('./src/features/character-generation/index.js');
+                
+                log('✅ Character generation system imported', 'success');
+                
+                // Test availability
+                const subjects = CharacterUtils.getAvailableSubjects();
+                log(`✅ Available subjects: ${subjects.join(', ')}`, 'success');
+                
+                // Store globally
+                window.CharacterGenerationAPI = CharacterGenerationAPI;
+                window.CharacterUtils = CharacterUtils;
+                window.characterEvents = characterEvents;
+                
+                updateStatus('System ready - buttons should work', 'success');
+                setupEventListeners();
+                
+            } catch (error) {
+                log(`❌ Initialization failed: ${error.message}`, 'error');
+                updateStatus(`Initialization failed: ${error.message}`, 'error');
+                console.error('Init error:', error);
+            }
+        }
+
+        function setupEventListeners() {
+            log('Setting up event listeners...');
+            
+            // Character Customizer
+            document.getElementById('open-customizer').addEventListener('click', async () => {
+                log('📱 Opening Character Customizer...');
+                try {
+                    if (!window.BaseComponent) {
+                        throw new Error('BaseComponent not available');
+                    }
+                    
+                    const { default: CharacterCustomizer } = 
+                        await import('./src/features/character-generation/ui/CharacterCustomizer.js');
+                    
+                    log('✅ CharacterCustomizer imported', 'success');
+                    
+                    const customizer = new CharacterCustomizer({
+                        container: container,
+                        onSave: (customization) => log('💾 Customization saved', 'success'),
+                        onCancel: () => log('❌ Customizer cancelled', 'warning')
+                    });
+                    
+                    container.innerHTML = '<h3>Character Customizer Loading...</h3>';
+                    customizer.render();
+                    
+                    window.demoComponents.customizer = customizer;
+                    log('✅ CharacterCustomizer rendered', 'success');
+                    
+                } catch (error) {
+                    log(`❌ Customizer error: ${error.message}`, 'error');
+                    console.error('Customizer error:', error);
+                }
+            });
+
+            // Preview Component
+            document.getElementById('open-preview').addEventListener('click', async () => {
+                log('👁️ Opening Preview Component...');
+                try {
+                    const { default: CustomizationPreview } = 
+                        await import('./src/features/character-generation/ui/CustomizationPreview.js');
+                    
+                    const preview = new CustomizationPreview({
+                        container: container,
+                        mode: 'single'
+                    });
+                    
+                    container.innerHTML = '<h3>Customization Preview Loading...</h3>';
+                    preview.render();
+                    
+                    window.demoComponents.preview = preview;
+                    log('✅ CustomizationPreview rendered', 'success');
+                    
+                } catch (error) {
+                    log(`❌ Preview error: ${error.message}`, 'error');
+                    console.error('Preview error:', error);
+                }
+            });
+
+            // Preset Manager
+            document.getElementById('open-presets').addEventListener('click', async () => {
+                log('🎯 Opening Preset Manager...');
+                try {
+                    const { default: CustomizationPresets } = 
+                        await import('./src/features/character-generation/ui/CustomizationPresets.js');
+                    
+                    const presets = new CustomizationPresets({
+                        container: container
+                    });
+                    
+                    container.innerHTML = '<h3>Customization Presets Loading...</h3>';
+                    presets.render();
+                    
+                    window.demoComponents.presets = presets;
+                    log('✅ CustomizationPresets rendered', 'success');
+                    
+                } catch (error) {
+                    log(`❌ Presets error: ${error.message}`, 'error');
+                    console.error('Presets error:', error);
+                }
+            });
+
+            // Create Test Data
+            document.getElementById('create-test-data').addEventListener('click', async () => {
+                log('🧪 Creating test data...');
+                try {
+                    const testCharacter = await window.CharacterGenerationAPI.createCharacter({
+                        name: 'Test Character',
+                        subject: 'math',
+                        autoSave: true
+                    });
+                    
+                    if (testCharacter.success) {
+                        log(`✅ Created character: ${testCharacter.character.name}`, 'success');
+                        container.innerHTML = `<h3>Test Character Created</h3><pre>${JSON.stringify(testCharacter.character, null, 2)}</pre>`;
+                    } else {
+                        log(`❌ Character creation failed: ${testCharacter.error}`, 'error');
+                    }
+                    
+                } catch (error) {
+                    log(`❌ Test data error: ${error.message}`, 'error');
+                    console.error('Test data error:', error);
+                }
+            });
+
+            log('✅ Event listeners attached', 'success');
+        }
+
+        // Initialize when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDemo);
+        } else {
+            initializeDemo();
+        }
+
+        log('📄 Minimal demo page loaded');
+    </script>
+</body>
+</html>

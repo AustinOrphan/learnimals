@@ -59,6 +59,11 @@ describe('XSS Prevention', () => {
   });
 
   describe('Modal XSS Prevention', () => {
+    beforeEach(() => {
+      // Ensure BaseComponent is available for Modal tests
+      window.BaseComponent = global.BaseComponent;
+    });
+
     it('should prevent XSS in modal title', async () => {
       // Import Modal component
       const { default: Modal } = await import('../../src/components/ui/Modal.js');

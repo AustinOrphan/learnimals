@@ -206,5 +206,32 @@ global.CSS = {
   supports: vi.fn(() => true)
 };
 
+// Mock BaseComponent for component tests
+global.BaseComponent = class BaseComponent {
+  constructor(options = {}) {
+    this.options = options;
+    this.element = null;
+  }
+
+  createElement(tagName = 'div', className = '') {
+    const element = document.createElement(tagName);
+    if (className) element.className = className;
+    return element;
+  }
+
+  render() {
+    return document.createElement('div');
+  }
+
+  destroy() {
+    if (this.element && this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
+    }
+  }
+};
+
+// Make BaseComponent available globally like in browser environment
+window.BaseComponent = global.BaseComponent;
+
 // Set test environment
 process.env.NODE_ENV = 'test';

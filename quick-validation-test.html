@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Validation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .log { margin: 5px 0; padding: 8px; background: #f5f5f5; border-left: 3px solid #007bff; font-family: monospace; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        button { margin: 10px; padding: 10px 20px; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; max-height: 400px; }
+    </style>
+</head>
+<body>
+    <h1>Quick Validation Test (With Fixed Validator)</h1>
+    
+    <button id="test-simple-array">Test Simple Array Validation</button>
+    <button id="test-character-creation">Test Character Creation</button>
+    <button id="force-reload">Force Reload Modules</button>
+    
+    <div id="logs"></div>
+
+    <script type="module">
+        const logs = document.getElementById('logs');
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        let CharacterGenerationAPI, CharacterValidator;
+
+        async function init() {
+            try {
+                // Force fresh import with cache busting
+                const timestamp = Date.now();
+                const module = await import(`./src/features/character-generation/index.js?v=${timestamp}`);
+                CharacterGenerationAPI = module.CharacterGenerationAPI;
+                
+                const validatorModule = await import(`./src/features/character-generation/validation/CharacterValidator.js?v=${timestamp}`);
+                CharacterValidator = validatorModule.CharacterValidator;
+                
+                log('✅ Modules loaded with cache busting', 'success');
+            } catch (error) {
+                log(`❌ Failed to load: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        document.getElementById('test-simple-array').addEventListener('click', () => {
+            log('🧪 Testing simple array validation...');
+            
+            try {
+                const validator = new CharacterValidator();
+                
+                // Test array validation directly
+                const testData = {
+                    testArray: ['item1', 'item2'],
+                    testString: 'hello'
+                };
+                
+                const schema = {
+                    testArray: { type: 'array', items: { type: 'string' } },
+                    testString: { type: 'string' }
+                };
+                
+                // Test each property
+                validator.validateProperty('testArray', testData.testArray, schema.testArray);
+                validator.validateProperty('testString', testData.testString, schema.testString);
+                
+                const result = validator.getResult();
+                
+                if (result.isValid) {
+                    log('✅ Simple array validation passed', 'success');
+                } else {
+                    log(`❌ Simple array validation failed:`, 'error');
+                    log(`<pre>${JSON.stringify(result.errors, null, 2)}</pre>`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Array test exception: ${error.message}`, 'error');
+                console.error(error);
+            }
+        });
+
+        document.getElementById('test-character-creation').addEventListener('click', async () => {
+            log('🧪 Testing character creation with detailed output...');
+            
+            try {
+                const result = await CharacterGenerationAPI.createCharacter({
+                    name: 'Quick Test',
+                    subject: 'math',
+                    autoSave: false
+                });
+                
+                if (result.success) {
+                    log('✅ Character creation succeeded!', 'success');
+                    log(`Character ID: ${result.character.id}`);
+                } else {
+                    log(`❌ Character creation failed: ${result.error}`, 'error');
+                    if (result.details) {
+                        log(`<pre>Validation Errors:\n${JSON.stringify(result.details, null, 2)}</pre>`, 'error');
+                    }
+                    if (result.warnings) {
+                        log(`<pre>Warnings:\n${JSON.stringify(result.warnings, null, 2)}</pre>`);
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ Character creation exception: ${error.message}`, 'error');
+                console.error(error);
+            }
+        });
+
+        document.getElementById('force-reload').addEventListener('click', () => {
+            log('🔄 Force reloading modules...');
+            init();
+        });
+
+        init();
+        log('🚀 Quick validation test loaded. Testing with updated validator.');
+    </script>
+</body>
+</html>

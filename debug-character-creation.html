@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Character Creation</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .log { margin: 5px 0; padding: 8px; background: #f5f5f5; border-left: 3px solid #007bff; font-family: monospace; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        button { margin: 10px; padding: 10px 20px; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Debug Character Creation</h1>
+    
+    <button id="test-simple">Test Simple Character</button>
+    <button id="test-detailed">Test Detailed Character</button>
+    <button id="test-validation">Test Validation Only</button>
+    
+    <div id="logs"></div>
+
+    <script type="module">
+        const logs = document.getElementById('logs');
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        let CharacterGenerationAPI, CharacterUtils;
+
+        async function init() {
+            try {
+                const module = await import('./src/features/character-generation/index.js');
+                CharacterGenerationAPI = module.CharacterGenerationAPI;
+                CharacterUtils = module.CharacterUtils;
+                log('✅ Character generation system loaded', 'success');
+            } catch (error) {
+                log(`❌ Failed to load: ${error.message}`, 'error');
+            }
+        }
+
+        document.getElementById('test-simple').addEventListener('click', async () => {
+            log('🧪 Testing simple character creation...');
+            
+            try {
+                const result = await CharacterGenerationAPI.createCharacter({
+                    name: 'Test Character',
+                    subject: 'math',
+                    autoSave: false
+                });
+                
+                if (result.success) {
+                    log('✅ Simple character created successfully', 'success');
+                    log(`Character: ${JSON.stringify(result.character, null, 2)}`);
+                } else {
+                    log(`❌ Character creation failed: ${result.error}`, 'error');
+                    if (result.details) {
+                        log(`Details: ${JSON.stringify(result.details, null, 2)}`, 'error');
+                    }
+                    if (result.warnings) {
+                        log(`Warnings: ${JSON.stringify(result.warnings, null, 2)}`, 'warning');
+                    }
+                }
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        });
+
+        document.getElementById('test-detailed').addEventListener('click', async () => {
+            log('🧪 Testing detailed character creation...');
+            
+            try {
+                const result = await CharacterGenerationAPI.createCharacter({
+                    name: 'Detailed Test',
+                    subject: 'science',
+                    appearance: {
+                        baseShape: 'circle',
+                        primaryColor: '#4A90E2',
+                        secondaryColor: '#FFFFFF',
+                        accentColor: '#FFD700'
+                    },
+                    personality: {
+                        primaryTrait: 'friendly',
+                        traits: ['friendly', 'curious']
+                    },
+                    education: {
+                        specialties: ['experiments', 'discovery'],
+                        difficultyLevel: 'beginner'
+                    },
+                    autoSave: false
+                });
+                
+                if (result.success) {
+                    log('✅ Detailed character created successfully', 'success');
+                    log(`Character: ${JSON.stringify(result.character, null, 2)}`);
+                } else {
+                    log(`❌ Character creation failed: ${result.error}`, 'error');
+                    if (result.details) {
+                        log(`Details: ${JSON.stringify(result.details, null, 2)}`, 'error');
+                    }
+                    if (result.warnings) {
+                        log(`Warnings: ${JSON.stringify(result.warnings, null, 2)}`, 'warning');
+                    }
+                }
+            } catch (error) {
+                log(`❌ Exception: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        });
+
+        document.getElementById('test-validation').addEventListener('click', async () => {
+            log('🧪 Testing validation directly...');
+            
+            try {
+                // Create a minimal character object
+                const testCharacter = {
+                    id: 'test-123',
+                    name: 'Test',
+                    subject: 'math',
+                    appearance: {
+                        baseShape: 'circle',
+                        primaryColor: '#4A90E2'
+                    },
+                    personality: {
+                        primaryTrait: 'friendly'
+                    },
+                    education: {
+                        specialties: ['numbers']
+                    }
+                };
+                
+                const validation = CharacterGenerationAPI.validateCharacter(testCharacter);
+                
+                log(`Validation result: isValid=${validation.isValid}`);
+                if (validation.errors && validation.errors.length > 0) {
+                    log(`Errors: ${JSON.stringify(validation.errors, null, 2)}`, 'error');
+                }
+                if (validation.warnings && validation.warnings.length > 0) {
+                    log(`Warnings: ${JSON.stringify(validation.warnings, null, 2)}`, 'warning');
+                }
+            } catch (error) {
+                log(`❌ Validation exception: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        });
+
+        init();
+        log('🚀 Debug page loaded. Click buttons to test character creation.');
+    </script>
+</body>
+</html>

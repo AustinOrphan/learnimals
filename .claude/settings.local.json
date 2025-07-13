@@ -68,7 +68,6 @@
       "Bash(git stash:*)",
       "Bash(node:*)",
       "mcp__serena__summarize_changes",
-      "mcp__serena__replace_regex",
       "Bash(gh run view:*)",
       "Bash(cat:*)",
       "mcp__serena__restart_language_server",
@@ -83,7 +82,21 @@
       "mcp__filesystem__list_directory",
       "mcp__filesystem__read_multiple_files",
       "mcp__filesystem__search_files",
-      "mcp__filesystem__edit_file"
+      "mcp__filesystem__edit_file",
+      "mcp__filesystem__directory_tree",
+      "mcp__filesystem__create_directory",
+      "Bash(open:*)",
+      "mcp__playwright__playwright_navigate",
+      "mcp__playwright__playwright_click",
+      "mcp__playwright__playwright_console_logs",
+      "mcp__playwright__playwright_get_visible_text",
+      "mcp__playwright__playwright_evaluate",
+      "mcp__playwright__playwright_screenshot",
+      "mcp__playwright__playwright_close",
+      "Bash(npm test:*)",
+      "Bash(git rebase:*)",
+      "Bash(rm:*)",
+      "Bash(kill:*)"
     ],
     "deny": []
   }

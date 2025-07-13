@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnose Character Generation Failures</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .test-section { 
+            background: #f5f5f5; 
+            padding: 15px; 
+            margin: 15px 0;
+            border-radius: 5px; 
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        pre { 
+            background: #fff; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button { 
+            padding: 10px 20px; 
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover { background: #0056b3; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #ccc;
+            background: white;
+        }
+        .test-result.success { border-left-color: green; }
+        .test-result.error { border-left-color: red; }
+        .test-result.warning { border-left-color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Diagnose Character Generation Failures</h1>
+    
+    <div class="test-section">
+        <h2>System Check</h2>
+        <button id="check-system">Check System Components</button>
+        <div id="system-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Template Analysis</h2>
+        <button id="check-templates">Analyze Templates</button>
+        <div id="template-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Subject-by-Subject Test</h2>
+        <button id="test-all-subjects">Test All Subjects</button>
+        <div id="subject-results" class="grid"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Stress Test</h2>
+        <button id="stress-test">Run Stress Test (100 characters)</button>
+        <div id="stress-results"></div>
+    </div>
+
+    <script type="module">
+        let CharacterGenerationAPI, CharacterUtils, CharacterFactory, CharacterValidator;
+        let DefaultCharacterTemplate, SubjectTemplates, CharacterSchema;
+        
+        async function init() {
+            try {
+                const module = await import('./src/features/character-generation/index.js');
+                CharacterGenerationAPI = module.CharacterGenerationAPI;
+                CharacterUtils = module.CharacterUtils;
+                CharacterFactory = module.CharacterFactory;
+                CharacterValidator = module.CharacterValidator;
+                
+                const schemaModule = await import('./src/features/character-generation/schemas/CharacterSchema.js');
+                DefaultCharacterTemplate = schemaModule.DefaultCharacterTemplate;
+                SubjectTemplates = schemaModule.SubjectTemplates;
+                CharacterSchema = schemaModule.CharacterSchema;
+                
+                log('system-results', '✅ Modules loaded successfully', 'success');
+            } catch (error) {
+                log('system-results', `❌ Failed to load modules: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+        
+        function log(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            container.appendChild(div);
+        }
+        
+        // System Component Check
+        document.getElementById('check-system').addEventListener('click', async () => {
+            const results = document.getElementById('system-results');
+            results.innerHTML = '';
+            
+            log('system-results', 'Checking system components...', 'info');
+            
+            // Check default template
+            log('system-results', '<strong>Default Template Check:</strong>');
+            const templateIssues = [];
+            
+            if (DefaultCharacterTemplate.id === '') {
+                templateIssues.push('ID is empty string (should be generated later)');
+            }
+            if (DefaultCharacterTemplate.name === '') {
+                templateIssues.push('Name is empty string (should be generated later)');
+            }
+            
+            // Check metadata dates
+            const created = DefaultCharacterTemplate.metadata.created;
+            const modified = DefaultCharacterTemplate.metadata.modified;
+            const now = new Date().toISOString();
+            
+            if (created === modified) {
+                templateIssues.push('Created and modified dates are identical (might be static)');
+            }
+            
+            if (Math.abs(new Date(created) - new Date()) > 60000) {
+                templateIssues.push(`Created date is stale: ${created} (current: ${now})`);
+            }
+            
+            if (templateIssues.length > 0) {
+                log('system-results', `⚠️ Template issues found:<br>${templateIssues.join('<br>')}`, 'warning');
+            } else {
+                log('system-results', '✅ Default template looks good', 'success');
+            }
+            
+            // Check available subjects vs defined templates
+            const availableSubjects = CharacterUtils.getAvailableSubjects();
+            const templateSubjects = Object.keys(SubjectTemplates);
+            const missingTemplates = availableSubjects.filter(s => !templateSubjects.includes(s));
+            
+            log('system-results', `<strong>Subject Coverage:</strong><br>
+                Available subjects: ${availableSubjects.length}<br>
+                Subjects with templates: ${templateSubjects.length}<br>
+                Missing templates: ${missingTemplates.length > 0 ? missingTemplates.join(', ') : 'None'}`);
+            
+            if (missingTemplates.length > 0) {
+                log('system-results', `⚠️ ${missingTemplates.length} subjects missing templates: ${missingTemplates.join(', ')}`, 'warning');
+            }
+            
+            // Test factory instance
+            try {
+                const factory = new CharacterFactory();
+                log('system-results', '✅ CharacterFactory instantiation successful', 'success');
+                
+                // Check generation rules
+                const rules = factory.generationRules;
+                log('system-results', `<strong>Generation Rules:</strong><br>
+                    Color palettes: ${rules.colorPalettes.length}<br>
+                    Name generators: ${Object.keys(rules.nameGenerators).length}<br>
+                    Personality traits: ${rules.personalityTraitCombinations.length}<br>
+                    Education specialties: ${Object.keys(rules.educationSpecialties).length}`);
+                    
+            } catch (error) {
+                log('system-results', `❌ Factory instantiation failed: ${error.message}`, 'error');
+            }
+        });
+        
+        // Template Analysis
+        document.getElementById('check-templates').addEventListener('click', async () => {
+            const results = document.getElementById('template-results');
+            results.innerHTML = '';
+            
+            log('template-results', 'Analyzing templates...', 'info');
+            
+            // Test default template validation
+            const defaultValidation = CharacterGenerationAPI.validateCharacter(DefaultCharacterTemplate);
+            log('template-results', `<strong>Default Template Validation:</strong><br>
+                Valid: ${defaultValidation.isValid}<br>
+                Errors: ${defaultValidation.errors ? defaultValidation.errors.join(', ') : 'None'}<br>
+                Warnings: ${defaultValidation.warnings ? defaultValidation.warnings.join(', ') : 'None'}`);
+            
+            // Test each subject template
+            for (const [subject, template] of Object.entries(SubjectTemplates)) {
+                log('template-results', `<strong>${subject} Template:</strong>`);
+                
+                // Merge with default to create full character
+                const factory = new CharacterFactory();
+                const merged = factory.mergeDeep(
+                    JSON.parse(JSON.stringify(DefaultCharacterTemplate)), 
+                    template
+                );
+                merged.id = 'test-id';
+                merged.name = 'Test Name';
+                merged.subject = subject;
+                
+                const validation = CharacterGenerationAPI.validateCharacter(merged);
+                
+                if (validation.isValid) {
+                    log('template-results', `✅ ${subject} template valid after merge`, 'success');
+                } else {
+                    log('template-results', `❌ ${subject} template invalid: ${validation.errors.join(', ')}`, 'error');
+                }
+            }
+        });
+        
+        // Test All Subjects
+        document.getElementById('test-all-subjects').addEventListener('click', async () => {
+            const results = document.getElementById('subject-results');
+            results.innerHTML = '';
+            
+            const subjects = CharacterUtils.getAvailableSubjects();
+            
+            for (const subject of subjects) {
+                const subjectDiv = document.createElement('div');
+                subjectDiv.className = 'test-section';
+                subjectDiv.innerHTML = `<h3>${subject}</h3>`;
+                results.appendChild(subjectDiv);
+                
+                try {
+                    // Test 5 times for each subject
+                    let successes = 0;
+                    let failures = [];
+                    
+                    for (let i = 0; i < 5; i++) {
+                        const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
+                            autoSave: false
+                        });
+                        
+                        if (result.success) {
+                            successes++;
+                        } else {
+                            failures.push(`Attempt ${i + 1}: ${result.error} - ${result.details ? result.details.join(', ') : ''}`);
+                        }
+                    }
+                    
+                    const content = document.createElement('div');
+                    if (successes === 5) {
+                        content.innerHTML = `<span class="success">✅ All 5 tests passed</span>`;
+                    } else if (successes === 0) {
+                        content.innerHTML = `<span class="error">❌ All 5 tests failed</span><br>
+                            <small>${failures.join('<br>')}</small>`;
+                    } else {
+                        content.innerHTML = `<span class="warning">⚠️ ${successes}/5 tests passed</span><br>
+                            <small>${failures.join('<br>')}</small>`;
+                    }
+                    subjectDiv.appendChild(content);
+                    
+                } catch (error) {
+                    const content = document.createElement('div');
+                    content.innerHTML = `<span class="error">❌ Exception: ${error.message}</span>`;
+                    subjectDiv.appendChild(content);
+                }
+            }
+        });
+        
+        // Stress Test
+        document.getElementById('stress-test').addEventListener('click', async () => {
+            const results = document.getElementById('stress-results');
+            results.innerHTML = '';
+            
+            log('stress-results', 'Starting stress test...', 'info');
+            
+            const stats = {
+                total: 0,
+                success: 0,
+                failed: 0,
+                errors: {},
+                timings: []
+            };
+            
+            const subjects = CharacterUtils.getAvailableSubjects();
+            
+            for (let i = 0; i < 100; i++) {
+                const subject = subjects[Math.floor(Math.random() * subjects.length)];
+                stats.total++;
+                
+                const start = performance.now();
+                
+                try {
+                    const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
+                        autoSave: false
+                    });
+                    
+                    const duration = performance.now() - start;
+                    stats.timings.push(duration);
+                    
+                    if (result.success) {
+                        stats.success++;
+                    } else {
+                        stats.failed++;
+                        const errorKey = `${subject}: ${result.error}`;
+                        stats.errors[errorKey] = (stats.errors[errorKey] || 0) + 1;
+                    }
+                    
+                } catch (error) {
+                    stats.failed++;
+                    const errorKey = `${subject}: ${error.message}`;
+                    stats.errors[errorKey] = (stats.errors[errorKey] || 0) + 1;
+                }
+                
+                if (i % 10 === 0) {
+                    results.innerHTML = `<div class="info">Progress: ${i + 1}/100...</div>`;
+                }
+            }
+            
+            const avgTime = stats.timings.reduce((a, b) => a + b, 0) / stats.timings.length;
+            const successRate = (stats.success / stats.total * 100).toFixed(1);
+            
+            let errorSummary = '';
+            if (Object.keys(stats.errors).length > 0) {
+                errorSummary = '<h4>Error Summary:</h4><ul>';
+                for (const [error, count] of Object.entries(stats.errors)) {
+                    errorSummary += `<li>${error}: ${count} times</li>`;
+                }
+                errorSummary += '</ul>';
+            }
+            
+            results.innerHTML = `
+                <div class="${stats.success === stats.total ? 'success' : stats.failed > 10 ? 'error' : 'warning'}">
+                    <strong>Stress Test Results:</strong><br>
+                    Total: ${stats.total}<br>
+                    Success: ${stats.success} (${successRate}%)<br>
+                    Failed: ${stats.failed}<br>
+                    Average time: ${avgTime.toFixed(0)}ms
+                </div>
+                ${errorSummary}
+            `;
+        });
+        
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
