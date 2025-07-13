@@ -152,6 +152,88 @@ export function isPointInCircle(x, y, circleX, circleY, radius) {
 }
 
 /**
+ * Lighten a hex color by a percentage
+ * @param {string} color - Hex color string (e.g., '#FF0000')
+ * @param {number} percent - Percentage to lighten (0-100)
+ * @returns {string} - Lightened hex color
+ */
+export function lightenColor(color, percent) {
+  const num = parseInt(color.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) + amt;
+  const G = (num >> 8 & 0x00FF) + amt;
+  const B = (num & 0x0000FF) + amt;
+  return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+}
+
+/**
+ * Darken a hex color by a percentage
+ * @param {string} color - Hex color string (e.g., '#FF0000')
+ * @param {number} percent - Percentage to darken (0-100)
+ * @returns {string} - Darkened hex color
+ */
+export function darkenColor(color, percent) {
+  const num = parseInt(color.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) - amt;
+  const G = (num >> 8 & 0x00FF) - amt;
+  const B = (num & 0x0000FF) - amt;
+  return '#' + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+    (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+    (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+}
+
+/**
+ * Compare two fractions for equality using integer arithmetic
+ * @param {number} num1 - First fraction numerator
+ * @param {number} den1 - First fraction denominator
+ * @param {number} num2 - Second fraction numerator
+ * @param {number} den2 - Second fraction denominator
+ * @returns {boolean} - True if fractions are equal
+ */
+export function compareFractions(num1, den1, num2, den2) {
+  // Cross multiply to avoid floating point errors: a/b == c/d iff a*d == b*c
+  return num1 * den2 === num2 * den1;
+}
+
+/**
+ * Add two fractions and return the result as a simplified fraction
+ * @param {number} num1 - First fraction numerator
+ * @param {number} den1 - First fraction denominator
+ * @param {number} num2 - Second fraction numerator
+ * @param {number} den2 - Second fraction denominator
+ * @returns {Object} - Object with numerator and denominator properties
+ */
+export function addFractions(num1, den1, num2, den2) {
+  const numerator = num1 * den2 + num2 * den1;
+  const denominator = den1 * den2;
+  const gcd = getGCD(numerator, denominator);
+  return {
+    numerator: numerator / gcd,
+    denominator: denominator / gcd
+  };
+}
+
+/**
+ * Calculate the greatest common divisor of two numbers
+ * @param {number} a - First number
+ * @param {number} b - Second number
+ * @returns {number} - Greatest common divisor
+ */
+export function getGCD(a, b) {
+  a = Math.abs(a);
+  b = Math.abs(b);
+  while (b !== 0) {
+    const temp = b;
+    b = a % b;
+    a = temp;
+  }
+  return a;
+}
+
+/**
  * SECURITY: Escape HTML characters to prevent XSS attacks
  * Converts dangerous HTML characters to safe HTML entities
  * @param {string} text - Text to escape
