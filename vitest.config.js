@@ -9,7 +9,7 @@ export default defineConfig({
     globals: true,
     
     // Setup files to run before tests
-    setupFiles: ['./tests/setup.js'],
+    setupFiles: ['./tests/setup/enhanced-setup.js'],
     
     // Test file patterns
     include: [
@@ -46,8 +46,10 @@ export default defineConfig({
     reporter: ['default'],
     
     // Mock configuration
-    deps: {
-      inline: ['jsdom']
+    server: {
+      deps: {
+        inline: ['jsdom']
+      }
     }
   },
   
