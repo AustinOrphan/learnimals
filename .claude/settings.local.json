@@ -45,7 +45,8 @@
       "mcp__Context7__get-library-docs",
       "mcp__serena__summarize_changes",
       "Bash(gh run view:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git rebase:*)"
     ],
     "deny": []
   }
