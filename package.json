@@ -6,15 +6,17 @@
   "scripts": {
     "generate-subjects": "node scripts/generateSubjects.js",
     "list-templates": "node scripts/generateSubjects.js --list-templates",
-    "lint": "eslint src/ --ext .js",
-    "lint:fix": "eslint src/ --ext .js --fix",
+    "lint": "eslint src/ scripts/ tests/",
+    "lint:fix": "eslint src/ scripts/ tests/ --fix",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:components": "vitest run tests/components",
     "test:integration": "vitest run tests/integration",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky",
+    "pre-commit": "lint-staged"
   },
   "keywords": ["education", "children", "games", "learning"],
   "private": true,
@@ -23,6 +25,19 @@
     "@eslint/js": "^8.57.0",
     "vitest": "^1.6.0",
     "@vitest/ui": "^1.6.0",
-    "jsdom": "^24.1.0"
+    "jsdom": "^24.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "prettier": "^3.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "vitest related --run"
+    ],
+    "src/**/*.{html,css}": [
+      "prettier --write --ignore-unknown"
+    ]
   }
 }

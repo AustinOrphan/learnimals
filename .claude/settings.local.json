@@ -100,7 +100,9 @@
       "Bash(git stash:*)",
       "Bash(git rebase:*)",
       "Bash(rm:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(chmod:*)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }

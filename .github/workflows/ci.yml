@@ -64,15 +64,32 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Run tests
+      - name: Run tests with coverage
         run: |
           if grep -q "test:" package.json; then
-            npm test
+            npm run test:coverage
           else
             echo "No test script found, skipping tests"
           fi
         env:
           CI: true
+      
+      - name: Check coverage thresholds
+        if: matrix.node-version == 20
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            # Extract coverage percentages
+            COVERAGE=$(npx lcov-summary coverage/lcov.info | grep "Total" | awk '{print $2}' | sed 's/%//')
+            echo "Total coverage: $COVERAGE%"
+            
+            # Check against threshold (70% for now)
+            if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+              echo "Coverage is below 70% threshold"
+              exit 1
+            fi
+          else
+            echo "No coverage report found"
+          fi
       
       - name: Upload coverage reports
         if: matrix.node-version == 20
@@ -82,6 +99,14 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
+      
+      - name: Upload coverage to artifact
+        if: matrix.node-version == 20 && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
 
   build:
     runs-on: ubuntu-latest

@@ -58,6 +58,13 @@ class CharacterGallery extends BaseComponent {
       keyboardNavigation: this.handleKeyboardNavigation.bind(this),
       resize: this.handleResize.bind(this)
     };
+    
+    this.onCharacterSelect = options.onCharacterSelect || null;
+    this.onCharacterInteraction = options.onCharacterInteraction || null;
+    
+    // Memory management
+    this.autoplayInterval = null;
+    this.boundKeydownHandler = null;
 
     this.init();
   }
@@ -456,11 +463,15 @@ class CharacterGallery extends BaseComponent {
     // Sort characters
     filtered.sort((a, b) => {
       switch (this.currentSort) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+        
       case 'subject':
         return a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name);
+        
       case 'popularity':
         return (b.popularity || 0) - (a.popularity || 0);
-      case 'name':
+        
       default:
         return a.name.localeCompare(b.name);
       }
@@ -849,6 +860,29 @@ class CharacterGallery extends BaseComponent {
       this.updateMemoryUsage();
       setInterval(() => this.updateMemoryUsage(), 5000);
     }
+    
+    // Event delegation for all click events
+    this.handleDelegatedClick = this.handleDelegatedClick.bind(this);
+    this.element.addEventListener('click', this.handleDelegatedClick);
+    
+    // Event delegation for input events  
+    this.handleDelegatedInput = this.handleDelegatedInput.bind(this);
+    this.element.addEventListener('input', this.handleDelegatedInput);
+    
+    // Event delegation for change events
+    this.handleDelegatedChange = this.handleDelegatedChange.bind(this);
+    this.element.addEventListener('change', this.handleDelegatedChange);
+    
+    // Keyboard navigation - store bound handler for cleanup
+    this.boundKeydownHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.selectedCharacter = null;
+        document.querySelectorAll('.character-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+      }
+    };
+    document.addEventListener('keydown', this.boundKeydownHandler);
   }
 
   /**
@@ -892,6 +926,47 @@ class CharacterGallery extends BaseComponent {
       
       this.performanceMetrics.memoryUsage = usedMB;
     }
+  }
+  
+  /**
+   * Start autoplay animations for characters
+   */
+  startAutoplayAnimations() {
+    // Clear any existing interval
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+    
+    this.autoplayInterval = setInterval(() => {
+      const visibleCards = Array.from(document.querySelectorAll('.character-card'))
+        .filter(card => this.isElementVisible(card));
+      
+      if (visibleCards.length > 0) {
+        const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+        const characterId = randomCard.dataset.characterId;
+        
+        if (characterId) {
+          const animations = ['happy', 'thinking', 'waving'];
+          const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+          
+          // Add animation class for visual feedback
+          randomCard.classList.add(`animate-${randomAnimation}`);
+          
+          // Reset animation after delay
+          setTimeout(() => {
+            randomCard.classList.remove(`animate-${randomAnimation}`);
+          }, 2000);
+        }
+      }
+    }, 5000);
+  }
+  
+  /**
+   * Check if element is visible in viewport
+   */
+  isElementVisible(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.top < window.innerHeight && rect.bottom > 0;
   }
 
   /**
@@ -1066,6 +1141,18 @@ class CharacterGallery extends BaseComponent {
     // Clear timeouts
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
+    }
+    
+    // Clean up document event listener
+    if (this.boundKeydownHandler) {
+      document.removeEventListener('keydown', this.boundKeydownHandler);
+      this.boundKeydownHandler = null;
+    }
+    
+    // Clean up autoplay interval
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
     }
     
     super.destroy();

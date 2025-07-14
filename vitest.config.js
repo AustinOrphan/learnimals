@@ -43,7 +43,7 @@ export default defineConfig({
     hookTimeout: 10000,
     
     // Reporter configuration
-    reporter: ['verbose', 'json'],
+    reporter: ['default'],
     
     // Mock configuration
     deps: {
