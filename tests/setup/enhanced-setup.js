@@ -26,21 +26,24 @@ beforeAll(() => {
     debug: vi.fn()
   };
   
-  // Mock window.location
-  delete window.location;
-  window.location = {
-    href: 'http://localhost:3000/',
-    origin: 'http://localhost:3000',
-    protocol: 'http:',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/',
-    search: '',
-    hash: '',
-    assign: vi.fn(),
-    reload: vi.fn(),
-    replace: vi.fn()
-  };
+  // Mock window.location (use defineProperty to override non-configurable property)
+  Object.defineProperty(window, 'location', {
+    value: {
+      href: 'http://localhost:3000/',
+      origin: 'http://localhost:3000',
+      protocol: 'http:',
+      hostname: 'localhost',
+      port: '3000',
+      pathname: '/',
+      search: '',
+      hash: '',
+      assign: vi.fn(),
+      reload: vi.fn(),
+      replace: vi.fn()
+    },
+    writable: true,
+    configurable: true
+  });
   
   // Setup DOM environment
   document.body.innerHTML = '';
