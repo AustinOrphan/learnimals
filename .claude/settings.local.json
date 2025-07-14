@@ -44,7 +44,25 @@
       "Bash(gh pr list:*)",
       "Bash(gh issue create:*)",
       "Bash(gh pr create:*)",
-      "Bash(gh issue edit:*)"
+      "Bash(gh issue edit:*)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "mcp__github__create_issue",
+      "mcp__github__get_me",
+      "Bash(gh label:*)",
+      "Bash(git stash:*)",
+      "Bash(node:*)",
+      "Bash(gh run view:*)",
+      "Bash(cat:*)",
+      "mcp__serena__restart_language_server",
+      "mcp__serena__list_memories",
+      "mcp__serena__write_memory",
+      "gh label:*",
+      "gh milestone:*",
+      "git remote get-url:*",
+      "mcp__filesystem__search_files",
+      "Bash(chmod:*)",
+      "Bash(gh pr checkout:*)"
     ],
     "deny": []
   }
