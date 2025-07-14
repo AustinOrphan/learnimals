@@ -79,30 +79,14 @@
       "git remote get-url:*",
       "mcp__filesystem__read_file",
       "mcp__filesystem__write_file",
-<<<<<<< HEAD
       "mcp__filesystem__list_directory",
       "mcp__filesystem__read_multiple_files",
       "mcp__filesystem__search_files",
       "mcp__filesystem__edit_file",
-      "Bash(rm:*)"
-=======
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "Bash(cd:*)",
-      "mcp__serena__find_symbol",
+      "Bash(rm:*)",
       "Bash(chmod:*)",
-      "Bash(npm test)",
-      "Bash(git restore:*)"
->>>>>>> 486f138 (feat: implement mobile-first responsive design system (Phase 1 B1))
+      "Bash(git restore:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }
