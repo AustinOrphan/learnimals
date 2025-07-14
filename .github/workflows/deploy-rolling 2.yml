@@ -1,0 +1,333 @@
+name: 🚀 Rolling Deployment
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      force_deploy:
+        description: 'Force deployment (skip some checks)'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  NODE_VERSION: '18'
+
+jobs:
+  # Pre-deployment Validation
+  pre-deployment:
+    name: 🔍 Pre-deployment Validation
+    runs-on: ubuntu-latest
+    outputs:
+      deployment-environment: ${{ steps.environment.outputs.environment }}
+      should-deploy: ${{ steps.validation.outputs.should-deploy }}
+    steps:
+      - name: Determine deployment environment
+        id: environment
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.event_name }}" == "release" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate deployment readiness
+        id: validation
+        run: |
+          # Check if this is a forced deployment
+          if [[ "${{ github.event.inputs.force_deploy }}" == "true" ]]; then
+            echo "should-deploy=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Force deployment enabled - skipping some validation checks"
+            exit 0
+          fi
+          
+          # Validate branch for production deployments
+          if [[ "${{ steps.environment.outputs.environment }}" == "production" ]]; then
+            if [[ "${{ github.ref }}" != "refs/heads/main" ]] && [[ "${{ github.event_name }}" != "release" ]]; then
+              echo "❌ Production deployments only allowed from main branch or releases"
+              echo "should-deploy=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          fi
+          
+          echo "should-deploy=true" >> $GITHUB_OUTPUT
+
+  # Development Environment Deployment
+  deploy-dev:
+    name: 🔧 Deploy to Development
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || contains(github.ref, 'feature/')
+    environment:
+      name: development
+      url: https://dev.learnimals.app
+    steps:
+      - name: Deploy to Development
+        run: |
+          echo "🚀 Deploying to Development Environment"
+          echo "🏷️ Image: ${{ needs.pre-deployment.outputs.image-tag }}"
+
+  # Staging Environment Deployment
+  deploy-staging:
+    name: 🎭 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [pre-deployment]
+    if: needs.pre-deployment.outputs.should-deploy == 'true' && (needs.pre-deployment.outputs.deployment-environment == 'staging' || github.ref == 'refs/heads/main')
+    environment:
+      name: staging
+      url: https://staging.learnimals.app
+    outputs:
+      deployment-id: ${{ steps.deploy.outputs.deployment-id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure staging cluster access
+        run: |
+          echo "${{ secrets.STAGING_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Rolling deployment to staging
+        id: deploy
+        run: |
+          # Generate deployment ID for tracking
+          DEPLOYMENT_ID="staging-$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA:0:8}"
+          echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+          
+          echo "🚀 Starting rolling deployment to staging"
+          echo "📦 Deployment ID: $DEPLOYMENT_ID"
+          
+          # Apply Kubernetes manifests with rolling update strategy
+          envsubst < k8s/staging/deployment.yaml | kubectl apply -f -
+          envsubst < k8s/staging/service.yaml | kubectl apply -f -
+          envsubst < k8s/staging/ingress.yaml | kubectl apply -f -
+          
+          # Wait for rollout to complete
+          kubectl rollout status deployment/learnimals-app -n staging --timeout=600s
+          
+          echo "✅ Rolling deployment completed successfully"
+
+      - name: Verify deployment health
+        run: |
+          echo "🔍 Verifying deployment health..."
+          
+          # Wait for pods to be ready
+          kubectl wait --for=condition=ready pod -l app=learnimals-app -n staging --timeout=300s
+          
+          # Health check endpoint
+          for i in {1..30}; do
+            if curl -f https://staging.learnimals.app/health; then
+              echo "✅ Health check passed"
+              break
+            fi
+            echo "⏳ Waiting for health check... ($i/30)"
+            sleep 10
+          done
+
+      - name: Run post-deployment tests
+        run: |
+          echo "🧪 Running post-deployment tests..."
+          
+          # Smoke tests
+          npx playwright test --config=tests/e2e/playwright.config.js --grep="@smoke"
+          
+          # Performance validation
+          npx lighthouse-ci autorun --config=.lighthouserc.staging.json
+
+  # Production Deployment with Approvals
+  deploy-production:
+    name: 🏭 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [pre-deployment, deploy-staging]
+    if: needs.pre-deployment.outputs.should-deploy == 'true' && needs.pre-deployment.outputs.deployment-environment == 'production'
+    environment:
+      name: production
+      url: https://learnimals.app
+    steps:
+      - name: Manual approval checkpoint
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ github.repository_owner }}
+          minimum-approvals: 1
+          issue-title: "Production Deployment Approval Required"
+          issue-body: |
+            ## 🚀 Production Deployment Request
+            
+            **Branch:** ${{ github.ref }}
+            **Commit:** ${{ github.sha }}
+            **Staging Deployment:** ${{ needs.deploy-staging.outputs.deployment-id }}
+            
+            ### Pre-deployment Checklist
+            - [ ] Staging deployment successful
+            - [ ] All tests passing
+            - [ ] Performance metrics acceptable
+            - [ ] Business stakeholders notified
+            
+            **Approve this deployment by commenting `/approve`**
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure production cluster access
+        run: |
+          echo "${{ secrets.PRODUCTION_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Production rolling deployment
+        id: deploy
+        run: |
+          # Generate deployment ID for tracking
+          DEPLOYMENT_ID="prod-$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA:0:8}"
+          echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+          
+          echo "🚀 Starting PRODUCTION rolling deployment"
+          echo "📦 Deployment ID: $DEPLOYMENT_ID"
+          echo "⚠️ PRODUCTION DEPLOYMENT - Proceeding with caution"
+          
+          # Apply production manifests with rolling update
+          envsubst < k8s/production/deployment.yaml | kubectl apply -f -
+          envsubst < k8s/production/service.yaml | kubectl apply -f -
+          envsubst < k8s/production/ingress.yaml | kubectl apply -f -
+          
+          # Wait for rollout with longer timeout for production
+          kubectl rollout status deployment/learnimals-app -n production --timeout=900s
+          
+          echo "✅ Production rolling deployment completed"
+
+      - name: Comprehensive production health checks
+        run: |
+          echo "🔍 Running comprehensive production health checks..."
+          
+          # Wait for all pods to be ready
+          kubectl wait --for=condition=ready pod -l app=learnimals-app -n production --timeout=600s
+          
+          # Verify all replicas are running
+          DESIRED=$(kubectl get deployment learnimals-app -n production -o jsonpath='{.spec.replicas}')
+          READY=$(kubectl get deployment learnimals-app -n production -o jsonpath='{.status.readyReplicas}')
+          
+          if [[ "$READY" != "$DESIRED" ]]; then
+            echo "❌ Not all replicas are ready: $READY/$DESIRED"
+            exit 1
+          fi
+          
+          # Health check endpoints
+          for i in {1..60}; do
+            if curl -f https://learnimals.app/health; then
+              echo "✅ Production health check passed"
+              break
+            fi
+            echo "⏳ Waiting for production health check... ($i/60)"
+            sleep 10
+          done
+
+      - name: Production smoke tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+          npx playwright test --config=tests/e2e/playwright.config.js --grep="@critical"
+
+      - name: Performance validation
+        run: |
+          echo "⚡ Validating production performance..."
+          npx lighthouse-ci autorun --config=.lighthouserc.production.json
+
+  # Rollback Job
+  rollback:
+    name: 🔄 Rollback Deployment
+    runs-on: ubuntu-latest
+    if: failure() && (needs.deploy-staging.result == 'failure' || needs.deploy-production.result == 'failure')
+    needs: [deploy-staging, deploy-production]
+    environment:
+      name: ${{ needs.pre-deployment.outputs.deployment-environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure cluster access
+        run: |
+          if [[ "${{ needs.pre-deployment.outputs.deployment-environment }}" == "production" ]]; then
+            echo "${{ secrets.PRODUCTION_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+            NAMESPACE="production"
+          else
+            echo "${{ secrets.STAGING_KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+            NAMESPACE="staging"
+          fi
+          chmod 600 $HOME/.kube/config
+          echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
+
+      - name: Rollback deployment
+        run: |
+          echo "🔄 Rolling back deployment in ${{ env.NAMESPACE }}"
+          
+          # Rollback to previous version
+          kubectl rollout undo deployment/learnimals-app -n ${{ env.NAMESPACE }}
+          
+          # Wait for rollback to complete
+          kubectl rollout status deployment/learnimals-app -n ${{ env.NAMESPACE }} --timeout=600s
+          
+          echo "✅ Rollback completed successfully"
+
+      - name: Verify rollback health
+        run: |
+          echo "🔍 Verifying rollback health..."
+          kubectl wait --for=condition=ready pod -l app=learnimals-app -n ${{ env.NAMESPACE }} --timeout=300s
+          echo "✅ Rollback health check passed"
+
+  # Deployment Notifications
+  notify:
+    name: 📢 Deployment Notifications
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [pre-deployment, deploy-staging, deploy-production, rollback]
+    steps:
+      - name: Deployment status notification
+        run: |
+          if [[ "${{ needs.deploy-production.result }}" == "success" ]]; then
+            echo "✅ Production deployment successful"
+            # Send success notification
+          elif [[ "${{ needs.deploy-staging.result }}" == "success" ]]; then
+            echo "✅ Staging deployment successful"
+            # Send staging success notification
+          elif [[ "${{ needs.rollback.result }}" == "success" ]]; then
+            echo "🔄 Deployment rolled back successfully"
+            # Send rollback notification
+          else
+            echo "❌ Deployment failed"
+            # Send failure notification
+          fi

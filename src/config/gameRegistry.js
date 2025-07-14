@@ -28,8 +28,8 @@ export const gameRegistry = [
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
     
-    // Template configuration
-    template: 'game',
+    // Template configuration - Using minimal template for focused word puzzle gameplay
+    template: 'minimal',
     showControls: true,
     showProgress: true,
     showStats: true,
@@ -96,8 +96,8 @@ export const gameRegistry = [
     // Game features (fully featured after BaseGame migration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
     
-    // Template configuration
-    template: 'game', // Now uses full game template with BaseGame integration
+    // Template configuration - Using fullscreen template for immersive action-puzzle experience
+    template: 'fullscreen', // Immersive canvas-based bubble popping with auto-hide UI
     showControls: true,
     showProgress: true,
     showStats: true,
@@ -159,8 +159,8 @@ export const gameRegistry = [
     // Game features (fully featured after BaseGame migration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
     
-    // Template configuration
-    template: 'game', // Now uses full game template with BaseGame integration
+    // Template configuration - Using mobile template for touch-friendly simulation game
+    template: 'mobile', // Touch-optimized for younger ages with haptic feedback
     showControls: true, // BaseGame provides enhanced controls
     showProgress: true,
     showStats: true,
@@ -314,8 +314,8 @@ export const gameRegistry = [
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes'],
     
-    // Template configuration
-    template: 'game',
+    // Template configuration - Using mobile template for touch-friendly card flipping
+    template: 'mobile',
     showControls: true,
     showProgress: true,
     showStats: true,
@@ -459,8 +459,8 @@ export const gameRegistry = [
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes'],
     
-    // Template configuration
-    template: 'game',
+    // Template configuration - Using fullscreen template for creative pattern design
+    template: 'fullscreen',
     showControls: true,
     showProgress: true,
     showStats: true,
@@ -618,8 +618,8 @@ export const gameRegistry = [
     // Game features (fully featured with BaseGame integration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
     
-    // Template configuration
-    template: 'game',
+    // Template configuration - Using minimal template for focused math visualization
+    template: 'minimal',
     showControls: true,
     showProgress: true,
     showStats: true,
@@ -689,8 +689,8 @@ export const gameRegistry = [
     // Game features (fully featured with BaseGame integration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
     
-    // Template configuration
-    template: 'game',
+    // Template configuration - Using fullscreen template for immersive art creation
+    template: 'fullscreen',
     showControls: true,
     showProgress: true,
     showStats: true,
