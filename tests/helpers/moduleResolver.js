@@ -194,28 +194,550 @@ export function setupGlobalMocks() {
   });
   
   // Mock Canvas API
-  HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation(() => ({
-    fillStyle: '',
-    strokeStyle: '',
-    lineWidth: 1,
-    fillRect: vi.fn(),
-    strokeRect: vi.fn(),
-    clearRect: vi.fn(),
-    arc: vi.fn(),
-    beginPath: vi.fn(),
-    closePath: vi.fn(),
-    fill: vi.fn(),
-    stroke: vi.fn(),
-    save: vi.fn(),
-    restore: vi.fn(),
-    translate: vi.fn(),
-    rotate: vi.fn(),
-    scale: vi.fn(),
-    drawImage: vi.fn(),
-    measureText: vi.fn().mockReturnValue({ width: 100 }),
-    fillText: vi.fn(),
-    strokeText: vi.fn()
+  if (global.window.HTMLCanvasElement) {
+    global.window.HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation(() => ({
+      fillStyle: '',
+      strokeStyle: '',
+      lineWidth: 1,
+      fillRect: vi.fn(),
+      strokeRect: vi.fn(),
+      clearRect: vi.fn(),
+      arc: vi.fn(),
+      beginPath: vi.fn(),
+      closePath: vi.fn(),
+      fill: vi.fn(),
+      stroke: vi.fn(),
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate: vi.fn(),
+      rotate: vi.fn(),
+      scale: vi.fn(),
+      drawImage: vi.fn(),
+      measureText: vi.fn().mockReturnValue({ width: 100 }),
+      fillText: vi.fn(),
+      strokeText: vi.fn()
+    }));
+  }
+
+  // Mock window.scrollTo (jsdom doesn't implement it)
+  global.window.scrollTo = vi.fn();
+  global.window.scroll = vi.fn();
+  global.window.scrollBy = vi.fn();
+  
+  // Mock window.getComputedStyle for better DOM testing
+  global.window.getComputedStyle = vi.fn().mockReturnValue({
+    getPropertyValue: vi.fn().mockReturnValue(''),
+    display: 'block',
+    visibility: 'visible',
+    opacity: '1'
+  });
+  
+  // Mock window.IntersectionObserver
+  global.window.IntersectionObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn()
   }));
+  
+  // Mock window.ResizeObserver
+  global.window.ResizeObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn()
+  }));
+  
+  // Mock window.MutationObserver
+  global.window.MutationObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    disconnect: vi.fn(),
+    takeRecords: vi.fn().mockReturnValue([])
+  }));
+  
+  // Mock window.performance.now for timing functions
+  global.window.performance = {
+    ...global.window.performance,
+    now: vi.fn(() => Date.now()),
+    mark: vi.fn(),
+    measure: vi.fn(),
+    getEntriesByName: vi.fn().mockReturnValue([]),
+    getEntriesByType: vi.fn().mockReturnValue([])
+  };
+  
+  // Mock window.URL for URL operations
+  global.window.URL = {
+    createObjectURL: vi.fn().mockReturnValue('blob:mock-url'),
+    revokeObjectURL: vi.fn()
+  };
+  
+  // Mock window.Blob for file operations
+  global.window.Blob = vi.fn().mockImplementation(() => ({
+    size: 0,
+    type: 'text/plain'
+  }));
+  
+  // Mock window.FileReader for file handling
+  global.window.FileReader = vi.fn().mockImplementation(() => ({
+    readAsText: vi.fn(),
+    readAsDataURL: vi.fn(),
+    readAsArrayBuffer: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    result: null,
+    error: null
+  }));
+  
+  // Mock window.history for navigation testing
+  global.window.history = {
+    pushState: vi.fn(),
+    replaceState: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    go: vi.fn(),
+    length: 1,
+    state: null
+  };
+  
+  // Mock window.screen for screen info
+  global.window.screen = {
+    width: 1920,
+    height: 1080,
+    availWidth: 1920,
+    availHeight: 1080,
+    colorDepth: 24,
+    pixelDepth: 24,
+    orientation: {
+      angle: 0,
+      type: 'landscape-primary',
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
+    }
+  };
+  
+  // Mock window.devicePixelRatio
+  global.window.devicePixelRatio = 1;
+  
+  // Mock window.pageXOffset and pageYOffset
+  global.window.pageXOffset = 0;
+  global.window.pageYOffset = 0;
+  global.window.scrollX = 0;
+  global.window.scrollY = 0;
+  
+  // Mock window.innerWidth and innerHeight
+  global.window.innerWidth = 1920;
+  global.window.innerHeight = 1080;
+  global.window.outerWidth = 1920;
+  global.window.outerHeight = 1080;
+  
+  // Mock document.elementFromPoint
+  global.document.elementFromPoint = vi.fn().mockReturnValue(null);
+  global.document.elementsFromPoint = vi.fn().mockReturnValue([]);
+  
+  // Mock document.createRange
+  global.document.createRange = vi.fn().mockReturnValue({
+    setStart: vi.fn(),
+    setEnd: vi.fn(),
+    collapse: vi.fn(),
+    selectNode: vi.fn(),
+    selectNodeContents: vi.fn(),
+    deleteContents: vi.fn(),
+    extractContents: vi.fn(),
+    cloneContents: vi.fn(),
+    insertNode: vi.fn(),
+    surroundContents: vi.fn(),
+    cloneRange: vi.fn(),
+    toString: vi.fn().mockReturnValue(''),
+    getBoundingClientRect: vi.fn().mockReturnValue({
+      x: 0, y: 0, width: 0, height: 0,
+      top: 0, right: 0, bottom: 0, left: 0
+    })
+  });
+  
+  // Mock document.getSelection
+  global.document.getSelection = vi.fn().mockReturnValue({
+    getRangeAt: vi.fn().mockReturnValue({
+      setStart: vi.fn(),
+      setEnd: vi.fn()
+    }),
+    addRange: vi.fn(),
+    removeAllRanges: vi.fn(),
+    toString: vi.fn().mockReturnValue('')
+  });
+  
+  // Mock document.execCommand
+  global.document.execCommand = vi.fn().mockReturnValue(true);
+  
+  // Mock document.hidden and visibilityState
+  Object.defineProperty(global.document, 'hidden', {
+    value: false,
+    writable: true
+  });
+  
+  Object.defineProperty(global.document, 'visibilityState', {
+    value: 'visible',
+    writable: true
+  });
+  
+  // Mock document.fullscreenElement
+  Object.defineProperty(global.document, 'fullscreenElement', {
+    value: null,
+    writable: true
+  });
+  
+  // Mock document.exitFullscreen
+  global.document.exitFullscreen = vi.fn().mockResolvedValue();
+  
+  // Mock Audio API
+  global.window.Audio = vi.fn().mockImplementation(() => ({
+    play: vi.fn().mockResolvedValue(),
+    pause: vi.fn(),
+    load: vi.fn(),
+    volume: 1,
+    muted: false,
+    duration: 0,
+    currentTime: 0,
+    paused: true,
+    ended: false,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn()
+  }));
+  
+  // Mock AudioContext
+  global.window.AudioContext = vi.fn().mockImplementation(() => ({
+    createOscillator: vi.fn(() => ({
+      connect: vi.fn(),
+      start: vi.fn(),
+      stop: vi.fn(),
+      frequency: { setValueAtTime: vi.fn() },
+      type: 'sine'
+    })),
+    createGain: vi.fn(() => ({
+      connect: vi.fn(),
+      gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() }
+    })),
+    destination: {},
+    currentTime: 0.5
+  }));
+  
+  global.window.webkitAudioContext = global.window.AudioContext;
+  
+  // Mock navigator.vibrate
+  global.navigator.vibrate = vi.fn();
+  
+  // Mock navigator.mediaDevices
+  global.navigator.mediaDevices = {
+    getUserMedia: vi.fn().mockResolvedValue({
+      getTracks: vi.fn().mockReturnValue([])
+    }),
+    getDisplayMedia: vi.fn().mockResolvedValue({
+      getTracks: vi.fn().mockReturnValue([])
+    })
+  };
+  
+  // Mock navigator.geolocation
+  global.navigator.geolocation = {
+    getCurrentPosition: vi.fn(),
+    watchPosition: vi.fn(),
+    clearWatch: vi.fn()
+  };
+  
+  // Mock navigator.permissions
+  global.navigator.permissions = {
+    query: vi.fn().mockResolvedValue({ state: 'granted' })
+  };
+  
+  // Mock navigator.clipboard
+  global.navigator.clipboard = {
+    writeText: vi.fn().mockResolvedValue(),
+    readText: vi.fn().mockResolvedValue(''),
+    write: vi.fn().mockResolvedValue(),
+    read: vi.fn().mockResolvedValue([])
+  };
+  
+  // Mock window.crypto (handling read-only property)
+  try {
+    global.window.crypto = {
+      getRandomValues: vi.fn().mockImplementation((arr) => {
+        for (let i = 0; i < arr.length; i++) {
+          arr[i] = Math.floor(Math.random() * 256);
+        }
+        return arr;
+      }),
+      subtle: {
+        digest: vi.fn().mockResolvedValue(new ArrayBuffer(32)),
+        encrypt: vi.fn().mockResolvedValue(new ArrayBuffer(16)),
+        decrypt: vi.fn().mockResolvedValue(new ArrayBuffer(16))
+      }
+    };
+  } catch (e) {
+    // If crypto is read-only, use defineProperty
+    Object.defineProperty(global.window, 'crypto', {
+      value: {
+        getRandomValues: vi.fn().mockImplementation((arr) => {
+          for (let i = 0; i < arr.length; i++) {
+            arr[i] = Math.floor(Math.random() * 256);
+          }
+          return arr;
+        }),
+        subtle: {
+          digest: vi.fn().mockResolvedValue(new ArrayBuffer(32)),
+          encrypt: vi.fn().mockResolvedValue(new ArrayBuffer(16)),
+          decrypt: vi.fn().mockResolvedValue(new ArrayBuffer(16))
+        }
+      },
+      writable: true,
+      configurable: true
+    });
+  }
+  
+  // Mock window.requestIdleCallback
+  global.window.requestIdleCallback = vi.fn((cb) => setTimeout(cb, 1));
+  global.window.cancelIdleCallback = vi.fn();
+  
+  // Mock window.Image
+  global.window.Image = vi.fn().mockImplementation(() => ({
+    src: '',
+    onload: null,
+    onerror: null,
+    width: 0,
+    height: 0,
+    complete: true
+  }));
+  
+  // Mock form validation APIs
+  if (global.window.HTMLFormElement) {
+    global.window.HTMLFormElement.prototype.checkValidity = vi.fn().mockReturnValue(true);
+    global.window.HTMLFormElement.prototype.reportValidity = vi.fn().mockReturnValue(true);
+  }
+  
+  // Mock element.getBoundingClientRect
+  if (global.window.Element) {
+    global.window.Element.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+      x: 0, y: 0, width: 0, height: 0,
+      top: 0, right: 0, bottom: 0, left: 0
+    });
+    
+    // Mock element.scrollIntoView
+    global.window.Element.prototype.scrollIntoView = vi.fn();
+    
+    // Mock element.animate
+    global.window.Element.prototype.animate = vi.fn().mockReturnValue({
+      play: vi.fn(),
+      pause: vi.fn(),
+      cancel: vi.fn(),
+      finish: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
+    });
+    
+    // Mock element.requestFullscreen
+    global.window.Element.prototype.requestFullscreen = vi.fn().mockResolvedValue();
+  }
+  
+  // Mock WebGL context
+  global.window.WebGLRenderingContext = vi.fn();
+  global.window.WebGL2RenderingContext = vi.fn();
+  
+  // Mock CSS Object Model
+  global.window.CSS = {
+    supports: vi.fn().mockReturnValue(true),
+    escape: vi.fn().mockImplementation(str => str),
+    paintWorklet: {
+      addModule: vi.fn().mockResolvedValue()
+    }
+  };
+  
+  // Mock Fetch API (enhanced)
+  global.window.fetch = vi.fn().mockImplementation((url) => {
+    // Provide default responses for common requests
+    if (url.includes('navbar.html')) {
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve('<nav id="navbar">Mock Navbar</nav>'),
+        json: () => Promise.resolve({}),
+        blob: () => Promise.resolve(new Blob())
+      });
+    }
+    
+    return Promise.resolve({
+      ok: true,
+      text: () => Promise.resolve(''),
+      json: () => Promise.resolve({}),
+      blob: () => Promise.resolve(new Blob())
+    });
+  });
+  
+  // Mock WebSocket
+  global.window.WebSocket = vi.fn().mockImplementation(() => ({
+    send: vi.fn(),
+    close: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    readyState: 1,
+    CONNECTING: 0,
+    OPEN: 1,
+    CLOSING: 2,
+    CLOSED: 3
+  }));
+  
+  // Mock EventSource
+  global.window.EventSource = vi.fn().mockImplementation(() => ({
+    close: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    readyState: 1,
+    CONNECTING: 0,
+    OPEN: 1,
+    CLOSED: 2
+  }));
+  
+  // Mock Worker
+  global.window.Worker = vi.fn().mockImplementation(() => ({
+    postMessage: vi.fn(),
+    terminate: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn()
+  }));
+  
+  // Mock SharedWorker
+  global.window.SharedWorker = vi.fn().mockImplementation(() => ({
+    port: {
+      postMessage: vi.fn(),
+      start: vi.fn(),
+      close: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
+    }
+  }));
+  
+  // Mock ServiceWorker
+  global.navigator.serviceWorker = {
+    register: vi.fn().mockResolvedValue({}),
+    ready: Promise.resolve({}),
+    controller: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn()
+  };
+  
+  // Mock IndexedDB
+  global.window.indexedDB = {
+    open: vi.fn().mockReturnValue({
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
+    }),
+    deleteDatabase: vi.fn(),
+    cmp: vi.fn().mockReturnValue(0)
+  };
+  
+  // Mock Notification API
+  global.window.Notification = vi.fn().mockImplementation(() => ({
+    close: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn()
+  }));
+  
+  global.window.Notification.requestPermission = vi.fn().mockResolvedValue('granted');
+  global.window.Notification.permission = 'granted';
+  
+  // Mock Touch APIs
+  global.window.TouchEvent = vi.fn().mockImplementation((type, options) => ({
+    type,
+    ...options,
+    preventDefault: vi.fn(),
+    stopPropagation: vi.fn(),
+    touches: [],
+    changedTouches: []
+  }));
+  
+  global.window.Touch = vi.fn().mockImplementation(() => ({
+    identifier: 0,
+    target: null,
+    clientX: 0,
+    clientY: 0,
+    pageX: 0,
+    pageY: 0,
+    screenX: 0,
+    screenY: 0
+  }));
+  
+  // Mock KeyboardEvent with proper inheritance
+  global.window.KeyboardEvent = vi.fn().mockImplementation(function(type, options = {}) {
+    // Create event with proper prototype and inheritance
+    const event = Object.create(Event.prototype);
+    event.type = type;
+    event.key = options.key || '';
+    event.code = options.code || '';
+    event.shiftKey = options.shiftKey || false;
+    event.ctrlKey = options.ctrlKey || false;
+    event.altKey = options.altKey || false;
+    event.metaKey = options.metaKey || false;
+    event.bubbles = options.bubbles || false;
+    event.cancelable = options.cancelable || false;
+    event.preventDefault = vi.fn();
+    event.stopPropagation = vi.fn();
+    event.stopImmediatePropagation = vi.fn();
+    event.target = null;
+    event.currentTarget = null;
+    event.eventPhase = 0;
+    event.isTrusted = false;
+    event.timeStamp = Date.now();
+    return event;
+  });
+  
+  // Mock MouseEvent with proper inheritance
+  global.window.MouseEvent = vi.fn().mockImplementation(function(type, options = {}) {
+    const event = Object.create(Event.prototype);
+    event.type = type;
+    event.clientX = options.clientX || 0;
+    event.clientY = options.clientY || 0;
+    event.button = options.button || 0;
+    event.buttons = options.buttons || 0;
+    event.bubbles = options.bubbles || false;
+    event.cancelable = options.cancelable || false;
+    event.preventDefault = vi.fn();
+    event.stopPropagation = vi.fn();
+    event.stopImmediatePropagation = vi.fn();
+    event.target = null;
+    event.currentTarget = null;
+    event.eventPhase = 0;
+    event.isTrusted = false;
+    event.timeStamp = Date.now();
+    return event;
+  });
+  
+  // Mock CustomEvent with proper inheritance
+  global.window.CustomEvent = vi.fn().mockImplementation(function(type, options = {}) {
+    const event = Object.create(Event.prototype);
+    event.type = type;
+    event.detail = options.detail || null;
+    event.bubbles = options.bubbles || false;
+    event.cancelable = options.cancelable || false;
+    event.preventDefault = vi.fn();
+    event.stopPropagation = vi.fn();
+    event.stopImmediatePropagation = vi.fn();
+    event.target = null;
+    event.currentTarget = null;
+    event.eventPhase = 0;
+    event.isTrusted = false;
+    event.timeStamp = Date.now();
+    return event;
+  });
+  
+  // Mock Event constructor with proper prototype
+  global.window.Event = vi.fn().mockImplementation(function(type, options = {}) {
+    const event = Object.create(Event.prototype);
+    event.type = type;
+    event.bubbles = options.bubbles || false;
+    event.cancelable = options.cancelable || false;
+    event.preventDefault = vi.fn();
+    event.stopPropagation = vi.fn();
+    event.stopImmediatePropagation = vi.fn();
+    event.target = null;
+    event.currentTarget = null;
+    event.eventPhase = 0;
+    event.isTrusted = false;
+    event.timeStamp = Date.now();
+    return event;
+  });
 }
 
 export default {
