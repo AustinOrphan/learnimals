@@ -42,7 +42,9 @@
       "Bash(find:*)",
       "Bash(gh issue list:*)",
       "Bash(gh pr list:*)",
-      "Bash(gh issue create:*)"
+      "Bash(gh issue create:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh issue edit:*)"
     ],
     "deny": []
   }

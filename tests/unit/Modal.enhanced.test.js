@@ -180,17 +180,21 @@ const mockModal = createMockModule({
       // Trigger before close event
       this.trigger('beforeClose');
 
-      // Remove classes for animation
-      this.backdrop.classList.remove('show');
-      this.element.classList.remove('show');
+      // Remove classes for animation - with null checks
+      if (this.backdrop) {
+        this.backdrop.classList.remove('show');
+      }
+      if (this.element) {
+        this.element.classList.remove('show');
+      }
 
       // Wait for animation to complete
       setTimeout(() => {
         // Remove from DOM
-        if (this.backdrop.parentNode) {
+        if (this.backdrop && this.backdrop.parentNode) {
           this.backdrop.parentNode.removeChild(this.backdrop);
         }
-        if (this.element.parentNode) {
+        if (this.element && this.element.parentNode) {
           this.element.parentNode.removeChild(this.element);
         }
 
@@ -207,7 +211,9 @@ const mockModal = createMockModule({
 
         // Set state
         this.isOpen = false;
-        this.backdrop.setAttribute('aria-hidden', 'true');
+        if (this.backdrop) {
+          this.backdrop.setAttribute('aria-hidden', 'true');
+        }
 
         // Trigger close event
         this.trigger('close');
@@ -342,7 +348,7 @@ const mockModal = createMockModule({
       }
       
       // Remove event listeners
-      if (this.options.closeOnBackdrop) {
+      if (this.options.closeOnBackdrop && this.backdrop) {
         this.backdrop.removeEventListener('click', this.boundBackdropClick);
       }
       
