@@ -287,6 +287,30 @@ class BaseComponent {
   }
 
   /**
+   * Add event listener to the component
+   * @param {string} eventName - Event name
+   * @param {Function} handler - Event handler function
+   */
+  on(eventName, handler) {
+    if (this.element) {
+      this.element.addEventListener(eventName, handler);
+    }
+    return this;
+  }
+
+  /**
+   * Remove event listener from the component
+   * @param {string} eventName - Event name
+   * @param {Function} handler - Event handler function
+   */
+  off(eventName, handler) {
+    if (this.element) {
+      this.element.removeEventListener(eventName, handler);
+    }
+    return this;
+  }
+
+  /**
    * Emit a custom event from the component
    * @param {string} eventName - Event name
    * @param {*} [detail] - Event detail data
