@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="{{gameDescription}}" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>{{gameName}} - Learnimals</title>
+    
+    <!-- Mobile optimized styles -->
+    <link rel="stylesheet" href="/src/styles/base/reset.css" />
+    <link rel="stylesheet" href="/src/styles/base/variables.css" />
+    <link rel="stylesheet" href="/src/styles/base/base.css" />
+    <link rel="stylesheet" href="/src/styles/components/game-ui.css" />
+    
+    <!-- Game-specific styles -->
+    {{#if gameStyleSheet}}<link rel="stylesheet" href="{{gameStyleSheet}}" />{{/if}}
+    
+    <!-- Custom styles -->
+    {{#if customStyles}}
+    <style>{{customStyles}}</style>
+    {{/if}}
+    
+    <!-- Mobile template styles -->
+    <style>
+        .mobile-game-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--bg-body, #f8f9fa);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .mobile-game-header {
+            background: linear-gradient(135deg, var(--primary-color, #007bff), var(--secondary-color, #6c757d));
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .mobile-game-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 0.5rem;
+        }
+        
+        .mobile-stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .mobile-stat-label {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            margin-bottom: 0.2rem;
+        }
+        
+        .mobile-stat-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg-card, #fff);
+            border-bottom: 1px solid var(--border-color, #dee2e6);
+        }
+        
+        .mobile-control-btn {
+            flex: 1;
+            max-width: 80px;
+            padding: 0.75rem 0.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            touch-action: manipulation;
+        }
+        
+        .mobile-control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .mobile-control-btn.primary {
+            background: var(--primary-color, #007bff);
+            color: white;
+        }
+        
+        .mobile-control-btn.secondary {
+            background: var(--secondary-color, #6c757d);
+            color: white;
+        }
+        
+        .mobile-control-btn.outline {
+            background: transparent;
+            border: 2px solid var(--primary-color, #007bff);
+            color: var(--primary-color, #007bff);
+        }
+        
+        .mobile-control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .mobile-control-icon {
+            font-size: 1.2rem;
+        }
+        
+        .mobile-game-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card, #fff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mobile-game-footer {
+            background: var(--bg-card, #fff);
+            border-top: 1px solid var(--border-color, #dee2e6);
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary, #6c757d);
+        }
+        
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .mobile-overlay-content {
+            background: var(--bg-card, #fff);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            margin: 1rem;
+        }
+        
+        .mobile-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg-secondary, #e9ecef);
+            border-top: 4px solid var(--primary-color, #007bff);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .mobile-error-message {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            background: var(--error-color, #dc3545);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: none;
+            z-index: 1001;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .mobile-touch-feedback {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: touchRipple 0.3s ease-out;
+            pointer-events: none;
+        }
+        
+        @keyframes touchRipple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .mobile-haptic-btn {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-haptic-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .mobile-haptic-btn.enabled {
+            background: var(--primary-color, #007bff);
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .mobile-game-header {
+                padding: 0.5rem;
+            }
+            
+            .mobile-game-title {
+                font-size: 1rem;
+            }
+            
+            .mobile-game-stats {
+                margin-top: 0.25rem;
+            }
+            
+            .mobile-stat-value {
+                font-size: 1rem;
+            }
+            
+            .mobile-game-controls {
+                padding: 0.5rem;
+            }
+            
+            .mobile-control-btn {
+                padding: 0.5rem;
+            }
+            
+            .mobile-game-footer {
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Portrait specific styles */
+        @media (orientation: portrait) {
+            .mobile-game-container {
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Safe area support for notched devices */
+        @supports (padding: max(0px)) {
+            .mobile-game-header {
+                padding-top: max(1rem, env(safe-area-inset-top));
+            }
+            
+            .mobile-game-footer {
+                padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body class="mobile-game-page {{themeClass}}">
+    <main class="mobile-game-layout">
+        <header class="mobile-game-header">
+            <h1 class="mobile-game-title">{{gameName}}</h1>
+            
+            {{#if showStats}}
+            <div class="mobile-game-stats">
+                <div class="mobile-stat-item">
+                    <span class="mobile-stat-label">Score</span>
+                    <span class="mobile-stat-value" id="mobile-score">0</span>
+                </div>
+                <div class="mobile-stat-item">
+                    <span class="mobile-stat-label">Level</span>
+                    <span class="mobile-stat-value" id="mobile-level">1</span>
+                </div>
+                {{#if timeLimit}}
+                <div class="mobile-stat-item">
+                    <span class="mobile-stat-label">Time</span>
+                    <span class="mobile-stat-value" id="mobile-timer">{{timeLimit}}</span>
+                </div>
+                {{/if}}
+            </div>
+            {{/if}}
+        </header>
+
+        {{#if showControls}}
+        <div class="mobile-game-controls">
+            <button id="mobile-start" class="mobile-control-btn primary">
+                <span class="mobile-control-icon">▶️</span>
+                <span>Start</span>
+            </button>
+            <button id="mobile-pause" class="mobile-control-btn secondary" style="display: none;">
+                <span class="mobile-control-icon">⏸️</span>
+                <span>Pause</span>
+            </button>
+            <button id="mobile-restart" class="mobile-control-btn outline">
+                <span class="mobile-control-icon">🔄</span>
+                <span>Restart</span>
+            </button>
+        </div>
+        {{/if}}
+        
+        <div class="mobile-game-container">
+            <div id="{{containerId}}" class="game-container">
+                <!-- Game-specific content will be rendered here -->
+                {{gameContent}}
+            </div>
+        </div>
+        
+        <footer class="mobile-game-footer">
+            <p>{{characterName}} • Learnimals</p>
+        </footer>
+    </main>
+
+    <!-- Mobile haptic feedback toggle -->
+    <button class="mobile-haptic-btn" id="mobile-haptic-toggle" title="Toggle Haptic Feedback">
+        📳
+    </button>
+
+    <!-- Mobile overlays -->
+    <div id="mobile-loading-overlay" class="mobile-overlay" style="display: none;">
+        <div class="mobile-overlay-content">
+            <div class="mobile-loading-spinner"></div>
+            <h3>Loading {{gameName}}...</h3>
+            <p>Optimizing for mobile...</p>
+        </div>
+    </div>
+
+    <div id="mobile-pause-overlay" class="mobile-overlay" style="display: none;">
+        <div class="mobile-overlay-content">
+            <h3>Game Paused</h3>
+            <p>Tap resume to continue playing.</p>
+            <button id="mobile-resume" class="btn btn-primary btn-lg">
+                ▶️ Resume
+            </button>
+        </div>
+    </div>
+
+    <div id="mobile-error-message" class="mobile-error-message"></div>
+
+    <!-- Mobile JavaScript -->
+    <script defer type="module" src="/src/themeInitializer.js"></script>
+    <script type="module" src="/src/utils/themeManager.js"></script>
+    <script type="module" src="/src/utils/GameSystem.js"></script>
+    <script type="module" src="{{gameScriptPath}}"></script>
+    
+    <!-- Mobile template integration -->
+    <script type="module">
+        import gameSystem from '/src/utils/GameSystem.js';
+        
+        // Game configuration
+        const gameConfig = {
+            id: '{{gameId}}',
+            name: '{{gameName}}',
+            character: '{{characterName}}',
+            features: {{{featureFlags}}}
+        };
+        
+        const gameOptions = {{{gameOptions}}};
+        
+        let hapticEnabled = localStorage.getItem('hapticEnabled') !== 'false';
+        let touchFeedbackEnabled = true;
+        
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Prevent zoom on double tap
+                preventZoom();
+                
+                // Initialize haptic feedback
+                initializeHapticFeedback();
+                
+                if (!gameSystem.initialized) {
+                    await gameSystem.init();
+                }
+                
+                setupMobileEventHandlers();
+                setupTouchFeedback();
+                showMobileLoading();
+                
+                const gameInstance = await gameSystem.loadGame(
+                    '{{gameId}}', 
+                    '{{containerId}}', 
+                    gameOptions
+                );
+                
+                hideMobileLoading();
+                
+                if (gameInstance && typeof gameInstance.setupTemplateIntegration === 'function') {
+                    gameInstance.setupTemplateIntegration();
+                }
+                
+                console.log('Mobile game template loaded:', '{{gameName}}');
+                
+            } catch (error) {
+                console.error('Failed to load mobile game:', error);
+                showMobileError('Failed to load game. Please try again.');
+            }
+        });
+        
+        // Prevent zoom on double tap
+        function preventZoom() {
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        }
+        
+        // Mobile event handlers
+        function setupMobileEventHandlers() {
+            const startBtn = document.getElementById('mobile-start');
+            const pauseBtn = document.getElementById('mobile-pause');
+            const restartBtn = document.getElementById('mobile-restart');
+            const resumeBtn = document.getElementById('mobile-resume');
+            const hapticToggle = document.getElementById('mobile-haptic-toggle');
+            
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    vibrate(50);
+                    gameSystem.emit('gameStart', { gameId: '{{gameId}}' });
+                    startBtn.style.display = 'none';
+                    if (pauseBtn) pauseBtn.style.display = 'flex';
+                });
+            }
+            
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', () => {
+                    vibrate(50);
+                    gameSystem.emit('gamePause', { gameId: '{{gameId}}' });
+                    showMobilePause();
+                });
+            }
+            
+            if (restartBtn) {
+                restartBtn.addEventListener('click', () => {
+                    vibrate(100);
+                    if (confirm('Restart game?')) {
+                        gameSystem.emit('gameRestart', { gameId: '{{gameId}}' });
+                        if (startBtn) startBtn.style.display = 'flex';
+                        if (pauseBtn) pauseBtn.style.display = 'none';
+                    }
+                });
+            }
+            
+            if (resumeBtn) {
+                resumeBtn.addEventListener('click', () => {
+                    vibrate(50);
+                    gameSystem.emit('gameResume', { gameId: '{{gameId}}' });
+                    hideMobilePause();
+                });
+            }
+            
+            if (hapticToggle) {
+                hapticToggle.addEventListener('click', toggleHapticFeedback);
+                updateHapticButtonState();
+            }
+            
+            // Orientation change handler
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    // Trigger resize event for game
+                    gameSystem.emit('resize', { gameId: '{{gameId}}' });
+                }, 100);
+            });
+            
+            // Visibility change handler (for app switching)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    gameSystem.emit('gamePause', { gameId: '{{gameId}}' });
+                    showMobilePause();
+                }
+            });
+        }
+        
+        // Touch feedback system
+        function setupTouchFeedback() {
+            const gameContainer = document.querySelector('.mobile-game-container');
+            
+            if (gameContainer) {
+                gameContainer.addEventListener('touchstart', (e) => {
+                    if (touchFeedbackEnabled) {
+                        showTouchFeedback(e.touches[0]);
+                    }
+                });
+            }
+        }
+        
+        function showTouchFeedback(touch) {
+            const feedback = document.createElement('div');
+            feedback.className = 'mobile-touch-feedback';
+            feedback.style.left = (touch.clientX - 15) + 'px';
+            feedback.style.top = (touch.clientY - 15) + 'px';
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 300);
+        }
+        
+        // Haptic feedback system
+        function initializeHapticFeedback() {
+            if (!navigator.vibrate) {
+                const hapticBtn = document.getElementById('mobile-haptic-toggle');
+                if (hapticBtn) {
+                    hapticBtn.style.display = 'none';
+                }
+                hapticEnabled = false;
+            }
+        }
+        
+        function vibrate(duration) {
+            if (hapticEnabled && navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
+        
+        function toggleHapticFeedback() {
+            hapticEnabled = !hapticEnabled;
+            localStorage.setItem('hapticEnabled', hapticEnabled.toString());
+            updateHapticButtonState();
+            
+            if (hapticEnabled) {
+                vibrate(100);
+            }
+        }
+        
+        function updateHapticButtonState() {
+            const hapticBtn = document.getElementById('mobile-haptic-toggle');
+            if (hapticBtn) {
+                hapticBtn.classList.toggle('enabled', hapticEnabled);
+                hapticBtn.title = hapticEnabled ? 'Disable Haptic Feedback' : 'Enable Haptic Feedback';
+            }
+        }
+        
+        // Utility functions
+        function showMobileLoading() {
+            const overlay = document.getElementById('mobile-loading-overlay');
+            if (overlay) overlay.style.display = 'flex';
+        }
+        
+        function hideMobileLoading() {
+            const overlay = document.getElementById('mobile-loading-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+        
+        function showMobilePause() {
+            const overlay = document.getElementById('mobile-pause-overlay');
+            if (overlay) overlay.style.display = 'flex';
+        }
+        
+        function hideMobilePause() {
+            const overlay = document.getElementById('mobile-pause-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+        
+        function showMobileError(message) {
+            const errorDiv = document.getElementById('mobile-error-message');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Expose utilities
+        window.MobileTemplate = {
+            showMobileLoading,
+            hideMobileLoading,
+            showMobilePause,
+            hideMobilePause,
+            showMobileError,
+            vibrate,
+            toggleHapticFeedback,
+            showTouchFeedback
+        };
+        
+        // Update UI when game events occur
+        gameSystem.on('scoreUpdate', (data) => {
+            const scoreEl = document.getElementById('mobile-score');
+            if (scoreEl && data.gameId === '{{gameId}}') {
+                scoreEl.textContent = data.score;
+                vibrate(25); // Gentle feedback for score updates
+            }
+        });
+        
+        gameSystem.on('levelUpdate', (data) => {
+            const levelEl = document.getElementById('mobile-level');
+            if (levelEl && data.gameId === '{{gameId}}') {
+                levelEl.textContent = data.level;
+                vibrate(150); // Stronger feedback for level changes
+            }
+        });
+        
+        gameSystem.on('gameCorrectAnswer', () => {
+            vibrate([50, 50, 50]); // Success pattern
+        });
+        
+        gameSystem.on('gameIncorrectAnswer', () => {
+            vibrate(200); // Error vibration
+        });
+        
+        // Initialize haptic button state
+        updateHapticButtonState();
+    </script>
+</body>
+</html>
