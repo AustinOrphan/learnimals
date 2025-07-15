@@ -6,200 +6,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createMockModule } from '../helpers/moduleResolver.js';
-import { ComponentFactory } from '../fixtures/testDataFactory.js';
-
-// Mock BaseComponent
-const mockBaseComponent = createMockModule({
-  default: class MockBaseComponent {
-    constructor(element, options = {}) {
-      this.element = element;
-      this.options = { ...this.constructor.defaultOptions, ...options };
-      this.listeners = new Map();
-      this.isInitialized = false;
-      this.isDestroyed = false;
-      this._boundEventListeners = [];
-    }
-
-    static get defaultOptions() {
-      return {
-        autoInit: true,
-        debug: false,
-        className: 'base-component'
-      };
-    }
-
-    init() {
-      if (this.isInitialized) return this;
-      
-      this.beforeInit();
-      this.setupElement();
-      this.bindEvents();
-      this.afterInit();
-      
-      this.isInitialized = true;
-      this.element.classList.add('initialized');
-      
-      return this;
-    }
-
-    beforeInit() {
-      // Hook for subclasses
-      this.trigger('beforeInit');
-    }
-
-    afterInit() {
-      // Hook for subclasses  
-      this.trigger('afterInit');
-    }
-
-    setupElement() {
-      if (!this.element) {
-        throw new Error('Element is required');
-      }
-      
-      this.element.classList.add(this.options.className);
-      this.element.setAttribute('data-component', this.constructor.name);
-    }
-
-    bindEvents() {
-      // Default event binding - to be overridden by subclasses
-    }
-
-    on(event, handler) {
-      if (!this.listeners.has(event)) {
-        this.listeners.set(event, []);
-      }
-      this.listeners.get(event).push(handler);
-      return this;
-    }
-
-    off(event, handler) {
-      if (!this.listeners.has(event)) return this;
-      
-      const handlers = this.listeners.get(event);
-      if (handler) {
-        const index = handlers.indexOf(handler);
-        if (index > -1) {
-          handlers.splice(index, 1);
-        }
-      } else {
-        this.listeners.set(event, []);
-      }
-      return this;
-    }
-
-    trigger(event, data) {
-      if (!this.listeners.has(event)) return this;
-      
-      this.listeners.get(event).forEach(handler => {
-        try {
-          handler.call(this, data);
-        } catch (error) {
-          if (this.options.debug) {
-            console.error(`Error in event handler for '${event}':`, error);
-          }
-        }
-      });
-      return this;
-    }
-
-    destroy() {
-      if (this.isDestroyed) return this;
-      
-      this.beforeDestroy();
-      this.unbindEvents();
-      this.cleanupElement();
-      this.afterDestroy();
-      
-      this.isDestroyed = true;
-      this.isInitialized = false;
-      
-      return this;
-    }
-
-    beforeDestroy() {
-      this.trigger('beforeDestroy');
-    }
-
-    afterDestroy() {
-      this.trigger('afterDestroy');
-      this.listeners.clear();
-    }
-
-    unbindEvents() {
-      this._boundEventListeners.forEach(({ element, event, handler }) => {
-        element.removeEventListener(event, handler);
-      });
-      this._boundEventListeners = [];
-    }
-
-    cleanupElement() {
-      if (this.element) {
-        this.element.classList.remove(this.options.className, 'initialized');
-        this.element.removeAttribute('data-component');
-      }
-    }
-
-    addDOMListener(element, event, handler) {
-      const boundHandler = handler.bind(this);
-      element.addEventListener(event, boundHandler);
-      this._boundEventListeners.push({ element, event, handler: boundHandler });
-    }
-
-    find(selector) {
-      return this.element ? this.element.querySelector(selector) : null;
-    }
-
-    findAll(selector) {
-      return this.element ? Array.from(this.element.querySelectorAll(selector)) : [];
-    }
-
-    getData(key) {
-      return this.element ? this.element.dataset[key] : null;
-    }
-
-    setData(key, value) {
-      if (this.element) {
-        this.element.dataset[key] = value;
-      }
-      return this;
-    }
-
-    addClass(className) {
-      if (this.element) {
-        this.element.classList.add(className);
-      }
-      return this;
-    }
-
-    removeClass(className) {
-      if (this.element) {
-        this.element.classList.remove(className);
-      }
-      return this;
-    }
-
-    toggleClass(className) {
-      if (this.element) {
-        this.element.classList.toggle(className);
-      }
-      return this;
-    }
-
-    hasClass(className) {
-      return this.element ? this.element.classList.contains(className) : false;
-    }
-  }
-});
-
-// Mock the module
-vi.mock('../../src/components/BaseComponent.js', () => mockBaseComponent);
+import BaseComponent from '../../src/components/BaseComponent.js';
 
 describe('BaseComponent Enhanced Tests', () => {
   let element;
   let component;
-  const BaseComponent = mockBaseComponent.default;
 
   beforeEach(() => {
     // Create fresh DOM element for each test
@@ -220,407 +31,259 @@ describe('BaseComponent Enhanced Tests', () => {
   });
 
   describe('Constructor and Initialization', () => {
-    it('should create component with element and default options', () => {
-      component = new BaseComponent(element);
+    it('should create component with default options', () => {
+      component = new BaseComponent();
       
-      expect(component.element).toBe(element);
-      expect(component.options).toEqual({
-        autoInit: true,
-        debug: false,
-        className: 'base-component'
-      });
-      expect(component.isInitialized).toBe(false);
-      expect(component.isDestroyed).toBe(false);
+      expect(component.options.id).toBeDefined();
+      expect(component.options.cssClasses).toEqual([]);
+      expect(component.element).toBeNull();
+      expect(component.isRendered).toBe(false);
     });
 
-    it('should merge custom options with defaults', () => {
+    it('should merge custom options', () => {
       const customOptions = {
-        debug: true,
-        className: 'custom-component',
+        id: 'custom-id',
+        cssClasses: ['custom-class'],
         customProp: 'value'
       };
       
-      component = new BaseComponent(element, customOptions);
+      component = new BaseComponent(customOptions);
       
-      expect(component.options).toEqual({
-        autoInit: true,
-        debug: true,
-        className: 'custom-component',
-        customProp: 'value'
-      });
+      expect(component.options.id).toBe('custom-id');
+      expect(component.options.cssClasses).toEqual(['custom-class']);
+      expect(component.options.customProp).toBe('value');
     });
 
-    it('should throw error when element is missing during setup', () => {
-      component = new BaseComponent(null);
+    it('should generate unique IDs when not provided', () => {
+      const component1 = new BaseComponent();
+      const component2 = new BaseComponent();
       
-      expect(() => component.init()).toThrow('Element is required');
+      expect(component1.options.id).not.toBe(component2.options.id);
+      expect(component1.options.id).toContain('basecomponent-');
     });
 
-    it('should initialize only once', () => {
-      component = new BaseComponent(element);
-      const beforeInitSpy = vi.spyOn(component, 'beforeInit');
+    it('should implement generateHTML method requirement', () => {
+      component = new BaseComponent();
       
-      component.init();
-      component.init(); // Second call should be ignored
-      
-      expect(beforeInitSpy).toHaveBeenCalledTimes(1);
-      expect(component.isInitialized).toBe(true);
+      expect(() => component.generateHTML()).toThrow('generateHTML method must be implemented by subclass');
     });
   });
 
-  describe('Element Setup and Management', () => {
+  describe('Rendering and Element Management', () => {
     beforeEach(() => {
-      component = new BaseComponent(element);
+      // Create a test component that implements generateHTML
+      class TestComponent extends BaseComponent {
+        generateHTML() {
+          return `<div id="${this.options.id}" class="${this.options.cssClasses.join(' ')}">Test Content</div>`;
+        }
+      }
+      component = new TestComponent({ container: element });
     });
 
-    it('should setup element correctly during initialization', () => {
-      component.init();
+    it('should render component to container', () => {
+      component.render();
       
-      expect(element.classList.contains('base-component')).toBe(true);
-      expect(element.classList.contains('initialized')).toBe(true);
-      expect(element.getAttribute('data-component')).toBe('MockBaseComponent');
+      expect(component.isRendered).toBe(true);
+      expect(component.element).toBeDefined();
+      expect(element.innerHTML).toContain('Test Content');
     });
 
     it('should add and remove CSS classes', () => {
-      component.init();
+      component.render();
       
       component.addClass('test-class');
-      expect(element.classList.contains('test-class')).toBe(true);
+      expect(component.element.classList.contains('test-class')).toBe(true);
       
       component.removeClass('test-class');
-      expect(element.classList.contains('test-class')).toBe(false);
+      expect(component.element.classList.contains('test-class')).toBe(false);
       
       component.toggleClass('toggle-class');
-      expect(element.classList.contains('toggle-class')).toBe(true);
+      expect(component.element.classList.contains('toggle-class')).toBe(true);
       
       component.toggleClass('toggle-class');
-      expect(element.classList.contains('toggle-class')).toBe(false);
+      expect(component.element.classList.contains('toggle-class')).toBe(false);
     });
 
     it('should check class existence correctly', () => {
-      component.init();
-      element.classList.add('existing-class');
+      component.render();
+      component.element.classList.add('existing-class');
       
       expect(component.hasClass('existing-class')).toBe(true);
       expect(component.hasClass('non-existing-class')).toBe(false);
-    });
-
-    it('should handle data attributes', () => {
-      component.init();
-      
-      component.setData('testKey', 'testValue');
-      expect(component.getData('testKey')).toBe('testValue');
-      expect(element.dataset.testKey).toBe('testValue');
-    });
-
-    it('should find elements within component', () => {
-      element.innerHTML = `
-        <div class="child">Child</div>
-        <div class="child">Another Child</div>
-        <span class="different">Different</span>
-      `;
-      component.init();
-      
-      const firstChild = component.find('.child');
-      expect(firstChild.textContent).toBe('Child');
-      
-      const allChildren = component.findAll('.child');
-      expect(allChildren).toHaveLength(2);
-      
-      const nonExistent = component.find('.not-there');
-      expect(nonExistent).toBeNull();
     });
   });
 
   describe('Event System', () => {
     beforeEach(() => {
-      component = new BaseComponent(element);
+      // Create a test component that implements generateHTML
+      class TestComponent extends BaseComponent {
+        generateHTML() {
+          return `<div id="${this.options.id}">Test Content</div>`;
+        }
+      }
+      component = new TestComponent({ container: element });
+      component.render();
     });
 
-    it('should register and trigger custom events', () => {
+    it('should emit custom events', () => {
       const handler = vi.fn();
-      component.on('customEvent', handler);
+      component.element.addEventListener('customEvent', handler);
       
-      component.trigger('customEvent', { data: 'test' });
+      component.emit('customEvent', { data: 'test' });
       
-      expect(handler).toHaveBeenCalledWith({ data: 'test' });
       expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler.mock.calls[0][0].detail).toEqual({ data: 'test' });
     });
 
-    it('should support multiple handlers for same event', () => {
-      const handler1 = vi.fn();
-      const handler2 = vi.fn();
-      
-      component.on('test', handler1);
-      component.on('test', handler2);
-      
-      component.trigger('test');
-      
-      expect(handler1).toHaveBeenCalledTimes(1);
-      expect(handler2).toHaveBeenCalledTimes(1);
-    });
-
-    it('should remove specific event handler', () => {
-      const handler1 = vi.fn();
-      const handler2 = vi.fn();
-      
-      component.on('test', handler1);
-      component.on('test', handler2);
-      component.off('test', handler1);
-      
-      component.trigger('test');
-      
-      expect(handler1).not.toHaveBeenCalled();
-      expect(handler2).toHaveBeenCalledTimes(1);
-    });
-
-    it('should remove all handlers for an event', () => {
-      const handler1 = vi.fn();
-      const handler2 = vi.fn();
-      
-      component.on('test', handler1);
-      component.on('test', handler2);
-      component.off('test'); // Remove all handlers
-      
-      component.trigger('test');
-      
-      expect(handler1).not.toHaveBeenCalled();
-      expect(handler2).not.toHaveBeenCalled();
-    });
-
-    it('should handle errors in event handlers gracefully', () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const errorHandler = vi.fn(() => { throw new Error('Handler error'); });
-      const successHandler = vi.fn();
-      
-      component.options.debug = true;
-      component.on('test', errorHandler);
-      component.on('test', successHandler);
-      
-      component.trigger('test');
-      
-      expect(errorHandler).toHaveBeenCalled();
-      expect(successHandler).toHaveBeenCalled();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error in event handler for 'test':",
-        expect.any(Error)
-      );
-      
-      consoleErrorSpy.mockRestore();
-    });
-
-    it('should manage DOM event listeners correctly', () => {
+    it('should add and remove event listeners', () => {
       const handler = vi.fn();
-      const button = document.createElement('button');
-      element.appendChild(button);
       
-      component.init();
-      component.addDOMListener(button, 'click', handler);
-      
-      // Simulate click
-      button.click();
+      // Use the actual BaseComponent's on/off methods
+      component.on('click', handler);
+      component.element.click();
       expect(handler).toHaveBeenCalledTimes(1);
       
-      // Destroy should remove listeners
-      component.destroy();
-      button.click();
+      component.off('click', handler);
+      component.element.click();
       expect(handler).toHaveBeenCalledTimes(1); // Still just 1
+    });
+
+    it('should support method chaining', () => {
+      const result = component
+        .addClass('test')
+        .removeClass('test')
+        .show()
+        .hide();
+      
+      expect(result).toBe(component);
     });
   });
 
-  describe('Lifecycle Management', () => {
+  describe('Component Lifecycle', () => {
     beforeEach(() => {
-      component = new BaseComponent(element);
+      // Create a test component that implements generateHTML
+      class TestComponent extends BaseComponent {
+        generateHTML() {
+          return `<div id="${this.options.id}">Test Content</div>`;
+        }
+      }
+      component = new TestComponent({ container: element });
     });
 
-    it('should follow correct initialization sequence', () => {
-      const beforeInitSpy = vi.spyOn(component, 'beforeInit');
-      const setupElementSpy = vi.spyOn(component, 'setupElement');
-      const bindEventsSpy = vi.spyOn(component, 'bindEvents');
-      const afterInitSpy = vi.spyOn(component, 'afterInit');
+    it('should handle show/hide operations', () => {
+      component.render();
       
-      component.init();
+      component.hide();
+      expect(component.element.style.display).toBe('none');
       
-      expect(beforeInitSpy).toHaveBeenCalledBefore(setupElementSpy);
-      expect(setupElementSpy).toHaveBeenCalledBefore(bindEventsSpy);
-      expect(bindEventsSpy).toHaveBeenCalledBefore(afterInitSpy);
+      component.show();
+      expect(component.element.style.display).toBe('');
+      
+      const toggleResult1 = component.toggle();
+      expect(component.element.style.display).toBe('none');
+      expect(toggleResult1).toBe(component);
+      
+      const toggleResult2 = component.toggle();
+      expect(component.element.style.display).toBe('');
+      expect(toggleResult2).toBe(component);
     });
 
-    it('should trigger lifecycle events', () => {
-      const beforeInitHandler = vi.fn();
-      const afterInitHandler = vi.fn();
-      const beforeDestroyHandler = vi.fn();
-      const afterDestroyHandler = vi.fn();
-      
-      component.on('beforeInit', beforeInitHandler);
-      component.on('afterInit', afterInitHandler);
-      component.on('beforeDestroy', beforeDestroyHandler);
-      component.on('afterDestroy', afterDestroyHandler);
-      
-      component.init();
-      expect(beforeInitHandler).toHaveBeenCalledTimes(1);
-      expect(afterInitHandler).toHaveBeenCalledTimes(1);
+    it('should handle destroy operation', () => {
+      component.render();
+      expect(component.isRendered).toBe(true);
+      expect(component.element).not.toBeNull();
       
       component.destroy();
-      expect(beforeDestroyHandler).toHaveBeenCalledTimes(1);
-      expect(afterDestroyHandler).toHaveBeenCalledTimes(1);
+      expect(component.isRendered).toBe(false);
+      expect(component.element).toBeNull();
     });
 
-    it('should follow correct destruction sequence', () => {
-      component.init();
+    it('should support options management', () => {
+      expect(component.getOption('container')).toBe(element);
       
-      const beforeDestroySpy = vi.spyOn(component, 'beforeDestroy');
-      const unbindEventsSpy = vi.spyOn(component, 'unbindEvents');
-      const cleanupElementSpy = vi.spyOn(component, 'cleanupElement');
-      const afterDestroySpy = vi.spyOn(component, 'afterDestroy');
-      
-      component.destroy();
-      
-      expect(beforeDestroySpy).toHaveBeenCalledBefore(unbindEventsSpy);
-      expect(unbindEventsSpy).toHaveBeenCalledBefore(cleanupElementSpy);
-      expect(cleanupElementSpy).toHaveBeenCalledBefore(afterDestroySpy);
-    });
-
-    it('should destroy only once', () => {
-      component.init();
-      const beforeDestroySpy = vi.spyOn(component, 'beforeDestroy');
-      
-      component.destroy();
-      component.destroy(); // Second call should be ignored
-      
-      expect(beforeDestroySpy).toHaveBeenCalledTimes(1);
-      expect(component.isDestroyed).toBe(true);
-    });
-
-    it('should clean up element during destruction', () => {
-      component.init();
-      
-      // Element should have classes and attributes
-      expect(element.classList.contains('base-component')).toBe(true);
-      expect(element.classList.contains('initialized')).toBe(true);
-      expect(element.getAttribute('data-component')).toBe('MockBaseComponent');
-      
-      component.destroy();
-      
-      // Element should be cleaned up
-      expect(element.classList.contains('base-component')).toBe(false);
-      expect(element.classList.contains('initialized')).toBe(false);
-      expect(element.getAttribute('data-component')).toBeNull();
+      component.setOption('newOption', 'testValue');
+      expect(component.getOption('newOption')).toBe('testValue');
     });
   });
 
   describe('Edge Cases and Error Handling', () => {
-    it('should handle missing element gracefully in utility methods', () => {
-      component = new BaseComponent(null);
+    it('should handle missing container gracefully', () => {
+      component = new BaseComponent();
       
-      expect(() => component.addClass('test')).not.toThrow();
-      expect(() => component.removeClass('test')).not.toThrow();
-      expect(() => component.toggleClass('test')).not.toThrow();
-      expect(component.hasClass('test')).toBe(false);
-      expect(component.getData('test')).toBeNull();
-      expect(() => component.setData('test', 'value')).not.toThrow();
-      expect(component.find('.test')).toBeNull();
-      expect(component.findAll('.test')).toEqual([]);
+      // Should not throw when container is missing
+      expect(() => component.render('nonexistent-selector')).not.toThrow();
+      expect(component.isRendered).toBe(false);
     });
 
-    it('should handle events for non-existent event types', () => {
-      component = new BaseComponent(element);
-      
-      expect(() => component.trigger('nonExistent')).not.toThrow();
-      expect(() => component.off('nonExistent')).not.toThrow();
-    });
-
-    it('should chain method calls correctly', () => {
-      component = new BaseComponent(element);
+    it('should handle method chaining when element is null', () => {
+      component = new BaseComponent();
       
       const result = component
-        .init()
         .addClass('test')
-        .setData('key', 'value')
-        .on('test', () => {});
+        .removeClass('test')
+        .show()
+        .hide();
       
       expect(result).toBe(component);
     });
 
-    it('should handle rapid init/destroy cycles', () => {
-      component = new BaseComponent(element);
-      
-      for (let i = 0; i < 5; i++) {
-        component.init();
-        expect(component.isInitialized).toBe(true);
-        
-        component.destroy();
-        expect(component.isDestroyed).toBe(true);
-        expect(component.isInitialized).toBe(false);
-        
-        // Reset for next iteration
-        component.isDestroyed = false;
-      }
-    });
-  });
-
-  describe('Performance and Memory', () => {
-    it('should not leak event listeners', () => {
-      component = new BaseComponent(element);
-      const handler = vi.fn();
-      
-      // Add many listeners
-      for (let i = 0; i < 100; i++) {
-        component.on(`event${i}`, handler);
-      }
-      
-      expect(component.listeners.size).toBe(100);
-      
-      component.destroy();
-      expect(component.listeners.size).toBe(0);
-    });
-
-    it('should not leak DOM event listeners', () => {
-      component = new BaseComponent(element);
-      const button = document.createElement('button');
-      element.appendChild(button);
-      
-      component.init();
-      
-      // Add many DOM listeners
-      for (let i = 0; i < 10; i++) {
-        component.addDOMListener(button, 'click', vi.fn());
-      }
-      
-      expect(component._boundEventListeners).toHaveLength(10);
-      
-      component.destroy();
-      expect(component._boundEventListeners).toHaveLength(0);
-    });
-  });
-
-  describe('Static Properties and Methods', () => {
-    it('should have correct default options', () => {
-      expect(BaseComponent.defaultOptions).toEqual({
-        autoInit: true,
-        debug: false,
-        className: 'base-component'
+    it('should support static createElement utility', () => {
+      const testElement = BaseComponent.createElement('div', {
+        className: 'test-class',
+        innerHTML: 'Test Content',
+        attributes: { 'data-test': 'value' }
       });
+      
+      expect(testElement.tagName).toBe('DIV');
+      expect(testElement.className).toBe('test-class');
+      expect(testElement.innerHTML).toBe('Test Content');
+      expect(testElement.getAttribute('data-test')).toBe('value');
     });
+  });
 
-    it('should allow default options to be extended', () => {
-      class ExtendedComponent extends BaseComponent {
-        static get defaultOptions() {
-          return {
-            ...super.defaultOptions,
-            extended: true,
-            debug: true
-          };
+  describe('Component Integration', () => {
+    it('should work with custom component implementations', () => {
+      class CustomComponent extends BaseComponent {
+        generateHTML() {
+          return `<div id="${this.options.id}" class="custom-component">
+            <h1>${this.options.title || 'Default Title'}</h1>
+          </div>`;
+        }
+
+        onRender() {
+          super.onRender();
+          this.bindCustomEvents();
+        }
+
+        bindCustomEvents() {
+          if (this.element) {
+            this.element.addEventListener('click', () => {
+              this.emit('custom:click', { componentId: this.options.id });
+            });
+          }
         }
       }
       
-      const extended = new ExtendedComponent(element);
-      expect(extended.options).toEqual({
-        autoInit: true,
-        debug: true,
-        className: 'base-component',
-        extended: true
+      const customComponent = new CustomComponent({
+        title: 'Test Component',
+        container: element
       });
+      
+      customComponent.render();
+      
+      expect(customComponent.isRendered).toBe(true);
+      expect(customComponent.element.querySelector('h1').textContent).toBe('Test Component');
+      expect(customComponent.element.classList.contains('custom-component')).toBe(true);
+      
+      // Test custom event
+      const eventHandler = vi.fn();
+      customComponent.element.addEventListener('custom:click', eventHandler);
+      customComponent.element.click();
+      
+      expect(eventHandler).toHaveBeenCalledTimes(1);
+      expect(eventHandler.mock.calls[0][0].detail.componentId).toBe(customComponent.options.id);
+      
+      customComponent.destroy();
     });
   });
 });

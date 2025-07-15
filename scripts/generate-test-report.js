@@ -333,91 +333,290 @@ class TestReportGenerator {
   }
 
   generatePerformanceSection() {
+    if (this.results.performance.length === 0) {
+      return `
+      <section class="performance-section">
+        <h2>⚡ Performance Tests</h2>
+        <p>No performance test results available</p>
+      </section>`;
+    }
+
+    // Calculate actual performance metrics from test data
+    const performanceMetrics = this.calculatePerformanceMetrics();
+    
     return `
     <section class="performance-section">
       <h2>⚡ Performance Tests</h2>
-      ${this.results.performance.length > 0 ? `
-        <div class="performance-metrics">
-          <div class="metric-card">
-            <h3>Load Time</h3>
-            <div class="metric-value">1.2s</div>
-            <div class="metric-status passed">✅ Under 2s budget</div>
-          </div>
-          <div class="metric-card">
-            <h3>Bundle Size</h3>
-            <div class="metric-value">187KB</div>
-            <div class="metric-status passed">✅ Under 250KB budget</div>
-          </div>
-          <div class="metric-card">
-            <h3>Core Web Vitals</h3>
-            <div class="metric-value">Good</div>
-            <div class="metric-status passed">✅ All metrics passed</div>
+      <div class="performance-metrics">
+        <div class="metric-card">
+          <h3>Load Time</h3>
+          <div class="metric-value">${performanceMetrics.loadTime}</div>
+          <div class="metric-status ${performanceMetrics.loadTimeStatus}">
+            ${performanceMetrics.loadTimeStatus === 'passed' ? '✅' : '❌'} 
+            ${performanceMetrics.loadTimeMessage}
           </div>
         </div>
-      ` : '<p>No performance test results available</p>'}
+        <div class="metric-card">
+          <h3>Bundle Size</h3>
+          <div class="metric-value">${performanceMetrics.bundleSize}</div>
+          <div class="metric-status ${performanceMetrics.bundleSizeStatus}">
+            ${performanceMetrics.bundleSizeStatus === 'passed' ? '✅' : '❌'} 
+            ${performanceMetrics.bundleSizeMessage}
+          </div>
+        </div>
+        <div class="metric-card">
+          <h3>Core Web Vitals</h3>
+          <div class="metric-value">${performanceMetrics.coreWebVitals}</div>
+          <div class="metric-status ${performanceMetrics.coreWebVitalsStatus}">
+            ${performanceMetrics.coreWebVitalsStatus === 'passed' ? '✅' : '❌'} 
+            ${performanceMetrics.coreWebVitalsMessage}
+          </div>
+        </div>
+      </div>
     </section>`;
+  }
+
+  calculatePerformanceMetrics() {
+    let loadTime = 'N/A';
+    let loadTimeStatus = 'failed';
+    let loadTimeMessage = 'No data available';
+    let bundleSize = 'N/A';
+    let bundleSizeStatus = 'failed';
+    let bundleSizeMessage = 'No data available';
+    let coreWebVitals = 'N/A';
+    let coreWebVitalsStatus = 'failed';
+    let coreWebVitalsMessage = 'No data available';
+
+    // Process performance test results
+    this.results.performance.forEach(result => {
+      if (result.loadTime) {
+        loadTime = `${result.loadTime}s`;
+        loadTimeStatus = result.loadTime < 2 ? 'passed' : 'failed';
+        loadTimeMessage = result.loadTime < 2 ? 'Under 2s budget' : 'Exceeds 2s budget';
+      }
+      
+      if (result.bundleSize) {
+        bundleSize = `${result.bundleSize}KB`;
+        bundleSizeStatus = result.bundleSize < 250 ? 'passed' : 'failed';
+        bundleSizeMessage = result.bundleSize < 250 ? 'Under 250KB budget' : 'Exceeds 250KB budget';
+      }
+      
+      if (result.coreWebVitals) {
+        coreWebVitals = result.coreWebVitals.overall || 'Unknown';
+        coreWebVitalsStatus = result.coreWebVitals.overall === 'Good' ? 'passed' : 'failed';
+        coreWebVitalsMessage = result.coreWebVitals.overall === 'Good' ? 'All metrics passed' : 'Some metrics need improvement';
+      }
+    });
+
+    return {
+      loadTime,
+      loadTimeStatus,
+      loadTimeMessage,
+      bundleSize,
+      bundleSizeStatus,
+      bundleSizeMessage,
+      coreWebVitals,
+      coreWebVitalsStatus,
+      coreWebVitalsMessage
+    };
   }
 
   generateSecuritySection() {
+    if (this.results.security.length === 0) {
+      return `
+      <section class="security-section">
+        <h2>🔒 Security Tests</h2>
+        <p>No security test results available</p>
+      </section>`;
+    }
+
+    const securityMetrics = this.calculateSecurityMetrics();
+    
     return `
     <section class="security-section">
       <h2>🔒 Security Tests</h2>
-      ${this.results.security.length > 0 ? `
-        <div class="security-summary">
-          <div class="security-card">
-            <h3>XSS Prevention</h3>
-            <div class="security-status passed">✅ All tests passed</div>
-          </div>
-          <div class="security-card">
-            <h3>Input Sanitization</h3>
-            <div class="security-status passed">✅ All inputs sanitized</div>
-          </div>
-          <div class="security-card">
-            <h3>CSRF Protection</h3>
-            <div class="security-status passed">✅ Tokens validated</div>
+      <div class="security-summary">
+        <div class="security-card">
+          <h3>XSS Prevention</h3>
+          <div class="security-status ${securityMetrics.xss.status}">
+            ${securityMetrics.xss.status === 'passed' ? '✅' : '❌'} ${securityMetrics.xss.message}
           </div>
         </div>
-      ` : '<p>No security test results available</p>'}
+        <div class="security-card">
+          <h3>Input Sanitization</h3>
+          <div class="security-status ${securityMetrics.sanitization.status}">
+            ${securityMetrics.sanitization.status === 'passed' ? '✅' : '❌'} ${securityMetrics.sanitization.message}
+          </div>
+        </div>
+        <div class="security-card">
+          <h3>CSRF Protection</h3>
+          <div class="security-status ${securityMetrics.csrf.status}">
+            ${securityMetrics.csrf.status === 'passed' ? '✅' : '❌'} ${securityMetrics.csrf.message}
+          </div>
+        </div>
+      </div>
     </section>`;
+  }
+
+  calculateSecurityMetrics() {
+    const metrics = {
+      xss: { status: 'failed', message: 'No test data' },
+      sanitization: { status: 'failed', message: 'No test data' },
+      csrf: { status: 'failed', message: 'No test data' }
+    };
+
+    // Process security test results
+    this.results.security.forEach(result => {
+      if (result.xssTests) {
+        const passed = result.xssTests.passed || 0;
+        const failed = result.xssTests.failed || 0;
+        metrics.xss.status = failed === 0 ? 'passed' : 'failed';
+        metrics.xss.message = failed === 0 ? `All ${passed} tests passed` : `${failed} tests failed`;
+      }
+      
+      if (result.sanitizationTests) {
+        const passed = result.sanitizationTests.passed || 0;
+        const failed = result.sanitizationTests.failed || 0;
+        metrics.sanitization.status = failed === 0 ? 'passed' : 'failed';
+        metrics.sanitization.message = failed === 0 ? `All ${passed} inputs sanitized` : `${failed} sanitization failures`;
+      }
+      
+      if (result.csrfTests) {
+        const passed = result.csrfTests.passed || 0;
+        const failed = result.csrfTests.failed || 0;
+        metrics.csrf.status = failed === 0 ? 'passed' : 'failed';
+        metrics.csrf.message = failed === 0 ? `All ${passed} tokens validated` : `${failed} token validation failures`;
+      }
+    });
+
+    return metrics;
   }
 
   generateAccessibilitySection() {
+    if (this.results.accessibility.length === 0) {
+      return `
+      <section class="accessibility-section">
+        <h2>♿ Accessibility Tests</h2>
+        <p>No accessibility test results available</p>
+      </section>`;
+    }
+
+    const a11yMetrics = this.calculateAccessibilityMetrics();
+    
     return `
     <section class="accessibility-section">
       <h2>♿ Accessibility Tests</h2>
-      ${this.results.accessibility.length > 0 ? `
-        <div class="accessibility-summary">
-          <div class="a11y-metric">
-            <h3>WCAG Compliance</h3>
-            <div class="compliance-level">AA</div>
-          </div>
-          <div class="a11y-metric">
-            <h3>Keyboard Navigation</h3>
-            <div class="a11y-status passed">✅ Fully accessible</div>
-          </div>
-          <div class="a11y-metric">
-            <h3>Color Contrast</h3>
-            <div class="a11y-status passed">✅ 4.5:1 minimum</div>
+      <div class="accessibility-summary">
+        <div class="a11y-metric">
+          <h3>WCAG Compliance</h3>
+          <div class="compliance-level ${a11yMetrics.wcag.level.toLowerCase()}">${a11yMetrics.wcag.level}</div>
+          <div class="a11y-details">${a11yMetrics.wcag.details}</div>
+        </div>
+        <div class="a11y-metric">
+          <h3>Keyboard Navigation</h3>
+          <div class="a11y-status ${a11yMetrics.keyboard.status}">
+            ${a11yMetrics.keyboard.status === 'passed' ? '✅' : '❌'} ${a11yMetrics.keyboard.message}
           </div>
         </div>
-      ` : '<p>No accessibility test results available</p>'}
+        <div class="a11y-metric">
+          <h3>Color Contrast</h3>
+          <div class="a11y-status ${a11yMetrics.contrast.status}">
+            ${a11yMetrics.contrast.status === 'passed' ? '✅' : '❌'} ${a11yMetrics.contrast.message}
+          </div>
+        </div>
+      </div>
     </section>`;
   }
 
+  calculateAccessibilityMetrics() {
+    const metrics = {
+      wcag: { level: 'Unknown', details: 'No test data available' },
+      keyboard: { status: 'failed', message: 'No test data' },
+      contrast: { status: 'failed', message: 'No test data' }
+    };
+
+    // Process accessibility test results
+    this.results.accessibility.forEach(result => {
+      if (result.wcagCompliance) {
+        metrics.wcag.level = result.wcagCompliance.level || 'Unknown';
+        const violations = result.wcagCompliance.violations || 0;
+        metrics.wcag.details = violations === 0 ? 'Fully compliant' : `${violations} violations found`;
+      }
+      
+      if (result.keyboardNavigation) {
+        const passed = result.keyboardNavigation.passed || 0;
+        const failed = result.keyboardNavigation.failed || 0;
+        metrics.keyboard.status = failed === 0 ? 'passed' : 'failed';
+        metrics.keyboard.message = failed === 0 ? 'Fully accessible' : `${failed} navigation issues`;
+      }
+      
+      if (result.colorContrast) {
+        const minRatio = result.colorContrast.minimumRatio || 0;
+        const violations = result.colorContrast.violations || 0;
+        metrics.contrast.status = violations === 0 ? 'passed' : 'failed';
+        metrics.contrast.message = violations === 0 ? `${minRatio}:1 minimum met` : `${violations} contrast violations`;
+      }
+    });
+
+    return metrics;
+  }
+
   generateVisualRegressionSection() {
+    if (this.results.visual.length === 0) {
+      return `
+      <section class="visual-section">
+        <h2>👁️ Visual Regression Tests</h2>
+        <p>No visual regression test results available</p>
+      </section>`;
+    }
+
+    const visualMetrics = this.calculateVisualMetrics();
+    
     return `
     <section class="visual-section">
       <h2>👁️ Visual Regression Tests</h2>
-      ${this.results.visual.length > 0 ? `
-        <div class="visual-summary">
-          <p>Visual regression tests help ensure UI consistency across changes.</p>
-          <div class="visual-stats">
-            <span class="visual-stat">📸 24 screenshots compared</span>
-            <span class="visual-stat">✅ 0 visual differences detected</span>
-          </div>
+      <div class="visual-summary">
+        <p>Visual regression tests help ensure UI consistency across changes.</p>
+        <div class="visual-stats">
+          <span class="visual-stat">📸 ${visualMetrics.screenshotsCompared} screenshots compared</span>
+          <span class="visual-stat ${visualMetrics.differencesStatus}">
+            ${visualMetrics.differencesStatus === 'passed' ? '✅' : '❌'} 
+            ${visualMetrics.visualDifferences} visual differences detected
+          </span>
+          ${visualMetrics.threshold ? `<span class="visual-stat">🎯 ${visualMetrics.threshold}% difference threshold</span>` : ''}
         </div>
-      ` : '<p>No visual regression test results available</p>'}
+      </div>
     </section>`;
+  }
+
+  calculateVisualMetrics() {
+    let screenshotsCompared = 0;
+    let visualDifferences = 0;
+    let threshold = null;
+    
+    // Process visual regression test results
+    this.results.visual.forEach(result => {
+      if (result.screenshotsCompared) {
+        screenshotsCompared += result.screenshotsCompared;
+      }
+      
+      if (result.visualDifferences !== undefined) {
+        visualDifferences += result.visualDifferences;
+      }
+      
+      if (result.threshold) {
+        threshold = result.threshold;
+      }
+    });
+
+    const differencesStatus = visualDifferences === 0 ? 'passed' : 'failed';
+    
+    return {
+      screenshotsCompared,
+      visualDifferences,
+      differencesStatus,
+      threshold
+    };
   }
 
   generateTrendsSection() {
