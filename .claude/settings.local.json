@@ -8,7 +8,11 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(gh pr create:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "mcp__serena__insert_before_symbol",
+      "mcp__serena__replace_regex",
+      "mcp__serena__insert_after_symbol",
+      "mcp__filesystem__write_file"
     ],
     "deny": []
   }

@@ -1569,6 +1569,7 @@ export class GameRegistryUtil {
    */
   static validateGameConfig(gameConfig) {
     const errors = [];
+    const warnings = [];
     
     // Required fields
     const required = ['id', 'name', 'gameClass', 'scriptPath'];
@@ -1601,14 +1602,44 @@ export class GameRegistryUtil {
     }
 
     // Template validation
-    const validTemplates = ['game', 'minimal', 'fullscreen', 'mobile', 'none'];
+    const validTemplates = ['game', 'minimal', 'fullscreen', 'mobile', 'educational', 'none'];
     if (gameConfig.template && !validTemplates.includes(gameConfig.template)) {
       errors.push(`Invalid template: ${gameConfig.template}. Must be one of: ${validTemplates.join(', ')}`);
+    }
+    
+    // Educational template specific validation
+    if (gameConfig.template === 'educational') {
+      const educationalValidation = this.validateEducationalMetadata(gameConfig.metadata || {});
+      errors.push(...educationalValidation.errors);
+      warnings.push(...educationalValidation.warnings);
+      
+      // Additional educational template requirements
+      if (!gameConfig.metadata?.learningObjectives || gameConfig.metadata.learningObjectives.length === 0) {
+        errors.push('Educational template requires learningObjectives in metadata');
+      }
+      
+      if (!gameConfig.metadata?.ageRange) {
+        errors.push('Educational template requires ageRange in metadata');
+      }
+      
+      if (!gameConfig.metadata?.assessmentType) {
+        errors.push('Educational template requires assessmentType in metadata');
+      }
+      
+      // COPPA compliance check
+      const coppaCheck = this.checkCOPPACompliance(gameConfig.metadata || {});
+      if (coppaCheck.issues.length > 0) {
+        warnings.push(...coppaCheck.issues.map(issue => `COPPA: ${issue}`));
+        warnings.push(...coppaCheck.recommendations);
+      }
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
+      warnings,
+      coppaCompliant: gameConfig.template === 'educational' ? 
+        this.checkCOPPACompliance(gameConfig.metadata || {}).issues.length === 0 : true
     };
   }
 
@@ -1658,6 +1689,431 @@ export class GameRegistryUtil {
     });
 
     return stats;
+  }
+
+  /**
+   * Educational Template Methods
+   * Methods specifically for supporting educational games with lesson integration
+   */
+
+  /**
+   * Get games suitable for educational template
+   * @returns {Array} Games that would benefit from educational template features
+   */
+  static getEducationalGames() {
+    return gameRegistry.filter(game => {
+      // Check if game has educational metadata
+      const hasEducationalMetadata = game.metadata?.learningObjectives || 
+                                     game.metadata?.tags?.includes('educational') ||
+                                     game.template === 'educational';
+      
+      // Check if game is text-heavy or requires assessment
+      const isEducationalContent = game.metadata?.gameType?.includes('quiz') ||
+                                   game.metadata?.gameType?.includes('puzzle') ||
+                                   game.features?.includes('analytics');
+      
+      return hasEducationalMetadata || isEducationalContent;
+    });
+  }
+
+  /**
+   * Get games by learning standards
+   * @param {string} standard - Educational standard to filter by
+   * @returns {Array} Games aligned with the specified standard
+   */
+  static getGamesByStandard(standard) {
+    return gameRegistry.filter(game => {
+      const standards = game.metadata?.learningStandards || game.standards || [];
+      return standards.some(gameStandard => 
+        gameStandard.toLowerCase().includes(standard.toLowerCase())
+      );
+    });
+  }
+
+  /**
+   * Get games by learning objectives
+   * @param {Array|string} objectives - Learning objective(s) to filter by
+   * @returns {Array} Games that meet the specified learning objectives
+   */
+  static getGamesByLearningObjectives(objectives) {
+    const targetObjectives = Array.isArray(objectives) ? objectives : [objectives];
+    
+    return gameRegistry.filter(game => {
+      const gameObjectives = game.metadata?.learningObjectives || [];
+      return targetObjectives.some(target =>
+        gameObjectives.some(objective =>
+          objective.toLowerCase().includes(target.toLowerCase())
+        )
+      );
+    });
+  }
+
+  /**
+   * Get games by age range for curriculum planning
+   * @param {string} ageRange - Age range (e.g., '6-8', '9-12')
+   * @returns {Array} Games appropriate for the specified age range
+   */
+  static getGamesByAgeRange(ageRange) {
+    return gameRegistry.filter(game => {
+      const gameAgeRange = game.metadata?.ageRange;
+      if (!gameAgeRange) return false;
+      
+      // Simple age range matching (could be enhanced with proper parsing)
+      return gameAgeRange === ageRange || gameAgeRange.includes(ageRange);
+    });
+  }
+
+  /**
+   * Get games suitable for assessment
+   * @returns {Array} Games that include assessment capabilities
+   */
+  static getAssessmentGames() {
+    return gameRegistry.filter(game => {
+      return game.features?.includes('analytics') ||
+             game.metadata?.gameType?.includes('quiz') ||
+             game.template === 'educational' ||
+             game.metadata?.tags?.includes('assessment');
+    });
+  }
+
+  /**
+   * Generate lesson plan recommendations
+   * @param {Object} criteria - Lesson planning criteria
+   * @param {string} criteria.subject - Subject area
+   * @param {string} criteria.ageRange - Target age range
+   * @param {Array} criteria.objectives - Learning objectives
+   * @param {number} criteria.duration - Lesson duration in minutes
+   * @returns {Object} Lesson plan with recommended games
+   */
+  static generateLessonPlan(criteria) {
+    const { subject, ageRange, objectives, duration = 30 } = criteria;
+    
+    // Filter games based on criteria
+    let recommendedGames = gameRegistry.filter(game => {
+      let matches = true;
+      
+      if (subject && game.subject !== subject) matches = false;
+      if (ageRange && game.metadata?.ageRange !== ageRange) matches = false;
+      if (objectives && objectives.length > 0) {
+        const gameObjectives = game.metadata?.learningObjectives || [];
+        const hasMatchingObjective = objectives.some(objective =>
+          gameObjectives.some(gameObj =>
+            gameObj.toLowerCase().includes(objective.toLowerCase())
+          )
+        );
+        if (!hasMatchingObjective) matches = false;
+      }
+      
+      return matches;
+    });
+
+    // Sort by play time and educational value
+    recommendedGames = recommendedGames
+      .map(game => ({
+        ...game,
+        educationalScore: this.calculateEducationalScore(game)
+      }))
+      .sort((a, b) => b.educationalScore - a.educationalScore);
+
+    // Create lesson structure
+    const lessonStructure = {
+      warmUp: recommendedGames.filter(g => g.metadata?.estimatedPlayTime <= 5).slice(0, 1),
+      mainActivity: recommendedGames.filter(g => 
+        g.metadata?.estimatedPlayTime > 5 && g.metadata?.estimatedPlayTime <= 20
+      ).slice(0, 2),
+      assessment: recommendedGames.filter(g => 
+        g.features?.includes('analytics') || g.template === 'educational'
+      ).slice(0, 1),
+      extension: recommendedGames.filter(g => g.difficulty?.includes('hard')).slice(0, 1)
+    };
+
+    return {
+      criteria,
+      recommendedGames: recommendedGames.slice(0, 10),
+      lessonStructure,
+      totalEstimatedTime: this.calculateLessonTime(lessonStructure),
+      learningPath: this.generateLearningPath(recommendedGames.slice(0, 5))
+    };
+  }
+
+  /**
+   * Calculate educational score for lesson planning
+   * @param {Object} game - Game object
+   * @returns {number} Educational score (0-100)
+   */
+  static calculateEducationalScore(game) {
+    let score = 0;
+    
+    // Base score for having educational metadata
+    if (game.metadata?.learningObjectives?.length > 0) score += 20;
+    if (game.metadata?.tags?.includes('educational')) score += 15;
+    if (game.template === 'educational') score += 25;
+    
+    // Analytics and progress tracking
+    if (game.features?.includes('analytics')) score += 15;
+    if (game.features?.includes('progress')) score += 10;
+    
+    // Age appropriateness
+    if (game.metadata?.ageRange) score += 10;
+    
+    // Assessment capabilities
+    if (game.metadata?.gameType?.includes('quiz')) score += 15;
+    if (game.metadata?.gameType?.includes('assessment')) score += 20;
+    
+    // Accessibility features
+    if (game.metadata?.accessibility?.length > 0) score += 5;
+    
+    return Math.min(score, 100);
+  }
+
+  /**
+   * Calculate total lesson time
+   * @param {Object} lessonStructure - Lesson structure with activities
+   * @returns {number} Total time in minutes
+   */
+  static calculateLessonTime(lessonStructure) {
+    let totalTime = 0;
+    
+    Object.values(lessonStructure).forEach(activities => {
+      if (Array.isArray(activities)) {
+        activities.forEach(activity => {
+          totalTime += activity.metadata?.estimatedPlayTime || 10;
+        });
+      }
+    });
+    
+    return totalTime;
+  }
+
+  /**
+   * Generate learning path progression
+   * @param {Array} games - Ordered list of games
+   * @returns {Array} Learning path with difficulty progression
+   */
+  static generateLearningPath(games) {
+    return games.map((game, index) => ({
+      step: index + 1,
+      game: game.name,
+      gameId: game.id,
+      objective: game.metadata?.learningObjectives?.[0] || 'Practice skills',
+      difficulty: game.difficulty?.[0] || 'medium',
+      estimatedTime: game.metadata?.estimatedPlayTime || 10,
+      prerequisites: index > 0 ? [games[index - 1].name] : [],
+      nextSteps: index < games.length - 1 ? [games[index + 1].name] : ['Complete assessment']
+    }));
+  }
+
+  /**
+   * Get curriculum alignment report
+   * @param {string} subject - Subject to analyze
+   * @returns {Object} Curriculum coverage report
+   */
+  static getCurriculumAlignment(subject) {
+    const subjectGames = this.getGamesBySubject(subject);
+    
+    // Collect all learning objectives
+    const allObjectives = new Set();
+    const ageRanges = new Set();
+    const gameTypes = new Set();
+    
+    subjectGames.forEach(game => {
+      if (game.metadata?.learningObjectives) {
+        game.metadata.learningObjectives.forEach(obj => allObjectives.add(obj));
+      }
+      if (game.metadata?.ageRange) ageRanges.add(game.metadata.ageRange);
+      if (game.metadata?.gameType) gameTypes.add(game.metadata.gameType);
+    });
+
+    return {
+      subject,
+      totalGames: subjectGames.length,
+      learningObjectives: Array.from(allObjectives),
+      ageRanges: Array.from(ageRanges),
+      gameTypes: Array.from(gameTypes),
+      educationalGames: subjectGames.filter(g => g.template === 'educational').length,
+      assessmentCapable: subjectGames.filter(g => 
+        g.features?.includes('analytics') || g.template === 'educational'
+      ).length,
+      gaps: this.identifyCurriculumGaps(subjectGames),
+      recommendations: this.generateCurriculumRecommendations(subjectGames)
+    };
+  }
+
+  /**
+   * Identify gaps in curriculum coverage
+   * @param {Array} games - Games to analyze
+   * @returns {Array} Identified gaps and recommendations
+   */
+  static identifyCurriculumGaps(games) {
+    const gaps = [];
+    
+    // Check for missing difficulty levels
+    const difficulties = new Set();
+    games.forEach(game => {
+      if (game.difficulty) {
+        game.difficulty.forEach(diff => difficulties.add(diff));
+      }
+    });
+    
+    ['easy', 'medium', 'hard'].forEach(level => {
+      if (!difficulties.has(level)) {
+        gaps.push({
+          type: 'difficulty',
+          missing: level,
+          recommendation: `Add more ${level} difficulty games`
+        });
+      }
+    });
+    
+    // Check for assessment gaps
+    const hasAssessment = games.some(game => 
+      game.features?.includes('analytics') || game.template === 'educational'
+    );
+    
+    if (!hasAssessment) {
+      gaps.push({
+        type: 'assessment',
+        missing: 'assessment tools',
+        recommendation: 'Add games with educational template or analytics features'
+      });
+    }
+    
+    return gaps;
+  }
+
+  /**
+   * Generate curriculum recommendations
+   * @param {Array} games - Games to analyze
+   * @returns {Array} Curriculum improvement recommendations
+   */
+  /**
+   * Validate educational metadata using imported schema
+   * @param {Object} metadata - Metadata to validate
+   * @returns {Object} Validation result
+   */
+  static validateEducationalMetadata(metadata) {
+    // Import validation function dynamically to avoid circular dependencies
+    try {
+      // For now, implement basic validation here
+      // TODO: Import from educationalMetadataSchema.js when module loading is resolved
+      const errors = [];
+      const warnings = [];
+      
+      // Check required educational fields
+      if (!metadata.learningObjectives || !Array.isArray(metadata.learningObjectives) || metadata.learningObjectives.length === 0) {
+        errors.push('learningObjectives is required and must be a non-empty array');
+      }
+      
+      if (!metadata.ageRange || typeof metadata.ageRange !== 'string') {
+        errors.push('ageRange is required and must be a string (e.g., "6-8")');
+      } else if (!/^\d+-\d+$/.test(metadata.ageRange)) {
+        errors.push('ageRange must be in format "min-max" (e.g., "6-8")');
+      }
+      
+      if (!metadata.assessmentType || !['formative', 'summative', 'diagnostic', 'practice'].includes(metadata.assessmentType)) {
+        errors.push('assessmentType must be one of: formative, summative, diagnostic, practice');
+      }
+      
+      if (!metadata.estimatedPlayTime || typeof metadata.estimatedPlayTime !== 'number') {
+        errors.push('estimatedPlayTime is required and must be a number (minutes)');
+      } else if (metadata.estimatedPlayTime < 1 || metadata.estimatedPlayTime > 60) {
+        warnings.push('estimatedPlayTime should be between 1-60 minutes for optimal engagement');
+      }
+      
+      // Check data collection (COPPA relevant)
+      if (!metadata.dataCollection) {
+        warnings.push('dataCollection object is recommended for COPPA compliance');
+      } else {
+        if (typeof metadata.dataCollection.collectsPersonalInfo !== 'boolean') {
+          errors.push('dataCollection.collectsPersonalInfo must be a boolean');
+        }
+        if (!Array.isArray(metadata.dataCollection.dataTypes)) {
+          errors.push('dataCollection.dataTypes must be an array');
+        }
+        if (!metadata.dataCollection.purpose) {
+          errors.push('dataCollection.purpose is required');
+        }
+      }
+      
+      return { errors, warnings };
+    } catch (error) {
+      return { 
+        errors: [`Validation error: ${error.message}`], 
+        warnings: [] 
+      };
+    }
+  }
+
+  /**
+   * Check COPPA compliance for educational metadata
+   * @param {Object} metadata - Game metadata to check
+   * @returns {Object} COPPA compliance status
+   */
+  static checkCOPPACompliance(metadata) {
+    const compliance = {
+      requiresParentalConsent: false,
+      issues: [],
+      recommendations: []
+    };
+    
+    // Check age range for under-13 users
+    if (metadata.ageRange) {
+      const [minAge] = metadata.ageRange.split('-').map(Number);
+      if (minAge < 13) {
+        compliance.requiresParentalConsent = true;
+        
+        if (metadata.dataCollection?.collectsPersonalInfo) {
+          compliance.issues.push('Collects personal info from children under 13');
+          compliance.recommendations.push('Implement verifiable parental consent mechanism');
+          compliance.recommendations.push('Add clear privacy policy for parents');
+        }
+        
+        if (metadata.dataCollection?.retention && metadata.dataCollection.retention !== 'session_only') {
+          compliance.issues.push('Data retention beyond session for under-13 users');
+          compliance.recommendations.push('Limit data retention to session only or implement data deletion');
+        }
+      }
+    }
+    
+    // Check for marketing data use
+    if (metadata.dataCollection?.purpose?.includes('marketing')) {
+      compliance.issues.push('Data used for marketing purposes');
+      compliance.recommendations.push('Remove marketing data collection for COPPA compliance');
+    }
+    
+    // Check for advertising
+    if (metadata.dataCollection?.dataTypes?.includes('advertising_id')) {
+      compliance.issues.push('Collects advertising identifiers');
+      compliance.recommendations.push('Remove advertising tracking for children under 13');
+    }
+    
+    return compliance;
+  }
+
+  static generateCurriculumRecommendations(games) {
+    const recommendations = [];
+    
+    // Educational template usage
+    const educationalGames = games.filter(g => g.template === 'educational');
+    if (educationalGames.length < games.length * 0.3) {
+      recommendations.push({
+        priority: 'high',
+        category: 'template',
+        suggestion: 'Consider converting more games to use the educational template for better learning tracking'
+      });
+    }
+    
+    // Analytics coverage
+    const analyticsGames = games.filter(g => g.features?.includes('analytics'));
+    if (analyticsGames.length < games.length * 0.5) {
+      recommendations.push({
+        priority: 'medium',
+        category: 'analytics',
+        suggestion: 'Add analytics features to more games for better progress tracking'
+      });
+    }
+    
+    return recommendations;
   }
 }
 
