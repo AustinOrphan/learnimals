@@ -358,12 +358,10 @@ class BaseComponent {
   }
 }
 
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = BaseComponent;
-} else {
+// ES module export only
+export default BaseComponent;
+
+// Also make available globally for legacy compatibility
+if (typeof window !== 'undefined') {
   window.BaseComponent = BaseComponent;
 }
-
-// ES module export
-export default BaseComponent;
