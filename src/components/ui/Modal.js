@@ -1,8 +1,21 @@
 // Modal Component
 // Reusable modal component for consistent UI across the site
 
-import BaseComponent from '../BaseComponent.js';
-import { escapeHTML } from '../../utils/htmlEscape.js';
+// Use global BaseComponent (loaded via script tag in demo page)
+const BaseComponent = window.BaseComponent;
+
+// Inline escapeHTML function to avoid module import
+function escapeHTML(input) {
+  if (typeof input !== 'string') return input;
+  
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
 
 class Modal extends BaseComponent {
   /**
@@ -238,8 +251,9 @@ class Modal extends BaseComponent {
 }
 
 // Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Modal;
-} else {
+export default Modal;
+
+// Also make globally available for non-module scripts
+if (typeof window !== 'undefined') {
   window.Modal = Modal;
 }
