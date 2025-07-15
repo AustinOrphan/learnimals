@@ -287,30 +287,6 @@ class BaseComponent {
   }
 
   /**
-   * Add event listener to the component
-   * @param {string} eventName - Event name
-   * @param {Function} handler - Event handler function
-   */
-  on(eventName, handler) {
-    if (this.element) {
-      this.element.addEventListener(eventName, handler);
-    }
-    return this;
-  }
-
-  /**
-   * Remove event listener from the component
-   * @param {string} eventName - Event name
-   * @param {Function} handler - Event handler function
-   */
-  off(eventName, handler) {
-    if (this.element) {
-      this.element.removeEventListener(eventName, handler);
-    }
-    return this;
-  }
-
-  /**
    * Emit a custom event from the component
    * @param {string} eventName - Event name
    * @param {*} [detail] - Event detail data
@@ -358,13 +334,10 @@ class BaseComponent {
   }
 }
 
-// Always make globally available 
-window.BaseComponent = BaseComponent;
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = BaseComponent;
-}
-
-// ES module export
+// ES module export only
 export default BaseComponent;
+
+// Also make available globally for legacy compatibility
+if (typeof window !== 'undefined') {
+  window.BaseComponent = BaseComponent;
+}

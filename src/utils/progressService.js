@@ -20,12 +20,12 @@
 
 // Import dependencies
 import userProgress from '../features/user/userProgress.js';
-import enhancedProgressTracker from './EnhancedProgressTracker.js';
+import EnhancedProgressTracker from './EnhancedProgressTracker.js';
 
 class ProgressService {
   constructor(options = {}) {
     this.userProgress = options.userProgress || userProgress;
-    this.enhancedTracker = options.enhancedTracker || enhancedProgressTracker;
+    this.enhancedTracker = options.enhancedTracker || new EnhancedProgressTracker();
     this.eventListeners = new Map();
     this.sessionId = this.generateSessionId();
     this.cache = new Map();

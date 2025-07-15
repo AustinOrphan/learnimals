@@ -68,7 +68,7 @@ jobs:
           echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404 - Page Not Found</title><link rel="stylesheet" href="/src/styles/main.css"></head><body><h1>404 - Page Not Found</h1><p><a href="/">Go Home</a></p></body></html>' > _site/404.html
           
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
