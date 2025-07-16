@@ -87,7 +87,8 @@
       "Bash(chmod:*)",
       "Bash(git restore:*)",
       "Bash(npm install:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(git merge:*)"
     ],
     "deny": []
   }
