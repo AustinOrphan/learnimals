@@ -271,7 +271,7 @@ class GameProgressDashboard {
       const button = document.createElement('button');
       button.className = 'filter-button';
       button.textContent = cat.label;
-      button.onclick = () => this.filterAchievements(cat.id);
+      button.onclick = () => this.filterAchievements(cat.id, button);
       filter.appendChild(button);
     });
     
@@ -328,7 +328,7 @@ class GameProgressDashboard {
     });
   }
   
-  filterAchievements(category) {
+  filterAchievements(category, activeButton) {
     const grid = document.getElementById('achievements-grid');
     this.renderAchievementGrid(grid, category);
     
@@ -336,7 +336,7 @@ class GameProgressDashboard {
     document.querySelectorAll('.filter-button').forEach(btn => {
       btn.classList.remove('active');
     });
-    event.target.classList.add('active');
+    activeButton.classList.add('active');
   }
   
   renderDetailedStats() {

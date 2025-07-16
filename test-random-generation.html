@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Character Generation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-results { 
+            max-height: 600px; 
+            overflow-y: auto; 
+            background: #f5f5f5; 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        button { 
+            padding: 10px 20px; 
+            margin: 10px; 
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .stats {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Character Generation Test</h1>
+    <p>This test will generate multiple random characters and track success/failure rates.</p>
+    
+    <div>
+        <button id="test-10">Test 10 Characters</button>
+        <button id="test-50">Test 50 Characters</button>
+        <button id="test-100">Test 100 Characters</button>
+        <button id="clear">Clear Results</button>
+    </div>
+    
+    <div class="stats" id="stats">
+        <h3>Statistics</h3>
+        <div id="stats-content">No tests run yet.</div>
+    </div>
+    
+    <div class="test-results" id="results">
+        <h3>Test Results</h3>
+        <div id="results-content">Click a button to start testing...</div>
+    </div>
+
+    <script type="module">
+        const resultsContent = document.getElementById('results-content');
+        const statsContent = document.getElementById('stats-content');
+        
+        let testResults = {
+            total: 0,
+            successful: 0,
+            failed: 0,
+            errors: {},
+            subjectStats: {},
+            timings: []
+        };
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = type;
+            entry.textContent = `[${timestamp}] ${message}`;
+            resultsContent.appendChild(entry);
+            resultsContent.scrollTop = resultsContent.scrollHeight;
+        }
+        
+        function updateStats() {
+            const successRate = testResults.total > 0 
+                ? ((testResults.successful / testResults.total) * 100).toFixed(1) 
+                : 0;
+            
+            const avgTime = testResults.timings.length > 0
+                ? (testResults.timings.reduce((a, b) => a + b, 0) / testResults.timings.length).toFixed(0)
+                : 0;
+            
+            let errorSummary = '';
+            if (Object.keys(testResults.errors).length > 0) {
+                errorSummary = '<h4>Error Summary:</h4><ul>';
+                for (const [error, count] of Object.entries(testResults.errors)) {
+                    errorSummary += `<li>${error}: ${count} occurrences</li>`;
+                }
+                errorSummary += '</ul>';
+            }
+            
+            let subjectSummary = '';
+            if (Object.keys(testResults.subjectStats).length > 0) {
+                subjectSummary = '<h4>Subject Success Rates:</h4><ul>';
+                for (const [subject, stats] of Object.entries(testResults.subjectStats)) {
+                    const rate = ((stats.success / stats.total) * 100).toFixed(1);
+                    subjectSummary += `<li>${subject}: ${stats.success}/${stats.total} (${rate}%)</li>`;
+                }
+                subjectSummary += '</ul>';
+            }
+            
+            statsContent.innerHTML = `
+                <p><strong>Total Tests:</strong> ${testResults.total}</p>
+                <p><strong>Successful:</strong> ${testResults.successful} (${successRate}%)</p>
+                <p><strong>Failed:</strong> ${testResults.failed}</p>
+                <p><strong>Average Time:</strong> ${avgTime}ms</p>
+                ${errorSummary}
+                ${subjectSummary}
+            `;
+        }
+        
+        async function testRandomGeneration(count) {
+            log(`Starting test of ${count} random character generations...`, 'info');
+            
+            // Reset stats for this test run
+            testResults = {
+                total: 0,
+                successful: 0,
+                failed: 0,
+                errors: {},
+                subjectStats: {},
+                timings: []
+            };
+            
+            try {
+                // Import the API
+                const { CharacterGenerationAPI, CharacterUtils } = await import('./src/features/character-generation/index.js');
+                
+                const subjects = CharacterUtils.getAvailableSubjects();
+                log(`Available subjects: ${subjects.join(', ')}`, 'info');
+                
+                for (let i = 0; i < count; i++) {
+                    const subject = subjects[Math.floor(Math.random() * subjects.length)];
+                    
+                    // Initialize subject stats if needed
+                    if (!testResults.subjectStats[subject]) {
+                        testResults.subjectStats[subject] = { total: 0, success: 0 };
+                    }
+                    
+                    testResults.total++;
+                    testResults.subjectStats[subject].total++;
+                    
+                    const startTime = performance.now();
+                    
+                    try {
+                        log(`Test ${i + 1}/${count}: Generating ${subject} character...`);
+                        
+                        const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
+                            autoSave: false // Don't save to avoid filling storage
+                        });
+                        
+                        const endTime = performance.now();
+                        const duration = endTime - startTime;
+                        testResults.timings.push(duration);
+                        
+                        if (result.success) {
+                            testResults.successful++;
+                            testResults.subjectStats[subject].success++;
+                            log(`✓ Success: ${result.character.name} (${subject}) - ${duration.toFixed(0)}ms`, 'success');
+                            
+                            // Validate the character
+                            const validation = CharacterGenerationAPI.validateCharacter(result.character);
+                            if (!validation.isValid) {
+                                log(`  ⚠️ Validation failed: ${validation.errors.join(', ')}`, 'warning');
+                            }
+                        } else {
+                            testResults.failed++;
+                            const errorMsg = result.error + (result.details ? ': ' + result.details.join(', ') : '');
+                            testResults.errors[errorMsg] = (testResults.errors[errorMsg] || 0) + 1;
+                            log(`✗ Failed: ${errorMsg}`, 'error');
+                        }
+                        
+                    } catch (error) {
+                        testResults.failed++;
+                        const errorMsg = error.message;
+                        testResults.errors[errorMsg] = (testResults.errors[errorMsg] || 0) + 1;
+                        log(`✗ Exception: ${errorMsg}`, 'error');
+                        console.error('Full error:', error);
+                    }
+                    
+                    updateStats();
+                    
+                    // Small delay to avoid overwhelming the system
+                    if (i < count - 1) {
+                        await new Promise(resolve => setTimeout(resolve, 10));
+                    }
+                }
+                
+                log(`\nTest complete! Success rate: ${((testResults.successful / testResults.total) * 100).toFixed(1)}%`, 'info');
+                
+            } catch (error) {
+                log(`Fatal error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        }
+        
+        // Button handlers
+        document.getElementById('test-10').addEventListener('click', () => testRandomGeneration(10));
+        document.getElementById('test-50').addEventListener('click', () => testRandomGeneration(50));
+        document.getElementById('test-100').addEventListener('click', () => testRandomGeneration(100));
+        
+        document.getElementById('clear').addEventListener('click', () => {
+            resultsContent.innerHTML = 'Click a button to start testing...';
+            testResults = {
+                total: 0,
+                successful: 0,
+                failed: 0,
+                errors: {},
+                subjectStats: {},
+                timings: []
+            };
+            updateStats();
+        });
+        
+        log('Test page loaded. Click a button to start testing random character generation.', 'info');
+    </script>
+</body>
+</html>

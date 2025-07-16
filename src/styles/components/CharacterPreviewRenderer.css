@@ -1,0 +1,268 @@
+/**
+ * Character Preview Renderer Styles - Phase E Enhanced
+ * Advanced animations and visual effects for character rendering
+ */
+
+/* Character Animation Keyframes */
+@keyframes character-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes character-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes character-blink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes character-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes character-wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes character-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Character SVG Enhancements */
+.character-preview svg {
+  overflow: visible;
+  transition: all 0.3s ease;
+}
+
+.character-preview svg:hover {
+  transform: scale(1.05);
+}
+
+/* Theme-specific enhancements */
+.character-preview[data-theme="playful"] svg {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.character-preview[data-theme="educational"] svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.character-preview[data-theme="professional"] svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.character-preview[data-theme="artistic"] svg {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) brightness(1.1);
+}
+
+/* Subject-specific styling */
+.character-preview[data-subject="math"] {
+  --accent-color: #4A90E2;
+}
+
+.character-preview[data-subject="science"] {
+  --accent-color: #2ECC71;
+}
+
+.character-preview[data-subject="reading"] {
+  --accent-color: #E74C3C;
+}
+
+.character-preview[data-subject="art"] {
+  --accent-color: #9B59B6;
+}
+
+.character-preview[data-subject="coding"] {
+  --accent-color: #F39C12;
+}
+
+/* Interactive states */
+.character-preview.interactive svg {
+  cursor: pointer;
+}
+
+.character-preview.interactive svg:hover .character-base {
+  animation: character-pulse 1s ease-in-out;
+}
+
+.character-preview.interactive svg:active {
+  animation: character-bounce 0.6s ease;
+}
+
+/* Expression-specific effects */
+.character-preview[data-expression="excited"] svg {
+  animation: character-wiggle 0.5s ease-in-out;
+}
+
+.character-preview[data-expression="thinking"] .character-eye {
+  animation: character-blink 3s infinite;
+}
+
+.character-preview[data-expression="happy"] svg:hover {
+  animation: character-bounce 0.8s ease;
+}
+
+/* Sparkle effects */
+.sparkle-effects circle {
+  animation: sparkle-twinkle 2s infinite;
+}
+
+/* Subject background patterns */
+.subject-background {
+  opacity: 0.08;
+  transition: opacity 0.3s ease;
+}
+
+.character-preview:hover .subject-background {
+  opacity: 0.15;
+}
+
+/* Enhanced subject badge */
+.subject-badge-enhanced {
+  transition: all 0.3s ease;
+}
+
+.character-preview:hover .subject-badge-enhanced {
+  transform: scale(1.1);
+}
+
+/* Tool icons */
+.character-preview .tool-icon {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.character-preview:hover .tool-icon {
+  opacity: 1;
+}
+
+/* Character size variations */
+.character-preview.size-small {
+  min-width: 80px;
+  min-height: 80px;
+}
+
+.character-preview.size-medium {
+  min-width: 120px;
+  min-height: 120px;
+}
+
+.character-preview.size-large {
+  min-width: 200px;
+  min-height: 200px;
+}
+
+/* Accessibility enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .character-preview svg,
+  .character-preview .character-base,
+  .character-preview .character-eye,
+  .character-preview .sparkle-effects circle {
+    animation: none !important;
+  }
+  
+  .character-preview svg:hover {
+    transform: none;
+  }
+}
+
+/* Focus states for accessibility */
+.character-preview.interactive svg:focus {
+  outline: 2px solid var(--accent-color, #4A90E2);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Loading states */
+.character-preview.loading {
+  opacity: 0.6;
+}
+
+.character-preview.loading svg {
+  animation: character-pulse 1.5s infinite;
+}
+
+/* Error states */
+.character-preview.error {
+  opacity: 0.4;
+  filter: grayscale(100%);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .character-preview svg {
+    filter: contrast(1.5);
+  }
+  
+  .subject-background {
+    opacity: 0.2;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .character-preview.size-large {
+    min-width: 160px;
+    min-height: 160px;
+  }
+  
+  .character-preview svg:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* Print styles */
+@media print {
+  .character-preview svg {
+    filter: none;
+    animation: none;
+  }
+  
+  .sparkle-effects {
+    display: none;
+  }
+}

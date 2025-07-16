@@ -2,21 +2,26 @@
 // Provides absolute URL resolution for navigation links
 
 // Use shared logger factory created by navbarLoader.js
-const logger = window.createLogger ? window.createLogger('NavigationHelper') : {
-  debug: (...args) => {
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      console.log('[NavigationHelper DEBUG]', ...args);
-    }
-  },
-  error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
-  warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
-  info: (...args) => console.info('[NavigationHelper INFO]', ...args)
-};
+// Always use window.logger to avoid redeclaration errors
+if (typeof window !== 'undefined' && !window.logger) {
+  window.logger = window.createLogger ? window.createLogger('NavigationHelper') : {
+    debug: (...args) => {
+      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        console.log('[NavigationHelper DEBUG]', ...args);
+      }
+    },
+    error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
+    warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
+    info: (...args) => console.info('[NavigationHelper INFO]', ...args)
+  };
+}
 
 class NavigationHelper {
   constructor() {
     this.baseUrl = this.detectBaseUrl();
-    logger.debug('Navigation Helper initialized with base URL:', this.baseUrl);
+    if (typeof window !== 'undefined' && window.logger) {
+      window.logger.debug('Navigation Helper initialized with base URL:', this.baseUrl);
+    }
   }
 
   detectBaseUrl() {
@@ -89,7 +94,9 @@ class NavigationHelper {
       const navKey = link.getAttribute('data-nav');
       if (linkMappings[navKey]) {
         link.href = this.getUrl(linkMappings[navKey]);
-        logger.debug(`Updated ${navKey} link to:`, link.href);
+        if (typeof window !== 'undefined' && window.logger) {
+          window.logger.debug(`Updated ${navKey} link to:`, link.href);
+        }
       }
     });
 
@@ -97,14 +104,18 @@ class NavigationHelper {
     document.querySelectorAll('[data-img]').forEach(img => {
       const imgKey = img.getAttribute('data-img');
       img.src = this.getImageUrl(imgKey);
-      logger.debug(`Updated ${imgKey} image to:`, img.src);
+      if (typeof window !== 'undefined' && window.logger) {
+        window.logger.debug(`Updated ${imgKey} image to:`, img.src);
+      }
     });
   }
 
   // Navigate to a page programmatically
   navigateTo(page) {
     const url = this.getSubjectUrl(page);
-    logger.debug(`Navigating to: ${url}`);
+    if (typeof window !== 'undefined' && window.logger) {
+      window.logger.debug(`Navigating to: ${url}`);
+    }
     window.location.href = url;
   }
 
@@ -134,7 +145,7 @@ if (typeof window !== 'undefined') {
 }
 
 // Export for ES6 modules and testing
-export default NavigationHelper;
+// export default NavigationHelper; // Disabled for browser compatibility
 
 // Make available for dynamic imports
 if (typeof window !== 'undefined') {

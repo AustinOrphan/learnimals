@@ -2,7 +2,7 @@
  * Pizza Party Rush! - A fun pizza-making game for kids
  * Players fulfill customer orders by dragging the correct toppings
  */
-import { animationDelay, animationSequence } from '../../../utils/AnimationManager.js';
+import { animationDelay, _animationSequence } from '../../../utils/AnimationManager.js';
 export default class PizzaMakerGame {
   constructor() {
     // Game state

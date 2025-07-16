@@ -4,7 +4,7 @@
 // Simple logger fallback for non-module script loading.
 // This factory will be reused by other scripts like navigationHelper.js.
 if (!window.createLogger) {
-  window.createLogger = (prefix) => {
+  window.create_Logger = (prefix) => {
     const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     return {
       debug: (...args) => isDev && console.log(`[${prefix} DEBUG]`, ...args),

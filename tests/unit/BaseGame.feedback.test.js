@@ -260,7 +260,7 @@ describe('BaseGame Feedback System', () => {
     });
 
     it('should provide random character reactions', () => {
-      const reactions = new Set();
+      const _reactions = new Set();
       
       // Enable debug mode to capture character reactions
       game.feedbackConfig.debugMode = true;

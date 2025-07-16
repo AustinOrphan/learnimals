@@ -85,7 +85,7 @@ global.createNavbarPlaceholder = () => {
 
 // Mock file content fetching for tests that read actual files
 global.mockFileContent = (filePath, content) => {
-  fetch.mockImplementation((url) => {
+  fetch.mockImplementation((_url) => {
     if (url.includes(filePath)) {
       return Promise.resolve({
         ok: true,
@@ -102,7 +102,7 @@ global.mockFileContent = (filePath, content) => {
 
 // Setup default file content mocks for navigation files
 global.setupNavigationFileMocks = () => {
-  fetch.mockImplementation((url) => {
+  fetch.mockImplementation((_url) => {
     if (url.includes('navbarLoader.js')) {
       return Promise.resolve({
         ok: true,

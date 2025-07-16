@@ -1,634 +1,865 @@
 /**
- * Character Gallery Component
+ * CharacterGallery - Interactive gallery displaying all default characters
  * 
- * Interactive gallery displaying all default characters with filtering,
- * searching, and real-time character interactions.
+ * Features:
+ * - Grid view with filtering, search, and sorting
+ * - Character interactions (greet, celebrate, encourage) 
+ * - Real-time speech with character voice settings
+ * - Character spotlight with detailed information
+ * - Performance monitoring for rendering speeds
+ * - Mobile responsive design
+ * 
+ * Part of Phase C: Character Demo & Showcase (Issue #253)
  */
 
-import BaseComponent from '../BaseComponent.js';
-import CharacterRenderer from './CharacterRenderer.js';
-import { getAllDefaultCharacters, generateCharacterMessage } from '../../utils/characterIntegration.js';
-
+/* global BaseComponent */
+// CharacterGallery class extends globally available BaseComponent
 class CharacterGallery extends BaseComponent {
   constructor(options = {}) {
     super({
-      id: options.id || 'character-gallery',
-      cssClasses: ['character-gallery', ...(options.cssClasses || [])],
+      tagName: 'div',
+      className: 'character-gallery',
+      attributes: {
+        'role': 'region',
+        'aria-label': 'Character Gallery',
+        'data-component': 'character-gallery'
+      },
       ...options
     });
-    
-    // Gallery state
-    this.characters = getAllDefaultCharacters();
+
+    // Configuration
+    this.characters = options.characters || this.getDefaultCharacters();
     this.filteredCharacters = [...this.characters];
     this.currentFilter = 'all';
     this.currentSort = 'name';
-    this.searchQuery = '';
-    this.selectedCharacter = null;
+    this.searchTerm = '';
+    this.currentSpotlight = null;
+    this.gridLayout = options.gridLayout || 'cards'; // 'cards' | 'list' | 'compact'
     
-    // Character renderers
-    this.renderers = new Map();
-    
-    // UI options
-    this.showFilters = options.showFilters !== false;
-    this.showSearch = options.showSearch !== false;
-    this.showSpotlight = options.showSpotlight !== false;
-    this.autoplayAnimations = options.autoplayAnimations !== false;
-    
+    // Performance monitoring
+    this.performanceMetrics = {
+      renderStartTime: 0,
+      renderEndTime: 0,
+      frameCount: 0,
+      memoryUsage: 0
+    };
+
+    // Speech synthesis
+    this.speechSynthesis = window.speechSynthesis;
+    this.currentVoice = null;
+
     // Event handlers
+    this.boundHandlers = {
+      search: this.handleSearch.bind(this),
+      filter: this.handleFilter.bind(this),
+      sort: this.handleSort.bind(this),
+      characterClick: this.handleCharacterClick.bind(this),
+      characterInteraction: this.handleCharacterInteraction.bind(this),
+      keyboardNavigation: this.handleKeyboardNavigation.bind(this),
+      resize: this.handleResize.bind(this)
+    };
+    
     this.onCharacterSelect = options.onCharacterSelect || null;
     this.onCharacterInteraction = options.onCharacterInteraction || null;
     
     // Memory management
     this.autoplayInterval = null;
     this.boundKeydownHandler = null;
+
+    this.init();
   }
-  
+
+  /**
+   * Initialize the gallery
+   */
+  init() {
+    this.loadVoices();
+    
+    // Set up resize observer for responsive behavior
+    if (window.ResizeObserver) {
+      this.resizeObserver = new ResizeObserver(this.boundHandlers.resize);
+    }
+  }
+
+  /**
+   * Generate the gallery HTML structure
+   */
   generateHTML() {
     return `
-      <div class="character-gallery ${this.options.cssClasses.join(' ')}" id="${this.options.id}">
-        ${this.generateGalleryHeader()}
-        ${this.showFilters || this.showSearch ? this.generateGalleryControls() : ''}
-        ${this.generateGalleryGrid()}
-        ${this.showSpotlight ? this.generateCharacterSpotlight() : ''}
-      </div>
-    `;
-  }
-  
-  generateGalleryHeader() {
-    return `
+    <div id="${this.options.id}" class="character-gallery" role="region" aria-label="Character Gallery" data-component="character-gallery">
       <div class="gallery-header">
-        <h2 class="gallery-title">Character Gallery</h2>
-        <p class="gallery-description">
-          Meet our amazing cast of learning companions! Click on any character to see their personality,
-          hear their voice, and watch their animations in action.
-        </p>
-        <div class="gallery-stats">
-          <span class="stat-item">
-            <span class="stat-number">${this.characters.length}</span>
-            <span class="stat-label">Characters</span>
-          </span>
-          <span class="stat-item">
-            <span class="stat-number">${this.getSubjectCount()}</span>
-            <span class="stat-label">Subjects</span>
-          </span>
-          <span class="stat-item">
-            <span class="stat-number">${this.getSpeciesCount()}</span>
-            <span class="stat-label">Species</span>
-          </span>
-        </div>
-      </div>
-    `;
-  }
-  
-  generateGalleryControls() {
-    return `
-      <div class="gallery-controls">
-        ${this.showSearch ? this.generateSearchControls() : ''}
-        ${this.showFilters ? this.generateFilterControls() : ''}
-        ${this.generateSortControls()}
-      </div>
-    `;
-  }
-  
-  generateSearchControls() {
-    return `
-      <div class="search-controls">
-        <div class="search-container">
-          <input type="text" 
-                 class="search-input" 
-                 placeholder="Search characters, species, or subjects..."
-                 value="${this.searchQuery}">
-          <button class="search-clear" 
-                  ${this.searchQuery ? '' : 'style="display: none;"'}>
-            ×
-          </button>
-        </div>
-      </div>
-    `;
-  }
-  
-  generateFilterControls() {
-    const subjects = [...new Set(this.characters.map(c => c.personality?.favoriteSubject || 'general'))];
-    const species = [...new Set(this.characters.map(c => c.species.primary))];
-    
-    return `
-      <div class="filter-controls">
-        <div class="filter-group">
-          <label>Filter by Subject:</label>
-          <select class="filter-select" data-filter-type="subject">
-            <option value="all" ${this.currentFilter === 'all' ? 'selected' : ''}>All Subjects</option>
-            ${subjects.map(subject => `
-              <option value="${subject}" ${this.currentFilter === subject ? 'selected' : ''}>
-                ${subject.charAt(0).toUpperCase() + subject.slice(1)}
-              </option>
-            `).join('')}
-          </select>
+        <div class="gallery-title">
+          <h1>Character Gallery</h1>
+          <p class="gallery-subtitle">Meet your learning companions</p>
         </div>
         
-        <div class="filter-group">
-          <label>Filter by Species:</label>
-          <select class="filter-select" data-filter-type="species">
-            <option value="all" ${this.currentFilter === 'all' ? 'selected' : ''}>All Species</option>
-            ${species.map(s => `
-              <option value="${s}" ${this.currentFilter === s ? 'selected' : ''}>
-                ${s.charAt(0).toUpperCase() + s.slice(1)}
-              </option>
-            `).join('')}
-          </select>
-        </div>
-        
-        <div class="filter-chips">
-          <button class="filter-chip ${this.currentFilter === 'all' ? 'active' : ''}"
-                  data-filter-type="subject" data-filter-value="all">
-            All
-          </button>
-          ${subjects.slice(0, 4).map(subject => `
-            <button class="filter-chip ${this.currentFilter === subject ? 'active' : ''}"
-                    data-filter-type="subject" data-filter-value="${subject}">
-              ${this.getSubjectIcon(subject)} ${subject.charAt(0).toUpperCase() + subject.slice(1)}
+        <div class="gallery-controls">
+          <div class="search-container">
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search characters..."
+              aria-label="Search characters"
+              autocomplete="off"
+            >
+            <button class="search-clear" aria-label="Clear search" style="display: none;">
+              <span aria-hidden="true">×</span>
             </button>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
-  
-  generateSortControls() {
-    return `
-      <div class="sort-controls">
-        <label>Sort by:</label>
-        <select class="sort-select">
-          <option value="name" ${this.currentSort === 'name' ? 'selected' : ''}>Name</option>
-          <option value="subject" ${this.currentSort === 'subject' ? 'selected' : ''}>Subject</option>
-          <option value="species" ${this.currentSort === 'species' ? 'selected' : ''}>Species</option>
-          <option value="enthusiasm" ${this.currentSort === 'enthusiasm' ? 'selected' : ''}>Enthusiasm</option>
-          <option value="patience" ${this.currentSort === 'patience' ? 'selected' : ''}>Patience</option>
-        </select>
-      </div>
-    `;
-  }
-  
-  generateGalleryGrid() {
-    return `
-      <div class="gallery-grid" id="character-gallery-grid">
-        ${this.filteredCharacters.map(character => this.generateCharacterCard(character)).join('')}
-      </div>
-      
-      ${this.filteredCharacters.length === 0 ? this.generateEmptyState() : ''}
-    `;
-  }
-  
-  generateCharacterCard(character) {
-    const subject = character.personality?.favoriteSubject || 'general';
-    const topTraits = this.getTopTraits(character.personality.traits);
-    
-    return `
-      <div class="character-card" 
-           data-character-id="${character.id}"
-           data-subject="${subject}"
-           data-species="${character.species.primary}"
-           role="button"
-           tabindex="0"
-           aria-label="Select ${character.name} the ${character.species.primary}">
-        
-        <div class="card-header">
-          <div class="character-container" id="card-char-${character.id}">
-            <!-- Character renderer will be inserted here -->
-          </div>
-          <div class="character-status" id="status-${character.id}">
-            <span class="status-indicator"></span>
-          </div>
-        </div>
-        
-        <div class="card-content">
-          <h3 class="character-name">${character.name}</h3>
-          <div class="character-meta">
-            <span class="character-species">
-              ${this.getSpeciesIcon(character.species.primary)} ${character.species.primary}
-            </span>
-            <span class="character-subject">
-              ${this.getSubjectIcon(subject)} ${subject}
-            </span>
           </div>
           
-          <div class="personality-preview">
-            <div class="trait-bars">
-              ${topTraits.map(([trait, value]) => `
-                <div class="trait-bar">
-                  <span class="trait-name">${trait}</span>
-                  <div class="trait-progress">
-                    <div class="trait-fill" style="width: ${value}%"></div>
-                  </div>
-                  <span class="trait-value">${value}</span>
+          <div class="filter-controls">
+            <select class="filter-select" aria-label="Filter by subject">
+              <option value="all">All Subjects</option>
+              <option value="math">Math</option>
+              <option value="reading">Reading</option>
+              <option value="science">Science</option>
+              <option value="art">Art</option>
+              <option value="coding">Coding</option>
+            </select>
+          </div>
+          
+          <div class="sort-controls">
+            <select class="sort-select" aria-label="Sort characters">
+              <option value="name">Sort by Name</option>
+              <option value="subject">Sort by Subject</option>
+              <option value="popularity">Sort by Popularity</option>
+            </select>
+          </div>
+          
+          <div class="layout-controls">
+            <button class="layout-btn layout-cards active" data-layout="cards" aria-label="Card view">
+              <span aria-hidden="true">⊞</span>
+            </button>
+            <button class="layout-btn layout-list" data-layout="list" aria-label="List view">
+              <span aria-hidden="true">☰</span>
+            </button>
+            <button class="layout-btn layout-compact" data-layout="compact" aria-label="Compact view">
+              <span aria-hidden="true">⊡</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-content">
+        <div class="characters-grid" role="grid" aria-label="Character gallery grid">
+          <!-- Characters will be rendered here -->
+        </div>
+        
+        <div class="character-spotlight" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="spotlight-title">
+          <div class="spotlight-backdrop"></div>
+          <div class="spotlight-content">
+            <div class="spotlight-header">
+              <h2 id="spotlight-title">Character Details</h2>
+              <button class="spotlight-close" aria-label="Close character details">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            
+            <div class="spotlight-body">
+              <div class="spotlight-character">
+                <div class="character-preview">
+                  <!-- Character SVG will be rendered here -->
                 </div>
-              `).join('')}
+                <div class="character-info">
+                  <h3 class="character-name"></h3>
+                  <p class="character-subject"></p>
+                  <p class="character-description"></p>
+                </div>
+              </div>
+              
+              <div class="spotlight-interactions">
+                <h4>Try Interactions</h4>
+                <div class="interaction-buttons">
+                  <button class="interaction-btn greet-btn" data-interaction="greet">
+                    <span class="btn-icon">👋</span>
+                    <span class="btn-text">Greet</span>
+                  </button>
+                  <button class="interaction-btn celebrate-btn" data-interaction="celebrate">
+                    <span class="btn-icon">🎉</span>
+                    <span class="btn-text">Celebrate</span>
+                  </button>
+                  <button class="interaction-btn encourage-btn" data-interaction="encourage">
+                    <span class="btn-icon">💪</span>
+                    <span class="btn-text">Encourage</span>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="spotlight-stats">
+                <h4>Character Stats</h4>
+                <div class="stats-grid">
+                  <div class="stat-item">
+                    <span class="stat-label">Subject</span>
+                    <span class="stat-value character-subject-stat"></span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Personality</span>
+                    <span class="stat-value character-personality"></span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Voice Type</span>
+                    <span class="stat-value character-voice"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
-          <div class="card-actions">
-            <button class="interaction-btn" 
-                    data-action="greet"
-                    aria-label="Greet ${character.name}">
-              <span class="btn-icon">👋</span>
-              <span class="btn-text">Say Hi</span>
-            </button>
-            <button class="interaction-btn" 
-                    data-action="celebrate"
-                    aria-label="Celebrate with ${character.name}">
-              <span class="btn-icon">🎉</span>
-              <span class="btn-text">Celebrate</span>
-            </button>
-            <button class="interaction-btn" 
-                    data-action="encourage"
-                    aria-label="Get encouragement from ${character.name}">
-              <span class="btn-icon">💪</span>
-              <span class="btn-text">Encourage</span>
-            </button>
-          </div>
-        </div>
-        
-        <div class="card-overlay">
-          <div class="overlay-content">
-            <div class="overlay-message" id="message-${character.id}">
-              Click to learn more about ${character.name}!
-            </div>
-          </div>
         </div>
       </div>
-    `;
-  }
-  
-  generateCharacterSpotlight() {
-    return `
-      <div class="character-spotlight" id="character-spotlight">
-        <div class="spotlight-content">
-          <div class="spotlight-placeholder">
-            <div class="placeholder-icon">🎭</div>
-            <h3>Character Spotlight</h3>
-            <p>Click on any character above to see detailed information, personality traits, and interactive features.</p>
-          </div>
+
+      <div class="gallery-footer">
+        <div class="performance-display">
+          <span class="perf-item">
+            <span class="perf-label">Render Time:</span>
+            <span class="perf-value render-time">0ms</span>
+          </span>
+          <span class="perf-item">
+            <span class="perf-label">Characters:</span>
+            <span class="perf-value character-count">0</span>
+          </span>
+          <span class="perf-item">
+            <span class="perf-label">Memory:</span>
+            <span class="perf-value memory-usage">0MB</span>
+          </span>
         </div>
       </div>
+    </div>
     `;
   }
-  
-  generateEmptyState() {
-    return `
-      <div class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <h3>No Characters Found</h3>
-        <p>Try adjusting your search or filter criteria.</p>
-        <button class="empty-action">
-          Clear All Filters
-        </button>
-      </div>
-    `;
-  }
-  
-  // Event Handlers
-  handleSearch(event) {
-    this.searchQuery = event.target.value.toLowerCase();
-    this.applyFilters();
-    this.updateUI();
-  }
-  
-  clearSearch() {
-    this.searchQuery = '';
-    const searchInput = document.querySelector('.search-input');
+
+  /**
+   * Attach event listeners after rendering
+   */
+  attachEventListeners() {
+    super.attachEventListeners();
+    
+    if (!this.element) return;
+    
+    // Search functionality
+    const searchInput = this.element.querySelector('.search-input');
+    const searchClear = this.element.querySelector('.search-clear');
+    
     if (searchInput) {
-      searchInput.value = '';
+      searchInput.addEventListener('input', this.boundHandlers.search);
+      searchInput.addEventListener('keydown', this.boundHandlers.keyboardNavigation);
     }
-    this.applyFilters();
-    this.updateUI();
-  }
-  
-  handleFilter(type, value) {
-    this.currentFilter = value;
-    this.applyFilters();
-    this.updateUI();
-  }
-  
-  handleSort(sortBy) {
-    this.currentSort = sortBy;
-    this.sortCharacters();
-    this.updateUI();
-  }
-  
-  selectCharacter(characterId) {
-    const character = this.characters.find(c => c.id === characterId);
-    if (!character) return;
     
-    this.selectedCharacter = character;
-    this.updateSpotlight(character);
+    if (searchClear) {
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        this.handleSearch();
+      });
+    }
     
-    // Update card states
-    document.querySelectorAll('.character-card').forEach(card => {
-      card.classList.toggle('selected', card.dataset.characterId === characterId);
+    // Filter and sort controls
+    const filterSelect = this.element.querySelector('.filter-select');
+    const sortSelect = this.element.querySelector('.sort-select');
+    
+    if (filterSelect) {
+      filterSelect.addEventListener('change', this.boundHandlers.filter);
+    }
+    
+    if (sortSelect) {
+      sortSelect.addEventListener('change', this.boundHandlers.sort);
+    }
+    
+    // Layout controls
+    const layoutButtons = this.element.querySelectorAll('.layout-btn');
+    layoutButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const layout = e.currentTarget.dataset.layout;
+        this.setGridLayout(layout);
+      });
     });
     
-    // Callback
-    if (this.onCharacterSelect) {
-      this.onCharacterSelect(character);
+    // Character grid interactions
+    const charactersGrid = this.element.querySelector('.characters-grid');
+    if (charactersGrid) {
+      charactersGrid.addEventListener('click', this.boundHandlers.characterClick);
+      charactersGrid.addEventListener('keydown', this.boundHandlers.keyboardNavigation);
     }
     
-    // Emit event
-    this.emit('character:selected', { character });
-  }
-  
-  async triggerInteraction(characterId, action) {
-    const character = this.characters.find(c => c.id === characterId);
-    const renderer = this.renderers.get(characterId);
+    // Spotlight controls
+    const spotlightClose = this.element.querySelector('.spotlight-close');
+    const spotlightBackdrop = this.element.querySelector('.spotlight-backdrop');
     
-    if (!character || !renderer) return;
-    
-    // Update character animation
-    const animationMap = {
-      greet: 'waving',
-      celebrate: 'celebrating',
-      encourage: 'encouraging'
-    };
-    
-    renderer.setAnimationState(animationMap[action] || 'happy');
-    
-    // Show message
-    const message = generateCharacterMessage(character, action === 'greet' ? 'greeting' : action);
-    this.showCharacterMessage(characterId, message);
-    
-    // Update status indicator
-    this.updateCharacterStatus(characterId, action);
-    
-    // Callback
-    if (this.onCharacterInteraction) {
-      this.onCharacterInteraction(character, action, message);
+    if (spotlightClose) {
+      spotlightClose.addEventListener('click', () => this.closeSpotlight());
     }
     
-    // Emit event
-    this.emit('character:interaction', { character, action, message });
+    if (spotlightBackdrop) {
+      spotlightBackdrop.addEventListener('click', () => this.closeSpotlight());
+    }
     
-    // Reset after delay
-    import('../../../utils/AnimationManager.js').then(({ animationManager }) => {
-      animationManager.delay(() => {
-        renderer.setAnimationState('idle');
-        this.clearCharacterMessage(characterId);
-        this.updateCharacterStatus(characterId, 'idle');
-      }, 3000);
+    // Interaction buttons in spotlight
+    const interactionButtons = this.element.querySelectorAll('.interaction-btn');
+    interactionButtons.forEach(btn => {
+      btn.addEventListener('click', this.boundHandlers.characterInteraction);
     });
+    
+    // Set up resize observer
+    if (this.resizeObserver && this.element) {
+      this.resizeObserver.observe(this.element);
+    }
+    
+    // Initial render of characters
+    this.renderCharacters();
   }
-  
-  // Helper Methods
-  applyFilters() {
-    this.filteredCharacters = this.characters.filter(character => {
-      // Search filter
-      if (this.searchQuery) {
-        const searchFields = [
-          character.name.toLowerCase(),
-          character.species.primary.toLowerCase(),
-          character.personality?.favoriteSubject?.toLowerCase() || '',
-          ...Object.keys(character.personality.traits)
-        ];
-        
-        if (!searchFields.some(field => field.includes(this.searchQuery))) {
-          return false;
-        }
+
+  /**
+   * Handle search input
+   */
+  handleSearch(_event) {
+    const searchInput = this.element.querySelector('.search-input');
+    const searchClear = this.element.querySelector('.search-clear');
+    
+    if (searchInput) {
+      this.searchTerm = searchInput.value.toLowerCase().trim();
+      
+      // Show/hide clear button
+      if (searchClear) {
+        searchClear.style.display = this.searchTerm ? 'block' : 'none';
       }
       
-      // Subject/Species filter
-      if (this.currentFilter !== 'all') {
-        const subject = character.personality?.favoriteSubject || 'general';
-        const species = character.species.primary;
-        
-        if (this.currentFilter !== subject && this.currentFilter !== species) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-    
-    this.sortCharacters();
+      this.filterAndRenderCharacters();
+    }
   }
-  
-  sortCharacters() {
-    this.filteredCharacters.sort((a, b) => {
+
+  /**
+   * Handle filter selection
+   */
+  handleFilter(event) {
+    this.currentFilter = event.target.value;
+    this.filterAndRenderCharacters();
+  }
+
+  /**
+   * Handle sort selection
+   */
+  handleSort(event) {
+    this.currentSort = event.target.value;
+    this.filterAndRenderCharacters();
+  }
+
+  /**
+   * Handle character card clicks
+   */
+  handleCharacterClick(event) {
+    const characterCard = event.target.closest('.character-card');
+    if (!characterCard) return;
+    
+    const characterId = characterCard.dataset.characterId;
+    if (characterId) {
+      const character = this.characters.find(c => c.id === characterId);
+      if (character) {
+        this.openSpotlight(character);
+      }
+    }
+  }
+
+  /**
+   * Handle character interactions (greet, celebrate, encourage)
+   */
+  handleCharacterInteraction(event) {
+    const button = event.target.closest('.interaction-btn');
+    if (!button) return;
+    
+    const interaction = button.dataset.interaction;
+    if (this.currentSpotlight && interaction) {
+      this.performCharacterInteraction(this.currentSpotlight, interaction);
+    }
+  }
+
+  /**
+   * Handle keyboard navigation
+   */
+  handleKeyboardNavigation(event) {
+    if (event.key === 'Escape' && this.currentSpotlight) {
+      this.closeSpotlight();
+    }
+    
+    // Grid navigation with arrow keys
+    if (event.target.closest('.characters-grid')) {
+      this.handleGridKeyboardNavigation(event);
+    }
+  }
+
+  /**
+   * Handle grid keyboard navigation
+   */
+  handleGridKeyboardNavigation(event) {
+    const cards = Array.from(this.element.querySelectorAll('.character-card'));
+    const currentIndex = cards.findIndex(card => card === document.activeElement);
+    
+    let nextIndex = currentIndex;
+    const columns = this.getGridColumns();
+    
+    switch (event.key) {
+    case 'ArrowRight':
+      nextIndex = Math.min(currentIndex + 1, cards.length - 1);
+      break;
+    case 'ArrowLeft':
+      nextIndex = Math.max(currentIndex - 1, 0);
+      break;
+    case 'ArrowDown':
+      nextIndex = Math.min(currentIndex + columns, cards.length - 1);
+      break;
+    case 'ArrowUp':
+      nextIndex = Math.max(currentIndex - columns, 0);
+      break;
+    case 'Enter':
+    case ' ':
+      if (currentIndex >= 0) {
+        cards[currentIndex].click();
+        event.preventDefault();
+      }
+      return;
+    default:
+      return;
+    }
+    
+    if (nextIndex !== currentIndex && cards[nextIndex]) {
+      cards[nextIndex].focus();
+      event.preventDefault();
+    }
+  }
+
+  /**
+   * Handle resize events
+   */
+  handleResize() {
+    // Debounce resize handling
+    clearTimeout(this.resizeTimeout);
+    this.resizeTimeout = setTimeout(() => {
+      this.updateGridLayout();
+      this.updatePerformanceMetrics();
+    }, 150);
+  }
+
+  /**
+   * Filter and render characters based on current criteria
+   */
+  filterAndRenderCharacters() {
+    this.performanceMetrics.renderStartTime = performance.now();
+    
+    // Filter by subject
+    let filtered = this.characters;
+    if (this.currentFilter !== 'all') {
+      filtered = filtered.filter(character => 
+        character.subject.toLowerCase() === this.currentFilter.toLowerCase()
+      );
+    }
+    
+    // Filter by search term
+    if (this.searchTerm) {
+      filtered = filtered.filter(character =>
+        character.name.toLowerCase().includes(this.searchTerm) ||
+        character.subject.toLowerCase().includes(this.searchTerm) ||
+        character.description.toLowerCase().includes(this.searchTerm) ||
+        character.personality.toLowerCase().includes(this.searchTerm)
+      );
+    }
+    
+    // Sort characters
+    filtered.sort((a, b) => {
       switch (this.currentSort) {
       case 'name':
         return a.name.localeCompare(b.name);
         
-      case 'subject': {
-        const subjectA = a.personality?.favoriteSubject || 'general';
-        const subjectB = b.personality?.favoriteSubject || 'general';
-        return subjectA.localeCompare(subjectB);
-      }
+      case 'subject':
+        return a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name);
         
-      case 'species':
-        return a.species.primary.localeCompare(b.species.primary);
-        
-      case 'enthusiasm':
-      case 'patience': {
-        const valueA = a.personality.traits[this.currentSort] || 0;
-        const valueB = b.personality.traits[this.currentSort] || 0;
-        return valueB - valueA; // Descending order
-      }
+      case 'popularity':
+        return (b.popularity || 0) - (a.popularity || 0);
         
       default:
-        return 0;
+        return a.name.localeCompare(b.name);
       }
     });
-  }
-  
-  clearFilters() {
-    this.searchQuery = '';
-    this.currentFilter = 'all';
-    this.applyFilters();
-    this.updateUI();
-  }
-  
-  getTopTraits(traits) {
-    return Object.entries(traits)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 3);
-  }
-  
-  getSubjectCount() {
-    return new Set(this.characters.map(c => c.personality?.favoriteSubject || 'general')).size;
-  }
-  
-  getSpeciesCount() {
-    return new Set(this.characters.map(c => c.species.primary)).size;
-  }
-  
-  getSubjectIcon(subject) {
-    const icons = {
-      math: '🔢',
-      science: '🔬',
-      reading: '📚',
-      art: '🎨',
-      coding: '💻',
-      music: '🎵',
-      geography: '🌍',
-      general: '📖'
-    };
-    return icons[subject] || icons.general;
-  }
-  
-  getSpeciesIcon(species) {
-    const icons = {
-      cat: '🐱',
-      dog: '🐕',
-      panda: '🐼',
-      shark: '🦈',
-      parrot: '🦜',
-      lion: '🦁',
-      owl: '🦉',
-      dolphin: '🐬'
-    };
-    return icons[species] || '🐾';
-  }
-  
-  showCharacterMessage(characterId, message) {
-    const messageElement = document.getElementById(`message-${characterId}`);
-    if (messageElement) {
-      messageElement.textContent = message;
-      messageElement.parentElement.parentElement.classList.add('show-message');
-    }
-  }
-  
-  clearCharacterMessage(characterId) {
-    const messageElement = document.getElementById(`message-${characterId}`);
-    if (messageElement) {
-      messageElement.parentElement.parentElement.classList.remove('show-message');
-    }
-  }
-  
-  updateCharacterStatus(characterId, status) {
-    const statusElement = document.getElementById(`status-${characterId}`);
-    if (statusElement) {
-      statusElement.className = `character-status ${status}`;
-    }
-  }
-  
-  updateSpotlight(character) {
-    const spotlight = document.getElementById('character-spotlight');
-    if (!spotlight) return;
     
-    const topTraits = this.getTopTraits(character.personality.traits);
-    const subject = character.personality?.favoriteSubject || 'general';
+    this.filteredCharacters = filtered;
+    this.renderCharacters();
+  }
+
+  /**
+   * Render the character grid
+   */
+  renderCharacters() {
+    const grid = this.element.querySelector('.characters-grid');
+    if (!grid) return;
     
-    spotlight.innerHTML = `
-      <div class="spotlight-content">
-        <div class="spotlight-header">
-          <div class="spotlight-character" id="spotlight-char-${character.id}">
-            <!-- Large character renderer -->
-          </div>
-          <div class="spotlight-info">
-            <h3>${character.name}</h3>
-            <div class="spotlight-meta">
-              <span class="spotlight-species">
-                ${this.getSpeciesIcon(character.species.primary)} ${character.species.primary}
-              </span>
-              <span class="spotlight-subject">
-                ${this.getSubjectIcon(subject)} ${subject} Teacher
-              </span>
-            </div>
-          </div>
+    // Clear existing content
+    grid.innerHTML = '';
+    
+    if (this.filteredCharacters.length === 0) {
+      grid.innerHTML = `
+        <div class="no-characters">
+          <div class="no-characters-icon">🔍</div>
+          <h3>No characters found</h3>
+          <p>Try adjusting your search or filter criteria.</p>
+        </div>
+      `;
+      this.updatePerformanceMetrics();
+      return;
+    }
+    
+    // Render character cards
+    const fragment = document.createDocumentFragment();
+    
+    this.filteredCharacters.forEach((character, index) => {
+      const card = this.createCharacterCard(character, index);
+      fragment.appendChild(card);
+    });
+    
+    grid.appendChild(fragment);
+    
+    // Update grid layout class
+    grid.className = `characters-grid layout-${this.gridLayout}`;
+    
+    this.updatePerformanceMetrics();
+    this.updateCharacterCount();
+  }
+
+  /**
+   * Create a character card element
+   */
+  createCharacterCard(character, _index) {
+    const card = document.createElement('div');
+    card.className = 'character-card';
+    card.dataset.characterId = character.id;
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'gridcell');
+    card.setAttribute('aria-label', `${character.name}, ${character.subject} character`);
+    
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="character-avatar">
+          ${this.renderCharacterSVG(character, 'small')}
+        </div>
+        <div class="character-badge subject-${character.subject.toLowerCase()}">
+          ${character.subject}
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <h3 class="character-name">${character.name}</h3>
+        <p class="character-description">${character.description}</p>
+        
+        <div class="character-traits">
+          <span class="trait-tag">${character.personality}</span>
+          ${character.specialties ? character.specialties.map(specialty => 
+    `<span class="specialty-tag">${specialty}</span>`
+  ).join('') : ''}
+        </div>
+      </div>
+      
+      <div class="card-footer">
+        <div class="quick-interactions">
+          <button class="quick-btn greet-quick" data-interaction="greet" aria-label="Greet ${character.name}">
+            <span aria-hidden="true">👋</span>
+          </button>
+          <button class="quick-btn celebrate-quick" data-interaction="celebrate" aria-label="Celebrate with ${character.name}">
+            <span aria-hidden="true">🎉</span>
+          </button>
+          <button class="quick-btn encourage-quick" data-interaction="encourage" aria-label="Encourage ${character.name}">
+            <span aria-hidden="true">💪</span>
+          </button>
         </div>
         
-        <div class="spotlight-details">
-          <div class="personality-details">
-            <h4>Personality Traits</h4>
-            <div class="trait-list">
-              ${topTraits.map(([trait, value]) => `
-                <div class="trait-item">
-                  <span class="trait-label">${trait.charAt(0).toUpperCase() + trait.slice(1)}</span>
-                  <div class="trait-bar-large">
-                    <div class="trait-fill" style="width: ${value}%"></div>
-                  </div>
-                  <span class="trait-value">${value}%</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          
-          <div class="spotlight-actions">
-            <button class="spotlight-btn primary" data-action="greet" data-character-id="${character.id}">
-              <span class="btn-icon">👋</span> Meet ${character.name}
-            </button>
-            <button class="spotlight-btn secondary" data-action="voice" data-character-id="${character.id}">
-              <span class="btn-icon">🔊</span> Hear Voice
-            </button>
-            <button class="spotlight-btn secondary" data-action="learn" data-character-id="${character.id}">
-              <span class="btn-icon">ℹ️</span> Learn More
-            </button>
-          </div>
+        <div class="card-actions">
+          <button class="view-details-btn" aria-label="View ${character.name} details">
+            View Details
+          </button>
         </div>
       </div>
     `;
     
-    // Initialize large character renderer
-    this.initializeSpotlightRenderer(character);
-  }
-  
-  async initializeSpotlightRenderer(character) {
-    const container = document.getElementById(`spotlight-char-${character.id}`);
-    if (!container) return;
-    
-    const renderer = new CharacterRenderer({
-      character: character,
-      size: 250,
-      interactive: true,
-      animated: true,
-      container: container
+    // Add quick interaction listeners
+    const quickButtons = card.querySelectorAll('.quick-btn');
+    quickButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const interaction = btn.dataset.interaction;
+        this.performCharacterInteraction(character, interaction);
+      });
     });
     
-    await renderer.render();
-    this.renderers.set(`spotlight-${character.id}`, renderer);
+    return card;
   }
-  
-  hearCharacterVoice(characterId) {
-    const character = this.characters.find(c => c.id === characterId);
-    if (!character) return;
+
+  /**
+   * Render character SVG (placeholder - would integrate with actual character renderer)
+   */
+  renderCharacterSVG(character, size = 'medium') {
+    const dimensions = {
+      small: { width: 60, height: 60 },
+      medium: { width: 120, height: 120 },
+      large: { width: 200, height: 200 }
+    };
     
-    const message = generateCharacterMessage(character, 'greeting');
+    const { width, height } = dimensions[size];
     
-    if ('speechSynthesis' in window) {
-      const utterance = new window.SpeechSynthesisUtterance(message);
-      const voice = character.personality.voice || {};
+    // Placeholder SVG - in real implementation this would use CharacterRenderer
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 100 100" class="character-svg">
+        <circle cx="50" cy="50" r="45" fill="${character.primaryColor || '#4A90E2'}" stroke="#333" stroke-width="2"/>
+        <circle cx="35" cy="40" r="5" fill="#333"/>
+        <circle cx="65" cy="40" r="5" fill="#333"/>
+        <path d="M 30 65 Q 50 80 70 65" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <text x="50" y="90" text-anchor="middle" font-size="8" fill="#333">${character.name}</text>
+      </svg>
+    `;
+  }
+
+  /**
+   * Open character spotlight
+   */
+  openSpotlight(character) {
+    this.currentSpotlight = character;
+    const spotlight = this.element.querySelector('.character-spotlight');
+    
+    if (!spotlight) return;
+    
+    // Update spotlight content
+    const title = spotlight.querySelector('#spotlight-title');
+    const name = spotlight.querySelector('.character-name');
+    const subject = spotlight.querySelector('.character-subject');
+    const description = spotlight.querySelector('.character-description');
+    const preview = spotlight.querySelector('.character-preview');
+    const subjectStat = spotlight.querySelector('.character-subject-stat');
+    const personality = spotlight.querySelector('.character-personality');
+    const voice = spotlight.querySelector('.character-voice');
+    
+    if (title) title.textContent = `${character.name} - Character Details`;
+    if (name) name.textContent = character.name;
+    if (subject) subject.textContent = character.subject;
+    if (description) description.textContent = character.description;
+    if (subjectStat) subjectStat.textContent = character.subject;
+    if (personality) personality.textContent = character.personality;
+    if (voice) voice.textContent = character.voiceType || 'Default';
+    
+    if (preview) {
+      preview.innerHTML = this.renderCharacterSVG(character, 'large');
+    }
+    
+    // Show spotlight
+    spotlight.style.display = 'block';
+    
+    // Focus management
+    setTimeout(() => {
+      const closeButton = spotlight.querySelector('.spotlight-close');
+      if (closeButton) closeButton.focus();
+    }, 100);
+    
+    // Emit event
+    this.emit('character:spotlight:opened', { character });
+  }
+
+  /**
+   * Close character spotlight
+   */
+  closeSpotlight() {
+    const spotlight = this.element.querySelector('.character-spotlight');
+    if (spotlight) {
+      spotlight.style.display = 'none';
+    }
+    
+    this.currentSpotlight = null;
+    
+    // Return focus to grid
+    const grid = this.element.querySelector('.characters-grid');
+    if (grid) {
+      const firstCard = grid.querySelector('.character-card');
+      if (firstCard) firstCard.focus();
+    }
+    
+    // Emit event
+    this.emit('character:spotlight:closed');
+  }
+
+  /**
+   * Perform character interaction with animation and speech
+   */
+  performCharacterInteraction(character, interaction) {
+    const messages = {
+      greet: [
+        `Hi there! I'm ${character.name}, ready to help with ${character.subject}!`,
+        `Hello! Let's explore ${character.subject} together!`,
+        `Hey! I'm excited to learn ${character.subject} with you!`
+      ],
+      celebrate: [
+        'Fantastic work! You\'re doing amazing!',
+        'Woohoo! That\'s excellent progress!',
+        'Amazing! Keep up the great work!'
+      ],
+      encourage: [
+        'You\'ve got this! Don\'t give up!',
+        'Believe in yourself! You\'re capable of great things!',
+        'Every challenge is a chance to grow stronger!'
+      ]
+    };
+    
+    const messageList = messages[interaction] || messages.greet;
+    const message = messageList[Math.floor(Math.random() * messageList.length)];
+    
+    // Visual feedback
+    this.animateCharacterInteraction(character, interaction);
+    
+    // Speech synthesis
+    this.speakMessage(message, character.voiceType);
+    
+    // Emit event
+    this.emit('character:interaction', { 
+      character, 
+      interaction, 
+      message,
+      timestamp: Date.now()
+    });
+  }
+
+  /**
+   * Animate character interaction
+   */
+  animateCharacterInteraction(character, interaction) {
+    // Find character elements to animate
+    const cardElement = this.element.querySelector(`[data-character-id="${character.id}"]`);
+    const spotlightElement = this.element.querySelector('.character-preview');
+    
+    const elements = [cardElement, spotlightElement].filter(Boolean);
+    
+    elements.forEach(element => {
+      // Remove existing animation classes
+      element.classList.remove('animate-greet', 'animate-celebrate', 'animate-encourage');
       
-      utterance.pitch = voice.pitch || 1;
-      utterance.rate = voice.speed || 1;
-      utterance.volume = 1;
+      // Add interaction-specific animation
+      element.classList.add(`animate-${interaction}`);
       
-      window.speechSynthesis.speak(utterance);
+      // Remove animation class after animation completes
+      setTimeout(() => {
+        element.classList.remove(`animate-${interaction}`);
+      }, 1000);
+    });
+  }
+
+  /**
+   * Speak message using Web Speech API
+   */
+  speakMessage(message, voiceType = 'default') {
+    if (!this.speechSynthesis) return;
+    
+    // Cancel any ongoing speech
+    this.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(message);
+    
+    // Configure voice based on character
+    if (this.currentVoice) {
+      utterance.voice = this.currentVoice;
+    }
+    
+    utterance.rate = 0.9;
+    utterance.pitch = voiceType === 'child' ? 1.2 : 1.0;
+    utterance.volume = 0.8;
+    
+    this.speechSynthesis.speak(utterance);
+  }
+
+  /**
+   * Load available voices for speech synthesis
+   */
+  loadVoices() {
+    if (!this.speechSynthesis) return;
+    
+    const voices = this.speechSynthesis.getVoices();
+    
+    // Prefer child-friendly or female voices
+    this.currentVoice = voices.find(voice => 
+      voice.name.toLowerCase().includes('child') ||
+      voice.name.toLowerCase().includes('female') ||
+      voice.name.toLowerCase().includes('karen') ||
+      voice.name.toLowerCase().includes('samantha')
+    ) || voices[0];
+    
+    // Reload voices when they become available
+    if (voices.length === 0) {
+      this.speechSynthesis.addEventListener('voiceschanged', () => {
+        this.loadVoices();
+      });
     }
   }
-  
-  learnMoreAbout(characterId) {
-    // TODO: Open detailed character information modal
-    console.log(`Learn more about character: ${characterId}`);
-  }
-  
-  // Lifecycle Methods
-  async afterRender() {
-    await super.afterRender();
-    this.bindEvents();
-    await this.initializeCharacterRenderers();
+
+  /**
+   * Set grid layout
+   */
+  setGridLayout(layout) {
+    if (!['cards', 'list', 'compact'].includes(layout)) return;
     
-    if (this.autoplayAnimations) {
-      this.startAutoplayAnimations();
+    this.gridLayout = layout;
+    
+    // Update layout buttons
+    const layoutButtons = this.element.querySelectorAll('.layout-btn');
+    layoutButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.layout === layout);
+    });
+    
+    // Update grid class
+    const grid = this.element.querySelector('.characters-grid');
+    if (grid) {
+      grid.className = `characters-grid layout-${layout}`;
+    }
+    
+    // Emit event
+    this.emit('layout:changed', { layout });
+  }
+
+  /**
+   * Get number of grid columns for keyboard navigation
+   */
+  getGridColumns() {
+    const grid = this.element.querySelector('.characters-grid');
+    if (!grid) return 1;
+    
+    const firstCard = grid.querySelector('.character-card');
+    if (!firstCard) return 1;
+    
+    const gridRect = grid.getBoundingClientRect();
+    const cardRect = firstCard.getBoundingClientRect();
+    
+    return Math.floor(gridRect.width / cardRect.width) || 1;
+  }
+
+  /**
+   * Update grid layout responsively
+   */
+  updateGridLayout() {
+    const grid = this.element.querySelector('.characters-grid');
+    if (!grid) return;
+    
+    const containerWidth = grid.getBoundingClientRect().width;
+    
+    // Adjust grid based on container width
+    if (containerWidth < 600) {
+      grid.style.setProperty('--grid-columns', '1');
+    } else if (containerWidth < 900) {
+      grid.style.setProperty('--grid-columns', '2');
+    } else if (containerWidth < 1200) {
+      grid.style.setProperty('--grid-columns', '3');
+    } else {
+      grid.style.setProperty('--grid-columns', '4');
     }
   }
-  
-  bindEvents() {
-    // Bind this context to methods
-    this.handleSearch = this.handleSearch.bind(this);
-    this.clearSearch = this.clearSearch.bind(this);
-    this.handleFilter = this.handleFilter.bind(this);
-    this.handleSort = this.handleSort.bind(this);
-    this.selectCharacter = this.selectCharacter.bind(this);
-    this.triggerInteraction = this.triggerInteraction.bind(this);
-    this.clearFilters = this.clearFilters.bind(this);
-    this.hearCharacterVoice = this.hearCharacterVoice.bind(this);
-    this.learnMoreAbout = this.learnMoreAbout.bind(this);
+
+  /**
+   * Start performance monitoring
+   */
+  startPerformanceMonitoring() {
+    this.performanceMetrics.renderStartTime = performance.now();
+    
+    // Monitor memory usage if available
+    if ('memory' in performance) {
+      this.updateMemoryUsage();
+      setInterval(() => this.updateMemoryUsage(), 5000);
+    }
     
     // Event delegation for all click events
     this.handleDelegatedClick = this.handleDelegatedClick.bind(this);
@@ -653,27 +884,53 @@ class CharacterGallery extends BaseComponent {
     };
     document.addEventListener('keydown', this.boundKeydownHandler);
   }
-  
-  async initializeCharacterRenderers() {
-    const promises = this.filteredCharacters.map(async (character) => {
-      const container = document.getElementById(`card-char-${character.id}`);
-      if (container) {
-        const renderer = new CharacterRenderer({
-          character: character,
-          size: 120,
-          interactive: true,
-          animated: true,
-          container: container
-        });
-        
-        await renderer.render();
-        this.renderers.set(character.id, renderer);
-      }
-    });
+
+  /**
+   * Update performance metrics display
+   */
+  updatePerformanceMetrics() {
+    this.performanceMetrics.renderEndTime = performance.now();
+    const renderTime = this.performanceMetrics.renderEndTime - this.performanceMetrics.renderStartTime;
     
-    await Promise.all(promises);
+    const renderTimeDisplay = this.element.querySelector('.render-time');
+    if (renderTimeDisplay) {
+      renderTimeDisplay.textContent = `${Math.round(renderTime)}ms`;
+    }
+  }
+
+  /**
+   * Update character count display
+   */
+  updateCharacterCount() {
+    const countDisplay = this.element.querySelector('.character-count');
+    if (countDisplay) {
+      countDisplay.textContent = `${this.filteredCharacters.length}/${this.characters.length}`;
+    }
+  }
+
+  /**
+   * Update memory usage display
+   */
+  updateMemoryUsage() {
+    if ('memory' in performance) {
+      const memoryInfo = performance.memory;
+      const usedMB = Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024);
+      
+      // Safety check: ensure element exists before querying
+      if (this.element) {
+        const memoryDisplay = this.element.querySelector('.memory-usage');
+        if (memoryDisplay) {
+          memoryDisplay.textContent = `${usedMB}MB`;
+        }
+      }
+      
+      this.performanceMetrics.memoryUsage = usedMB;
+    }
   }
   
+  /**
+   * Start autoplay animations for characters
+   */
   startAutoplayAnimations() {
     // Clear any existing interval
     if (this.autoplayInterval) {
@@ -687,158 +944,203 @@ class CharacterGallery extends BaseComponent {
       if (visibleCards.length > 0) {
         const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
         const characterId = randomCard.dataset.characterId;
-        const renderer = this.renderers.get(characterId);
         
-        if (renderer) {
+        if (characterId) {
           const animations = ['happy', 'thinking', 'waving'];
           const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
           
-          renderer.setAnimationState(randomAnimation);
+          // Add animation class for visual feedback
+          randomCard.classList.add(`animate-${randomAnimation}`);
           
           // Reset animation after delay
           setTimeout(() => {
-            renderer.setAnimationState('idle');
+            randomCard.classList.remove(`animate-${randomAnimation}`);
           }, 2000);
         }
       }
     }, 5000);
   }
   
+  /**
+   * Check if element is visible in viewport
+   */
   isElementVisible(element) {
     const rect = element.getBoundingClientRect();
     return rect.top < window.innerHeight && rect.bottom > 0;
   }
-  
-  updateUI() {
-    const gridElement = document.getElementById('character-gallery-grid');
-    if (gridElement) {
-      gridElement.innerHTML = this.filteredCharacters.map(character => 
-        this.generateCharacterCard(character)
-      ).join('') + (this.filteredCharacters.length === 0 ? this.generateEmptyState() : '');
-      
-      // Re-initialize renderers for new cards
-      this.initializeCharacterRenderers();
-    }
-    
-    // Update search clear button
-    const clearButton = document.querySelector('.search-clear');
-    if (clearButton) {
-      clearButton.style.display = this.searchQuery ? 'block' : 'none';
-    }
-    
-    // Update filter chips
-    document.querySelectorAll('.filter-chip').forEach(chip => {
-      const filterValue = chip.dataset.filterValue;
-      const isActive = filterValue === this.currentFilter || (filterValue === 'all' && this.currentFilter === 'all');
-      chip.classList.toggle('active', isActive);
-    });
-  }
-  
-  // Event delegation handlers
-  handleDelegatedClick(event) {
-    const target = event.target;
-    const characterCard = target.closest('.character-card');
-    const actionBtn = target.closest('[data-action]');
-    
-    // Handle character card selection
-    if (characterCard && !actionBtn) {
-      const characterId = characterCard.dataset.characterId;
-      if (characterId) {
-        this.selectCharacter(characterId);
+
+  /**
+   * Get default character data
+   */
+  getDefaultCharacters() {
+    return [
+      {
+        id: 'ruby-reading',
+        name: 'Ruby',
+        subject: 'Reading',
+        description: 'A wise panda who loves stories and helps with reading comprehension.',
+        personality: 'Wise and Patient',
+        primaryColor: '#8B4513',
+        voiceType: 'female',
+        specialties: ['Stories', 'Vocabulary', 'Comprehension'],
+        popularity: 95
+      },
+      {
+        id: 'leo-math',
+        name: 'Leo',
+        subject: 'Math',
+        description: 'An energetic lion who makes numbers fun and easy to understand.',
+        personality: 'Energetic and Encouraging',
+        primaryColor: '#FFA500',
+        voiceType: 'male',
+        specialties: ['Numbers', 'Problem Solving', 'Patterns'],
+        popularity: 92
+      },
+      {
+        id: 'sage-science',
+        name: 'Sage',
+        subject: 'Science',
+        description: 'A curious owl who explores the wonders of science and discovery.',
+        personality: 'Curious and Methodical',
+        primaryColor: '#4A90E2',
+        voiceType: 'male',
+        specialties: ['Experiments', 'Discovery', 'Nature'],
+        popularity: 88
+      },
+      {
+        id: 'aria-art',
+        name: 'Aria',
+        subject: 'Art',
+        description: 'A creative butterfly who inspires artistic expression and creativity.',
+        personality: 'Creative and Inspiring',
+        primaryColor: '#E91E63',
+        voiceType: 'female',
+        specialties: ['Drawing', 'Colors', 'Creativity'],
+        popularity: 85
+      },
+      {
+        id: 'bit-coding',
+        name: 'Bit',
+        subject: 'Coding',
+        description: 'A clever robot who teaches programming and logical thinking.',
+        personality: 'Logical and Systematic',
+        primaryColor: '#9C27B0',
+        voiceType: 'male',
+        specialties: ['Programming', 'Logic', 'Problem Solving'],
+        popularity: 90
+      },
+      {
+        id: 'harmony-music',
+        name: 'Harmony',
+        subject: 'Music',
+        description: 'A melodic songbird who makes learning music theory enjoyable.',
+        personality: 'Melodic and Rhythmic',
+        primaryColor: '#FF5722',
+        voiceType: 'female',
+        specialties: ['Rhythm', 'Melody', 'Instruments'],
+        popularity: 82
+      },
+      {
+        id: 'terra-geography',
+        name: 'Terra',
+        subject: 'Geography',
+        description: 'An adventurous explorer who discovers the world with you.',
+        personality: 'Adventurous and Knowledgeable',
+        primaryColor: '#4CAF50',
+        voiceType: 'female',
+        specialties: ['Maps', 'Countries', 'Cultures'],
+        popularity: 78
+      },
+      {
+        id: 'ziggy-general',
+        name: 'Ziggy',
+        subject: 'General',
+        description: 'A friendly companion ready to help with any learning adventure.',
+        personality: 'Friendly and Adaptable',
+        primaryColor: '#607D8B',
+        voiceType: 'child',
+        specialties: ['General Help', 'Motivation', 'Fun'],
+        popularity: 75
       }
-      return;
-    }
-    
-    // Handle interaction buttons
-    if (actionBtn) {
-      event.stopPropagation();
-      const action = actionBtn.dataset.action;
-      
-      // Get characterId from multiple sources for robustness
-      const characterId = actionBtn.dataset.characterId || // Direct on button (spotlight buttons)
-                          characterCard?.dataset.characterId; // From parent card (card buttons)
-      
-      if (characterId && action) {
-        // Handle different action types
-        if (action === 'greet' || action === 'celebrate' || action === 'encourage') {
-          this.triggerInteraction(characterId, action);
-        } else if (action === 'voice') {
-          this.hearCharacterVoice(characterId);
-        } else if (action === 'learn') {
-          this.learnMoreAbout(characterId);
-        }
-      }
-      return;
-    }
-    
-    // Handle search clear button
-    if (target.classList.contains('search-clear')) {
-      this.clearSearch();
-      return;
-    }
-    
-    // Handle filter chips
-    if (target.classList.contains('filter-chip')) {
-      const filterType = target.dataset.filterType || 'subject';
-      const filterValue = target.dataset.filterValue || 'all';
-      this.handleFilter(filterType, filterValue);
-      return;
-    }
-    
-    // Handle clear filters button
-    if (target.classList.contains('empty-action')) {
-      this.clearFilters();
-      return;
-    }
-    
-    // Handle spotlight buttons (legacy support)
-    if (target.classList.contains('spotlight-btn')) {
-      const action = target.dataset.action;
-      const characterId = target.dataset.characterId;
-      if (action === 'greet' && characterId) {
-        this.triggerInteraction(characterId, 'greet');
-      } else if (action === 'voice' && characterId) {
-        this.hearCharacterVoice(characterId);
-      } else if (action === 'learn' && characterId) {
-        this.learnMoreAbout(characterId);
-      }
-      return;
+    ];
+  }
+
+  /**
+   * Public API: Add characters
+   */
+  addCharacters(newCharacters) {
+    this.characters = [...this.characters, ...newCharacters];
+    this.filterAndRenderCharacters();
+    this.emit('characters:added', { characters: newCharacters });
+  }
+
+  /**
+   * Public API: Remove character
+   */
+  removeCharacter(characterId) {
+    this.characters = this.characters.filter(c => c.id !== characterId);
+    this.filterAndRenderCharacters();
+    this.emit('character:removed', { characterId });
+  }
+
+  /**
+   * Public API: Update character
+   */
+  updateCharacter(characterId, updates) {
+    const characterIndex = this.characters.findIndex(c => c.id === characterId);
+    if (characterIndex >= 0) {
+      this.characters[characterIndex] = { ...this.characters[characterIndex], ...updates };
+      this.filterAndRenderCharacters();
+      this.emit('character:updated', { characterId, updates });
     }
   }
-  
-  handleDelegatedInput(event) {
-    const target = event.target;
-    
-    // Handle search input
-    if (target.classList.contains('search-input')) {
-      this.handleSearch(event);
-      return;
+
+  /**
+   * Public API: Get performance metrics
+   */
+  getPerformanceMetrics() {
+    return { ...this.performanceMetrics };
+  }
+
+  /**
+   * Public API: Search characters
+   */
+  searchCharacters(term) {
+    const searchInput = this.element.querySelector('.search-input');
+    if (searchInput) {
+      searchInput.value = term;
+      this.handleSearch();
     }
   }
-  
-  handleDelegatedChange(event) {
-    const target = event.target;
-    
-    // Handle filter selects
-    if (target.classList.contains('filter-select')) {
-      const filterType = target.dataset.filterType || 'subject';
-      this.handleFilter(filterType, target.value);
-      return;
-    }
-    
-    // Handle sort select
-    if (target.classList.contains('sort-select')) {
-      this.handleSort(target.value);
-      return;
+
+  /**
+   * Public API: Filter characters
+   */
+  filterCharacters(subject) {
+    const filterSelect = this.element.querySelector('.filter-select');
+    if (filterSelect) {
+      filterSelect.value = subject;
+      this.handleFilter({ target: filterSelect });
     }
   }
-  
+
+  /**
+   * Cleanup
+   */
   destroy() {
-    // Clean up event listeners
-    if (this.element) {
-      this.element.removeEventListener('click', this.handleDelegatedClick);
-      this.element.removeEventListener('input', this.handleDelegatedInput);
-      this.element.removeEventListener('change', this.handleDelegatedChange);
+    // Clean up speech synthesis
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
+    }
+    
+    // Clean up resize observer
+    if (this.resizeObserver && this.element) {
+      this.resizeObserver.unobserve(this.element);
+    }
+    
+    // Clear timeouts
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
     }
     
     // Clean up document event listener
@@ -853,14 +1155,11 @@ class CharacterGallery extends BaseComponent {
       this.autoplayInterval = null;
     }
     
-    // Clean up renderers
-    this.renderers.forEach(renderer => {
-      renderer.destroy();
-    });
-    this.renderers.clear();
-    
     super.destroy();
   }
 }
 
-export default CharacterGallery;
+// Make available globally
+if (typeof window !== 'undefined') {
+  window.CharacterGallery = CharacterGallery;
+}

@@ -197,7 +197,7 @@
             if ("serviceWorker" in navigator) {
                 window.addEventListener("load", function () {
                     navigator.serviceWorker
-                        .register("../public/serviceWorker.js")
+                        .register("../../public/serviceWorker.js")
                         .then(function (registration) {
                             console.log(
                                 "ServiceWorker registration successful with scope: ",

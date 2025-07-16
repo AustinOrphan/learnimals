@@ -82,7 +82,7 @@ export default class AnimationManager {
   sequence(sequence, options = {}) {
     const id = ++this.animationId;
     let currentIndex = 0;
-    let accumulatedTime = 0;
+    let _accumulatedTime = 0;
     
     const executeNext = () => {
       if (currentIndex >= sequence.length) {
@@ -94,7 +94,7 @@ export default class AnimationManager {
       }
       
       const step = sequence[currentIndex];
-      accumulatedTime += step.delay || 0;
+      _accumulatedTime += step.delay || 0;
       
       this.delay(() => {
         if (this.activeAnimations.has(id)) {

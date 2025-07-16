@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Generator Demo - Learnimals</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/base/styles.css">
+    <link rel="stylesheet" href="../styles/components/navbar.css">
+    <link rel="stylesheet" href="../styles/components/components.css">
+    <link rel="stylesheet" href="../styles/components/themeSwitcher.css">
+    <link rel="stylesheet" href="../styles/components/CharacterWizard.css">
+    <link rel="stylesheet" href="../styles/components/CharacterGallery.css">
+    <link rel="stylesheet" href="../styles/components/CharacterPreviewRenderer.css">
+    
+    <style>
+        /* Demo-specific styles */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .demo-header h1 {
+            color: var(--text-heading);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-header p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .demo-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .demo-button:hover {
+            background: var(--accent-primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .demo-button.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .demo-button.secondary:hover {
+            background: var(--bg-hover);
+        }
+        
+        .demo-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+        
+        .demo-section h2 {
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .test-results {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        
+        .character-preview {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .character-info {
+            margin-top: 1rem;
+        }
+        
+        .character-name {
+            font-weight: 600;
+            color: var(--text-heading);
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .character-subject {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .character-traits {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .trait-tag {
+            background: var(--accent-primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .status-success {
+            background: var(--status-success)20;
+            color: var(--status-success);
+        }
+        
+        .status-error {
+            background: var(--status-error)20;
+            color: var(--status-error);
+        }
+        
+        .gallery-container {
+            min-height: 400px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .demo-container {
+                padding: 1rem;
+            }
+            
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .demo-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        /* Phase E: Enhanced renderer demo styles */
+        .renderer-demo {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1rem;
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-controls label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .demo-controls select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .renderer-showcase {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            background: var(--bg-tertiary);
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .character-preview-demo {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .character-preview-demo .character-preview {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="demo-container">
+        <div class="demo-header">
+            <h1>Character Generator Demo</h1>
+            <p>
+                Test the new character generation system with an interactive wizard, 
+                validation testing, and live character previews.
+            </p>
+        </div>
+
+        <div class="demo-actions">
+            <button class="demo-button" id="open-wizard">
+                <span>✨</span>
+                Open Character Wizard
+            </button>
+            <button class="demo-button secondary" id="run-tests">
+                <span>🧪</span>
+                Run System Tests
+            </button>
+            <button class="demo-button secondary" id="generate-random">
+                <span>🎲</span>
+                Generate Random Character
+            </button>
+            <button class="demo-button secondary" id="clear-storage">
+                <span>🗑️</span>
+                Clear Storage
+            </button>
+            <button class="demo-button secondary" id="open-customization-studio">
+                <span>🎨</span>
+                Character Customization Studio
+            </button>
+            <button class="demo-button secondary" id="open-studio-direct">
+                <span>🎭</span>
+                Open Studio (Direct)
+            </button>
+        </div>
+
+        <div class="demo-grid">
+            <div class="demo-section">
+                <h2>Character Preview</h2>
+                <div class="character-preview" id="character-preview">
+                    <div class="placeholder-icon">👤</div>
+                    <div class="character-info">
+                        <div class="character-name">No character selected</div>
+                        <div class="character-subject">Create or generate a character to see preview</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h2>System Status</h2>
+                <div id="system-status">
+                    <div class="status-indicator">
+                        <span>⏳</span>
+                        Initializing character generation system...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Test Results</h2>
+            <div class="test-results" id="test-results">
+                Click "Run System Tests" to test the character generation system...
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Generated Characters Gallery</h2>
+            <div class="gallery-container" id="gallery-container">
+                <p>Generated characters will appear here...</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>Phase E: Enhanced Visual Renderer</h2>
+            <p>Test the enhanced character preview system with different themes and expressions.</p>
+            
+            <div class="renderer-demo">
+                <div class="demo-controls">
+                    <label for="demo-theme">Visual Theme:</label>
+                    <select id="demo-theme">
+                        <option value="educational">Educational</option>
+                        <option value="playful">Playful</option>
+                        <option value="professional">Professional</option>
+                        <option value="artistic">Artistic</option>
+                    </select>
+                    
+                    <label for="demo-expression">Expression:</label>
+                    <select id="demo-expression">
+                        <option value="happy">Happy</option>
+                        <option value="excited">Excited</option>
+                        <option value="thinking">Thinking</option>
+                        <option value="surprised">Surprised</option>
+                        <option value="proud">Proud</option>
+                        <option value="encouraging">Encouraging</option>
+                    </select>
+                    
+                    <button id="demo-render" class="demo-button secondary">
+                        <span>🎨</span>
+                        Render Demo Character
+                    </button>
+                </div>
+                
+                <div class="renderer-showcase" id="renderer-showcase">
+                    <div class="character-preview-demo" id="demo-preview-container">
+                        <p>Click "Render Demo Character" to see enhanced visual features</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Character Wizard Container -->
+    <div id="character-wizard-container"></div>
+
+    <!-- JavaScript -->
+    <script defer type="module" src="../themeInitializer.js"></script>
+    <script type="module" src="../utils/themeManager.js"></script>
+    <script type="module" src="../components/layout/themeSwitcher.js"></script>
+    <script defer src="../components/layout/navbarLoader.js"></script>
+
+    <!-- Load base components -->
+    <script src="../components/BaseComponent.js"></script>
+    <script type="module">
+        // Load Modal.js as module to make it globally available
+        import Modal from '../components/ui/Modal.js';
+        window.Modal = Modal;
+    </script>
+    <script src="../components/ui/CharacterGallery.js"></script>
+
+    <!-- Load character generation system -->
+    <script type="module">
+        import { CharacterGenerationAPI, CharacterUtils, characterEvents } from '../features/character-generation/index.js';
+        import CharacterWizard from '../features/character-generation/ui/CharacterWizard.js';
+        import CustomizationStudio from '../features/character-generation/ui/CustomizationStudio.js';
+        import testCharacterSystem from '../features/character-generation/test-character-system.js';
+
+        // Make available globally for easier debugging
+        window.CharacterGenerationAPI = CharacterGenerationAPI;
+        window.CharacterUtils = CharacterUtils;
+        window.CharacterWizard = CharacterWizard;
+        window.CustomizationStudio = CustomizationStudio;
+        window.testCharacterSystem = testCharacterSystem;
+
+        // Demo application state
+        let currentWizard = null;
+        let currentCustomizationStudio = null;
+        let characterGallery = null;
+        let generatedCharacters = [];
+
+        // Initialize the demo
+        async function initializeDemo() {
+            console.log('🎮 Initializing Character Generator Demo...');
+            
+            try {
+                // Test system availability
+                const subjects = CharacterUtils.getAvailableSubjects();
+                const colorPalettes = CharacterUtils.getColorPalettes('math');
+                
+                if (subjects.length > 0 && colorPalettes.length > 0) {
+                    updateSystemStatus('success', 'Character generation system ready');
+                    console.log('✅ Character generation system initialized successfully');
+                } else {
+                    throw new Error('System components not properly loaded');
+                }
+
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Load existing characters
+                loadExistingCharacters();
+
+            } catch (error) {
+                console.error('❌ Demo initialization failed:', error);
+                updateSystemStatus('error', `Initialization failed: ${error.message}`);
+            }
+        }
+
+        function setupEventListeners() {
+            // Open Character Wizard
+            document.getElementById('open-wizard').addEventListener('click', openCharacterWizard);
+            
+            // Run Tests
+            document.getElementById('run-tests').addEventListener('click', runSystemTests);
+            
+            // Generate Random Character
+            document.getElementById('generate-random').addEventListener('click', generateRandomCharacter);
+            
+            // Clear Storage
+            document.getElementById('clear-storage').addEventListener('click', clearStorage);
+            
+            // Open Customization Studio
+            document.getElementById('open-customization-studio').addEventListener('click', openCustomizationStudio);
+            
+            // Phase E: Enhanced Renderer Demo
+            document.getElementById('demo-render').addEventListener('click', renderDemoCharacter);
+
+            // Listen for character events
+            characterEvents.on('characterCreated', handleCharacterCreated);
+            characterEvents.on('characterGenerated', handleCharacterGenerated);
+        }
+
+        function openCharacterWizard() {
+            if (currentWizard) {
+                currentWizard.destroy();
+            }
+
+            const wizardContainer = document.getElementById('character-wizard-container');
+            
+            currentWizard = new CharacterWizard({
+                container: wizardContainer,
+                onComplete: (result) => {
+                    console.log('🎉 Character created:', result);
+                    updateCharacterPreview(result.character);
+                    addCharacterToGallery(result.character);
+                    characterEvents.emit('characterCreated', result);
+                },
+                onCancel: () => {
+                    console.log('❌ Character creation cancelled');
+                },
+                onPreviewUpdate: (character) => {
+                    updateCharacterPreview(character);
+                }
+            });
+
+            currentWizard.render().show();
+        }
+
+        async function runSystemTests() {
+            const testResults = document.getElementById('test-results');
+            testResults.textContent = 'Running tests...\n';
+            
+            // Capture console output
+            const originalLog = console.log;
+            const logs = [];
+            
+            console.log = (...args) => {
+                const message = args.join(' ');
+                logs.push(message);
+                testResults.textContent += message + '\n';
+                testResults.scrollTop = testResults.scrollHeight;
+                originalLog(...args);
+            };
+
+            try {
+                const results = await testCharacterSystem();
+                
+                // Update system status based on test results
+                if (results.failed === 0) {
+                    updateSystemStatus('success', `All ${results.tests} tests passed!`);
+                } else {
+                    updateSystemStatus('error', `${results.failed}/${results.tests} tests failed`);
+                }
+                
+            } catch (error) {
+                console.log(`\n❌ Test execution failed: ${error.message}`);
+                updateSystemStatus('error', 'Test execution failed');
+            } finally {
+                // Restore console.log
+                console.log = originalLog;
+            }
+        }
+
+        async function generateRandomCharacter() {
+            try {
+                const subjects = CharacterUtils.getAvailableSubjects();
+                const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
+                
+                updateSystemStatus('info', 'Generating random character...');
+                
+                const result = await CharacterGenerationAPI.generateRandomCharacter(randomSubject, {
+                    autoSave: true
+                });
+
+                if (result.success) {
+                    console.log('🎲 Generated random character:', result.character);
+                    updateCharacterPreview(result.character);
+                    addCharacterToGallery(result.character);
+                    updateSystemStatus('success', `Generated ${result.character.name} (${result.character.subject})`);
+                    characterEvents.emit('characterGenerated', result);
+                } else {
+                    throw new Error(result.error);
+                }
+
+            } catch (error) {
+                console.error('❌ Random character generation failed:', error);
+                updateSystemStatus('error', `Generation failed: ${error.message}`);
+            }
+        }
+
+        function clearStorage() {
+            try {
+                // Clear character storage
+                const stats = CharacterGenerationAPI.getStorageStats();
+                if (stats && stats.totalCharacters > 0) {
+                    // Clear localStorage
+                    localStorage.removeItem('learnimals_characters');
+                    localStorage.removeItem('learnimals_character_meta');
+                    
+                    // Clear gallery
+                    generatedCharacters = [];
+                    updateGallery();
+                    
+                    updateSystemStatus('success', 'Storage cleared successfully');
+                    console.log('🗑️ Character storage cleared');
+                } else {
+                    updateSystemStatus('info', 'Storage already empty');
+                }
+            } catch (error) {
+                console.error('❌ Failed to clear storage:', error);
+                updateSystemStatus('error', `Clear failed: ${error.message}`);
+            }
+        }
+
+        function openCustomizationStudio() {
+            try {
+                console.log('🎨 Opening Character Customization Studio...');
+                
+                if (currentCustomizationStudio) {
+                    currentCustomizationStudio.destroy();
+                }
+
+                // Get existing characters to customize
+                const existingCharacters = CharacterGenerationAPI.loadAllCharacters();
+                
+                // Create studio instance
+                currentCustomizationStudio = new CustomizationStudio({
+                    container: document.body, // Render as overlay
+                    characters: existingCharacters,
+                    presets: new Map(), // Empty presets initially
+                    onCustomizationApplied: (customizationData) => {
+                        console.log('🎨 Customization applied:', customizationData);
+                        updateSystemStatus('success', 'Character customization applied');
+                    },
+                    onPresetSaved: (presetData) => {
+                        console.log('💾 Preset saved:', presetData);
+                        updateSystemStatus('success', 'Customization preset saved');
+                    },
+                    onClose: () => {
+                        console.log('✕ Customization Studio closed');
+                        if (currentCustomizationStudio) {
+                            currentCustomizationStudio.destroy();
+                            currentCustomizationStudio = null;
+                        }
+                    }
+                });
+
+                // Render the studio
+                currentCustomizationStudio.render();
+                updateSystemStatus('success', 'Customization Studio opened');
+                
+            } catch (error) {
+                console.error('❌ Failed to open Customization Studio:', error);
+                updateSystemStatus('error', `Studio failed to open: ${error.message}`);
+            }
+        }
+
+        function updateCharacterPreview(character) {
+            const preview = document.getElementById('character-preview');
+            
+            if (!character) {
+                preview.innerHTML = `
+                    <div class="placeholder-icon">👤</div>
+                    <div class="character-info">
+                        <div class="character-name">No character selected</div>
+                        <div class="character-subject">Create or generate a character to see preview</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const traits = character.personality?.traits || [];
+            const traitsHTML = traits.map(trait => `<span class="trait-tag">${trait}</span>`).join('');
+
+            preview.innerHTML = `
+                <div class="character-avatar" style="
+                    width: 80px; 
+                    height: 80px; 
+                    border-radius: 50%; 
+                    background: ${character.appearance?.primaryColor || '#4A90E2'};
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 2rem;
+                    margin-bottom: 1rem;
+                ">
+                    ${character.name ? character.name.charAt(0).toUpperCase() : '?'}
+                </div>
+                <div class="character-info">
+                    <div class="character-name">${character.name || 'Unnamed Character'}</div>
+                    <div class="character-subject">${character.subject || 'No Subject'}</div>
+                    <div class="character-traits">${traitsHTML}</div>
+                </div>
+            `;
+        }
+
+        function updateSystemStatus(type, message) {
+            const statusContainer = document.getElementById('system-status');
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'info' ? 'ℹ️' : '⏳';
+            const className = type === 'success' ? 'status-success' : type === 'error' ? 'status-error' : '';
+            
+            statusContainer.innerHTML = `
+                <div class="status-indicator ${className}">
+                    <span>${icon}</span>
+                    ${message}
+                </div>
+            `;
+        }
+
+        function addCharacterToGallery(character) {
+            generatedCharacters.push(character);
+            updateGallery();
+        }
+
+        function updateGallery() {
+            const galleryContainer = document.getElementById('gallery-container');
+            
+            if (generatedCharacters.length === 0) {
+                galleryContainer.innerHTML = '<p>Generated characters will appear here...</p>';
+                return;
+            }
+
+            // Create or update character gallery
+            if (!characterGallery) {
+                characterGallery = new CharacterGallery({
+                    container: galleryContainer,
+                    characters: generatedCharacters,
+                    gridLayout: 'compact'
+                });
+                characterGallery.render();
+            } else {
+                // Clear and re-render with all characters (more efficient for small numbers)
+                characterGallery.destroy();
+                characterGallery = new CharacterGallery({
+                    container: galleryContainer,
+                    characters: generatedCharacters,
+                    gridLayout: 'compact'
+                });
+                characterGallery.render();
+            }
+        }
+
+        function loadExistingCharacters() {
+            try {
+                const existingCharacters = CharacterGenerationAPI.loadAllCharacters();
+                if (existingCharacters.length > 0) {
+                    generatedCharacters = existingCharacters;
+                    updateGallery();
+                    console.log(`📚 Loaded ${existingCharacters.length} existing characters`);
+                }
+            } catch (error) {
+                console.warn('⚠️ Could not load existing characters:', error);
+            }
+        }
+
+        // Phase E: Enhanced Renderer Demo Function
+        async function renderDemoCharacter() {
+            try {
+                const theme = document.getElementById('demo-theme').value;
+                const expression = document.getElementById('demo-expression').value;
+                const container = document.getElementById('demo-preview-container');
+                
+                updateSystemStatus('info', 'Rendering enhanced character preview...');
+                
+                // Import the enhanced renderer
+                const { default: CharacterPreviewRenderer } = await import('../features/character-generation/ui/CharacterPreviewRenderer.js');
+                
+                // Create a demo character
+                const demoCharacter = {
+                    name: 'Demo Character',
+                    subject: 'math',
+                    appearance: {
+                        shape: 'circle',
+                        primaryColor: '#4A90E2',
+                        secondaryColor: '#FFFFFF',
+                        accentColor: '#FFD700',
+                        eyes: { shape: 'circle', color: '#333333' },
+                        mouth: { shape: 'smile' }
+                    },
+                    personality: {
+                        traits: ['friendly', 'helpful'],
+                        mood: expression === 'excited' ? 'excited' : 'happy'
+                    }
+                };
+                
+                // Create enhanced renderer with selected theme
+                const renderer = new CharacterPreviewRenderer({
+                    size: 'large',
+                    animated: true,
+                    interactive: true,
+                    theme: theme
+                });
+                
+                // Clear container and add character preview wrapper
+                container.innerHTML = `
+                    <div class="character-preview" 
+                         data-theme="${theme}" 
+                         data-expression="${expression}"
+                         data-subject="${demoCharacter.subject}">
+                    </div>
+                `;
+                
+                const previewWrapper = container.querySelector('.character-preview');
+                
+                // Render with expression
+                renderer.renderWithExpression(previewWrapper, demoCharacter, expression);
+                
+                updateSystemStatus('success', `Rendered character with ${theme} theme and ${expression} expression`);
+                console.log('🎨 Enhanced character rendered successfully');
+                
+            } catch (error) {
+                console.error('❌ Enhanced rendering failed:', error);
+                updateSystemStatus('error', `Enhanced rendering failed: ${error.message}`);
+            }
+        }
+
+        function handleCharacterCreated(result) {
+            console.log('🎨 Character created event:', result.character.name);
+        }
+
+        function handleCharacterGenerated(result) {
+            console.log('🎲 Random character generated event:', result.character.name);
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDemo);
+        } else {
+            initializeDemo();
+        }
+
+        // Export for debugging
+        window.demoApp = {
+            openCharacterWizard,
+            openCustomizationStudio,
+            runSystemTests,
+            generateRandomCharacter,
+            clearStorage,
+            updateCharacterPreview,
+            currentWizard,
+            currentCustomizationStudio,
+            characterGallery,
+            generatedCharacters
+        };
+    </script>
+
+    <!-- Direct CustomizationStudio launcher (bypasses module loading issues) -->
+    <script type="module">
+        // Add direct studio launcher
+        document.getElementById('open-studio-direct')?.addEventListener('click', async () => {
+            try {
+                console.log('🎭 Opening CustomizationStudio directly...');
+                
+                // Import CustomizationStudio directly
+                const { default: CustomizationStudio } = await import('../features/character-generation/ui/CustomizationStudio.js');
+                
+                // Create overlay container
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 10000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                
+                // Create studio container
+                const studioContainer = document.createElement('div');
+                studioContainer.style.cssText = `
+                    background: white;
+                    border-radius: 12px;
+                    max-width: 90vw;
+                    max-height: 90vh;
+                    overflow: auto;
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                `;
+                
+                overlay.appendChild(studioContainer);
+                document.body.appendChild(overlay);
+                
+                // Create and render CustomizationStudio
+                const studio = new CustomizationStudio({
+                    container: studioContainer,
+                    characters: [], // Empty for now
+                    presets: new Map(),
+                    onCustomizationApplied: (data) => {
+                        console.log('🎨 Customization applied:', data);
+                    },
+                    onClose: () => {
+                        console.log('✕ Closing CustomizationStudio');
+                        overlay.remove();
+                    }
+                });
+                
+                studio.render();
+                
+                // Add close button to overlay
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        studio.destroy?.();
+                        overlay.remove();
+                    }
+                });
+                
+                console.log('✅ CustomizationStudio opened successfully!');
+                
+            } catch (error) {
+                console.error('❌ Failed to open CustomizationStudio:', error);
+                alert(`Failed to open CustomizationStudio: ${error.message}`);
+            }
+        });
+        
+        console.log('🎭 Direct studio launcher ready');
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Subjects</title>
+</head>
+<body>
+    <h1>Subject Debug</h1>
+    <div id="output"></div>
+
+    <script type="module">
+        async function debugSubjects() {
+            const output = document.getElementById('output');
+            
+            try {
+                const { CharacterUtils, SubjectTemplates } = await import('./src/features/character-generation/index.js');
+                
+                const availableSubjects = CharacterUtils.getAvailableSubjects();
+                const subjectKeys = Object.keys(SubjectTemplates);
+                
+                output.innerHTML = `
+                    <h2>Available Subjects (${availableSubjects.length}):</h2>
+                    <ul>${availableSubjects.map(s => `<li>${s}</li>`).join('')}</ul>
+                    
+                    <h2>Subject Template Keys (${subjectKeys.length}):</h2>
+                    <ul>${subjectKeys.map(s => `<li>${s}</li>`).join('')}</ul>
+                    
+                    <h2>Expected Subjects (12):</h2>
+                    <ul>
+                        <li>math</li>
+                        <li>science</li>
+                        <li>reading</li>
+                        <li>art</li>
+                        <li>coding</li>
+                        <li>music</li>
+                        <li>geography</li>
+                        <li>history</li>
+                        <li>language</li>
+                        <li>physics</li>
+                        <li>cooking</li>
+                        <li>environment</li>
+                    </ul>
+                `;
+                
+            } catch (error) {
+                output.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error('Debug error:', error);
+            }
+        }
+        
+        debugSubjects();
+    </script>
+</body>
+</html>
