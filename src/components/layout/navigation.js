@@ -121,3 +121,7 @@ if (document.readyState === 'loading') {
   // DOM already loaded
   waitForNavbar();
 }
+
+// Export for ES6 modules and testing
+export { NavigationComponent };
+export default NavigationComponent;

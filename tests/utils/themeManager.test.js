@@ -20,12 +20,24 @@ const mockThemeRegistry = {
   },
   THEME_COLORS: {
     default: {
-      primary: '#007bff',
-      secondary: '#6c757d'
+      light: {
+        primary: '#007bff',
+        secondary: '#6c757d'
+      },
+      dark: {
+        primary: '#0056b3',
+        secondary: '#5a6268'
+      }
     },
     nature: {
-      primary: '#28a745',
-      secondary: '#20c997'
+      light: {
+        primary: '#28a745',
+        secondary: '#20c997'
+      },
+      dark: {
+        primary: '#1e7e34',
+        secondary: '#17a2b8'
+      }
     }
   },
   THEME_DEFINITIONS: {
@@ -86,9 +98,18 @@ describe('ThemeManager', () => {
     // Reset mocks
     vi.clearAllMocks();
     
+    // Reset localStorage to ensure clean state
+    localStorageMock.getItem.mockReturnValue(null);
+    localStorageMock.setItem.mockImplementation(() => {});
+    localStorageMock.removeItem.mockImplementation(() => {});
+    localStorageMock.clear.mockImplementation(() => {});
+    
     // Reset DOM
     document.body.innerHTML = '';
     document.head.innerHTML = '';
+    
+    // Ensure light mode is preferred
+    mockThemeManagerUtils.getPreferredColorScheme.mockReturnValue('light');
     
     // Import ThemeManager after setting up mocks
     const module = await import('../../src/utils/themeManager.js');
@@ -389,7 +410,7 @@ describe('ThemeManager', () => {
   describe('Edge Cases', () => {
     it('should handle missing matchMedia', () => {
       const originalMatchMedia = window.matchMedia;
-      delete window.matchMedia;
+      window.matchMedia = undefined;
       
       expect(() => {
         themeManager = new ThemeManager();

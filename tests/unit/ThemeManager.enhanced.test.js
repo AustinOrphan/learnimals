@@ -154,13 +154,16 @@ const mockThemeManager = createMockModule({
       }
 
       // Auto-detect preference
-      if (this.options.autoDetectPreference) {
-        const prefersDark = window.matchMedia && 
-          window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (prefersDark && this.themes.has('dark')) {
-          this.setTheme('dark');
-          return;
+      if (this.options.autoDetectPreference && window.matchMedia) {
+        try {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          
+          if (prefersDark && this.themes.has('dark')) {
+            this.setTheme('dark');
+            return;
+          }
+        } catch (error) {
+          // Ignore matchMedia errors in test environment
         }
       }
 
@@ -233,13 +236,14 @@ const mockThemeManager = createMockModule({
       }
 
       const previousTheme = this.currentTheme;
+      const previousThemeData = previousTheme ? this.themes.get(previousTheme) : null;
       const theme = this.themes.get(themeId);
 
       // Update current theme
       this.currentTheme = themeId;
 
       // Apply theme to document
-      this.applyTheme(theme);
+      this.applyTheme(theme, previousThemeData);
 
       // Save to storage
       this.saveTheme(themeId);
@@ -254,13 +258,13 @@ const mockThemeManager = createMockModule({
       return this;
     }
 
-    applyTheme(theme) {
+    applyTheme(theme, previousThemeData) {
       const root = document.documentElement;
 
       // Remove previous theme classes
-      if (this.currentTheme) {
-        root.classList.remove(`theme-${this.currentTheme}`);
-        root.classList.remove(`theme-type-${this.themes.get(this.currentTheme).type}`);
+      if (previousThemeData) {
+        root.classList.remove(`theme-${previousThemeData.id}`);
+        root.classList.remove(`theme-type-${previousThemeData.type}`);
       }
 
       // Add new theme classes
@@ -517,6 +521,18 @@ describe('ThemeManager Enhanced Tests', () => {
       value: mockLocalStorage,
       writable: true
     });
+    
+    // Mock window.matchMedia to return false for dark mode by default
+    global.window.matchMedia = vi.fn().mockImplementation(query => ({
+      matches: false, // Default to light mode
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }));
   });
 
   afterEach(() => {

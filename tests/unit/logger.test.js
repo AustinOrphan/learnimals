@@ -5,6 +5,9 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
+// Unmock the logger for these specific tests
+vi.unmock('../../src/utils/logger.js');
+
 describe('Logger Utility', () => {
   let Logger;
   let originalWindow;
@@ -13,10 +16,8 @@ describe('Logger Utility', () => {
     // Store original window state
     originalWindow = global.window;
     
-    // Clear module cache and reimport
+    // Clear module cache
     vi.resetModules();
-    const module = await import('../../src/utils/logger.js');
-    Logger = module.default;
   });
   
   afterEach(() => {
@@ -48,7 +49,15 @@ describe('Logger Utility', () => {
       
       vi.resetModules();
       const module = await import('../../src/utils/logger.js');
-      const logger = module.default;
+      const Logger = module.Logger; // Import the class, not the instance
+      
+      // Debug the import
+      console.log('Logger class:', Logger);
+      console.log('module:', Object.keys(module));
+      
+      const logger = new Logger(); // Create fresh instance
+      console.log('Logger instance:', logger);
+      console.log('logger.level:', logger.level);
       
       expect(logger.level).toBe(3); // DEBUG level
     });
@@ -61,7 +70,8 @@ describe('Logger Utility', () => {
       
       vi.resetModules();
       const module = await import('../../src/utils/logger.js');
-      const logger = module.default;
+      const Logger = module.Logger; // Import the class, not the instance
+      const logger = new Logger(); // Create fresh instance
       
       expect(logger.level).toBe(3); // DEBUG level
     });
@@ -74,7 +84,8 @@ describe('Logger Utility', () => {
       
       vi.resetModules();
       const module = await import('../../src/utils/logger.js');
-      const logger = module.default;
+      const Logger = module.Logger; // Import the class, not the instance
+      const logger = new Logger(); // Create fresh instance
       
       expect(logger.level).toBe(1); // WARN level
     });
@@ -313,16 +324,26 @@ describe('Logger Utility', () => {
     });
     
     it('should format timestamps correctly', () => {
+      // Check if formatMessage method exists
+      expect(logger.formatMessage).toBeDefined();
+      
       // Test the formatMessage method instead since getTimestamp is not public
       const formatted = logger.formatMessage('INFO', 'test message', []);
+      expect(formatted).toBeDefined();
+      expect(Array.isArray(formatted)).toBe(true);
+      expect(formatted.length).toBeGreaterThan(0);
+      
       const timestamp = formatted[0];
       
-      // Should match HH:MM:SS.mmm format
+      // Should match HH:MM:SS.mmm format (timestamp extracted from ISO string slice(11,23))
       expect(timestamp).toMatch(/^\[\d{2}:\d{2}:\d{2}\.\d{3}\] INFO:$/);
     });
     
     it('should include milliseconds in timestamp', () => {
       const formatted = logger.formatMessage('DEBUG', 'test', []);
+      expect(formatted).toBeDefined();
+      expect(Array.isArray(formatted)).toBe(true);
+      
       const timestamp = formatted[0];
       
       // Should include milliseconds

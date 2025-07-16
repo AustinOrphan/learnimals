@@ -446,7 +446,7 @@ describe('Character System Integration', () => {
       const mockErrorHandler = {
         handleError: vi.fn((error) => {
           console.error('Character loading failed:', error);
-          return { fallbackCharacter: CharacterFactory.createMinimal() };
+          return { fallbackCharacter: CharacterFactory.createMinimal({ name: 'Test Character' }) };
         })
       };
       

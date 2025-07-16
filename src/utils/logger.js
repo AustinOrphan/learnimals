@@ -32,8 +32,15 @@ class Logger {
     // Malicious domains like "evil-localhost.com" or "not-localhost.malicious.com" 
     // could trigger development mode if substring matching was used
     const isDevelopmentHostname = () => {
-      const DEVELOPMENT_HOSTNAMES = ['localhost', '127.0.0.1'];
-      return typeof window !== 'undefined' && DEVELOPMENT_HOSTNAMES.includes(window.location.hostname);
+      try {
+        const DEVELOPMENT_HOSTNAMES = ['localhost', '127.0.0.1'];
+        return typeof window !== 'undefined' && 
+               window.location && 
+               DEVELOPMENT_HOSTNAMES.includes(window.location.hostname);
+      } catch (e) {
+        // Fallback to production mode if window.location access fails
+        return false;
+      }
     };
     const isDevelopment = isDevelopmentHostname();
 

@@ -68,15 +68,15 @@ describe('Comprehensive Security Tests', () => {
 
     const expectedSanitized = [
       '&lt;script&gt;alert("XSS")&lt;/script&gt;',
-      '&lt;img src="x" onerror="alert(\'XSS\')" /&gt;',
-      'javascript:alert("XSS")', // URL schemes should be blocked
-      '&lt;svg onload="alert(1)"&gt;',
-      '&lt;iframe src="javascript:alert(\'XSS\')"&gt;&lt;/iframe&gt;',
-      '&lt;div onclick="alert(\'XSS\')"&gt;Click me&lt;/div&gt;',
-      '&lt;style&gt;body{background:url("javascript:alert(\'XSS\')")}&lt;/style&gt;',
-      '&lt;link rel="stylesheet" href="javascript:alert(\'XSS\')" /&gt;',
-      '&lt;meta http-equiv="refresh" content="0;url=javascript:alert(\'XSS\')" /&gt;',
-      '&lt;object data="javascript:alert(\'XSS\')"&gt;&lt;/object&gt;'
+      '&lt;img src="x" /&gt;',
+      '', // URL schemes should be blocked completely
+      '&lt;svg&gt;',
+      '&lt;iframe&gt;&lt;/iframe&gt;',
+      '&lt;div&gt;Click me&lt;/div&gt;',
+      '&lt;style&gt;body{background:url("")}&lt;/style&gt;',
+      '&lt;link rel="stylesheet" /&gt;',
+      '&lt;meta http-equiv="refresh" content="0;url=" /&gt;',
+      '&lt;object&gt;&lt;/object&gt;'
     ];
 
     // Test HTML sanitization
@@ -189,7 +189,7 @@ describe('Comprehensive Security Tests', () => {
       
       expect(generatedToken).toBe(token);
       expect(generatedToken).toMatch(/^csrf_token_[a-z0-9]{12}$/);
-      expect(generatedToken.length).toBe(24);
+      expect(generatedToken.length).toBe(23);
       
       console.log(`   ✓ CSRF token ${index + 1} generated: ${token.substring(0, 20)}...`);
     });

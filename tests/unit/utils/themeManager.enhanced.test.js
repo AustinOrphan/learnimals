@@ -102,7 +102,13 @@ describe('ThemeManager', () => {
       });
       
       this.loadSavedTheme = vi.fn().mockImplementation(() => {
-        const savedTheme = localStorage.getItem(this.options.storageKey);
+        let savedTheme = null;
+        try {
+          savedTheme = localStorage?.getItem(this.options.storageKey);
+        } catch (error) {
+          // localStorage unavailable or throws error
+          savedTheme = null;
+        }
         const themeToLoad = savedTheme || this.options.defaultTheme;
         
         if (this.availableThemes.has(themeToLoad)) {
@@ -117,23 +123,31 @@ describe('ThemeManager', () => {
         
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const handleSystemThemeChange = (e) => {
-          if (!localStorage.getItem(this.options.storageKey)) {
-            // Only auto-switch if no manual theme is set
-            const systemTheme = e.matches ? 'dark' : 'default';
-            if (this.availableThemes.has(systemTheme)) {
-              this.setTheme(systemTheme, false);
+          try {
+            if (!localStorage?.getItem(this.options.storageKey)) {
+              // Only auto-switch if no manual theme is set
+              const systemTheme = e.matches ? 'dark' : 'default';
+              if (this.availableThemes.has(systemTheme)) {
+                this.setTheme(systemTheme, false);
+              }
             }
+          } catch (error) {
+            // localStorage unavailable
           }
         };
         
         mediaQuery.addEventListener('change', handleSystemThemeChange);
         
         // Initial check
-        if (!localStorage.getItem(this.options.storageKey)) {
-          const systemTheme = mediaQuery.matches ? 'dark' : 'default';
-          if (this.availableThemes.has(systemTheme)) {
-            this.setTheme(systemTheme, false);
+        try {
+          if (!localStorage?.getItem(this.options.storageKey)) {
+            const systemTheme = mediaQuery.matches ? 'dark' : 'default';
+            if (this.availableThemes.has(systemTheme)) {
+              this.setTheme(systemTheme, false);
+            }
           }
+        } catch (error) {
+          // localStorage unavailable
         }
       });
       
@@ -661,12 +675,15 @@ describe('ThemeManager', () => {
 
   describe('Error Handling and Edge Cases', () => {
     it('should handle missing localStorage gracefully', () => {
+      const originalLocalStorage = global.localStorage;
       global.localStorage = undefined;
       
       expect(() => {
         themeManager = new ThemeManager();
         themeManager.init();
       }).not.toThrow();
+      
+      global.localStorage = originalLocalStorage;
     });
 
     it('should handle malformed JSON in localStorage', () => {
@@ -701,7 +718,7 @@ describe('ThemeManager', () => {
 
   describe('Integration with Test Data Factory', () => {
     it('should work with theme factory data', () => {
-      const factoryTheme = ThemeFactory.createTheme({
+      const factoryTheme = ThemeFactory.create({
         id: 'factory-theme',
         name: 'Factory Theme'
       });

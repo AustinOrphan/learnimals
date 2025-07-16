@@ -112,7 +112,22 @@ class Card extends BaseComponent {
 
 // Export for module usage
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Card;
+  try {
+    module.exports = Card;
+  } catch (e) {
+    // If module.exports is read-only, try alternative approaches
+    try {
+      if (typeof module.exports === 'object') {
+        Object.defineProperty(module.exports, 'default', {
+          value: Card,
+          writable: true,
+          configurable: true
+        });
+      }
+    } catch (defineError) {
+      // If all approaches fail, continue silently - Card will be available globally
+    }
+  }
 } else {
   window.Card = Card;
 }

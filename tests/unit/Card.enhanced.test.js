@@ -103,7 +103,9 @@ const mockCard = createMockModule({
 
     // Add custom classes
     if (cardData.className) {
-      card.classList.add(cardData.className);
+      // Handle multiple classes separated by spaces
+      const classes = cardData.className.split(' ').filter(cls => cls.trim());
+      classes.forEach(cls => card.classList.add(cls));
     }
 
     // Store card data for testing
@@ -342,7 +344,9 @@ describe('Card Component Enhanced Tests', () => {
       const card = Card.createCard(cardData);
       container.appendChild(card);
 
-      const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+      const enterEvent = document.createEvent('Event');
+      enterEvent.initEvent('keydown', true, true);
+      Object.defineProperty(enterEvent, 'key', { value: 'Enter', writable: false });
       card.dispatchEvent(enterEvent);
 
       expect(onClick).toHaveBeenCalledWith(cardData);
@@ -359,7 +363,9 @@ describe('Card Component Enhanced Tests', () => {
       const card = Card.createCard(cardData);
       container.appendChild(card);
 
-      const spaceEvent = new KeyboardEvent('keydown', { key: ' ' });
+      const spaceEvent = document.createEvent('Event');
+      spaceEvent.initEvent('keydown', true, true);
+      Object.defineProperty(spaceEvent, 'key', { value: ' ', writable: false });
       card.dispatchEvent(spaceEvent);
 
       expect(onClick).toHaveBeenCalledWith(cardData);
@@ -376,7 +382,9 @@ describe('Card Component Enhanced Tests', () => {
       const card = Card.createCard(cardData);
       container.appendChild(card);
 
-      const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+      const tabEvent = document.createEvent('Event');
+      tabEvent.initEvent('keydown', true, true);
+      Object.defineProperty(tabEvent, 'key', { value: 'Tab', writable: false });
       card.dispatchEvent(tabEvent);
 
       expect(onClick).not.toHaveBeenCalled();
@@ -731,7 +739,8 @@ describe('Card Component Enhanced Tests', () => {
       const card = Card.createCard(cardData);
       container.appendChild(card);
 
-      const clickEvent = new MouseEvent('click', { bubbles: true });
+      const clickEvent = document.createEvent('Event');
+      clickEvent.initEvent('click', true, true);
       const preventDefaultSpy = vi.spyOn(clickEvent, 'preventDefault');
       
       card.dispatchEvent(clickEvent);

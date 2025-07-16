@@ -644,7 +644,9 @@ describe('Modal Component Enhanced Tests', () => {
       
       // Focus last element and press Tab
       lastElement.focus();
-      const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+      const tabEvent = document.createEvent('Event');
+      tabEvent.initEvent('keydown', true, true);
+      Object.defineProperty(tabEvent, 'key', { value: 'Tab', writable: false });
       modal.handleKeydown(tabEvent);
       
       // Should wrap to first element
@@ -659,10 +661,10 @@ describe('Modal Component Enhanced Tests', () => {
       
       // Focus first element and press Shift+Tab
       firstElement.focus();
-      const shiftTabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        shiftKey: true 
-      });
+      const shiftTabEvent = document.createEvent('Event');
+      shiftTabEvent.initEvent('keydown', true, true);
+      Object.defineProperty(shiftTabEvent, 'key', { value: 'Tab', writable: false });
+      Object.defineProperty(shiftTabEvent, 'shiftKey', { value: true, writable: false });
       modal.handleKeydown(shiftTabEvent);
       
       // Should wrap to last element
@@ -717,7 +719,9 @@ describe('Modal Component Enhanced Tests', () => {
     it('should close on Escape key', () => {
       modal.open();
       
-      const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+      const escapeEvent = document.createEvent('Event');
+      escapeEvent.initEvent('keydown', true, true);
+      Object.defineProperty(escapeEvent, 'key', { value: 'Escape', writable: false });
       modal.handleKeydown(escapeEvent);
       
       // Advance timers to complete the close animation
@@ -731,7 +735,9 @@ describe('Modal Component Enhanced Tests', () => {
       modal.options.closeOnEscape = false;
       modal.open();
       
-      const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+      const escapeEvent = document.createEvent('Event');
+      escapeEvent.initEvent('keydown', true, true);
+      Object.defineProperty(escapeEvent, 'key', { value: 'Escape', writable: false });
       modal.handleKeydown(escapeEvent);
       
       expect(modal.isOpen).toBe(true);
@@ -740,7 +746,9 @@ describe('Modal Component Enhanced Tests', () => {
     it('should handle Tab key navigation', () => {
       modal.open();
       
-      const tabEvent = new KeyboardEvent('keydown', { key: 'Tab' });
+      const tabEvent = document.createEvent('Event');
+      tabEvent.initEvent('keydown', true, true);
+      Object.defineProperty(tabEvent, 'key', { value: 'Tab', writable: false });
       const handleTabSpy = vi.spyOn(modal, 'handleTabNavigation');
       
       modal.handleKeydown(tabEvent);
@@ -751,7 +759,9 @@ describe('Modal Component Enhanced Tests', () => {
     it('should ignore other keys', () => {
       modal.open();
       
-      const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+      const enterEvent = document.createEvent('Event');
+      enterEvent.initEvent('keydown', true, true);
+      Object.defineProperty(enterEvent, 'key', { value: 'Enter', writable: false });
       const closeSpy = vi.spyOn(modal, 'close');
       
       modal.handleKeydown(enterEvent);
@@ -1031,7 +1041,9 @@ describe('Modal Component Enhanced Tests', () => {
     it('should handle keyboard events when not open', () => {
       modal = new Modal();
       
-      const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
+      const escapeEvent = document.createEvent('Event');
+      escapeEvent.initEvent('keydown', true, true);
+      Object.defineProperty(escapeEvent, 'key', { value: 'Escape', writable: false });
       expect(() => modal.handleKeydown(escapeEvent)).not.toThrow();
     });
 

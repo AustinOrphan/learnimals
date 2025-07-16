@@ -23,18 +23,25 @@ class ThemeManager {
   }
   
   init() {
-    // Check if user has saved theme preferences
-    const savedThemeName = localStorage.getItem('learnimals-theme-name');
-    const savedThemeMode = localStorage.getItem('learnimals-theme-mode');
-    
-    // Set initial theme based on saved preferences or system preferences
-    if (savedThemeName && this.themeColors[savedThemeName]) {
-      this.currentTheme.name = savedThemeName;
+    try {
+      // Check if user has saved theme preferences
+      const savedThemeName = localStorage?.getItem('learnimals-theme-name');
+      const savedThemeMode = localStorage?.getItem('learnimals-theme-mode');
       
-      if (savedThemeMode && (savedThemeMode === 'light' || savedThemeMode === 'dark')) {
-        this.currentTheme.mode = savedThemeMode;
-      }    } else {
-      // Default theme name is 'default', check for system dark/light preference
+      // Set initial theme based on saved preferences or system preferences
+      if (savedThemeName && this.themeColors[savedThemeName]) {
+        this.currentTheme.name = savedThemeName;
+        
+        if (savedThemeMode && (savedThemeMode === 'light' || savedThemeMode === 'dark')) {
+          this.currentTheme.mode = savedThemeMode;
+        }
+      } else {
+        // Default theme name is 'default', check for system dark/light preference
+        this.currentTheme.mode = getPreferredColorScheme();
+      }
+    } catch (error) {
+      console.warn('Error loading theme preferences:', error);
+      // Use defaults if localStorage access fails
       this.currentTheme.mode = getPreferredColorScheme();
     }
     
@@ -45,9 +52,13 @@ class ThemeManager {
     if (window.matchMedia) {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         // Only auto-switch if user hasn't explicitly set a theme mode
-        if (!localStorage.getItem('learnimals-theme-mode')) {
-          this.currentTheme.mode = e.matches ? 'dark' : 'light';
-          this.applyCurrentTheme();
+        try {
+          if (!localStorage?.getItem('learnimals-theme-mode')) {
+            this.currentTheme.mode = e.matches ? 'dark' : 'light';
+            this.applyCurrentTheme();
+          }
+        } catch (error) {
+          console.warn('Error checking theme mode preference:', error);
         }
       });
     }
@@ -85,13 +96,18 @@ class ThemeManager {
     document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'night' : name);
     
     // Save preferences to localStorage
-    localStorage.setItem('learnimals-theme-name', name);
-    localStorage.setItem('learnimals-theme-mode', mode);
+    try {
+      localStorage?.setItem('learnimals-theme-name', name);
+      localStorage?.setItem('learnimals-theme-mode', mode);
+    } catch (error) {
+      console.warn('Error saving theme preferences:', error);
+    }
     
     // Dispatch event for other components that need to react
     const event = new CustomEvent('themeChanged', { 
       detail: { 
-        theme: name,
+        theme: this.currentTheme,
+        themeName: name,
         mode: mode 
       } 
     });
@@ -105,6 +121,11 @@ class ThemeManager {
   setTheme(themeName) {
     if (this.themeColors[themeName]) {
       this.currentTheme.name = themeName;
+      try {
+        localStorage?.setItem('learnimals-theme-name', themeName);
+      } catch (error) {
+        console.warn('Error saving theme name:', error);
+      }
       this.applyCurrentTheme();
       return true;
     }
@@ -122,6 +143,11 @@ class ThemeManager {
   setMode(mode) {
     if (mode === 'light' || mode === 'dark') {
       this.currentTheme.mode = mode;
+      try {
+        localStorage?.setItem('learnimals-theme-mode', mode);
+      } catch (error) {
+        console.warn('Error saving theme mode:', error);
+      }
       this.applyCurrentTheme();
       return true;
     }
@@ -146,14 +172,59 @@ class ThemeManager {
     }
     return false;
   }
+  
+  // Alias methods for backward compatibility with tests
+  switchTheme(themeName) {
+    return this.setTheme(themeName);
+  }
+  
+  switchMode(mode) {
+    return this.setMode(mode);
+  }
+  
+  // Get theme definition
+  getThemeDefinition(themeName) {
+    return this.themeDefinitions[themeName] || null;
+  }
+  
+  // Check if current mode is dark
+  isDarkMode() {
+    return this.currentTheme.mode === 'dark';
+  }
+  
+  // Get theme colors
+  getThemeColors(themeName) {
+    return this.themeColors[themeName] || null;
+  }
+  
+  // Get base colors for mode
+  getBaseColors(mode) {
+    return this.themeBaseColors[mode] || null;
+  }
+  
+  // Reset theme to default
+  resetTheme() {
+    this.currentTheme.name = 'default';
+    this.currentTheme.mode = 'light';
+    try {
+      localStorage?.removeItem('learnimals-theme-name');
+      localStorage?.removeItem('learnimals-theme-mode');
+    } catch (error) {
+      console.warn('Error removing theme preferences:', error);
+    }
+    this.applyCurrentTheme();
+  }
 }
 
 // Create and export singleton instance
 const themeManager = new ThemeManager();
 
 // Add a global accessor for use in HTML
-window.themeManager = themeManager;
+if (typeof window !== 'undefined') {
+  window.themeManager = themeManager;
+}
 
 // Initialize theme on load - already handled in init() so this is redundant
 
-export default themeManager;
+export default ThemeManager;
+export { themeManager };

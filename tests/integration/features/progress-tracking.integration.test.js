@@ -415,7 +415,7 @@ describe('Progress Tracking System Integration', () => {
   describe('Statistics and Analytics Integration', () => {
     it('should generate comprehensive statistics report', () => {
       const mockStatsGenerator = {
-        generateReport: vi.fn((progressData) => {
+        generateReport: vi.fn(function(progressData) {
           const report = {
             overview: {
               totalGamesPlayed: progressData.totalGamesPlayed || 0,

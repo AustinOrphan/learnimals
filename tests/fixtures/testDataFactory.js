@@ -33,6 +33,13 @@ export const CharacterFactory = {
       pattern: randomChoice(['solid', 'stripes', 'spots', 'polka-dots']),
       size: randomChoice(['small', 'medium', 'large'])
     },
+    appearance: {
+      avatar: `/images/characters/${randomChoice(['cat', 'dog', 'bird', 'rabbit', 'hamster'])}_${randomChoice(['blue', 'red', 'green', 'purple'])}.png`,
+      colors: {
+        primary: randomChoice(['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444']),
+        secondary: randomChoice(['#1E40AF', '#047857', '#D97706', '#7C3AED', '#DC2626'])
+      }
+    },
     personality: {
       traits: randomChoice([
         ['curious', 'friendly'],
@@ -48,6 +55,12 @@ export const CharacterFactory = {
         ['reading', 'art'],
         ['coding', 'math']
       ])
+    },
+    stats: {
+      level: randomNumber(1, 10),
+      xp: randomNumber(0, 1000),
+      gamesPlayed: randomNumber(0, 50),
+      timeSpent: randomNumber(0, 3600) // seconds
     },
     createdAt: randomDate().toISOString(),
     lastModified: new Date().toISOString(),
@@ -90,7 +103,21 @@ export const CharacterFactory = {
 
   createBatch: (count = 5) => {
     return Array.from({ length: count }, () => CharacterFactory.create());
-  }
+  },
+
+  createMinimal: (overrides = {}) => ({
+    id: generateId('char'),
+    name: 'Default Character',
+    species: { primary: 'cat', secondary: null },
+    favoriteColor: 'blue',
+    appearance: {
+      avatar: '/images/characters/default_cat.png',
+      colors: { primary: '#3B82F6', secondary: '#1E40AF' }
+    },
+    stats: { level: 1, xp: 0, gamesPlayed: 0, timeSpent: 0 },
+    version: '2.0',
+    ...overrides
+  })
 };
 
 // Game Test Data Factory
@@ -101,6 +128,18 @@ export const GameFactory = {
     type: randomChoice(['arcade', 'puzzle', 'memory', 'educational', 'creative']),
     subject: randomChoice(['math', 'science', 'reading', 'art', 'coding']),
     difficulty: randomChoice(['easy', 'medium', 'hard']),
+    description: randomChoice([
+      'Test your skills with this exciting game',
+      'Learn while having fun',
+      'Challenge yourself with interactive puzzles',
+      'Master the basics through gameplay'
+    ]),
+    features: randomChoice([
+      ['High score tracking', 'Multiple difficulty levels'],
+      ['Interactive tutorials', 'Progress saving', 'Achievements'],
+      ['Multiplayer support', 'Custom themes', 'Sound effects'],
+      ['Adaptive difficulty', 'Performance analytics']
+    ]),
     config: {
       timeLimit: randomChoice([30, 60, 90, 120]), // seconds
       maxLives: randomChoice([3, 5, null]),
@@ -150,7 +189,10 @@ export const GameFactory = {
       achievements: randomChoice([[], ['speed_run'], ['perfect_game', 'high_scorer']]),
       playedAt: randomDate().toISOString()
     }));
-  }
+  },
+
+  // Alias for createSession method - used by integration tests
+  createGameSession: (overrides = {}) => GameFactory.createSession(overrides.gameId, overrides.playerId, overrides)
 };
 
 // Progress Test Data Factory
@@ -248,7 +290,10 @@ export const ProgressFactory = {
       bonus: randomChoice([null, 'double_xp_weekend', 'new_game_unlock'])
     },
     ...overrides
-  })
+  }),
+
+  // Alias for create method - used by integration tests
+  createUserProgress: (overrides = {}) => ProgressFactory.create(overrides)
 };
 
 // Theme Test Data Factory
@@ -256,6 +301,7 @@ export const ThemeFactory = {
   create: (overrides = {}) => ({
     id: generateId('theme'),
     name: randomChoice(['Ocean Blue', 'Forest Green', 'Sunset Orange', 'Royal Purple', 'Cosmic Dark']),
+    type: randomChoice(['light', 'dark']), // Required property for theme validation
     category: randomChoice(['nature', 'space', 'fantasy', 'minimalist', 'colorful']),
     colors: {
       primary: randomChoice(['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444']),
@@ -486,6 +532,34 @@ export const ValidationHelpers = {
   }
 };
 
+// Component Mock Data for UI tests
+export const ComponentMockData = {
+  formData: {
+    character: {
+      name: 'Test Character',
+      species: 'cat'
+    }
+  },
+  modalData: {
+    title: 'Test Modal',
+    content: '<p>Test modal content</p>',
+    buttons: [
+      { text: 'Cancel', action: 'cancel', variant: 'secondary' },
+      { text: 'Confirm', action: 'confirm', variant: 'primary' }
+    ]
+  }
+};
+
+// Test data utilities
+export const TestDataUtils = {
+  createRandomString: (length = 10) => {
+    return Math.random().toString(36).substring(2, length + 2);
+  },
+  createRandomNumber: (min = 0, max = 100) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+};
+
 export default {
   CharacterFactory,
   GameFactory,
@@ -494,5 +568,7 @@ export default {
   EnvironmentFactory,
   EdgeCaseFactory,
   MockFactory,
-  ValidationHelpers
+  ValidationHelpers,
+  ComponentMockData,
+  TestDataUtils
 };

@@ -632,7 +632,8 @@ describe('FormComponent', () => {
       input.value = 'newvalue';
       
       // Trigger input event
-      const inputEvent = new dom.window.Event('input', { bubbles: true });
+      const inputEvent = document.createEvent('Event');
+      inputEvent.initEvent('input', true, true);
       input.dispatchEvent(inputEvent);
       
       expect(fieldChangeHandler).toHaveBeenCalled();

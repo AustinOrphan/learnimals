@@ -407,10 +407,9 @@ describe('Modal Component', () => {
       modal.open();
       
       // Simulate Escape key press
-      const escapeEvent = new dom.window.KeyboardEvent('keydown', {
-        key: 'Escape',
-        bubbles: true
-      });
+      const escapeEvent = document.createEvent('Event');
+      escapeEvent.initEvent('keydown', true, true);
+      escapeEvent.key = 'Escape';
       document.dispatchEvent(escapeEvent);
       
       expect(modal.isOpen).toBe(false);
@@ -426,10 +425,9 @@ describe('Modal Component', () => {
       modal.open();
       
       // Simulate other key press
-      const enterEvent = new dom.window.KeyboardEvent('keydown', {
-        key: 'Enter',
-        bubbles: true
-      });
+      const enterEvent = document.createEvent('Event');
+      enterEvent.initEvent('keydown', true, true);
+      enterEvent.key = 'Enter';
       document.dispatchEvent(enterEvent);
       
       expect(modal.isOpen).toBe(true);
@@ -445,10 +443,9 @@ describe('Modal Component', () => {
       modal.create();
       
       // Simulate Escape key press when modal is closed
-      const escapeEvent = new dom.window.KeyboardEvent('keydown', {
-        key: 'Escape',
-        bubbles: true
-      });
+      const escapeEvent = document.createEvent('Event');
+      escapeEvent.initEvent('keydown', true, true);
+      escapeEvent.key = 'Escape';
       document.dispatchEvent(escapeEvent);
       
       expect(modal.isOpen).toBe(false);
@@ -548,10 +545,9 @@ describe('Modal Component', () => {
       newModal.open();
       
       // Simulate Escape key press
-      const escapeEvent = new dom.window.KeyboardEvent('keydown', {
-        key: 'Escape',
-        bubbles: true
-      });
+      const escapeEvent = document.createEvent('Event');
+      escapeEvent.initEvent('keydown', true, true);
+      escapeEvent.key = 'Escape';
       document.dispatchEvent(escapeEvent);
       
       // Only the new modal should close

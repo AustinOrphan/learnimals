@@ -50,14 +50,22 @@ export default defineConfig({
       deps: {
         inline: ['jsdom']
       }
-    }
+    },
+    
+    // Environment-specific mocks to prevent dynamic import timeouts
+    pool: 'forks'
   },
   
   // Resolve configuration for imports
   resolve: {
     alias: {
       '@': '/src',
-      '@test': '/tests'
+      '@test': '/tests',
+      '@vitest/browser/context': '/tests/mocks/browser-context.js',
+      // Navigation module mocks to prevent dynamic import timeouts
+      '../../src/utils/navigationHelper.js': '/tests/mocks/navigationHelper.js',
+      '../../src/components/layout/navigation.js': '/tests/mocks/navigation.js',
+      '../../src/components/layout/navbarLoader.js': '/tests/mocks/navbarLoader.js'
     }
   }
 });

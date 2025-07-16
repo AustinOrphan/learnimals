@@ -253,15 +253,32 @@ export function setupGlobalMocks() {
     takeRecords: vi.fn().mockReturnValue([])
   }));
   
-  // Mock window.performance.now for timing functions
-  global.window.performance = {
-    ...global.window.performance,
-    now: vi.fn(() => Date.now()),
-    mark: vi.fn(),
-    measure: vi.fn(),
-    getEntriesByName: vi.fn().mockReturnValue([]),
-    getEntriesByType: vi.fn().mockReturnValue([])
-  };
+  // Mock window.performance.now for timing functions (handle read-only)
+  try {
+    global.window.performance = {
+      ...global.window.performance,
+      now: vi.fn(() => Date.now()),
+      mark: vi.fn(),
+      measure: vi.fn(),
+      getEntriesByName: vi.fn().mockReturnValue([]),
+      getEntriesByType: vi.fn().mockReturnValue([])
+    };
+  } catch (e) {
+    // If performance is read-only, use defineProperty
+    Object.defineProperty(global.window, 'performance', {
+      value: {
+        now: vi.fn(() => Date.now()),
+        mark: vi.fn(),
+        measure: vi.fn(),
+        getEntriesByName: vi.fn().mockReturnValue([]),
+        getEntriesByType: vi.fn().mockReturnValue([]),
+        timing: {},
+        navigation: {}
+      },
+      writable: true,
+      configurable: true
+    });
+  }
   
   // Mock window.URL for URL operations
   global.window.URL = {
@@ -286,16 +303,33 @@ export function setupGlobalMocks() {
     error: null
   }));
   
-  // Mock window.history for navigation testing
-  global.window.history = {
-    pushState: vi.fn(),
-    replaceState: vi.fn(),
-    back: vi.fn(),
-    forward: vi.fn(),
-    go: vi.fn(),
-    length: 1,
-    state: null
-  };
+  // Mock window.history for navigation testing (handle read-only)
+  try {
+    global.window.history = {
+      pushState: vi.fn(),
+      replaceState: vi.fn(),
+      back: vi.fn(),
+      forward: vi.fn(),
+      go: vi.fn(),
+      length: 1,
+      state: null
+    };
+  } catch (e) {
+    // If history is read-only, use defineProperty
+    Object.defineProperty(global.window, 'history', {
+      value: {
+        pushState: vi.fn(),
+        replaceState: vi.fn(),
+        back: vi.fn(),
+        forward: vi.fn(),
+        go: vi.fn(),
+        length: 1,
+        state: null
+      },
+      writable: true,
+      configurable: true
+    });
+  }
   
   // Mock window.screen for screen info
   global.window.screen = {
@@ -558,6 +592,34 @@ export function setupGlobalMocks() {
       });
     }
     
+    // Mock navigation JavaScript files
+    if (url.includes('navigationHelper.js')) {
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve('// Mock navigationHelper.js content\nclass NavigationHelper { constructor() {} }'),
+        json: () => Promise.resolve({}),
+        blob: () => Promise.resolve(new Blob())
+      });
+    }
+    
+    if (url.includes('navbarLoader.js')) {
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve('// Mock navbarLoader.js content'),
+        json: () => Promise.resolve({}),
+        blob: () => Promise.resolve(new Blob())
+      });
+    }
+    
+    if (url.includes('navigation.js')) {
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve('// Mock navigation.js content'),
+        json: () => Promise.resolve({}),
+        blob: () => Promise.resolve(new Blob())
+      });
+    }
+    
     return Promise.resolve({
       ok: true,
       text: () => Promise.resolve(''),
@@ -663,79 +725,95 @@ export function setupGlobalMocks() {
   global.window.KeyboardEvent = vi.fn().mockImplementation(function(type, options = {}) {
     // Create event with proper prototype and inheritance
     const event = Object.create(Event.prototype);
-    event.type = type;
-    event.key = options.key || '';
-    event.code = options.code || '';
-    event.shiftKey = options.shiftKey || false;
-    event.ctrlKey = options.ctrlKey || false;
-    event.altKey = options.altKey || false;
-    event.metaKey = options.metaKey || false;
-    event.bubbles = options.bubbles || false;
-    event.cancelable = options.cancelable || false;
+    
+    // Define properties with proper descriptors to handle read-only properties
+    Object.defineProperty(event, 'type', { value: type, writable: false, configurable: true });
+    Object.defineProperty(event, 'key', { value: options.key || '', writable: false, configurable: true });
+    Object.defineProperty(event, 'code', { value: options.code || '', writable: false, configurable: true });
+    Object.defineProperty(event, 'shiftKey', { value: options.shiftKey || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'ctrlKey', { value: options.ctrlKey || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'altKey', { value: options.altKey || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'metaKey', { value: options.metaKey || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'bubbles', { value: options.bubbles || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'cancelable', { value: options.cancelable || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'target', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'currentTarget', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'eventPhase', { value: 0, writable: true, configurable: true });
+    Object.defineProperty(event, 'isTrusted', { value: false, writable: false, configurable: true });
+    Object.defineProperty(event, 'timeStamp', { value: Date.now(), writable: false, configurable: true });
+    
     event.preventDefault = vi.fn();
     event.stopPropagation = vi.fn();
     event.stopImmediatePropagation = vi.fn();
-    event.target = null;
-    event.currentTarget = null;
-    event.eventPhase = 0;
-    event.isTrusted = false;
-    event.timeStamp = Date.now();
+    
     return event;
   });
   
   // Mock MouseEvent with proper inheritance
   global.window.MouseEvent = vi.fn().mockImplementation(function(type, options = {}) {
     const event = Object.create(Event.prototype);
-    event.type = type;
-    event.clientX = options.clientX || 0;
-    event.clientY = options.clientY || 0;
-    event.button = options.button || 0;
-    event.buttons = options.buttons || 0;
-    event.bubbles = options.bubbles || false;
-    event.cancelable = options.cancelable || false;
+    
+    // Define properties with proper descriptors to handle read-only properties
+    Object.defineProperty(event, 'type', { value: type, writable: false, configurable: true });
+    Object.defineProperty(event, 'clientX', { value: options.clientX || 0, writable: false, configurable: true });
+    Object.defineProperty(event, 'clientY', { value: options.clientY || 0, writable: false, configurable: true });
+    Object.defineProperty(event, 'button', { value: options.button || 0, writable: false, configurable: true });
+    Object.defineProperty(event, 'buttons', { value: options.buttons || 0, writable: false, configurable: true });
+    Object.defineProperty(event, 'bubbles', { value: options.bubbles || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'cancelable', { value: options.cancelable || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'target', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'currentTarget', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'eventPhase', { value: 0, writable: true, configurable: true });
+    Object.defineProperty(event, 'isTrusted', { value: false, writable: false, configurable: true });
+    Object.defineProperty(event, 'timeStamp', { value: Date.now(), writable: false, configurable: true });
+    
     event.preventDefault = vi.fn();
     event.stopPropagation = vi.fn();
     event.stopImmediatePropagation = vi.fn();
-    event.target = null;
-    event.currentTarget = null;
-    event.eventPhase = 0;
-    event.isTrusted = false;
-    event.timeStamp = Date.now();
+    
     return event;
   });
   
   // Mock CustomEvent with proper inheritance
   global.window.CustomEvent = vi.fn().mockImplementation(function(type, options = {}) {
     const event = Object.create(Event.prototype);
-    event.type = type;
-    event.detail = options.detail || null;
-    event.bubbles = options.bubbles || false;
-    event.cancelable = options.cancelable || false;
+    
+    // Define properties with proper descriptors to handle read-only properties
+    Object.defineProperty(event, 'type', { value: type, writable: false, configurable: true });
+    Object.defineProperty(event, 'detail', { value: options.detail || null, writable: false, configurable: true });
+    Object.defineProperty(event, 'bubbles', { value: options.bubbles || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'cancelable', { value: options.cancelable || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'target', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'currentTarget', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'eventPhase', { value: 0, writable: true, configurable: true });
+    Object.defineProperty(event, 'isTrusted', { value: false, writable: false, configurable: true });
+    Object.defineProperty(event, 'timeStamp', { value: Date.now(), writable: false, configurable: true });
+    
     event.preventDefault = vi.fn();
     event.stopPropagation = vi.fn();
     event.stopImmediatePropagation = vi.fn();
-    event.target = null;
-    event.currentTarget = null;
-    event.eventPhase = 0;
-    event.isTrusted = false;
-    event.timeStamp = Date.now();
+    
     return event;
   });
   
   // Mock Event constructor with proper prototype
   global.window.Event = vi.fn().mockImplementation(function(type, options = {}) {
     const event = Object.create(Event.prototype);
-    event.type = type;
-    event.bubbles = options.bubbles || false;
-    event.cancelable = options.cancelable || false;
+    
+    // Define properties with proper descriptors to handle read-only properties
+    Object.defineProperty(event, 'type', { value: type, writable: false, configurable: true });
+    Object.defineProperty(event, 'bubbles', { value: options.bubbles || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'cancelable', { value: options.cancelable || false, writable: false, configurable: true });
+    Object.defineProperty(event, 'target', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'currentTarget', { value: null, writable: true, configurable: true });
+    Object.defineProperty(event, 'eventPhase', { value: 0, writable: true, configurable: true });
+    Object.defineProperty(event, 'isTrusted', { value: false, writable: false, configurable: true });
+    Object.defineProperty(event, 'timeStamp', { value: Date.now(), writable: false, configurable: true });
+    
     event.preventDefault = vi.fn();
     event.stopPropagation = vi.fn();
     event.stopImmediatePropagation = vi.fn();
-    event.target = null;
-    event.currentTarget = null;
-    event.eventPhase = 0;
-    event.isTrusted = false;
-    event.timeStamp = Date.now();
+    
     return event;
   });
 }

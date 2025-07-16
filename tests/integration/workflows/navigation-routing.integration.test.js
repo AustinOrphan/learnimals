@@ -324,11 +324,11 @@ describe('Navigation and Routing Integration', () => {
       };
       
       // Define routes
-      mockRouter.define('/', { page: 'home' });
-      mockRouter.define('/math', { page: 'math' });
-      mockRouter.define('/game/:gameId', { page: 'game' });
-      mockRouter.define('/profile/:userId', { page: 'profile' });
-      mockRouter.define('/404', { page: 'notFound' });
+      mockRouter.define('/', vi.fn(() => ({ page: 'home' })));
+      mockRouter.define('/math', vi.fn(() => ({ page: 'math' })));
+      mockRouter.define('/game/:gameId', vi.fn(() => ({ page: 'game' })));
+      mockRouter.define('/profile/:userId', vi.fn(() => ({ page: 'profile' })));
+      mockRouter.define('/404', vi.fn(() => ({ page: 'notFound' })));
       
       // Test basic navigation
       mockRouter.navigate('/math');
@@ -474,7 +474,7 @@ describe('Navigation and Routing Integration', () => {
         }),
         
         wait: vi.fn(function(ms) {
-          return new Promise(resolve => setTimeout(resolve, ms));
+          return Promise.resolve(); // Skip actual waiting in tests
         }),
         
         preloadPage: vi.fn(async function(page) {
@@ -586,7 +586,13 @@ describe('Navigation and Routing Integration', () => {
         ],
         
         handleDeepLink: vi.fn(function(url) {
-          const path = new URL(url, window.location.origin).pathname;
+          // Extract pathname from URL string
+          let path;
+          if (url.startsWith('http')) {
+            path = url.replace(/^https?:\/\/[^\/]+/, '');
+          } else {
+            path = url;
+          }
           
           for (const { pattern, handler } of this.patterns) {
             const match = path.match(pattern);
@@ -674,6 +680,19 @@ describe('Navigation and Routing Integration', () => {
 
   describe('Navigation Guards and Permissions', () => {
     it('should implement navigation guards', async () => {
+      // Create a shared localStorage mock for this test
+      const testLocalStorage = {
+        data: {},
+        getItem: vi.fn(function(key) { return this.data[key] || null; }),
+        setItem: vi.fn(function(key, value) { this.data[key] = value; }),
+        removeItem: vi.fn(function(key) { delete this.data[key]; }),
+        clear: vi.fn(function() { this.data = {}; })
+      };
+      
+      // Override global localStorage for this test
+      const originalLocalStorage = global.localStorage;
+      global.localStorage = testLocalStorage;
+      
       const mockNavigationGuard = {
         guards: [],
         
@@ -715,7 +734,8 @@ describe('Navigation and Routing Integration', () => {
         const isProtected = protectedRoutes.some(route => to.startsWith(route));
         
         if (isProtected) {
-          const isAuthenticated = localStorage.getItem('user_token') !== null;
+          const userToken = localStorage.getItem('user_token');
+          const isAuthenticated = userToken !== null && userToken !== undefined;
           if (!isAuthenticated) {
             return { redirect: '/login' };
           }
@@ -736,21 +756,27 @@ describe('Navigation and Routing Integration', () => {
         return true;
       });
       
+      // Clear localStorage to ensure no auth token
+      testLocalStorage.clear();
+      
       // Test navigation to protected route without auth
       const result1 = await mockNavigationGuard.navigate('/profile');
       expect(result1.success).toBe(false);
       expect(result1.redirect).toBe('/login');
       
       // Set auth and try again
-      localStorage.setItem('user_token', 'test-token');
+      testLocalStorage.setItem('user_token', 'test-token');
       const result2 = await mockNavigationGuard.navigate('/profile');
       expect(result2.success).toBe(true);
       
       // Test level-based guard
-      localStorage.setItem('user_level', '3');
+      testLocalStorage.setItem('user_level', '3');
       const result3 = await mockNavigationGuard.navigate('/advanced-games');
       expect(result3.success).toBe(false);
       expect(result3.redirect).toBe('/level-required');
+      
+      // Restore original localStorage
+      global.localStorage = originalLocalStorage;
     });
   });
 });

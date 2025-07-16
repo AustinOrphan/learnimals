@@ -109,6 +109,11 @@ describe('Game System Integration', () => {
     });
 
     it('should handle game pause and resume correctly', () => {
+      // Use fake timers to control timing
+      const originalNow = Date.now;
+      let mockTime = 1000;
+      Date.now = vi.fn(() => mockTime);
+      
       const mockGame = {
         state: 'playing',
         isPaused: false,
@@ -144,12 +149,19 @@ describe('Game System Integration', () => {
       expect(mockGame.isPaused).toBe(true);
       expect(mockGame.state).toBe('paused');
       
+      // Simulate time passing (100ms)
+      mockTime += 100;
+      
       // Test resume
       const resumeResult = mockGame.resume();
       expect(resumeResult).toBe(true);
       expect(mockGame.isPaused).toBe(false);
       expect(mockGame.state).toBe('playing');
       expect(mockGame.totalPauseTime).toBeGreaterThan(0);
+      expect(mockGame.totalPauseTime).toBe(100);
+      
+      // Restore original Date.now
+      Date.now = originalNow;
     });
   });
 

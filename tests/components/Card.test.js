@@ -224,10 +224,8 @@ describe('Card Component', () => {
       card.element.addEventListener('cardHover', cardHoverHandler);
       
       // Simulate mouseenter
-      const mouseEnterEvent = new dom.window.MouseEvent('mouseenter', {
-        bubbles: true,
-        cancelable: true
-      });
+      const mouseEnterEvent = document.createEvent('Event');
+      mouseEnterEvent.initEvent('mouseenter', true, true);
       card.element.dispatchEvent(mouseEnterEvent);
       
       expect(cardHoverHandler).toHaveBeenCalled();

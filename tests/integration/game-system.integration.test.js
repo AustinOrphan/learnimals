@@ -337,6 +337,10 @@ describe('Game System Integration', () => {
     const startButton = document.getElementById('start-button');
     const pauseButton = document.getElementById('pause-button');
     
+    // Add event listeners to connect buttons to mock functions
+    startButton.addEventListener('click', () => mockBaseGame.start());
+    pauseButton.addEventListener('click', () => mockBaseGame.pause());
+    
     startButton.click();
     expect(mockBaseGame.start).toHaveBeenCalled();
     
