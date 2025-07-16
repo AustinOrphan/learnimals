@@ -222,7 +222,7 @@ class FeedbackToast extends BaseComponent {
       }
     };
     
-    const characterReactions = reactions[character] || reactions.max;
+    const characterReactions = _reactions[character] || _reactions.max;
     return characterReactions[type] || characterReactions.success;
   }
 

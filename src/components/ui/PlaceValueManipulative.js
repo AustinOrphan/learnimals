@@ -239,7 +239,7 @@ class PlaceValueManipulative {
     // Add block buttons
     this.container.querySelectorAll('.add-block-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const _type = e.target.dataset.type;
+        const type = e.target.dataset.type;
         this.addBlock(type);
       });
     });
@@ -471,7 +471,7 @@ class PlaceValueManipulative {
    * @param {string} message - Message text
    * @param {string} type - Message type (info, warning, error)
    */
-  showMessage(message, _type = 'info') {
+  showMessage(message, type = 'info') {
     // Simple message display - could be enhanced with a toast system
     const messageEl = document.createElement('div');
     messageEl.className = `pv-message pv-message-${type}`;

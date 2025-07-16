@@ -13,7 +13,7 @@
 export function showToast(options) {
   const { 
     message, 
-    _type = 'info', 
+    type = 'info', 
     duration = 3000, 
     dismissable = true 
   } = options;
