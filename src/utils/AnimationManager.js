@@ -94,7 +94,7 @@ export default class AnimationManager {
       }
       
       const step = sequence[currentIndex];
-      accumulatedTime += step.delay || 0;
+      _accumulatedTime += step.delay || 0;
       
       this.delay(() => {
         if (this.activeAnimations.has(id)) {

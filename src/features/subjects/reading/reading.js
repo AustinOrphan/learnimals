@@ -6,7 +6,7 @@
  */
 
 import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
-import WordScrambleGame as _WordScrambleGame from '/src/features/games/word-scramble/wordScramble.js';
+import { WordScrambleGame as _WordScrambleGame } from '/src/features/games/word-scramble/wordScramble.js';
 
 // Define feature cards data for the reading page
 const readingFeatureCards = [
