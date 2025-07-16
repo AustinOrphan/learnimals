@@ -1,9 +1,9 @@
-/* NAVBAR LAYOUT */
+/* MOBILE-FIRST NAVBAR LAYOUT */
 .navbar {
     display: flex;
     justify-content: space-between; /* ensures logo and links are spaced */
     align-items: center; /* vertically aligns logo and nav */
-    padding: 0.75rem 2rem; /* reduce vertical padding if logo is taller */
+    padding: 0.75rem 1rem; /* mobile-first padding */
     background-color: var(--background-color);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     width: 100%;
@@ -11,50 +11,14 @@
 }
 
 .navbar-logo img {
-    height: 80px; /* Adjust based on your visual preference */
-    max-height: 80px;
+    height: 60px; /* mobile-optimized size */
+    max-height: 60px;
     display: block;
 }
 
-
-/* NAV LINKS CONTAINER (THE WRAPPER BUBBLE) */
-.navbar-links {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.navbar-links ul {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-    margin: 0;
-    padding: 0.5rem 1rem;
-    background-color: var(--background-color-alt);
-    border-radius: 9999px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* NORMAL LINK STYLING (NO INDIVIDUAL BUBBLES) */
-.navbar-links a {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.25rem 0.5rem;
-    /* Theme color transitions handled by universal system */
-}
-
-.navbar-links a:hover,
-.navbar-links a:focus {
-    color: var(--text-color-alt);
-    background-color: transparent;
-    text-decoration: underline;
-}
-
-/* MOBILE MENU BUTTON */
+/* MOBILE MENU BUTTON - DEFAULT VISIBLE */
 .mobile-menu-button {
-    display: none;
+    display: flex;
     flex-direction: column;
     background: none;
     border: none;
@@ -69,6 +33,7 @@
     /* Better touch target for mobile */
     min-width: 44px;
     min-height: 44px;
+    transition: background-color 0.15s ease;
 }
 
 .mobile-menu-button span {
@@ -94,67 +59,141 @@
     transform: rotate(45deg) translate(-5px, -6px);
 }
 
-/* RESPONSIVE MOBILE STYLES */
-@media (max-width: 768px) {
+/* Hamburger menu hover/active states */
+.mobile-menu-button:hover,
+.mobile-menu-button:active {
+    background-color: var(--background-color-alt, rgba(0, 0, 0, 0.05));
+}
+
+/* MOBILE NAV LINKS - DEFAULT HIDDEN */
+.navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--background-color, #ffffff);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.navbar-links.active {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.navbar-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 1rem;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.navbar-links li {
+    width: 100%;
+}
+
+/* MOBILE LINK STYLING */
+.navbar-links a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    text-align: left;
+    font-size: 18px;
+    /* Better touch targets for mobile */
+    min-height: 48px;
+    line-height: 1.4;
+    transition: all 0.15s ease;
+}
+
+/* Mobile touch feedback */
+.navbar-links a:hover,
+.navbar-links a:active,
+.navbar-links a:focus {
+    color: var(--text-color-alt);
+    background-color: var(--background-color-alt, #f8f9fa);
+    transform: scale(0.98);
+    text-decoration: underline;
+}
+
+/* TABLET AND DESKTOP STYLES - MIN-WIDTH MEDIA QUERIES */
+@media (min-width: 769px) {
+    .navbar {
+        padding: 0.75rem 2rem; /* increased padding for larger screens */
+    }
+    
+    .navbar-logo img {
+        height: 80px; /* larger logo for desktop */
+        max-height: 80px;
+    }
+    
+    /* Hide mobile menu button on larger screens */
     .mobile-menu-button {
-        display: flex;
-    }
-    
-    .navbar-links {
         display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: var(--background-color, #ffffff);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
     }
     
-    .navbar-links.active {
+    /* Show desktop navigation */
+    .navbar-links {
+        flex-grow: 1;
         display: flex;
-        flex-direction: column;
-        align-items: stretch;
+        justify-content: center;
+        align-items: center;
+        position: static;
+        background-color: transparent;
+        box-shadow: none;
+        z-index: auto;
+        transform: none;
+        opacity: 1;
+        transition: none;
     }
     
     .navbar-links ul {
-        flex-direction: column;
-        width: 100%;
-        border-radius: 0;
-        box-shadow: none;
-        padding: 1rem;
-        gap: 0.5rem;
+        flex-direction: row;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: var(--background-color-alt);
+        border-radius: 9999px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
     
     .navbar-links li {
-        width: 100%;
+        width: auto;
     }
     
+    /* Desktop link styling */
     .navbar-links a {
-        display: block;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        width: 100%;
-        text-align: left;
-        font-size: 18px;
-        /* Better touch targets for mobile */
-        min-height: 48px;
-        line-height: 1.4;
+        padding: 0.25rem 0.5rem;
+        font-size: 16px;
+        min-height: auto;
+        line-height: normal;
+        text-align: center;
+        width: auto;
+        display: inline;
+        border-radius: 0;
+        transform: none;
+        transition: color 0.15s ease;
     }
     
-    /* Mobile touch feedback */
     .navbar-links a:hover,
-    .navbar-links a:active,
     .navbar-links a:focus {
-        background-color: var(--background-color-alt, #f8f9fa);
-        transform: scale(0.98);
-        transition: all 0.15s ease;
-    }
-    
-    /* Hamburger menu hover/active states */
-    .mobile-menu-button:hover,
-    .mobile-menu-button:active {
-        background-color: var(--background-color-alt, rgba(0, 0, 0, 0.05));
-        transition: background-color 0.15s ease;
+        color: var(--text-color-alt);
+        background-color: transparent;
+        text-decoration: underline;
+        transform: none;
     }
 }
