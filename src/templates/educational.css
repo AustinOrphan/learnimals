@@ -1,0 +1,535 @@
+/**
+ * Educational Template Styles
+ * Specialized template for educational games with learning tracking and assessment
+ */
+
+/* Educational Template Layout */
+.educational-template {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-secondary);
+  font-family: var(--font-family);
+}
+
+/* Educational Header */
+.educational-header {
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--border-color);
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.header-main {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 2rem;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.lesson-context .game-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.learning-objectives h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.learning-objectives ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.learning-objectives li {
+  background: var(--accent-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Progress Overview */
+.progress-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 200px;
+}
+
+.session-progress label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.progress-bar {
+  position: relative;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  height: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--success-color), var(--accent-primary));
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.mastery-indicators {
+  display: flex;
+  gap: 1rem;
+}
+
+.mastery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.mastery-item .label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.mastery-item .value {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--accent-primary);
+}
+
+/* Header Controls */
+.header-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Main Content Area */
+.educational-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Educational Sidebar */
+.educational-sidebar {
+  width: 300px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 50;
+}
+
+.educational-sidebar.active {
+  transform: translateX(0);
+}
+
+.sidebar-content {
+  padding: 1rem;
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.sidebar-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Student Metrics */
+.student-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+}
+
+.metric-item label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.metric-item span {
+  font-weight: bold;
+  color: var(--accent-primary);
+}
+
+/* Teacher Notes */
+#teacher-notes {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  resize: vertical;
+  margin-bottom: 0.5rem;
+}
+
+/* Standards List */
+#standards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.standard-item {
+  background: var(--bg-secondary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border-left: 3px solid var(--accent-primary);
+}
+
+/* Game Content Area */
+.game-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Learning Scaffolding */
+.learning-scaffold {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hint-system {
+  position: relative;
+}
+
+.hint-btn {
+  background: var(--warning-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hint-btn:hover {
+  background: var(--warning-dark);
+  transform: translateY(-1px);
+}
+
+.hint-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  min-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+  margin-top: 0.5rem;
+}
+
+.current-objective {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Game Container */
+.game-container {
+  flex: 1;
+  padding: 1rem;
+  overflow: auto;
+  background: var(--bg-primary);
+}
+
+/* Educational Controls */
+.educational-controls {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  padding: 1rem;
+}
+
+.session-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.adaptive-feedback {
+  background: var(--info-light);
+  border: 1px solid var(--info-color);
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--info-dark);
+  text-align: center;
+}
+
+.adaptive-feedback.success {
+  background: var(--success-light);
+  border-color: var(--success-color);
+  color: var(--success-dark);
+}
+
+.adaptive-feedback.warning {
+  background: var(--warning-light);
+  border-color: var(--warning-color);
+  color: var(--warning-dark);
+}
+
+/* Educational Footer */
+.educational-footer {
+  background: var(--bg-card);
+  border-top: 2px solid var(--border-color);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.next-steps {
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Educational Modals */
+.educational-modal {
+  max-width: 600px;
+}
+
+.educational-modal.large {
+  max-width: 800px;
+}
+
+.assessment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.assessment-question {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-primary);
+}
+
+.assessment-question h4 {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-primary);
+}
+
+.assessment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.assessment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.assessment-option:hover {
+  background: var(--bg-hover);
+}
+
+.assessment-option input[type="radio"] {
+  margin: 0;
+}
+
+/* Report Content */
+.report-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.report-section {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.report-section:last-child {
+  border-bottom: none;
+}
+
+.report-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--accent-primary);
+}
+
+.report-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.report-metric {
+  text-align: center;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.report-metric .value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin-bottom: 0.25rem;
+}
+
+.report-metric .label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-main {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .progress-overview {
+    min-width: auto;
+  }
+  
+  .educational-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mastery-indicators {
+    justify-content: center;
+  }
+  
+  .session-controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .educational-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .summary-stats {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .educational-header {
+    padding: 0.75rem;
+  }
+  
+  .game-container {
+    padding: 0.75rem;
+  }
+  
+  .educational-controls {
+    padding: 0.75rem;
+  }
+  
+  .educational-footer {
+    padding: 0.75rem;
+  }
+  
+  .learning-objectives ul {
+    flex-direction: column;
+  }
+}

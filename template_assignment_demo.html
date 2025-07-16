@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Assignment Demo - Learnimals</title>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .template-section {
+            background: white;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .template-header {
+            padding: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .minimal-header { background: #6c757d; }
+        .mobile-header { background: #fd7e14; }
+        .fullscreen-header { background: #6f42c1; }
+        .game-header { background: #007bff; }
+        
+        .games-grid {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .game-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .minimal-card { border-left-color: #6c757d; }
+        .mobile-card { border-left-color: #fd7e14; }
+        .fullscreen-card { border-left-color: #6f42c1; }
+        .game-card-default { border-left-color: #007bff; }
+        
+        .game-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .game-meta {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        
+        .feature-tag {
+            background: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #495057;
+        }
+        
+        .template-description {
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            font-style: italic;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <header class="demo-header">
+        <h1>🎮 Template Assignment Demo</h1>
+        <p>Showcasing the strategic assignment of games to appropriate templates</p>
+    </header>
+    
+    <!-- Template sections will be populated by JavaScript -->
+    <div id="template-sections"></div>
+    
+    <script type="module">
+        import { GameRegistryUtil } from '/src/config/gameRegistry.js';
+        
+        const templateInfo = {
+            minimal: {
+                name: 'Minimal Template',
+                description: 'Lightweight template (60% smaller) with essential controls only. Perfect for focused gameplay with quick sessions and minimal distractions.',
+                colorClass: 'minimal'
+            },
+            mobile: {
+                name: 'Mobile Template', 
+                description: 'Touch-optimized template with haptic feedback and safe area support. Ideal for younger ages and touch-friendly interactions.',
+                colorClass: 'mobile'
+            },
+            fullscreen: {
+                name: 'Fullscreen Template',
+                description: 'Immersive gaming experience with auto-hide UI and fullscreen mode. Perfect for creative, action-based, or visually-rich games.',
+                colorClass: 'fullscreen'
+            },
+            game: {
+                name: 'Standard Game Template',
+                description: 'Full-featured template with complete UI and educational controls. Best for complex educational content and text-heavy games.',
+                colorClass: 'game'
+            }
+        };
+        
+        function createGameCard(game, templateClass) {
+            return `
+                <div class="game-card ${templateClass}-card">
+                    <div class="game-title">${game.name}</div>
+                    <div class="game-meta">
+                        <strong>Type:</strong> ${game.metadata?.gameType || 'Unknown'} | 
+                        <strong>Play Time:</strong> ${game.metadata?.estimatedPlayTime || '?'} min | 
+                        <strong>Age:</strong> ${game.metadata?.ageRange || 'All'}
+                    </div>
+                    <div class="game-features">
+                        ${game.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderTemplateSection(templateId, info) {
+            const games = GameRegistryUtil.getGamesByTemplate(templateId);
+            
+            return `
+                <div class="template-section">
+                    <div class="template-header ${info.colorClass}-header">
+                        ${info.name} (${games.length} games)
+                    </div>
+                    <div class="template-description">
+                        ${info.description}
+                    </div>
+                    <div class="games-grid">
+                        ${games.map(game => createGameCard(game, info.colorClass)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Render all template sections
+        const container = document.getElementById('template-sections');
+        container.innerHTML = Object.entries(templateInfo)
+            .map(([templateId, info]) => renderTemplateSection(templateId, info))
+            .join('');
+            
+        console.log('✅ Template assignment demo loaded successfully');
+        
+        // Show template statistics
+        const stats = GameRegistryUtil.getTemplateStats();
+        console.log('📊 Template Distribution:', stats);
+    </script>
+</body>
+</html>

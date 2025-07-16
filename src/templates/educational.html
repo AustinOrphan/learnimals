@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{gameTitle}} - Learnimals Educational</title>
+  
+  <!-- Core Learnimals Styles -->
+  <link rel="stylesheet" href="/src/styles/base/variables.css">
+  <link rel="stylesheet" href="/src/styles/base/reset.css">
+  <link rel="stylesheet" href="/src/styles/base/typography.css">
+  <link rel="stylesheet" href="/src/styles/components/buttons.css">
+  <link rel="stylesheet" href="/src/styles/components/cards.css">
+  <link rel="stylesheet" href="/src/styles/components/modals.css">
+  <link rel="stylesheet" href="/src/styles/components/forms.css">
+  <link rel="stylesheet" href="/src/styles/themes/theme-manager.css">
+  
+  <!-- Educational Template Styles -->
+  <link rel="stylesheet" href="/src/templates/educational.css">
+  
+  <!-- Game-specific styles -->
+  {{#if styleSheet}}
+  <link rel="stylesheet" href="{{styleSheet}}">
+  {{/if}}
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="/public/manifest.json">
+  <meta name="theme-color" content="#28a745">
+  
+  <!-- iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Learnimals Educational">
+</head>
+<body class="educational-template">
+  <!-- Educational Header -->
+  <header class="educational-header" id="educational-header">
+    <div class="header-main">
+      <div class="lesson-context">
+        <h1 class="game-title">{{gameTitle}}</h1>
+        <div class="learning-objectives">
+          <h3>Learning Objectives</h3>
+          <ul id="objectives-list">
+            <!-- Populated by JavaScript -->
+          </ul>
+        </div>
+      </div>
+      
+      <div class="progress-overview">
+        <div class="session-progress">
+          <label>Session Progress</label>
+          <div class="progress-bar">
+            <div class="progress-fill" id="session-progress-fill"></div>
+            <span class="progress-text" id="session-progress-text">0%</span>
+          </div>
+        </div>
+        
+        <div class="mastery-indicators">
+          <div class="mastery-item" id="accuracy-indicator">
+            <span class="label">Accuracy</span>
+            <span class="value" id="accuracy-value">-</span>
+          </div>
+          <div class="mastery-item" id="time-indicator">
+            <span class="label">Avg Time</span>
+            <span class="value" id="time-value">-</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="header-controls">
+        <button class="btn btn-secondary" id="toggle-sidebar">
+          <span id="sidebar-toggle-text">Teacher Panel</span>
+        </button>
+        <button class="btn btn-primary" id="assessment-btn">Assessment</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <div class="educational-main">
+    <!-- Educational Sidebar -->
+    <aside class="educational-sidebar" id="educational-sidebar">
+      <div class="sidebar-content">
+        <div class="sidebar-section">
+          <h3>Standards Alignment</h3>
+          <div id="standards-list">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3>Student Progress</h3>
+          <div class="student-metrics">
+            <div class="metric-item">
+              <label>Questions Attempted</label>
+              <span id="questions-attempted">0</span>
+            </div>
+            <div class="metric-item">
+              <label>Correct Answers</label>
+              <span id="correct-answers">0</span>
+            </div>
+            <div class="metric-item">
+              <label>Time Spent</label>
+              <span id="time-spent">0:00</span>
+            </div>
+            <div class="metric-item">
+              <label>Skill Level</label>
+              <span id="skill-level">Beginner</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3>Teacher Notes</h3>
+          <textarea id="teacher-notes" placeholder="Add notes about student performance..."></textarea>
+          <button class="btn btn-sm btn-secondary" id="save-notes">Save Notes</button>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3>Quick Actions</h3>
+          <button class="btn btn-sm btn-outline" id="generate-report">Generate Report</button>
+          <button class="btn btn-sm btn-outline" id="export-data">Export Data</button>
+          <button class="btn btn-sm btn-outline" id="reset-session">Reset Session</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Game Content Area -->
+    <main class="game-content" id="game-content">
+      <!-- Learning Scaffolding -->
+      <div class="learning-scaffold" id="learning-scaffold">
+        <div class="hint-system">
+          <button class="hint-btn" id="hint-btn">💡 Need a hint?</button>
+          <div class="hint-content" id="hint-content" style="display: none;">
+            <!-- Populated by game logic -->
+          </div>
+        </div>
+        
+        <div class="progress-indicator">
+          <span class="current-objective" id="current-objective">Getting started...</span>
+        </div>
+      </div>
+      
+      <!-- Game Container -->
+      <div class="game-container" id="game-container">
+        {{#if templateContent}}
+        {{{templateContent}}}
+        {{else}}
+        <div class="default-game-area">
+          <p>Game content will be loaded here...</p>
+        </div>
+        {{/if}}
+      </div>
+      
+      <!-- Educational Controls -->
+      <div class="educational-controls">
+        <div class="session-controls">
+          <button class="btn btn-secondary" id="pause-btn">⏸️ Pause</button>
+          <button class="btn btn-secondary" id="skip-btn">⏭️ Skip Question</button>
+          <button class="btn btn-primary" id="check-understanding">Check Understanding</button>
+        </div>
+        
+        <div class="adaptive-feedback" id="adaptive-feedback">
+          <!-- Dynamic feedback based on performance -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Educational Footer -->
+  <footer class="educational-footer">
+    <div class="session-summary">
+      <div class="summary-stats">
+        <span id="questions-completed">0 questions completed</span>
+        <span id="session-time">Session time: 0:00</span>
+      </div>
+      
+      <div class="next-steps">
+        <span id="next-recommendation">Continue practicing to improve mastery!</span>
+      </div>
+    </div>
+    
+    <div class="footer-actions">
+      <button class="btn btn-outline" id="save-session">💾 Save Progress</button>
+      <button class="btn btn-outline" id="share-progress">📤 Share with Teacher</button>
+      <button class="btn btn-primary" id="continue-learning">Continue Learning</button>
+    </div>
+  </footer>
+
+  <!-- Assessment Modal -->
+  <div class="modal" id="assessment-modal">
+    <div class="modal-content educational-modal">
+      <div class="modal-header">
+        <h2>Learning Assessment</h2>
+        <button class="modal-close" id="close-assessment">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="assessment-content" id="assessment-content">
+          <!-- Assessment questions populated by JavaScript -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancel-assessment">Cancel</button>
+        <button class="btn btn-primary" id="submit-assessment">Submit Assessment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Report Modal -->
+  <div class="modal" id="report-modal">
+    <div class="modal-content educational-modal large">
+      <div class="modal-header">
+        <h2>Progress Report</h2>
+        <button class="modal-close" id="close-report">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="report-content" id="report-content">
+          <!-- Report content populated by JavaScript -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="print-report">🖨️ Print</button>
+        <button class="btn btn-primary" id="email-report">📧 Email Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core JavaScript -->
+  <script src="/src/utils/themeManager.js"></script>
+  <script src="/src/components/ui/Modal.js"></script>
+  <script src="/src/config/gameRegistry.js" type="module"></script>
+  
+  <!-- Educational Template Scripts -->
+  <script src="/src/templates/educational.js" type="module"></script>
+  
+  <!-- Game Dependencies -->
+  {{#each dependencies}}
+  <script src="{{this}}"></script>
+  {{/each}}
+  
+  <!-- Game Script -->
+  {{#if scriptPath}}
+  <script src="{{scriptPath}}" type="module"></script>
+  {{/if}}
+  
+  <!-- Template Initialization -->
+  <script type="module">
+    import { EducationalTemplate } from '/src/templates/educational.js';
+    
+    // Initialize educational template with game configuration
+    const gameConfig = {
+      id: '{{gameId}}',
+      name: '{{gameTitle}}',
+      learningObjectives: {{{learningObjectives}}},
+      standards: {{{standards}}},
+      assessmentType: '{{assessmentType}}',
+      metadata: {{{metadata}}}
+    };
+    
+    const educational = new EducationalTemplate(gameConfig);
+    educational.initialize();
+    
+    // Initialize game when ready
+    document.addEventListener('DOMContentLoaded', () => {
+      {{#if gameClass}}
+      if (window.{{gameClass}}) {
+        const game = new window.{{gameClass}}();
+        educational.setGame(game);
+        game.initialize();
+      }
+      {{/if}}
+    });
+  </script>
+</body>
+</html>
