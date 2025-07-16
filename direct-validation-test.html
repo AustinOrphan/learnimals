@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Validation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .log { margin: 5px 0; padding: 8px; background: #f5f5f5; border-left: 3px solid #007bff; font-family: monospace; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        button { margin: 10px; padding: 10px 20px; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; max-height: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Direct Validation Test</h1>
+    
+    <button id="test-typeof">Test typeof array</button>
+    <button id="test-validator">Test CharacterValidator</button>
+    <button id="refresh-test">Hard Refresh Test</button>
+    
+    <div id="logs"></div>
+
+    <script type="module">
+        const logs = document.getElementById('logs');
+        
+        function log(message, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logs.appendChild(div);
+            console.log(message);
+        }
+
+        // Test 1: Basic typeof behavior
+        document.getElementById('test-typeof').addEventListener('click', () => {
+            log('🧪 Testing basic array type checking...');
+            
+            const testArray = ['test', 'array'];
+            log(`Array: ${JSON.stringify(testArray)}`);
+            log(`typeof array: ${typeof testArray}`);
+            log(`Array.isArray(): ${Array.isArray(testArray)}`);
+            
+            // Test the logic used in the validator
+            const schemaDef = { type: 'array' };
+            if (schemaDef.type === 'array' && !Array.isArray(testArray)) {
+                log('❌ Array validation would fail', 'error');
+            } else {
+                log('✅ Array validation would pass', 'success');
+            }
+        });
+
+        // Test 2: CharacterValidator
+        document.getElementById('test-validator').addEventListener('click', async () => {
+            log('🧪 Testing CharacterValidator directly...');
+            
+            try {
+                // Import fresh
+                const module = await import('./src/features/character-generation/validation/CharacterValidator.js');
+                const { CharacterValidator } = module;
+                
+                const validator = new CharacterValidator();
+                
+                // Test a simple object with arrays
+                const testChar = {
+                    id: 'test-123',
+                    name: 'Test Character',
+                    subject: 'math',
+                    appearance: {
+                        accessories: []
+                    },
+                    personality: {
+                        traits: ['friendly'],
+                        primaryTrait: 'friendly',
+                        catchphrases: []
+                    },
+                    education: {
+                        specialties: ['numbers']
+                    },
+                    interactions: {
+                        greetings: ['Hello'],
+                        encouragements: ['Good job'],
+                        celebrations: ['Great'],
+                        hints: []
+                    },
+                    metadata: {
+                        tags: []
+                    }
+                };
+                
+                log('Testing character object...');
+                const result = validator.validate(testChar);
+                
+                if (result.isValid) {
+                    log('✅ Validation passed!', 'success');
+                } else {
+                    log(`❌ Validation failed with ${result.errors.length} errors:`, 'error');
+                    log(`<pre>${JSON.stringify(result.errors, null, 2)}</pre>`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Validator test exception: ${error.message}`, 'error');
+                console.error(error);
+            }
+        });
+
+        // Test 3: Hard refresh
+        document.getElementById('refresh-test').addEventListener('click', () => {
+            window.location.reload(true);
+        });
+
+        log('🚀 Direct validation test loaded.');
+    </script>
+</body>
+</html>

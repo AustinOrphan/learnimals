@@ -18,7 +18,7 @@ RUN npm run lint
 RUN npm run test
 
 # Production stage
-FROM nginx:1.25-alpine3.19 AS production
+FROM nginx:1.27-alpine3.19 AS production
 
 # Add metadata labels for security scanning
 LABEL maintainer="learnimals-team"
