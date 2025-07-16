@@ -1222,7 +1222,7 @@ export default class PizzaPartyGame {
     }
   }
   
-  showMessage(text, type = 'info', duration = 2000) {
+  showMessage(text, _type = 'info', duration = 2000) {
     const messageArea = this.uiElements.messageArea;
     if (!messageArea) return;
     

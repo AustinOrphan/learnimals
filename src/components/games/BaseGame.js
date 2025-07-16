@@ -937,7 +937,7 @@ export default class BaseGame {
   /**
      * Play sound effect
      */
-  playSound(frequency, duration = 200, type = 'sine') {
+  playSound(frequency, duration = 200, _type = 'sine') {
     if (!this.soundEnabled || !this.audioContext) return;
         
     try {
@@ -948,7 +948,7 @@ export default class BaseGame {
       gainNode.connect(this.audioContext.destination);
             
       oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-      oscillator.type = type;
+      oscillator._type = type;
             
       gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration / 1000);
@@ -1705,7 +1705,7 @@ export default class BaseGame {
       codecat: '🐱'
     };
     
-    const reactions = {
+    const _reactions = {
       success: {
         bella: ['Great reading! 📚', 'Perfect sentence! ✨', 'You\'re a reading star! 🌟'],
         max: ['Math magic! 🎩', 'Numbers are your friend! 🔢', 'Calculating success! 📊'],
@@ -1974,7 +1974,7 @@ export default class BaseGame {
    * Legacy feedback method for existing games (SentenceBuilder, etc.)
    * Maps to new feedback system while maintaining API compatibility
    */
-  displayMessage(message, type = 'info', duration = 2000) {
+  displayMessage(message, _type = 'info', duration = 2000) {
     const feedbackType = this.mapLegacyType(type);
     return this.showFeedback(feedbackType, message, { duration });
   }
@@ -2027,7 +2027,7 @@ export default class BaseGame {
   /**
    * Legacy method for games that call addMessage directly
    */
-  addMessage(message, type = 'info', duration = 2000) {
+  addMessage(message, _type = 'info', duration = 2000) {
     return this.displayMessage(message, type, duration);
   }
   
@@ -2042,30 +2042,30 @@ export default class BaseGame {
    * Simplified feedback for quick integration
    */
   feedback(message, isSuccess = true, options = {}) {
-    const type = isSuccess ? 'success' : 'error';
+    const _type = isSuccess ? 'success' : 'error';
     return this.showFeedback(type, message, options);
   }
   
   /**
    * Character-specific feedback shorthand methods
    */
-  bellaFeedback(message, type = 'hint', options = {}) {
+  bellaFeedback(message, _type = 'hint', options = {}) {
     return this.showFeedback(type, message, { character: 'bella', ...options });
   }
   
-  maxFeedback(message, type = 'hint', options = {}) {
+  maxFeedback(message, _type = 'hint', options = {}) {
     return this.showFeedback(type, message, { character: 'max', ...options });
   }
   
-  zaraFeedback(message, type = 'hint', options = {}) {
+  zaraFeedback(message, _type = 'hint', options = {}) {
     return this.showFeedback(type, message, { character: 'zara', ...options });
   }
   
-  ariaFeedback(message, type = 'hint', options = {}) {
+  ariaFeedback(message, _type = 'hint', options = {}) {
     return this.showFeedback(type, message, { character: 'aria', ...options });
   }
   
-  codecatFeedback(message, type = 'hint', options = {}) {
+  codecatFeedback(message, _type = 'hint', options = {}) {
     return this.showFeedback(type, message, { character: 'codecat', ...options });
   }
 }

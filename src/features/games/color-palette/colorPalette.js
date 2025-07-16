@@ -380,10 +380,10 @@ class ColorPaletteGame extends BaseGame {
   /**
    * Check if challenge objective is met
    */
-  checkChallengeObjective(resultColorId) {
+  checkChallengeObjective(_resultColorId) {
     switch (this.currentChallenge.type) {
     case 'color-mixing':
-      return this.currentChallenge.correctAnswer === resultColorId;
+      return this.currentChallenge.correctAnswer === _resultColorId;
     default:
       return false;
     }
@@ -624,7 +624,7 @@ class ColorPaletteGame extends BaseGame {
   /**
    * Add success animation effects
    */
-  addSuccessAnimation(resultColor) {
+  addSuccessAnimation(_resultColor) {
     // Add paint splatter effect
     if (this.container && !this.canvas) {
       const workArea = this.container.querySelector('.game-container');
@@ -633,7 +633,7 @@ class ColorPaletteGame extends BaseGame {
         for (let i = 0; i < 5; i++) {
           const splatter = document.createElement('div');
           splatter.className = 'paint-particle paint-splattering';
-          splatter.style.backgroundColor = resultColor.hex;
+          splatter.style.backgroundColor = _resultColor.hex;
           splatter.style.left = `${40 + Math.random() * 20}%`;
           splatter.style.top = `${40 + Math.random() * 20}%`;
           splatter.style.animationDelay = `${i * 100}ms`;
@@ -668,7 +668,7 @@ class ColorPaletteGame extends BaseGame {
         vy: -Math.random() * 8 - 2,
         life: 1.0,
         decay: 0.015,
-        color: resultColor.hex,
+        color: _resultColor.hex,
         size: Math.random() * 10 + 5,
         type: 'celebration'
       });
@@ -678,7 +678,7 @@ class ColorPaletteGame extends BaseGame {
   /**
    * Add partial success animation
    */
-  addPartialSuccessAnimation(resultColor) {
+  addPartialSuccessAnimation(_resultColor) {
     if (this.container && !this.canvas) {
       // Add gentle color flowing animation
       const gameElement = this.container.querySelector('.color-palette-game');

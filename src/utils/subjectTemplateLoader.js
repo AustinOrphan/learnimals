@@ -63,7 +63,7 @@ class SubjectTemplateLoader {
       }
             
       // Handle feature cards data for Card.js
-      let scriptsToInject = [];
+      const scriptsToInject = [];
       
       if (options.featureCardsData) {
         scriptsToInject.push(`

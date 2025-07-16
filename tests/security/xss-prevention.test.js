@@ -32,7 +32,7 @@ describe('XSS Prevention', () => {
     });
 
     it('should escape single quotes', () => {
-      const input = "'; alert('XSS'); //";
+      const input = '\'; alert(\'XSS\'); //';
       const escaped = escapeHTML(input);
       expect(escaped).toBe('&#x27;; alert(&#x27;XSS&#x27;); &#x2F;&#x2F;');
     });

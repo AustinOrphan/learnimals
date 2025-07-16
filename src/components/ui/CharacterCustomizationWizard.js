@@ -111,16 +111,16 @@ class CharacterCustomizationWizard extends BaseComponent {
     const step = this.steps[this.currentStep];
     
     switch (step.id) {
-      case 'species':
-        return this.generateSpeciesSelector();
-      case 'appearance':
-        return this.generateAppearanceCustomizer();
-      case 'personality':
-        return this.generatePersonalityBuilder();
-      case 'review':
-        return this.generateReviewSection();
-      default:
-        return '<p>Unknown step</p>';
+    case 'species':
+      return this.generateSpeciesSelector();
+    case 'appearance':
+      return this.generateAppearanceCustomizer();
+    case 'personality':
+      return this.generatePersonalityBuilder();
+    case 'review':
+      return this.generateReviewSection();
+    default:
+      return '<p>Unknown step</p>';
     }
   }
   
@@ -690,17 +690,17 @@ class CharacterCustomizationWizard extends BaseComponent {
     this.validationErrors = [];
     
     switch (this.steps[this.currentStep].id) {
-      case 'species':
-        if (!this.characterData.species.primary) {
-          this.validationErrors.push('Please select a species');
-        }
-        break;
+    case 'species':
+      if (!this.characterData.species.primary) {
+        this.validationErrors.push('Please select a species');
+      }
+      break;
       
-      case 'review':
-        if (!this.characterData.name || this.characterData.name.trim().length === 0) {
-          this.validationErrors.push('Please enter a name for your character');
-        }
-        break;
+    case 'review':
+      if (!this.characterData.name || this.characterData.name.trim().length === 0) {
+        this.validationErrors.push('Please enter a name for your character');
+      }
+      break;
     }
     
     this.updateUI();
@@ -986,7 +986,7 @@ class CharacterCustomizationWizard extends BaseComponent {
     });
     
     // Search/filter
-    this.eventDelegation.onClass('species-search', (event, element) => {
+    this.eventDelegation.onClass('species-search', (event, _element) => {
       this.filterSpecies(event.originalEvent);
     });
     

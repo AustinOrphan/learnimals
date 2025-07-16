@@ -189,7 +189,7 @@ export default class MemoryLeakPrevention {
     const exempt = new Set(exemptions);
     
     Object.keys(obj).forEach(key => {
-      if (!exempt.has(key) && obj.hasOwnProperty(key)) {
+      if (!exempt.has(key) && Object.prototype.hasOwnProperty.call(obj, key)) {
         if (obj[key] && typeof obj[key] === 'object') {
           // Clear arrays and objects
           if (Array.isArray(obj[key])) {

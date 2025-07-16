@@ -48,7 +48,7 @@ class FormComponent extends BaseComponent {
   generateFieldHTML(field) {
     const {
       name,
-      type = 'text',
+      _type = 'text',
       label,
       placeholder = '',
       value = '',

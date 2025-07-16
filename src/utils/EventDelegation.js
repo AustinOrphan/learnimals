@@ -127,7 +127,7 @@ export default class EventDelegation {
    * @param {string} eventType - Event type (click, input, change, etc.)
    * @returns {Function} Delegated event handler
    */
-  createDelegatedHandler(eventType) {
+  createDelegatedHandler(_eventType) {
     return (event) => {
       const target = event.target;
       

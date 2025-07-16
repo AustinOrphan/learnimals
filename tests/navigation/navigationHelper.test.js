@@ -179,7 +179,7 @@ describe('NavigationHelper', () => {
 
     it('should handle different log levels in fallback logger', () => {
       // Test the inline logger structure
-      const mockLogger = {
+      const mock_Logger = {
         debug: (...args) => {
           if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.log('[NavigationHelper DEBUG]', ...args);

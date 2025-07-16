@@ -8,7 +8,7 @@ export default class ProgressTracker {
     this.progress = {};
   }
   
-  track(data) {
+  track(_data) {
     // Placeholder method
   }
   

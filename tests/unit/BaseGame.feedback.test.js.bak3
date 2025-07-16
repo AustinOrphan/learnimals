@@ -30,6 +30,9 @@ describe('BaseGame Feedback System', () => {
   let container;
 
   beforeEach(() => {
+    // Enable fake timers
+    vi.useFakeTimers();
+    
     // Create DOM container
     container = document.createElement('div');
     container.id = 'test-game';
@@ -94,6 +97,9 @@ describe('BaseGame Feedback System', () => {
     }
     document.body.innerHTML = '';
     vi.clearAllMocks();
+    
+    // Restore real timers
+    vi.useRealTimers();
   });
 
   describe('Core Functionality', () => {
@@ -143,13 +149,13 @@ describe('BaseGame Feedback System', () => {
       expect(game.feedbackState.activeFeedbacks.size).toBe(0);
     });
 
-    it('should clean up feedback after duration', async () => {
+    it('should clean up feedback after duration', () => {
       const feedbackId = game.showFeedback('success', 'Test message', { duration: 100 });
       
       expect(game.feedbackState.activeFeedbacks.has(feedbackId)).toBe(true);
       
-      // Wait for cleanup
-      await new Promise(resolve => setTimeout(resolve, 150));
+      // Advance fake timers
+      vi.advanceTimersByTime(150);
       
       expect(game.feedbackState.activeFeedbacks.has(feedbackId)).toBe(false);
     });
@@ -170,8 +176,8 @@ describe('BaseGame Feedback System', () => {
       
       game.showFeedback('success', 'Great job!');
       
-      // Wait for announcement delay
-      await new Promise(resolve => setTimeout(resolve, 150));
+      // Advance fake timers for announcement delay
+      vi.advanceTimersByTime(150);
       
       expect(ariaRegion.textContent).toBe('Great job!');
     });
@@ -181,7 +187,7 @@ describe('BaseGame Feedback System', () => {
       
       game.showFeedback('error', 'Try again!');
       
-      await new Promise(resolve => setTimeout(resolve, 50));
+      vi.advanceTimersByTime(50);
       
       expect(ariaRegion.getAttribute('aria-live')).toBe('assertive');
     });
@@ -260,7 +266,7 @@ describe('BaseGame Feedback System', () => {
     });
 
     it('should provide random character reactions', () => {
-      const _reactions = new Set();
+      const reactions = new Set();
       
       // Enable debug mode to capture character reactions
       game.feedbackConfig.debugMode = true;
@@ -580,8 +586,8 @@ describe('BaseGame Feedback System', () => {
       const element = game.feedbackState.feedbackContainer.querySelector(`[data-feedback-id="${feedbackId}"]`);
       expect(element).toBeTruthy();
       
-      // Wait for cleanup
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Advance fake timers for cleanup
+      vi.advanceTimersByTime(500);
       
       const elementAfter = game.feedbackState.feedbackContainer.querySelector(`[data-feedback-id="${feedbackId}"]`);
       expect(elementAfter).toBeNull();
