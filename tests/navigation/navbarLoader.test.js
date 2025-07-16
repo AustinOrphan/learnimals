@@ -157,7 +157,7 @@ describe('NavbarLoader', () => {
 
     it('should detect localhost environment correctly', () => {
       // This tests the inline logger's environment detection
-      const mockLogger = {
+      const mock_Logger = {
         debug: (...args) => {
           if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.log('[NavbarLoader DEBUG]', ...args);

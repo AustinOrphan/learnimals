@@ -184,7 +184,7 @@ class FeedbackToast extends BaseComponent {
    * @returns {string} - Short reaction text
    */
   getCharacterReaction(character, type) {
-    const reactions = {
+    const _reactions = {
       bella: {
         success: 'Great reading!',
         error: 'Keep trying!',
@@ -222,7 +222,7 @@ class FeedbackToast extends BaseComponent {
       }
     };
     
-    const characterReactions = reactions[character] || reactions.max;
+    const characterReactions = _reactions[character] || _reactions.max;
     return characterReactions[type] || characterReactions.success;
   }
 

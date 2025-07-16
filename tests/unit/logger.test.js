@@ -16,7 +16,7 @@ describe('Logger Utility', () => {
     // Clear module cache and reimport
     vi.resetModules();
     const module = await import('../../src/utils/logger.js');
-    Logger = module.default;
+    _Logger = module.default;
   });
   
   afterEach(() => {

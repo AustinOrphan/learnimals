@@ -502,11 +502,11 @@ export function mixColors(color1Id, color2Id) {
   const mixingInfo = color1.mixingWith?.[color2Id] || color2.mixingWith?.[color1Id];
   
   if (mixingInfo) {
-    const resultColor = getColorById(mixingInfo.result);
+    const _resultColor = getColorById(mixingInfo.result);
     return {
       success: true,
-      result: resultColor,
-      message: `${color1.name} + ${color2.name} = ${resultColor.name}!`,
+      result: _resultColor,
+      message: `${color1.name} + ${color2.name} = ${_resultColor.name}!`,
       type: mixingInfo.type
     };
   }

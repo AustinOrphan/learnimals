@@ -199,9 +199,9 @@ export function generateCharacterMessage(character, context = 'greeting') {
         `${name} thinks you're doing great! Let's keep trying.`
       ],
       low_patience: [
-        `Let's focus and try again.`,
+        'Let\'s focus and try again.',
         `${name} knows you can get this right.`,
-        `One more time - you've got this!`
+        'One more time - you\'ve got this!'
       ]
     },
     celebration: {
@@ -227,13 +227,13 @@ export function generateCharacterMessage(character, context = 'greeting') {
   let level = 'medium';
   if (context === 'greeting') {
     level = personality.traits.enthusiasm > 80 ? 'high_enthusiasm' : 
-            personality.traits.enthusiasm < 50 ? 'low_enthusiasm' : 'medium_enthusiasm';
+      personality.traits.enthusiasm < 50 ? 'low_enthusiasm' : 'medium_enthusiasm';
   } else if (context === 'encouragement') {
     level = personality.traits.patience > 80 ? 'high_patience' : 
-            personality.traits.patience < 50 ? 'low_patience' : 'medium_patience';
+      personality.traits.patience < 50 ? 'low_patience' : 'medium_patience';
   } else if (context === 'celebration') {
     level = personality.traits.playfulness > 80 ? 'high_playfulness' : 
-            personality.traits.playfulness < 50 ? 'low_playfulness' : 'medium_playfulness';
+      personality.traits.playfulness < 50 ? 'low_playfulness' : 'medium_playfulness';
   }
 
   const messagePool = messages[context]?.[level] || messages.greeting.medium_enthusiasm;
@@ -289,20 +289,20 @@ export function getCharacterAnimationState(character, context) {
   const personality = character.personality;
   
   switch (context) {
-    case 'correct_answer':
-      return personality.traits.playfulness > 70 ? 'celebrating' : 'happy';
+  case 'correct_answer':
+    return personality.traits.playfulness > 70 ? 'celebrating' : 'happy';
     
-    case 'wrong_answer':
-      return personality.traits.empathy > 80 ? 'encouraging' : 'thinking';
+  case 'wrong_answer':
+    return personality.traits.empathy > 80 ? 'encouraging' : 'thinking';
     
-    case 'waiting':
-      return personality.traits.patience > 80 ? 'calm' : 'idle';
+  case 'waiting':
+    return personality.traits.patience > 80 ? 'calm' : 'idle';
     
-    case 'teaching':
-      return personality.traits.enthusiasm > 80 ? 'excited' : 'focused';
+  case 'teaching':
+    return personality.traits.enthusiasm > 80 ? 'excited' : 'focused';
     
-    default:
-      return 'idle';
+  default:
+    return 'idle';
   }
 }
 

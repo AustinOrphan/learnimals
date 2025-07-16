@@ -191,7 +191,7 @@ class Particle {
     this.x = options.x || 0;
     this.y = options.y || 0;
     this.color = options.color || '#FFD700';
-    this.type = options.type || 'basic';
+    this._type = options.type || 'basic';
     this.text = options.text || '';
     
     this.velocity = options.velocity || { x: 0, y: 0 };
@@ -291,25 +291,25 @@ class Particle {
     
     // Draw based on type
     switch (this.type) {
-      case 'burst':
-      case 'sparkle':
-        this.drawCircle(ctx);
-        break;
+    case 'burst':
+    case 'sparkle':
+      this.drawCircle(ctx);
+      break;
         
-      case 'confetti':
-        this.drawConfetti(ctx);
-        break;
+    case 'confetti':
+      this.drawConfetti(ctx);
+      break;
         
-      case 'text':
-        this.drawText(ctx);
-        break;
+    case 'text':
+      this.drawText(ctx);
+      break;
         
-      case 'steam':
-        this.drawSteam(ctx);
-        break;
+    case 'steam':
+      this.drawSteam(ctx);
+      break;
         
-      default:
-        this.drawCircle(ctx);
+    default:
+      this.drawCircle(ctx);
     }
     
     ctx.restore();

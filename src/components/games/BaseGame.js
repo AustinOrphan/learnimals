@@ -948,7 +948,7 @@ export default class BaseGame {
       gainNode.connect(this.audioContext.destination);
             
       oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-      oscillator.type = type;
+      oscillator._type = type;
             
       gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration / 1000);
@@ -1705,7 +1705,7 @@ export default class BaseGame {
       codecat: '🐱'
     };
     
-    const reactions = {
+    const _reactions = {
       success: {
         bella: ['Great reading! 📚', 'Perfect sentence! ✨', 'You\'re a reading star! 🌟'],
         max: ['Math magic! 🎩', 'Numbers are your friend! 🔢', 'Calculating success! 📊'],
@@ -1745,7 +1745,7 @@ export default class BaseGame {
     
     // Get character emoji and random reaction
     const emoji = characterEmojis[character] || '🎮';
-    const characterReactions = reactions[type]?.[character] || [`${emoji} Great job!`];
+    const characterReactions = _reactions[type]?.[character] || [`${emoji} Great job!`];
     const reaction = characterReactions[Math.floor(Math.random() * characterReactions.length)];
     
     // Trigger character animation/reaction in UI if available

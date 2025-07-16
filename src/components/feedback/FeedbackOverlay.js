@@ -164,7 +164,7 @@ class FeedbackOverlay extends BaseComponent {
    * @returns {string} - Reaction message
    */
   getCharacterReaction(character, type) {
-    const reactions = {
+    const _reactions = {
       bella: {
         success: ['Wonderful reading! 📚', 'You\'re becoming a great reader! 🌟', 'Perfect pronunciation! 🎭'],
         error: ['Let\'s try that again together! 💪', 'Reading takes practice! 📖', 'We\'ll get it next time! 🤗'],
@@ -202,7 +202,7 @@ class FeedbackOverlay extends BaseComponent {
       }
     };
     
-    const characterReactions = reactions[character] || reactions.max;
+    const characterReactions = _reactions[character] || _reactions.max;
     const typeReactions = characterReactions[type] || characterReactions.success;
     const randomReaction = typeReactions[Math.floor(Math.random() * typeReactions.length)];
     

@@ -203,6 +203,32 @@ describe('XSS Prevention Security Tests', () => {
       });
     });
 
+    it('should escape single quotes', () => {
+      const input = '\'; alert(\'XSS\'); //';
+      const escaped = inputSanitizer.escapeHTML(input);
+      expect(escaped).toBe('&#39;; alert(&#39;XSS&#39;); &#x2F;&#x2F;');
+    });
+    
+    it('should escape ampersands', () => {
+      const input = 'Tom & Jerry';
+      const escaped = inputSanitizer.escapeHTML(input);
+      expect(escaped).toBe('Tom &amp; Jerry');
+    });
+
+    it('should handle empty strings and null values', () => {
+      expect(inputSanitizer.escapeHTML('')).toBe('');
+      expect(inputSanitizer.escapeHTML(null)).toBe('');
+      expect(inputSanitizer.escapeHTML(undefined)).toBe('');
+    });
+
+    it('should escape HTML attributes more aggressively', () => {
+      const input = '<div class="test" onclick="alert(1)">content</div>';
+      const escaped = inputSanitizer.escapeHTML(input);
+      expect(escaped).not.toContain('onclick');
+      expect(escaped).not.toContain('<div');
+      expect(escaped).toContain('&lt;div');
+    });
+
     it('should validate and sanitize form inputs', () => {
       const formInputs = [
         { field: 'name', value: 'Max<script>alert(1)</script>', expected: 'Max' },
