@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Science - Learnimals</title>
+        <script type="module">
+            import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
+            // Define content for science page
+            const scienceOptions = {
+                subjectName: 'Science',
+                subjectLower: 'science',
+                subjectDescription: 'Exciting science experiments and facts for kids featuring Sky the Parrot',
+                characterName: 'Sky',
+                characterType: 'Parrot',
+                heroSubtitle: 'Explore fun experiments and amazing facts!',
+                // Fallback HTML if Card.js doesn't work
+                featureCards: `
+                    <div class="feature-card">
+                        <h3>Fun Facts</h3>
+                        <p>Discover amazing science facts with Sky!</p>
+                        <button onclick="showRandomFact()">Show Fact</button>
+                        <p id="factOutput" style="margin-top: 10px" aria-live="polite"></p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Home Experiments</h3>
+                        <p>Try these safe and fun experiments at home!</p>
+                        <button onclick="showExperiments()">See Experiments</button>
+                        <div id="experimentsContainer" class="hidden"></div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Science Quiz</h3>
+                        <p>Test your knowledge with our fun science quiz!</p>
+                        <a href="#quiz" class="game-link"><button>Start Quiz</button></a>
+                    </div>
+                `,
+                // Card.js data for generating cards
+                featureCardsData: [
+                    {
+                        title: 'Fun Facts',
+                        content: `
+                            <p>Discover amazing science facts with Sky!</p>
+                            <button onclick="showRandomFact()">Show Fact</button>
+                            <p id="factOutput" style="margin-top: 10px" aria-live="polite"></p>
+                        `,
+                        imageUrl: '../../../public/images/science-parrot2.png',
+                        imageAlt: 'Sky the Science Parrot',
+                        theme: 'alt'
+                    },
+                    {
+                        title: 'Home Experiments',
+                        content: `
+                            <p>Try these safe and fun experiments at home!</p>
+                            <button onclick="showExperiments()">See Experiments</button>
+                            <div id="experimentsContainer" class="hidden"></div>
+                        `,
+                        imageUrl: '../../../public/images/science-parrot.png',
+                        imageAlt: 'Sky doing experiments'
+                    },
+                    {
+                        isLinked: true,
+                        title: 'Science Quiz',
+                        content: '<p>Test your knowledge with our fun science quiz!</p>',
+                        linkText: 'Start Quiz',
+                        linkUrl: '#quiz',
+                        imageUrl: '../../../public/images/rocket.png',
+                        imageAlt: 'Science quiz rocket',
+                        theme: 'default'
+                    }
+                ]
+            };
+
+            // Render the template with science-specific content
+            document.addEventListener('DOMContentLoaded', async () => {
+                await SubjectTemplateLoader.renderTemplate(scienceOptions);
+            });
+        </script>
+    </head>
+    <body>
+        <!-- This content will be replaced by the template -->
+        <p>Loading science content...</p>
+    </body>
+</html>

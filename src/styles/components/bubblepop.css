@@ -1,0 +1,134 @@
+.game-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#gameCanvas {
+  border: 3px solid var(--primary-color);
+  background: var(--bg-card);
+  width: 90%;
+  max-width: 600px;
+  height: 400px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  font: 16px "Comic Sans MS", cursive, sans-serif;
+}
+
+.hero-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-top: 20px;
+  transition: transform 0.2s;
+  display: flex;
+  justify-self: center;
+}
+
+
+.hero-image  img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Fullscreen button */
+.fullscreen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 2px solid var(--primary-color);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  /* Theme color transitions handled by universal system */
+  z-index: 10;
+  opacity: 0.9;
+  /* Better touch target for mobile */
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.fullscreen-btn:hover {
+  background: var(--primary-color);
+  color: var(--text-on-accent);
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Game container position relative for fullscreen button */
+.game-container {
+  position: relative;
+}
+
+/* Fullscreen styles */
+.game-container:fullscreen {
+  background-color: var(--bg-body);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .game-container {
+    margin-top: 16px;
+    padding: 0 16px;
+  }
+  
+  #gameCanvas {
+    width: 100%;
+    height: 320px;
+    border-radius: 12px;
+    /* Disable text selection on mobile */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Improve touch response */
+    touch-action: manipulation;
+  }
+  
+  .fullscreen-btn {
+    top: 8px;
+    right: 8px;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+  
+  .hero-image {
+    width: 150px;
+    height: 150px;
+    margin-top: 16px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  #gameCanvas {
+    height: 280px;
+    border-width: 2px;
+  }
+  
+  .game-container {
+    padding: 0 12px;
+  }
+  
+  .hero-image {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+

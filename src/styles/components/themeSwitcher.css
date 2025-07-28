@@ -1,0 +1,342 @@
+/* Theme Switcher Component Styles */
+/* Dedicated CSS for theme switcher to replace inline styles */
+
+/* Main container for theme switcher */
+.theme-switcher-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+/* Mobile optimizations for theme switcher */
+@media (max-width: 768px) {
+  .theme-switcher-container {
+    bottom: 16px;
+    right: 16px;
+    gap: 10px;
+  }
+  
+  .theme-switcher-container button.theme-button,
+  .theme-switcher-container button.theme-button:focus,
+  .theme-switcher-container button.theme-button:visited {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+  
+  .theme-switcher-container .theme-emoji-overlay {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    top: 0;
+    left: 0;
+  }
+  
+  /* Larger touch target for better mobile usability */
+  .theme-switcher-container button.theme-button::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    pointer-events: auto;
+  }
+}
+
+/* Base theme button styles - shared by both buttons */
+/* High specificity to override default button styles without !important */
+.theme-switcher-container button.theme-button,
+.theme-switcher-container button.theme-button:focus,
+.theme-switcher-container button.theme-button:visited {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
+  /* Override any conflicting button styles */
+  padding: 0;
+  margin: 0;
+  min-height: auto;
+  line-height: 1;
+  min-width: auto;
+  max-width: none;
+  max-height: none;
+  /* Allow only specific transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, width 0.3s ease, height 0.3s ease, font-size 0.3s ease;
+  animation: none;
+  /* Reset other potential conflicting properties */
+  outline: none;
+  text-decoration: none;
+  vertical-align: baseline;
+}
+
+/* Theme switcher button - uses gradient with current theme colors */
+.theme-switcher-container button#theme-switcher-button.theme-button {
+  background: linear-gradient(135deg, 
+    var(--primary-color), 
+    var(--secondary-color), 
+    var(--accent-color), 
+    var(--accent-color-alt),
+    var(--primary-color)
+  );
+  animation: colorShift 6s ease-in-out infinite;
+}
+
+/* Mode toggle button - uses accent color alt */
+.theme-switcher-container button#mode-toggle-button.theme-button {
+  background: var(--accent-color-alt);
+}
+
+/* Subtle theme color shift animation */
+@keyframes colorShift {
+  0% { 
+    filter: hue-rotate(0deg) brightness(1) saturate(1); 
+  }
+  25% { 
+    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1); 
+  }
+  50% { 
+    filter: hue-rotate(30deg) brightness(1.1) saturate(1.2); 
+  }
+  75% { 
+    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1); 
+  }
+  100% { 
+    filter: hue-rotate(0deg) brightness(1) saturate(1); 
+  }
+}
+
+/* Button hover effects */
+.theme-switcher-container button.theme-button:hover {
+  transform: scale(1.05);
+}
+
+/* Ensure theme switcher animation continues on hover */
+.theme-switcher-container button#theme-switcher-button.theme-button:hover {
+  animation: colorShift 6s ease-in-out infinite;
+  transform: scale(1.05);
+}
+
+/* Emoji overlay positioned over the button but outside filter effects */
+.theme-switcher-container .theme-emoji-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  pointer-events: none;
+  z-index: 101;
+  transition: transform 0.3s ease;
+  /* This element is completely separate from the filtered button */
+  transition: width 0.3s ease, height 0.3s ease, font-size 0.3s ease, transform 0.3s ease;
+}
+
+/* Emoji scales with button on hover */
+.theme-switcher-container button#theme-switcher-button:hover + .theme-emoji-overlay {
+  transform: scale(1.05);
+}
+
+/* Emoji rotates when menu is open */
+.theme-switcher-container button#theme-switcher-button.menu-open + .theme-emoji-overlay {
+  transform: rotate(45deg);
+}
+
+/* Theme switcher button specific hover effects */
+.theme-switcher-container button#theme-switcher-button.theme-button:hover {
+  animation-duration: 2s;
+  filter: brightness(1.1);
+  box-shadow: 0 4px 16px var(--primary-color);
+}
+
+/* Mode toggle button specific hover effects */
+.theme-switcher-container button#mode-toggle-button.theme-button:hover {
+  filter: brightness(1.1) drop-shadow(0 4px 16px var(--accent-color-alt));
+}
+
+/* Button active state */
+.theme-switcher-container button.theme-button:active {
+  transform: scale(0.95);
+}
+
+/* Theme switcher button rotation when menu is open */
+.theme-switcher-container button.theme-button.menu-open {
+  transform: rotate(45deg);
+}
+
+/* Theme menu container */
+.theme-menu {
+  position: absolute;
+  bottom: 60px; /* Positioned above horizontal buttons */
+  right: 0;
+  background: var(--text-color);
+  color: var(--accent-color);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Show menu when active */
+.theme-menu.menu-open {
+  display: flex;
+}
+
+/* Menu title styling */
+.theme-menu-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--primary-color);
+  transition: border-bottom-color 0.3s ease;
+  font-size: 14px;
+}
+
+/* Individual theme option buttons */
+.theme-option {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  color: inherit;
+  font-size: 14px;
+}
+
+/* Theme option hover effect */
+.theme-option:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode hover effect for theme options */
+.theme-mode-dark .theme-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Active theme option styling */
+.theme-option.active {
+  background-color: rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Dark mode active theme option */
+.theme-mode-dark .theme-option.active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon styling within buttons */
+.theme-icon,
+.mode-icon {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+  .theme-switcher-container {
+    bottom: 15px;
+    right: 15px;
+    gap: 8px;
+  }
+
+  .theme-switcher-container button.theme-button {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .theme-switcher-container .theme-emoji-overlay {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .theme-menu {
+    bottom: 55px;
+    min-width: 140px;
+    padding: 8px;
+  }
+
+  .theme-option {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .theme-switcher-container button.theme-button {
+    border: 2px solid var(--text-color);
+  }
+
+  .theme-menu {
+    border: 2px solid var(--accent-color);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .theme-switcher-container button.theme-button,
+  .theme-menu,
+  .theme-option,
+  .theme-menu-title,
+  .theme-emoji-overlay {
+    transition: none;
+  }
+  .theme-switcher-container button#theme-switcher-button.theme-button {
+    animation: none;
+    filter: none;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    background: var(--primary-color);
+  }
+}
+
+/* Focus styles for accessibility */
+.theme-switcher-container button.theme-button:focus-visible,
+.theme-option:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Animation for menu appearance */
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-menu.menu-open {
+  animation: menuSlideIn 0.2s ease-out;
+}

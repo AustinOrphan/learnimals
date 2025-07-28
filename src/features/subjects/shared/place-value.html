@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Interactive place value activities with visual manipulatives featuring Mango the Shark"
+        />
+        <title>Place Value Activities - Learnimals</title>
+        
+        <!-- Import components -->
+        <script src="/src/components/ui/PlaceValueManipulative.js"></script>
+        
+        <script type="module">
+            import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
+
+            // Define content for place value page
+            const placeValueOptions = {
+                subjectName: 'Place Value Activities',
+                subjectLower: 'math',
+                subjectDescription: 'Learn place value with interactive manipulatives and visual exercises',
+                characterName: 'Mango',
+                characterType: 'Shark',
+                heroSubtitle: 'Build and break down numbers with place value blocks!',
+                
+                // Fallback HTML for feature cards if Card.js doesn't work
+                featureCards: `
+                    <div class="feature-card">
+                        <h3>Place Value Builder</h3>
+                        <p>Build numbers using thousands, hundreds, tens, and ones blocks!</p>
+                        <div id="place-value-builder"></div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Quick Practice</h3>
+                        <div class="quick-practice">
+                            <p>What is the value of the digit 5 in the number 2,584?</p>
+                            <div class="practice-buttons">
+                                <button class="practice-btn" data-answer="5">5</button>
+                                <button class="practice-btn" data-answer="50">50</button>
+                                <button class="practice-btn" data-answer="500" data-correct="true">500</button>
+                                <button class="practice-btn" data-answer="5000">5,000</button>
+                            </div>
+                            <p id="practice-feedback" class="practice-feedback"></p>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Place Value Chart</h3>
+                        <div class="place-value-reference">
+                            <table class="pv-table">
+                                <thead>
+                                    <tr>
+                                        <th>Thousands</th>
+                                        <th>Hundreds</th>
+                                        <th>Tens</th>
+                                        <th>Ones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1,000</td>
+                                        <td>100</td>
+                                        <td>10</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr class="example-row">
+                                        <td>3</td>
+                                        <td>7</td>
+                                        <td>4</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr class="value-row">
+                                        <td>3,000</td>
+                                        <td>700</td>
+                                        <td>40</td>
+                                        <td>2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="table-explanation">
+                                The number 3,742 = 3,000 + 700 + 40 + 2
+                            </p>
+                        </div>
+                    </div>
+                `,
+                
+                // Card.js data for generating feature cards
+                featureCardsData: [
+                    {
+                        title: 'Place Value Builder',
+                        content: `
+                            <p>Build numbers using thousands, hundreds, tens, and ones blocks!</p>
+                            <div id="place-value-builder"></div>
+                        `
+                    },
+                    {
+                        title: 'Quick Practice',
+                        content: `
+                            <div class="quick-practice">
+                                <p>What is the value of the digit 5 in the number 2,584?</p>
+                                <div class="practice-buttons">
+                                    <button class="practice-btn" data-answer="5">5</button>
+                                    <button class="practice-btn" data-answer="50">50</button>
+                                    <button class="practice-btn" data-answer="500" data-correct="true">500</button>
+                                    <button class="practice-btn" data-answer="5000">5,000</button>
+                                </div>
+                                <p id="practice-feedback" class="practice-feedback"></p>
+                            </div>
+                        `
+                    },
+                    {
+                        title: 'Place Value Chart',
+                        content: `
+                            <div class="place-value-reference">
+                                <table class="pv-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thousands</th>
+                                            <th>Hundreds</th>
+                                            <th>Tens</th>
+                                            <th>Ones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1,000</td>
+                                            <td>100</td>
+                                            <td>10</td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr class="example-row">
+                                            <td>3</td>
+                                            <td>7</td>
+                                            <td>4</td>
+                                            <td>2</td>
+                                        </tr>
+                                        <tr class="value-row">
+                                            <td>3,000</td>
+                                            <td>700</td>
+                                            <td>40</td>
+                                            <td>2</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="table-explanation">
+                                    The number 3,742 = 3,000 + 700 + 40 + 2
+                                </p>
+                            </div>
+                        `,
+                        imageUrl: '/public/images/math-parrot.png',
+                        imageAlt: 'Math helper parrot'
+                    }
+                ]
+            };
+            
+            document.addEventListener('DOMContentLoaded', async () => {
+                await SubjectTemplateLoader.renderTemplate(placeValueOptions);
+                
+                // Initialize place value manipulative
+                initializePlaceValue();
+                
+                // Initialize quick practice
+                initializeQuickPractice();
+            });
+
+            function initializePlaceValue() {
+                // Wait for DOM to be ready
+                setTimeout(() => {
+                    const container = document.getElementById('place-value-builder');
+                    if (container && window.PlaceValueManipulative) {
+                        new PlaceValueManipulative({
+                            containerId: 'place-value-builder',
+                            maxNumber: 9999,
+                            mode: 'compose'
+                        });
+                    } else {
+                        console.warn('PlaceValueManipulative not found or container missing');
+                        // Fallback content
+                        if (container) {
+                            container.innerHTML = `
+                                <p>Place Value Builder is loading...</p>
+                                <p>Try refreshing the page if it doesn't appear.</p>
+                            `;
+                        }
+                    }
+                }, 100);
+            }
+
+            function initializeQuickPractice() {
+                setTimeout(() => {
+                    const practiceButtons = document.querySelectorAll('.practice-btn');
+                    const feedback = document.getElementById('practice-feedback');
+                    
+                    practiceButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            const isCorrect = button.hasAttribute('data-correct');
+                            const answer = button.getAttribute('data-answer');
+                            
+                            // Reset all buttons
+                            practiceButtons.forEach(btn => {
+                                btn.classList.remove('correct', 'incorrect');
+                                btn.disabled = false;
+                            });
+                            
+                            if (isCorrect) {
+                                button.classList.add('correct');
+                                feedback.textContent = '🎉 Correct! The 5 is in the hundreds place, so its value is 500.';
+                                feedback.className = 'practice-feedback correct';
+                            } else {
+                                button.classList.add('incorrect');
+                                feedback.textContent = `❌ Not quite. You selected ${answer}, but the 5 is in the hundreds place.`;
+                                feedback.className = 'practice-feedback incorrect';
+                            }
+                            
+                            // Disable all buttons after selection
+                            practiceButtons.forEach(btn => btn.disabled = true);
+                            
+                            // Enable reset after 3 seconds
+                            setTimeout(() => {
+                                practiceButtons.forEach(btn => {
+                                    btn.classList.remove('correct', 'incorrect');
+                                    btn.disabled = false;
+                                });
+                                feedback.textContent = '';
+                                feedback.className = 'practice-feedback';
+                            }, 3000);
+                        });
+                    });
+                }, 100);
+            }
+        </script>
+        
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="/src/styles/base/styles.css" />
+        <link rel="stylesheet" href="/src/styles/components/navbar.css" />
+        <link rel="stylesheet" href="/src/features/subjects/math/math.css" />
+        <link rel="stylesheet" href="/src/features/subjects/math/place-value.css" />
+    </head>
+    <body>
+        <!-- This content will be replaced by the template -->
+        <div class="loading-container">
+            <p>Loading place value activities...</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </body>
+</html>

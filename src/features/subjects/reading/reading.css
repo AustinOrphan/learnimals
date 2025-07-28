@@ -1,0 +1,344 @@
+/* Reading page specific styles */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+footer {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.reading-container {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.reading-section {
+  background-color: var(--bg-card);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px var(--shadow-color);
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.story-card {
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-left: 5px solid var(--accent-primary);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px var(--shadow-color);
+}
+
+.story-card h3 {
+  color: var(--accent-primary);
+  margin-bottom: 10px;
+}
+
+.story-preview {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+}
+
+.story-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.story-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.story-button {
+  padding: 8px 15px;
+  background-color: var(--accent-primary);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.story-button:hover {
+  background-color: var(--accent-secondary);
+  transform: scale(1.05);
+}
+
+.story-button.outline {
+  background-color: transparent;
+  border: 2px solid var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.story-button.outline:hover {
+  background-color: var(--accent-primary);
+  color: var(--text-on-accent);
+}
+
+.word-scramble-container {
+  margin-top: 30px;
+  border-top: 2px dashed var(--border-color);
+  padding-top: 20px;
+}
+
+.reading-level {
+  display: inline-block;
+  padding: 4px 10px;
+  background-color: var(--accent-secondary);
+  color: var(--text-on-accent);
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.reading-level.beginner {
+  background-color: var(--success-color, #c8fcea);
+  color: var(--text-primary);
+}
+
+.reading-level.intermediate {
+  background-color: var(--warning-color, #ffeaa7);
+  color: var(--text-primary);
+}
+
+.reading-level.advanced {
+  background-color: var(--error-color, #fab1a0);
+  color: var(--text-primary);
+}
+
+.story-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* Word Scramble Game specific styles */
+.game-container {
+  padding: 20px;
+  background-color: var(--bg-card-alt);
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+/* Story modal styles */
+.story-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--overlay-color, rgba(0,0,0,0.7));
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  margin: 30px auto;
+  padding: 30px;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 15px;
+  position: relative;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 30px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.close-modal:hover {
+  color: var(--error-color, #e74c3c);
+}
+
+.story-title {
+  color: var(--accent-primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.story-image {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: 250px;
+  object-fit: cover;
+  margin: 0 auto 20px;
+  border-radius: 10px;
+}
+
+.story-content {
+  margin-bottom: 30px;
+}
+
+.story-questions {
+  background-color: var(--bg-card-alt);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.question {
+  margin-bottom: 20px;
+}
+
+.question p {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  padding: 10px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--text-primary);
+}
+
+.option:hover {
+  background-color: var(--bg-highlight);
+}
+
+.option.selected {
+  background-color: var(--success-color, #c8fcea);
+  border-color: var(--accent-primary);
+}
+
+@media (max-width: 768px) {
+  .reading-container {
+    padding: 16px;
+  }
+  
+  .reading-section {
+    padding: 20px 16px;
+    margin-bottom: 24px;
+  }
+  
+  .story-card {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .story-card img {
+    height: 120px;
+  }
+  
+  .story-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .story-button {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    min-height: 48px;
+    border-radius: 24px;
+  }
+  
+  .modal-content {
+    padding: 20px 16px;
+    margin: 12px;
+    width: calc(100% - 24px);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .close-modal {
+    top: 16px;
+    right: 16px;
+    font-size: 32px;
+    /* Larger touch target */
+    padding: 8px;
+    margin: -8px;
+  }
+  
+  .story-meta {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .story-title {
+    font-size: 1.5rem;
+  }
+  
+  .story-image {
+    height: 200px;
+  }
+  
+  .option {
+    padding: 16px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  
+  .question p {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .modal-content {
+    margin: 8px;
+    width: calc(100% - 16px);
+    padding: 16px 12px;
+  }
+  
+  .story-card img {
+    height: 100px;
+  }
+  
+  .story-image {
+    height: 150px;
+  }
+  
+  .reading-section {
+    padding: 16px 12px;
+  }
+}

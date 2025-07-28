@@ -1,0 +1,274 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      node-version: ${{ steps.setup.outputs.node-version }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Read Node version
+        id: setup
+        run: |
+          NODE_VERSION=$(cat .nvmrc 2>/dev/null || echo "20")
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: npm run lint
+      
+      - name: Check code formatting
+        run: |
+          if command -v prettier &> /dev/null; then
+            npx prettier --check "src/**/*.{js,html,css}"
+          else
+            echo "Prettier not configured, skipping format check"
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    needs: setup
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests with coverage
+        run: |
+          if grep -q "test:" package.json; then
+            npm run test:coverage
+          else
+            echo "No test script found, skipping tests"
+          fi
+        env:
+          CI: true
+      
+      - name: Check coverage thresholds
+        if: matrix.node-version == 20
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            # Extract coverage percentages
+            COVERAGE=$(npx lcov-summary coverage/lcov.info | grep "Total" | awk '{print $2}' | sed 's/%//')
+            echo "Total coverage: $COVERAGE%"
+            
+            # Check against threshold (70% for now)
+            if (( $(echo "$COVERAGE < 70" | bc -l) )); then
+              echo "Coverage is below 70% threshold"
+              exit 1
+            fi
+          else
+            echo "No coverage report found"
+          fi
+      
+      - name: Upload coverage reports
+        if: matrix.node-version == 20
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+      
+      - name: Upload coverage to artifact
+        if: matrix.node-version == 20 && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [setup, lint]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build project
+        run: |
+          if grep -q "build" package.json; then
+            npm run build
+          else
+            echo "No build script found, project is static"
+          fi
+      
+      - name: Upload build artifacts
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files
+          path: |
+            src/
+            public/
+            !src/**/*.test.js
+            !src/**/*.spec.js
+          retention-days: 30
+
+  validate-html:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate HTML
+        run: |
+          # Install html-validate if not already present
+          if ! command -v html-validate &> /dev/null; then
+            npm install -g html-validate
+          fi
+          
+          # Validate HTML files
+          find src -name "*.html" -exec html-validate {} \; || true
+      
+      - name: Check for broken links
+        run: |
+          # Install linkchecker if available
+          if command -v linkchecker &> /dev/null; then
+            find src -name "*.html" -exec linkchecker --check-extern {} \; || true
+          else
+            echo "Link checker not available, skipping link validation"
+          fi
+
+  pwa-audit:
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Start development server
+        run: |
+          # Start a simple HTTP server
+          if command -v python3 &> /dev/null; then
+            python3 -m http.server 3000 --directory src/pages &
+          else
+            npx serve src/pages -p 3000 &
+          fi
+          
+          # Wait for server to be ready
+          sleep 5
+        
+      - name: Run PWA audit
+        run: |
+          # Install lighthouse if not present
+          npm install -g lighthouse
+          
+          # Run lighthouse audit
+          lighthouse http://localhost:3000 \
+            --chrome-flags="--headless --no-sandbox" \
+            --output json \
+            --output-path lighthouse-results.json \
+            --only-categories pwa,performance,accessibility
+        
+      - name: Upload lighthouse results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: lighthouse-results.json
+          retention-days: 30
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ needs.setup.outputs.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run npm audit
+        run: |
+          npm audit --audit-level high
+        continue-on-error: true
+      
+      - name: Run dependency scan
+        run: |
+          # Check for known security vulnerabilities
+          npx audit-ci --moderate
+        continue-on-error: true
+
+  status-check:
+    runs-on: ubuntu-latest
+    needs: [lint, test, build, validate-html, pwa-audit, security-scan]
+    if: always()
+    steps:
+      - name: Check job statuses
+        run: |
+          echo "Lint: ${{ needs.lint.result }}"
+          echo "Test: ${{ needs.test.result }}"
+          echo "Build: ${{ needs.build.result }}"
+          echo "HTML Validation: ${{ needs.validate-html.result }}"
+          echo "PWA Audit: ${{ needs.pwa-audit.result }}"
+          echo "Security Scan: ${{ needs.security-scan.result }}"
+          
+          # Fail if any critical jobs failed
+          if [ "${{ needs.lint.result }}" == "failure" ] || \
+             [ "${{ needs.test.result }}" == "failure" ] || \
+             [ "${{ needs.build.result }}" == "failure" ]; then
+            echo "Critical jobs failed"
+            exit 1
+          fi
+          
+          echo "All critical jobs passed"
