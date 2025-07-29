@@ -4,6 +4,9 @@
   "description": "Educational web application featuring interactive games and activities for children",
   "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "generate-subjects": "node scripts/generateSubjects.js",
     "list-templates": "node scripts/generateSubjects.js --list-templates",
     "lint": "eslint src/ scripts/ tests/",
@@ -29,13 +32,13 @@
     "test:ci": "npm run lint && npm run test:all && npm run test:coverage:all",
     "generate-test-report": "node scripts/generate-test-report.js",
     "serve": "python -m http.server 3000 -d src/pages",
-    "build": "echo 'Static site - no build required'",
     "prepare": "husky",
     "pre-commit": "lint-staged"
   },
   "keywords": ["education", "children", "games", "learning"],
   "private": true,
   "devDependencies": {
+    "vite": "^5.0.0",
     "eslint": "^8.57.0",
     "@eslint/js": "^8.57.0",
     "vitest": "^1.6.0",
