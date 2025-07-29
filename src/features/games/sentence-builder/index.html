@@ -129,6 +129,7 @@
   <!-- Game Script -->
   <script type="module">
     import SentenceBuilderGame from './sentenceBuilder.js';
+    import logger from '../../../utils/logger.js';
 
     // Game configuration
     const gameConfig = {
@@ -172,11 +173,11 @@
             difficulty: gameConfig.difficulty,
             onScoreUpdate: (score) => {
               // Score updates can be handled here if needed
-              console.log('Score updated:', score);
+              logger.game('Score updated:', score);
             },
             onLevelUpdate: (level) => {
               // Level updates can be handled here if needed
-              console.log('Level updated:', level);
+              logger.game('Level updated:', level);
             },
             onGameOver: (finalScore) => {
               setTimeout(() => {

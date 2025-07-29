@@ -6,6 +6,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Learnimals is a static educational web application featuring interactive games and activities for children. Each subject area (Math, Science, Reading, Art, Coding) is represented by an animal character and follows a consistent template-based architecture.
 
+**Current Status**: This is a local development project, not yet deployed anywhere.
+
+## Critical Thinking and Feedback
+
+**IMPORTANT: Always critically evaluate and challenge user suggestions, even when they seem reasonable.**
+
+- **Question assumptions**: Don't just agree - analyze if there are better approaches
+- **Offer alternative perspectives**: Suggest different solutions or point out potential issues
+- **Challenge organization decisions**: If something doesn't fit logically, speak up
+- **Point out inconsistencies**: Help catch logical errors or misplaced components
+
+This critical feedback helps improve decision-making and ensures robust solutions. Being agreeable is less valuable than being thoughtful and analytical.
+
+### Example Behaviors
+
+✅ "I disagree - that component belongs in a different file because..."
+✅ "Have you considered this alternative approach?"
+✅ "This seems inconsistent with the pattern we established..."
+❌ Just implementing suggestions without evaluation
+
 ## Development Commands
 
 This is a static HTML/CSS/JavaScript website that requires no build process. To develop:
@@ -20,15 +40,10 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 
 ### Initial Setup
 ```bash
-# Install dependencies
+# Install dependencies (Note: package-lock may be out of sync)
 npm install
-# or use Make
-make install
 
-# Set up project (creates .env, runs install)
-make setup
-
-# Check Node.js version (requires Node 18)
+# Check Node.js version (configured for Node 18, may need adjustment)
 make check-node
 ```
 
@@ -38,13 +53,15 @@ make check-node
 - `npm run lint:fix` - Run ESLint with auto-fix enabled
 - `npm run generate-subjects` - Generate new subject pages programmatically
 - `npm run list-templates` - List all available subject templates
-- `npm test` - Run all tests with Vitest
+- `npm test` - Run all tests with Vitest (Note: has dependency issues)
 - `npm run test:unit` - Run unit tests
 - `npm run test:components` - Run component tests
 - `npm run test:integration` - Run integration tests
 - `npm run test:watch` - Run tests in watch mode
-- `npm run test:ui` - Run tests with Vitest UI
+- `npm run test:ui` - Run tests with Vitest UI (has dependency issues)
 - `npm run test:coverage` - Run tests with coverage report
+
+**Note**: Test commands currently have missing dependency issues (es-errors module). Run `npm install` to resolve.
 
 ### Subject Generation System
 
@@ -120,6 +137,25 @@ Available subject templates: music, geography, history, language, physics, cooki
 - **Form Component**: Validated forms with local storage integration
 - **UI Utilities**: Common patterns like toast notifications and tab interfaces
 
+## Repository Structure and Navigation
+
+### Navigation Tips
+
+- **When exploring a new feature**, first identify which directory it belongs to (`src/features/`, `src/components/`, etc.)
+- **Related code is typically co-located** within the same directory structure
+- **Check existing implementations** before creating new ones - look for similar components or features
+- **For understanding cross-component interactions**, look for integration tests in `/tests/integration/`
+- **Subject-specific code** is organized under `src/features/subjects/[subject]/`
+- **Reusable components** follow the pattern `src/components/[type]/ComponentName.js`
+- **Game implementations** are self-contained in `src/features/games/[game-name]/`
+
+### Code Organization Patterns
+
+- **Feature-based organization**: Related functionality grouped together
+- **Component composition**: Complex components built from simpler ones
+- **Consistent naming**: Files, classes, and functions follow established conventions
+- **Template-driven**: Subject pages use shared templates with customization
+
 ## Development Guidelines
 
 ### Adding New Subject Pages
@@ -157,6 +193,26 @@ Available subject templates: music, geography, history, language, physics, cooki
 - Touch and mouse input support
 - Score tracking and progress saving
 
+## Coding Standards Reference
+
+**IMPORTANT: Always read the full coding standards at the beginning of EACH session.**
+
+Check for project-specific coding rules in these locations:
+- `eslint.config.mjs` - JavaScript linting rules
+- `package.json` - Project scripts and lint-staged configuration
+- `.github/` - Pull request templates and contribution guidelines
+- Root-level config files - Prettier, TypeScript, or other tool configurations
+
+These guidelines contain critical details for:
+- **Git commit conventions** - Message format and structure requirements
+- **JavaScript style** - Naming conventions, async patterns, function structure
+- **Documentation practices** - Comment structure, JSDoc patterns, README standards
+- **Error handling** - Consistent error patterns and logging approaches
+- **Testing strategy** - Test organization, assertion patterns, coverage requirements
+- **Code organization** - File structure, import/export patterns, component architecture
+
+**Reading the complete standards is essential** for ensuring code quality and consistency. These full guidelines contain nuances that cannot be summarized.
+
 ## Code Standards
 
 ### ESLint Configuration
@@ -180,12 +236,59 @@ Available subject templates: music, geography, history, language, physics, cooki
 - Utilities: `src/utils/utilityName.js`
 - Templates: `src/templates/templateName.html`
 
+## Documentation Best Practices
+
+When documenting JavaScript code, follow these guidelines:
+
+### Function Documentation Structure
+
+- **Begin with a clear, single-line summary** of what the function does
+- **Include a detailed description** of the function's behavior and purpose
+- **For simple functions** (0-2 parameters), describe parameters inline in the main description
+- **For complex functions** (3+ parameters), use an explicit "@param" section with JSDoc
+- **Always describe return values** in the main description text
+- **Document error conditions** with "@throws" or describe in main text
+
+```javascript
+/**
+ * Creates a new Card component with specified content and styling.
+ * 
+ * @param {Object} options - Configuration object for the card
+ * @param {string} options.title - Card title text
+ * @param {string} options.content - Main card content (HTML allowed)
+ * @param {string} [options.theme='default'] - Visual theme
+ * @returns {Card} Configured Card component instance
+ * @throws {Error} When required options are missing
+ */
+function createCard(options) {
+  // Implementation
+}
+```
+
+### Component Documentation
+
+- **Begin with a clear summary** of what the component represents
+- **Explain the component's purpose** and usage patterns
+- **Document component options** with clear descriptions
+- **Document event emissions** and callback patterns
+
+### Examples
+
+- **Include practical examples** for public APIs
+- **Ensure examples are current** and demonstrate typical usage
+- **For complex components**, show multiple usage scenarios
+- **Test examples** to ensure they work as documented
+
+This balanced approach maintains readability while providing necessary structure for complex APIs.
+
 ## Testing
 
 The project uses Vitest for automated testing with the following configuration:
 - Test environment: jsdom (for DOM manipulation)
 - Test files: Located in `tests/` directory
 - Coverage provider: @vitest/coverage-v8
+
+**Note**: Test commands currently have dependency issues. You may need to run `npm install` to resolve missing modules.
 
 ### Running Tests
 ```bash
@@ -204,7 +307,7 @@ npm run test:watch
 # Run with coverage
 npm run test:coverage
 
-# Run with UI interface
+# Run with UI interface (has issues)
 npm run test:ui
 ```
 
@@ -223,66 +326,101 @@ Additionally, perform manual testing by:
 4. Testing offline capabilities (PWA features)
 5. Running `npm run lint` to check code quality
 
-### Make Commands for Testing
+### Working Make Commands
 ```bash
-# Run all tests
-make test
+# Development
+make dev-server    # Start local server
+make lint          # Run ESLint
+make lint-fix      # Run ESLint with auto-fix
 
-# Run tests with coverage
-make test-coverage
+# Subject generation
+make generate-subjects
 
-# Run tests in watch mode
-make test-watch
-
-# Run linting
-make lint
-
-# Run linting with auto-fix
-make lint-fix
-
-# Run all PR checks (linting, tests, security scan)
-make pr-check
+# Help
+make help          # View all available commands
 ```
+
+## Branch Naming Convention
+
+Use descriptive branch names that clearly indicate the purpose and scope of changes:
+
+### Branch Types
+
+- **`feature/`** - New features or enhancements
+  - `feature/user-profile-system`
+  - `feature/math-game-improvements`
+  - `feature/theme-customization`
+
+- **`fix/`** - Bug fixes
+  - `fix/navigation-mobile-menu`
+  - `fix/theme-switching-persistence`
+  - `fix/card-component-accessibility`
+
+- **`refactor/`** - Code refactoring without functional changes
+  - `refactor/component-architecture`
+  - `refactor/utility-functions`
+
+- **`docs/`** - Documentation updates
+  - `docs/component-library-guide`
+  - `docs/deployment-instructions`
+
+- **`test/`** - Test additions or improvements
+  - `test/integration-test-coverage`
+  - `test/component-unit-tests`
+
+- **`chore/`** - Maintenance tasks, dependency updates
+  - `chore/dependency-updates`
+  - `chore/ci-pipeline-optimization`
+
+### Naming Guidelines
+
+- Use lowercase with hyphens for separation
+- Be descriptive but concise (2-4 words after prefix)
+- Include issue numbers when applicable: `feature/user-auth-123`
+- Avoid personal identifiers or temporary naming
+
+## Pull Request Template
+
+The repository includes a comprehensive PR template at `.github/pull_request_template.md` that ensures consistent and thorough pull request descriptions.
+
+### PR Requirements
+
+When creating pull requests, ensure you:
+
+- **Provide clear context** - Explain what changes were made and why
+- **Reference related issues** - Link to GitHub issues using `#issue-number`
+- **Describe testing** - Document how changes were tested
+- **Note breaking changes** - Highlight any backwards compatibility issues
+- **Update documentation** - Include relevant documentation updates
+- **Follow checklist** - Complete all items in the PR template checklist
+
+### Before Submitting
+
+```bash
+# Run pre-commit checks
+npm run lint
+npm test  # Note: has dependency issues
+
+# Fix linting issues
+npm run lint:fix
+```
+
+### PR Review Process
+
+- PRs require approval before merging
+- CI pipeline runs tests and linting
+- Consider requesting review from code owners
+- Address all feedback before merging
 
 ## CI/CD & Security
 
 ### GitHub Actions Workflows
-The project includes comprehensive CI/CD pipelines:
+The project includes GitHub Actions workflows that are being fine-tuned:
 
-- **`.github/workflows/ci.yml`** - Main CI pipeline with security scans, quality gates, and tests
-- **`.github/workflows/security.yml`** - Dedicated security scanning workflow  
-- **`.github/workflows/deploy-rolling.yml`** - Rolling deployment workflow for multiple environments
-- **`.github/workflows/monitoring.yml`** - Production monitoring and alerts
-
-### Docker Development
-```bash
-# Build and run with Docker Compose (includes monitoring)
-make docker-run
-
-# Stop containers
-make docker-stop
-
-# View logs
-make docker-logs
-
-# Access container shell
-make docker-shell
-
-# Build Docker image
-make docker-build
-```
-
-### Deployment Commands
-```bash
-# Deploy to staging
-make deploy-staging
-
-# Deploy to production (requires approval)
-make deploy-production
-
-# Validate Kubernetes manifests
-make validate-k8s
-```
+- **`.github/workflows/ci.yml`** - Main CI pipeline with tests and quality checks
+- **`.github/workflows/security.yml`** - Security scanning workflow
+- **`.github/workflows/deploy.yml`** - GitHub Pages deployment (not active)
+- Additional workflows exist but are being fine-tuned for future use
 
 ### Security Scanning Configuration
 
@@ -297,52 +435,162 @@ These files prevent false positives in:
 - Base64 encoded images
 - Localhost URLs and example domains
 
-#### Container Security
-- **`.trivyignore`** - Trivy container vulnerability scanner exclusions
-- **`Dockerfile`** - Multi-stage build with security hardening
-  - Uses specific Alpine versions for reproducibility
-  - Runs as non-root user (appuser:appgroup)
-  - Includes health checks
+## Git Worktree Development Workflow
 
-### Docker Configuration
-- **`docker/nginx.conf`** - Main nginx configuration with security headers
-- **`docker/default.conf`** - Site-specific nginx configuration
-- **`docker/healthcheck.sh`** - Container health check script
+**REQUIRED**: This project uses git worktrees for parallel development. All developers must use the worktree structure below.
 
-### Kubernetes Deployment
-- **`k8s/base/`** - Base Kubernetes manifests
-- **`k8s/overlays/`** - Environment-specific configurations (dev, staging, production)
-- Uses Kustomize for configuration management
-- Implements rolling deployments with PodDisruptionBudgets
+### Worktree Setup
+1. **Initial Setup** (one-time): Run the setup script from project root:
+   ```bash
+   chmod +x scripts/setup-worktrees.sh
+   ./scripts/setup-worktrees.sh
+   ```
 
-### Additional Make Commands
+2. **Worktree Structure** (automatically created):
+   ```
+   learnimals/                    # Original repository (main branch)
+   learnimals-worktrees/
+   ├── main/                     # Main development and testing
+   ├── stabilization/            # Infrastructure fixes (URGENT)
+   ├── feature-development/      # New feature work
+   ├── hotfix/                   # Emergency bug fixes
+   └── experimental/             # Prototype and experimental features
+   ```
+
+### Development Workflow
+
+#### Critical Infrastructure Work (IMMEDIATE)
 ```bash
-# Run security vulnerability scan
-make security-scan
-
-# Run Lighthouse performance test
-make lighthouse
-
-# Generate new subject pages
-make generate-subjects
-
-# Monitor application health
-make monitor-health
-
-# Clean build artifacts and containers
-make clean
-
-# View all available commands
-make help
+cd ../learnimals-worktrees/stabilization
+npm install
+# Work on infrastructure fixes (ESLint errors, testing framework, CI/CD)
 ```
 
-### Required GitHub Secrets
-For CI/CD to work properly, configure these secrets:
-- `SNYK_TOKEN` - For dependency vulnerability scanning
-- `GITLEAKS_LICENSE` - For enhanced Gitleaks features (optional)
-- `FOSSA_API_KEY` - For license compliance scanning
-- `DOCKER_USERNAME` / `DOCKER_PASSWORD` - For container registry
-- `KUBECONFIG_DEV` / `KUBECONFIG_STAGING` / `KUBECONFIG_PROD` - For K8s deployments
+#### Feature Development
+```bash
+cd ../learnimals-worktrees/feature-development
+npm install
+# Develop new features and major functionality
+```
+
+#### Emergency Fixes
+```bash
+cd ../learnimals-worktrees/hotfix
+npm install
+# Fix critical bugs that need immediate deployment
+```
+
+#### Experimental Work
+```bash
+cd ../learnimals-worktrees/experimental
+npm install
+# Try new ideas, prototypes, major refactoring
+```
+
+### Worktree Management Commands
+```bash
+# List all worktrees
+git worktree list
+
+# Remove unused worktree
+git worktree remove <worktree-name>
+
+# Add new worktree
+git worktree add <path> <branch-name>
+
+# Move between worktrees
+cd ../learnimals-worktrees/<worktree-name>
+```
+
+### Required Workflow Rules
+
+1. **Each worktree runs independently**: Install dependencies (`npm install`) in each worktree before development
+2. **Separate node_modules**: Each worktree has its own node_modules for isolated development
+3. **Branch isolation**: Work stays isolated until explicitly merged
+4. **Testing in each worktree**: Run tests in the appropriate worktree context
+5. **No cross-worktree file dependencies**: Keep work self-contained within each worktree
+
+### Development Priority Order
+1. **stabilization** - Fix infrastructure first (5-day critical path)
+2. **feature-development** - Core MVP features
+3. **main** - Integration and final testing
+4. **hotfix** - Emergency fixes only
+5. **experimental** - Research and prototypes
+
+### Integration Process
+```bash
+# From feature branch, merge to main
+cd ../learnimals-worktrees/feature-development
+git add . && git commit -m "Feature: description"
+git push origin feature-branch
+
+# Switch to main for integration
+cd ../learnimals-worktrees/main
+git pull origin main
+git merge feature-branch
+```
+
+**Important**: The original repository directory should primarily be used for documentation updates and final integration work.
+
+## Common Commands
+
+Quick reference for frequently used commands:
+
+### Development Setup
+```bash
+# Initial setup
+npm install
+make setup
+
+# Set up worktrees (REQUIRED - one-time setup)
+chmod +x scripts/setup-worktrees.sh
+./scripts/setup-worktrees.sh
+
+# Start development server (in appropriate worktree)
+cd ../learnimals-worktrees/feature-development
+npm install
+npm run dev
+# or
+python3 -m http.server 8080
+```
+
+### Testing & Quality
+```bash
+# Run tests (has dependency issues)
+npm test
+npm run test:watch
+
+# Linting
+npm run lint
+npm run lint:fix
+# or
+make lint
+make lint-fix
+```
+
+### Subject Generation
+```bash
+# List available templates
+npm run list-templates
+
+# Generate subjects
+npm run generate-subjects -- --subjects=music,geography
+# or
+make generate-subjects
+```
+
+### Utilities
+```bash
+# View all available commands
+make help
+
+# Clean up (may have issues)
+make clean
+```
+
+## Future Features
+
+For information about planned features like Docker deployment, Kubernetes infrastructure, and advanced CI/CD, see `FUTURE-FEATURES.md`.
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.

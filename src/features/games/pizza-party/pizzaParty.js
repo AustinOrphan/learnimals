@@ -1,5 +1,6 @@
 // filepath: src/features/games/pizza-party/pizzaParty.js
 import { getRandomInt, debounce, lightenColor, darkenColor, compareFractions, addFractions } from '../../../utils/common.js';
+import logger from '../../../utils/logger.js';
 import PizzaSlice from './PizzaSlice.js';
 import ParticleSystem from './ParticleSystem.js';
 
@@ -1132,7 +1133,7 @@ export default class PizzaPartyGame {
   
   showAchievement(title, description) {
     // TODO: Implement achievement popup
-    console.log(`Achievement Unlocked: ${title} - ${description}`);
+    logger.game(`Achievement Unlocked: ${title} - ${description}`);
   }
   
   addAnimation(animation) {

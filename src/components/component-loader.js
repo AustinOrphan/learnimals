@@ -4,6 +4,14 @@
 (function() {
   'use strict';
   
+  // Import logger - adapt for non-module environment
+  const logger = window.logger || {
+    error: (...args) => console.error('[ERROR]', ...args),
+    warn: (...args) => console.warn('[WARN]', ...args),
+    info: (...args) => console.log('[INFO]', ...args),
+    debug: (...args) => console.log('[DEBUG]', ...args)
+  };
+  
   // Base Component - simplified version for non-module environments
   class BaseComponent {
     constructor(options = {}) {
@@ -36,7 +44,7 @@
         : targetContainer;
       
       if (!containerEl) {
-        console.error('Container not found:', targetContainer);
+        logger.error('Container not found:', targetContainer);
         return this;
       }
 

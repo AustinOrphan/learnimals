@@ -1,5 +1,6 @@
 // Base Component Class
 // Provides common functionality and patterns for all Learnimals components
+import logger from '../utils/logger.js';
 
 class BaseComponent {
   /**
@@ -53,7 +54,7 @@ class BaseComponent {
       : targetContainer;
     
     if (!containerEl) {
-      console.error('Container not found:', targetContainer);
+      logger.error('Container not found:', targetContainer);
       return this;
     }
 

@@ -21,6 +21,7 @@
 // Import dependencies
 import userProgress from '../features/user/userProgress.js';
 import enhancedProgressTracker from './EnhancedProgressTracker.js';
+import logger from './logger.js';
 
 class ProgressService {
   constructor(options = {}) {
@@ -160,7 +161,7 @@ class ProgressService {
       
       return true;
     } catch (error) {
-      console.error('Error tracking activity start:', error);
+      logger.error('Error tracking activity start:', error);
       return false;
     }
   }
@@ -191,7 +192,7 @@ class ProgressService {
       // Get session from cache
       const session = this.getCache(`session_${activityId}`);
       if (!session) {
-        console.warn(`No session found for activity ${activityId}`);
+        logger.warn(`No session found for activity ${activityId}`);
       }
       
       const subjectId = session?.subjectId || metadata.subjectId || 'general';
@@ -242,7 +243,7 @@ class ProgressService {
       
       return true;
     } catch (error) {
-      console.error('Error tracking activity completion:', error);
+      logger.error('Error tracking activity completion:', error);
       return false;
     }
   }
@@ -275,7 +276,7 @@ class ProgressService {
       
       return true; // No previous completion found
     } catch (error) {
-      console.error('Error checking first completion:', error);
+      logger.error('Error checking first completion:', error);
       return true; // Default to true on error
     }
   }
@@ -312,7 +313,7 @@ class ProgressService {
       
       return progress;
     } catch (error) {
-      console.error(`Error getting subject progress for ${subjectId}:`, error);
+      logger.error(`Error getting subject progress for ${subjectId}:`, error);
       return null;
     }
   }
@@ -340,7 +341,7 @@ class ProgressService {
       
       return progressData;
     } catch (error) {
-      console.error('Error getting all subjects progress:', error);
+      logger.error('Error getting all subjects progress:', error);
       return {};
     }
   }
@@ -354,7 +355,7 @@ class ProgressService {
     try {
       const userData = this.userProgress.userData;
       if (!userData || !userData.progress) {
-        console.warn('No user data available for progress calculation');
+        logger.warn('No user data available for progress calculation');
         return this.getEmptyProgress(subjectId);
       }
       
@@ -431,7 +432,7 @@ class ProgressService {
         lastActivity: subjectProgress.lastActivity
       };
     } catch (error) {
-      console.error(`Error calculating progress for ${subjectId}:`, error);
+      logger.error(`Error calculating progress for ${subjectId}:`, error);
       return this.getEmptyProgress(subjectId);
     }
   }
@@ -532,7 +533,7 @@ class ProgressService {
         }
         break;
       default:
-        console.warn(`Unknown subject: ${subjectId}`);
+        logger.warn(`Unknown subject: ${subjectId}`);
         success = false;
       }
       
@@ -541,7 +542,7 @@ class ProgressService {
       
       return success;
     } catch (error) {
-      console.error(`Error updating ${subjectId} progress:`, error);
+      logger.error(`Error updating ${subjectId} progress:`, error);
       return false;
     }
   }
@@ -565,7 +566,7 @@ class ProgressService {
       
       return streak;
     } catch (error) {
-      console.error('Error updating streak:', error);
+      logger.error('Error updating streak:', error);
       return null;
     }
   }
@@ -579,7 +580,7 @@ class ProgressService {
       const profile = this.userProgress.getProfile();
       return profile.streak || { current: 0, max: 0 };
     } catch (error) {
-      console.error('Error getting current streak:', error);
+      logger.error('Error getting current streak:', error);
       return { current: 0, max: 0 };
     }
   }
@@ -612,7 +613,7 @@ class ProgressService {
       
       return newAchievements;
     } catch (error) {
-      console.error('Error checking achievements:', error);
+      logger.error('Error checking achievements:', error);
       return [];
     }
   }
@@ -625,7 +626,7 @@ class ProgressService {
     try {
       return this.userProgress.getAchievements().filter(a => a.unlocked);
     } catch (error) {
-      console.error('Error getting unlocked achievements:', error);
+      logger.error('Error getting unlocked achievements:', error);
       return [];
     }
   }
@@ -668,7 +669,7 @@ class ProgressService {
       
       return enhancedSummary;
     } catch (error) {
-      console.error('Error getting progress summary:', error);
+      logger.error('Error getting progress summary:', error);
       return null;
     }
   }
@@ -690,7 +691,7 @@ class ProgressService {
       
       return analytics;
     } catch (error) {
-      console.error('Error getting progress analytics:', error);
+      logger.error('Error getting progress analytics:', error);
       return null;
     }
   }
@@ -729,7 +730,7 @@ class ProgressService {
         throw new Error(`Unsupported export format: ${format}`);
       }
     } catch (error) {
-      console.error('Error exporting progress:', error);
+      logger.error('Error exporting progress:', error);
       return null;
     }
   }
@@ -818,7 +819,7 @@ class ProgressService {
         try {
           callback(data);
         } catch (error) {
-          console.error(`Error in event listener for ${eventType}:`, error);
+          logger.error(`Error in event listener for ${eventType}:`, error);
         }
       });
     }

@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'path';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   test: {
@@ -28,7 +30,8 @@ export default defineConfig({
         '**/mockData/**',
         'scripts/',
         'docs/',
-        '.github/'
+        '.github/',
+        'dist/'
       ],
       thresholds: {
         branches: 80,
@@ -51,11 +54,27 @@ export default defineConfig({
     }
   },
   
-  // Resolve configuration for imports
+  // Resolve configuration for imports - aligned with vite.config.js
   resolve: {
     alias: {
-      '@': '/src',
-      '@test': '/tests'
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
+      '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
+      '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
+      '@features': fileURLToPath(new URL('./src/features', import.meta.url)),
+      '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
+      '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
+      '@templates': fileURLToPath(new URL('./src/templates', import.meta.url)),
+      '@config': fileURLToPath(new URL('./src/config.js', import.meta.url)),
+      '@public': fileURLToPath(new URL('./public', import.meta.url)),
+      '@test': fileURLToPath(new URL('./tests', import.meta.url))
     }
+  },
+
+  // Environment variables - align with vite.config.js
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
+    __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+    __PROD__: JSON.stringify(process.env.NODE_ENV === 'production')
   }
 });

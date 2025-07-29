@@ -179,6 +179,48 @@ class Logger {
       console.log(...this.formatMessage('PERF', message, args));
     }
   }
+
+  /**
+   * Log navigation events
+   * @param {string} message
+   * @param {...any} args
+   */
+  nav(message, ...args) {
+    if (this.shouldLog(LOG_LEVELS.DEBUG)) {
+      console.log(...this.formatMessage('NAV', message, args));
+    }
+  }
+
+  /**
+   * Log theme-related events
+   * @param {string} message
+   * @param {...any} args
+   */
+  theme(message, ...args) {
+    if (this.shouldLog(LOG_LEVELS.DEBUG)) {
+      console.log(...this.formatMessage('THEME', message, args));
+    }
+  }
+
+  /**
+   * Log component lifecycle events
+   * @param {string} message
+   * @param {...any} args
+   */
+  component(message, ...args) {
+    if (this.shouldLog(LOG_LEVELS.DEBUG)) {
+      console.log(...this.formatMessage('COMP', message, args));
+    }
+  }
+
+  /**
+   * Convenience method for console.log replacement
+   * @param {...any} args
+   */
+  log(...args) {
+    // Redirect to info level
+    this.info(...args);
+  }
 }
 
 // Create singleton instance

@@ -108,10 +108,26 @@ lighthouse:
 	fi
 	@echo "${GREEN}✓ Lighthouse test completed${NC}"
 
-## dev-server: Start local development server
+## dev: Start Vite development server (modern)
+dev:
+	@echo "${YELLOW}Starting Vite development server...${NC}"
+	npm run dev
+
+## dev-server: Start local development server (legacy/compatibility)
 dev-server:
-	@echo "${YELLOW}Starting development server...${NC}"
+	@echo "${YELLOW}Starting legacy development server...${NC}"
 	python3 -m http.server $(PORT)
+
+## build: Build project with Vite
+build:
+	@echo "${YELLOW}Building project with Vite...${NC}"
+	npm run build
+	@echo "${GREEN}✓ Build completed${NC}"
+
+## preview: Preview production build
+preview:
+	@echo "${YELLOW}Starting preview server...${NC}"
+	npm run preview
 
 ## generate-subjects: Generate new subject pages
 generate-subjects:
@@ -148,6 +164,7 @@ clean:
 	@echo "${YELLOW}Cleaning build artifacts...${NC}"
 	rm -rf node_modules
 	rm -rf coverage
+	rm -rf dist
 	rm -f server.pid
 	docker-compose down -v
 	@echo "${GREEN}✓ Cleanup completed${NC}"

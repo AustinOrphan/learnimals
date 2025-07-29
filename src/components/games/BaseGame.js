@@ -477,15 +477,17 @@ export default class BaseGame {
       return;
     }
     
-    // Prevent zoom on double tap for game canvas
-    let lastTouchEnd = 0;
-    this.canvas.addEventListener('touchend', (e) => {
-      const now = (new Date()).getTime();
-      if (now - lastTouchEnd <= 300) {
-        e.preventDefault();
-      }
-      lastTouchEnd = now;
-    }, { passive: false });
+    // Prevent zoom on double tap for game canvas (only if canvas exists)
+    if (this.canvas) {
+      let lastTouchEnd = 0;
+      this.canvas.addEventListener('touchend', (e) => {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, { passive: false });
+    }
     
     // Optimize viewport for mobile gaming
     this.setupMobileViewport();
@@ -526,8 +528,10 @@ export default class BaseGame {
    * Setup mobile-specific event listeners
    */
   setupMobileEventListeners() {
-    // Prevent context menu on long press
-    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    // Prevent context menu on long press (only if canvas exists)
+    if (this.canvas) {
+      this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
     
     // Handle orientation changes
     window.addEventListener('orientationchange', () => {
@@ -536,7 +540,7 @@ export default class BaseGame {
     
     // Handle focus changes for mobile keyboards
     window.addEventListener('resize', () => {
-      if (this.isMobile) {
+      if (this.isMobile && this.canvas) {
         setTimeout(() => this.resizeCanvas(), 100);
       }
     });
@@ -1350,9 +1354,11 @@ export default class BaseGame {
       this.pause();
     }
     
-    // Resize canvas after orientation change
+    // Resize canvas after orientation change (only if canvas exists)
     setTimeout(() => {
-      this.resizeCanvas();
+      if (this.canvas) {
+        this.resizeCanvas();
+      }
       this.onOrientationChange();
     }, 100);
     

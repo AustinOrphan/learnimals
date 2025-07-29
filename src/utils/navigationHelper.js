@@ -1,17 +1,35 @@
 // Navigation Helper for Learnimals
 // Provides absolute URL resolution for navigation links
 
-// Use shared logger factory created by navbarLoader.js
-const logger = window.createLogger ? window.createLogger('NavigationHelper') : {
-  debug: (...args) => {
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      console.log('[NavigationHelper DEBUG]', ...args);
-    }
-  },
-  error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
-  warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
-  info: (...args) => console.info('[NavigationHelper INFO]', ...args)
+// Inline logger fallback for compatibility with regular script loading
+// This avoids ES6 imports which would break non-module script usage
+const createInlineLogger = (prefix) => {
+  // Use global logger if available, fallback to console
+  const globalLogger = typeof window !== 'undefined' && window.logger;
+  const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+  
+  if (globalLogger) {
+    return {
+      debug: (...args) => globalLogger.debug(`[${prefix}]`, ...args),
+      error: (...args) => globalLogger.error(`[${prefix}]`, ...args),
+      warn: (...args) => globalLogger.warn(`[${prefix}]`, ...args),
+      info: (...args) => globalLogger.info(`[${prefix}]`, ...args),
+    };
+  }
+  
+  // Fallback for environments without global logger
+  return {
+    debug: (...args) => isDev && console.log(`[${prefix} DEBUG]`, ...args),
+    error: (...args) => console.error(`[${prefix} ERROR]`, ...args),
+    warn: (...args) => console.warn(`[${prefix} WARN]`, ...args),
+    info: (...args) => console.info(`[${prefix} INFO]`, ...args),
+  };
 };
+
+// Use shared logger factory created by navbarLoader.js, or fallback to inline logger
+const logger = (typeof window !== 'undefined' && window.createLogger) 
+  ? window.createLogger('NavigationHelper') 
+  : createInlineLogger('NavigationHelper');
 
 class NavigationHelper {
   constructor() {

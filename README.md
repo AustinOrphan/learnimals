@@ -1,13 +1,12 @@
 # 🎮 Learnimals - Educational Games for Children
 
 [![CI/CD Pipeline](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/ci.yml)
-[![Deploy](https://github.com/AustinOrphan/learnimals/actions/workflows/deploy.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/deploy.yml)
 [![Security Scan](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml)
-[![Monitoring](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml)
-[![codecov](https://codecov.io/gh/AustinOrphan/learnimals/branch/main/graph/badge.svg)](https://codecov.io/gh/AustinOrphan/learnimals)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Learnimals is an interactive educational web application featuring fun games and activities designed to help children learn core subjects through play. Each subject area is represented by a friendly animal character, creating an engaging and memorable learning experience.
+
+**Note**: This is a static HTML/CSS/JavaScript application currently used for local development only. See [FUTURE-FEATURES.md](FUTURE-FEATURES.md) for planned deployment and infrastructure features.
 
 ## 🌟 Features
 
@@ -26,10 +25,10 @@ Learnimals is an interactive educational web application featuring fun games and
 
 ### Prerequisites
 
-- Node.js 18+ (use `.nvmrc` for exact version)
-- npm or yarn
-- Python 3 (for local development server)
-- Modern web browser (Chrome, Firefox, Edge, etc.)
+- Node.js 18+
+- npm
+- Python 3 (for local development server) or any static file server
+- Modern web browser
 
 ### Installation
 
@@ -42,11 +41,14 @@ Learnimals is an interactive educational web application featuring fun games and
 2. Install dependencies
    ```bash
    npm install
+   # Note: npm ci currently fails due to package-lock.json sync issues
    ```
 
 3. Run tests
    ```bash
    npm test
+   # Note: Tests may fail with "Cannot find module 'es-errors/type'" error
+   # This is a known dependency issue that needs resolution
    ```
 
 4. Start a local web server
@@ -58,33 +60,29 @@ Learnimals is an interactive educational web application featuring fun games and
    npx serve src/pages
    ```
 
-5. Open `http://localhost:8080` in your browser
+5. Open `http://localhost:8080/src/pages/index.html` in your browser
 
 ### CI/CD Pipeline
 
-This project uses GitHub Actions for continuous integration and deployment:
+This project includes GitHub Actions workflows that are currently being fine-tuned:
 
 - **CI Pipeline**: Runs on every push and PR
   - ESLint for code quality
-  - Vitest for unit testing (80% coverage threshold)
-  - HTML validation
-  - PWA audit with Lighthouse
+  - Vitest for unit testing (though tests have dependency issues)
   - Security scanning
   - Multi-version Node.js testing (18, 20)
 
-- **Deployment**: Automatic deployment to GitHub Pages on main branch
-- **Release Management**: Automated versioning and changelog generation
-- **Dependency Updates**: Weekly automated dependency checks
+- **Other Workflows**: Various workflows exist for security, accessibility, and deployment but are not yet fully configured
 
 ### Development Workflow
 
 1. Create a feature branch
 2. Make your changes
-3. Run tests locally: `npm test`
+3. Run linting: `make lint` or `npm run lint`
 4. Commit changes (pre-commit hooks will run)
 5. Push and create a PR
-6. CI pipeline will validate changes
-7. Merge to main triggers deployment
+6. CI pipeline will attempt validation
+7. Merge to main when ready
 
 ### Using Make Commands
 
@@ -92,12 +90,15 @@ This project uses GitHub Actions for continuous integration and deployment:
 # View all available commands
 make help
 
-# Common development tasks
-make install          # Install dependencies
-make test            # Run tests
-make lint            # Run ESLint
+# Working development commands
 make dev-server      # Start development server
-make docker-run      # Run with Docker
+make lint            # Run ESLint (shows ~200 errors)
+make lint-fix        # Run ESLint with auto-fix
+make generate-subjects  # Generate new subject pages
+
+# Commands with issues
+make install         # Fails - use npm install instead
+make test            # Fails - missing es-errors module
 ```
 
 ## 🏗️ Architecture
@@ -116,125 +117,43 @@ learnimals/
 │   └── pages/              # Main application pages
 ├── public/                 # Static assets
 ├── tests/                  # Test files
-├── .github/workflows/      # CI/CD pipelines
-├── docker/                 # Docker configurations
-└── k8s/                    # Kubernetes manifests
+├── .github/workflows/      # CI/CD pipelines (being fine-tuned)
+├── docker/                 # Docker configurations (not currently used)
+└── k8s/                    # Kubernetes manifests (not currently used)
 ```
 
 ### Technology Stack
 
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
-- **Testing**: Vitest, Happy DOM
-- **CI/CD**: GitHub Actions, Docker, Kubernetes
-- **Monitoring**: Prometheus, Grafana, Lighthouse CI
-- **Security**: CodeQL, Snyk, Trivy
+- **Testing**: Vitest with jsdom environment (has dependency issues)
+- **Code Quality**: ESLint
+- **CI/CD**: GitHub Actions (workflows being fine-tuned)
+- **Local Development**: Python HTTP server or npx serve
 
 ## 🧪 Testing
 
+**Note**: Tests currently fail due to missing `es-errors` module dependency. This needs to be resolved before tests can run properly.
+
 ```bash
-# Run all tests
+# Run all tests (currently fails)
 npm test
 
-# Run tests in watch mode
-npm run test:watch
-
-# Run specific test suites
-npm test -- tests/unit/
-npm test -- tests/integration/
-
-# Run with coverage
-npm test -- --coverage
-npm run test:unit
-npm run test:navigation
-npm run test:integration
-
-# Generate coverage report
-npm run test:coverage
+# Available test commands (when working):
+npm run test:watch          # Run tests in watch mode
+npm run test:unit           # Run unit tests
+npm run test:components     # Run component tests
+npm run test:integration    # Run integration tests
+npm run test:coverage       # Generate coverage report
 ```
 
-## 🐳 Docker Support
-
-### Local Development with Docker
-
-```bash
-# Build and run with Docker Compose
-make docker-run
-
-# Stop containers
-make docker-stop
-
-# View logs
-make docker-logs
-```
-
-### Production Docker Build
-
-```bash
-# Build production image
-docker build -t learnimals:latest .
-
-# Run production container
-docker run -p 8080:8080 learnimals:latest
-```
-
-## 🚀 Deployment
-
-The project uses a **Rolling Deployment** strategy with multi-environment support:
-
-- **Development**: Feature testing and rapid iteration
-- **Staging**: Integration testing and QA
-- **Production**: Live application with high availability
-
-### Deployment Commands
-
-```bash
-# Deploy to staging
-make deploy-staging
-
-# Deploy to production (requires approval)
-make deploy-production
-
-# Validate Kubernetes manifests
-make validate-k8s
-```
-
-See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed deployment procedures.
 
 ## 🔒 Security
 
-- **Continuous Security Scanning**: Daily vulnerability scans
-- **Dependency Management**: Automated updates with Dependabot
-- **Container Security**: Multi-stage builds with security hardening
-- **Network Policies**: Kubernetes-native traffic control
-- **HTTPS Only**: Enforced TLS with HSTS
+The project includes security configurations in GitHub Actions workflows (still being fine-tuned):
 
-## 📊 Monitoring & Performance
-
-- **Health Checks**: Continuous application monitoring
-- **Performance Metrics**: Core Web Vitals tracking
-- **Accessibility**: WCAG 2.1 AA compliance
-- **User Journey Testing**: Synthetic monitoring
-
-## 🔒 Security
-
-### Security Scanning
-
-Our CI/CD pipeline includes comprehensive security scanning:
-
-- **🔍 SAST Analysis**: CodeQL and Semgrep for code vulnerabilities
-- **📦 Dependency Scanning**: npm audit and Snyk for package vulnerabilities  
-- **🐳 Container Security**: Trivy and Grype for Docker image scanning
-- **🔐 Secrets Detection**: Gitleaks and TruffleHog prevent credential leaks
-- **🏗️ Infrastructure Security**: Checkov and Terrascan for IaC scanning
-- **📄 License Compliance**: Automated license checking with FOSSA
-
-### Security Features
-
-- **Content Security Policy (CSP)** enforced via nginx
-- **XSS Prevention** with input sanitization utilities
-- **Security Headers** for defense in depth
-- **Non-root Container** execution for reduced attack surface
-- **Regular Updates** of dependencies and base images
+- **Security Scanning**: Various security scanning tools configured but not fully operational
+- **XSS Prevention**: Input sanitization utilities in the codebase
+- **Dependency Management**: npm audit available via `npm audit`
 
 ### Reporting Security Issues
 
@@ -264,9 +183,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Support
 
-- **Documentation**: [docs/](docs/)
+- **Documentation**: See CLAUDE.md for development guidance
 - **Issues**: [GitHub Issues](https://github.com/AustinOrphan/learnimals/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/AustinOrphan/learnimals/discussions)
 
 ---
 

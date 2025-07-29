@@ -5,6 +5,7 @@
  */
 
 import { AvatarRenderer } from '../../features/profile/avatarSystem.js';
+import logger from '../../utils/logger.js';
 
 class Avatar {
   constructor(containerId, options = {}) {
@@ -26,7 +27,7 @@ class Avatar {
   
   init() {
     if (!this.container) {
-      console.error(`Container ${this.containerId} not found`);
+      logger.error(`Container ${this.containerId} not found`);
       return;
     }
     

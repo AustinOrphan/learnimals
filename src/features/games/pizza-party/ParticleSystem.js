@@ -291,25 +291,25 @@ class Particle {
     
     // Draw based on type
     switch (this.type) {
-      case 'burst':
-      case 'sparkle':
-        this.drawCircle(ctx);
-        break;
+    case 'burst':
+    case 'sparkle':
+      this.drawCircle(ctx);
+      break;
         
-      case 'confetti':
-        this.drawConfetti(ctx);
-        break;
+    case 'confetti':
+      this.drawConfetti(ctx);
+      break;
         
-      case 'text':
-        this.drawText(ctx);
-        break;
+    case 'text':
+      this.drawText(ctx);
+      break;
         
-      case 'steam':
-        this.drawSteam(ctx);
-        break;
+    case 'steam':
+      this.drawSteam(ctx);
+      break;
         
-      default:
-        this.drawCircle(ctx);
+    default:
+      this.drawCircle(ctx);
     }
     
     ctx.restore();

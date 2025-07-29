@@ -2,6 +2,7 @@
 // Reusable form component for consistent UI and validation across the site
 
 import BaseComponent from '../BaseComponent.js';
+import logger from '../../utils/logger.js';
 
 class FormComponent extends BaseComponent {
   /**
@@ -378,7 +379,7 @@ class FormComponent extends BaseComponent {
         }
       } catch (err) {
         isValid = false;
-        console.error('Validation error:', err);
+        logger.error('Validation error:', err);
       }
     }
     
@@ -408,7 +409,7 @@ class FormComponent extends BaseComponent {
       try {
         this.options.onSubmit(data, form);
       } catch (err) {
-        console.error('Submit error:', err);
+        logger.error('Submit error:', err);
         
         // Show error
         if (!generalError) {
@@ -435,7 +436,7 @@ class FormComponent extends BaseComponent {
       const data = this.getFormData();
       localStorage.setItem(this.options.storageKey, JSON.stringify(data));
     } catch (err) {
-      console.error('Failed to save form data to localStorage:', err);
+      logger.error('Failed to save form data to localStorage:', err);
     }
   }
 
@@ -459,7 +460,7 @@ class FormComponent extends BaseComponent {
         });
       }
     } catch (err) {
-      console.error('Failed to load form data from localStorage:', err);
+      logger.error('Failed to load form data from localStorage:', err);
     }
   }
 

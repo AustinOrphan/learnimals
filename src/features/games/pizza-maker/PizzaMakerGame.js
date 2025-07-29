@@ -3,6 +3,7 @@
  * Players fulfill customer orders by dragging the correct toppings
  */
 import { animationDelay, animationSequence } from '../../../utils/AnimationManager.js';
+import logger from '../../../utils/logger.js';
 export default class PizzaMakerGame {
   constructor() {
     // Game state
@@ -693,7 +694,7 @@ export default class PizzaMakerGame {
       oscillator.start(this.audioContext.currentTime);
       oscillator.stop(this.audioContext.currentTime + (type === 'levelComplete' ? 0.6 : type === 'gameOver' ? 0.5 : 0.3));
     } catch (error) {
-      console.log('Audio not available:', error);
+      logger.warn('Audio not available:', error);
     }
   }
 
@@ -749,7 +750,7 @@ export default class PizzaMakerGame {
       try {
         this.audioContext.close();
       } catch (error) {
-        console.log('Error closing audio context:', error);
+        logger.warn('Error closing audio context:', error);
       }
     }
 
@@ -783,6 +784,6 @@ export default class PizzaMakerGame {
     this.nextLevelButton = null;
     this.restartButton = null;
 
-    console.log('PizzaMakerGame destroyed and cleaned up');
+    logger.info('PizzaMakerGame destroyed and cleaned up');
   }
 }

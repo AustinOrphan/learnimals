@@ -8,6 +8,7 @@
 import BaseComponent from '../BaseComponent.js';
 import CharacterRenderer from './CharacterRenderer.js';
 import { getAllDefaultCharacters, generateCharacterMessage } from '../../utils/characterIntegration.js';
+import logger from '../../utils/logger.js';
 
 class CharacterGallery extends BaseComponent {
   constructor(options = {}) {
@@ -604,7 +605,7 @@ class CharacterGallery extends BaseComponent {
   
   learnMoreAbout(characterId) {
     // TODO: Open detailed character information modal
-    console.log(`Learn more about character: ${characterId}`);
+    logger.info(`Learn more about character: ${characterId}`);
   }
   
   // Lifecycle Methods

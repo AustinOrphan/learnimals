@@ -209,15 +209,15 @@ class CharacterRenderer extends BaseComponent {
     const density = this.character.appearance.patterns.density;
     
     switch (patternType) {
-      case 'stripes':
-        this.createStripesPattern(defs, density);
-        break;
-      case 'spots':
-        this.createSpotsPattern(defs, density);
-        break;
-      case 'patches':
-        this.createPatchesPattern(defs, density);
-        break;
+    case 'stripes':
+      this.createStripesPattern(defs, density);
+      break;
+    case 'spots':
+      this.createSpotsPattern(defs, density);
+      break;
+    case 'patches':
+      this.createPatchesPattern(defs, density);
+      break;
     }
   }
 
@@ -358,23 +358,23 @@ class CharacterRenderer extends BaseComponent {
     let path;
     
     switch (species) {
-      case 'cat':
-        path = this.generateCatBody(bodyType);
-        break;
-      case 'dog':
-        path = this.generateDogBody(bodyType);
-        break;
-      case 'shark':
-        path = this.generateSharkBody(bodyType);
-        break;
-      case 'panda':
-        path = this.generatePandaBody(bodyType);
-        break;
-      case 'parrot':
-        path = this.generateParrotBody(bodyType);
-        break;
-      default:
-        path = this.generateGenericBody(bodyType);
+    case 'cat':
+      path = this.generateCatBody(bodyType);
+      break;
+    case 'dog':
+      path = this.generateDogBody(bodyType);
+      break;
+    case 'shark':
+      path = this.generateSharkBody(bodyType);
+      break;
+    case 'panda':
+      path = this.generatePandaBody(bodyType);
+      break;
+    case 'parrot':
+      path = this.generateParrotBody(bodyType);
+      break;
+    default:
+      path = this.generateGenericBody(bodyType);
     }
     
     this.pathCache.set(cacheKey, path);
@@ -460,7 +460,7 @@ class CharacterRenderer extends BaseComponent {
   renderEyes() {
     const eyeType = this.character.appearance.features.eyes;
     const eyeSize = this.character.appearance.features.eyeSize === 'large' ? 20 : 
-                   this.character.appearance.features.eyeSize === 'small' ? 12 : 16;
+      this.character.appearance.features.eyeSize === 'small' ? 12 : 16;
     
     const leftEye = this.createEye(175, 200, eyeSize, eyeType);
     const rightEye = this.createEye(225, 200, eyeSize, eyeType);
@@ -484,58 +484,58 @@ class CharacterRenderer extends BaseComponent {
     });
     
     switch (type) {
-      case 'round':
-        eyeGroup.appendChild(this.createSVGElement('circle', {
-          cx: '0',
-          cy: '0',
-          r: size,
-          fill: 'white',
-          stroke: '#333'
-        }));
-        eyeGroup.appendChild(this.createSVGElement('circle', {
-          cx: '0',
-          cy: '0',
-          r: size * 0.6,
-          fill: this.character.appearance.colors.eyes,
-          class: 'eye-pupil'
-        }));
-        break;
+    case 'round':
+      eyeGroup.appendChild(this.createSVGElement('circle', {
+        cx: '0',
+        cy: '0',
+        r: size,
+        fill: 'white',
+        stroke: '#333'
+      }));
+      eyeGroup.appendChild(this.createSVGElement('circle', {
+        cx: '0',
+        cy: '0',
+        r: size * 0.6,
+        fill: this.character.appearance.colors.eyes,
+        class: 'eye-pupil'
+      }));
+      break;
         
-      case 'star':
-        eyeGroup.appendChild(this.createStarShape(0, 0, size, 'white'));
-        eyeGroup.appendChild(this.createSVGElement('circle', {
-          cx: '0',
-          cy: '0',
-          r: size * 0.5,
-          fill: this.character.appearance.colors.eyes
-        }));
-        break;
+    case 'star':
+      eyeGroup.appendChild(this.createStarShape(0, 0, size, 'white'));
+      eyeGroup.appendChild(this.createSVGElement('circle', {
+        cx: '0',
+        cy: '0',
+        r: size * 0.5,
+        fill: this.character.appearance.colors.eyes
+      }));
+      break;
         
-      case 'heart':
-        eyeGroup.appendChild(this.createHeartShape(0, 0, size, 'white'));
-        eyeGroup.appendChild(this.createSVGElement('circle', {
-          cx: '0',
-          cy: '2',
-          r: size * 0.4,
-          fill: this.character.appearance.colors.eyes
-        }));
-        break;
+    case 'heart':
+      eyeGroup.appendChild(this.createHeartShape(0, 0, size, 'white'));
+      eyeGroup.appendChild(this.createSVGElement('circle', {
+        cx: '0',
+        cy: '2',
+        r: size * 0.4,
+        fill: this.character.appearance.colors.eyes
+      }));
+      break;
         
-      default:
-        // Default to round eyes
-        eyeGroup.appendChild(this.createSVGElement('circle', {
-          cx: '0',
-          cy: '0',
-          r: size,
-          fill: 'white',
-          stroke: '#333'
-        }));
-        eyeGroup.appendChild(this.createSVGElement('circle', {
-          cx: '0',
-          cy: '0',
-          r: size * 0.6,
-          fill: this.character.appearance.colors.eyes
-        }));
+    default:
+      // Default to round eyes
+      eyeGroup.appendChild(this.createSVGElement('circle', {
+        cx: '0',
+        cy: '0',
+        r: size,
+        fill: 'white',
+        stroke: '#333'
+      }));
+      eyeGroup.appendChild(this.createSVGElement('circle', {
+        cx: '0',
+        cy: '0',
+        r: size * 0.6,
+        fill: this.character.appearance.colors.eyes
+      }));
     }
     
     return eyeGroup;
@@ -564,45 +564,45 @@ class CharacterRenderer extends BaseComponent {
     });
     
     switch (type) {
-      case 'smile':
-        mouthGroup.appendChild(this.createSVGElement('path', {
-          d: 'M -15 0 Q 0 15 15 0',
-          stroke: '#333',
-          'stroke-width': '3',
-          fill: 'none',
-          'stroke-linecap': 'round'
-        }));
-        break;
+    case 'smile':
+      mouthGroup.appendChild(this.createSVGElement('path', {
+        d: 'M -15 0 Q 0 15 15 0',
+        stroke: '#333',
+        'stroke-width': '3',
+        fill: 'none',
+        'stroke-linecap': 'round'
+      }));
+      break;
         
-      case 'grin':
-        mouthGroup.appendChild(this.createSVGElement('path', {
-          d: 'M -20 0 Q 0 20 20 0',
-          stroke: '#333',
-          'stroke-width': '3',
-          fill: 'pink',
-          'stroke-linecap': 'round'
-        }));
-        break;
+    case 'grin':
+      mouthGroup.appendChild(this.createSVGElement('path', {
+        d: 'M -20 0 Q 0 20 20 0',
+        stroke: '#333',
+        'stroke-width': '3',
+        fill: 'pink',
+        'stroke-linecap': 'round'
+      }));
+      break;
         
-      case 'serious':
-        mouthGroup.appendChild(this.createSVGElement('line', {
-          x1: '-12',
-          y1: '0',
-          x2: '12',
-          y2: '0',
-          stroke: '#333',
-          'stroke-width': '3',
-          'stroke-linecap': 'round'
-        }));
-        break;
+    case 'serious':
+      mouthGroup.appendChild(this.createSVGElement('line', {
+        x1: '-12',
+        y1: '0',
+        x2: '12',
+        y2: '0',
+        stroke: '#333',
+        'stroke-width': '3',
+        'stroke-linecap': 'round'
+      }));
+      break;
         
-      default:
-        mouthGroup.appendChild(this.createSVGElement('path', {
-          d: 'M -15 0 Q 0 15 15 0',
-          stroke: '#333',
-          'stroke-width': '3',
-          fill: 'none'
-        }));
+    default:
+      mouthGroup.appendChild(this.createSVGElement('path', {
+        d: 'M -15 0 Q 0 15 15 0',
+        stroke: '#333',
+        'stroke-width': '3',
+        fill: 'none'
+      }));
     }
     
     return mouthGroup;
@@ -778,15 +778,15 @@ class CharacterRenderer extends BaseComponent {
     if (!body) return;
     
     switch (this.animationState) {
-      case 'idle':
-        this.applyIdleAnimation(body, eyes);
-        break;
-      case 'happy':
-        this.applyHappyAnimation(body, eyes);
-        break;
-      case 'thinking':
-        this.applyThinkingAnimation(body, eyes);
-        break;
+    case 'idle':
+      this.applyIdleAnimation(body, eyes);
+      break;
+    case 'happy':
+      this.applyHappyAnimation(body, eyes);
+      break;
+    case 'thinking':
+      this.applyThinkingAnimation(body, eyes);
+      break;
     }
   }
 

@@ -85,8 +85,8 @@ export default [
     rules: {
       ...js.configs.recommended.rules,
       
-      // Allow console.log for development/debugging
-      'no-console': 'off',
+      // Disallow console statements (use logger instead)
+      'no-console': 'warn',
       
       // Allow unused variables starting with underscore
       'no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],

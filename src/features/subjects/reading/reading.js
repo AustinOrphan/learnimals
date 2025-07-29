@@ -11,9 +11,9 @@ import WordScrambleGame from '/src/features/games/word-scramble/wordScramble.js'
 // Define feature cards data for the reading page
 const readingFeatureCards = [
   {
-    title: "Stories to Read",
-    description: "Choose from exciting stories with comprehension questions",
-    icon: "📚",
+    title: 'Stories to Read',
+    description: 'Choose from exciting stories with comprehension questions',
+    icon: '📚',
     content: `
       <div class="story-cards-container">
         <div class="story-card">
@@ -347,9 +347,9 @@ const readingFeatureCards = [
     isLinked: false
   },
   {
-    title: "Word Games with Ruby",
-    description: "Practice your word skills with these fun games!",
-    icon: "🎮",
+    title: 'Word Games with Ruby',
+    description: 'Practice your word skills with these fun games!',
+    icon: '🎮',
     content: `
       <div class="word-scramble-container">
         <h3>Ruby's Word Scramble</h3>

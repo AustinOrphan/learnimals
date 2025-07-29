@@ -8,6 +8,7 @@
 
 import { escapeHTML } from './htmlEscape.js';
 import { getCharacterBySubject, generateCharacterMessage } from './characterIntegration.js';
+import logger from './logger.js';
 
 class SubjectTemplateLoader {
   /**
@@ -63,7 +64,7 @@ class SubjectTemplateLoader {
       }
             
       // Handle feature cards data for Card.js
-      let scriptsToInject = [];
+      const scriptsToInject = [];
       
       if (options.featureCardsData) {
         scriptsToInject.push(`
@@ -153,7 +154,7 @@ class SubjectTemplateLoader {
             
       return template;
     } catch (error) {
-      console.error('Error loading subject template:', error);
+      logger.error('Error loading subject template:', error);
       return null;
     }
   }
@@ -170,7 +171,7 @@ class SubjectTemplateLoader {
       document.write(content);
       document.close();
     } else {
-      console.error('Failed to render subject template');
+      logger.error('Failed to render subject template');
     }
   }
 

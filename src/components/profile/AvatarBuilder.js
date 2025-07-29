@@ -16,6 +16,7 @@ import {
 } from '../../features/profile/avatarSystem.js';
 import Avatar from './Avatar.js';
 import Modal from '../ui/Modal.js';
+import logger from '../../utils/logger.js';
 
 class AvatarBuilder {
   constructor(containerId, options = {}) {
@@ -35,12 +36,12 @@ class AvatarBuilder {
   
   init() {
     if (!this.container) {
-      console.error(`Container ${this.containerId} not found`);
+      logger.error(`Container ${this.containerId} not found`);
       return;
     }
     
     if (!this.profile) {
-      console.error('Profile is required for AvatarBuilder');
+      logger.error('Profile is required for AvatarBuilder');
       return;
     }
     
