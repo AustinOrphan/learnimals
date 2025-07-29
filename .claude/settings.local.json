@@ -84,7 +84,8 @@
       "gh label:*",
       "gh milestone:*",
       "git remote get-url:*",
-      "Bash(git cherry-pick:*)"
+      "Bash(git cherry-pick:*)",
+      "Bash(git rm:*)"
     ],
     "deny": []
   }

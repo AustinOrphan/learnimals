@@ -9,7 +9,7 @@ export default defineConfig({
     globals: true,
     
     // Setup files to run before tests
-    setupFiles: ['./tests/setup/enhanced-setup.js'],
+    setupFiles: ['./tests/setup.js'],
     
     // Test file patterns
     include: [
@@ -53,10 +53,19 @@ export default defineConfig({
     }
   },
   
-  // Resolve configuration for imports
+  // Resolve configuration for imports (must match vite.config.js)
   resolve: {
     alias: {
       '@': '/src',
+      '@components': '/src/components',
+      '@utils': '/src/utils',
+      '@services': '/src/services',
+      '@features': '/src/features',
+      '@styles': '/src/styles',
+      '@pages': '/src/pages',
+      '@templates': '/src/templates',
+      '@config': '/src/config.js',
+      '@public': '/public',
       '@test': '/tests'
     }
   }

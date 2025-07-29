@@ -160,7 +160,63 @@ beforeAll(() => {
 });
 
 // Mock fetch for API testing
-global.fetch = vi.fn();
+global.fetch = vi.fn(() => 
+  Promise.resolve({
+    ok: true,
+    status: 200,
+    text: () => Promise.resolve('<nav>Mock HTML</nav>'),
+    json: () => Promise.resolve({})
+  })
+);
+
+// Mock window.scrollTo (not available in jsdom)
+Object.defineProperty(window, 'scrollTo', {
+  value: vi.fn(),
+  writable: true
+});
+
+// Mock window.scroll (not available in jsdom)
+Object.defineProperty(window, 'scroll', {
+  value: vi.fn(),
+  writable: true
+});
+
+// Mock window.scrollBy (not available in jsdom)
+Object.defineProperty(window, 'scrollBy', {
+  value: vi.fn(),
+  writable: true
+});
+
+// Mock document.currentScript for ES6 modules
+Object.defineProperty(document, 'currentScript', {
+  value: {
+    src: 'http://localhost:8080/src/components/layout/navbarLoader.js'
+  },
+  writable: true,
+  configurable: true
+});
+
+// Mock requestAnimationFrame and cancelAnimationFrame
+global.requestAnimationFrame = vi.fn(cb => setTimeout(cb, 16));
+global.cancelAnimationFrame = vi.fn(id => clearTimeout(id));
+
+// Mock Element.prototype.animate (Web Animations API)
+Element.prototype.animate = vi.fn(() => ({
+  finished: Promise.resolve(),
+  cancel: vi.fn(),
+  finish: vi.fn(),
+  play: vi.fn(),
+  pause: vi.fn()
+}));
+
+// Mock getComputedStyle
+Object.defineProperty(window, 'getComputedStyle', {
+  value: vi.fn(() => ({
+    getPropertyValue: vi.fn(() => ''),
+    setProperty: vi.fn()
+  })),
+  writable: true
+});
 
 // Mock localStorage and sessionStorage
 Object.defineProperty(window, 'localStorage', {
