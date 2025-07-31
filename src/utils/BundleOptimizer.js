@@ -363,8 +363,8 @@ export class BundleOptimizer {
     // Set up idle prefetching
     this.setupIdlePrefetching();
 
-    // Set up route-based prefetching
-    this.setupRoutePrefetching();
+    // Set up route-based prefetching (handled in setupRouteSplitting)
+    // this.setupRoutePrefetching(); // This method doesn't exist
   }
 
   /**
