@@ -531,6 +531,8 @@ export class LazyLoadManager {
       if (this.componentCache.has(componentName)) {
         const ComponentClass = this.componentCache.get(componentName);
         await this.renderComponent(component, ComponentClass);
+        this.loadedItems.add(component);
+        this.emit('componentLoaded', { component, componentName });
         return;
       }
 
