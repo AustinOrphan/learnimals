@@ -12,6 +12,15 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { GameFactory, CharacterFactory } from '../fixtures/testDataFactory.js';
 
+// Utility function for controlled delays in tests using fake timers
+const delayWithFakeTimers = async (ms) => {
+  vi.useFakeTimers();
+  const promise = new Promise(resolve => setTimeout(resolve, ms));
+  vi.advanceTimersByTime(ms);
+  await promise;
+  vi.useRealTimers();
+};
+
 describe('Core Performance Tests', () => {
   let performanceMonitor;
   let memoryTracker;
@@ -157,7 +166,7 @@ describe('Core Performance Tests', () => {
       performanceMonitor.mark('homepage-start');
       
       // Simulate page load
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await delayWithFakeTimers(50);
       
       performanceMonitor.mark('homepage-end');
       const loadTime = performanceMonitor.measure('homepage-load', 'homepage-start', 'homepage-end');
@@ -254,7 +263,7 @@ describe('Core Performance Tests', () => {
         const renderMeasure = renderProfiler.measureRenderTime();
         
         // Simulate interaction processing
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await delayWithFakeTimers(10);
         
         const renderTime = renderMeasure.end();
         renderProfiler.recordFrame(renderTime);

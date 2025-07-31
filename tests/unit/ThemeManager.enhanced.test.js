@@ -235,11 +235,11 @@ const mockThemeManager = createMockModule({
       const previousTheme = this.currentTheme;
       const theme = this.themes.get(themeId);
 
+      // Apply theme to document (before updating currentTheme)
+      this.applyTheme(theme, previousTheme);
+
       // Update current theme
       this.currentTheme = themeId;
-
-      // Apply theme to document
-      this.applyTheme(theme);
 
       // Save to storage
       this.saveTheme(themeId);
@@ -254,13 +254,16 @@ const mockThemeManager = createMockModule({
       return this;
     }
 
-    applyTheme(theme) {
+    applyTheme(theme, previousTheme = null) {
       const root = document.documentElement;
 
       // Remove previous theme classes
-      if (this.currentTheme) {
-        root.classList.remove(`theme-${this.currentTheme}`);
-        root.classList.remove(`theme-type-${this.themes.get(this.currentTheme).type}`);
+      if (previousTheme) {
+        root.classList.remove(`theme-${previousTheme}`);
+        const prevThemeData = this.themes.get(previousTheme);
+        if (prevThemeData) {
+          root.classList.remove(`theme-type-${prevThemeData.type}`);
+        }
       }
 
       // Add new theme classes
@@ -486,7 +489,7 @@ vi.mock('../../src/features/themes/ThemeManager.js', () => mockThemeManager);
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation(query => ({
-    matches: query.includes('dark'),
+    matches: false, // Default to light theme preference
     media: query,
     onchange: null,
     addListener: vi.fn(),
@@ -677,6 +680,10 @@ describe('ThemeManager Enhanced Tests', () => {
       const handler = vi.fn();
       themeManager.on('themeChanged', handler);
       
+      // Start with light theme to test changing to dark
+      themeManager.setTheme('light');
+      vi.clearAllMocks(); // Clear the initial setTheme call
+      
       themeManager.setTheme('dark');
       
       expect(handler).toHaveBeenCalledWith({
@@ -714,6 +721,8 @@ describe('ThemeManager Enhanced Tests', () => {
     });
 
     it('should toggle between light and dark themes', () => {
+      // Ensure we start with light theme
+      themeManager.setTheme('light');
       expect(themeManager.getCurrentTheme()).toBe('light');
       
       themeManager.toggleTheme();

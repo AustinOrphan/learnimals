@@ -1,0 +1,68 @@
+name: Coverage Report
+
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  coverage-report:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage
+        continue-on-error: true
+      
+      - name: Setup Pages
+        if: ${{ hashFiles('coverage/index.html') != '' }}
+        uses: actions/configure-pages@v4
+      
+      - name: Upload coverage to Pages
+        if: ${{ hashFiles('coverage/index.html') != '' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./coverage
+      
+      - name: Deploy to GitHub Pages
+        if: ${{ hashFiles('coverage/index.html') != '' }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
+      - name: Create coverage badge
+        if: ${{ hashFiles('coverage/coverage-summary.json') != '' }}
+        run: |
+          # Extract coverage percentage
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct' 2>/dev/null || echo "0")
+          
+          # Determine badge color
+          if (( $(echo "$COVERAGE >= 80" | bc -l) )); then
+            COLOR="brightgreen"
+          elif (( $(echo "$COVERAGE >= 60" | bc -l) )); then
+            COLOR="yellow"
+          else
+            COLOR="red"
+          fi
+          
+          # Create badge URL
+          BADGE_URL="https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}"
+          
+          echo "Coverage: $COVERAGE%"
+          echo "Badge URL: $BADGE_URL"
+          
+          # Update README with badge (if needed)
+          echo "::notice title=Coverage Badge::![Coverage](${BADGE_URL})"

@@ -5,6 +5,15 @@
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
+// Utility function for controlled delays in tests using fake timers
+const delayWithFakeTimers = async (ms) => {
+  vi.useFakeTimers();
+  const promise = new Promise(resolve => setTimeout(resolve, ms));
+  vi.advanceTimersByTime(ms);
+  await promise;
+  vi.useRealTimers();
+};
+
 describe('NavbarLoader', () => {
   let mockFetch;
 
@@ -80,7 +89,7 @@ describe('NavbarLoader', () => {
       await import('../../src/components/layout/navbarLoader.js');
       
       // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await delayWithFakeTimers(100);
 
       // Should fetch from correct relative path
       expect(mockFetch).toHaveBeenCalledWith(
@@ -95,7 +104,7 @@ describe('NavbarLoader', () => {
       await import('../../src/components/layout/navbarLoader.js');
       
       // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await delayWithFakeTimers(100);
 
       // Should have navbar content injected
       expect(placeholder.innerHTML).toContain('navbar');
@@ -113,7 +122,7 @@ describe('NavbarLoader', () => {
       await import('../../src/components/layout/navbarLoader.js');
       
       // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await delayWithFakeTimers(100);
 
       expect(eventFired).toBe(true);
     });
@@ -125,7 +134,7 @@ describe('NavbarLoader', () => {
       // Should not throw when import fails
       expect(async () => {
         await import('../../src/components/layout/navbarLoader.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await delayWithFakeTimers(100);
       }).not.toThrow();
     });
 
@@ -137,7 +146,7 @@ describe('NavbarLoader', () => {
       // Should not throw when placeholder missing
       expect(async () => {
         await import('../../src/components/layout/navbarLoader.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await delayWithFakeTimers(100);
       }).not.toThrow();
     });
   });
@@ -148,7 +157,7 @@ describe('NavbarLoader', () => {
       await import('../../src/components/layout/navbarLoader.js');
       
       // Wait for execution
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await delayWithFakeTimers(100);
 
       // Should have logged debug message (in test environment)
       // Note: Actual logging behavior depends on environment detection
@@ -168,7 +177,7 @@ describe('NavbarLoader', () => {
 
       // Should call debug in localhost environment
       const consoleSpy = vi.spyOn(console, 'log');
-      mockLogger.debug('test message');
+      mock_Logger.debug('test message');
       
       expect(consoleSpy).toHaveBeenCalledWith('[NavbarLoader DEBUG]', 'test message');
     });
@@ -201,7 +210,7 @@ describe('NavbarLoader', () => {
         await import('../../src/components/layout/navbarLoader.js');
         
         // Wait for execution
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await delayWithFakeTimers(50);
 
         // Check fetch was called with correct path
         expect(mockFetch).toHaveBeenCalledWith(testCase.expectedPath);

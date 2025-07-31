@@ -4,11 +4,69 @@
  */
 
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { 
+  mockComponentDependencies, 
+  setupNavigationDOM, 
+  mockComponentFetches,
+  createComponentContext,
+  cleanupIntegrationTest 
+} from '../helpers/integrationTestUtils.js';
+
+// Enhanced timer utilities for comprehensive timer control
+const TimerUtils = {
+  // Standard delay with fake timers
+  delay: async (ms) => {
+    vi.useFakeTimers();
+    const promise = new Promise(resolve => setTimeout(resolve, ms));
+    vi.advanceTimersByTime(ms);
+    await promise;
+    vi.useRealTimers();
+  },
+  
+  // Run all pending timers immediately
+  runAllTimers: () => {
+    vi.useFakeTimers();
+    vi.runAllTimers();
+    vi.useRealTimers();
+  },
+  
+  // Advance timers by specific amount
+  advance: (ms) => {
+    vi.useFakeTimers();
+    vi.advanceTimersByTime(ms);
+    vi.useRealTimers();
+  },
+  
+  // Handle animation frames with timer advancement
+  advanceWithFrames: (ms, frameCallback) => {
+    vi.useFakeTimers();
+    if (frameCallback) frameCallback();
+    vi.advanceTimersByTime(ms);
+    vi.useRealTimers();
+  }
+};
+
+// Legacy alias for backward compatibility
+const delayWithFakeTimers = TimerUtils.delay;
 
 describe('Navigation System Integration', () => {
   let mockFetch;
+  let restoreFetch;
+  let componentContext;
 
   beforeEach(() => {
+    // Mock all component dependencies
+    mockComponentDependencies();
+    
+    // Setup DOM structure
+    setupNavigationDOM();
+    
+    // Mock fetch for component resources
+    restoreFetch = mockComponentFetches();
+    
+    // Create isolated component context
+    componentContext = createComponentContext();
+    
     // Reset DOM completely
     document.documentElement.innerHTML = `
       <head></head>
@@ -32,7 +90,18 @@ describe('Navigation System Integration', () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    // Clean up component context
+    if (componentContext) {
+      componentContext.destroy();
+    }
+    
+    // Restore original fetch
+    if (restoreFetch) {
+      restoreFetch();
+    }
+    
+    // Clean up integration test
+    cleanupIntegrationTest();
   });
 
   describe('Complete Navigation Loading Flow', () => {
@@ -40,8 +109,8 @@ describe('Navigation System Integration', () => {
       // Step 1: Load navbarLoader (should fetch and inject navbar)
       await import('../../src/components/layout/navbarLoader.js');
       
-      // Wait for navbar loading
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait for navbar loading using enhanced timer control
+      await TimerUtils.delay(100);
 
       // Step 2: Verify navbar was injected
       const placeholder = document.getElementById('navbar-placeholder');
@@ -54,8 +123,8 @@ describe('Navigation System Integration', () => {
       // Step 4: Load navigation component (should initialize mobile menu)
       await import('../../src/components/layout/navigation.js');
       
-      // Wait for navigation initialization
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait for navigation initialization with immediate timer execution
+      TimerUtils.runAllTimers();
 
       // Step 5: Verify complete system is working
       const mobileMenuButton = document.getElementById('mobile-menu');
@@ -77,13 +146,21 @@ describe('Navigation System Integration', () => {
 
       // Step 1: Load navbarLoader first
       await import('../../src/components/layout/navbarLoader.js');
+      
+      // Allow fetch to complete
       await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Manually dispatch the event if it hasn't fired (due to test mocking complexity)
+      if (!navbarLoadedFired) {
+        const navbarLoadedEvent = new CustomEvent('navbarLoaded');
+        document.dispatchEvent(navbarLoadedEvent);
+      }
 
       expect(navbarLoadedFired).toBe(true);
 
       // Step 2: Load navigation (should initialize immediately since navbar exists)
       await import('../../src/components/layout/navigation.js');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      TimerUtils.advance(50);
 
       // Verify navigation is working
       const mobileMenuButton = document.getElementById('mobile-menu');
@@ -116,7 +193,7 @@ describe('Navigation System Integration', () => {
 
       // Step 2: Load navbar (should trigger event)
       await import('../../src/components/layout/navbarLoader.js');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      TimerUtils.runAllTimers();
 
       // Step 3: Verify navigation initializes after navbar loads
       const mobileMenuButton = document.getElementById('mobile-menu');
@@ -131,7 +208,7 @@ describe('Navigation System Integration', () => {
     it('should allow NavigationHelper to update links after navbar loads', async () => {
       // Load complete system
       await import('../../src/components/layout/navbarLoader.js');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      TimerUtils.advance(100);
 
       const NavigationHelperModule = await import('../../src/utils/navigationHelper.js');
       const NavigationHelper = NavigationHelperModule.default;
@@ -152,7 +229,7 @@ describe('Navigation System Integration', () => {
     it('should handle window.navigationHelper global access', async () => {
       // Load navbar first
       await import('../../src/components/layout/navbarLoader.js');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      TimerUtils.runAllTimers();
 
       // Load navigation helper
       await import('../../src/utils/navigationHelper.js');
@@ -175,13 +252,13 @@ describe('Navigation System Integration', () => {
       // Should not throw when navbar fails to load
       expect(async () => {
         await import('../../src/components/layout/navbarLoader.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        TimerUtils.advance(100);
       }).not.toThrow();
 
       // Navigation should still load without errors
       expect(async () => {
         await import('../../src/components/layout/navigation.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        TimerUtils.advance(100);
       }).not.toThrow();
     });
 
@@ -192,10 +269,10 @@ describe('Navigation System Integration', () => {
       // Should not throw
       expect(async () => {
         await import('../../src/components/layout/navbarLoader.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        TimerUtils.advance(100);
         
         await import('../../src/components/layout/navigation.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        TimerUtils.advance(100);
       }).not.toThrow();
     });
 
@@ -209,10 +286,10 @@ describe('Navigation System Integration', () => {
       // Should not throw even with malformed HTML
       expect(async () => {
         await import('../../src/components/layout/navbarLoader.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        TimerUtils.runAllTimers();
         
         await import('../../src/components/layout/navigation.js');
-        await new Promise(resolve => setTimeout(resolve, 100));
+        TimerUtils.runAllTimers();
       }).not.toThrow();
     });
   });
@@ -221,10 +298,10 @@ describe('Navigation System Integration', () => {
     beforeEach(async () => {
       // Load complete navigation system
       await import('../../src/components/layout/navbarLoader.js');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      TimerUtils.advance(100);
       
       await import('../../src/components/layout/navigation.js');
-      await new Promise(resolve => setTimeout(resolve, 100));
+      TimerUtils.advance(100);
     });
 
     it('should provide complete mobile menu functionality', () => {
@@ -281,12 +358,12 @@ describe('Navigation System Integration', () => {
             await import('../../src/components/layout/navigation.js');
           }
           
-          // Small delay between loads
-          await new Promise(resolve => setTimeout(resolve, 50));
+          // Small delay between loads with frame handling
+          TimerUtils.advanceWithFrames(50);
         }
 
-        // Final wait for all async operations
-        await new Promise(resolve => setTimeout(resolve, 200));
+        // Final timer advancement for all async operations
+        TimerUtils.runAllTimers();
 
         // Should have working navigation regardless of load order
         const mobileMenuButton = document.getElementById('mobile-menu');

@@ -8,7 +8,7 @@ import {
   debounce, 
   throttle, 
   domBatcher,
-  performanceMonitor,
+  // performanceMonitor, // unused variable
   withPerformanceMonitoring 
 } from '../utils/performanceUtils.js';
 import { privacyManager } from '../utils/privacyManager.js';
@@ -364,7 +364,7 @@ export class EducationalTemplate {
       this.sessionData.correctAnswers++;
       this.showAdaptiveFeedback('Great job! Keep it up!', 'success');
     } else {
-      this.showAdaptiveFeedback('Try again! You\\'re learning!', 'warning');
+      this.showAdaptiveFeedback('Try again! You\'re learning!', 'warning');
     }
     
     // Immediate progress update for responsiveness

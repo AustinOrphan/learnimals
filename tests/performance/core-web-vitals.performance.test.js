@@ -3,7 +3,7 @@
  * Tests essential performance metrics for optimal user experience
  */
 
-import { expect, test, describe, beforeAll, afterAll } from 'vitest';
+import { expect, test, describe, beforeAll, afterAll, vi } from 'vitest';
 import { page } from '@vitest/browser/context';
 
 // Performance thresholds based on Google Core Web Vitals
@@ -238,6 +238,9 @@ describe('Core Web Vitals Performance Tests', () => {
         
         longTaskObserver.observe({ entryTypes: ['longtask'] });
         
+        // Use fake timers for performance tests to avoid actual delays
+        vi.useFakeTimers();
+        
         // Simulate user interactions
         setTimeout(() => {
           // Trigger some UI updates
@@ -253,6 +256,10 @@ describe('Core Web Vitals Performance Tests', () => {
             resolve(totalBlockingTime);
           }, 2000);
         }, 1000);
+        
+        // Advance timers to execute the timeouts immediately
+        vi.advanceTimersByTime(3000);
+        vi.useRealTimers();
       });
     });
     
@@ -306,6 +313,9 @@ describe('Core Web Vitals Performance Tests', () => {
           }
         };
         
+        // Use fake timers for interval-based measurements
+        vi.useFakeTimers();
+        
         // Take measurements every 300ms
         const interval = setInterval(measureVisualProgress, 300);
         
@@ -317,6 +327,10 @@ describe('Core Web Vitals Performance Tests', () => {
             resolve(3000); // Default if measurement fails
           }
         }, 3000);
+        
+        // Advance timers to complete the measurement cycle
+        vi.advanceTimersByTime(3600); // 3000ms timeout + 300ms intervals
+        vi.useRealTimers();
       });
     });
     

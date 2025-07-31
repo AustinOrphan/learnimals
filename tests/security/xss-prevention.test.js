@@ -115,10 +115,17 @@ describe('XSS Prevention Security Tests', () => {
     // Mock input sanitizer
     inputSanitizer = {
       sanitizeHTML: vi.fn().mockImplementation((html) => {
+        if (typeof html !== 'string') return '';
         // Basic sanitization - remove script tags and event handlers
         return html
           .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/<iframe\b[^>]*>.*?<\/iframe>/gi, '')
+          .replace(/<object\b[^>]*>.*?<\/object>/gi, '')
+          .replace(/<embed\b[^>]*>/gi, '')
+          .replace(/<svg\b[^>]*onload[^>]*>/gi, '<svg>')
           .replace(/on\w+="[^"]*"/gi, '')
+          .replace(/on\w+='[^']*'/gi, '')
+          .replace(/on\w+=[^\s>]+/gi, '')
           .replace(/javascript:/gi, '')
           .replace(/expression\(/gi, '');
       }),
@@ -143,12 +150,14 @@ describe('XSS Prevention Security Tests', () => {
       }),
       
       escapeHTML: vi.fn().mockImplementation((text) => {
+        if (typeof text !== 'string' || text === null || text === undefined) return '';
         return text
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;')
           .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#39;');
+          .replace(/'/g, '&#x27;')
+          .replace(/\//g, '&#x2F;');
       })
     };
 
@@ -206,7 +215,7 @@ describe('XSS Prevention Security Tests', () => {
     it('should escape single quotes', () => {
       const input = '\'; alert(\'XSS\'); //';
       const escaped = inputSanitizer.escapeHTML(input);
-      expect(escaped).toBe('&#39;; alert(&#39;XSS&#39;); &#x2F;&#x2F;');
+      expect(escaped).toBe('&#x27;; alert(&#x27;XSS&#x27;); &#x2F;&#x2F;');
     });
     
     it('should escape ampersands', () => {
@@ -596,7 +605,7 @@ describe('XSS Prevention Security Tests', () => {
         { input: 'Cat < Dog', expected: 'Cat &lt; Dog' },
         { input: 'Dog > Cat', expected: 'Dog &gt; Cat' },
         { input: 'Say "Hello"', expected: 'Say &quot;Hello&quot;' },
-        { input: "Don't worry", expected: 'Don&#39;t worry' }
+        { input: "Don't worry", expected: 'Don&#x27;t worry' }
       ];
       
       specialInputs.forEach(test => {

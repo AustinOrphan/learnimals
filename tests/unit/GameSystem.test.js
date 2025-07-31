@@ -6,14 +6,31 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { GameSystem } from '../../src/utils/GameSystem.js';
 import { GameRegistryUtil } from '../../src/config/gameRegistry.js';
 
-// Mock logger to avoid console noise in tests
+// Mock logger with inline mock to avoid hoisting issues
 vi.mock('../../src/utils/logger.js', () => ({
   default: {
-    info: vi.fn(),
-    warn: vi.fn(),
+    level: 2,
+    enabled: true,
+    getLogLevel: vi.fn().mockReturnValue(2),
+    setLevel: vi.fn(),
+    setEnabled: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    shouldLog: vi.fn().mockReturnValue(true),
+    formatMessage: vi.fn().mockImplementation((level, message, args) => {
+      const timestamp = new Date().toISOString().slice(11, 23);
+      return [`[${timestamp}] ${level}:`, message, ...args];
+    }),
     error: vi.fn(),
-    debug: vi.fn()
-  }
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+    game: vi.fn(),
+    user: vi.fn(),
+    perf: vi.fn()
+  },
+  Logger: vi.fn(),
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
 }));
 
 describe('GameSystem', () => {

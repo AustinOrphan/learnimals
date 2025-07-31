@@ -145,9 +145,9 @@ if (typeof window !== 'undefined') {
 }
 
 // Export for ES6 modules and testing
-// export default NavigationHelper; // Disabled for browser compatibility
+export default NavigationHelper;
 
-// Make available for dynamic imports
+// Make available for dynamic imports and browser compatibility
 if (typeof window !== 'undefined') {
   window.NavigationHelper = NavigationHelper;
 }

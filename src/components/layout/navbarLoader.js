@@ -4,7 +4,7 @@
 // Simple logger fallback for non-module script loading.
 // This factory will be reused by other scripts like navigationHelper.js.
 if (!window.createLogger) {
-  window.create_Logger = (prefix) => {
+  window.createLogger = (prefix) => {
     const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     return {
       debug: (...args) => isDev && console.log(`[${prefix} DEBUG]`, ...args),
@@ -17,8 +17,8 @@ if (!window.createLogger) {
 const logger = window.createLogger('NavbarLoader');
 
 const currentScript = document.currentScript;
-const scriptPath = currentScript.src;
-const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+const scriptPath = currentScript ? currentScript.src : '';
+const basePath = scriptPath ? scriptPath.substring(0, scriptPath.lastIndexOf('/')) : '/src/components/layout';
 const navbarPath = basePath + '/navbar.html';
 
 fetch(navbarPath)

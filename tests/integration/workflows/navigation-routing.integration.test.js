@@ -6,6 +6,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { 
+  mockComponentDependencies,
+  cleanupIntegrationTest 
+} from '../../helpers/integrationTestUtils.js';
 
 describe('Navigation and Routing Integration', () => {
   let container;
@@ -13,8 +17,29 @@ describe('Navigation and Routing Integration', () => {
   let mockLocation;
 
   beforeEach(() => {
+    // Mock component dependencies
+    mockComponentDependencies();
+    
     // Setup test container
-    container = testUtils.createTestContainer('navigation-integration-test');
+    container = document.createElement('div');
+    container.id = 'navigation-integration-test';
+    document.body.appendChild(container);
+    
+    // Mock window.scrollTo
+    window.scrollTo = vi.fn();
+    global.scrollTo = vi.fn();
+    
+    // Mock window.scrollX and scrollY
+    Object.defineProperty(window, 'scrollX', {
+      value: 0,
+      writable: true,
+      configurable: true
+    });
+    Object.defineProperty(window, 'scrollY', {
+      value: 0,
+      writable: true,
+      configurable: true
+    });
     
     // Mock browser history API
     mockHistory = {
@@ -51,24 +76,63 @@ describe('Navigation and Routing Integration', () => {
       })
     };
     
-    // Mock location
+    // Mock location with all required properties
     mockLocation = {
       pathname: '/',
       search: '',
       hash: '',
-      href: 'http://localhost:3000/'
+      href: 'http://localhost:3000/',
+      origin: 'http://localhost:3000',
+      protocol: 'http:',
+      host: 'localhost:3000',
+      hostname: 'localhost',
+      port: '3000',
+      assign: vi.fn((url) => {
+        mockLocation.href = url;
+        mockLocation.pathname = new URL(url, mockLocation.origin).pathname;
+      }),
+      replace: vi.fn((url) => {
+        mockLocation.href = url;
+        mockLocation.pathname = new URL(url, mockLocation.origin).pathname;
+      }),
+      reload: vi.fn()
     };
     
     global.history = mockHistory;
-    Object.defineProperty(window, 'location', {
-      value: mockLocation,
-      writable: true,
-      configurable: true
+    delete window.location;
+    window.location = mockLocation;
+    
+    // Mock localStorage
+    const localStorageMock = (() => {
+      let store = {};
+      return {
+        getItem: vi.fn((key) => store[key] || null),
+        setItem: vi.fn((key, value) => {
+          store[key] = value.toString();
+        }),
+        removeItem: vi.fn((key) => {
+          delete store[key];
+        }),
+        clear: vi.fn(() => {
+          store = {};
+        })
+      };
+    })();
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+      writable: true
     });
   });
 
   afterEach(() => {
-    container.innerHTML = '';
+    // Clean up container
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
+    
+    // Clean up integration test
+    cleanupIntegrationTest();
+    
     vi.clearAllMocks();
   });
 
@@ -323,12 +387,12 @@ describe('Navigation and Routing Integration', () => {
         })
       };
       
-      // Define routes
-      mockRouter.define('/', { page: 'home' });
-      mockRouter.define('/math', { page: 'math' });
-      mockRouter.define('/game/:gameId', { page: 'game' });
-      mockRouter.define('/profile/:userId', { page: 'profile' });
-      mockRouter.define('/404', { page: 'notFound' });
+      // Define routes with mock handlers
+      mockRouter.define('/', vi.fn((context) => ({ page: 'home', context })));
+      mockRouter.define('/math', vi.fn((context) => ({ page: 'math', context })));
+      mockRouter.define('/game/:gameId', vi.fn((context) => ({ page: 'game', context })));
+      mockRouter.define('/profile/:userId', vi.fn((context) => ({ page: 'profile', context })));
+      mockRouter.define('/404', vi.fn((context) => ({ page: 'notFound', context })));
       
       // Test basic navigation
       mockRouter.navigate('/math');
@@ -553,8 +617,8 @@ describe('Navigation and Routing Integration', () => {
       };
       
       // Mock scroll position
-      global.scrollX = 0;
-      global.scrollY = 500;
+      window.scrollX = 0;
+      window.scrollY = 500;
       
       // Save position before navigation
       mockScrollManager.savePosition('/math');
@@ -562,7 +626,7 @@ describe('Navigation and Routing Integration', () => {
       expect(mockScrollManager.positions.get('/math').y).toBe(500);
       
       // Navigate away and back
-      global.scrollY = 0; // Reset scroll
+      window.scrollY = 0; // Reset scroll
       mockScrollManager.restorePosition('/math');
       
       expect(mockScrollManager.restorePosition).toHaveBeenCalledWith('/math');
@@ -605,7 +669,7 @@ describe('Navigation and Routing Integration', () => {
             gameId,
             action: () => {
               // Load game directly
-              window.location.href = `/games/${gameId}`;
+              window.location.assign(`/games/${gameId}`);
             }
           };
         }),
@@ -617,7 +681,7 @@ describe('Navigation and Routing Integration', () => {
             userId,
             action: () => {
               // Navigate to profile
-              window.location.href = `/profile/${userId}`;
+              window.location.assign(`/profile/${userId}`);
             }
           };
         }),
@@ -640,7 +704,7 @@ describe('Navigation and Routing Integration', () => {
             type: 'default',
             path,
             action: () => {
-              window.location.href = path;
+              window.location.assign(path);
             }
           };
         }),
@@ -715,7 +779,7 @@ describe('Navigation and Routing Integration', () => {
         const isProtected = protectedRoutes.some(route => to.startsWith(route));
         
         if (isProtected) {
-          const isAuthenticated = localStorage.getItem('user_token') !== null;
+          const isAuthenticated = window.localStorage.getItem('user_token') !== null;
           if (!isAuthenticated) {
             return { redirect: '/login' };
           }
@@ -727,7 +791,7 @@ describe('Navigation and Routing Integration', () => {
       // Register progress guard
       mockNavigationGuard.register(async (to, from) => {
         if (to.startsWith('/advanced-games')) {
-          const userLevel = parseInt(localStorage.getItem('user_level') || '1');
+          const userLevel = parseInt(window.localStorage.getItem('user_level') || '1');
           if (userLevel < 5) {
             return { redirect: '/level-required' };
           }
@@ -742,12 +806,12 @@ describe('Navigation and Routing Integration', () => {
       expect(result1.redirect).toBe('/login');
       
       // Set auth and try again
-      localStorage.setItem('user_token', 'test-token');
+      window.localStorage.setItem('user_token', 'test-token');
       const result2 = await mockNavigationGuard.navigate('/profile');
       expect(result2.success).toBe(true);
       
       // Test level-based guard
-      localStorage.setItem('user_level', '3');
+      window.localStorage.setItem('user_level', '3');
       const result3 = await mockNavigationGuard.navigate('/advanced-games');
       expect(result3.success).toBe(false);
       expect(result3.redirect).toBe('/level-required');

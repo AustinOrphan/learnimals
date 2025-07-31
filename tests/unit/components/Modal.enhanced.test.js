@@ -8,6 +8,29 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentMockData, TestDataUtils } from '../../fixtures/testDataFactory.js';
 
+// Mock testUtils
+const testUtils = {
+  createTestContainer: vi.fn().mockImplementation((id) => {
+    const container = document.createElement('div');
+    container.id = id;
+    container.className = 'test-container';
+    document.body.appendChild(container);
+    return container;
+  }),
+  
+  simulateEvent: vi.fn().mockImplementation((element, eventType, options = {}) => {
+    if (!element) return;
+    const event = new Event(eventType, { bubbles: true, cancelable: true, ...options });
+    element.dispatchEvent(event);
+    return event;
+  }),
+  
+  cleanup: vi.fn().mockImplementation(() => {
+    const containers = document.querySelectorAll('.test-container');
+    containers.forEach(container => container.remove());
+  })
+};
+
 // Mock Modal component
 let Modal;
 

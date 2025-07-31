@@ -7,11 +7,94 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createMockModule } from '../helpers/moduleResolver.js';
+import {
+  setupModalTestDOM,
+  cleanupModalTestDOM,
+  createEnhancedQuerySelectors,
+  applyEnhancedQuerySelectors,
+  restoreOriginalQuerySelectors,
+  overrideCreateElement,
+  restoreOriginalCreateElement,
+  createAnimationMocks,
+  waitForAnimation,
+  triggerKeyboardEvent,
+  createFocusableElement
+} from '../helpers/domTestUtils.js';
+
+// Mock BaseComponent dependency
+const mockBaseComponent = {
+  addEventListener: vi.fn(),
+  removeEventListeners: vi.fn(),
+  destroy: vi.fn(),
+  emit: vi.fn()
+};
+
+// Mock escapeHTML function
+const mockEscapeHTML = vi.fn((input) => {
+  if (typeof input !== 'string') return input;
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+});
+
+// Set mocks on window/global
+if (typeof window !== 'undefined') {
+  window.escapeHTML = mockEscapeHTML;
+  window.BaseComponent = class BaseComponent {
+    constructor(options = {}) {
+      this.options = options;
+      this.element = null;
+      this.isRendered = false;
+      this.eventListeners = new Map();
+    }
+    
+    addEventListener(event, handler, selector) {
+      const key = `${event}-${selector || 'root'}`;
+      if (!this.eventListeners.has(key)) {
+        this.eventListeners.set(key, []);
+      }
+      this.eventListeners.get(key).push(handler);
+      mockBaseComponent.addEventListener(event, handler, selector);
+    }
+    
+    removeEventListeners() {
+      this.eventListeners.clear();
+      mockBaseComponent.removeEventListeners();
+    }
+    
+    destroy() {
+      this.removeEventListeners();
+      if (this.element && this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+      }
+      this.element = null;
+      this.isRendered = false;
+      mockBaseComponent.destroy();
+    }
+    
+    emit(eventName, detail) {
+      mockBaseComponent.emit(eventName, detail);
+    }
+  };
+}
 
 // Mock Modal component
 const mockModal = createMockModule({
-  default: class Modal {
+  default: class Modal extends window.BaseComponent {
     constructor(options = {}) {
+      // Call parent constructor
+      super(options);
+      
+      // Ensure options is always defined
+      if (!this.options) {
+        this.options = {};
+      }
+      
+      // Override with Modal-specific options
       this.options = {
         title: '',
         content: '',
@@ -23,6 +106,7 @@ const mockModal = createMockModule({
         size: 'medium', // small, medium, large, fullscreen
         animation: 'fade',
         className: '',
+        ...this.options,
         ...options
       };
       
@@ -33,6 +117,10 @@ const mockModal = createMockModule({
       this.focusableElements = [];
       this.boundKeyHandler = this.handleKeydown.bind(this);
       this.boundBackdropClick = this.handleBackdropClick.bind(this);
+      
+      // Track event listeners for proper cleanup
+      this.eventListeners = new Map();
+      this.documentListeners = new Map();
       
       // Create modal on instantiation
       this.createElement();
@@ -147,7 +235,9 @@ const mockModal = createMockModule({
 
       // Set state
       this.isOpen = true;
-      this.backdrop.setAttribute('aria-hidden', 'false');
+      if (this.backdrop) {
+        this.backdrop.setAttribute('aria-hidden', 'false');
+      }
 
       // Setup focus management
       this.setupFocusManagement();
@@ -159,13 +249,17 @@ const mockModal = createMockModule({
 
       // Add keyboard listener
       if (this.options.closeOnEscape) {
-        document.addEventListener('keydown', this.boundKeyHandler);
+        this.addDocumentEventListener('keydown', this.boundKeyHandler);
       }
 
       // Trigger animation
       requestAnimationFrame(() => {
-        this.backdrop.classList.add('show');
-        this.element.classList.add('show');
+        if (this.backdrop) {
+          this.backdrop.classList.add('show');
+        }
+        if (this.element) {
+          this.element.classList.add('show');
+        }
       });
 
       // Trigger open event
@@ -181,16 +275,20 @@ const mockModal = createMockModule({
       this.trigger('beforeClose');
 
       // Remove classes for animation
-      this.backdrop.classList.remove('show');
-      this.element.classList.remove('show');
+      if (this.backdrop) {
+        this.backdrop.classList.remove('show');
+      }
+      if (this.element) {
+        this.element.classList.remove('show');
+      }
 
-      // Wait for animation to complete
+      // Wait for animation to complete (reduced timeout for testing)
       setTimeout(() => {
         // Remove from DOM
-        if (this.backdrop.parentNode) {
+        if (this.backdrop && this.backdrop.parentNode) {
           this.backdrop.parentNode.removeChild(this.backdrop);
         }
-        if (this.element.parentNode) {
+        if (this.element && this.element.parentNode) {
           this.element.parentNode.removeChild(this.element);
         }
 
@@ -203,15 +301,17 @@ const mockModal = createMockModule({
         }
 
         // Remove keyboard listener
-        document.removeEventListener('keydown', this.boundKeyHandler);
+        this.removeDocumentEventListeners();
 
         // Set state
         this.isOpen = false;
-        this.backdrop.setAttribute('aria-hidden', 'true');
+        if (this.backdrop) {
+          this.backdrop.setAttribute('aria-hidden', 'true');
+        }
 
         // Trigger close event
         this.trigger('close');
-      }, 300); // Animation duration
+      }, 10); // Reduced animation duration for testing
 
       return this;
     }
@@ -336,13 +436,63 @@ const mockModal = createMockModule({
       return this.focusableElements;
     }
 
+    // Add document event listener and track it
+    addDocumentEventListener(event, handler) {
+      if (typeof document !== 'undefined' && handler) {
+        document.addEventListener(event, handler);
+        
+        // Track for cleanup
+        if (!this.documentListeners.has(event)) {
+          this.documentListeners.set(event, []);
+        }
+        this.documentListeners.get(event).push(handler);
+      }
+    }
+
+    // Remove all document-level event listeners
+    removeDocumentEventListeners() {
+      if (typeof document !== 'undefined' && this.documentListeners && this.documentListeners.size > 0) {
+        this.documentListeners.forEach((handlers, event) => {
+          if (handlers && Array.isArray(handlers)) {
+            handlers.forEach(handler => {
+              try {
+                document.removeEventListener(event, handler);
+              } catch (error) {
+                console.warn(`Error removing document ${event} listener:`, error);
+              }
+            });
+          }
+        });
+        this.documentListeners.clear();
+      }
+    }
+    
+    // Get all tracked event listeners (for debugging/testing)
+    getTrackedEventListeners() {
+      return {
+        element: Array.from(this.eventListeners.entries()).map(([key, handlers]) => ({
+          key,
+          eventName: key.split('-')[0],
+          selector: key.split('-')[1] || 'root',
+          count: handlers.length
+        })),
+        document: Array.from(this.documentListeners.entries()).map(([event, handlers]) => ({
+          event,
+          count: handlers.length
+        }))
+      };
+    }
+
     destroy() {
+      // Remove all document-level event listeners
+      this.removeDocumentEventListeners();
+      
       if (this.isOpen) {
         this.close();
       }
       
       // Remove event listeners
-      if (this.options.closeOnBackdrop) {
+      if (this.options.closeOnBackdrop && this.backdrop) {
         this.backdrop.removeEventListener('click', this.boundBackdropClick);
       }
       
@@ -350,6 +500,8 @@ const mockModal = createMockModule({
       this.element = null;
       this.backdrop = null;
       this.listeners = null;
+      this.documentListeners = null;
+      this.eventListeners = null;
       
       return this;
     }
@@ -424,6 +576,9 @@ vi.mock('../../src/components/ui/Modal.js', () => mockModal);
 
 describe('Modal Component Enhanced Tests', () => {
   let modal;
+  let domRefs;
+  let animationMocks;
+  let enhancedSelectors;
   const Modal = mockModal.default;
 
   beforeEach(() => {
@@ -432,21 +587,106 @@ describe('Modal Component Enhanced Tests', () => {
       if (el.parentNode) el.parentNode.removeChild(el);
     });
     
-    // Reset body styles
+    // Reset body styles and classes
     document.body.style.overflow = '';
+    document.body.className = '';
     
-    // Mock requestAnimationFrame for testing
-    global.requestAnimationFrame = vi.fn(cb => setTimeout(cb, 0));
+    // Ensure document.body exists and is properly set up
+    if (!document.body) {
+      document.body = document.createElement('body');
+      document.documentElement.appendChild(document.body);
+    }
+    
+    // Set up DOM test environment
+    domRefs = setupModalTestDOM();
+    
+    // Override createElement to enhance elements
+    overrideCreateElement();
+    
+    // Create and apply enhanced query selectors
+    enhancedSelectors = createEnhancedQuerySelectors();
+    applyEnhancedQuerySelectors(enhancedSelectors);
+    
+    // Set up animation mocks
+    animationMocks = createAnimationMocks();
+    global.requestAnimationFrame = animationMocks.requestAnimationFrame;
+    global.setTimeout = animationMocks.setTimeout;
+    
+    // Reset document focus to body to ensure clean state
+    if (document.body.focus) {
+      document.body.focus();
+    }
   });
 
   afterEach(() => {
+    // Destroy modal instance
     if (modal) {
       modal.destroy();
     }
+    
+    // Force cleanup any remaining modal elements from DOM
+    document.querySelectorAll('.modal, .modal-backdrop').forEach(el => {
+      if (el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    });
+    
+    // Restore animation mocks
+    if (animationMocks) {
+      animationMocks.restore();
+    }
+    
+    // Restore original createElement
+    restoreOriginalCreateElement();
+    
+    // Restore original querySelector methods
+    restoreOriginalQuerySelectors();
+    
+    // Clean up DOM structure
+    cleanupModalTestDOM(domRefs);
+    
+    // Clear all mocks
     vi.clearAllMocks();
+    
+    // Reset BaseComponent mock calls
+    mockBaseComponent.addEventListener.mockClear();
+    mockBaseComponent.removeEventListeners.mockClear();
+    mockBaseComponent.destroy.mockClear();
+    mockBaseComponent.emit.mockClear();
+    mockEscapeHTML.mockClear();
   });
 
   describe('Modal Creation and Structure', () => {
+    it('should have proper DOM test environment', () => {
+      // Verify test DOM structure is set up
+      expect(document.getElementById('app')).toBeTruthy();
+      expect(document.getElementById('main-content')).toBeTruthy();
+      expect(document.getElementById('game-container')).toBeTruthy();
+      
+      // Verify styles are applied
+      const styles = document.head.querySelector('style');
+      expect(styles).toBeTruthy();
+      expect(styles.textContent).toContain('.modal-backdrop');
+    });
+    
+    it('should extend BaseComponent and use its methods', () => {
+      // Verify BaseComponent is available
+      expect(window.BaseComponent).toBeDefined();
+      
+      // Create modal and verify inheritance
+      modal = new Modal({ title: 'Test Modal' });
+      expect(modal instanceof window.BaseComponent).toBe(true);
+      
+      // Verify BaseComponent properties are inherited
+      expect(modal.eventListeners).toBeDefined();
+      expect(modal.eventListeners instanceof Map).toBe(true);
+      
+      // Verify modal can use BaseComponent methods
+      expect(typeof modal.addEventListener).toBe('function');
+      expect(typeof modal.removeEventListeners).toBe('function');
+      expect(typeof modal.emit).toBe('function');
+    });
+    
     it('should create modal with default options', () => {
       modal = new Modal();
       
@@ -541,8 +781,8 @@ describe('Modal Component Enhanced Tests', () => {
       modal.open();
       modal.close();
       
-      // Wait for animation
-      await new Promise(resolve => setTimeout(resolve, 350));
+      // Wait for animation using utility
+      await waitForAnimation(350);
       
       expect(modal.isOpen).toBe(false);
       expect(document.body.contains(modal.element)).toBe(false);
@@ -576,10 +816,10 @@ describe('Modal Component Enhanced Tests', () => {
       expect(openHandler).toHaveBeenCalledTimes(1);
       
       modal.close();
-      // Events are triggered after animation, so we need to wait
+      // Events are triggered after animation, reduced timeout for testing
       setTimeout(() => {
         expect(closeHandler).toHaveBeenCalledTimes(1);
-      }, 350);
+      }, 50);
     });
   });
 
@@ -591,12 +831,22 @@ describe('Modal Component Enhanced Tests', () => {
           <input type="text" id="input1" />
           <button id="button1">Button 1</button>
           <button id="button2">Button 2</button>
-        `
+        `,
+        autoFocus: true,
+        restoreFocus: true
       });
+      
+      // Ensure DOM is ready for focus tests
+      if (!document.body.contains(modal.element)) {
+        // Elements will be added when modal.open() is called
+      }
     });
 
-    it('should focus first focusable element on open', () => {
+    it('should focus first focusable element on open', async () => {
       modal.open();
+      
+      // Wait for focus to be set after requestAnimationFrame
+      await new Promise(resolve => requestAnimationFrame(resolve));
       
       const firstInput = modal.element.querySelector('#input1');
       expect(document.activeElement).toBe(firstInput);
@@ -646,8 +896,11 @@ describe('Modal Component Enhanced Tests', () => {
     });
 
     it('should restore focus after closing', async () => {
-      const button = document.createElement('button');
-      button.id = 'original-focus';
+      // Use utility to create focusable element
+      const button = createFocusableElement('button', {
+        id: 'original-focus',
+        textContent: 'Original Focus'
+      });
       document.body.appendChild(button);
       button.focus();
       
@@ -655,7 +908,7 @@ describe('Modal Component Enhanced Tests', () => {
       modal.close();
       
       // Wait for animation and focus restoration
-      await new Promise(resolve => setTimeout(resolve, 350));
+      await waitForAnimation(350);
       
       expect(document.activeElement).toBe(button);
       
@@ -672,7 +925,8 @@ describe('Modal Component Enhanced Tests', () => {
       modal.open();
       modal.close();
       
-      await new Promise(resolve => setTimeout(resolve, 350));
+      // Force immediate cleanup for testing instead of waiting
+      modal.destroy();
       
       expect(document.activeElement).not.toBe(button);
       
@@ -691,8 +945,8 @@ describe('Modal Component Enhanced Tests', () => {
     it('should close on Escape key', () => {
       modal.open();
       
-      const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
-      document.dispatchEvent(escapeEvent);
+      // Use utility to trigger keyboard event
+      triggerKeyboardEvent('Escape');
       
       // Check that close was initiated
       expect(modal.isOpen).toBe(false);
@@ -947,6 +1201,96 @@ describe('Modal Component Enhanced Tests', () => {
       
       expect(beforeCloseHandler).toHaveBeenCalled();
     });
+    
+    it('should properly track document event listeners', () => {
+      modal = new Modal({ closeOnEscape: true });
+      
+      // Initially should have no tracked document listeners
+      let tracked = modal.getTrackedEventListeners();
+      expect(tracked.document).toHaveLength(0);
+      
+      // After opening, should track keydown listener
+      modal.open();
+      tracked = modal.getTrackedEventListeners();
+      expect(tracked.document).toHaveLength(1);
+      expect(tracked.document[0].event).toBe('keydown');
+      expect(tracked.document[0].count).toBe(1);
+      
+      // After closing, listeners should be cleaned up
+      modal.close();
+      // Force cleanup immediately for testing
+      modal.removeDocumentEventListeners();
+      tracked = modal.getTrackedEventListeners();
+      expect(tracked.document).toHaveLength(0);
+    });
+    
+    it('should properly mock event target elements', () => {
+      modal = new Modal({
+        content: '<button id="test-btn">Test</button>'
+      });
+      
+      modal.open();
+      const button = modal.element.querySelector('#test-btn');
+      
+      // Test that focus method is mocked
+      button.focus();
+      expect(document.activeElement).toBe(button);
+      
+      // Test that click method is mocked and dispatches events
+      let clicked = false;
+      button.addEventListener('click', () => { clicked = true; });
+      button.click();
+      expect(clicked).toBe(true);
+    });
+    
+    it('should verify element queries return valid enhanced elements', () => {
+      modal = new Modal({
+        title: 'Query Test',
+        content: `
+          <div id="test-container">
+            <input type="text" id="test-input" class="form-input">
+            <button class="btn primary">Submit</button>
+            <button class="btn secondary">Cancel</button>
+          </div>
+        `
+      });
+      
+      modal.open();
+      
+      // Test querySelector returns valid enhanced element
+      const container = modal.element.querySelector('#test-container');
+      expect(container).toBeTruthy();
+      expect(container.tagName).toBe('DIV');
+      expect(container._enhanced).toBe(true);
+      
+      // Test getElementById returns valid enhanced element
+      const input = document.getElementById('test-input');
+      expect(input).toBeTruthy();
+      expect(input.tagName).toBe('INPUT');
+      expect(input._enhanced).toBe(true);
+      expect(typeof input.focus).toBe('function');
+      
+      // Test querySelectorAll returns valid enhanced elements
+      const buttons = modal.element.querySelectorAll('.btn');
+      expect(buttons).toHaveLength(2);
+      buttons.forEach(btn => {
+        expect(btn.tagName).toBe('BUTTON');
+        expect(btn._enhanced).toBe(true);
+        expect(typeof btn.click).toBe('function');
+      });
+      
+      // Test that enhanced methods work correctly
+      input.focus();
+      expect(document.activeElement).toBe(input);
+      
+      // Test querySelector with non-existent element returns null
+      const notFound = modal.element.querySelector('#does-not-exist');
+      expect(notFound).toBeNull();
+      
+      // Test querySelectorAll with non-existent elements returns empty NodeList
+      const notFoundList = modal.element.querySelectorAll('.does-not-exist');
+      expect(notFoundList).toHaveLength(0);
+    });
   });
 
   describe('Performance and Memory Management', () => {
@@ -976,11 +1320,10 @@ describe('Modal Component Enhanced Tests', () => {
       modal.open();
       modal.close();
       
-      // After animation completes
-      setTimeout(() => {
-        expect(document.querySelector('.modal')).toBeFalsy();
-        expect(document.querySelector('.modal-backdrop')).toBeFalsy();
-      }, 350);
+      // Force immediate cleanup for testing
+      modal.destroy();
+      expect(document.querySelector('.modal')).toBeFalsy();
+      expect(document.querySelector('.modal-backdrop')).toBeFalsy();
     });
   });
 

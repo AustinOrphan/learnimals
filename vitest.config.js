@@ -17,6 +17,21 @@ export default defineConfig({
       'src/**/*.{test,spec}.{js,mjs,ts}'
     ],
     
+    // Test pool configuration for parallel execution
+    pool: process.env.CI ? 'forks' : 'threads',
+    poolOptions: {
+      threads: {
+        singleThread: false,
+        minThreads: 1,
+        maxThreads: process.env.CI ? 2 : 4
+      },
+      forks: {
+        singleFork: false,
+        minForks: 1,
+        maxForks: process.env.CI ? 2 : 4
+      }
+    },
+    
     // Coverage configuration
     coverage: {
       provider: 'v8',

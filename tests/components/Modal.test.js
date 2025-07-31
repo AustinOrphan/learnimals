@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
-import Modal from '../../src/components/ui/Modal.js';
 
 // Mock DOM
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
@@ -9,13 +8,116 @@ global.window = dom.window;
 global.HTMLElement = dom.window.HTMLElement;
 global.CustomEvent = dom.window.CustomEvent;
 
+// Mock BaseComponent that Modal extends - BEFORE importing Modal
+global.window.BaseComponent = class BaseComponent {
+  constructor(options = {}) {
+    this.options = options;
+    this.element = null;
+  }
+  
+  render(container) {
+    if (container && this.element) {
+      container.appendChild(this.element);
+    }
+    return this;
+  }
+  
+  destroy() {
+    if (this.element && this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
+    }
+    this.element = null;
+    return this;
+  }
+  
+  emit(eventName, data) {
+    if (this.element) {
+      const event = new CustomEvent(eventName, { detail: data });
+      this.element.dispatchEvent(event);
+    }
+    return this;
+  }
+  
+  on(eventName, handler) {
+    if (this.element) {
+      this.element.addEventListener(eventName, handler);
+    }
+    return this;
+  }
+  
+  off(eventName, handler) {
+    if (this.element) {
+      this.element.removeEventListener(eventName, handler);
+    }
+    return this;
+  }
+  
+  addEventListener(eventType, handler, selector) {
+    if (selector) {
+      // If selector provided, find elements and add listener
+      if (this.element) {
+        const elements = this.element.querySelectorAll(selector);
+        elements.forEach(el => el.addEventListener(eventType, handler));
+      }
+    } else {
+      // Add listener to main element
+      if (this.element) {
+        this.element.addEventListener(eventType, handler);
+      }
+    }
+    return this;
+  }
+  
+  getOption(key) {
+    return this.options[key];
+  }
+  
+  setOption(key, value) {
+    this.options[key] = value;
+    return this;
+  }
+};
+
 describe('Modal Component', () => {
   let modal;
+  let Modal;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Reset DOM
     document.body.innerHTML = '';
     document.body.className = '';
+    
+    // Mock window.location by directly assigning properties
+    if (global.window.location) {
+      // Store original values
+      if (!global.originalLocationProps) {
+        global.originalLocationProps = {
+          pathname: global.window.location.pathname,
+          href: global.window.location.href
+        };
+      }
+      
+      // Override specific properties safely  
+      try {
+        Object.defineProperty(global.window.location, 'pathname', {
+          value: '/src/pages/index.html',
+          writable: true,
+          configurable: true
+        });
+        Object.defineProperty(global.window.location, 'href', {
+          value: 'http://localhost:3000/src/pages/index.html',
+          writable: true,
+          configurable: true
+        });
+      } catch (error) {
+        // If we can't redefine properties, just continue
+        console.warn('Could not mock location properties:', error.message);
+      }
+    }
+    
+    // Import Modal after BaseComponent is set up
+    const modalModule = await import('../../src/components/ui/Modal.js');
+    Modal = modalModule.default;
   });
 
   afterEach(() => {
@@ -24,6 +126,24 @@ describe('Modal Component', () => {
     }
     document.body.innerHTML = '';
     document.body.className = '';
+    
+    // Restore original location properties
+    if (global.originalLocationProps && global.window.location) {
+      try {
+        Object.defineProperty(global.window.location, 'pathname', {
+          value: global.originalLocationProps.pathname,
+          writable: true,
+          configurable: true
+        });
+        Object.defineProperty(global.window.location, 'href', {
+          value: global.originalLocationProps.href,
+          writable: true,
+          configurable: true
+        });
+      } catch (error) {
+        // If we can't restore, just continue
+      }
+    }
   });
 
   describe('Constructor', () => {

@@ -191,19 +191,19 @@ describe('NavigationHelper', () => {
       };
 
       // Should have all required log methods
-      expect(typeof mockLogger.debug).toBe('function');
-      expect(typeof mockLogger.error).toBe('function');
-      expect(typeof mockLogger.warn).toBe('function');
-      expect(typeof mockLogger.info).toBe('function');
+      expect(typeof mock_Logger.debug).toBe('function');
+      expect(typeof mock_Logger.error).toBe('function');
+      expect(typeof mock_Logger.warn).toBe('function');
+      expect(typeof mock_Logger.info).toBe('function');
 
       // Should call appropriate console methods
       const errorSpy = vi.spyOn(console, 'error');
       const warnSpy = vi.spyOn(console, 'warn');
       const infoSpy = vi.spyOn(console, 'info');
 
-      mockLogger.error('test error');
-      mockLogger.warn('test warning');
-      mockLogger.info('test info');
+      mock_Logger.error('test error');
+      mock_Logger.warn('test warning');
+      mock_Logger.info('test info');
 
       expect(errorSpy).toHaveBeenCalledWith('[NavigationHelper ERROR]', 'test error');
       expect(warnSpy).toHaveBeenCalledWith('[NavigationHelper WARN]', 'test warning');

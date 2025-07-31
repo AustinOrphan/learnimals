@@ -256,6 +256,7 @@ export const ThemeFactory = {
   create: (overrides = {}) => ({
     id: generateId('theme'),
     name: randomChoice(['Ocean Blue', 'Forest Green', 'Sunset Orange', 'Royal Purple', 'Cosmic Dark']),
+    type: randomChoice(['light', 'dark']),
     category: randomChoice(['nature', 'space', 'fantasy', 'minimalist', 'colorful']),
     colors: {
       primary: randomChoice(['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444']),
@@ -292,6 +293,135 @@ export const ThemeFactory = {
     },
     ...overrides
   })
+};
+
+// DOM Mock Utilities
+export const DOMUtils = {
+  setupElementMocks: () => {
+    // Mock getBoundingClientRect for all elements
+    if (!Element.prototype.getBoundingClientRect) {
+      Element.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+        width: 100,
+        height: 100,
+        top: 0,
+        left: 0,
+        bottom: 100,
+        right: 100,
+        x: 0,
+        y: 0
+      });
+    }
+    
+    // Mock scrollIntoView
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = vi.fn();
+    }
+    
+    // Mock focus and blur methods
+    if (!Element.prototype.focus) {
+      Element.prototype.focus = vi.fn();
+    }
+    
+    if (!Element.prototype.blur) {
+      Element.prototype.blur = vi.fn();
+    }
+    
+    // Mock click method
+    if (!Element.prototype.click) {
+      Element.prototype.click = vi.fn();
+    }
+    
+    // Mock computedStyle
+    if (!window.getComputedStyle) {
+      window.getComputedStyle = vi.fn().mockReturnValue({
+        getPropertyValue: vi.fn().mockReturnValue(''),
+        visibility: 'visible',
+        display: 'block',
+        opacity: '1'
+      });
+    }
+    
+    // Mock Canvas API
+    if (!HTMLCanvasElement.prototype.getContext) {
+      HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
+        fillRect: vi.fn(),
+        clearRect: vi.fn(),
+        getImageData: vi.fn().mockReturnValue({
+          data: new Array(4).fill(0)
+        }),
+        putImageData: vi.fn(),
+        createImageData: vi.fn().mockReturnValue({
+          data: new Array(4).fill(0)
+        }),
+        setTransform: vi.fn(),
+        drawImage: vi.fn(),
+        save: vi.fn(),
+        restore: vi.fn(),
+        beginPath: vi.fn(),
+        moveTo: vi.fn(),
+        lineTo: vi.fn(),
+        closePath: vi.fn(),
+        stroke: vi.fn(),
+        fill: vi.fn()
+      });
+    }
+    
+    if (!HTMLCanvasElement.prototype.toDataURL) {
+      HTMLCanvasElement.prototype.toDataURL = vi.fn().mockReturnValue('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+    }
+  },
+  
+  createMockElement: (tagName = 'div', attributes = {}) => {
+    const element = document.createElement(tagName);
+    Object.entries(attributes).forEach(([key, value]) => {
+      if (key === 'textContent') {
+        element.textContent = value;
+      } else if (key === 'innerHTML') {
+        element.innerHTML = value;
+      } else {
+        element.setAttribute(key, value);
+      }
+    });
+    return element;
+  }
+};
+
+// Component Mock Data Factory
+export const ComponentMockData = {
+  modalData: {
+    title: 'Test Modal',
+    content: 'This is test modal content',
+    size: 'medium',
+    buttons: [
+      { text: 'OK', type: 'primary', action: 'confirm' },
+      { text: 'Cancel', type: 'secondary', action: 'cancel' }
+    ],
+    closeOnOverlay: true,
+    closeOnEscape: true,
+    onShow: null,
+    onHide: null,
+    onConfirm: null,
+    onCancel: null
+  },
+  
+  cardData: {
+    title: 'Test Card',
+    content: 'Test card content',
+    image: '/images/test-card.jpg',
+    actions: [
+      { text: 'Learn More', href: '/learn-more' }
+    ]
+  },
+  
+  formData: {
+    fields: [
+      { name: 'username', type: 'text', label: 'Username', required: true },
+      { name: 'email', type: 'email', label: 'Email', required: true },
+      { name: 'password', type: 'password', label: 'Password', required: true }
+    ],
+    submitText: 'Submit',
+    cancelText: 'Cancel'
+  }
 };
 
 // Test Environment Factory

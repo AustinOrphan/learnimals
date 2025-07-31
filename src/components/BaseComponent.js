@@ -100,6 +100,47 @@ class BaseComponent {
   }
 
   /**
+   * Add an event listener to the component (alias for addEventListener)
+   * @param {string} event - Event name
+   * @param {Function} handler - Event handler
+   * @param {string} [selector] - Optional selector for event delegation
+   */
+  on(event, handler, selector) {
+    return this.addEventListener(event, handler, selector);
+  }
+
+  /**
+   * Remove event listeners (alias for removeEventListeners)
+   * @param {string} event - Event name
+   * @param {Function} [handler] - Specific handler to remove
+   */
+  off(event, handler) {
+    if (handler && this.element) {
+      // Remove specific handler - need to find the wrapped handler
+      const key = `${event}-root`;
+      const listeners = this.eventListeners.get(key);
+      if (listeners && Array.isArray(listeners)) {
+        // Find and remove the specific handler
+        const index = listeners.findIndex(wrappedHandler => 
+          wrappedHandler === handler || wrappedHandler.originalHandler === handler
+        );
+        if (index !== -1) {
+          const wrappedHandler = listeners[index];
+          this.element.removeEventListener(event, wrappedHandler);
+          listeners.splice(index, 1);
+          if (listeners.length === 0) {
+            this.eventListeners.delete(key);
+          }
+        }
+      }
+    } else {
+      // Remove all handlers for this event
+      this.removeEventListeners(event);
+    }
+    return this;
+  }
+
+  /**
    * Add an event listener to the component
    * @param {string} event - Event name
    * @param {Function} handler - Event handler
@@ -115,6 +156,9 @@ class BaseComponent {
         }
       }
       : handler.bind(this);
+    
+    // Store reference to original handler for removal
+    wrappedHandler.originalHandler = handler;
     
     this.element.addEventListener(event, wrappedHandler);
     
@@ -136,19 +180,33 @@ class BaseComponent {
     if (event) {
       // Remove specific event
       const listeners = this.eventListeners.get(event);
-      if (listeners) {
+      if (listeners && Array.isArray(listeners)) {
         listeners.forEach(handler => {
-          this.element.removeEventListener(event.split('-')[0], handler);
+          try {
+            if (this.element && typeof this.element.removeEventListener === 'function') {
+              this.element.removeEventListener(event.split('-')[0], handler);
+            }
+          } catch (error) {
+            console.warn(`Error removing event listener for ${event}:`, error);
+          }
         });
         this.eventListeners.delete(event);
       }
     } else {
       // Remove all events
       this.eventListeners.forEach((handlers, key) => {
-        const eventName = key.split('-')[0];
-        handlers.forEach(handler => {
-          this.element.removeEventListener(eventName, handler);
-        });
+        if (handlers && Array.isArray(handlers)) {
+          const eventName = key.split('-')[0];
+          handlers.forEach(handler => {
+            try {
+              if (this.element && typeof this.element.removeEventListener === 'function') {
+                this.element.removeEventListener(eventName, handler);
+              }
+            } catch (error) {
+              console.warn(`Error removing event listener for ${eventName}:`, error);
+            }
+          });
+        }
       });
       this.eventListeners.clear();
     }
@@ -277,8 +335,25 @@ class BaseComponent {
    */
   destroy() {
     if (this.element) {
-      this.removeEventListeners();
-      this.element.remove();
+      // Remove event listeners with error handling
+      try {
+        this.removeEventListeners();
+      } catch (error) {
+        console.warn('Error removing event listeners during destroy:', error);
+      }
+      
+      // Remove element from DOM with defensive check
+      try {
+        if (this.element && typeof this.element.remove === 'function') {
+          this.element.remove();
+        } else if (this.element && this.element.parentNode) {
+          // Fallback for older browsers
+          this.element.parentNode.removeChild(this.element);
+        }
+      } catch (error) {
+        console.warn('Error removing element from DOM:', error);
+      }
+      
       this.element = null;
       this.isRendered = false;
     }

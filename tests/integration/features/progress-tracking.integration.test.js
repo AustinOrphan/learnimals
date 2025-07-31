@@ -25,7 +25,7 @@ describe('Progress Tracking System Integration', () => {
     global.localStorage = mockLocalStorage;
     
     // Create test data
-    progressData = ProgressFactory.createUserProgress();
+    progressData = ProgressFactory.create();
     characterData = CharacterFactory.create();
   });
 
@@ -414,6 +414,17 @@ describe('Progress Tracking System Integration', () => {
 
   describe('Statistics and Analytics Integration', () => {
     it('should generate comprehensive statistics report', () => {
+      const calculateProficiency = (subjectData) => {
+        // Simple proficiency calculation based on average score and consistency
+        const scoreWeight = 0.6;
+        const consistencyWeight = 0.4;
+        
+        const scoreComponent = (subjectData.averageScore / 100) * scoreWeight;
+        const consistencyComponent = (1 - (subjectData.scoreVariance || 0.2)) * consistencyWeight;
+        
+        return Math.round((scoreComponent + consistencyComponent) * 100);
+      };
+
       const mockStatsGenerator = {
         generateReport: vi.fn((progressData) => {
           const report = {
@@ -446,7 +457,7 @@ describe('Progress Tracking System Integration', () => {
                 bestScore: data.bestScore,
                 totalTime: data.totalTime,
                 level: data.level,
-                proficiency: this.calculateProficiency(data)
+                proficiency: calculateProficiency(data)
               };
             });
           }
@@ -466,17 +477,6 @@ describe('Progress Tracking System Integration', () => {
           }
           
           return report;
-        }),
-        
-        calculateProficiency: vi.fn((subjectData) => {
-          // Simple proficiency calculation based on average score and consistency
-          const scoreWeight = 0.6;
-          const consistencyWeight = 0.4;
-          
-          const scoreComponent = (subjectData.averageScore / 100) * scoreWeight;
-          const consistencyComponent = (1 - (subjectData.scoreVariance || 0.2)) * consistencyWeight;
-          
-          return Math.round((scoreComponent + consistencyComponent) * 100);
         }),
         
         getInsights: vi.fn((report) => {
