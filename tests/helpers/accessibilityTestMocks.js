@@ -206,40 +206,40 @@ function getCustomElementStyles(element) {
     const classes = element.className.split(' ');
     classes.forEach(className => {
       switch (className) {
-        case 'hidden':
-          styles.display = 'none';
-          break;
-        case 'invisible':
-          styles.visibility = 'hidden';
-          break;
-        case 'sr-only':
-        case 'visually-hidden':
-          styles.position = 'absolute';
-          styles.width = '1px';
-          styles.height = '1px';
-          styles.padding = '0px';
-          styles.margin = '-1px';
-          styles.overflow = 'hidden';
-          styles.clip = 'rect(0, 0, 0, 0)';
-          styles.whiteSpace = 'nowrap';
-          styles.border = '0px';
-          break;
-        case 'focus-visible':
-          styles.outline = '2px solid rgb(0, 123, 255)';
-          styles.outlineOffset = '2px';
-          break;
-        case 'no-focus':
-          styles.outline = 'none';
-          break;
-        default:
-          // Check for color/theme classes
-          if (className.includes('text-')) {
-            styles.color = getColorFromClass(className);
-          }
-          if (className.includes('bg-')) {
-            styles.backgroundColor = getColorFromClass(className);
-          }
-          break;
+      case 'hidden':
+        styles.display = 'none';
+        break;
+      case 'invisible':
+        styles.visibility = 'hidden';
+        break;
+      case 'sr-only':
+      case 'visually-hidden':
+        styles.position = 'absolute';
+        styles.width = '1px';
+        styles.height = '1px';
+        styles.padding = '0px';
+        styles.margin = '-1px';
+        styles.overflow = 'hidden';
+        styles.clip = 'rect(0, 0, 0, 0)';
+        styles.whiteSpace = 'nowrap';
+        styles.border = '0px';
+        break;
+      case 'focus-visible':
+        styles.outline = '2px solid rgb(0, 123, 255)';
+        styles.outlineOffset = '2px';
+        break;
+      case 'no-focus':
+        styles.outline = 'none';
+        break;
+      default:
+        // Check for color/theme classes
+        if (className.includes('text-')) {
+          styles.color = getColorFromClass(className);
+        }
+        if (className.includes('bg-')) {
+          styles.backgroundColor = getColorFromClass(className);
+        }
+        break;
       }
     });
   }
@@ -495,33 +495,33 @@ export function createKeyboardEventMock() {
       // Simulate default browser behavior for common keys
       if (!keydownEvent.defaultPrevented) {
         switch (key) {
-          case 'Tab':
-            // Focus next/previous element
-            const focusableElements = document.querySelectorAll(
-              'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-            );
-            const currentIndex = Array.from(focusableElements).indexOf(element);
-            const nextIndex = options.shiftKey ? currentIndex - 1 : currentIndex + 1;
-            const nextElement = focusableElements[nextIndex];
-            if (nextElement) {
-              nextElement.focus();
-            }
-            break;
-          case 'Enter':
-          case ' ':
-            // Activate element
-            if (element.tagName === 'BUTTON' || element.getAttribute('role') === 'button') {
-              element.click();
-            }
-            break;
-          case 'Escape':
-            // Close modals, clear focus traps, etc.
-            const modal = document.querySelector('[role="dialog"]:not([aria-hidden="true"])');
-            if (modal) {
-              modal.style.display = 'none';
-              modal.setAttribute('aria-hidden', 'true');
-            }
-            break;
+        case 'Tab':
+          // Focus next/previous element
+          const focusableElements = document.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+          const currentIndex = Array.from(focusableElements).indexOf(element);
+          const nextIndex = options.shiftKey ? currentIndex - 1 : currentIndex + 1;
+          const nextElement = focusableElements[nextIndex];
+          if (nextElement) {
+            nextElement.focus();
+          }
+          break;
+        case 'Enter':
+        case ' ':
+          // Activate element
+          if (element.tagName === 'BUTTON' || element.getAttribute('role') === 'button') {
+            element.click();
+          }
+          break;
+        case 'Escape':
+          // Close modals, clear focus traps, etc.
+          const modal = document.querySelector('[role="dialog"]:not([aria-hidden="true"])');
+          if (modal) {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+          }
+          break;
         }
       }
       

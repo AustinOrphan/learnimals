@@ -239,49 +239,49 @@ describe('API Service Integration', () => {
           
           if (response) {
             switch (response.status) {
-              case 401:
-                // Unauthorized - redirect to login
-                window.localStorage.removeItem('auth_token');
-                window.location.href = '/login';
-                break;
+            case 401:
+              // Unauthorized - redirect to login
+              window.localStorage.removeItem('auth_token');
+              window.location.href = '/login';
+              break;
               
-              case 403:
-                // Forbidden
-                return {
-                  error: 'You do not have permission to access this resource',
-                  code: 'FORBIDDEN'
-                };
+            case 403:
+              // Forbidden
+              return {
+                error: 'You do not have permission to access this resource',
+                code: 'FORBIDDEN'
+              };
               
-              case 404:
-                // Not found
-                return {
-                  error: 'The requested resource was not found',
-                  code: 'NOT_FOUND'
-                };
+            case 404:
+              // Not found
+              return {
+                error: 'The requested resource was not found',
+                code: 'NOT_FOUND'
+              };
               
-              case 429:
-                // Rate limited
-                const retryAfter = response.headers.get('Retry-After');
-                return {
-                  error: 'Too many requests. Please try again later.',
-                  code: 'RATE_LIMITED',
-                  retryAfter: retryAfter ? parseInt(retryAfter) : 60
-                };
+            case 429:
+              // Rate limited
+              const retryAfter = response.headers.get('Retry-After');
+              return {
+                error: 'Too many requests. Please try again later.',
+                code: 'RATE_LIMITED',
+                retryAfter: retryAfter ? parseInt(retryAfter) : 60
+              };
               
-              case 500:
-              case 502:
-              case 503:
-                // Server error
-                return {
-                  error: 'Server error. Please try again later.',
-                  code: 'SERVER_ERROR'
-                };
+            case 500:
+            case 502:
+            case 503:
+              // Server error
+              return {
+                error: 'Server error. Please try again later.',
+                code: 'SERVER_ERROR'
+              };
               
-              default:
-                return {
-                  error: 'An unexpected error occurred',
-                  code: 'UNKNOWN_ERROR'
-                };
+            default:
+              return {
+                error: 'An unexpected error occurred',
+                code: 'UNKNOWN_ERROR'
+              };
             }
           } else if (error.code === 'NETWORK_ERROR') {
             return {

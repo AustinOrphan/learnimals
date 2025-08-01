@@ -142,7 +142,7 @@ function generateShardReport(shards) {
     console.log(`Shard ${index + 1}:`);
     console.log(`  Files: ${fileCount}`);
     console.log(`  Weight: ${weight.toFixed(2)}`);
-    console.log(`  Categories:`);
+    console.log('  Categories:');
     
     // Group by category
     const categories = {};

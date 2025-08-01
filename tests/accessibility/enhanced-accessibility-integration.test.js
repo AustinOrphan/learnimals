@@ -997,7 +997,7 @@ describe('Enhanced Accessibility Integration Tests', () => {
       expect(importantUpdates.textContent).toBe('Critical error occurred');
 
       // Test batched updates
-      let batchedContent = [];
+      const batchedContent = [];
       batchedContent.push('Item 1 completed');
       batchedContent.push('Item 2 completed');
       batchedContent.push('Item 3 completed');

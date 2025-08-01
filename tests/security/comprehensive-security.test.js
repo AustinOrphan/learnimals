@@ -266,8 +266,8 @@ describe('Comprehensive Security Tests', () => {
       'https://trusted.com',
       'https://cdn.learnimals.com',
       'data:',
-      "'self'",
-      "'unsafe-inline'" // Only for development
+      '\'self\'',
+      '\'unsafe-inline\'' // Only for development
     ];
 
     // Test source validation
@@ -329,16 +329,16 @@ describe('Comprehensive Security Tests', () => {
   test('SQL injection prevention', async () => {
     // Even though this is a static site, test SQL injection patterns that could affect backend APIs
     const sqlInjectionAttempts = [
-      "'; DROP TABLE users; --",
-      "1' OR '1'='1",
-      "'; UNION SELECT * FROM sensitive_data; --",
-      "1'; UPDATE users SET password='hacked' WHERE id=1; --",
-      "' OR 1=1 LIMIT 1 OFFSET 1 --",
-      "'; INSERT INTO admin (user) VALUES ('hacker'); --",
-      "1' AND (SELECT COUNT(*) FROM information_schema.tables)>0 --",
-      "'; EXEC xp_cmdshell('format c:'); --",
-      "1' OR SLEEP(5) --",
-      "'; SELECT password FROM users WHERE username='admin' --"
+      '\'; DROP TABLE users; --',
+      '1\' OR \'1\'=\'1',
+      '\'; UNION SELECT * FROM sensitive_data; --',
+      '1\'; UPDATE users SET password=\'hacked\' WHERE id=1; --',
+      '\' OR 1=1 LIMIT 1 OFFSET 1 --',
+      '\'; INSERT INTO admin (user) VALUES (\'hacker\'); --',
+      '1\' AND (SELECT COUNT(*) FROM information_schema.tables)>0 --',
+      '\'; EXEC xp_cmdshell(\'format c:\'); --',
+      '1\' OR SLEEP(5) --',
+      '\'; SELECT password FROM users WHERE username=\'admin\' --'
     ];
 
     const mockSQLValidator = {

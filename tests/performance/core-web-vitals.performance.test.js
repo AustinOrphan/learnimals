@@ -19,7 +19,7 @@ const PERFORMANCE_THRESHOLDS = {
 
 describe('Core Web Vitals Performance Tests', () => {
   let performanceObserver;
-  let performanceEntries = [];
+  const performanceEntries = [];
 
   beforeAll(async () => {
     // Set up performance monitoring
@@ -460,7 +460,7 @@ describe('Core Web Vitals Performance Tests', () => {
     const animationPerformance = await page.evaluate(() => {
       return new Promise((resolve) => {
         let frameCount = 0;
-        let startTime = Date.now();
+        const startTime = Date.now();
         let missedFrames = 0;
         const targetFPS = 60;
         const frameInterval = 1000 / targetFPS;

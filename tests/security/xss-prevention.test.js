@@ -487,10 +487,10 @@ describe('XSS Prevention Security Tests', () => {
     it('should prevent SQL injection in API calls', () => {
       // Mock API request data
       const apiRequests = [
-        { query: "'; DROP TABLE users; --", safe: false },
-        { query: "1' OR '1'='1", safe: false },
-        { query: "normal search term", safe: true },
-        { query: "SELECT * FROM characters WHERE name=''; DROP TABLE users; --'", safe: false }
+        { query: '\'; DROP TABLE users; --', safe: false },
+        { query: '1\' OR \'1\'=\'1', safe: false },
+        { query: 'normal search term', safe: true },
+        { query: 'SELECT * FROM characters WHERE name=\'\'; DROP TABLE users; --\'', safe: false }
       ];
       
       // Mock API sanitization
@@ -507,7 +507,7 @@ describe('XSS Prevention Security Tests', () => {
         if (!request.safe) {
           expect(sanitized).not.toContain('DROP');
           expect(sanitized).not.toContain('DELETE');
-          expect(sanitized).not.toContain("'");
+          expect(sanitized).not.toContain('\'');
           expect(sanitized).not.toContain(';');
         }
       });
@@ -605,7 +605,7 @@ describe('XSS Prevention Security Tests', () => {
         { input: 'Cat < Dog', expected: 'Cat &lt; Dog' },
         { input: 'Dog > Cat', expected: 'Dog &gt; Cat' },
         { input: 'Say "Hello"', expected: 'Say &quot;Hello&quot;' },
-        { input: "Don't worry", expected: 'Don&#x27;t worry' }
+        { input: 'Don\'t worry', expected: 'Don&#x27;t worry' }
       ];
       
       specialInputs.forEach(test => {

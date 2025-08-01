@@ -102,7 +102,12 @@ export class AccessibilityService {
     this.preferences.darkMode = prefersDark.matches;
 
     // Check for screen reader (heuristic)
-    this.preferences.screenReader = this.detectScreenReader();
+    try {
+      this.preferences.screenReader = this.detectScreenReader();
+    } catch (error) {
+      logger.debug('Screen reader detection failed:', error);
+      this.preferences.screenReader = false;
+    }
 
     // Load saved preferences
     this.loadSavedPreferences();
@@ -134,17 +139,27 @@ export class AccessibilityService {
    * Set up media query listeners
    */
   setupMediaQueries() {
-    // Reduced motion
-    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    reducedMotionQuery.addEventListener('change', this.handleMediaChange);
+    try {
+      // Reduced motion
+      this.reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      this.reducedMotionQuery.addEventListener('change', this.handleMediaChange);
 
-    // High contrast
-    const highContrastQuery = window.matchMedia('(prefers-contrast: high)');
-    highContrastQuery.addEventListener('change', this.handleMediaChange);
+      // High contrast
+      this.highContrastQuery = window.matchMedia('(prefers-contrast: high)');
+      this.highContrastQuery.addEventListener('change', this.handleMediaChange);
 
-    // Color scheme
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    darkModeQuery.addEventListener('change', this.handleMediaChange);
+      // Color scheme
+      this.darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this.darkModeQuery.addEventListener('change', this.handleMediaChange);
+    } catch (error) {
+      // JSDOM limitation - media queries may not be fully supported
+      logger.debug('Media query setup failed, using fallback:', error.message);
+      
+      // Create simple mock media query objects for testing
+      this.reducedMotionQuery = { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
+      this.highContrastQuery = { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
+      this.darkModeQuery = { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
+    }
   }
 
   /**
@@ -355,16 +370,27 @@ export class AccessibilityService {
    * Ensure element is visible when focused
    */
   ensureVisible(element) {
-    const rect = element.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    
-    // Check if element is partially or fully outside viewport
-    if (rect.top < 0 || rect.bottom > viewportHeight) {
-      element.scrollIntoView({
-        behavior: this.preferences.reducedMotion ? 'auto' : 'smooth',
-        block: 'center',
-        inline: 'nearest'
-      });
+    try {
+      const rect = element.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      
+      // Check if element is partially or fully outside viewport
+      if (rect.top < 0 || rect.bottom > viewportHeight) {
+        element.scrollIntoView({
+          behavior: this.preferences.reducedMotion ? 'auto' : 'smooth',
+          block: 'center',
+          inline: 'nearest'
+        });
+      }
+    } catch (error) {
+      // JSDOM limitation - fallback to simple scrollIntoView
+      if (element && typeof element.scrollIntoView === 'function') {
+        element.scrollIntoView({
+          behavior: this.preferences.reducedMotion ? 'auto' : 'smooth',
+          block: 'center',
+          inline: 'nearest'
+        });
+      }
     }
   }
 
@@ -628,6 +654,17 @@ export class AccessibilityService {
     // Remove event listeners
     document.removeEventListener('keydown', this.handleKeydown);
     document.removeEventListener('focusin', this.handleFocusIn);
+
+    // Remove media query listeners
+    if (this.reducedMotionQuery) {
+      this.reducedMotionQuery.removeEventListener('change', this.handleMediaChange);
+    }
+    if (this.highContrastQuery) {
+      this.highContrastQuery.removeEventListener('change', this.handleMediaChange);
+    }
+    if (this.darkModeQuery) {
+      this.darkModeQuery.removeEventListener('change', this.handleMediaChange);
+    }
 
     // Remove announcers
     if (this.announcer) {

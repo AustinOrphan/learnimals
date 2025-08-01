@@ -54,7 +54,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 
 describe('Keyboard Navigation Test Suite - Integration Tests', () => {
   let testContainer;
-  let testResults = {
+  const testResults = {
     totalTests: 0,
     passedTests: 0,
     failedTests: 0,
@@ -512,8 +512,8 @@ describe('Keyboard Navigation Test Suite - Integration Tests', () => {
         <div class="performance-test">
           <div class="large-list" role="listbox" aria-label="Large item list">
             ${Array.from({ length: 1000 }, (_, i) => 
-              `<div role="option" tabindex="${i === 0 ? '0' : '-1'}" id="item-${i}">Item ${i + 1}</div>`
-            ).join('')}
+    `<div role="option" tabindex="${i === 0 ? '0' : '-1'}" id="item-${i}">Item ${i + 1}</div>`
+  ).join('')}
           </div>
         </div>
       `;

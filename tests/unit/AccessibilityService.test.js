@@ -45,8 +45,40 @@ describe('AccessibilityService', () => {
     document.body.innerHTML = '';
     document.head.innerHTML = '';
     
-    // Reset localStorage
-    localStorage.clear();
+    // Set up localStorage mock with working implementation
+    const localStorageMock = {
+      store: new Map(),
+      getItem: function(key) { 
+        return this.store.get(key) || null; 
+      },
+      setItem: function(key, value) { 
+        this.store.set(key, String(value)); 
+      },
+      removeItem: function(key) { 
+        this.store.delete(key); 
+      },
+      clear: function() { 
+        this.store.clear(); 
+      },
+      key: function(index) { 
+        return Array.from(this.store.keys())[index] || null; 
+      },
+      get length() { 
+        return this.store.size; 
+      }
+    };
+    
+    // Replace localStorage globally
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+      writable: true,
+      configurable: true
+    });
+    Object.defineProperty(global, 'localStorage', {
+      value: localStorageMock,
+      writable: true,
+      configurable: true
+    });
     
     // Additional mock for scrollIntoView (may be overridden)
     Element.prototype.scrollIntoView = vi.fn();
@@ -336,7 +368,11 @@ describe('AccessibilityService', () => {
       
       const scrollSpy = vi.spyOn(button, 'scrollIntoView');
       
-      const focusEvent = new FocusEvent('focusin', { target: button });
+      const focusEvent = new FocusEvent('focusin', { bubbles: true });
+      Object.defineProperty(focusEvent, 'target', {
+        value: button,
+        configurable: true
+      });
       document.dispatchEvent(focusEvent);
       
       expect(scrollSpy).toHaveBeenCalledWith({
@@ -362,7 +398,11 @@ describe('AccessibilityService', () => {
       
       const scrollSpy = vi.spyOn(button, 'scrollIntoView');
       
-      const focusEvent = new FocusEvent('focusin', { target: button });
+      const focusEvent = new FocusEvent('focusin', { bubbles: true });
+      Object.defineProperty(focusEvent, 'target', {
+        value: button,
+        configurable: true
+      });
       document.dispatchEvent(focusEvent);
       
       expect(scrollSpy).toHaveBeenCalledWith({
@@ -398,13 +438,21 @@ describe('AccessibilityService', () => {
     it('should save preferences to localStorage', async () => {
       await accessibilityService.initialize();
       
+      // Verify initial state
+      expect(accessibilityService.preferences.highContrast).toBe(false);
+      
       accessibilityService.updatePreference('highContrast', true);
+      
+      // Verify the preference was updated
+      expect(accessibilityService.preferences.highContrast).toBe(true);
       
       const savedString = localStorage.getItem('accessibility-preferences');
       expect(savedString).toBeTruthy();
       
-      const saved = JSON.parse(savedString);
-      expect(saved.highContrast).toBe(true);
+      if (savedString) {
+        const saved = JSON.parse(savedString);
+        expect(saved.highContrast).toBe(true);
+      }
     });
 
     it('should load saved preferences', () => {
@@ -629,15 +677,26 @@ describe('AccessibilityService', () => {
     });
 
     it('should handle errors in screen reader detection', () => {
+      // Save original speechSynthesis
+      const originalSpeechSynthesis = window.speechSynthesis;
+      
       // Mock speechSynthesis to throw error
       Object.defineProperty(window, 'speechSynthesis', {
         get: () => {
           throw new Error('Not available');
-        }
+        },
+        configurable: true
       });
       
       const isScreenReader = accessibilityService.detectScreenReader();
       expect(typeof isScreenReader).toBe('boolean');
+      
+      // Restore original speechSynthesis
+      Object.defineProperty(window, 'speechSynthesis', {
+        value: originalSpeechSynthesis,
+        writable: true,
+        configurable: true
+      });
     });
   });
 

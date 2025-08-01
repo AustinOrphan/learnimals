@@ -705,7 +705,7 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
       
       gameContainer = testContainer.querySelector('#advanced-game');
       
-      let playerStats = { health: 100, mana: 50 };
+      const playerStats = { health: 100, mana: 50 };
       
       gameContainer.addEventListener('keydown', (e) => {
         // Ctrl+H for health potion

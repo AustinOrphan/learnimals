@@ -14,8 +14,8 @@ expect.extend({
       pass,
       message: () => 
         pass 
-          ? `Expected element not to be in the document`
-          : `Expected element to be in the document`
+          ? 'Expected element not to be in the document'
+          : 'Expected element to be in the document'
     };
   },
 
@@ -55,7 +55,7 @@ expect.extend({
       pass,
       message: () =>
         pass
-          ? `Expected element not to have styles`
+          ? 'Expected element not to have styles'
           : `Style mismatches: ${failures.join(', ')}`
     };
   },
@@ -311,7 +311,7 @@ export const PerformanceHelpers = {
   monitorFrameRate: (duration = 1000) => {
     return new Promise((resolve) => {
       let frameCount = 0;
-      let startTime = performance.now();
+      const startTime = performance.now();
       let lastTime = startTime;
       const frames = [];
 
@@ -662,10 +662,10 @@ export const SecurityHelpers = {
 
   // SQL injection testing
   createSQLInjectionPayloads: () => [
-    "'; DROP TABLE users; --",
-    "1' OR '1'='1",
-    "'; UNION SELECT * FROM sensitive_data; --",
-    "1'; UPDATE users SET password='hacked' WHERE id=1; --"
+    '\'; DROP TABLE users; --',
+    '1\' OR \'1\'=\'1',
+    '\'; UNION SELECT * FROM sensitive_data; --',
+    '1\'; UPDATE users SET password=\'hacked\' WHERE id=1; --'
   ],
 
   // Test input sanitization

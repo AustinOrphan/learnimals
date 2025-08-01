@@ -973,7 +973,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       formComponent.render(testContainer);
 
       const emailField = testContainer.querySelector('[name="email"]');
-      const errorElement = testContainer.querySelector(`#validation-form-email-error`);
+      const errorElement = testContainer.querySelector('#validation-form-email-error');
 
       // Enter invalid email
       emailField.value = 'invalid-email';
@@ -998,7 +998,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const gameArea = testContainer.querySelector('#game-area');
       const player = testContainer.querySelector('#player');
       
-      let playerPosition = { x: 100, y: 100 };
+      const playerPosition = { x: 100, y: 100 };
       
       // Mock game movement handler
       const movementHandler = (e) => {

@@ -696,7 +696,7 @@ describe('ThemeManager Enhanced Tests', () => {
     it('should throw error for non-existent theme', () => {
       expect(() => {
         themeManager.setTheme('non-existent');
-      }).toThrow("Theme 'non-existent' is not registered");
+      }).toThrow('Theme \'non-existent\' is not registered');
     });
 
     it('should handle localStorage errors gracefully', () => {
@@ -952,7 +952,7 @@ describe('ThemeManager Enhanced Tests', () => {
       expect(errorHandler).toHaveBeenCalled();
       expect(successHandler).toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error in theme event handler for 'test':",
+        'Error in theme event handler for \'test\':',
         expect.any(Error)
       );
       
@@ -1002,7 +1002,7 @@ describe('ThemeManager Enhanced Tests', () => {
       expect(themeManager.hasTheme('valid')).toBe(true);
       expect(themeManager.hasTheme('invalid')).toBe(false);
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "Failed to import theme 'invalid':",
+        'Failed to import theme \'invalid\':',
         expect.any(Error)
       );
       

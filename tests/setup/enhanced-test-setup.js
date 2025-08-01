@@ -170,9 +170,9 @@ export const test = base.extend({
     ];
 
     const sqlInjectionPayloads = [
-      "'; DROP TABLE users; --",
-      "1' OR '1'='1",
-      "'; UNION SELECT * FROM sensitive_data; --"
+      '\'; DROP TABLE users; --',
+      '1\' OR \'1\'=\'1',
+      '\'; UNION SELECT * FROM sensitive_data; --'
     ];
 
     const csrfToken = `csrf_${Math.random().toString(36).substr(2, 16)}`;

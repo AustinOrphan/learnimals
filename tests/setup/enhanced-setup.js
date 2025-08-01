@@ -57,6 +57,22 @@ beforeAll(() => {
   window.scrollTo = vi.fn();
   window.scroll = vi.fn();
   
+  // Ensure localStorage is available globally
+  if (!global.localStorage) {
+    const localStorageMock = {
+      store: {},
+      getItem: function(key) { return this.store[key] || null; },
+      setItem: function(key, value) { this.store[key] = String(value); },
+      removeItem: function(key) { delete this.store[key]; },
+      clear: function() { this.store = {}; },
+      key: function(index) { return Object.keys(this.store)[index] || null; },
+      get length() { return Object.keys(this.store).length; }
+    };
+    
+    global.localStorage = localStorageMock;
+    global.sessionStorage = { ...localStorageMock, store: {} };
+  }
+  
   // Mock IntersectionObserver
   global.IntersectionObserver = vi.fn().mockImplementation((callback, options) => ({
     observe: vi.fn(),
@@ -217,6 +233,23 @@ beforeAll(() => {
       x: 0,
       y: 0
     });
+  }
+  
+  // Mock scrollIntoView for all elements
+  if (!Element.prototype.scrollIntoView) {
+    Element.prototype.scrollIntoView = vi.fn();
+  }
+  
+  // Mock matchMedia for media query support
+  if (!window.matchMedia) {
+    window.matchMedia = vi.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }));
   }
   
   // Setup DOM environment
@@ -452,9 +485,42 @@ beforeEach(() => {
     toggle: vi.fn()
   };
   
-  // Reset localStorage
-  window.localStorage.clear();
-  window.sessionStorage.clear();
+  // Reset localStorage and ensure it's working
+  try {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+  } catch (error) {
+    // If localStorage doesn't work, create a mock
+    const localStorageMock = {
+      store: {},
+      getItem: vi.fn((key) => localStorageMock.store[key] || null),
+      setItem: vi.fn((key, value) => {
+        localStorageMock.store[key] = String(value);
+      }),
+      removeItem: vi.fn((key) => {
+        delete localStorageMock.store[key];
+      }),
+      clear: vi.fn(() => {
+        localStorageMock.store = {};
+      }),
+      key: vi.fn((index) => Object.keys(localStorageMock.store)[index] || null),
+      get length() {
+        return Object.keys(localStorageMock.store).length;
+      }
+    };
+    
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+      writable: true,
+      configurable: true
+    });
+    
+    Object.defineProperty(window, 'sessionStorage', {
+      value: { ...localStorageMock, store: {} },
+      writable: true,
+      configurable: true
+    });
+  }
   
   // Reset location safely
   if (window.location) {
@@ -473,15 +539,15 @@ beforeEach(() => {
             hostname: 'localhost',
             port: '3000',
             pathname: '/',
-          search: '',
-          hash: '',
-          assign: vi.fn(),
-          reload: vi.fn(),
-          replace: vi.fn()
-        },
-        writable: true,
-        configurable: true
-      });
+            search: '',
+            hash: '',
+            assign: vi.fn(),
+            reload: vi.fn(),
+            replace: vi.fn()
+          },
+          writable: true,
+          configurable: true
+        });
       } catch (nestedError) {
         // If we still can't redefine, just skip location setup
         console.warn('Unable to setup window.location mock:', nestedError.message);
@@ -625,8 +691,8 @@ expect.extend({
     return {
       pass,
       message: () => pass 
-        ? `Expected element not to be in DOM`
-        : `Expected element to be in DOM`
+        ? 'Expected element not to be in DOM'
+        : 'Expected element to be in DOM'
     };
   },
   
@@ -646,8 +712,8 @@ expect.extend({
     return {
       pass,
       message: () => pass
-        ? `Expected element not to be visible`
-        : `Expected element to be visible`
+        ? 'Expected element not to be visible'
+        : 'Expected element to be visible'
     };
   }
 });

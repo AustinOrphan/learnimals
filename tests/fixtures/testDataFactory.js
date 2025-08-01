@@ -499,7 +499,7 @@ export const EdgeCaseFactory = {
 
   createMaliciousInput: () => ({
     xssAttempt: '<script>alert("XSS")</script>',
-    sqlInjection: "'; DROP TABLE users; --",
+    sqlInjection: '\'; DROP TABLE users; --',
     pathTraversal: '../../../etc/passwd',
     prototypePolutation: '__proto__.isAdmin',
     htmlInjection: '<img src="x" onerror="evil()" />',
