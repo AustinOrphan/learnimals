@@ -7,6 +7,7 @@
 
 import { vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 import { setupGlobalMocks } from '../helpers/moduleResolver.js';
+import { setupAccessibilityTestMocks } from '../helpers/accessibilityTestMocks.js';
 
 // Configure test environment
 beforeAll(() => {
@@ -15,6 +16,9 @@ beforeAll(() => {
   
   // Setup global mocks for browser APIs
   setupGlobalMocks();
+  
+  // Setup accessibility test mocks
+  setupAccessibilityTestMocks();
   
   // Mock console methods to reduce noise in tests
   global.console = {

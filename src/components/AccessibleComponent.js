@@ -18,6 +18,8 @@ export class AccessibleComponent extends BaseComponent {
       focusable: options.focusable !== false, // Default to focusable
       keyboardNavigation: options.keyboardNavigation !== false,
       announceChanges: options.announceChanges !== false,
+      content: options.content || 'Accessible Component',
+      tagName: options.tagName || 'div',
       ...options
     });
 
@@ -29,6 +31,62 @@ export class AccessibleComponent extends BaseComponent {
     this.handleAccessibleKeydown = this.handleAccessibleKeydown.bind(this);
     this.handleFocusIn = this.handleFocusIn.bind(this);
     this.handleFocusOut = this.handleFocusOut.bind(this);
+  }
+
+  /**
+   * Default implementation of generateHTML for testing and base functionality
+   */
+  generateHTML() {
+    const attributes = this.buildAttributes();
+    const content = this.options.content || 'Accessible Component';
+    const tagName = this.options.tagName || 'div';
+    
+    return `<${tagName}${attributes}>${content}</${tagName}>`;
+  }
+
+  /**
+   * Build HTML attributes string
+   */
+  buildAttributes() {
+    const attrs = [];
+    
+    // Add ID
+    if (this.options.id) {
+      attrs.push(`id="${this.options.id}"`);
+    }
+    
+    // Add CSS classes
+    const classes = ['accessible-component', ...(this.options.cssClasses || [])];
+    attrs.push(`class="${classes.join(' ')}"`);
+    
+    // Add ARIA attributes
+    if (this.options.ariaLabel) {
+      attrs.push(`aria-label="${this.options.ariaLabel}"`);
+    }
+    if (this.options.ariaLabelledBy) {
+      attrs.push(`aria-labelledby="${this.options.ariaLabelledBy}"`);
+    }
+    if (this.options.ariaDescribedBy) {
+      attrs.push(`aria-describedby="${this.options.ariaDescribedBy}"`);
+    }
+    if (this.options.role) {
+      attrs.push(`role="${this.options.role}"`);
+    }
+    if (this.options.ariaHidden !== null) {
+      attrs.push(`aria-hidden="${this.options.ariaHidden}"`);
+    }
+    
+    // Add focusable attribute
+    if (this.options.focusable && this.options.tagName !== 'button' && this.options.tagName !== 'a') {
+      attrs.push('tabindex="0"');
+    }
+    
+    // Add custom attributes
+    Object.entries(this.options.attributes || {}).forEach(([key, value]) => {
+      attrs.push(`${key}="${value}"`);
+    });
+    
+    return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
   }
 
   /**
