@@ -17,9 +17,10 @@ describe('Vite Configuration Integration', () => {
     // Test importing modules using aliases
     try {
       // This tests the @utils alias
-      const { logger } = await import('@utils/logger.js');
+      const logger = await import('@utils/logger.js');
       expect(logger).toBeDefined();
-      expect(typeof logger.log).toBe('function');
+      expect(logger.default).toBeDefined();
+      expect(typeof logger.default.info).toBe('function');
     } catch (error) {
       // If alias doesn't work, this will fail
       throw new Error(`Failed to import using @utils alias: ${error.message}`);
@@ -42,9 +43,10 @@ describe('Vite Configuration Integration', () => {
   test('should import component using alias', async () => {
     try {
       // This tests the @components alias
-      const { Modal } = await import('@components/ui/Modal.js');
+      const Modal = await import('@components/ui/Modal.js');
       expect(Modal).toBeDefined();
-      expect(typeof Modal).toBe('function');
+      expect(Modal.default).toBeDefined();
+      expect(typeof Modal.default).toBe('function');
     } catch (error) {
       // Test the alias works even if the component import fails
       expect(error.message).not.toContain('Cannot resolve');
@@ -155,7 +157,8 @@ describe('Vite Build Configuration', () => {
     expect(typeof BigInt).toBe('function');
     
     // Dynamic imports (already tested above)
-    expect(typeof import).toBe('function');
+    // import is a keyword, not a function, so we test its usage instead
+    expect(import('@utils/logger.js')).toBeInstanceOf(Promise);
   });
 });
 

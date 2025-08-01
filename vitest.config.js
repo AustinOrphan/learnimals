@@ -1,6 +1,12 @@
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'path';
 
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify('1.0.0'),
+    __DEV__: JSON.stringify(true),
+    __PROD__: JSON.stringify(false)
+  },
   test: {
     // Use jsdom environment for DOM testing (instead of 'node')
     environment: 'jsdom',
@@ -71,8 +77,17 @@ export default defineConfig({
   // Resolve configuration for imports
   resolve: {
     alias: {
-      '@': '/src',
-      '@test': '/tests'
+      '@': resolve(__dirname, 'src'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@utils': resolve(__dirname, 'src/utils'),
+      '@services': resolve(__dirname, 'src/services'),
+      '@features': resolve(__dirname, 'src/features'),
+      '@styles': resolve(__dirname, 'src/styles'),
+      '@pages': resolve(__dirname, 'src/pages'),
+      '@templates': resolve(__dirname, 'src/templates'),
+      '@config': resolve(__dirname, 'src/config.js'),
+      '@public': resolve(__dirname, 'public'),
+      '@test': resolve(__dirname, 'tests')
     }
   }
 });

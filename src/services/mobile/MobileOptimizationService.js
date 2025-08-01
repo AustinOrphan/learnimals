@@ -880,6 +880,14 @@ export class MobileOptimizationService {
     return this.config.imageOptimization.webpSupport;
   }
 
+  setupResponsiveImages() {
+    // Set up responsive image handling
+    const images = document.querySelectorAll('img[data-src]');
+    images.forEach(img => {
+      this.loadResponsiveImage(img);
+    });
+  }
+
   getNetworkInfo() {
     if ('connection' in navigator) {
       const connection = navigator.connection;
