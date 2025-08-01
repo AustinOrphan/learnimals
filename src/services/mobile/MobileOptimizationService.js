@@ -20,7 +20,7 @@ export class MobileOptimizationService {
     this.config = {
       imageOptimization: {
         lazyLoadingEnabled: true,
-        webpSupport: this.supportsWebP(),
+        webpSupport: null, // Will be determined lazily
         retinaSuffix: '@2x',
         compressionQuality: 0.8
       },
@@ -861,10 +861,23 @@ export class MobileOptimizationService {
   }
 
   supportsWebP() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const dataURL = canvas.toDataURL('image/webp');
+      return dataURL && dataURL.indexOf('data:image/webp') === 0;
+    } catch (error) {
+      // Fallback for test environments or unsupported browsers
+      return false;
+    }
+  }
+
+  getWebPSupport() {
+    if (this.config.imageOptimization.webpSupport === null) {
+      this.config.imageOptimization.webpSupport = this.supportsWebP();
+    }
+    return this.config.imageOptimization.webpSupport;
   }
 
   getNetworkInfo() {

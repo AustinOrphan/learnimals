@@ -218,7 +218,12 @@ beforeAll(() => {
   }
   
   if (!HTMLCanvasElement.prototype.toDataURL) {
-    HTMLCanvasElement.prototype.toDataURL = vi.fn().mockReturnValue('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+    HTMLCanvasElement.prototype.toDataURL = vi.fn().mockImplementation((type) => {
+      if (type === 'image/webp') {
+        return 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==';
+      }
+      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    });
   }
   
   // Mock getBoundingClientRect for all elements

@@ -21,6 +21,23 @@ export const CharacterFactory = {
       secondary: null
     },
     favoriteColor: randomChoice(['blue', 'red', 'green', 'purple', 'orange', 'pink', 'yellow']),
+    appearance: {
+      colors: {
+        primary: randomChoice(['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444']),
+        secondary: randomChoice(['#1E40AF', '#047857', '#D97706', '#7C3AED', '#DC2626']),
+        accent: randomChoice(['#60A5FA', '#34D399', '#FBBF24', '#A78BFA', '#F87171'])
+      },
+      accessories: randomChoice([
+        [],
+        ['hat'],
+        ['glasses'],
+        ['bow-tie'],
+        ['hat', 'glasses'],
+        ['scarf', 'hat']
+      ]),
+      pattern: randomChoice(['solid', 'stripes', 'spots', 'polka-dots']),
+      size: randomChoice(['small', 'medium', 'large'])
+    },
     customizations: {
       accessories: randomChoice([
         [],
@@ -48,6 +65,13 @@ export const CharacterFactory = {
         ['reading', 'art'],
         ['coding', 'math']
       ])
+    },
+    stats: {
+      level: randomNumber(1, 10),
+      xp: randomNumber(0, 5000),
+      totalScore: randomNumber(100, 10000),
+      gamesPlayed: randomNumber(1, 50),
+      timeSpent: randomNumber(300, 18000) // 5 minutes to 5 hours
     },
     createdAt: randomDate().toISOString(),
     lastModified: new Date().toISOString(),
@@ -90,7 +114,34 @@ export const CharacterFactory = {
 
   createBatch: (count = 5) => {
     return Array.from({ length: count }, () => CharacterFactory.create());
-  }
+  },
+
+  createMinimal: (overrides = {}) => ({
+    id: generateId('char'),
+    name: 'Test Character',
+    species: { primary: 'cat', secondary: null },
+    favoriteColor: 'blue',
+    appearance: {
+      colors: {
+        primary: '#3B82F6',
+        secondary: '#1E40AF',
+        accent: '#60A5FA'
+      },
+      accessories: [],
+      pattern: 'solid',
+      size: 'medium'
+    },
+    stats: {
+      level: 1,
+      xp: 0,
+      totalScore: 0,
+      gamesPlayed: 0,
+      timeSpent: 0
+    },
+    createdAt: new Date().toISOString(),
+    version: '2.0',
+    ...overrides
+  })
 };
 
 // Game Test Data Factory
@@ -114,6 +165,29 @@ export const GameFactory = {
     },
     createdAt: randomDate().toISOString(),
     version: '1.0',
+    ...overrides
+  }),
+
+  createGameSession: (overrides = {}) => ({
+    sessionId: generateId('session'),
+    gameId: overrides.gameId || generateId('game'),
+    characterId: overrides.characterId || generateId('char'),
+    playerId: overrides.playerId || generateId('player'),
+    startTime: Date.now(),
+    endTime: null,
+    state: 'initialized',
+    score: 0,
+    level: 1,
+    timeElapsed: 0,
+    moves: 0,
+    accuracy: 100,
+    powerUpsUsed: [],
+    achievements: [],
+    metadata: {
+      browser: 'Chrome',
+      device: 'desktop',
+      viewport: '1920x1080'
+    },
     ...overrides
   }),
 
@@ -248,6 +322,76 @@ export const ProgressFactory = {
       bonus: randomChoice([null, 'double_xp_weekend', 'new_game_unlock'])
     },
     ...overrides
+  }),
+
+  createUserProgress: (overrides = {}) => ({
+    userId: generateId('user'),
+    username: randomChoice(['TestUser', 'PlayerOne', 'Learner123', 'StudentA']),
+    level: randomNumber(1, 20),
+    xp: randomNumber(0, 50000),
+    totalScore: randomNumber(1000, 100000),
+    totalTime: randomNumber(3600, 360000), // 1 hour to 100 hours in seconds
+    gamesPlayed: randomNumber(10, 500),
+    activitiesCompleted: randomNumber(5, 200),
+    achievements: randomChoice([
+      [],
+      ['first_steps'],
+      ['first_steps', 'math_explorer'],
+      ['first_steps', 'science_lover', 'high_scorer'],
+      ['speedster', 'perfectionist', 'explorer', 'master']
+    ]),
+    currentStreak: randomNumber(0, 30),
+    longestStreak: randomNumber(5, 60),
+    subjects: {
+      math: {
+        level: randomNumber(1, 15),
+        xp: randomNumber(0, 10000),
+        gamesPlayed: randomNumber(5, 100),
+        totalScore: randomNumber(500, 25000),
+        averageScore: randomNumber(200, 800),
+        bestScore: randomNumber(800, 2000),
+        timeSpent: randomNumber(1800, 72000),
+        lastPlayed: randomDate().toISOString()
+      },
+      science: {
+        level: randomNumber(1, 15),
+        xp: randomNumber(0, 10000),
+        gamesPlayed: randomNumber(3, 80),
+        totalScore: randomNumber(300, 20000),
+        averageScore: randomNumber(150, 750),
+        bestScore: randomNumber(600, 1800),
+        timeSpent: randomNumber(1200, 54000),
+        lastPlayed: randomDate().toISOString()
+      },
+      reading: {
+        level: randomNumber(1, 12),
+        xp: randomNumber(0, 8000),
+        gamesPlayed: randomNumber(2, 60),
+        totalScore: randomNumber(200, 15000),
+        averageScore: randomNumber(100, 600),
+        bestScore: randomNumber(500, 1500),
+        timeSpent: randomNumber(900, 36000),
+        lastPlayed: randomDate().toISOString()
+      }
+    },
+    preferences: {
+      difficulty: randomChoice(['easy', 'medium', 'hard', 'adaptive']),
+      soundEnabled: randomChoice([true, false]),
+      animationsEnabled: randomChoice([true, false]),
+      notifications: randomChoice([true, false]),
+      autoSave: randomChoice([true, false])
+    },
+    statistics: {
+      sessionCount: randomNumber(10, 200),
+      averageSessionTime: randomNumber(300, 1800), // 5-30 minutes
+      favoriteGame: randomChoice(['bubble-pop', 'word-scramble', 'element-match', 'number-line-jump']),
+      favoriteSubject: randomChoice(['math', 'science', 'reading', 'art']),
+      peakPerformanceHour: randomNumber(8, 20), // 8 AM to 8 PM
+      weeklyGoalCompletion: randomNumber(0, 100) // percentage
+    },
+    createdAt: randomDate(new Date(2024, 0, 1)).toISOString(),
+    lastActive: randomDate().toISOString(),
+    ...overrides
   })
 };
 
@@ -367,7 +511,12 @@ export const DOMUtils = {
     }
     
     if (!HTMLCanvasElement.prototype.toDataURL) {
-      HTMLCanvasElement.prototype.toDataURL = vi.fn().mockReturnValue('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+      HTMLCanvasElement.prototype.toDataURL = vi.fn().mockImplementation((type) => {
+        if (type === 'image/webp') {
+          return 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==';
+        }
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+      });
     }
   },
   

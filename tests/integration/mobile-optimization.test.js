@@ -24,6 +24,17 @@ vi.mock('../../src/utils/performanceUtils.js', () => ({
     end: vi.fn(),
     measure: vi.fn()
   },
+  fpsMonitor: {
+    start: vi.fn(),
+    stop: vi.fn(),
+    getCurrentFPS: vi.fn(() => 60),
+    getAverageFPS: vi.fn(() => 58)
+  },
+  memoryMonitor: {
+    snapshot: vi.fn(),
+    getCurrentMemoryUsage: vi.fn(() => ({ used: 25000000, total: 100000000 })),
+    getMemoryTrend: vi.fn(() => 'stable')
+  },
   rafThrottle: vi.fn(fn => fn)
 }));
 
