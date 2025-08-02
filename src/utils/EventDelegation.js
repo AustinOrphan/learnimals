@@ -1,9 +1,9 @@
 /**
  * Event Delegation Utility
- * 
+ *
  * Provides CSP-compliant event delegation infrastructure for components.
  * Based on modern JavaScript patterns and security best practices.
- * 
+ *
  * Features:
  * - Type-safe event delegation with data attributes
  * - Automatic cleanup and memory leak prevention
@@ -18,15 +18,15 @@ export default class EventDelegation {
     this.options = {
       stopPropagation: options.stopPropagation || false,
       preventDefault: options.preventDefault || false,
-      ...options
+      ...options,
     };
-    
+
     // Event handler registry
     this.handlers = new Map();
-    
+
     // Bound methods for cleanup
     this.boundHandlers = new Map();
-    
+
     this.isInitialized = false;
   }
 
@@ -59,15 +59,15 @@ export default class EventDelegation {
     if (!this.handlers.has(selector)) {
       this.handlers.set(selector, []);
     }
-    
+
     const handlerConfig = {
       handler,
       once: options.once || false,
       stopPropagation: options.stopPropagation || this.options.stopPropagation,
       preventDefault: options.preventDefault || this.options.preventDefault,
-      condition: options.condition || null
+      condition: options.condition || null,
     };
-    
+
     this.handlers.get(selector).push(handlerConfig);
   }
 
@@ -78,13 +78,13 @@ export default class EventDelegation {
    */
   off(selector, handler) {
     if (!this.handlers.has(selector)) return;
-    
+
     const handlers = this.handlers.get(selector);
     const index = handlers.findIndex(h => h.handler === handler);
-    
+
     if (index !== -1) {
       handlers.splice(index, 1);
-      
+
       // Clean up empty handler arrays
       if (handlers.length === 0) {
         this.handlers.delete(selector);
@@ -128,13 +128,13 @@ export default class EventDelegation {
    * @returns {Function} Delegated event handler
    */
   createDelegatedHandler(_eventType) {
-    return (event) => {
+    return event => {
       const target = event.target;
-      
+
       // Find matching handlers by iterating through registered selectors
       for (const [selector, handlerConfigs] of this.handlers) {
         const matchingElement = this.findMatchingElement(target, selector);
-        
+
         if (matchingElement && this.container.contains(matchingElement)) {
           // Execute all matching handlers
           handlerConfigs.forEach((config, index) => {
@@ -147,7 +147,7 @@ export default class EventDelegation {
             if (config.preventDefault) {
               event.preventDefault();
             }
-            
+
             if (config.stopPropagation) {
               event.stopPropagation();
             }
@@ -158,7 +158,7 @@ export default class EventDelegation {
             try {
               // Execute handler
               config.handler(enhancedEvent, matchingElement);
-              
+
               // Remove if once: true
               if (config.once) {
                 handlerConfigs.splice(index, 1);
@@ -185,14 +185,14 @@ export default class EventDelegation {
    */
   findMatchingElement(target, selector) {
     let current = target;
-    
+
     while (current && current !== this.container) {
       if (current.matches && current.matches(selector)) {
         return current;
       }
       current = current.parentElement;
     }
-    
+
     return null;
   }
 
@@ -209,7 +209,7 @@ export default class EventDelegation {
       delegateTarget: matchingElement,
       data: this.extractElementData(matchingElement),
       getValue: () => this.getElementValue(matchingElement),
-      getFormData: () => this.getFormData(matchingElement)
+      getFormData: () => this.getFormData(matchingElement),
     };
   }
 
@@ -220,7 +220,7 @@ export default class EventDelegation {
    */
   extractElementData(element) {
     const data = {};
-    
+
     if (element.dataset) {
       for (const [key, value] of Object.entries(element.dataset)) {
         // Convert data attributes to camelCase and parse JSON if possible
@@ -231,7 +231,7 @@ export default class EventDelegation {
         }
       }
     }
-    
+
     return data;
   }
 
@@ -244,11 +244,11 @@ export default class EventDelegation {
     if (element.type === 'checkbox' || element.type === 'radio') {
       return element.checked;
     }
-    
+
     if (element.type === 'number' || element.type === 'range') {
       return parseFloat(element.value) || 0;
     }
-    
+
     return element.value || element.textContent || '';
   }
 
@@ -260,14 +260,14 @@ export default class EventDelegation {
   getFormData(element) {
     const form = element.closest('form');
     if (!form) return {};
-    
+
     const formData = new FormData(form);
     const data = {};
-    
+
     for (const [key, value] of formData.entries()) {
       data[key] = value;
     }
-    
+
     return data;
   }
 
@@ -279,7 +279,7 @@ export default class EventDelegation {
     for (const [eventType, boundHandler] of this.boundHandlers) {
       this.container.removeEventListener(eventType, boundHandler);
     }
-    
+
     // Clear all references
     this.handlers.clear();
     this.boundHandlers.clear();
@@ -294,15 +294,15 @@ export default class EventDelegation {
    */
   static create(container, config = {}) {
     const { eventTypes = ['click'], handlers = {}, ...options } = config;
-    
+
     const delegation = new EventDelegation(container, options);
     delegation.init(eventTypes);
-    
+
     // Register provided handlers
     for (const [selector, handler] of Object.entries(handlers)) {
       delegation.on(selector, handler);
     }
-    
+
     return delegation;
   }
 }
@@ -328,10 +328,10 @@ export function createEventDelegation(container, handlers = {}, options = {}) {
 export function createActionDelegation(container, actions = {}, options = {}) {
   const delegation = new EventDelegation(container, options);
   delegation.init(['click']);
-  
+
   for (const [action, handler] of Object.entries(actions)) {
     delegation.onAction(action, handler);
   }
-  
+
   return delegation;
 }

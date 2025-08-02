@@ -32,14 +32,14 @@ describe('Navigation Component', () => {
   beforeEach(() => {
     // Reset DOM
     document.body.innerHTML = '';
-    
+
     // Setup navigation file mocks synchronously
     if (global.setupNavigationFileMocks) {
       global.setupNavigationFileMocks();
     }
-    
+
     // Mock fetch globally for all navigation-related file requests
-    global.fetch = vi.fn().mockImplementation((url) => {
+    global.fetch = vi.fn().mockImplementation(url => {
       // Handle different navigation asset requests
       if (url.includes('navigation.js')) {
         return Promise.resolve({
@@ -83,7 +83,7 @@ describe('Navigation Component', () => {
               
               window.NavigationComponent = NavigationComponent;
             })();
-          `)
+          `),
         });
       } else if (url.includes('navbar.html')) {
         return Promise.resolve({
@@ -104,7 +104,7 @@ describe('Navigation Component', () => {
                 </ul>
               </nav>
             </header>
-          `)
+          `),
         });
       } else if (url.includes('.css')) {
         return Promise.resolve({
@@ -120,7 +120,7 @@ describe('Navigation Component', () => {
               .navbar-links { display: none; }
               .navbar-links.active { display: block; }
             }
-          `)
+          `),
         });
       } else {
         // Default mock for any other requests
@@ -128,11 +128,11 @@ describe('Navigation Component', () => {
           ok: true,
           status: 200,
           text: vi.fn().mockResolvedValue('// Mock file content'),
-          json: vi.fn().mockResolvedValue({}),           
+          json: vi.fn().mockResolvedValue({}),
         });
       }
     });
-    
+
     // Reset modules
     vi.resetModules();
   });
@@ -140,13 +140,16 @@ describe('Navigation Component', () => {
   afterEach(async () => {
     // Clear all mocks
     vi.clearAllMocks();
-    
+
     // Wait for any pending async operations to complete
-    await vi.waitFor(() => {
-      // This ensures any pending promises or microtasks have resolved
-      return true;
-    }, { timeout: 100 });
-    
+    await vi.waitFor(
+      () => {
+        // This ensures any pending promises or microtasks have resolved
+        return true;
+      },
+      { timeout: 100 }
+    );
+
     // Clean up any added event listeners
     const allEventListeners = document.querySelectorAll('*');
     allEventListeners.forEach(element => {
@@ -156,34 +159,34 @@ describe('Navigation Component', () => {
         element.parentNode.replaceChild(clone, element);
       }
     });
-    
+
     // Clear any custom properties on window
     if (window.location && Object.getOwnPropertyDescriptor(window, 'location')?.configurable) {
       delete window.location;
     }
-    
+
     // Clear global navigation mocks
     if (global.NavigationComponent) {
       delete global.NavigationComponent;
     }
-    
+
     if (global.setupNavigationFileMocks) {
       delete global.setupNavigationFileMocks;
     }
-    
+
     // Reset document body
     document.body.innerHTML = '';
-    
+
     // Remove any scripts added to head
     const scripts = document.head.querySelectorAll('script');
     scripts.forEach(script => script.remove());
-    
+
     // Clear any timers that might have been set
     vi.clearAllTimers();
-    
+
     // Restore any mocked functions
     vi.restoreAllMocks();
-    
+
     // Reset fetch mock
     if (global.fetch) {
       global.fetch.mockClear();
@@ -196,9 +199,9 @@ describe('Navigation Component', () => {
       const script = document.createElement('script');
       script.src = '/src/components/layout/navigation.js';
       // Intentionally NOT setting type="module"
-      
+
       document.head.appendChild(script);
-      
+
       // Should not throw syntax errors when loaded as regular script
       expect(() => {
         // navigation.js doesn't use imports, so it should work as regular script
@@ -220,13 +223,13 @@ describe('Navigation Component', () => {
             };
             window.NavigationComponent = NavigationComponent;
           })();
-        `)
+        `),
       });
-      
+
       // Read the actual navigation.js file content
       const response = await fetch('/src/components/layout/navigation.js');
       const content = await response.text();
-      
+
       // Should not contain ES6 imports
       expect(content).not.toMatch(/^\s*import\s+.*from\s+['"`].*['"`];?\s*$/m);
       expect(content).not.toMatch(/^\s*import\s*\{.*\}\s*from\s+['"`].*['"`];?\s*$/m);
@@ -243,9 +246,9 @@ describe('Navigation Component', () => {
         init: vi.fn(),
         bindEvents: vi.fn(),
         setupMobileMenu: vi.fn(),
-        destroy: vi.fn()
+        destroy: vi.fn(),
       }));
-      
+
       // Set global reference
       global.NavigationComponent = NavigationComponent;
     });
@@ -262,7 +265,7 @@ describe('Navigation Component', () => {
     it('should find and initialize navigation elements when present', () => {
       // Setup DOM for this specific test
       setupNavigationDOM();
-      
+
       // Mock NavigationComponent to have the expected properties
       NavigationComponent = vi.fn().mockImplementation(() => ({
         init: vi.fn(),
@@ -270,11 +273,11 @@ describe('Navigation Component', () => {
         setupMobileMenu: vi.fn(),
         destroy: vi.fn(),
         mobileMenuButton: document.getElementById('mobile-menu'),
-        navMenu: document.getElementById('nav-menu')
+        navMenu: document.getElementById('nav-menu'),
       }));
-      
+
       const component = new NavigationComponent();
-      
+
       // Should find mobile menu button
       expect(component.mobileMenuButton).toBeTruthy();
       expect(component.navMenu).toBeTruthy();
@@ -285,19 +288,20 @@ describe('Navigation Component', () => {
     // Setup function for mobile menu tests (synchronous)
     const setupMobileMenu = () => {
       setupNavigationDOM();
-      
+
       // Mock navigation script functionality
       global.NavigationComponent = {
         init: vi.fn(),
         toggleMobileMenu: vi.fn(),
-        closeMobileMenu: vi.fn()
+        closeMobileMenu: vi.fn(),
       };
-      
+
       // Add click handlers to simulate navigation behavior
       const mobileMenuButton = document.getElementById('mobile-menu');
       const navMenu = document.getElementById('nav-menu');
-      
+
       if (mobileMenuButton && navMenu) {
+        // Button click handler
         mobileMenuButton.addEventListener('click', () => {
           const isActive = navMenu.classList.contains('active');
           if (isActive) {
@@ -308,35 +312,32 @@ describe('Navigation Component', () => {
             mobileMenuButton.setAttribute('aria-expanded', 'true');
           }
         });
-        
-        // Set initial state
-        navMenu.classList.remove('active');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-        mobileMenuButton.setAttribute('aria-controls', 'nav-menu');
-        
-        // Add escape key handler
-        document.addEventListener('keydown', (e) => {
+
+        // Document click handler for outside clicks
+        document.addEventListener('click', e => {
+          if (!navMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+            navMenu.classList.remove('active');
+            mobileMenuButton.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Keyboard handler for escape key
+        document.addEventListener('keydown', e => {
           if (e.key === 'Escape' && navMenu.classList.contains('active')) {
             navMenu.classList.remove('active');
             mobileMenuButton.setAttribute('aria-expanded', 'false');
           }
         });
-        
-        // Add outside click handler
-        document.addEventListener('click', (e) => {
-          if (navMenu.classList.contains('active') && 
-              !navMenu.contains(e.target) && 
-              !mobileMenuButton.contains(e.target)) {
-            navMenu.classList.remove('active');
-            mobileMenuButton.setAttribute('aria-expanded', 'false');
-          }
-        });
+
+        // Initialize ARIA attributes
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+        mobileMenuButton.setAttribute('aria-controls', 'nav-menu');
       }
     };
 
     it('should toggle mobile menu on button click', () => {
       setupMobileMenu();
-      
+
       const mobileMenuButton = document.getElementById('mobile-menu');
       const navMenu = document.getElementById('nav-menu');
 
@@ -362,7 +363,7 @@ describe('Navigation Component', () => {
 
     it('should close menu on escape key', () => {
       setupMobileMenu();
-      
+
       const mobileMenuButton = document.getElementById('mobile-menu');
       const navMenu = document.getElementById('nav-menu');
 
@@ -380,7 +381,7 @@ describe('Navigation Component', () => {
 
     it('should close menu when clicking outside', () => {
       setupMobileMenu();
-      
+
       const mobileMenuButton = document.getElementById('mobile-menu');
       const navMenu = document.getElementById('nav-menu');
 
@@ -397,7 +398,7 @@ describe('Navigation Component', () => {
 
     it('should NOT close menu when clicking inside menu', () => {
       setupMobileMenu();
-      
+
       const mobileMenuButton = document.getElementById('mobile-menu');
       const navMenu = document.getElementById('nav-menu');
 
@@ -415,7 +416,7 @@ describe('Navigation Component', () => {
 
     it('should set proper ARIA attributes', () => {
       setupMobileMenu();
-      
+
       const mobileMenuButton = document.getElementById('mobile-menu');
 
       expect(mobileMenuButton.getAttribute('aria-expanded')).toBe('false');
@@ -431,13 +432,13 @@ describe('Navigation Component', () => {
     // Setup function for page highlighting tests (synchronous)
     const setupPageHighlighting = () => {
       setupNavigationDOM();
-      
+
       // Mock current page
       Object.defineProperty(window, 'location', {
         value: {
-          pathname: '/src/pages/index.html'
+          pathname: '/src/pages/index.html',
         },
-        configurable: true
+        configurable: true,
       });
 
       // Mock navigation highlighting functionality
@@ -454,9 +455,9 @@ describe('Navigation Component', () => {
 
     it('should highlight current page link', () => {
       setupPageHighlighting();
-      
+
       const homeLink = document.querySelector('a[href="/src/pages/index.html"]');
-      
+
       if (homeLink) {
         expect(homeLink.getAttribute('aria-current')).toBe('page');
         expect(homeLink.classList.contains('current-page')).toBe(true);
@@ -468,12 +469,12 @@ describe('Navigation Component', () => {
 
     it('should handle different path formats', () => {
       setupPageHighlighting();
-      
+
       const links = document.querySelectorAll('nav a');
-      
+
       // Should not throw errors when processing links
       expect(links.length).toBeGreaterThan(0);
-      
+
       // At least one link should be processed without error
       expect(true).toBe(true);
     });
@@ -498,15 +499,15 @@ describe('Navigation Component', () => {
 
     it('should initialize properly when navbar is already loaded', () => {
       setupNavigationDOM();
-      
+
       // Mock navigation script when navbar elements already exist
       const mobileMenuButton = document.getElementById('mobile-menu');
-      
+
       // Initialize mobile menu button attributes
       if (mobileMenuButton) {
         mobileMenuButton.setAttribute('aria-expanded', 'false');
       }
-      
+
       expect(mobileMenuButton.getAttribute('aria-expanded')).toBe('false');
     });
   });
@@ -515,7 +516,7 @@ describe('Navigation Component', () => {
     // Setup function for accessibility tests (synchronous)
     const setupAccessibility = () => {
       setupNavigationDOM();
-      
+
       // Mock accessibility features setup
       const menuLinks = document.querySelectorAll('#nav-menu a');
       menuLinks.forEach(link => {
@@ -528,16 +529,16 @@ describe('Navigation Component', () => {
 
     it('should provide keyboard navigation support', () => {
       setupAccessibility();
-      
+
       const menuLinks = document.querySelectorAll('#nav-menu a');
-      
+
       menuLinks.forEach(link => {
         // Should be keyboard accessible
         expect(link.tabIndex).not.toBe(-1);
-        
+
         // Test keyboard interaction
         const enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-        
+
         // Should not throw when keyboard events are triggered
         expect(() => {
           link.dispatchEvent(enterEvent);
@@ -547,7 +548,7 @@ describe('Navigation Component', () => {
 
     it('should have proper aria labels', () => {
       setupNavigationDOM();
-      
+
       const mobileMenuButton = document.getElementById('mobile-menu');
       const navMenu = document.getElementById('nav-menu');
 
@@ -563,7 +564,7 @@ describe('Navigation Component', () => {
         // Mock navigation initialization with missing elements
         const mobileMenuButton = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');
-        
+
         // These should be null but shouldn't cause errors
         expect(mobileMenuButton).toBeNull();
         expect(navMenu).toBeNull();
@@ -581,7 +582,7 @@ describe('Navigation Component', () => {
       expect(() => {
         const mobileMenuButton = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');
-        
+
         // Should find button but not menu
         expect(mobileMenuButton).toBeTruthy();
         expect(navMenu).toBeNull();

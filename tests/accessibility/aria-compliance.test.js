@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('ARIA Compliance Tests', () => {
@@ -55,7 +58,7 @@ describe('ARIA Compliance Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
   });
 
@@ -68,7 +71,7 @@ describe('ARIA Compliance Tests', () => {
     it('should properly set aria-label attributes', () => {
       const button = document.createElement('button');
       const component = new AccessibleComponent({
-        ariaLabel: 'Close dialog'
+        ariaLabel: 'Close dialog',
       });
       component.element = button;
       component.setupAccessibility();
@@ -84,7 +87,7 @@ describe('ARIA Compliance Tests', () => {
 
       const dialog = document.createElement('div');
       const component = new AccessibleComponent({
-        ariaLabelledBy: 'dialog-title'
+        ariaLabelledBy: 'dialog-title',
       });
       component.element = dialog;
       component.setupAccessibility();
@@ -100,7 +103,7 @@ describe('ARIA Compliance Tests', () => {
 
       const input = document.createElement('input');
       const component = new AccessibleComponent({
-        ariaDescribedBy: 'help-text'
+        ariaDescribedBy: 'help-text',
       });
       component.element = input;
       component.setupAccessibility();
@@ -133,11 +136,11 @@ describe('ARIA Compliance Tests', () => {
       const label = document.createElement('label');
       label.textContent = 'Email Address';
       label.htmlFor = 'email';
-      
+
       const inputWithLabel = document.createElement('input');
       inputWithLabel.type = 'email';
       inputWithLabel.id = 'email';
-      
+
       testContainer.appendChild(label);
       testContainer.appendChild(inputWithLabel);
 
@@ -152,7 +155,7 @@ describe('ARIA Compliance Tests', () => {
 
       // Need to set labels property for the test
       Object.defineProperty(inputWithLabel, 'labels', {
-        get: () => [label]
+        get: () => [label],
       });
 
       expect(accessibilityTester.hasLabel(inputWithLabel)).toBe(true);
@@ -189,9 +192,26 @@ describe('ARIA Compliance Tests', () => {
   describe('ARIA Roles', () => {
     it('should validate ARIA role usage', () => {
       const validRoles = [
-        'button', 'dialog', 'navigation', 'main', 'banner', 'contentinfo',
-        'complementary', 'search', 'form', 'list', 'listitem', 'tab', 'tabpanel',
-        'tablist', 'menu', 'menuitem', 'checkbox', 'radio', 'slider', 'progressbar'
+        'button',
+        'dialog',
+        'navigation',
+        'main',
+        'banner',
+        'contentinfo',
+        'complementary',
+        'search',
+        'form',
+        'list',
+        'listitem',
+        'tab',
+        'tabpanel',
+        'tablist',
+        'menu',
+        'menuitem',
+        'checkbox',
+        'radio',
+        'slider',
+        'progressbar',
       ];
 
       validRoles.forEach(role => {
@@ -207,7 +227,7 @@ describe('ARIA Compliance Tests', () => {
     it('should set appropriate roles for components', () => {
       const dialog = document.createElement('div');
       const component = new AccessibleComponent({
-        role: 'dialog'
+        role: 'dialog',
       });
       component.element = dialog;
       component.setupAccessibility();
@@ -525,7 +545,7 @@ describe('ARIA Compliance Tests', () => {
     it('should automatically apply semantic structure', () => {
       const component = new AccessibleComponent({
         role: 'navigation',
-        ariaLabel: 'Site navigation'
+        ariaLabel: 'Site navigation',
       });
 
       const nav = document.createElement('nav');
@@ -612,27 +632,27 @@ describe('ARIA Compliance Tests', () => {
 
     it('should properly associate form controls with labels', () => {
       const form = document.createElement('form');
-      
+
       // Explicit label association
       const emailLabel = document.createElement('label');
       emailLabel.htmlFor = 'email-input';
       emailLabel.textContent = 'Email Address';
-      
+
       const emailInput = document.createElement('input');
       emailInput.type = 'email';
       emailInput.id = 'email-input';
       emailInput.required = true;
-      
+
       // Implicit label association
       const nameLabel = document.createElement('label');
       nameLabel.textContent = 'Full Name';
-      
+
       const nameInput = document.createElement('input');
       nameInput.type = 'text';
       nameInput.required = true;
-      
+
       nameLabel.appendChild(nameInput);
-      
+
       form.appendChild(emailLabel);
       form.appendChild(emailInput);
       form.appendChild(nameLabel);
@@ -641,7 +661,7 @@ describe('ARIA Compliance Tests', () => {
       // Verify explicit association
       expect(emailLabel.htmlFor).toBe('email-input');
       expect(emailInput.id).toBe('email-input');
-      
+
       // Verify implicit association
       expect(nameLabel.contains(nameInput)).toBe(true);
     });

@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Keyboard Navigation Tests', () => {
@@ -56,28 +59,28 @@ describe('Keyboard Navigation Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock scrollIntoView
     Element.prototype.scrollIntoView = vi.fn();
 
     // Mock focus method
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       // Simulate focus by setting activeElement
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       // Dispatch focus event
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
     });
 
     // Mock blur method
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     });
@@ -159,18 +162,38 @@ describe('Keyboard Navigation Tests', () => {
       `;
 
       const elements = testContainer.querySelectorAll('*');
-      
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#button'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#link'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#input'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#select'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#textarea'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#focusable'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#role-button'))).toBe(true);
-      
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#non-focusable'))).toBe(false);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#disabled'))).toBe(false);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#negative-tab'))).toBe(false);
+
+      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#button'))).toBe(
+        true
+      );
+      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#link'))).toBe(
+        true
+      );
+      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#input'))).toBe(
+        true
+      );
+      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#select'))).toBe(
+        true
+      );
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#textarea'))
+      ).toBe(true);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#focusable'))
+      ).toBe(true);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#role-button'))
+      ).toBe(true);
+
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#non-focusable'))
+      ).toBe(false);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#disabled'))
+      ).toBe(false);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#negative-tab'))
+      ).toBe(false);
     });
 
     it('should handle focus traps in modal dialogs', () => {
@@ -219,10 +242,10 @@ describe('Keyboard Navigation Tests', () => {
       const activateSpy = vi.spyOn(component, 'activate');
 
       // Test Enter key
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
-        bubbles: true, 
-        cancelable: true 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        bubbles: true,
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       customButton.dispatchEvent(enterEvent);
@@ -234,10 +257,10 @@ describe('Keyboard Navigation Tests', () => {
       activateSpy.mockClear();
 
       // Test Space key
-      const spaceEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
-        bubbles: true, 
-        cancelable: true 
+      const spaceEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        bubbles: true,
+        cancelable: true,
       });
       spaceEvent.preventDefault = vi.fn();
       customButton.dispatchEvent(spaceEvent);
@@ -260,10 +283,10 @@ describe('Keyboard Navigation Tests', () => {
       const clickSpy = vi.fn();
       closeButton.addEventListener('click', clickSpy);
 
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
 
       document.dispatchEvent(escapeEvent);
@@ -287,16 +310,16 @@ describe('Keyboard Navigation Tests', () => {
       component.setupKeyboardNavigation();
 
       const items = menu.querySelectorAll('[role="menuitem"]');
-      
+
       // Focus first item
       items[0].focus();
       expect(document.activeElement).toBe(items[0]);
 
       // Test Arrow Down
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       items[0].dispatchEvent(arrowDownEvent);
@@ -304,10 +327,10 @@ describe('Keyboard Navigation Tests', () => {
       expect(arrowDownEvent.preventDefault).toHaveBeenCalled();
 
       // Test Arrow Up (should wrap to last item)
-      const arrowUpEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowUp', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowUpEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowUp',
+        bubbles: true,
+        cancelable: true,
       });
       arrowUpEvent.preventDefault = vi.fn();
       items[0].dispatchEvent(arrowUpEvent);
@@ -331,16 +354,16 @@ describe('Keyboard Navigation Tests', () => {
       component.setupKeyboardNavigation();
 
       const buttons = toolbar.querySelectorAll('button');
-      
+
       // Focus middle button
       buttons[1].focus();
       expect(document.activeElement).toBe(buttons[1]);
 
       // Test Home key
-      const homeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
-        bubbles: true, 
-        cancelable: true 
+      const homeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
+        bubbles: true,
+        cancelable: true,
       });
       homeEvent.preventDefault = vi.fn();
       buttons[1].dispatchEvent(homeEvent);
@@ -348,10 +371,10 @@ describe('Keyboard Navigation Tests', () => {
       expect(homeEvent.preventDefault).toHaveBeenCalled();
 
       // Test End key
-      const endEvent = new KeyboardEvent('keydown', { 
-        key: 'End', 
-        bubbles: true, 
-        cancelable: true 
+      const endEvent = new KeyboardEvent('keydown', {
+        key: 'End',
+        bubbles: true,
+        cancelable: true,
       });
       endEvent.preventDefault = vi.fn();
       buttons[1].dispatchEvent(endEvent);
@@ -420,10 +443,10 @@ describe('Keyboard Navigation Tests', () => {
 
       // Test arrow navigation
       tabs[0].focus();
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       tabs[0].dispatchEvent(arrowRightEvent);
@@ -452,7 +475,7 @@ describe('Keyboard Navigation Tests', () => {
       expect(links.length).toBeGreaterThan(0);
 
       // Test skip to main content
-      const mainSkipLink = Array.from(links).find(link => 
+      const mainSkipLink = Array.from(links).find(link =>
         link.textContent.includes('main content')
       );
       expect(mainSkipLink).toBeTruthy();
@@ -474,9 +497,9 @@ describe('Keyboard Navigation Tests', () => {
       const mainSkipLink = skipLinks.querySelector('a[href="#main-content"]');
 
       // Simulate skip link click
-      const clickEvent = new MouseEvent('click', { 
-        bubbles: true, 
-        cancelable: true 
+      const clickEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
       });
       clickEvent.preventDefault = vi.fn();
       mainSkipLink.dispatchEvent(clickEvent);
@@ -501,7 +524,7 @@ describe('Keyboard Navigation Tests', () => {
 
       const nav = testContainer.querySelector('nav');
       const main = testContainer.querySelector('main');
-      
+
       // Focus navigation first
       nav.focus();
       expect(document.activeElement).toBe(nav);
@@ -509,10 +532,10 @@ describe('Keyboard Navigation Tests', () => {
       const focusSpy = vi.spyOn(main, 'focus');
 
       // Press F6 to navigate to next landmark
-      const f6Event = new KeyboardEvent('keydown', { 
-        key: 'F6', 
-        bubbles: true, 
-        cancelable: true 
+      const f6Event = new KeyboardEvent('keydown', {
+        key: 'F6',
+        bubbles: true,
+        cancelable: true,
       });
       f6Event.preventDefault = vi.fn();
       document.dispatchEvent(f6Event);
@@ -532,11 +555,11 @@ describe('Keyboard Navigation Tests', () => {
       const focusSpy = vi.spyOn(main, 'focus');
       const scrollSpy = vi.spyOn(main, 'scrollIntoView');
 
-      const ctrlHomeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
+      const ctrlHomeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
         ctrlKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       ctrlHomeEvent.preventDefault = vi.fn();
       document.dispatchEvent(ctrlHomeEvent);
@@ -557,11 +580,11 @@ describe('Keyboard Navigation Tests', () => {
       const focusSpy = vi.spyOn(footer, 'focus');
       const scrollSpy = vi.spyOn(footer, 'scrollIntoView');
 
-      const ctrlEndEvent = new KeyboardEvent('keydown', { 
-        key: 'End', 
+      const ctrlEndEvent = new KeyboardEvent('keydown', {
+        key: 'End',
         ctrlKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       ctrlEndEvent.preventDefault = vi.fn();
       document.dispatchEvent(ctrlEndEvent);
@@ -616,7 +639,7 @@ describe('Keyboard Navigation Tests', () => {
       newField.type = 'text';
       newField.id = 'field2';
       newField.placeholder = 'Field 2';
-      
+
       const addButton = form.querySelector('#add-field');
       form.insertBefore(newField, addButton);
 
@@ -658,17 +681,17 @@ describe('Keyboard Navigation Tests', () => {
       component.setupKeyboardNavigation();
 
       const cells = grid.querySelectorAll('[role="columnheader"], [role="gridcell"]');
-      
+
       // Initially only first header should be focusable
       expect(cells[0].getAttribute('tabindex')).toBe('0');
-      
+
       // Test arrow navigation within grid
       cells[0].focus();
-      
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       cells[0].dispatchEvent(arrowRightEvent);

@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Navigation Accessibility Tests', () => {
@@ -56,27 +59,29 @@ describe('Navigation Accessibility Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock focus and blur methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
       this.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       const previousElement = this;
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
-      this.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body }));
+      this.dispatchEvent(
+        new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body })
+      );
     });
 
     // Mock scrollIntoView
@@ -139,13 +144,13 @@ describe('Navigation Accessibility Tests', () => {
       expect(header.getAttribute('role')).toBe('banner');
       expect(mainNav.getAttribute('role')).toBe('navigation');
       expect(mainNav.getAttribute('aria-label')).toBe('Main navigation');
-      
+
       expect(breadcrumbNav.getAttribute('aria-label')).toBe('Breadcrumb');
       expect(breadcrumbNav.classList.contains('breadcrumb')).toBe(true);
-      
+
       expect(main.getAttribute('role')).toBe('main');
       expect(main.id).toBe('main-content');
-      
+
       expect(footer.getAttribute('role')).toBe('contentinfo');
       expect(footerNav.getAttribute('aria-label')).toBe('Footer links');
     });
@@ -170,7 +175,7 @@ describe('Navigation Accessibility Tests', () => {
       `;
 
       const currentPageLinks = testContainer.querySelectorAll('[aria-current="page"]');
-      
+
       expect(currentPageLinks.length).toBe(2);
       expect(currentPageLinks[0].textContent).toBe('Home');
       expect(currentPageLinks[1].textContent).toBe('Science');
@@ -204,7 +209,7 @@ describe('Navigation Accessibility Tests', () => {
       expect(links.length).toBeGreaterThan(0);
 
       // Test skip to main content
-      const mainSkipLink = Array.from(links).find(link => 
+      const mainSkipLink = Array.from(links).find(link =>
         link.textContent.includes('main content')
       );
       expect(mainSkipLink).toBeTruthy();
@@ -259,7 +264,7 @@ describe('Navigation Accessibility Tests', () => {
       expect(coursesButton.getAttribute('aria-expanded')).toBe('false');
       expect(coursesButton.getAttribute('aria-haspopup')).toBe('true');
       expect(coursesButton.getAttribute('aria-controls')).toBe('courses-menu');
-      
+
       expect(coursesMenu.getAttribute('role')).toBe('menu');
       expect(coursesMenu.getAttribute('aria-labelledby')).toBe('courses-trigger');
       expect(menuItems.length).toBe(3);
@@ -319,7 +324,7 @@ describe('Navigation Accessibility Tests', () => {
 
       expect(subjectsButton.getAttribute('aria-haspopup')).toBe('true');
       expect(mathButton.getAttribute('aria-haspopup')).toBe('true');
-      
+
       // Test nested menu structure
       expect(subjectsMenu.getAttribute('role')).toBe('menu');
       expect(mathSubmenu.getAttribute('role')).toBe('menu');
@@ -463,7 +468,7 @@ describe('Navigation Accessibility Tests', () => {
       `;
 
       const breadcrumb = testContainer.querySelector('#dynamic-breadcrumb');
-      
+
       expect(breadcrumb.getAttribute('aria-live')).toBe('polite');
 
       // Simulate breadcrumb update after navigation
@@ -513,10 +518,10 @@ describe('Navigation Accessibility Tests', () => {
       expect(document.activeElement).toBe(menuItems[0]);
 
       // Test Arrow Right navigation
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       menuItems[0].dispatchEvent(arrowRightEvent);
@@ -524,10 +529,10 @@ describe('Navigation Accessibility Tests', () => {
       expect(arrowRightEvent.preventDefault).toHaveBeenCalled();
 
       // Test Arrow Left navigation (should wrap to last)
-      const arrowLeftEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowLeft', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowLeftEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowLeft',
+        bubbles: true,
+        cancelable: true,
       });
       arrowLeftEvent.preventDefault = vi.fn();
       menuItems[0].dispatchEvent(arrowLeftEvent);
@@ -535,10 +540,10 @@ describe('Navigation Accessibility Tests', () => {
       expect(arrowLeftEvent.preventDefault).toHaveBeenCalled();
 
       // Test Home key
-      const homeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
-        bubbles: true, 
-        cancelable: true 
+      const homeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
+        bubbles: true,
+        cancelable: true,
       });
       homeEvent.preventDefault = vi.fn();
       menuItems[2].dispatchEvent(homeEvent);
@@ -585,10 +590,10 @@ describe('Navigation Accessibility Tests', () => {
       expect(document.activeElement).toBe(submenuItems[0]);
 
       // Test Arrow Down navigation
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       submenuItems[0].dispatchEvent(arrowDownEvent);
@@ -596,10 +601,10 @@ describe('Navigation Accessibility Tests', () => {
       expect(arrowDownEvent.preventDefault).toHaveBeenCalled();
 
       // Test Escape to close submenu
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
       escapeEvent.preventDefault = vi.fn();
       submenuItems[1].dispatchEvent(escapeEvent);
@@ -670,7 +675,7 @@ describe('Navigation Accessibility Tests', () => {
 
       const nav = testContainer.querySelector('#nav');
       const main = testContainer.querySelector('#main');
-      
+
       // Focus navigation
       nav.focus();
       expect(document.activeElement).toBe(nav);
@@ -679,10 +684,10 @@ describe('Navigation Accessibility Tests', () => {
       const announceSpy = vi.spyOn(service, 'announce');
 
       // Press F6 to navigate to next landmark
-      const f6Event = new KeyboardEvent('keydown', { 
-        key: 'F6', 
-        bubbles: true, 
-        cancelable: true 
+      const f6Event = new KeyboardEvent('keydown', {
+        key: 'F6',
+        bubbles: true,
+        cancelable: true,
       });
       f6Event.preventDefault = vi.fn();
       document.dispatchEvent(f6Event);
@@ -740,7 +745,7 @@ describe('Navigation Accessibility Tests', () => {
       // Simulate navigation to new page
       pageTitle.textContent = 'About Us';
       pageStatus.textContent = 'Navigated to About Us page';
-      
+
       // Focus should move to main content
       mainContent.focus();
 
@@ -826,10 +831,10 @@ describe('Navigation Accessibility Tests', () => {
       expect(searchInput.getAttribute('aria-expanded')).toBe('false');
       expect(searchInput.getAttribute('aria-autocomplete')).toBe('list');
       expect(searchInput.getAttribute('aria-controls')).toBe('search-suggestions');
-      
+
       expect(suggestions.getAttribute('role')).toBe('listbox');
       expect(suggestions.getAttribute('aria-label')).toBe('Search suggestions');
-      
+
       options.forEach(option => {
         expect(option.getAttribute('role')).toBe('option');
         expect(option.getAttribute('aria-selected')).toBe('false');
@@ -838,7 +843,7 @@ describe('Navigation Accessibility Tests', () => {
       // Simulate showing suggestions
       searchInput.setAttribute('aria-expanded', 'true');
       suggestions.style.display = 'block';
-      
+
       // Simulate selecting first suggestion
       options[0].setAttribute('aria-selected', 'true');
       searchInput.setAttribute('aria-activedescendant', 'suggestion-1');
@@ -880,7 +885,7 @@ describe('Navigation Accessibility Tests', () => {
       expect(resultsSummary.getAttribute('aria-live')).toBe('polite');
       expect(resultsSummary.getAttribute('aria-atomic')).toBe('true');
       expect(resultsSummary.textContent).toBe('Found 2 results for "math"');
-      
+
       expect(resultsRegion.getAttribute('role')).toBe('region');
       expect(resultsRegion.getAttribute('aria-labelledby')).toBe('results-heading');
     });
@@ -987,7 +992,7 @@ describe('Navigation Accessibility Tests', () => {
       expect(navExpander.getAttribute('aria-expanded')).toBe('false');
       expect(navExpander.getAttribute('aria-controls')).toBe('nav-tabs');
       expect(navTabs.getAttribute('role')).toBe('tablist');
-      
+
       // First tab should be selected
       expect(tabs[0].getAttribute('aria-selected')).toBe('true');
       expect(tabs[1].getAttribute('aria-selected')).toBe('false');
@@ -1022,7 +1027,7 @@ describe('Navigation Accessibility Tests', () => {
       const navStatus = testContainer.querySelector('#nav-status');
 
       // Simulate navigation error
-      brokenLink.addEventListener('click', (e) => {
+      brokenLink.addEventListener('click', e => {
         e.preventDefault();
         navStatus.textContent = 'Navigation failed. Please try again or contact support.';
       });
@@ -1057,11 +1062,11 @@ describe('Navigation Accessibility Tests', () => {
       const navStatus = testContainer.querySelector('#nav-status');
 
       // Simulate slow navigation
-      slowLink.addEventListener('click', (e) => {
+      slowLink.addEventListener('click', e => {
         e.preventDefault();
         slowLink.setAttribute('aria-busy', 'true');
         navStatus.textContent = 'Loading page, please wait...';
-        
+
         setTimeout(() => {
           slowLink.removeAttribute('aria-busy');
           navStatus.textContent = 'Page loaded successfully';

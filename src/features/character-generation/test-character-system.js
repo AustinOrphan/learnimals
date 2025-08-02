@@ -1,7 +1,7 @@
 /**
  * Test file for Character Generation System
  * This file tests the core functionality of the character generation system
- * 
+ *
  * Part of Phase D: Character Generator Core
  */
 
@@ -13,12 +13,12 @@ import { runRegressionTests } from './test-regression.js';
  */
 async function testCharacterSystem() {
   console.log('🧪 Testing Character Generation System...\n');
-  
+
   const results = {
     tests: 0,
     passed: 0,
     failed: 0,
-    errors: []
+    errors: [],
   };
 
   // Test 1: Basic character creation
@@ -28,9 +28,9 @@ async function testCharacterSystem() {
     const character = await CharacterGenerationAPI.createCharacter({
       name: 'Test Character',
       subject: 'math',
-      autoSave: false
+      autoSave: false,
     });
-    
+
     if (character.success && character.character.name === 'Test Character') {
       console.log('✅ Basic character creation passed');
       results.passed++;
@@ -50,9 +50,9 @@ async function testCharacterSystem() {
   try {
     results.tests++;
     const randomCharacter = await CharacterGenerationAPI.generateRandomCharacter('science', {
-      autoSave: false
+      autoSave: false,
     });
-    
+
     if (randomCharacter.success && randomCharacter.character.subject === 'science') {
       console.log('✅ Random character generation passed');
       results.passed++;
@@ -80,23 +80,23 @@ async function testCharacterSystem() {
         size: 'medium',
         primaryColor: '#4A90E2',
         secondaryColor: '#FFFFFF',
-        accentColor: '#FFD700'
+        accentColor: '#FFD700',
       },
       personality: {
         traits: ['friendly', 'patient'],
         primaryTrait: 'friendly',
-        voiceType: 'child'
+        voiceType: 'child',
       },
       education: {
         specialties: ['Stories', 'Vocabulary'],
         difficultyLevel: 'beginner',
         ageRange: { min: 4, max: 8 },
-        teachingStyle: 'visual'
-      }
+        teachingStyle: 'visual',
+      },
     };
 
     const validation = CharacterGenerationAPI.validateCharacter(validCharacter);
-    
+
     if (validation.isValid) {
       console.log('✅ Character validation passed');
       results.passed++;
@@ -119,16 +119,16 @@ async function testCharacterSystem() {
       name: '', // Invalid: empty name
       subject: 'invalid-subject', // Invalid: not in enum
       appearance: {
-        primaryColor: 'not-a-color' // Invalid: wrong format
+        primaryColor: 'not-a-color', // Invalid: wrong format
       },
       personality: {
         traits: [], // Invalid: empty array
-        primaryTrait: 'nonexistent-trait'
-      }
+        primaryTrait: 'nonexistent-trait',
+      },
     };
 
     const validation = CharacterGenerationAPI.validateCharacter(invalidCharacter);
-    
+
     if (!validation.isValid && validation.errors.length > 0) {
       console.log('✅ Invalid character validation passed (correctly detected errors)');
       results.passed++;
@@ -149,9 +149,9 @@ async function testCharacterSystem() {
     results.tests++;
     const templateCharacter = await CharacterGenerationAPI.createFromTemplate('art', {
       name: 'Template Character',
-      autoSave: false
+      autoSave: false,
     });
-    
+
     if (templateCharacter.success && templateCharacter.character.subject === 'art') {
       console.log('✅ Template creation passed');
       results.passed++;
@@ -172,9 +172,9 @@ async function testCharacterSystem() {
     results.tests++;
     const preview = CharacterGenerationAPI.generatePreview({
       name: 'Preview Character',
-      subject: 'coding'
+      subject: 'coding',
     });
-    
+
     if (preview.character && preview.character.name === 'Preview Character') {
       console.log('✅ Preview generation passed');
       results.passed++;
@@ -196,7 +196,7 @@ async function testCharacterSystem() {
     const subjects = CharacterUtils.getAvailableSubjects();
     const colorPalettes = CharacterUtils.getColorPalettes('math');
     const namesSuggestions = CharacterUtils.getNameSuggestions('science', 3);
-    
+
     if (subjects.length > 0 && colorPalettes.length > 0 && namesSuggestions.length === 3) {
       console.log('✅ Character utilities passed');
       results.passed++;
@@ -215,21 +215,21 @@ async function testCharacterSystem() {
   console.log('\nTest 8: Storage operations');
   try {
     results.tests++;
-    
+
     // Create a character and try to save/load
     const character = await CharacterGenerationAPI.createCharacter({
       name: 'Storage Test Character',
       subject: 'math',
-      autoSave: true // This should save to storage
+      autoSave: true, // This should save to storage
     });
-    
+
     if (character.success && character.characterId) {
       const loadedCharacter = CharacterGenerationAPI.loadCharacter(character.characterId);
-      
+
       if (loadedCharacter && loadedCharacter.name === 'Storage Test Character') {
         console.log('✅ Storage operations passed');
         results.passed++;
-        
+
         // Clean up
         CharacterGenerationAPI.deleteCharacter(character.characterId);
       } else {
@@ -252,9 +252,9 @@ async function testCharacterSystem() {
   console.log('\n' + '='.repeat(50));
   console.log('Running Regression Tests...');
   console.log('='.repeat(50));
-  
+
   const regressionResults = await runRegressionTests();
-  
+
   // Merge regression results with main results
   results.tests += regressionResults.tests;
   results.passed += regressionResults.passed;
@@ -269,7 +269,7 @@ async function testCharacterSystem() {
   console.log(`Passed: ${results.passed} ✅`);
   console.log(`Failed: ${results.failed} ❌`);
   console.log(`Success Rate: ${((results.passed / results.tests) * 100).toFixed(1)}%`);
-  
+
   if (results.errors.length > 0) {
     console.log('\n🚨 Errors:');
     results.errors.forEach((error, index) => {
@@ -295,17 +295,17 @@ export async function testComponentIntegration() {
     console.log('Testing CharacterWizard integration...');
     try {
       const wizard = new window.CharacterWizard({
-        onComplete: (result) => console.log('Wizard completed:', result),
+        onComplete: result => console.log('Wizard completed:', result),
         onCancel: () => console.log('Wizard cancelled'),
-        onPreviewUpdate: (character) => console.log('Preview updated:', character.name)
+        onPreviewUpdate: character => console.log('Preview updated:', character.name),
       });
-      
+
       console.log('✅ CharacterWizard instantiation passed');
-      
+
       // Test wizard methods
       wizard.reset();
       console.log('✅ CharacterWizard reset passed');
-      
+
       return true;
     } catch (error) {
       console.log('❌ CharacterWizard integration error:', error.message);
@@ -324,41 +324,52 @@ export async function testPerformance() {
   const results = {
     characterCreation: 0,
     validation: 0,
-    bulkOperations: 0
+    bulkOperations: 0,
   };
 
   // Test character creation performance
   console.log('Testing character creation performance...');
   const startTime = performance.now();
-  
+
   for (let i = 0; i < 10; i++) {
     await CharacterGenerationAPI.createCharacter({
       name: `Performance Test ${i}`,
       subject: 'math',
-      autoSave: false
+      autoSave: false,
     });
   }
-  
+
   results.characterCreation = performance.now() - startTime;
   console.log(`✅ Created 10 characters in ${results.characterCreation.toFixed(2)}ms`);
 
   // Test validation performance
   console.log('Testing validation performance...');
   const validationStart = performance.now();
-  
+
   const testCharacter = {
     id: 'perf-test',
     name: 'Performance Test Character',
     subject: 'science',
-    appearance: { baseShape: 'circle', size: 'medium', primaryColor: '#4A90E2', secondaryColor: '#FFFFFF', accentColor: '#FFD700' },
+    appearance: {
+      baseShape: 'circle',
+      size: 'medium',
+      primaryColor: '#4A90E2',
+      secondaryColor: '#FFFFFF',
+      accentColor: '#FFD700',
+    },
     personality: { traits: ['friendly'], primaryTrait: 'friendly', voiceType: 'child' },
-    education: { specialties: ['Testing'], difficultyLevel: 'beginner', ageRange: { min: 4, max: 12 }, teachingStyle: 'mixed' }
+    education: {
+      specialties: ['Testing'],
+      difficultyLevel: 'beginner',
+      ageRange: { min: 4, max: 12 },
+      teachingStyle: 'mixed',
+    },
   };
 
   for (let i = 0; i < 100; i++) {
     CharacterGenerationAPI.validateCharacter(testCharacter);
   }
-  
+
   results.validation = performance.now() - validationStart;
   console.log(`✅ Validated character 100 times in ${results.validation.toFixed(2)}ms`);
 
@@ -371,7 +382,9 @@ export default testCharacterSystem;
 // Auto-run tests if this file is executed directly
 if (typeof window !== 'undefined' && window.location) {
   // Running in browser
-  console.log('Character Generation System Test Suite loaded. Run testCharacterSystem() to begin testing.');
+  console.log(
+    'Character Generation System Test Suite loaded. Run testCharacterSystem() to begin testing.'
+  );
 } else if (typeof module !== 'undefined' && require.main === module) {
   // Running in Node.js
   testCharacterSystem().then(results => {

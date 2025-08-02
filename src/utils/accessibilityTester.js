@@ -29,7 +29,7 @@ export class AccessibilityTester {
       { name: 'Image Accessibility', test: () => this.testImageAccessibility(container) },
       { name: 'Heading Structure', test: () => this.testHeadingStructure(container) },
       { name: 'Touch Targets', test: () => this.testTouchTargets(container) },
-      { name: 'Motion Preferences', test: () => this.testMotionPreferences(container) }
+      { name: 'Motion Preferences', test: () => this.testMotionPreferences(container) },
     ];
 
     for (const { name, test } of tests) {
@@ -51,7 +51,7 @@ export class AccessibilityTester {
    */
   testKeyboardNavigation(container) {
     const focusableElements = this.getFocusableElements(container);
-    
+
     if (focusableElements.length === 0) {
       this.warnings.push('No focusable elements found');
       return;
@@ -89,7 +89,9 @@ export class AccessibilityTester {
     focusableElements.forEach(element => {
       // Test focus indicators
       if (!this.hasFocusIndicator(element)) {
-        this.warnings.push(`Focus indicator may be insufficient: ${this.getElementSelector(element)}`);
+        this.warnings.push(
+          `Focus indicator may be insufficient: ${this.getElementSelector(element)}`
+        );
       }
 
       // Test focus visibility
@@ -111,13 +113,13 @@ export class AccessibilityTester {
   testARIA(container) {
     // Check for proper landmark usage
     this.testLandmarks(container);
-    
+
     // Check ARIA labels and descriptions
     this.testARIALabels(container);
-    
+
     // Check for proper roles
     this.testARIARoles(container);
-    
+
     // Check live regions
     this.testLiveRegions(container);
   }
@@ -171,10 +173,10 @@ export class AccessibilityTester {
    */
   testARIARoles(container) {
     const elementsWithRoles = container.querySelectorAll('[role]');
-    
+
     elementsWithRoles.forEach(element => {
       const role = element.getAttribute('role');
-      
+
       // Check for invalid roles
       if (!this.isValidRole(role)) {
         throw new Error(`Invalid ARIA role: ${role} on ${this.getElementSelector(element)}`);
@@ -184,7 +186,9 @@ export class AccessibilityTester {
       const requiredProps = this.getRequiredARIAProperties(role);
       requiredProps.forEach(prop => {
         if (!element.hasAttribute(prop)) {
-          throw new Error(`Missing required ARIA property ${prop} for role ${role}: ${this.getElementSelector(element)}`);
+          throw new Error(
+            `Missing required ARIA property ${prop} for role ${role}: ${this.getElementSelector(element)}`
+          );
         }
       });
     });
@@ -195,11 +199,13 @@ export class AccessibilityTester {
    */
   testLiveRegions(container) {
     const liveRegions = container.querySelectorAll('[aria-live]');
-    
+
     liveRegions.forEach(region => {
       const liveValue = region.getAttribute('aria-live');
       if (!['polite', 'assertive', 'off'].includes(liveValue)) {
-        throw new Error(`Invalid aria-live value: ${liveValue} on ${this.getElementSelector(region)}`);
+        throw new Error(
+          `Invalid aria-live value: ${liveValue} on ${this.getElementSelector(region)}`
+        );
       }
     });
   }
@@ -208,30 +214,38 @@ export class AccessibilityTester {
    * Test color contrast
    */
   testColorContrast(container) {
-    const textElements = container.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, a, button, label');
-    
+    const textElements = container.querySelectorAll(
+      'p, span, div, h1, h2, h3, h4, h5, h6, a, button, label'
+    );
+
     textElements.forEach(element => {
       try {
         const style = window.getComputedStyle(element);
         const color = style.color;
         const backgroundColor = this.getBackgroundColor(element);
-        
+
         if (color && backgroundColor) {
           const contrast = this.calculateContrastRatio(color, backgroundColor);
           const fontSize = parseInt(style.fontSize);
           const fontWeight = style.fontWeight;
-          
-          const isLargeText = fontSize >= 18 || (fontSize >= 14 && (fontWeight === 'bold' || parseInt(fontWeight) >= 700));
+
+          const isLargeText =
+            fontSize >= 18 ||
+            (fontSize >= 14 && (fontWeight === 'bold' || parseInt(fontWeight) >= 700));
           const minContrast = isLargeText ? 3.0 : 4.5;
-          
+
           if (contrast < minContrast) {
-            this.warnings.push(`Low color contrast (${contrast.toFixed(2)}:1) on ${this.getElementSelector(element)}`);
+            this.warnings.push(
+              `Low color contrast (${contrast.toFixed(2)}:1) on ${this.getElementSelector(element)}`
+            );
           }
         }
       } catch (error) {
         // JSDOM limitation - skip color contrast testing in test environment
         if (error.message.includes('Not implemented: window.getComputedStyle')) {
-          this.warnings.push(`Color contrast testing skipped in test environment for ${this.getElementSelector(element)}`);
+          this.warnings.push(
+            `Color contrast testing skipped in test environment for ${this.getElementSelector(element)}`
+          );
         } else {
           logger.debug('Color contrast test error:', error.message);
         }
@@ -244,7 +258,7 @@ export class AccessibilityTester {
    */
   testFormAccessibility(container) {
     const forms = container.querySelectorAll('form');
-    
+
     forms.forEach(form => {
       // Check for form labels
       const inputs = form.querySelectorAll('input, select, textarea');
@@ -284,7 +298,7 @@ export class AccessibilityTester {
    */
   testImageAccessibility(container) {
     const images = container.querySelectorAll('img');
-    
+
     images.forEach(img => {
       // Check for alt text
       if (!img.hasAttribute('alt')) {
@@ -293,12 +307,16 @@ export class AccessibilityTester {
 
       // Check for decorative images
       if (img.alt === '' && !img.getAttribute('aria-hidden')) {
-        this.warnings.push(`Decorative image should have aria-hidden="true": ${this.getElementSelector(img)}`);
+        this.warnings.push(
+          `Decorative image should have aria-hidden="true": ${this.getElementSelector(img)}`
+        );
       }
 
       // Check for complex images
       if (img.alt && img.alt.length > 125) {
-        this.warnings.push(`Alt text is very long, consider using aria-describedby: ${this.getElementSelector(img)}`);
+        this.warnings.push(
+          `Alt text is very long, consider using aria-describedby: ${this.getElementSelector(img)}`
+        );
       }
     });
 
@@ -306,7 +324,9 @@ export class AccessibilityTester {
     const elementsWithBgImages = container.querySelectorAll('[style*="background-image"]');
     elementsWithBgImages.forEach(element => {
       if (element.textContent.trim() === '' && !element.getAttribute('aria-label')) {
-        this.warnings.push(`Background image may need accessible alternative: ${this.getElementSelector(element)}`);
+        this.warnings.push(
+          `Background image may need accessible alternative: ${this.getElementSelector(element)}`
+        );
       }
     });
   }
@@ -316,7 +336,7 @@ export class AccessibilityTester {
    */
   testHeadingStructure(container) {
     const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+
     if (headings.length === 0) {
       this.warnings.push('No headings found');
       return;
@@ -327,7 +347,7 @@ export class AccessibilityTester {
 
     headings.forEach((heading, index) => {
       const level = parseInt(heading.tagName.charAt(1));
-      
+
       if (level === 1) {
         hasH1 = true;
         if (index > 0) {
@@ -364,7 +384,9 @@ export class AccessibilityTester {
       const minSize = 44; // WCAG recommendation
 
       if (rect.width < minSize || rect.height < minSize) {
-        this.warnings.push(`Touch target may be too small (${Math.round(rect.width)}x${Math.round(rect.height)}): ${this.getElementSelector(element)}`);
+        this.warnings.push(
+          `Touch target may be too small (${Math.round(rect.width)}x${Math.round(rect.height)}): ${this.getElementSelector(element)}`
+        );
       }
     });
   }
@@ -374,7 +396,7 @@ export class AccessibilityTester {
    */
   testMotionPreferences(container) {
     const animatedElements = container.querySelectorAll('[style*="animation"], [class*="animate"]');
-    
+
     if (animatedElements.length > 0) {
       // Check if there's a way to disable animations
       const animationControl = container.querySelector('.animation-control, [data-reduce-motion]');
@@ -420,7 +442,7 @@ export class AccessibilityTester {
       'video[controls]',
       'object',
       'embed',
-      'summary'
+      'summary',
     ].join(', ');
 
     return Array.from(container.querySelectorAll(focusableSelectors));
@@ -444,29 +466,40 @@ export class AccessibilityTester {
 
     // Check if element has keyboard event handlers or is natively focusable
     const tagName = element.tagName.toLowerCase();
-    const nativelyFocusable = ['a', 'button', 'input', 'select', 'textarea', 'audio', 'video', 'object', 'embed', 'summary'].includes(tagName);
-    
+    const nativelyFocusable = [
+      'a',
+      'button',
+      'input',
+      'select',
+      'textarea',
+      'audio',
+      'video',
+      'object',
+      'embed',
+      'summary',
+    ].includes(tagName);
+
     // Special case for links - need href attribute
     if (tagName === 'a' && !element.hasAttribute('href')) {
       return false;
     }
-    
+
     // Special case for audio/video - need controls attribute
     if ((tagName === 'audio' || tagName === 'video') && !element.hasAttribute('controls')) {
       return false;
     }
-    
+
     // Special case for contenteditable
     if (element.getAttribute('contenteditable') === 'true') {
       return true;
     }
-    
+
     if (nativelyFocusable) return true;
 
     // Check for role that implies keyboard interaction
     const role = element.getAttribute('role');
     const interactiveRoles = ['button', 'link', 'menuitem', 'tab', 'option'];
-    
+
     return interactiveRoles.includes(role) || tabIndex !== null;
   }
 
@@ -475,16 +508,18 @@ export class AccessibilityTester {
       .map(el => {
         const tabIndexAttr = el.getAttribute('tabindex');
         let tabIndex;
-        
+
         if (tabIndexAttr === null) {
           // Elements without explicit tabindex get 0 if they're naturally focusable
           const tagName = el.tagName.toLowerCase();
-          const naturallyFocusable = ['a', 'button', 'input', 'select', 'textarea'].includes(tagName);
+          const naturallyFocusable = ['a', 'button', 'input', 'select', 'textarea'].includes(
+            tagName
+          );
           tabIndex = naturallyFocusable ? 0 : -1;
         } else {
           tabIndex = parseInt(tabIndexAttr, 10);
         }
-        
+
         return { element: el, tabIndex };
       })
       .filter(item => item.tabIndex >= 0) // Exclude negative tabindex
@@ -497,7 +532,9 @@ export class AccessibilityTester {
         }
         // Same tab index, use document order
         if (typeof Node !== 'undefined' && Node.DOCUMENT_POSITION_FOLLOWING) {
-          return a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+          return a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_FOLLOWING
+            ? -1
+            : 1;
         } else {
           // Fallback for test environment - use array order
           const elementsArray = Array.from(a.element.parentNode?.children || []);
@@ -530,13 +567,14 @@ export class AccessibilityTester {
           logger.debug('Modal visibility check error:', error.message);
         }
       }
-      
+
       // Check for escape mechanisms
       const closeButton = modal.querySelector('[data-dismiss], .close, .modal-close');
-      const hasEscapeListener = modal.hasAttribute('data-keyboard') || 
-                               modal.addEventListener || 
-                               window.getEventListeners?.(modal)?.keydown;
-      
+      const hasEscapeListener =
+        modal.hasAttribute('data-keyboard') ||
+        modal.addEventListener ||
+        window.getEventListeners?.(modal)?.keydown;
+
       return !closeButton && !hasEscapeListener;
     });
   }
@@ -563,10 +601,12 @@ export class AccessibilityTester {
       const activeStyle = window.getComputedStyle(element, ':focus');
       const normalStyle = window.getComputedStyle(element);
       element.blur();
-      
-      return activeStyle.outline !== 'none' || 
-             activeStyle.boxShadow !== 'none' ||
-             activeStyle.backgroundColor !== normalStyle.backgroundColor;
+
+      return (
+        activeStyle.outline !== 'none' ||
+        activeStyle.boxShadow !== 'none' ||
+        activeStyle.backgroundColor !== normalStyle.backgroundColor
+      );
     } catch (error) {
       // JSDOM limitation - assume focus is visible in test environment
       if (error.message.includes('Not implemented: window.getComputedStyle')) {
@@ -584,62 +624,123 @@ export class AccessibilityTester {
   }
 
   hasAccessibleName(element) {
-    return element.getAttribute('aria-label') ||
-           element.getAttribute('aria-labelledby') ||
-           element.textContent.trim() ||
-           element.title ||
-           (element.tagName === 'INPUT' && element.labels?.length > 0);
+    return (
+      element.getAttribute('aria-label') ||
+      element.getAttribute('aria-labelledby') ||
+      element.textContent.trim() ||
+      element.title ||
+      (element.tagName === 'INPUT' && element.labels?.length > 0)
+    );
   }
 
   hasLabel(input) {
-    return input.labels?.length > 0 ||
-           input.getAttribute('aria-label') ||
-           input.getAttribute('aria-labelledby') ||
-           input.getAttribute('title');
+    return (
+      input.labels?.length > 0 ||
+      input.getAttribute('aria-label') ||
+      input.getAttribute('aria-labelledby') ||
+      input.getAttribute('title')
+    );
   }
 
   isValidRole(role) {
     const validRoles = [
-      'alert', 'alertdialog', 'application', 'article', 'banner', 'button',
-      'cell', 'checkbox', 'columnheader', 'combobox', 'complementary',
-      'contentinfo', 'definition', 'dialog', 'directory', 'document',
-      'feed', 'figure', 'form', 'grid', 'gridcell', 'group', 'heading',
-      'img', 'link', 'list', 'listbox', 'listitem', 'log', 'main',
-      'marquee', 'math', 'menu', 'menubar', 'menuitem', 'menuitemcheckbox',
-      'menuitemradio', 'navigation', 'none', 'note', 'option', 'presentation',
-      'progressbar', 'radio', 'radiogroup', 'region', 'row', 'rowgroup',
-      'rowheader', 'scrollbar', 'search', 'searchbox', 'separator',
-      'slider', 'spinbutton', 'status', 'switch', 'tab', 'table',
-      'tablist', 'tabpanel', 'term', 'textbox', 'timer', 'toolbar',
-      'tooltip', 'tree', 'treegrid', 'treeitem'
+      'alert',
+      'alertdialog',
+      'application',
+      'article',
+      'banner',
+      'button',
+      'cell',
+      'checkbox',
+      'columnheader',
+      'combobox',
+      'complementary',
+      'contentinfo',
+      'definition',
+      'dialog',
+      'directory',
+      'document',
+      'feed',
+      'figure',
+      'form',
+      'grid',
+      'gridcell',
+      'group',
+      'heading',
+      'img',
+      'link',
+      'list',
+      'listbox',
+      'listitem',
+      'log',
+      'main',
+      'marquee',
+      'math',
+      'menu',
+      'menubar',
+      'menuitem',
+      'menuitemcheckbox',
+      'menuitemradio',
+      'navigation',
+      'none',
+      'note',
+      'option',
+      'presentation',
+      'progressbar',
+      'radio',
+      'radiogroup',
+      'region',
+      'row',
+      'rowgroup',
+      'rowheader',
+      'scrollbar',
+      'search',
+      'searchbox',
+      'separator',
+      'slider',
+      'spinbutton',
+      'status',
+      'switch',
+      'tab',
+      'table',
+      'tablist',
+      'tabpanel',
+      'term',
+      'textbox',
+      'timer',
+      'toolbar',
+      'tooltip',
+      'tree',
+      'treegrid',
+      'treeitem',
     ];
-    
+
     return validRoles.includes(role);
   }
 
   getRequiredARIAProperties(role) {
     const requirements = {
-      'checkbox': ['aria-checked'],
-      'radio': ['aria-checked'],
-      'slider': ['aria-valuenow', 'aria-valuemin', 'aria-valuemax'],
-      'progressbar': ['aria-valuenow'],
-      'tab': ['aria-selected'],
-      'tabpanel': ['aria-labelledby'],
-      'dialog': ['aria-labelledby'],
-      'alertdialog': ['aria-labelledby']
+      checkbox: ['aria-checked'],
+      radio: ['aria-checked'],
+      slider: ['aria-valuenow', 'aria-valuemin', 'aria-valuemax'],
+      progressbar: ['aria-valuenow'],
+      tab: ['aria-selected'],
+      tabpanel: ['aria-labelledby'],
+      dialog: ['aria-labelledby'],
+      alertdialog: ['aria-labelledby'],
     };
-    
+
     return requirements[role] || [];
   }
 
   getBackgroundColor(element) {
     let current = element;
-    
+
     while (current && current !== document.body) {
       try {
         const style = window.getComputedStyle(current);
         const bgColor = style.backgroundColor;
-        
+
         if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
           return bgColor;
         }
@@ -651,10 +752,10 @@ export class AccessibilityTester {
           logger.debug('Background color check error:', error.message);
         }
       }
-      
+
       current = current.parentElement;
     }
-    
+
     return 'rgb(255, 255, 255)'; // Default to white
   }
 
@@ -696,11 +797,7 @@ export class AccessibilityTester {
     // Handle hex format
     const hexMatch = color.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
     if (hexMatch) {
-      return [
-        parseInt(hexMatch[1], 16),
-        parseInt(hexMatch[2], 16),
-        parseInt(hexMatch[3], 16)
-      ];
+      return [parseInt(hexMatch[1], 16), parseInt(hexMatch[2], 16), parseInt(hexMatch[3], 16)];
     }
 
     return null;
@@ -708,7 +805,8 @@ export class AccessibilityTester {
 
   getElementSelector(element) {
     if (element.id) return `#${element.id}`;
-    if (element.className) return `${element.tagName.toLowerCase()}.${element.className.split(' ')[0]}`;
+    if (element.className)
+      return `${element.tagName.toLowerCase()}.${element.className.split(' ')[0]}`;
     return element.tagName.toLowerCase();
   }
 
@@ -725,20 +823,20 @@ export class AccessibilityTester {
         total,
         passes: this.passes.length,
         violations: this.violations.length,
-        warnings: this.warnings.length
+        warnings: this.warnings.length,
       },
       passes: this.passes,
       violations: this.violations,
       warnings: this.warnings,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     logger.info('Accessibility audit completed:', report.summary);
-    
+
     if (this.violations.length > 0) {
       logger.error('Accessibility violations:', this.violations);
     }
-    
+
     if (this.warnings.length > 0) {
       logger.warn('Accessibility warnings:', this.warnings);
     }
@@ -751,10 +849,10 @@ export class AccessibilityTester {
    */
   exportReport(report) {
     const dataStr = JSON.stringify(report, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
     const exportFileDefaultName = `accessibility-report-${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -773,7 +871,7 @@ export class AccessibilityTester {
     try {
       // eslint-disable-next-line no-undef
       const results = await axe.run(container);
-      
+
       if (results.violations.length > 0) {
         logger.group('Axe Accessibility Violations');
         results.violations.forEach(violation => {

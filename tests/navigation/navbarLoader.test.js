@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 // Utility function for controlled delays in tests using fake timers
-const delayWithFakeTimers = async (ms) => {
+const delayWithFakeTimers = async ms => {
   vi.useFakeTimers();
   const promise = new Promise(resolve => setTimeout(resolve, ms));
   vi.advanceTimersByTime(ms);
@@ -20,17 +20,17 @@ describe('NavbarLoader', () => {
   beforeEach(() => {
     // Reset DOM
     document.body.innerHTML = '';
-    
+
     // Create navbar placeholder
     global.createNavbarPlaceholder();
-    
+
     // Mock successful fetch response
     mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      text: () => Promise.resolve(global.createMockNavbar())
+      text: () => Promise.resolve(global.createMockNavbar()),
     });
     global.fetch = mockFetch;
-    
+
     // Reset modules to ensure fresh imports
     vi.resetModules();
   });
@@ -44,7 +44,7 @@ describe('NavbarLoader', () => {
       // Read the actual navbarLoader.js file content
       const response = await fetch('/src/components/layout/navbarLoader.js');
       const content = await response.text();
-      
+
       // CRITICAL: Ensure no ES6 imports that would break regular script loading
       expect(content).not.toMatch(/^\s*import\s+.*from\s+['"`].*['"`];?\s*$/m);
       expect(content).not.toMatch(/^\s*import\s*\{.*\}\s*from\s+['"`].*['"`];?\s*$/m);
@@ -56,9 +56,9 @@ describe('NavbarLoader', () => {
       const script = document.createElement('script');
       script.src = '/src/components/layout/navbarLoader.js';
       // Intentionally NOT setting type="module"
-      
+
       document.head.appendChild(script);
-      
+
       // Should not throw syntax errors
       expect(() => {
         // Simulate script execution
@@ -69,7 +69,7 @@ describe('NavbarLoader', () => {
     it('should have inline logger fallback instead of import', async () => {
       // Import the module to check its structure
       const navbarLoaderModule = await import('../../src/components/layout/navbarLoader.js');
-      
+
       // Should not have logger import dependency
       expect(typeof navbarLoaderModule.default).toBe('undefined'); // Should be regular script, not module
     });
@@ -80,14 +80,14 @@ describe('NavbarLoader', () => {
       // Set up document.currentScript mock
       Object.defineProperty(document, 'currentScript', {
         value: {
-          src: 'http://localhost:8080/src/components/layout/navbarLoader.js'
+          src: 'http://localhost:8080/src/components/layout/navbarLoader.js',
         },
-        configurable: true
+        configurable: true,
       });
 
       // Import and execute navbarLoader
       await import('../../src/components/layout/navbarLoader.js');
-      
+
       // Wait for async operations
       await delayWithFakeTimers(100);
 
@@ -99,10 +99,10 @@ describe('NavbarLoader', () => {
 
     it('should inject navbar content into placeholder', async () => {
       const placeholder = document.getElementById('navbar-placeholder');
-      
+
       // Import navbarLoader
       await import('../../src/components/layout/navbarLoader.js');
-      
+
       // Wait for async operations
       await delayWithFakeTimers(100);
 
@@ -120,7 +120,7 @@ describe('NavbarLoader', () => {
 
       // Import navbarLoader
       await import('../../src/components/layout/navbarLoader.js');
-      
+
       // Wait for async operations
       await delayWithFakeTimers(100);
 
@@ -155,7 +155,7 @@ describe('NavbarLoader', () => {
     it('should have fallback logger that works without import', async () => {
       // Import navbarLoader
       await import('../../src/components/layout/navbarLoader.js');
-      
+
       // Wait for execution
       await delayWithFakeTimers(100);
 
@@ -172,13 +172,13 @@ describe('NavbarLoader', () => {
             console.log('[NavbarLoader DEBUG]', ...args);
           }
         },
-        error: (...args) => console.error('[NavbarLoader ERROR]', ...args)
+        error: (...args) => console.error('[NavbarLoader ERROR]', ...args),
       };
 
       // Should call debug in localhost environment
       const consoleSpy = vi.spyOn(console, 'log');
       mock_Logger.debug('test message');
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('[NavbarLoader DEBUG]', 'test message');
     });
   });
@@ -188,33 +188,33 @@ describe('NavbarLoader', () => {
       const testCases = [
         {
           scriptSrc: 'http://localhost:8080/src/components/layout/navbarLoader.js',
-          expectedPath: 'http://localhost:8080/src/components/layout/navbar.html'
+          expectedPath: 'http://localhost:8080/src/components/layout/navbar.html',
         },
         {
           scriptSrc: 'https://learnimals.com/src/components/layout/navbarLoader.js',
-          expectedPath: 'https://learnimals.com/src/components/layout/navbar.html'
-        }
+          expectedPath: 'https://learnimals.com/src/components/layout/navbar.html',
+        },
       ];
 
       for (const testCase of testCases) {
         // Reset modules for each test case
         vi.resetModules();
-        
+
         // Mock currentScript
         Object.defineProperty(document, 'currentScript', {
           value: { src: testCase.scriptSrc },
-          configurable: true
+          configurable: true,
         });
 
         // Import navbarLoader
         await import('../../src/components/layout/navbarLoader.js');
-        
+
         // Wait for execution
         await delayWithFakeTimers(50);
 
         // Check fetch was called with correct path
         expect(mockFetch).toHaveBeenCalledWith(testCase.expectedPath);
-        
+
         // Clear mocks for next iteration
         mockFetch.mockClear();
       }

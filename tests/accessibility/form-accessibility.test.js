@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Form Accessibility Tests', () => {
@@ -56,14 +59,14 @@ describe('Form Accessibility Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock focus method
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
     });
@@ -107,7 +110,7 @@ describe('Form Accessibility Tests', () => {
       expect(emailInput.id).toBe('email');
       expect(passwordLabel.getAttribute('for')).toBe('password');
       expect(passwordInput.id).toBe('password');
-      
+
       // Checkbox with implicit association
       expect(checkboxLabel.contains(checkboxInput)).toBe(true);
       expect(accessibilityTester.hasLabel(emailInput)).toBe(true);
@@ -133,7 +136,7 @@ describe('Form Accessibility Tests', () => {
       expect(searchInput.getAttribute('aria-label')).toBe('Search courses');
       expect(submitButton.getAttribute('aria-label')).toBe('Submit search');
       expect(usernameInput.getAttribute('aria-labelledby')).toBe('username-label');
-      
+
       expect(accessibilityTester.hasLabel(searchInput)).toBe(true);
       expect(accessibilityTester.hasLabel(submitButton)).toBe(false); // buttons need accessible name differently
       expect(accessibilityTester.hasLabel(usernameInput)).toBe(true);
@@ -233,7 +236,9 @@ describe('Form Accessibility Tests', () => {
       const helpText = testContainer.querySelector('#password-help');
       const requirements = testContainer.querySelector('#password-requirements');
 
-      expect(passwordInput.getAttribute('aria-describedby')).toBe('password-help password-requirements');
+      expect(passwordInput.getAttribute('aria-describedby')).toBe(
+        'password-help password-requirements'
+      );
       expect(helpText.textContent).toContain('Choose a strong password');
       expect(requirements.textContent).toContain('Must be at least 8 characters');
     });
@@ -381,7 +386,7 @@ describe('Form Accessibility Tests', () => {
 
       // Set invalid email
       emailInput.value = 'invalid-email';
-      
+
       const isValidEmail = accessibleForm.isValidEmail('invalid-email');
       const isValidEmailFormat = accessibleForm.isValidEmail('user@example.com');
 
@@ -500,7 +505,7 @@ describe('Form Accessibility Tests', () => {
 
       expect(optionsList.getAttribute('role')).toBe('listbox');
       expect(options.length).toBe(3);
-      
+
       options.forEach(option => {
         expect(option.getAttribute('role')).toBe('option');
         expect(option.getAttribute('aria-selected')).toBe('false');

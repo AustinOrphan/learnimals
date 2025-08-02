@@ -1,6 +1,6 @@
 /**
  * Example component demonstrating Vite alias usage
- * 
+ *
  * This component shows how to use the configured path aliases
  * for cleaner, more maintainable imports.
  */
@@ -13,11 +13,11 @@ import config from '@config';
 
 /**
  * Example component that demonstrates Vite alias usage
- * 
+ *
  * Before aliases:
  * import { logger } from '../../utils/logger.js';
  * import { Modal } from '../ui/Modal.js';
- * 
+ *
  * After aliases:
  * import { logger } from '@utils/logger.js';
  * import { Modal } from '@components/ui/Modal.js';
@@ -31,10 +31,10 @@ export class ViteAliasExample {
 
   init() {
     logger.info('ViteAliasExample: Initializing component');
-    
+
     // Create a demo button
     this.createDemoButton();
-    
+
     // Show current configuration
     this.displayConfig();
   }
@@ -44,7 +44,7 @@ export class ViteAliasExample {
     button.textContent = 'Test Vite Aliases';
     button.className = 'btn btn-primary';
     button.addEventListener('click', () => this.showAliasDemo());
-    
+
     this.element.appendChild(button);
   }
 
@@ -57,22 +57,22 @@ export class ViteAliasExample {
       <p><strong>Version:</strong> ${config.version || '1.0.0'}</p>
       <p><strong>Environment:</strong> ${config.environment || 'development'}</p>
     `;
-    
+
     this.element.appendChild(configDiv);
   }
 
   showAliasDemo() {
     logger.info('ViteAliasExample: Showing alias demo');
-    
+
     // Use the Modal component from @components/ui/Modal.js
     this.modal = new Modal({
       title: 'Vite Aliases Working!',
       content: this.createDemoContent(),
       onClose: () => {
         logger.info('ViteAliasExample: Demo modal closed');
-      }
+      },
     });
-    
+
     this.modal.open();
   }
 
@@ -122,7 +122,7 @@ export class ViteAliasExample {
 // Example of how to use in HTML pages
 export function initViteAliasExample() {
   const containers = document.querySelectorAll('[data-component="vite-alias-example"]');
-  
+
   containers.forEach(container => {
     new ViteAliasExample(container);
   });

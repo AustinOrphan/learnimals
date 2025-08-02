@@ -15,26 +15,26 @@ export class MobileOptimizationService {
     this.devicePixelRatio = window.devicePixelRatio || 1;
     this.networkInfo = this.getNetworkInfo();
     this.performanceMetrics = new Map();
-    
+
     // Configuration
     this.config = {
       imageOptimization: {
         lazyLoadingEnabled: true,
         webpSupport: null, // Will be determined lazily
         retinaSuffix: '@2x',
-        compressionQuality: 0.8
+        compressionQuality: 0.8,
       },
       touchOptimization: {
         minTouchTarget: 44, // iOS HIG minimum
         comfortableTouchTarget: 48,
         scrollThreshold: 10,
-        swipeThreshold: 50
+        swipeThreshold: 50,
       },
       performance: {
         fpsTarget: 60,
         budgetWarningThreshold: 16, // ms per frame
         memoryWarningThreshold: 50 * 1024 * 1024, // 50MB
-        networkTimeout: 5000
+        networkTimeout: 5000,
       },
       responsive: {
         breakpoints: {
@@ -43,15 +43,15 @@ export class MobileOptimizationService {
           md: 768,
           lg: 1024,
           xl: 1280,
-          '2xl': 1536
+          '2xl': 1536,
         },
         containerMaxWidths: {
           sm: '100%',
           md: '100%',
           lg: '1024px',
-          xl: '1280px'
-        }
-      }
+          xl: '1280px',
+        },
+      },
     };
 
     // Event listeners and observers
@@ -59,7 +59,7 @@ export class MobileOptimizationService {
     this.eventListeners = new Map();
     this.optimizedImages = new Set();
     this.lazyLoadQueue = new Set();
-    
+
     // Bind methods
     this.handleResize = this.handleResize.bind(this);
     this.handleOrientationChange = this.handleOrientationChange.bind(this);
@@ -105,7 +105,6 @@ export class MobileOptimizationService {
 
       // Log device and performance info
       this.logDeviceInfo();
-
     } catch (error) {
       logger.error('❌ Failed to initialize mobile optimization service:', error);
       throw error;
@@ -119,7 +118,7 @@ export class MobileOptimizationService {
     if (this.isMobile || this.isTablet) {
       // Start FPS monitoring for mobile devices
       fpsMonitor.start();
-      
+
       // Take initial memory snapshot
       memoryMonitor.snapshot('mobile-init');
 
@@ -160,14 +159,14 @@ export class MobileOptimizationService {
    */
   handleLowPerformance(type, value) {
     switch (type) {
-    case 'fps':
-      // Reduce animation complexity
-      this.reduceAnimationComplexity();
-      break;
-    case 'memory':
-      // Trigger garbage collection hints
-      this.optimizeMemoryUsage();
-      break;
+      case 'fps':
+        // Reduce animation complexity
+        this.reduceAnimationComplexity();
+        break;
+      case 'memory':
+        // Trigger garbage collection hints
+        this.optimizeMemoryUsage();
+        break;
     }
 
     // Emit performance warning event
@@ -179,7 +178,7 @@ export class MobileOptimizationService {
    */
   reduceAnimationComplexity() {
     document.body.classList.add('reduced-animations');
-    
+
     // Disable complex animations
     const style = document.createElement('style');
     style.textContent = `
@@ -202,10 +201,10 @@ export class MobileOptimizationService {
   optimizeMemoryUsage() {
     // Clean up unused DOM elements
     this.cleanupUnusedElements();
-    
+
     // Clear image caches
     this.clearImageCaches();
-    
+
     // Force garbage collection if available
     if (window.gc) {
       window.gc();
@@ -220,13 +219,13 @@ export class MobileOptimizationService {
   initializeResponsiveDesign() {
     // Set up responsive breakpoint detection
     this.setupBreakpointDetection();
-    
+
     // Initialize fluid typography
     this.initializeFluidTypography();
-    
+
     // Set up responsive images
     this.setupResponsiveImages();
-    
+
     // Initialize container queries fallback
     this.initializeContainerQueries();
   }
@@ -323,13 +322,13 @@ export class MobileOptimizationService {
 
     // Enhance touch targets
     this.enhanceTouchTargets();
-    
+
     // Initialize gesture support
     this.initializeGestureSupport();
-    
+
     // Optimize scroll behavior
     this.optimizeScrollBehavior();
-    
+
     // Set up touch feedback
     this.setupTouchFeedback();
   }
@@ -350,7 +349,7 @@ export class MobileOptimizationService {
       const rect = element.getBoundingClientRect();
       if (rect.width < minSize || rect.height < minSize) {
         element.classList.add('enhanced-touch-target');
-        
+
         // Apply minimum touch target size
         if (rect.width < minSize) {
           element.style.setProperty('--touch-width', `${minSize}px`);
@@ -407,16 +406,24 @@ export class MobileOptimizationService {
     let touchEndX = 0;
     let touchEndY = 0;
 
-    document.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
+    document.addEventListener(
+      'touchstart',
+      e => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      },
+      { passive: true }
+    );
 
-    document.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      touchEndY = e.changedTouches[0].screenY;
-      this.handleGesture(touchStartX, touchStartY, touchEndX, touchEndY);
-    }, { passive: true });
+    document.addEventListener(
+      'touchend',
+      e => {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        this.handleGesture(touchStartX, touchStartY, touchEndX, touchEndY);
+      },
+      { passive: true }
+    );
   }
 
   /**
@@ -430,7 +437,7 @@ export class MobileOptimizationService {
     // Detect swipe gestures
     if (Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold) {
       let direction;
-      
+
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
         direction = deltaX > 0 ? 'right' : 'left';
       } else {
@@ -449,10 +456,10 @@ export class MobileOptimizationService {
 
     // Set up intersection observer for lazy loading
     this.setupLazyLoading();
-    
+
     // Optimize existing images
     this.optimizeExistingImages();
-    
+
     // Set up responsive image loading
     this.setupResponsiveImageLoading();
   }
@@ -470,11 +477,11 @@ export class MobileOptimizationService {
     const options = {
       root: null,
       rootMargin: '50px',
-      threshold: 0.1
+      threshold: 0.1,
     };
 
     // eslint-disable-next-line no-undef
-    const lazyImageObserver = new IntersectionObserver((entries) => {
+    const lazyImageObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const img = entry.target;
@@ -513,7 +520,7 @@ export class MobileOptimizationService {
 
       // Create optimized source URL
       const optimizedSrc = this.getOptimizedImageSrc(src);
-      
+
       const tempImg = new Image();
       tempImg.onload = () => {
         // Use RAF to avoid layout thrashing
@@ -525,13 +532,13 @@ export class MobileOptimizationService {
           resolve(img);
         });
       };
-      
+
       tempImg.onerror = () => {
         // Fallback to original source
         img.src = src;
         reject(new Error(`Failed to load optimized image: ${optimizedSrc}`));
       };
-      
+
       tempImg.src = optimizedSrc;
     });
   }
@@ -545,7 +552,7 @@ export class MobileOptimizationService {
       const extension = originalSrc.split('.').pop();
       const baseName = originalSrc.replace(`.${extension}`, '');
       const retinaVersion = `${baseName}${this.config.imageOptimization.retinaSuffix}.${extension}`;
-      
+
       // Check if retina version exists (this would need server-side support)
       return retinaVersion;
     }
@@ -559,10 +566,10 @@ export class MobileOptimizationService {
   initializeNetworkOptimization() {
     // Set up connection monitoring
     this.monitorNetworkConnection();
-    
+
     // Implement adaptive loading based on connection
     this.setupAdaptiveLoading();
-    
+
     // Prefetch critical resources
     this.prefetchCriticalResources();
   }
@@ -577,7 +584,7 @@ export class MobileOptimizationService {
         effectiveType: connection.effectiveType,
         downlink: connection.downlink,
         rtt: connection.rtt,
-        saveData: connection.saveData
+        saveData: connection.saveData,
       };
 
       connection.addEventListener('change', this.handleNetworkChange);
@@ -591,17 +598,17 @@ export class MobileOptimizationService {
   handleNetworkChange() {
     const connection = navigator.connection;
     const oldInfo = { ...this.networkInfo };
-    
+
     this.networkInfo = {
       effectiveType: connection.effectiveType,
       downlink: connection.downlink,
       rtt: connection.rtt,
-      saveData: connection.saveData
+      saveData: connection.saveData,
     };
 
     // Adapt based on connection quality
     this.adaptToNetworkConditions(oldInfo, this.networkInfo);
-    
+
     this.emit('networkChange', { from: oldInfo, to: this.networkInfo });
   }
 
@@ -625,13 +632,13 @@ export class MobileOptimizationService {
    */
   enableDataSaverMode() {
     document.body.classList.add('data-saver-mode');
-    
+
     // Pause non-essential animations
     document.body.classList.add('reduced-animations');
-    
+
     // Reduce image quality
     this.config.imageOptimization.compressionQuality = 0.6;
-    
+
     logger.info('Enabled data saver mode due to slow connection');
   }
 
@@ -641,10 +648,10 @@ export class MobileOptimizationService {
   initializeViewportOptimizations() {
     // Set optimal viewport meta tag
     this.setOptimalViewport();
-    
+
     // Prevent zoom on form inputs (iOS)
     this.preventFormZoom();
-    
+
     // Handle safe area insets
     this.handleSafeAreaInsets();
   }
@@ -661,11 +668,7 @@ export class MobileOptimizationService {
     }
 
     // Optimal viewport for mobile web apps
-    const viewportContent = [
-      'width=device-width',
-      'initial-scale=1.0',
-      'viewport-fit=cover'
-    ];
+    const viewportContent = ['width=device-width', 'initial-scale=1.0', 'viewport-fit=cover'];
 
     // Prevent zoom on iOS for better UX
     if (this.isMobile) {
@@ -810,8 +813,13 @@ export class MobileOptimizationService {
    */
   handleOrientationChange() {
     setTimeout(() => {
-      const orientation = screen.orientation?.angle === 0 || screen.orientation?.angle === 180 ? 'portrait' : 'landscape';
-      document.body.className = document.body.className.replace(/\b(portrait|landscape)\b/g, '').trim();
+      const orientation =
+        screen.orientation?.angle === 0 || screen.orientation?.angle === 180
+          ? 'portrait'
+          : 'landscape';
+      document.body.className = document.body.className
+        .replace(/\b(portrait|landscape)\b/g, '')
+        .trim();
       document.body.classList.add(orientation);
 
       this.emit('orientationChange', { orientation });
@@ -839,13 +847,17 @@ export class MobileOptimizationService {
    * Device detection methods
    */
   detectMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-           (window.innerWidth <= 768 && 'ontouchstart' in window);
+    return (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (window.innerWidth <= 768 && 'ontouchstart' in window)
+    );
   }
 
   detectTablet() {
-    return /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent) ||
-           (window.innerWidth > 768 && window.innerWidth <= 1024 && 'ontouchstart' in window);
+    return (
+      /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent) ||
+      (window.innerWidth > 768 && window.innerWidth <= 1024 && 'ontouchstart' in window)
+    );
   }
 
   detectTouchSupport() {
@@ -895,7 +907,7 @@ export class MobileOptimizationService {
         effectiveType: connection.effectiveType,
         downlink: connection.downlink,
         rtt: connection.rtt,
-        saveData: connection.saveData
+        saveData: connection.saveData,
       };
     }
     return { effectiveType: '4g', downlink: 10, rtt: 100, saveData: false };
@@ -932,9 +944,9 @@ export class MobileOptimizationService {
         isMobile: this.isMobile,
         isTablet: this.isTablet,
         touchSupport: this.touchSupport,
-        devicePixelRatio: this.devicePixelRatio
+        devicePixelRatio: this.devicePixelRatio,
       },
-      currentBreakpoint: this.currentBreakpoint
+      currentBreakpoint: this.currentBreakpoint,
     };
   }
 
@@ -948,7 +960,7 @@ export class MobileOptimizationService {
       devicePixelRatio: this.devicePixelRatio,
       viewportSize: `${window.innerWidth}x${window.innerHeight}`,
       currentBreakpoint: this.currentBreakpoint,
-      networkInfo: this.networkInfo
+      networkInfo: this.networkInfo,
     };
 
     logger.info('📱 Device Information:', info);

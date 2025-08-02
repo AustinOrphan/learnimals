@@ -1,12 +1,12 @@
 /**
  * Animation Performance Manager
- * 
+ *
  * Provides efficient, CSP-compliant animation utilities that use requestAnimationFrame
  * instead of setTimeout for better performance and smoother animations.
- * 
+ *
  * Features:
  * - Frame-based timing using requestAnimationFrame
- * - Automatic cleanup and memory leak prevention  
+ * - Automatic cleanup and memory leak prevention
  * - Pause/resume support for performance optimization
  * - Sequential animation support for UI feedback
  * - Browser tab visibility optimization
@@ -17,7 +17,7 @@ export default class AnimationManager {
     this.activeAnimations = new Map();
     this.animationId = 0;
     this.isPaused = false;
-    
+
     // Optimize for browser tab visibility
     this.setupVisibilityOptimization();
   }
@@ -33,26 +33,26 @@ export default class AnimationManager {
   delay(callback, delay, options = {}) {
     const id = ++this.animationId;
     const startTime = performance.now();
-    
+
     const animation = {
       id,
       callback,
       startTime,
       delay,
       options,
-      cancelled: false
+      cancelled: false,
     };
-    
+
     this.activeAnimations.set(id, animation);
-    
-    const frame = (currentTime) => {
+
+    const frame = currentTime => {
       if (animation.cancelled || this.isPaused) {
         this.activeAnimations.delete(id);
         return;
       }
-      
+
       const elapsed = currentTime - startTime;
-      
+
       if (elapsed >= delay) {
         // Execute callback
         try {
@@ -60,14 +60,14 @@ export default class AnimationManager {
         } catch (error) {
           console.error('Animation callback error:', error);
         }
-        
+
         this.activeAnimations.delete(id);
       } else {
         // Continue waiting
         requestAnimationFrame(frame);
       }
     };
-    
+
     requestAnimationFrame(frame);
     return id;
   }
@@ -83,7 +83,7 @@ export default class AnimationManager {
     const id = ++this.animationId;
     let currentIndex = 0;
     let _accumulatedTime = 0;
-    
+
     const executeNext = () => {
       if (currentIndex >= sequence.length) {
         this.activeAnimations.delete(id);
@@ -92,10 +92,10 @@ export default class AnimationManager {
         }
         return;
       }
-      
+
       const step = sequence[currentIndex];
       _accumulatedTime += step.delay || 0;
-      
+
       this.delay(() => {
         if (this.activeAnimations.has(id)) {
           try {
@@ -108,10 +108,10 @@ export default class AnimationManager {
         }
       }, step.delay || 0);
     };
-    
+
     this.activeAnimations.set(id, { id, type: 'sequence', cancelled: false });
     executeNext();
-    
+
     return id;
   }
 
@@ -128,12 +128,12 @@ export default class AnimationManager {
       to = 1,
       easing = this.easeInOutCubic,
       onUpdate,
-      onComplete
+      onComplete,
     } = config;
-    
+
     const id = ++this.animationId;
     const startTime = performance.now();
-    
+
     const animation = {
       id,
       startTime,
@@ -143,28 +143,28 @@ export default class AnimationManager {
       easing,
       onUpdate,
       onComplete,
-      cancelled: false
+      cancelled: false,
     };
-    
+
     this.activeAnimations.set(id, animation);
-    
-    const frame = (currentTime) => {
+
+    const frame = currentTime => {
       if (animation.cancelled || this.isPaused) {
         this.activeAnimations.delete(id);
         return;
       }
-      
+
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const easedProgress = easing(progress);
       const currentValue = from + (to - from) * easedProgress;
-      
+
       try {
         onUpdate(currentValue, progress);
       } catch (error) {
         console.error('Animation update error:', error);
       }
-      
+
       if (progress >= 1) {
         this.activeAnimations.delete(id);
         if (onComplete) {
@@ -178,7 +178,7 @@ export default class AnimationManager {
         requestAnimationFrame(frame);
       }
     };
-    
+
     requestAnimationFrame(frame);
     return id;
   }
@@ -251,7 +251,7 @@ export default class AnimationManager {
   }
 
   easeOutElastic(t) {
-    return Math.sin(-13 * (t + 1) * Math.PI / 2) * Math.pow(2, -10 * t) + 1;
+    return Math.sin((-13 * (t + 1) * Math.PI) / 2) * Math.pow(2, -10 * t) + 1;
   }
 
   easeInOutBack(t) {

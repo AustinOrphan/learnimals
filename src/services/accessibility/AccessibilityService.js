@@ -12,15 +12,15 @@ export class AccessibilityService {
       highContrast: false,
       largeText: false,
       screenReader: false,
-      keyboardOnly: false
+      keyboardOnly: false,
     };
-    
+
     this.announcer = null;
     this.focusTrap = null;
     this.currentFocusable = [];
     this.skipLinks = new Map();
     this.keyboardNavigation = null;
-    
+
     // Bind methods
     this.handleKeydown = this.handleKeydown.bind(this);
     this.handleFocusIn = this.handleFocusIn.bind(this);
@@ -33,28 +33,28 @@ export class AccessibilityService {
   async initialize() {
     // Create screen reader announcer
     this.createAnnouncer();
-    
+
     // Check user preferences
     this.detectPreferences();
-    
+
     // Set up media query listeners
     this.setupMediaQueries();
-    
+
     // Initialize keyboard navigation
     this.initializeKeyboardNavigation();
-    
+
     // Create skip links
     this.createSkipLinks();
-    
+
     // Apply initial settings
     this.applyPreferences();
-    
+
     // Add global event listeners
     this.attachGlobalListeners();
-    
+
     // Initialize ARIA live regions
     this.setupLiveRegions();
-    
+
     logger.info('AccessibilityService initialized');
   }
 
@@ -65,7 +65,7 @@ export class AccessibilityService {
     // Polite announcements (wait for screen reader to finish)
     this.announcer = {
       polite: document.createElement('div'),
-      assertive: document.createElement('div')
+      assertive: document.createElement('div'),
     };
 
     // Configure polite announcer
@@ -123,7 +123,7 @@ export class AccessibilityService {
       () => navigator.userAgent.includes('JAWS'),
       () => window.speechSynthesis && window.speechSynthesis.getVoices().length > 0,
       () => 'speechSynthesis' in window,
-      () => document.querySelector('[role="application"]') !== null
+      () => document.querySelector('[role="application"]') !== null,
     ];
 
     return indicators.some(check => {
@@ -154,11 +154,23 @@ export class AccessibilityService {
     } catch (error) {
       // JSDOM limitation - media queries may not be fully supported
       logger.debug('Media query setup failed, using fallback:', error.message);
-      
+
       // Create simple mock media query objects for testing
-      this.reducedMotionQuery = { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
-      this.highContrastQuery = { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
-      this.darkModeQuery = { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
+      this.reducedMotionQuery = {
+        matches: false,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      };
+      this.highContrastQuery = {
+        matches: false,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      };
+      this.darkModeQuery = {
+        matches: false,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      };
     }
   }
 
@@ -192,7 +204,7 @@ export class AccessibilityService {
     const skipLinks = [
       { text: 'Skip to main content', target: '#main-content' },
       { text: 'Skip to navigation', target: '#main-navigation' },
-      { text: 'Skip to search', target: '#search' }
+      { text: 'Skip to search', target: '#search' },
     ];
 
     const skipContainer = document.createElement('div');
@@ -205,8 +217,8 @@ export class AccessibilityService {
       skipLink.href = link.target;
       skipLink.textContent = link.text;
       skipLink.className = 'skip-link sr-only-focusable';
-      
-      skipLink.addEventListener('click', (e) => {
+
+      skipLink.addEventListener('click', e => {
         const target = document.querySelector(link.target);
         if (target) {
           e.preventDefault();
@@ -229,7 +241,7 @@ export class AccessibilityService {
   attachGlobalListeners() {
     document.addEventListener('keydown', this.handleKeydown);
     document.addEventListener('focusin', this.handleFocusIn);
-    
+
     // Monitor for keyboard usage
     document.addEventListener('keydown', () => {
       document.body.classList.add('keyboard-navigation');
@@ -248,22 +260,22 @@ export class AccessibilityService {
   handleKeydown(e) {
     // Global keyboard shortcuts for accessibility
     switch (e.key) {
-    case 'Escape':
-      this.handleEscapeKey(e);
-      break;
-    case 'F6':
-      this.handleF6Navigation(e);
-      break;
-    case 'Home':
-      if (e.ctrlKey) {
-        this.navigateToTop(e);
-      }
-      break;
-    case 'End':
-      if (e.ctrlKey) {
-        this.navigateToBottom(e);
-      }
-      break;
+      case 'Escape':
+        this.handleEscapeKey(e);
+        break;
+      case 'F6':
+        this.handleF6Navigation(e);
+        break;
+      case 'Home':
+        if (e.ctrlKey) {
+          this.navigateToTop(e);
+        }
+        break;
+      case 'End':
+        if (e.ctrlKey) {
+          this.navigateToBottom(e);
+        }
+        break;
     }
   }
 
@@ -298,30 +310,30 @@ export class AccessibilityService {
    */
   handleF6Navigation(e) {
     e.preventDefault();
-    
+
     const landmarks = document.querySelectorAll(
       'main, nav, aside, header, footer, section[aria-labelledby], section[aria-label]'
     );
-    
+
     if (landmarks.length === 0) return;
 
-    const currentIndex = Array.from(landmarks).findIndex(
-      landmark => landmark.contains(document.activeElement)
+    const currentIndex = Array.from(landmarks).findIndex(landmark =>
+      landmark.contains(document.activeElement)
     );
-    
-    const nextIndex = e.shiftKey 
-      ? (currentIndex - 1 + landmarks.length) % landmarks.length 
+
+    const nextIndex = e.shiftKey
+      ? (currentIndex - 1 + landmarks.length) % landmarks.length
       : (currentIndex + 1) % landmarks.length;
-    
+
     const nextLandmark = landmarks[nextIndex];
-    
+
     // Make sure landmark is focusable
     if (!nextLandmark.hasAttribute('tabindex')) {
       nextLandmark.setAttribute('tabindex', '-1');
     }
-    
+
     nextLandmark.focus();
-    
+
     // Announce the landmark
     const landmarkName = this.getLandmarkName(nextLandmark);
     this.announce(`Navigated to ${landmarkName}`, 'polite');
@@ -333,23 +345,23 @@ export class AccessibilityService {
   getLandmarkName(element) {
     const label = element.getAttribute('aria-label');
     if (label) return label;
-    
+
     const labelledBy = element.getAttribute('aria-labelledby');
     if (labelledBy) {
       const labelElement = document.getElementById(labelledBy);
       if (labelElement) return labelElement.textContent.trim();
     }
-    
+
     const tagName = element.tagName.toLowerCase();
     const roleMap = {
-      'main': 'main content',
-      'nav': 'navigation',
-      'aside': 'sidebar',
-      'header': 'header',
-      'footer': 'footer',
-      'section': 'section'
+      main: 'main content',
+      nav: 'navigation',
+      aside: 'sidebar',
+      header: 'header',
+      footer: 'footer',
+      section: 'section',
     };
-    
+
     return roleMap[tagName] || tagName;
   }
 
@@ -359,7 +371,7 @@ export class AccessibilityService {
   handleFocusIn(e) {
     // Ensure focused element is visible
     this.ensureVisible(e.target);
-    
+
     // Track keyboard navigation
     if (this.preferences.keyboardOnly) {
       e.target.classList.add('keyboard-focused');
@@ -373,13 +385,13 @@ export class AccessibilityService {
     try {
       const rect = element.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      
+
       // Check if element is partially or fully outside viewport
       if (rect.top < 0 || rect.bottom > viewportHeight) {
         element.scrollIntoView({
           behavior: this.preferences.reducedMotion ? 'auto' : 'smooth',
           block: 'center',
-          inline: 'nearest'
+          inline: 'nearest',
         });
       }
     } catch (error) {
@@ -388,7 +400,7 @@ export class AccessibilityService {
         element.scrollIntoView({
           behavior: this.preferences.reducedMotion ? 'auto' : 'smooth',
           block: 'center',
-          inline: 'nearest'
+          inline: 'nearest',
         });
       }
     }
@@ -425,9 +437,7 @@ export class AccessibilityService {
   announce(message, priority = 'polite', timeout = 1000) {
     if (!message) return;
 
-    const announcer = priority === 'assertive' 
-      ? this.announcer.assertive 
-      : this.announcer.polite;
+    const announcer = priority === 'assertive' ? this.announcer.assertive : this.announcer.polite;
 
     // Clear previous message
     announcer.textContent = '';
@@ -519,13 +529,13 @@ export class AccessibilityService {
    */
   checkContrast(foreground, background) {
     const ratio = this.calculateContrastRatio(foreground, background);
-    
+
     return {
       ratio: parseFloat(ratio.toFixed(2)),
-      isAALarge: ratio >= 3.0,  // Large text AA
-      isAA: ratio >= 4.5,       // Normal text AA
+      isAALarge: ratio >= 3.0, // Large text AA
+      isAA: ratio >= 4.5, // Normal text AA
       isAAALarge: ratio >= 4.5, // Large text AAA
-      isAAA: ratio >= 7.0       // Normal text AAA
+      isAAA: ratio >= 7.0, // Normal text AAA
     };
   }
 
@@ -565,11 +575,13 @@ export class AccessibilityService {
    */
   hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   }
 
   /**
@@ -606,7 +618,7 @@ export class AccessibilityService {
       this.preferences[key] = value;
       this.applyPreferences();
       this.savePreferences();
-      
+
       this.announce(`${key} ${value ? 'enabled' : 'disabled'}`, 'polite');
     }
   }
@@ -702,8 +714,8 @@ class KeyboardNavigationManager {
     // Set initial state
     items.forEach((item, index) => {
       item.setAttribute('tabindex', index === 0 ? '0' : '-1');
-      
-      item.addEventListener('keydown', (e) => {
+
+      item.addEventListener('keydown', e => {
         this.handleRovingKeydown(e, items, index);
       });
 
@@ -717,7 +729,7 @@ class KeyboardNavigationManager {
         items.forEach(item => {
           item.removeAttribute('tabindex');
         });
-      }
+      },
     };
   }
 
@@ -728,22 +740,22 @@ class KeyboardNavigationManager {
     let newIndex = currentIndex;
 
     switch (e.key) {
-    case 'ArrowRight':
-    case 'ArrowDown':
-      newIndex = (currentIndex + 1) % items.length;
-      break;
-    case 'ArrowLeft':
-    case 'ArrowUp':
-      newIndex = (currentIndex - 1 + items.length) % items.length;
-      break;
-    case 'Home':
-      newIndex = 0;
-      break;
-    case 'End':
-      newIndex = items.length - 1;
-      break;
-    default:
-      return; // Don't prevent default for other keys
+      case 'ArrowRight':
+      case 'ArrowDown':
+        newIndex = (currentIndex + 1) % items.length;
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        newIndex = (currentIndex - 1 + items.length) % items.length;
+        break;
+      case 'Home':
+        newIndex = 0;
+        break;
+      case 'End':
+        newIndex = items.length - 1;
+        break;
+      default:
+        return; // Don't prevent default for other keys
     }
 
     e.preventDefault();
@@ -775,7 +787,7 @@ class FocusTrap {
     this.firstFocusable = null;
     this.lastFocusable = null;
     this.previouslyFocused = document.activeElement;
-    
+
     this.handleKeydown = this.handleKeydown.bind(this);
     this.updateFocusableElements();
   }
@@ -791,12 +803,10 @@ class FocusTrap {
       'select:not([disabled])',
       'textarea:not([disabled])',
       '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]'
+      '[contenteditable="true"]',
     ].join(', ');
 
-    this.focusableElements = Array.from(
-      this.container.querySelectorAll(focusableSelectors)
-    );
+    this.focusableElements = Array.from(this.container.querySelectorAll(focusableSelectors));
 
     this.firstFocusable = this.focusableElements[0];
     this.lastFocusable = this.focusableElements[this.focusableElements.length - 1];
@@ -807,7 +817,7 @@ class FocusTrap {
    */
   activate() {
     this.container.addEventListener('keydown', this.handleKeydown);
-    
+
     // Focus first element or container
     if (this.firstFocusable) {
       this.firstFocusable.focus();
@@ -821,7 +831,7 @@ class FocusTrap {
    */
   deactivate() {
     this.container.removeEventListener('keydown', this.handleKeydown);
-    
+
     // Restore focus to previously focused element
     if (this.previouslyFocused && this.previouslyFocused.focus) {
       this.previouslyFocused.focus();
@@ -863,7 +873,7 @@ class AccessibleForm {
     this.form = form;
     this.errors = new Map();
     this.announcer = null;
-    
+
     this.form.addEventListener('submit', this.handleSubmit.bind(this));
     this.enhanceInputs();
   }
@@ -873,7 +883,7 @@ class AccessibleForm {
    */
   enhanceInputs() {
     const inputs = this.form.querySelectorAll('input, select, textarea');
-    
+
     inputs.forEach(input => {
       // Add aria-describedby for help text
       const helpText = input.parentNode.querySelector('.help-text');
@@ -902,7 +912,7 @@ class AccessibleForm {
   handleSubmit(e) {
     e.preventDefault();
     this.clearAllErrors();
-    
+
     if (this.validate()) {
       // Form is valid, proceed with submission
       this.announceSuccess('Form submitted successfully');
@@ -944,24 +954,24 @@ class AccessibleForm {
     // Type-specific validation
     if (value) {
       switch (input.type) {
-      case 'email':
-        if (!this.isValidEmail(value)) {
-          this.addFieldError(input, 'Please enter a valid email address');
-          return false;
-        }
-        break;
-      case 'url':
-        if (!this.isValidUrl(value)) {
-          this.addFieldError(input, 'Please enter a valid URL');
-          return false;
-        }
-        break;
-      case 'tel':
-        if (!this.isValidPhone(value)) {
-          this.addFieldError(input, 'Please enter a valid phone number');
-          return false;
-        }
-        break;
+        case 'email':
+          if (!this.isValidEmail(value)) {
+            this.addFieldError(input, 'Please enter a valid email address');
+            return false;
+          }
+          break;
+        case 'url':
+          if (!this.isValidUrl(value)) {
+            this.addFieldError(input, 'Please enter a valid URL');
+            return false;
+          }
+          break;
+        case 'tel':
+          if (!this.isValidPhone(value)) {
+            this.addFieldError(input, 'Please enter a valid phone number');
+            return false;
+          }
+          break;
       }
 
       // Pattern validation
@@ -982,13 +992,13 @@ class AccessibleForm {
    */
   addFieldError(input, message) {
     this.errors.set(input, message);
-    
+
     input.setAttribute('aria-invalid', 'true');
-    
+
     // Create or update error element
     const errorId = `${input.id || this.generateId()}-error`;
     let errorElement = document.getElementById(errorId);
-    
+
     if (!errorElement) {
       errorElement = document.createElement('span');
       errorElement.id = errorId;
@@ -996,12 +1006,12 @@ class AccessibleForm {
       errorElement.setAttribute('role', 'alert');
       errorElement.setAttribute('aria-live', 'polite');
       input.parentNode.appendChild(errorElement);
-      
+
       // Update aria-describedby
       const describedBy = input.getAttribute('aria-describedby') || '';
       input.setAttribute('aria-describedby', `${describedBy} ${errorId}`.trim());
     }
-    
+
     errorElement.textContent = message;
     input.classList.add('error');
   }
@@ -1013,7 +1023,7 @@ class AccessibleForm {
     this.errors.delete(input);
     input.setAttribute('aria-invalid', 'false');
     input.classList.remove('error');
-    
+
     const errorId = `${input.id}-error`;
     const errorElement = document.getElementById(errorId);
     if (errorElement) {
@@ -1036,14 +1046,14 @@ class AccessibleForm {
   announceErrors() {
     const count = this.errors.size;
     const message = `There ${count === 1 ? 'is' : 'are'} ${count} error${count === 1 ? '' : 's'} in the form. Please review and correct them.`;
-    
+
     // Create temporary announcer
     const announcer = document.createElement('div');
     announcer.setAttribute('role', 'alert');
     announcer.setAttribute('aria-live', 'assertive');
     announcer.className = 'sr-only';
     announcer.textContent = message;
-    
+
     document.body.appendChild(announcer);
     setTimeout(() => announcer.remove(), 3000);
   }
@@ -1057,7 +1067,7 @@ class AccessibleForm {
     announcer.setAttribute('aria-live', 'polite');
     announcer.className = 'sr-only';
     announcer.textContent = message;
-    
+
     document.body.appendChild(announcer);
     setTimeout(() => announcer.remove(), 3000);
   }
@@ -1078,13 +1088,13 @@ class AccessibleForm {
   getFieldName(input) {
     const label = input.labels?.[0]?.textContent;
     if (label) return label.replace('*', '').trim();
-    
+
     const placeholder = input.placeholder;
     if (placeholder) return placeholder;
-    
+
     const name = input.name;
     if (name) return name.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    
+
     return 'This field';
   }
 
@@ -1125,7 +1135,7 @@ class AccessibleTooltip {
     this.content = content;
     this.tooltip = null;
     this.isVisible = false;
-    
+
     this.setup();
   }
 
@@ -1137,25 +1147,25 @@ class AccessibleTooltip {
     this.tooltip.id = `tooltip-${Math.random().toString(36).substr(2, 9)}`;
     this.tooltip.setAttribute('role', 'tooltip');
     this.tooltip.setAttribute('aria-hidden', 'true');
-    
+
     // Set up trigger
     this.trigger.setAttribute('aria-describedby', this.tooltip.id);
-    
+
     // Add event listeners
     this.trigger.addEventListener('mouseenter', () => this.show());
     this.trigger.addEventListener('mouseleave', () => this.hide());
     this.trigger.addEventListener('focus', () => this.show());
     this.trigger.addEventListener('blur', () => this.hide());
-    this.trigger.addEventListener('keydown', (e) => {
+    this.trigger.addEventListener('keydown', e => {
       if (e.key === 'Escape') this.hide();
     });
-    
+
     document.body.appendChild(this.tooltip);
   }
 
   show() {
     if (this.isVisible) return;
-    
+
     this.isVisible = true;
     this.tooltip.setAttribute('aria-hidden', 'false');
     this.tooltip.classList.add('visible');
@@ -1164,7 +1174,7 @@ class AccessibleTooltip {
 
   hide() {
     if (!this.isVisible) return;
-    
+
     this.isVisible = false;
     this.tooltip.setAttribute('aria-hidden', 'true');
     this.tooltip.classList.remove('visible');
@@ -1173,10 +1183,10 @@ class AccessibleTooltip {
   position() {
     const triggerRect = this.trigger.getBoundingClientRect();
     const tooltipRect = this.tooltip.getBoundingClientRect();
-    
-    const left = triggerRect.left + (triggerRect.width / 2) - (tooltipRect.width / 2);
+
+    const left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
     const top = triggerRect.top - tooltipRect.height - 8;
-    
+
     this.tooltip.style.left = `${Math.max(8, left)}px`;
     this.tooltip.style.top = `${Math.max(8, top)}px`;
   }

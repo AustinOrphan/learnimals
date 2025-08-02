@@ -1,11 +1,14 @@
 /**
  * Character Renderer Component
- * 
+ *
  * Renders SVG-based character representations with animations and interactions.
  * Supports procedural generation of character features and real-time customization.
  */
 
-import { CharacterSchema as _CharacterSchema, DefaultCharacterTemplates as _DefaultCharacterTemplates } from '../../data/characterSchema.js';
+import {
+  CharacterSchema as _CharacterSchema,
+  DefaultCharacterTemplates as _DefaultCharacterTemplates,
+} from '../../data/characterSchema.js';
 
 class CharacterRenderer extends BaseComponent {
   /**
@@ -19,24 +22,24 @@ class CharacterRenderer extends BaseComponent {
    */
   constructor(options = {}) {
     super(options);
-    
+
     this.character = options.character || this.createDefaultCharacter();
     this.size = options.size || 200;
     this.interactive = options.interactive !== false;
     this.animated = options.animated !== false;
     this.animationState = options.animationState || 'idle';
-    
+
     // Animation frame management
     this.animationFrame = null;
     this.animationTime = 0;
     this.animationSpeed = 0.02;
-    
+
     // SVG namespace
     this.svgNS = 'http://www.w3.org/2000/svg';
-    
+
     // Cache for generated paths and shapes
     this.pathCache = new Map();
-    
+
     // Bind methods for event handlers
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -88,10 +91,10 @@ class CharacterRenderer extends BaseComponent {
     // Mouse interactions
     this.addEventListener('mousemove', this.handleMouseMove);
     this.addEventListener('click', this.handleClick);
-    
+
     // Touch interactions for mobile
     this.addEventListener('touchstart', this.handleClick);
-    
+
     // Animation state changes
     this.addEventListener('character:celebrate', () => this.setAnimationState('happy'));
     this.addEventListener('character:think', () => this.setAnimationState('thinking'));
@@ -104,7 +107,7 @@ class CharacterRenderer extends BaseComponent {
   onRender() {
     this.svgElement = this.element.querySelector('.character-svg');
     this.renderCharacter();
-    
+
     if (this.animated) {
       this.startAnimation();
     }
@@ -121,7 +124,7 @@ class CharacterRenderer extends BaseComponent {
 
     // Create defs for gradients and patterns
     this.createDefinitions();
-    
+
     // Render character layers in order
     this.renderShadow();
     this.renderBody();
@@ -135,18 +138,18 @@ class CharacterRenderer extends BaseComponent {
    */
   createDefinitions() {
     const defs = this.createSVGElement('defs');
-    
+
     // Create gradients based on character colors
     this.createGradients(defs);
-    
+
     // Create patterns if character has pattern type
     if (this.character.appearance.patterns.type !== 'solid') {
       this.createPatterns(defs);
     }
-    
+
     // Create filters for effects
     this.createFilters(defs);
-    
+
     this.svgElement.appendChild(defs);
   }
 
@@ -156,47 +159,55 @@ class CharacterRenderer extends BaseComponent {
    */
   createGradients(defs) {
     const { primary, secondary, accent: _accent } = this.character.appearance.colors;
-    
+
     // Primary gradient
     const primaryGrad = this.createSVGElement('linearGradient', {
       id: 'primaryGradient',
       x1: '0%',
       y1: '0%',
       x2: '100%',
-      y2: '100%'
+      y2: '100%',
     });
-    
-    primaryGrad.appendChild(this.createSVGElement('stop', {
-      offset: '0%',
-      'stop-color': this.lightenColor(primary, 20)
-    }));
-    
-    primaryGrad.appendChild(this.createSVGElement('stop', {
-      offset: '100%',
-      'stop-color': this.darkenColor(primary, 10)
-    }));
-    
+
+    primaryGrad.appendChild(
+      this.createSVGElement('stop', {
+        offset: '0%',
+        'stop-color': this.lightenColor(primary, 20),
+      })
+    );
+
+    primaryGrad.appendChild(
+      this.createSVGElement('stop', {
+        offset: '100%',
+        'stop-color': this.darkenColor(primary, 10),
+      })
+    );
+
     defs.appendChild(primaryGrad);
-    
+
     // Secondary gradient
     const secondaryGrad = this.createSVGElement('linearGradient', {
       id: 'secondaryGradient',
       x1: '0%',
       y1: '0%',
       x2: '100%',
-      y2: '100%'
+      y2: '100%',
     });
-    
-    secondaryGrad.appendChild(this.createSVGElement('stop', {
-      offset: '0%',
-      'stop-color': this.lightenColor(secondary, 15)
-    }));
-    
-    secondaryGrad.appendChild(this.createSVGElement('stop', {
-      offset: '100%',
-      'stop-color': secondary
-    }));
-    
+
+    secondaryGrad.appendChild(
+      this.createSVGElement('stop', {
+        offset: '0%',
+        'stop-color': this.lightenColor(secondary, 15),
+      })
+    );
+
+    secondaryGrad.appendChild(
+      this.createSVGElement('stop', {
+        offset: '100%',
+        'stop-color': secondary,
+      })
+    );
+
     defs.appendChild(secondaryGrad);
   }
 
@@ -207,17 +218,17 @@ class CharacterRenderer extends BaseComponent {
   createPatterns(defs) {
     const patternType = this.character.appearance.patterns.type;
     const density = this.character.appearance.patterns.density;
-    
+
     switch (patternType) {
-    case 'stripes':
-      this.createStripesPattern(defs, density);
-      break;
-    case 'spots':
-      this.createSpotsPattern(defs, density);
-      break;
-    case 'patches':
-      this.createPatchesPattern(defs, density);
-      break;
+      case 'stripes':
+        this.createStripesPattern(defs, density);
+        break;
+      case 'spots':
+        this.createSpotsPattern(defs, density);
+        break;
+      case 'patches':
+        this.createPatchesPattern(defs, density);
+        break;
     }
   }
 
@@ -231,15 +242,15 @@ class CharacterRenderer extends BaseComponent {
       id: 'stripesPattern',
       patternUnits: 'userSpaceOnUse',
       width: Math.max(10, 50 - density * 0.4),
-      height: Math.max(10, 50 - density * 0.4)
+      height: Math.max(10, 50 - density * 0.4),
     });
-    
+
     const rect = this.createSVGElement('rect', {
       width: '100%',
       height: '50%',
-      fill: this.character.appearance.colors.pattern
+      fill: this.character.appearance.colors.pattern,
     });
-    
+
     pattern.appendChild(rect);
     defs.appendChild(pattern);
   }
@@ -254,23 +265,23 @@ class CharacterRenderer extends BaseComponent {
       id: 'spotsPattern',
       patternUnits: 'userSpaceOnUse',
       width: 30,
-      height: 30
+      height: 30,
     });
-    
+
     // Generate random spots based on density
     const spotCount = Math.floor(density * 0.05) + 1;
-    
+
     for (let i = 0; i < spotCount; i++) {
       const spot = this.createSVGElement('circle', {
         cx: Math.random() * 30,
         cy: Math.random() * 30,
         r: Math.random() * 5 + 2,
         fill: this.character.appearance.colors.pattern,
-        opacity: 0.7
+        opacity: 0.7,
       });
       pattern.appendChild(spot);
     }
-    
+
     defs.appendChild(pattern);
   }
 
@@ -285,16 +296,16 @@ class CharacterRenderer extends BaseComponent {
       x: '-50%',
       y: '-50%',
       width: '200%',
-      height: '200%'
+      height: '200%',
     });
-    
+
     const shadowOffset = this.createSVGElement('feDropShadow', {
       dx: '2',
       dy: '4',
-      'stdDeviation': '3',
-      'flood-color': 'rgba(0,0,0,0.2)'
+      stdDeviation: '3',
+      'flood-color': 'rgba(0,0,0,0.2)',
     });
-    
+
     shadowFilter.appendChild(shadowOffset);
     defs.appendChild(shadowFilter);
   }
@@ -309,9 +320,9 @@ class CharacterRenderer extends BaseComponent {
       rx: '80',
       ry: '15',
       fill: 'rgba(0,0,0,0.1)',
-      class: 'character-shadow'
+      class: 'character-shadow',
     });
-    
+
     this.svgElement.appendChild(shadow);
   }
 
@@ -321,24 +332,24 @@ class CharacterRenderer extends BaseComponent {
   renderBody() {
     const species = this.character.species.primary;
     const bodyType = this.character.appearance.bodyType;
-    
+
     // Generate body shape based on species and body type
     const bodyPath = this.generateBodyPath(species, bodyType);
-    
+
     const body = this.createSVGElement('path', {
       d: bodyPath,
       fill: 'url(#primaryGradient)',
       stroke: this.darkenColor(this.character.appearance.colors.primary, 20),
       'stroke-width': '2',
       filter: 'url(#dropShadow)',
-      class: 'character-body'
+      class: 'character-body',
     });
-    
+
     // Apply pattern if not solid
     if (this.character.appearance.patterns.type !== 'solid') {
       body.setAttribute('fill', `url(#${this.character.appearance.patterns.type}Pattern)`);
     }
-    
+
     this.svgElement.appendChild(body);
   }
 
@@ -350,33 +361,33 @@ class CharacterRenderer extends BaseComponent {
    */
   generateBodyPath(species, bodyType) {
     const cacheKey = `${species}-${bodyType}`;
-    
+
     if (this.pathCache.has(cacheKey)) {
       return this.pathCache.get(cacheKey);
     }
-    
+
     let path;
-    
+
     switch (species) {
-    case 'cat':
-      path = this.generateCatBody(bodyType);
-      break;
-    case 'dog':
-      path = this.generateDogBody(bodyType);
-      break;
-    case 'shark':
-      path = this.generateSharkBody(bodyType);
-      break;
-    case 'panda':
-      path = this.generatePandaBody(bodyType);
-      break;
-    case 'parrot':
-      path = this.generateParrotBody(bodyType);
-      break;
-    default:
-      path = this.generateGenericBody(bodyType);
+      case 'cat':
+        path = this.generateCatBody(bodyType);
+        break;
+      case 'dog':
+        path = this.generateDogBody(bodyType);
+        break;
+      case 'shark':
+        path = this.generateSharkBody(bodyType);
+        break;
+      case 'panda':
+        path = this.generatePandaBody(bodyType);
+        break;
+      case 'parrot':
+        path = this.generateParrotBody(bodyType);
+        break;
+      default:
+        path = this.generateGenericBody(bodyType);
     }
-    
+
     this.pathCache.set(cacheKey, path);
     return path;
   }
@@ -389,12 +400,12 @@ class CharacterRenderer extends BaseComponent {
   generateCatBody(bodyType) {
     const baseWidth = bodyType === 'chubby' ? 100 : bodyType === 'slim' ? 70 : 85;
     const baseHeight = bodyType === 'chubby' ? 120 : bodyType === 'slim' ? 100 : 110;
-    
-    return `M ${200 - baseWidth/2} 250 
-            Q ${200 - baseWidth/2} ${250 - baseHeight/4} ${200} ${250 - baseHeight/2}
-            Q ${200 + baseWidth/2} ${250 - baseHeight/4} ${200 + baseWidth/2} 250
-            Q ${200 + baseWidth/3} ${250 + baseHeight/2} ${200} ${250 + baseHeight/2}
-            Q ${200 - baseWidth/3} ${250 + baseHeight/2} ${200 - baseWidth/2} 250 Z`;
+
+    return `M ${200 - baseWidth / 2} 250 
+            Q ${200 - baseWidth / 2} ${250 - baseHeight / 4} ${200} ${250 - baseHeight / 2}
+            Q ${200 + baseWidth / 2} ${250 - baseHeight / 4} ${200 + baseWidth / 2} 250
+            Q ${200 + baseWidth / 3} ${250 + baseHeight / 2} ${200} ${250 + baseHeight / 2}
+            Q ${200 - baseWidth / 3} ${250 + baseHeight / 2} ${200 - baseWidth / 2} 250 Z`;
   }
 
   /**
@@ -405,12 +416,12 @@ class CharacterRenderer extends BaseComponent {
   generateDogBody(bodyType) {
     const baseWidth = bodyType === 'chubby' ? 110 : bodyType === 'slim' ? 75 : 90;
     const baseHeight = bodyType === 'chubby' ? 130 : bodyType === 'slim' ? 105 : 115;
-    
-    return `M ${200 - baseWidth/2} 260
-            C ${200 - baseWidth/2} ${260 - baseHeight/3} ${200 - baseWidth/4} ${260 - baseHeight/2} ${200} ${260 - baseHeight/2}
-            C ${200 + baseWidth/4} ${260 - baseHeight/2} ${200 + baseWidth/2} ${260 - baseHeight/3} ${200 + baseWidth/2} 260
-            L ${200 + baseWidth/3} ${260 + baseHeight/2}
-            C ${200 + baseWidth/3} ${260 + baseHeight/2 + 10} ${200 - baseWidth/3} ${260 + baseHeight/2 + 10} ${200 - baseWidth/3} ${260 + baseHeight/2}
+
+    return `M ${200 - baseWidth / 2} 260
+            C ${200 - baseWidth / 2} ${260 - baseHeight / 3} ${200 - baseWidth / 4} ${260 - baseHeight / 2} ${200} ${260 - baseHeight / 2}
+            C ${200 + baseWidth / 4} ${260 - baseHeight / 2} ${200 + baseWidth / 2} ${260 - baseHeight / 3} ${200 + baseWidth / 2} 260
+            L ${200 + baseWidth / 3} ${260 + baseHeight / 2}
+            C ${200 + baseWidth / 3} ${260 + baseHeight / 2 + 10} ${200 - baseWidth / 3} ${260 + baseHeight / 2 + 10} ${200 - baseWidth / 3} ${260 + baseHeight / 2}
             Z`;
   }
 
@@ -422,11 +433,11 @@ class CharacterRenderer extends BaseComponent {
   generateSharkBody(bodyType) {
     const baseWidth = bodyType === 'chubby' ? 120 : bodyType === 'slim' ? 80 : 100;
     const baseHeight = bodyType === 'chubby' ? 100 : bodyType === 'slim' ? 80 : 90;
-    
-    return `M ${200 - baseWidth/2} 270
-            C ${200 - baseWidth/2 - 20} 250 ${200 - baseWidth/4} ${270 - baseHeight} ${200} ${270 - baseHeight}
-            C ${200 + baseWidth/4} ${270 - baseHeight} ${200 + baseWidth/2 + 20} 250 ${200 + baseWidth/2} 270
-            C ${200 + baseWidth/3} ${270 + baseHeight/2} ${200 - baseWidth/3} ${270 + baseHeight/2} ${200 - baseWidth/2} 270 Z`;
+
+    return `M ${200 - baseWidth / 2} 270
+            C ${200 - baseWidth / 2 - 20} 250 ${200 - baseWidth / 4} ${270 - baseHeight} ${200} ${270 - baseHeight}
+            C ${200 + baseWidth / 4} ${270 - baseHeight} ${200 + baseWidth / 2 + 20} 250 ${200 + baseWidth / 2} 270
+            C ${200 + baseWidth / 3} ${270 + baseHeight / 2} ${200 - baseWidth / 3} ${270 + baseHeight / 2} ${200 - baseWidth / 2} 270 Z`;
   }
 
   /**
@@ -437,11 +448,11 @@ class CharacterRenderer extends BaseComponent {
   generateGenericBody(bodyType) {
     const baseWidth = bodyType === 'chubby' ? 100 : bodyType === 'slim' ? 70 : 85;
     const baseHeight = bodyType === 'chubby' ? 120 : bodyType === 'slim' ? 100 : 110;
-    
-    return `M ${200 - baseWidth/2} 250
-            Q ${200} ${250 - baseHeight/2} ${200 + baseWidth/2} 250
-            Q ${200 + baseWidth/2} ${250 + baseHeight/2} ${200} ${250 + baseHeight/2}
-            Q ${200 - baseWidth/2} ${250 + baseHeight/2} ${200 - baseWidth/2} 250 Z`;
+
+    return `M ${200 - baseWidth / 2} 250
+            Q ${200} ${250 - baseHeight / 2} ${200 + baseWidth / 2} 250
+            Q ${200 + baseWidth / 2} ${250 + baseHeight / 2} ${200} ${250 + baseHeight / 2}
+            Q ${200 - baseWidth / 2} ${250 + baseHeight / 2} ${200 - baseWidth / 2} 250 Z`;
   }
 
   /**
@@ -459,12 +470,16 @@ class CharacterRenderer extends BaseComponent {
    */
   renderEyes() {
     const eyeType = this.character.appearance.features.eyes;
-    const eyeSize = this.character.appearance.features.eyeSize === 'large' ? 20 : 
-      this.character.appearance.features.eyeSize === 'small' ? 12 : 16;
-    
+    const eyeSize =
+      this.character.appearance.features.eyeSize === 'large'
+        ? 20
+        : this.character.appearance.features.eyeSize === 'small'
+          ? 12
+          : 16;
+
     const leftEye = this.createEye(175, 200, eyeSize, eyeType);
     const rightEye = this.createEye(225, 200, eyeSize, eyeType);
-    
+
     this.svgElement.appendChild(leftEye);
     this.svgElement.appendChild(rightEye);
   }
@@ -480,64 +495,76 @@ class CharacterRenderer extends BaseComponent {
   createEye(x, y, size, type) {
     const eyeGroup = this.createSVGElement('g', {
       class: 'character-eye',
-      transform: `translate(${x}, ${y})`
+      transform: `translate(${x}, ${y})`,
     });
-    
+
     switch (type) {
-    case 'round':
-      eyeGroup.appendChild(this.createSVGElement('circle', {
-        cx: '0',
-        cy: '0',
-        r: size,
-        fill: 'white',
-        stroke: '#333'
-      }));
-      eyeGroup.appendChild(this.createSVGElement('circle', {
-        cx: '0',
-        cy: '0',
-        r: size * 0.6,
-        fill: this.character.appearance.colors.eyes,
-        class: 'eye-pupil'
-      }));
-      break;
-        
-    case 'star':
-      eyeGroup.appendChild(this.createStarShape(0, 0, size, 'white'));
-      eyeGroup.appendChild(this.createSVGElement('circle', {
-        cx: '0',
-        cy: '0',
-        r: size * 0.5,
-        fill: this.character.appearance.colors.eyes
-      }));
-      break;
-        
-    case 'heart':
-      eyeGroup.appendChild(this.createHeartShape(0, 0, size, 'white'));
-      eyeGroup.appendChild(this.createSVGElement('circle', {
-        cx: '0',
-        cy: '2',
-        r: size * 0.4,
-        fill: this.character.appearance.colors.eyes
-      }));
-      break;
-        
-    default:
-      // Default to round eyes
-      eyeGroup.appendChild(this.createSVGElement('circle', {
-        cx: '0',
-        cy: '0',
-        r: size,
-        fill: 'white',
-        stroke: '#333'
-      }));
-      eyeGroup.appendChild(this.createSVGElement('circle', {
-        cx: '0',
-        cy: '0',
-        r: size * 0.6,
-        fill: this.character.appearance.colors.eyes
-      }));
+      case 'round':
+        eyeGroup.appendChild(
+          this.createSVGElement('circle', {
+            cx: '0',
+            cy: '0',
+            r: size,
+            fill: 'white',
+            stroke: '#333',
+          })
+        );
+        eyeGroup.appendChild(
+          this.createSVGElement('circle', {
+            cx: '0',
+            cy: '0',
+            r: size * 0.6,
+            fill: this.character.appearance.colors.eyes,
+            class: 'eye-pupil',
+          })
+        );
+        break;
+
+      case 'star':
+        eyeGroup.appendChild(this.createStarShape(0, 0, size, 'white'));
+        eyeGroup.appendChild(
+          this.createSVGElement('circle', {
+            cx: '0',
+            cy: '0',
+            r: size * 0.5,
+            fill: this.character.appearance.colors.eyes,
+          })
+        );
+        break;
+
+      case 'heart':
+        eyeGroup.appendChild(this.createHeartShape(0, 0, size, 'white'));
+        eyeGroup.appendChild(
+          this.createSVGElement('circle', {
+            cx: '0',
+            cy: '2',
+            r: size * 0.4,
+            fill: this.character.appearance.colors.eyes,
+          })
+        );
+        break;
+
+      default:
+        // Default to round eyes
+        eyeGroup.appendChild(
+          this.createSVGElement('circle', {
+            cx: '0',
+            cy: '0',
+            r: size,
+            fill: 'white',
+            stroke: '#333',
+          })
+        );
+        eyeGroup.appendChild(
+          this.createSVGElement('circle', {
+            cx: '0',
+            cy: '0',
+            r: size * 0.6,
+            fill: this.character.appearance.colors.eyes,
+          })
+        );
     }
-    
+
     return eyeGroup;
   }
 
@@ -560,51 +587,59 @@ class CharacterRenderer extends BaseComponent {
   createMouth(x, y, type) {
     const mouthGroup = this.createSVGElement('g', {
       class: 'character-mouth',
-      transform: `translate(${x}, ${y})`
+      transform: `translate(${x}, ${y})`,
     });
-    
+
     switch (type) {
-    case 'smile':
-      mouthGroup.appendChild(this.createSVGElement('path', {
-        d: 'M -15 0 Q 0 15 15 0',
-        stroke: '#333',
-        'stroke-width': '3',
-        fill: 'none',
-        'stroke-linecap': 'round'
-      }));
-      break;
-        
-    case 'grin':
-      mouthGroup.appendChild(this.createSVGElement('path', {
-        d: 'M -20 0 Q 0 20 20 0',
-        stroke: '#333',
-        'stroke-width': '3',
-        fill: 'pink',
-        'stroke-linecap': 'round'
-      }));
-      break;
-        
-    case 'serious':
-      mouthGroup.appendChild(this.createSVGElement('line', {
-        x1: '-12',
-        y1: '0',
-        x2: '12',
-        y2: '0',
-        stroke: '#333',
-        'stroke-width': '3',
-        'stroke-linecap': 'round'
-      }));
-      break;
-        
-    default:
-      mouthGroup.appendChild(this.createSVGElement('path', {
-        d: 'M -15 0 Q 0 15 15 0',
-        stroke: '#333',
-        'stroke-width': '3',
-        fill: 'none'
-      }));
+      case 'smile':
+        mouthGroup.appendChild(
+          this.createSVGElement('path', {
+            d: 'M -15 0 Q 0 15 15 0',
+            stroke: '#333',
+            'stroke-width': '3',
+            fill: 'none',
+            'stroke-linecap': 'round',
+          })
+        );
+        break;
+
+      case 'grin':
+        mouthGroup.appendChild(
+          this.createSVGElement('path', {
+            d: 'M -20 0 Q 0 20 20 0',
+            stroke: '#333',
+            'stroke-width': '3',
+            fill: 'pink',
+            'stroke-linecap': 'round',
+          })
+        );
+        break;
+
+      case 'serious':
+        mouthGroup.appendChild(
+          this.createSVGElement('line', {
+            x1: '-12',
+            y1: '0',
+            x2: '12',
+            y2: '0',
+            stroke: '#333',
+            'stroke-width': '3',
+            'stroke-linecap': 'round',
+          })
+        );
+        break;
+
+      default:
+        mouthGroup.appendChild(
+          this.createSVGElement('path', {
+            d: 'M -15 0 Q 0 15 15 0',
+            stroke: '#333',
+            'stroke-width': '3',
+            fill: 'none',
+          })
+        );
     }
-    
+
     return mouthGroup;
   }
 
@@ -627,17 +662,17 @@ class CharacterRenderer extends BaseComponent {
   createNose(x, y, type) {
     const noseGroup = this.createSVGElement('g', {
       class: 'character-nose',
-      transform: `translate(${x}, ${y})`
+      transform: `translate(${x}, ${y})`,
     });
-    
+
     const nose = this.createSVGElement('ellipse', {
       cx: '0',
       cy: '0',
       rx: type === 'large' ? '8' : type === 'small' ? '4' : '6',
       ry: type === 'large' ? '6' : type === 'small' ? '3' : '4',
-      fill: this.darkenColor(this.character.appearance.colors.primary, 30)
+      fill: this.darkenColor(this.character.appearance.colors.primary, 30),
     });
-    
+
     noseGroup.appendChild(nose);
     return noseGroup;
   }
@@ -648,10 +683,10 @@ class CharacterRenderer extends BaseComponent {
   renderEars() {
     const earType = this.character.appearance.features.ears;
     const species = this.character.species.primary;
-    
+
     const leftEar = this.createEar(160, 180, earType, species, 'left');
     const rightEar = this.createEar(240, 180, earType, species, 'right');
-    
+
     this.svgElement.appendChild(leftEar);
     this.svgElement.appendChild(rightEar);
   }
@@ -668,34 +703,31 @@ class CharacterRenderer extends BaseComponent {
   createEar(x, y, type, species, side) {
     const earGroup = this.createSVGElement('g', {
       class: `character-ear ear-${side}`,
-      transform: `translate(${x}, ${y})`
+      transform: `translate(${x}, ${y})`,
     });
-    
+
     // Species-specific ear shapes
     let earPath;
-    
+
     if (species === 'cat') {
-      earPath = side === 'left' ? 
-        'M 0 0 L -20 -30 L 5 -25 Z' : 
-        'M 0 0 L 20 -30 L -5 -25 Z';
+      earPath = side === 'left' ? 'M 0 0 L -20 -30 L 5 -25 Z' : 'M 0 0 L 20 -30 L -5 -25 Z';
     } else if (species === 'dog') {
-      earPath = side === 'left' ? 
-        'M 0 0 Q -25 -15 -15 -35 Q -5 -30 0 -25 Z' : 
-        'M 0 0 Q 25 -15 15 -35 Q 5 -30 0 -25 Z';
+      earPath =
+        side === 'left'
+          ? 'M 0 0 Q -25 -15 -15 -35 Q -5 -30 0 -25 Z'
+          : 'M 0 0 Q 25 -15 15 -35 Q 5 -30 0 -25 Z';
     } else {
       // Generic ears
-      earPath = side === 'left' ? 
-        'M 0 0 L -15 -25 L 0 -20 Z' : 
-        'M 0 0 L 15 -25 L 0 -20 Z';
+      earPath = side === 'left' ? 'M 0 0 L -15 -25 L 0 -20 Z' : 'M 0 0 L 15 -25 L 0 -20 Z';
     }
-    
+
     const ear = this.createSVGElement('path', {
       d: earPath,
       fill: 'url(#primaryGradient)',
       stroke: this.darkenColor(this.character.appearance.colors.primary, 20),
-      'stroke-width': '1'
+      'stroke-width': '1',
     });
-    
+
     earGroup.appendChild(ear);
     return earGroup;
   }
@@ -705,17 +737,17 @@ class CharacterRenderer extends BaseComponent {
    */
   renderAccessories() {
     const accessories = this.character.appearance.accessories;
-    
+
     // Render head accessories
     accessories.head.forEach(accessory => {
       this.renderAccessory(accessory, 'head');
     });
-    
+
     // Render body accessories
     accessories.body.forEach(accessory => {
       this.renderAccessory(accessory, 'body');
     });
-    
+
     // Render special accessories
     accessories.special.forEach(accessory => {
       this.renderAccessory(accessory, 'special');
@@ -738,9 +770,9 @@ class CharacterRenderer extends BaseComponent {
   renderAnimationElements() {
     // Add invisible elements for animation tracking
     const animationLayer = this.createSVGElement('g', {
-      class: 'animation-layer'
+      class: 'animation-layer',
     });
-    
+
     this.svgElement.appendChild(animationLayer);
   }
 
@@ -751,7 +783,7 @@ class CharacterRenderer extends BaseComponent {
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
     }
-    
+
     this.animate();
   }
 
@@ -760,10 +792,10 @@ class CharacterRenderer extends BaseComponent {
    */
   animate() {
     this.animationTime += this.animationSpeed;
-    
+
     // Apply current animation state
     this.applyAnimationState();
-    
+
     // Continue animation
     this.animationFrame = requestAnimationFrame(this.animate);
   }
@@ -774,19 +806,19 @@ class CharacterRenderer extends BaseComponent {
   applyAnimationState() {
     const body = this.svgElement.querySelector('.character-body');
     const eyes = this.svgElement.querySelectorAll('.character-eye');
-    
+
     if (!body) return;
-    
+
     switch (this.animationState) {
-    case 'idle':
-      this.applyIdleAnimation(body, eyes);
-      break;
-    case 'happy':
-      this.applyHappyAnimation(body, eyes);
-      break;
-    case 'thinking':
-      this.applyThinkingAnimation(body, eyes);
-      break;
+      case 'idle':
+        this.applyIdleAnimation(body, eyes);
+        break;
+      case 'happy':
+        this.applyHappyAnimation(body, eyes);
+        break;
+      case 'thinking':
+        this.applyThinkingAnimation(body, eyes);
+        break;
     }
   }
 
@@ -799,7 +831,7 @@ class CharacterRenderer extends BaseComponent {
     const breatheScale = 1 + Math.sin(this.animationTime) * 0.02;
     body.style.transform = `scale(${breatheScale})`;
     body.style.transformOrigin = 'center';
-    
+
     // Occasional blinking
     if (Math.sin(this.animationTime * 0.1) > 0.95) {
       eyes.forEach(eye => {
@@ -819,7 +851,7 @@ class CharacterRenderer extends BaseComponent {
   applyHappyAnimation(body, eyes) {
     const bounceY = Math.abs(Math.sin(this.animationTime * 2)) * 10;
     body.style.transform = `translateY(-${bounceY}px)`;
-    
+
     // Happy eye sparkle effect
     eyes.forEach(eye => {
       const sparkle = Math.sin(this.animationTime * 3) * 0.2 + 1;
@@ -844,13 +876,13 @@ class CharacterRenderer extends BaseComponent {
    */
   setAnimationState(state) {
     this.animationState = state;
-    
+
     // Reset any temporary animations
     const body = this.svgElement?.querySelector('.character-body');
     if (body) {
       body.style.transition = 'transform 0.3s ease';
     }
-    
+
     // Auto-return to idle after some animations
     if (state === 'happy') {
       setTimeout(() => {
@@ -869,7 +901,7 @@ class CharacterRenderer extends BaseComponent {
     const rect = this.element.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     // Make eyes follow mouse
     this.updateEyeTracking(x, y);
   }
@@ -882,27 +914,27 @@ class CharacterRenderer extends BaseComponent {
   updateEyeTracking(mouseX, mouseY) {
     const eyes = this.svgElement?.querySelectorAll('.eye-pupil');
     if (!eyes) return;
-    
+
     eyes.forEach((pupil, index) => {
       const eyeX = index === 0 ? 175 : 225; // Left/right eye positions
       const eyeY = 200;
-      
+
       // Calculate relative mouse position to eye
-      const relativeX = (mouseX / this.size * 400) - eyeX;
-      const relativeY = (mouseY / this.size * 400) - eyeY;
-      
+      const relativeX = (mouseX / this.size) * 400 - eyeX;
+      const relativeY = (mouseY / this.size) * 400 - eyeY;
+
       // Limit pupil movement within eye bounds
       const distance = Math.sqrt(relativeX * relativeX + relativeY * relativeY);
       const maxDistance = 5; // Maximum pupil offset
-      
+
       let offsetX = relativeX;
       let offsetY = relativeY;
-      
+
       if (distance > maxDistance) {
         offsetX = (relativeX / distance) * maxDistance;
         offsetY = (relativeY / distance) * maxDistance;
       }
-      
+
       pupil.setAttribute('cx', offsetX);
       pupil.setAttribute('cy', offsetY);
     });
@@ -915,11 +947,11 @@ class CharacterRenderer extends BaseComponent {
   handleClick(_e) {
     // Trigger happy animation on click
     this.setAnimationState('happy');
-    
+
     // Emit custom event
     this.emit('character:interact', {
       type: 'click',
-      character: this.character
+      character: this.character,
     });
   }
 
@@ -950,26 +982,26 @@ class CharacterRenderer extends BaseComponent {
           secondary: '#7ed321',
           accent: '#f5a623',
           eyes: '#333333',
-          pattern: '#ffffff'
+          pattern: '#ffffff',
         },
         patterns: {
           type: 'solid',
           density: 50,
-          variation: 30
+          variation: 30,
         },
         features: {
           eyes: 'round',
           eyeSize: 'medium',
           mouth: 'smile',
           ears: 'medium',
-          nose: 'default'
+          nose: 'default',
         },
         accessories: {
           head: [],
           body: [],
-          special: []
-        }
-      }
+          special: [],
+        },
+      },
     };
   }
 
@@ -981,11 +1013,11 @@ class CharacterRenderer extends BaseComponent {
    */
   createSVGElement(tag, attributes = {}) {
     const element = document.createElementNS(this.svgNS, tag);
-    
+
     Object.entries(attributes).forEach(([key, value]) => {
       element.setAttribute(key, value);
     });
-    
+
     return element;
   }
 
@@ -999,12 +1031,20 @@ class CharacterRenderer extends BaseComponent {
     const num = parseInt(color.replace('#', ''), 16);
     const amt = Math.round(2.55 * percent);
     const R = (num >> 16) + amt;
-    const G = (num >> 8 & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
-    
-    return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-      (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-      (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+    const G = ((num >> 8) & 0x00ff) + amt;
+    const B = (num & 0x0000ff) + amt;
+
+    return (
+      '#' +
+      (
+        0x1000000 +
+        (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+        (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+        (B < 255 ? (B < 1 ? 0 : B) : 255)
+      )
+        .toString(16)
+        .slice(1)
+    );
   }
 
   /**
@@ -1017,12 +1057,20 @@ class CharacterRenderer extends BaseComponent {
     const num = parseInt(color.replace('#', ''), 16);
     const amt = Math.round(2.55 * percent);
     const R = (num >> 16) - amt;
-    const G = (num >> 8 & 0x00FF) - amt;
-    const B = (num & 0x0000FF) - amt;
-    
-    return '#' + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
-      (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
-      (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+    const G = ((num >> 8) & 0x00ff) - amt;
+    const B = (num & 0x0000ff) - amt;
+
+    return (
+      '#' +
+      (
+        0x1000000 +
+        (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+        (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+        (B > 255 ? 255 : B < 0 ? 0 : B)
+      )
+        .toString(16)
+        .slice(1)
+    );
   }
 
   /**
@@ -1042,11 +1090,11 @@ class CharacterRenderer extends BaseComponent {
                       L ${x - size * 0.3} ${y + size * 0.3}
                       L ${x - size} ${y}
                       L ${x - size * 0.3} ${y - size * 0.3} Z`;
-    
+
     return this.createSVGElement('path', {
       d: starPath,
       fill: fill,
-      stroke: '#333'
+      stroke: '#333',
     });
   }
 
@@ -1064,11 +1112,11 @@ class CharacterRenderer extends BaseComponent {
                        C ${x - size} ${y - size} ${x - size * 0.5} ${y - size} ${x} ${y - size * 0.3}
                        C ${x + size * 0.5} ${y - size} ${x + size} ${y - size} ${x + size} ${y - size * 0.5}
                        C ${x + size} ${y} ${x} ${y} ${x} ${y + size * 0.3} Z`;
-    
+
     return this.createSVGElement('path', {
       d: heartPath,
       fill: fill,
-      stroke: '#333'
+      stroke: '#333',
     });
   }
 
@@ -1080,7 +1128,7 @@ class CharacterRenderer extends BaseComponent {
       cancelAnimationFrame(this.animationFrame);
       this.animationFrame = null;
     }
-    
+
     super.destroy();
   }
 }

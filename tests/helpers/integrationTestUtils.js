@@ -10,12 +10,12 @@ import { vi } from 'vitest';
  */
 export function mockCreateLogger() {
   if (!window.createLogger) {
-    window.createLogger = vi.fn((prefix) => ({
+    window.createLogger = vi.fn(prefix => ({
       debug: vi.fn(),
       error: vi.fn(),
       warn: vi.fn(),
       info: vi.fn(),
-      log: vi.fn()
+      log: vi.fn(),
     }));
   }
   return window.createLogger;
@@ -27,7 +27,7 @@ export function mockCreateLogger() {
 export function mockComponentDependencies() {
   // Mock logger
   mockCreateLogger();
-  
+
   // Mock other common window utilities
   if (!window.ProgressFactory) {
     window.ProgressFactory = {
@@ -35,35 +35,35 @@ export function mockComponentDependencies() {
         userId: 'test-user',
         level: 1,
         points: 0,
-        achievements: []
-      }))
+        achievements: [],
+      })),
     };
   }
-  
+
   if (!window.CharacterFactory) {
     window.CharacterFactory = {
       create: vi.fn(() => ({
         id: 'test-character',
         name: 'Test Character',
-        type: 'default'
-      }))
+        type: 'default',
+      })),
     };
   }
-  
+
   // Mock navigation components
   if (!window.NavigationComponent) {
     window.NavigationComponent = {
       init: vi.fn(),
       navigate: vi.fn(),
-      updateActiveLink: vi.fn()
+      updateActiveLink: vi.fn(),
     };
   }
-  
+
   if (!window.navigationHelper) {
     window.navigationHelper = {
       init: vi.fn(),
       setActivePage: vi.fn(),
-      updatePageLinks: vi.fn()
+      updatePageLinks: vi.fn(),
     };
   }
 }
@@ -84,13 +84,14 @@ export function setupNavigationDOM() {
  */
 export function mockComponentFetches() {
   const originalFetch = global.fetch;
-  
-  global.fetch = vi.fn((url) => {
+
+  global.fetch = vi.fn(url => {
     // Mock navbar.html
     if (url.includes('navbar.html')) {
       return Promise.resolve({
         ok: true,
-        text: () => Promise.resolve(`
+        text: () =>
+          Promise.resolve(`
           <nav id="navbar" class="navbar">
             <div class="navbar-brand">
               <a href="/" class="navbar-logo">Learnimals</a>
@@ -105,15 +106,16 @@ export function mockComponentFetches() {
               <span></span>
             </button>
           </nav>
-        `)
+        `),
       });
     }
-    
+
     // Mock navigation.js
     if (url.includes('navigation.js') || url.includes('NavigationComponent')) {
       return Promise.resolve({
         ok: true,
-        text: () => Promise.resolve(`
+        text: () =>
+          Promise.resolve(`
           // Mock NavigationComponent
           window.NavigationComponent = {
             init: function() {
@@ -134,14 +136,14 @@ export function mockComponentFetches() {
               window.dispatchEvent(new CustomEvent('navigation', { detail: { page } }));
             }
           };
-        `)
+        `),
       });
     }
-    
+
     // Default response for other resources
     return originalFetch(url);
   });
-  
+
   return () => {
     global.fetch = originalFetch;
   };
@@ -154,33 +156,33 @@ export function createComponentContext() {
   const context = {
     events: [],
     state: {},
-    cleanup: []
+    cleanup: [],
   };
-  
+
   // Track events
-  const eventListener = (event) => {
+  const eventListener = event => {
     context.events.push({
       type: event.type,
       detail: event.detail,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   };
-  
+
   window.addEventListener('navigation', eventListener);
   window.addEventListener('navbarLoaded', eventListener);
   window.addEventListener('componentReady', eventListener);
-  
+
   context.cleanup.push(() => {
     window.removeEventListener('navigation', eventListener);
     window.removeEventListener('navbarLoaded', eventListener);
     window.removeEventListener('componentReady', eventListener);
   });
-  
+
   return {
     ...context,
     destroy() {
       context.cleanup.forEach(fn => fn());
-    }
+    },
   };
 }
 
@@ -192,7 +194,7 @@ export async function waitForComponent(componentName, timeout = 1000) {
     const timer = setTimeout(() => {
       reject(new Error(`Component ${componentName} did not initialize within ${timeout}ms`));
     }, timeout);
-    
+
     const checkComponent = () => {
       if (window[componentName]) {
         clearTimeout(timer);
@@ -201,7 +203,7 @@ export async function waitForComponent(componentName, timeout = 1000) {
         requestAnimationFrame(checkComponent);
       }
     };
-    
+
     checkComponent();
   });
 }
@@ -216,12 +218,12 @@ export function simulateComponentInteraction(fromComponent, toComponent, action,
       to: toComponent,
       action,
       data,
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    },
   });
-  
+
   window.dispatchEvent(event);
-  
+
   // If target component has a handler, call it
   if (window[toComponent] && typeof window[toComponent][action] === 'function') {
     return window[toComponent][action](data);
@@ -234,24 +236,24 @@ export function simulateComponentInteraction(fromComponent, toComponent, action,
 export function cleanupIntegrationTest() {
   // Clear all mocks
   vi.clearAllMocks();
-  
+
   // Reset DOM
   document.body.innerHTML = '';
   document.head.innerHTML = '';
-  
+
   // Clear window properties
   const windowProps = [
     'createLogger',
     'NavigationComponent',
     'navigationHelper',
     'ProgressFactory',
-    'CharacterFactory'
+    'CharacterFactory',
   ];
-  
+
   windowProps.forEach(prop => {
     delete window[prop];
   });
-  
+
   // Clear localStorage
   localStorage.clear();
   sessionStorage.clear();
@@ -265,5 +267,5 @@ export default {
   createComponentContext,
   waitForComponent,
   simulateComponentInteraction,
-  cleanupIntegrationTest
+  cleanupIntegrationTest,
 };

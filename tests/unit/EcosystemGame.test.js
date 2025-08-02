@@ -1,0 +1,290 @@
+/**
+ * EcosystemGame Unit Tests
+ * Tests for Sky's Ecosystem Explorer game
+ */
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { JSDOM } from 'jsdom';
+
+// Mock the dependencies
+vi.mock('../../src/utils/common.js', () => ({
+  getRandomInt: vi.fn((min, max) => Math.floor(min + (max - min) * 0.5)),
+  debounce: vi.fn(fn => fn),
+}));
+
+describe('Ecosystem Explorer Game', () => {
+  let dom;
+  let document;
+  let window;
+  let EcosystemGame;
+
+  beforeEach(async () => {
+    // Set up DOM environment
+    dom = new JSDOM(
+      `
+      <!DOCTYPE html>
+      <html>
+        <body>
+          <canvas id="ecosystem-canvas" width="800" height="600"></canvas>
+        </body>
+      </html>
+    `,
+      {
+        pretendToBeVisual: true,
+        resources: 'usable',
+      }
+    );
+
+    document = dom.window.document;
+    window = dom.window;
+
+    // Set up globals
+    global.document = document;
+    global.window = window;
+    global.HTMLCanvasElement = window.HTMLCanvasElement;
+    global.requestAnimationFrame = vi.fn();
+    global.performance = { now: vi.fn(() => Date.now()) };
+
+    // Mock window.location
+    Object.defineProperty(window, 'location', {
+      value: {
+        href: 'http://localhost:3000',
+        origin: 'http://localhost:3000',
+        pathname: '/',
+        search: '',
+        hash: '',
+      },
+      writable: true,
+      configurable: true,
+    });
+
+    // Mock canvas context
+    const mockContext = {
+      fillRect: vi.fn(),
+      strokeRect: vi.fn(),
+      fillText: vi.fn(),
+      beginPath: vi.fn(),
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      stroke: vi.fn(),
+      save: vi.fn(),
+      restore: vi.fn(),
+      setTransform: vi.fn(),
+      clearRect: vi.fn(),
+    };
+
+    vi.spyOn(window.HTMLCanvasElement.prototype, 'getContext').mockReturnValue(mockContext);
+
+    // Import the game class
+    const module = await import('../../src/features/games/ecosystem-explorer/EcosystemGame.js');
+    EcosystemGame = module.default;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.resetModules();
+    dom.window.close();
+  });
+
+  describe('Game Initialization', () => {
+    it('should create game instance successfully', () => {
+      const game = new EcosystemGame('ecosystem-canvas');
+
+      expect(game).toBeDefined();
+      expect(game.canvas).toBe(document.getElementById('ecosystem-canvas'));
+      expect(game.gameState.level).toBe(1);
+      expect(game.gameState.score).toBe(0);
+      expect(game.gameState.ecosystemHealth).toBe(1.0);
+    });
+
+    it('should initialize with correct species data', () => {
+      const game = new EcosystemGame('ecosystem-canvas');
+
+      expect(game.availableSpecies).toHaveLength(3);
+      expect(game.availableSpecies[0].id).toBe('grass');
+      expect(game.availableSpecies[1].id).toBe('rabbit');
+      expect(game.availableSpecies[2].id).toBe('fox');
+    });
+
+    it('should set up canvas dimensions correctly', () => {
+      const game = new EcosystemGame('ecosystem-canvas');
+
+      expect(game.canvas.width).toBe(800);
+      expect(game.canvas.height).toBe(600);
+      expect(game.gridWidth).toBeGreaterThan(0);
+      expect(game.gridHeight).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Game Mechanics', () => {
+    let game;
+
+    beforeEach(() => {
+      game = new EcosystemGame('ecosystem-canvas');
+    });
+
+    it('should place species correctly', () => {
+      const species = game.availableSpecies[0]; // grass
+      game.placeSpeciesAt(100, 100, species);
+
+      expect(game.gameState.placedSpecies.size).toBe(1);
+      expect(game.gameState.score).toBeGreaterThan(0);
+    });
+
+    it('should prevent placing species in occupied positions', () => {
+      const species = game.availableSpecies[0];
+
+      // Place first species
+      game.placeSpeciesAt(100, 100, species);
+      const initialScore = game.gameState.score;
+
+      // Try to place another species in same position
+      game.placeSpeciesAt(100, 100, species);
+
+      expect(game.gameState.placedSpecies.size).toBe(1);
+      expect(game.gameState.score).toBe(initialScore);
+    });
+
+    it('should calculate ecosystem health correctly', () => {
+      // Add some species to test balance calculation
+      game.gameState.placedSpecies.set('0,0', { type: 'producer' });
+      game.gameState.placedSpecies.set('1,0', { type: 'herbivore' });
+      game.gameState.placedSpecies.set('2,0', { type: 'carnivore' });
+
+      game.updateEcosystemBalance();
+
+      expect(game.gameState.ecosystemHealth).toBeGreaterThan(0);
+      expect(game.gameState.ecosystemHealth).toBeLessThanOrEqual(1);
+    });
+
+    it('should handle level progression', () => {
+      // Set up conditions for level completion
+      game.gameState.ecosystemHealth = 0.9;
+      game.gameState.placedSpecies.set('0,0', { type: 'producer' });
+      game.gameState.placedSpecies.set('1,0', { type: 'producer' });
+      game.gameState.placedSpecies.set('2,0', { type: 'herbivore' });
+      game.gameState.placedSpecies.set('3,0', { type: 'herbivore' });
+      game.gameState.placedSpecies.set('4,0', { type: 'carnivore' });
+
+      const initialLevel = game.gameState.level;
+      const initialScore = game.gameState.score;
+
+      game.checkWinConditions();
+
+      expect(game.gameState.level).toBe(initialLevel + 1);
+      expect(game.gameState.score).toBeGreaterThan(initialScore);
+    });
+  });
+
+  describe('User Interaction', () => {
+    let game;
+
+    beforeEach(() => {
+      game = new EcosystemGame('ecosystem-canvas');
+    });
+
+    it('should handle palette clicks correctly', () => {
+      // Simulate clicking on first species in palette
+      game.handlePaletteClick(50, 500); // Within first species area
+
+      expect(game.gameState.selectedSpecies).toBe('grass');
+    });
+
+    it('should handle species dragging', () => {
+      // Simulate drag start
+      const mockEvent = {
+        clientX: 50,
+        clientY: 550,
+        target: game.canvas,
+      };
+
+      // Mock getBoundingClientRect
+      game.canvas.getBoundingClientRect = vi.fn(() => ({
+        left: 0,
+        top: 0,
+        width: 800,
+        height: 600,
+      }));
+
+      game.handleMouseDown(mockEvent);
+
+      expect(game.gameState.draggedSpecies).toBeDefined();
+    });
+  });
+
+  describe('Game Control Methods', () => {
+    let game;
+
+    beforeEach(() => {
+      game = new EcosystemGame('ecosystem-canvas');
+    });
+
+    it('should start game correctly', () => {
+      game.start();
+      expect(game.gameState.gameActive).toBe(true);
+    });
+
+    it('should pause game correctly', () => {
+      game.pause();
+      expect(game.gameState.gameActive).toBe(false);
+    });
+
+    it('should reset game correctly', () => {
+      // Modify game state
+      game.gameState.level = 5;
+      game.gameState.score = 1000;
+      game.gameState.placedSpecies.set('0,0', { type: 'producer' });
+
+      game.reset();
+
+      expect(game.gameState.level).toBe(1);
+      expect(game.gameState.score).toBe(0);
+      expect(game.gameState.placedSpecies.size).toBe(0);
+      expect(game.gameState.ecosystemHealth).toBe(1.0);
+    });
+
+    it('should clean up resources on destroy', () => {
+      const removeEventListenerSpy = vi.spyOn(game.canvas, 'removeEventListener');
+      const windowRemoveEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+
+      game.destroy();
+
+      expect(removeEventListenerSpy).toHaveBeenCalled();
+      expect(windowRemoveEventListenerSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Particle System', () => {
+    let game;
+
+    beforeEach(() => {
+      game = new EcosystemGame('ecosystem-canvas');
+    });
+
+    it('should create particles correctly', () => {
+      game.createParticles(100, 100, '#00FF00');
+
+      expect(game.gameState.particles.length).toBeGreaterThan(0);
+
+      // Check particle properties
+      const particle = game.gameState.particles[0];
+      expect(particle.x).toBeDefined();
+      expect(particle.y).toBeDefined();
+      expect(particle.color).toBe('#00FF00');
+      expect(particle.alpha).toBe(1);
+    });
+
+    it('should update particles over time', () => {
+      game.createParticles(100, 100, '#00FF00');
+      const initialCount = game.gameState.particles.length;
+
+      // Simulate time passing
+      game.gameState.particles.forEach(particle => {
+        particle.age = particle.lifetime + 100; // Make them expire
+      });
+
+      game.updateParticles(16); // 16ms frame time
+
+      expect(game.gameState.particles.length).toBeLessThan(initialCount);
+    });
+  });
+});

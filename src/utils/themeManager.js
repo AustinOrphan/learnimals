@@ -1,7 +1,17 @@
 // Theme Manager for Learnimals
 // Handles theme switching, persistence, and prefers-color-scheme detection
-import { COMMON_COLORS, THEME_BASE_COLORS, THEME_COLORS, THEME_DEFINITIONS } from './themeRegistry.js';
-import { applyColors, setSemanticVariables, updateMetaThemeColor, getPreferredColorScheme } from './themeManagerUtils.js';
+import {
+  COMMON_COLORS,
+  THEME_BASE_COLORS,
+  THEME_COLORS,
+  THEME_DEFINITIONS,
+} from './themeRegistry.js';
+import {
+  applyColors,
+  setSemanticVariables,
+  updateMetaThemeColor,
+  getPreferredColorScheme,
+} from './themeManagerUtils.js';
 
 class ThemeManager {
   constructor() {
@@ -11,36 +21,36 @@ class ThemeManager {
     this.themeColors = THEME_COLORS;
     this.themeDefinitions = THEME_DEFINITIONS;
 
-    
     // Current theme state
     this.currentTheme = {
       name: 'default',
-      mode: 'light'
+      mode: 'light',
     };
-    
+
     // Initialize
     this.init();
   }
-  
+
   init() {
     // Check if user has saved theme preferences
     const savedThemeName = localStorage.getItem('learnimals-theme-name');
     const savedThemeMode = localStorage.getItem('learnimals-theme-mode');
-    
+
     // Set initial theme based on saved preferences or system preferences
     if (savedThemeName && this.themeColors[savedThemeName]) {
       this.currentTheme.name = savedThemeName;
-      
+
       if (savedThemeMode && (savedThemeMode === 'light' || savedThemeMode === 'dark')) {
         this.currentTheme.mode = savedThemeMode;
-      }    } else {
+      }
+    } else {
       // Default theme name is 'default', check for system dark/light preference
       this.currentTheme.mode = getPreferredColorScheme();
     }
-    
+
     // Apply the current theme
     this.applyCurrentTheme();
-    
+
     // Listen for system preference changes
     if (window.matchMedia) {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
@@ -54,25 +64,25 @@ class ThemeManager {
   }
   applyCurrentTheme() {
     const { name, mode } = this.currentTheme;
-    
+
     // First apply common colors
     applyColors(this.commonColors);
-    
+
     // Then apply base theme colors
     if (this.themeBaseColors[name]) {
       applyColors(this.themeBaseColors[name]);
     }
-    
+
     // Apply the specific theme mapping
     const themeColors = this.themeColors[name][mode];
     if (!themeColors) return;
-    
+
     // Apply theme-specific CSS variables
     applyColors(themeColors);
-    
+
     // Apply semantic variables for consistent component styling
     setSemanticVariables(mode);
-    
+
     // Add theme classes to body element
     document.body.className = document.body.className
       .replace(/theme-\w+/g, '')
@@ -80,27 +90,27 @@ class ThemeManager {
       .trim();
     document.body.classList.add(`theme-${name}`);
     document.body.classList.add(`theme-mode-${mode}`);
-    
+
     // Set data-theme attribute for compatibility with existing CSS
     document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'night' : name);
-    
+
     // Save preferences to localStorage
     localStorage.setItem('learnimals-theme-name', name);
     localStorage.setItem('learnimals-theme-mode', mode);
-    
+
     // Dispatch event for other components that need to react
-    const event = new CustomEvent('themeChanged', { 
-      detail: { 
+    const event = new CustomEvent('themeChanged', {
+      detail: {
         theme: name,
-        mode: mode 
-      } 
+        mode: mode,
+      },
     });
     document.dispatchEvent(event);
-    
+
     // Update theme meta tag for browser UI
     updateMetaThemeColor();
   }
-  
+
   // Set theme name (color theme)
   setTheme(themeName) {
     if (this.themeColors[themeName]) {
@@ -110,14 +120,14 @@ class ThemeManager {
     }
     return false;
   }
-  
+
   // Toggle between light and dark mode
   toggleMode() {
     this.currentTheme.mode = this.currentTheme.mode === 'light' ? 'dark' : 'light';
     this.applyCurrentTheme();
     return this.currentTheme.mode;
   }
-  
+
   // Set specific mode
   setMode(mode) {
     if (mode === 'light' || mode === 'dark') {
@@ -127,17 +137,17 @@ class ThemeManager {
     }
     return false;
   }
-  
+
   // Get current theme information
   getCurrentTheme() {
     return { ...this.currentTheme };
   }
-  
+
   // Get list of available themes
   getAvailableThemes() {
     return Object.keys(this.themeColors);
   }
-  
+
   // Register a new theme
   registerTheme(name, colorSet) {
     if (colorSet.light && colorSet.dark) {

@@ -13,8 +13,8 @@ vi.mock('../../src/utils/logger.js', () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-    debug: vi.fn()
-  }
+    debug: vi.fn(),
+  },
 }));
 
 // Mock performance utilities
@@ -22,20 +22,20 @@ vi.mock('../../src/utils/performanceUtils.js', () => ({
   performanceMonitor: {
     start: vi.fn(),
     end: vi.fn(),
-    measure: vi.fn()
+    measure: vi.fn(),
   },
   fpsMonitor: {
     start: vi.fn(),
     stop: vi.fn(),
     getCurrentFPS: vi.fn(() => 60),
-    getAverageFPS: vi.fn(() => 58)
+    getAverageFPS: vi.fn(() => 58),
   },
   memoryMonitor: {
     snapshot: vi.fn(),
     getCurrentMemoryUsage: vi.fn(() => ({ used: 25000000, total: 100000000 })),
-    getMemoryTrend: vi.fn(() => 'stable')
+    getMemoryTrend: vi.fn(() => 'stable'),
   },
-  rafThrottle: vi.fn(fn => fn)
+  rafThrottle: vi.fn(fn => fn),
 }));
 
 describe('Mobile Optimization Integration', () => {
@@ -48,11 +48,11 @@ describe('Mobile Optimization Integration', () => {
     // Reset DOM
     document.head.innerHTML = '';
     document.body.innerHTML = '';
-    
+
     // Mock viewport
     mockViewport = {
       width: 375,
-      height: 667
+      height: 667,
     };
     Object.defineProperty(window, 'innerWidth', { value: mockViewport.width, writable: true });
     Object.defineProperty(window, 'innerHeight', { value: mockViewport.height, writable: true });
@@ -65,31 +65,31 @@ describe('Mobile Optimization Integration', () => {
       rtt: 100,
       saveData: false,
       addEventListener: vi.fn(),
-      removeEventListener: vi.fn()
+      removeEventListener: vi.fn(),
     };
     Object.defineProperty(navigator, 'connection', {
       value: mockConnection,
       writable: true,
-      configurable: true
+      configurable: true,
     });
 
     // Mock touch events
     Object.defineProperty(window, 'ontouchstart', { value: null });
 
     // Mock ResizeObserver
-    global.ResizeObserver = vi.fn().mockImplementation((callback) => ({
+    global.ResizeObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(),
       unobserve: vi.fn(),
       disconnect: vi.fn(),
-      callback
+      callback,
     }));
 
     // Mock IntersectionObserver
-    global.IntersectionObserver = vi.fn().mockImplementation((callback) => ({
+    global.IntersectionObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(),
       unobserve: vi.fn(),
       disconnect: vi.fn(),
-      callback
+      callback,
     }));
 
     // Mock performance APIs
@@ -98,7 +98,7 @@ describe('Mobile Optimization Integration', () => {
       getEntriesByType: vi.fn(() => []),
       mark: vi.fn(),
       measure: vi.fn(),
-      ...global.performance
+      ...global.performance,
     };
 
     // Mock requestAnimationFrame
@@ -112,7 +112,7 @@ describe('Mobile Optimization Integration', () => {
       onload: null,
       onerror: null,
       src: '',
-      crossOrigin: null
+      crossOrigin: null,
     }));
 
     // Create service instances
@@ -151,7 +151,7 @@ describe('Mobile Optimization Integration', () => {
 
       // Verify lazy loading observers are set up
       expect(IntersectionObserver).toHaveBeenCalled();
-      
+
       // Verify images are being observed
       const images = document.querySelectorAll('img[data-src]');
       expect(images.length).toBe(2);
@@ -193,7 +193,7 @@ describe('Mobile Optimization Integration', () => {
       // Simulate touch start
       const touchEvent = new TouchEvent('touchstart', {
         bubbles: true,
-        touches: [{ clientX: 100, clientY: 100 }]
+        touches: [{ clientX: 100, clientY: 100 }],
       });
 
       button.dispatchEvent(touchEvent);
@@ -244,10 +244,10 @@ describe('Mobile Optimization Integration', () => {
       });
 
       const img = document.querySelector('img');
-      
+
       // Simulate loading
       lazyLoadManager.queueImageLoad(img);
-      
+
       // Should attempt fallback due to slow network
       expect(lazyLoadManager.options.lowQualityMode).toBe(true);
     });
@@ -282,8 +282,8 @@ describe('Mobile Optimization Integration', () => {
         performanceMonitor: {
           start: performanceStartSpy,
           end: performanceEndSpy,
-          measure: vi.fn()
-        }
+          measure: vi.fn(),
+        },
       }));
 
       document.body.innerHTML = `
@@ -355,17 +355,20 @@ describe('Mobile Optimization Integration', () => {
       // Mock dynamic imports
       const MockMobileMenu = vi.fn().mockImplementation(() => ({
         render: vi.fn().mockResolvedValue(),
-        initialize: vi.fn().mockResolvedValue()
+        initialize: vi.fn().mockResolvedValue(),
       }));
 
       const MockTouchCarousel = vi.fn().mockImplementation(() => ({
         render: vi.fn().mockResolvedValue(),
-        initialize: vi.fn().mockResolvedValue()
+        initialize: vi.fn().mockResolvedValue(),
       }));
 
-      vi.stubGlobal('import', vi.fn()
-        .mockResolvedValueOnce({ default: MockMobileMenu })
-        .mockResolvedValueOnce({ default: MockTouchCarousel })
+      vi.stubGlobal(
+        'import',
+        vi
+          .fn()
+          .mockResolvedValueOnce({ default: MockMobileMenu })
+          .mockResolvedValueOnce({ default: MockTouchCarousel })
       );
 
       await mobileService.initialize();
@@ -375,14 +378,14 @@ describe('Mobile Optimization Integration', () => {
       expect(components.length).toBe(2);
 
       // Simulate component intersection
-      const intersectionCallback = IntersectionObserver.mock.calls.find(
-        call => call[0].toString().includes('component')
+      const intersectionCallback = IntersectionObserver.mock.calls.find(call =>
+        call[0].toString().includes('component')
       )?.[0];
 
       if (intersectionCallback) {
         intersectionCallback([
           { isIntersecting: true, target: components[0] },
-          { isIntersecting: true, target: components[1] }
+          { isIntersecting: true, target: components[1] },
         ]);
       }
 
@@ -425,14 +428,14 @@ describe('Mobile Optimization Integration', () => {
       await lazyLoadManager.initialize();
 
       const container = document.querySelector('.swipe-container');
-      
+
       // Simulate swipe gesture
       const touchStart = new TouchEvent('touchstart', {
-        touches: [{ clientX: 100, clientY: 100 }]
+        touches: [{ clientX: 100, clientY: 100 }],
       });
-      
+
       const touchMove = new TouchEvent('touchmove', {
-        touches: [{ clientX: 200, clientY: 100 }]
+        touches: [{ clientX: 200, clientY: 100 }],
       });
 
       const touchEnd = new TouchEvent('touchend', {});
@@ -465,12 +468,13 @@ describe('Mobile Optimization Integration', () => {
     it('should manage memory efficiently on mobile devices', async () => {
       // Simulate memory-constrained device
       Object.defineProperty(navigator, 'deviceMemory', { value: 1 }); // 1GB RAM
-      
+
       document.body.innerHTML = `
         <div class="image-gallery">
-          ${Array.from({ length: 20 }, (_, i) => 
-    `<img data-src="gallery-${i}.jpg" alt="Gallery ${i}" class="gallery-item">`
-  ).join('')}
+          ${Array.from(
+            { length: 20 },
+            (_, i) => `<img data-src="gallery-${i}.jpg" alt="Gallery ${i}" class="gallery-item">`
+          ).join('')}
         </div>
       `;
 
@@ -495,14 +499,12 @@ describe('Mobile Optimization Integration', () => {
 
       // Simulate images going out of view
       const images = document.querySelectorAll('img');
-      
+
       // Mock intersection observer callback for cleanup
       const intersectionCallback = IntersectionObserver.mock.calls[0]?.[0];
       if (intersectionCallback) {
         // Image goes out of view
-        intersectionCallback([
-          { isIntersecting: false, target: images[0] }
-        ]);
+        intersectionCallback([{ isIntersecting: false, target: images[0] }]);
       }
 
       // Verify cleanup behavior
@@ -520,13 +522,13 @@ describe('Mobile Optimization Integration', () => {
 
       // Simulate network failure
       global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
-      
+
       // Mock Image failure
       global.Image = vi.fn().mockImplementation(() => {
         const img = {
           onload: null,
           onerror: null,
-          src: ''
+          src: '',
         };
         setTimeout(() => img.onerror && img.onerror(), 0);
         return img;
@@ -536,7 +538,7 @@ describe('Mobile Optimization Integration', () => {
       await lazyLoadManager.initialize();
 
       const img = document.querySelector('img');
-      
+
       try {
         await lazyLoadManager.loadImage(img);
       } catch (error) {
@@ -550,8 +552,8 @@ describe('Mobile Optimization Integration', () => {
       Object.defineProperty(navigator, 'serviceWorker', {
         value: {
           register: vi.fn().mockResolvedValue({}),
-          ready: Promise.resolve({})
-        }
+          ready: Promise.resolve({}),
+        },
       });
 
       // Simulate offline mode
@@ -573,7 +575,7 @@ describe('Mobile Optimization Integration', () => {
     it('should work with mobile Safari quirks', async () => {
       // Mock iOS Safari user agent
       Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15'
+        value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
       });
 
       await mobileService.initialize();
@@ -586,7 +588,7 @@ describe('Mobile Optimization Integration', () => {
     it('should handle Android Chrome mobile specifics', async () => {
       // Mock Android Chrome user agent
       Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 Chrome/91.0.4472.120'
+        value: 'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 Chrome/91.0.4472.120',
       });
 
       await mobileService.initialize();
@@ -631,8 +633,8 @@ describe('Mobile Optimization Integration', () => {
           removeListener: vi.fn(),
           addEventListener: vi.fn(),
           removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn()
-        }))
+          dispatchEvent: vi.fn(),
+        })),
       });
 
       await mobileService.initialize();

@@ -1,9 +1,9 @@
 /**
  * Comprehensive Keyboard Navigation Tests
- * 
+ *
  * This test suite provides thorough coverage of keyboard navigation functionality
  * across all interactive elements in the Learnimals project, ensuring WCAG 2.1 Level AA compliance.
- * 
+ *
  * Coverage includes:
  * - Tab order and focus management
  * - Skip links for efficient navigation
@@ -46,10 +46,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Comprehensive Keyboard Navigation Tests', () => {
@@ -69,7 +69,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
     // Enhanced focus tracking
     focusHistory = [];
     originalActiveElement = document.activeElement;
-    
+
     // Mock getBoundingClientRect for all elements
     Element.prototype.getBoundingClientRect = vi.fn(() => ({
       top: 0,
@@ -79,50 +79,54 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock scrollIntoView
     Element.prototype.scrollIntoView = vi.fn();
 
     // Enhanced focus method with history tracking
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       const previous = document.activeElement;
-      
+
       // Update activeElement
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
-      
+
       // Track focus history
       focusHistory.push({
         element: this,
         id: this.id || this.className || this.tagName,
         timestamp: Date.now(),
-        previous: previous
+        previous: previous,
       });
-      
+
       // Dispatch focus event
-      this.dispatchEvent(new FocusEvent('focus', { 
-        bubbles: true, 
-        relatedTarget: previous 
-      }));
+      this.dispatchEvent(
+        new FocusEvent('focus', {
+          bubbles: true,
+          relatedTarget: previous,
+        })
+      );
     });
 
     // Enhanced blur method
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       const previous = this;
-      
+
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
-      
-      this.dispatchEvent(new FocusEvent('blur', { 
-        bubbles: true, 
-        relatedTarget: document.body 
-      }));
+
+      this.dispatchEvent(
+        new FocusEvent('blur', {
+          bubbles: true,
+          relatedTarget: document.body,
+        })
+      );
     });
 
     service = accessibilityService;
@@ -169,20 +173,27 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       const focusableElements = accessibilityTester.getFocusableElements(testContainer);
       const expectedOrder = [
-        'menu-toggle', 'logo', 'nav-home', 'nav-about', 'nav-contact',
-        'action-btn', 'search', 'sidebar-btn', 'footer-btn'
+        'menu-toggle',
+        'logo',
+        'nav-home',
+        'nav-about',
+        'nav-contact',
+        'action-btn',
+        'search',
+        'sidebar-btn',
+        'footer-btn',
       ];
 
       expect(focusableElements.length).toBe(expectedOrder.length);
-      
+
       focusableElements.forEach((element, index) => {
         expect(element.id).toBe(expectedOrder[index]);
       });
 
       // Test that tab order is truly logical (not just document order)
-      expect(accessibilityTester.isLogicalTabOrder(
-        accessibilityTester.getTabOrder(focusableElements)
-      )).toBe(true);
+      expect(
+        accessibilityTester.isLogicalTabOrder(accessibilityTester.getTabOrder(focusableElements))
+      ).toBe(true);
     });
 
     it('should handle dynamic content insertion while maintaining tab order', () => {
@@ -201,7 +212,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const newButton = document.createElement('button');
       newButton.id = 'btn-2';
       newButton.textContent = 'Button 2';
-      
+
       const btn1 = testContainer.querySelector('#btn-1');
       const btn3 = testContainer.querySelector('#btn-3');
       btn1.parentNode.insertBefore(newButton, btn3);
@@ -282,13 +293,16 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         { id: 'video', expected: true, reason: 'video with controls' },
         { id: 'object', expected: true, reason: 'object element' },
         { id: 'embed', expected: true, reason: 'embed element' },
-        { id: 'summary', expected: true, reason: 'summary element' }
+        { id: 'summary', expected: true, reason: 'summary element' },
       ];
 
       testCases.forEach(({ id, expected, reason }) => {
         const element = testContainer.querySelector(`#${id}`);
         const isAccessible = accessibilityTester.isKeyboardAccessible(element);
-        expect(isAccessible).toBe(expected, `${id} should ${expected ? 'be' : 'not be'} keyboard accessible (${reason})`);
+        expect(isAccessible).toBe(
+          expected,
+          `${id} should ${expected ? 'be' : 'not be'} keyboard accessible (${reason})`
+        );
       });
     });
   });
@@ -317,9 +331,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       // Test for expected skip links
       const expectedTargets = ['#main-content', '#navigation', '#search-section'];
       expectedTargets.forEach(target => {
-        const skipLink = Array.from(links).find(link => 
-          link.getAttribute('href') === target
-        );
+        const skipLink = Array.from(links).find(link => link.getAttribute('href') === target);
         expect(skipLink).toBeTruthy(`Skip link to ${target} should exist`);
       });
     });
@@ -342,12 +354,12 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const mainSkipLink = skipLinks.querySelector('a[href="#main-content"]');
 
       // Simulate skip link activation
-      const clickEvent = new MouseEvent('click', { 
-        bubbles: true, 
-        cancelable: true 
+      const clickEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
       });
       clickEvent.preventDefault = vi.fn();
-      
+
       mainSkipLink.dispatchEvent(clickEvent);
 
       expect(clickEvent.preventDefault).toHaveBeenCalled();
@@ -371,7 +383,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       // Simulate focus on skip link
       firstSkipLink.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
-      
+
       // Should be visible when focused
       expect(firstSkipLink.matches(':focus')).toBe(true);
 
@@ -397,7 +409,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         testContainer.querySelector('#nav'),
         testContainer.querySelector('#main'),
         testContainer.querySelector('#aside'),
-        testContainer.querySelector('#footer')
+        testContainer.querySelector('#footer'),
       ];
 
       // Start at navigation
@@ -407,13 +419,13 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const focusSpy = vi.spyOn(landmarks[2], 'focus');
 
       // Press F6 to navigate to next landmark
-      const f6Event = new KeyboardEvent('keydown', { 
-        key: 'F6', 
-        bubbles: true, 
-        cancelable: true 
+      const f6Event = new KeyboardEvent('keydown', {
+        key: 'F6',
+        bubbles: true,
+        cancelable: true,
       });
       f6Event.preventDefault = vi.fn();
-      
+
       document.dispatchEvent(f6Event);
 
       expect(f6Event.preventDefault).toHaveBeenCalled();
@@ -439,14 +451,14 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const focusSpy = vi.spyOn(nav, 'focus');
 
       // Press Shift+F6 to navigate to previous landmark
-      const shiftF6Event = new KeyboardEvent('keydown', { 
+      const shiftF6Event = new KeyboardEvent('keydown', {
         key: 'F6',
         shiftKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       shiftF6Event.preventDefault = vi.fn();
-      
+
       document.dispatchEvent(shiftF6Event);
 
       expect(shiftF6Event.preventDefault).toHaveBeenCalled();
@@ -464,14 +476,14 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const focusSpy = vi.spyOn(main, 'focus');
       const scrollSpy = vi.spyOn(main, 'scrollIntoView');
 
-      const ctrlHomeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
+      const ctrlHomeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
         ctrlKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       ctrlHomeEvent.preventDefault = vi.fn();
-      
+
       document.dispatchEvent(ctrlHomeEvent);
 
       expect(ctrlHomeEvent.preventDefault).toHaveBeenCalled();
@@ -495,19 +507,19 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         const heading = testContainer.querySelector(`#h${level}`);
         const focusSpy = vi.spyOn(heading, 'focus');
 
-        const altNumberEvent = new KeyboardEvent('keydown', { 
+        const altNumberEvent = new KeyboardEvent('keydown', {
           key: level.toString(),
           altKey: true,
-          bubbles: true, 
-          cancelable: true 
+          bubbles: true,
+          cancelable: true,
         });
         altNumberEvent.preventDefault = vi.fn();
-        
+
         document.dispatchEvent(altNumberEvent);
 
         expect(altNumberEvent.preventDefault).toHaveBeenCalled();
         expect(focusSpy).toHaveBeenCalled();
-        
+
         // Clear the spy for next iteration
         focusSpy.mockRestore();
       }
@@ -524,7 +536,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       `;
 
       const focusableElements = accessibilityTester.getFocusableElements(testContainer);
-      
+
       focusableElements.forEach(element => {
         // Simulate focus
         element.focus();
@@ -532,7 +544,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
         // Check for focus indicator
         const hasVisibleFocus = accessibilityTester.hasVisibleFocusIndicator(element);
-        expect(hasVisibleFocus).toBe(true, `Element ${element.id} should have visible focus indicator`);
+        expect(hasVisibleFocus).toBe(
+          true,
+          `Element ${element.id} should have visible focus indicator`
+        );
       });
     });
 
@@ -548,9 +563,9 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       // Simulate keyboard navigation (Tab key)
       btn1.focus();
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
       });
       btn1.dispatchEvent(tabEvent);
 
@@ -572,7 +587,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const customComponent = new AccessibleComponent({
         id: 'custom-component',
         role: 'button',
-        focusable: true
+        focusable: true,
       });
 
       customComponent.render(testContainer);
@@ -597,7 +612,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
           <button id="modal-action">Action</button>
         `,
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
       });
 
       modal.create();
@@ -617,10 +632,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       // Simulate Tab on last element - should wrap to first
       lastFocusable.focus();
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true, 
-        cancelable: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
+        cancelable: true,
       });
       tabEvent.preventDefault = vi.fn();
       lastFocusable.dispatchEvent(tabEvent);
@@ -629,11 +644,11 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       // Simulate Shift+Tab on first element - should wrap to last
       firstFocusable.focus();
-      const shiftTabEvent = new KeyboardEvent('keydown', { 
+      const shiftTabEvent = new KeyboardEvent('keydown', {
         key: 'Tab',
         shiftKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       shiftTabEvent.preventDefault = vi.fn();
       firstFocusable.dispatchEvent(shiftTabEvent);
@@ -657,7 +672,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         id: 'focus-restore-modal',
         title: 'Focus Restore Test',
         content: '<p>Test content</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -679,7 +694,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         id: 'escape-modal',
         title: 'Escape Test',
         content: '<p>Press Escape to close</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -688,10 +703,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       expect(modal.isOpen).toBe(true);
 
       // Simulate Escape key
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
 
       document.dispatchEvent(escapeEvent);
@@ -735,10 +750,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       expect(document.activeElement).toBe(fileMenu);
 
       // Test Arrow Right navigation
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       fileMenu.dispatchEvent(arrowRightEvent);
@@ -746,10 +761,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       expect(arrowRightEvent.preventDefault).toHaveBeenCalled();
 
       // Test Arrow Down to open submenu
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       fileMenu.dispatchEvent(arrowDownEvent);
@@ -784,16 +799,16 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       component.setupKeyboardNavigation();
 
       const col1 = testContainer.querySelector('#col1');
-      
+
       // Focus first cell
       col1.focus();
       expect(document.activeElement).toBe(col1);
 
       // Test Arrow Right navigation
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       col1.dispatchEvent(arrowRightEvent);
@@ -801,10 +816,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       expect(arrowRightEvent.preventDefault).toHaveBeenCalled();
 
       // Test Arrow Down navigation
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       col1.dispatchEvent(arrowDownEvent);
@@ -841,10 +856,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       expect(tab2.getAttribute('tabindex')).toBe('-1');
 
       // Test Arrow Right navigation
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       tab1.dispatchEvent(arrowRightEvent);
@@ -860,21 +875,36 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         fields: [
           { name: 'firstName', type: 'text', label: 'First Name', required: true },
           { name: 'email', type: 'email', label: 'Email', required: true },
-          { name: 'category', type: 'select', label: 'Category', options: [
-            { value: 'student', label: 'Student' },
-            { value: 'teacher', label: 'Teacher' }
-          ]},
-          { name: 'notifications', type: 'checkbox', label: 'Notifications', options: [
-            { value: 'email', label: 'Email notifications' },
-            { value: 'sms', label: 'SMS notifications' }
-          ]},
-          { name: 'level', type: 'radio', label: 'Level', options: [
-            { value: 'beginner', label: 'Beginner' },
-            { value: 'intermediate', label: 'Intermediate' },
-            { value: 'advanced', label: 'Advanced' }
-          ]},
-          { name: 'comments', type: 'textarea', label: 'Comments' }
-        ]
+          {
+            name: 'category',
+            type: 'select',
+            label: 'Category',
+            options: [
+              { value: 'student', label: 'Student' },
+              { value: 'teacher', label: 'Teacher' },
+            ],
+          },
+          {
+            name: 'notifications',
+            type: 'checkbox',
+            label: 'Notifications',
+            options: [
+              { value: 'email', label: 'Email notifications' },
+              { value: 'sms', label: 'SMS notifications' },
+            ],
+          },
+          {
+            name: 'level',
+            type: 'radio',
+            label: 'Level',
+            options: [
+              { value: 'beginner', label: 'Beginner' },
+              { value: 'intermediate', label: 'Intermediate' },
+              { value: 'advanced', label: 'Advanced' },
+            ],
+          },
+          { name: 'comments', type: 'textarea', label: 'Comments' },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -888,27 +918,27 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       // Test Tab navigation through form
       let currentIndex = 0;
       focusableElements[currentIndex].focus();
-      
+
       for (let i = 0; i < 3; i++) {
-        const tabEvent = new KeyboardEvent('keydown', { 
-          key: 'Tab', 
-          bubbles: true, 
-          cancelable: true 
+        const tabEvent = new KeyboardEvent('keydown', {
+          key: 'Tab',
+          bubbles: true,
+          cancelable: true,
         });
-        
+
         focusableElements[currentIndex].dispatchEvent(tabEvent);
         currentIndex = (currentIndex + 1) % focusableElements.length;
       }
 
       // Test Shift+Tab backward navigation
       for (let i = 0; i < 2; i++) {
-        const shiftTabEvent = new KeyboardEvent('keydown', { 
+        const shiftTabEvent = new KeyboardEvent('keydown', {
           key: 'Tab',
           shiftKey: true,
-          bubbles: true, 
-          cancelable: true 
+          bubbles: true,
+          cancelable: true,
         });
-        
+
         focusableElements[currentIndex].dispatchEvent(shiftTabEvent);
         currentIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
       }
@@ -918,14 +948,14 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
     it('should handle Enter key submission and field navigation', () => {
       const onSubmitSpy = vi.fn();
-      
+
       const formComponent = new FormComponent({
         id: 'enter-form',
         fields: [
           { name: 'username', type: 'text', label: 'Username', required: true },
-          { name: 'password', type: 'password', label: 'Password', required: true }
+          { name: 'password', type: 'password', label: 'Password', required: true },
         ],
-        onSubmit: onSubmitSpy
+        onSubmit: onSubmitSpy,
       });
 
       formComponent.render(testContainer);
@@ -940,10 +970,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       // Test Enter on submit button
       submitButton.focus();
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
-        bubbles: true, 
-        cancelable: true 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        bubbles: true,
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       submitButton.dispatchEvent(enterEvent);
@@ -957,17 +987,17 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const formComponent = new FormComponent({
         id: 'validation-form',
         fields: [
-          { 
-            name: 'email', 
-            type: 'email', 
-            label: 'Email', 
+          {
+            name: 'email',
+            type: 'email',
+            label: 'Email',
             required: true,
-            validate: (value) => {
+            validate: value => {
               if (!value.includes('@')) return 'Please enter a valid email';
               return true;
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -997,33 +1027,33 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       const gameArea = testContainer.querySelector('#game-area');
       const player = testContainer.querySelector('#player');
-      
+
       const playerPosition = { x: 100, y: 100 };
-      
+
       // Mock game movement handler
-      const movementHandler = (e) => {
+      const movementHandler = e => {
         const moveDistance = 10;
         switch (e.key.toLowerCase()) {
-        case 'w':
-        case 'arrowup':
-          playerPosition.y -= moveDistance;
-          e.preventDefault();
-          break;
-        case 'a':
-        case 'arrowleft':
-          playerPosition.x -= moveDistance;
-          e.preventDefault();
-          break;
-        case 's':
-        case 'arrowdown':
-          playerPosition.y += moveDistance;
-          e.preventDefault();
-          break;
-        case 'd':
-        case 'arrowright':
-          playerPosition.x += moveDistance;
-          e.preventDefault();
-          break;
+          case 'w':
+          case 'arrowup':
+            playerPosition.y -= moveDistance;
+            e.preventDefault();
+            break;
+          case 'a':
+          case 'arrowleft':
+            playerPosition.x -= moveDistance;
+            e.preventDefault();
+            break;
+          case 's':
+          case 'arrowdown':
+            playerPosition.y += moveDistance;
+            e.preventDefault();
+            break;
+          case 'd':
+          case 'arrowright':
+            playerPosition.x += moveDistance;
+            e.preventDefault();
+            break;
         }
         player.style.left = `${playerPosition.x}px`;
         player.style.top = `${playerPosition.y}px`;
@@ -1037,14 +1067,14 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         { key: 'w', expectedY: 90 },
         { key: 'a', expectedX: 90 },
         { key: 's', expectedY: 100 },
-        { key: 'd', expectedX: 100 }
+        { key: 'd', expectedX: 100 },
       ];
 
       testKeys.forEach(({ key, expectedX, expectedY }) => {
-        const keyEvent = new KeyboardEvent('keydown', { 
-          key, 
-          bubbles: true, 
-          cancelable: true 
+        const keyEvent = new KeyboardEvent('keydown', {
+          key,
+          bubbles: true,
+          cancelable: true,
         });
         keyEvent.preventDefault = vi.fn();
         gameArea.dispatchEvent(keyEvent);
@@ -1068,10 +1098,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       const gameArea = testContainer.querySelector('#bubble-game');
       const bubble = testContainer.querySelector('#bubble');
-      
+
       let bubblePopped = false;
-      
-      const actionHandler = (e) => {
+
+      const actionHandler = e => {
         if (e.key === ' ' && bubble.dataset.active === 'true') {
           bubblePopped = true;
           bubble.dataset.active = 'false';
@@ -1084,10 +1114,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       gameArea.focus();
 
       // Test Space bar action
-      const spaceEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
-        bubbles: true, 
-        cancelable: true 
+      const spaceEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        bubbles: true,
+        cancelable: true,
       });
       spaceEvent.preventDefault = vi.fn();
       gameArea.dispatchEvent(spaceEvent);
@@ -1111,10 +1141,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
       const gameArea = testContainer.querySelector('#math-game');
       const buttons = gameArea.querySelectorAll('button');
-      
+
       let selectedAnswer = null;
-      
-      const selectionHandler = (e) => {
+
+      const selectionHandler = e => {
         const keyNum = e.key;
         if (keyNum >= '1' && keyNum <= '3') {
           const buttonIndex = parseInt(keyNum) - 1;
@@ -1130,10 +1160,10 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       gameArea.focus();
 
       // Test number key selection
-      const numberTwoEvent = new KeyboardEvent('keydown', { 
-        key: '2', 
-        bubbles: true, 
-        cancelable: true 
+      const numberTwoEvent = new KeyboardEvent('keydown', {
+        key: '2',
+        bubbles: true,
+        cancelable: true,
       });
       numberTwoEvent.preventDefault = vi.fn();
       gameArea.dispatchEvent(numberTwoEvent);
@@ -1251,7 +1281,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       `;
 
       const auditResults = accessibilityTester.runAudit(testContainer);
-      
+
       // Should pass basic keyboard navigation audit
       expect(auditResults.passed).toBe(true);
       expect(auditResults.errors.length).toBe(0);

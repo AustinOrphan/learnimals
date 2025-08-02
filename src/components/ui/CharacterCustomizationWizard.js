@@ -1,6 +1,6 @@
 /**
  * Character Customization Wizard Component
- * 
+ *
  * A step-by-step wizard interface for creating and customizing learning companion characters.
  * Features species selection, appearance customization, personality building, and save/load functionality.
  */
@@ -17,9 +17,9 @@ class CharacterCustomizationWizard extends BaseComponent {
     super({
       id: options.id || 'character-customization-wizard',
       cssClasses: ['character-wizard', ...(options.cssClasses || [])],
-      ...options
+      ...options,
     });
-    
+
     // Wizard state
     this.currentStep = 0;
     this.characterData = options.characterData || createCharacter();
@@ -27,20 +27,20 @@ class CharacterCustomizationWizard extends BaseComponent {
       { id: 'species', title: 'Choose Species', icon: '🐾' },
       { id: 'appearance', title: 'Customize Appearance', icon: '🎨' },
       { id: 'personality', title: 'Build Personality', icon: '🧠' },
-      { id: 'review', title: 'Review & Save', icon: '✨' }
+      { id: 'review', title: 'Review & Save', icon: '✨' },
     ];
-    
+
     // Component state
     this.isDirty = false;
     this.validationErrors = [];
     this.previewRenderer = null;
     this.storage = new CharacterStorage();
-    
+
     // Event listeners
     this.listeners = new Map();
     this.eventDelegation = null;
   }
-  
+
   generateHTML() {
     return `
       <div class="character-wizard ${this.options.cssClasses.join(' ')}" id="${this.options.id}">
@@ -95,35 +95,39 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateProgressIndicator() {
-    return this.steps.map((step, index) => `
+    return this.steps
+      .map(
+        (step, index) => `
       <div class="progress-step ${index === this.currentStep ? 'active' : ''} 
                   ${index < this.currentStep ? 'completed' : ''}">
         <div class="step-icon">${step.icon}</div>
         <div class="step-title">${step.title}</div>
         <div class="step-connector"></div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   generateCurrentStepContent() {
     const step = this.steps[this.currentStep];
-    
+
     switch (step.id) {
-    case 'species':
-      return this.generateSpeciesSelector();
-    case 'appearance':
-      return this.generateAppearanceCustomizer();
-    case 'personality':
-      return this.generatePersonalityBuilder();
-    case 'review':
-      return this.generateReviewSection();
-    default:
-      return '<p>Unknown step</p>';
+      case 'species':
+        return this.generateSpeciesSelector();
+      case 'appearance':
+        return this.generateAppearanceCustomizer();
+      case 'personality':
+        return this.generatePersonalityBuilder();
+      case 'review':
+        return this.generateReviewSection();
+      default:
+        return '<p>Unknown step</p>';
     }
   }
-  
+
   generateSpeciesSelector() {
     const species = [
       { id: 'cat', name: 'Cat', icon: '🐱', description: 'Curious and independent' },
@@ -133,9 +137,9 @@ class CharacterCustomizationWizard extends BaseComponent {
       { id: 'parrot', name: 'Parrot', icon: '🦜', description: 'Talkative and colorful' },
       { id: 'lion', name: 'Lion', icon: '🦁', description: 'Brave and confident' },
       { id: 'owl', name: 'Owl', icon: '🦉', description: 'Wise and observant' },
-      { id: 'dolphin', name: 'Dolphin', icon: '🐬', description: 'Playful and intelligent' }
+      { id: 'dolphin', name: 'Dolphin', icon: '🐬', description: 'Playful and intelligent' },
     ];
-    
+
     return `
       <div class="species-selector">
         <h2>Choose Your Character's Species</h2>
@@ -155,7 +159,9 @@ class CharacterCustomizationWizard extends BaseComponent {
         </div>
         
         <div class="species-grid">
-          ${species.map(s => `
+          ${species
+            .map(
+              s => `
             <div class="species-card ${this.characterData.species.primary === s.id ? 'selected' : ''}"
                  data-species="${s.id}"
                  data-action="select-species" data-species-id="${s.id}"
@@ -166,12 +172,14 @@ class CharacterCustomizationWizard extends BaseComponent {
               <div class="species-name">${s.name}</div>
               <div class="species-description">${s.description}</div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
       </div>
     `;
   }
-  
+
   generateAppearanceCustomizer() {
     return `
       <div class="appearance-customizer">
@@ -210,10 +218,10 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateColorControls() {
     const colors = this.characterData.appearance.colors;
-    
+
     return `
       <div class="color-controls">
         <div class="color-group">
@@ -269,43 +277,51 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generatePresetColors(colorType) {
     const presets = {
       primary: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57'],
       secondary: ['#F8B500', '#FF6348', '#A8E6CF', '#FFD3B6', '#DDA0DD'],
-      accent: ['#FFD93D', '#6BCF7E', '#FF6B9D', '#C7CEEA', '#FFA07A']
+      accent: ['#FFD93D', '#6BCF7E', '#FF6B9D', '#C7CEEA', '#FFA07A'],
     };
-    
-    return presets[colorType].map(color => `
+
+    return presets[colorType]
+      .map(
+        color => `
       <button class="preset-color" 
               style="background: ${color}"
               data-action="color-preset" data-color-type="${colorType}" data-color="${color}"
               aria-label="Select ${color}">
       </button>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   generatePatternControls() {
     const patterns = ['none', 'stripes', 'spots', 'patches', 'gradient'];
-    
+
     return `
       <div class="pattern-controls">
         <h3>Body Pattern</h3>
         <div class="pattern-grid">
-          ${patterns.map(pattern => `
+          ${patterns
+            .map(
+              pattern => `
             <div class="pattern-option ${this.characterData.appearance.pattern === pattern ? 'selected' : ''}"
                  data-pattern="${pattern}"
                  data-action="update-pattern" data-pattern="${pattern}">
               <div class="pattern-preview pattern-${pattern}"></div>
               <div class="pattern-name">${pattern.charAt(0).toUpperCase() + pattern.slice(1)}</div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
       </div>
     `;
   }
-  
+
   generateFeatureControls() {
     return `
       <div class="feature-controls">
@@ -340,44 +356,82 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateAccessoryControls() {
     const accessories = {
       head: ['hat', 'bow', 'glasses', 'headphones'],
       body: ['scarf', 'backpack', 'shirt', 'cape'],
-      special: ['wand', 'book', 'paintbrush', 'calculator']
+      special: ['wand', 'book', 'paintbrush', 'calculator'],
     };
-    
+
     return `
       <div class="accessory-controls">
-        ${Object.entries(accessories).map(([category, items]) => `
+        ${Object.entries(accessories)
+          .map(
+            ([category, items]) => `
           <div class="accessory-category">
             <h3>${category.charAt(0).toUpperCase() + category.slice(1)} Accessories</h3>
             <div class="accessory-grid">
-              ${items.map(item => `
+              ${items
+                .map(
+                  item => `
                 <div class="accessory-item ${this.hasAccessory(category, item) ? 'selected' : ''}"
                      data-action="toggle-accessory" data-category="${category}" data-item="${item}">
                   <div class="accessory-icon">${this.getAccessoryIcon(item)}</div>
                   <div class="accessory-name">${item}</div>
                 </div>
-              `).join('')}
+              `
+                )
+                .join('')}
             </div>
           </div>
-        `).join('')}
+        `
+          )
+          .join('')}
       </div>
     `;
   }
-  
+
   generatePersonalityBuilder() {
     const traits = [
-      { key: 'enthusiasm', label: 'Enthusiasm', description: 'How excited they get about learning', icon: '⚡' },
-      { key: 'patience', label: 'Patience', description: 'How they handle mistakes and struggles', icon: '⏳' },
-      { key: 'curiosity', label: 'Curiosity', description: 'Interest in exploration and discovery', icon: '🔍' },
-      { key: 'playfulness', label: 'Playfulness', description: 'Tendency toward games and fun', icon: '🎮' },
-      { key: 'confidence', label: 'Confidence', description: 'Self-assurance in abilities', icon: '💪' },
-      { key: 'empathy', label: 'Empathy', description: 'Understanding and responding to emotions', icon: '💝' }
+      {
+        key: 'enthusiasm',
+        label: 'Enthusiasm',
+        description: 'How excited they get about learning',
+        icon: '⚡',
+      },
+      {
+        key: 'patience',
+        label: 'Patience',
+        description: 'How they handle mistakes and struggles',
+        icon: '⏳',
+      },
+      {
+        key: 'curiosity',
+        label: 'Curiosity',
+        description: 'Interest in exploration and discovery',
+        icon: '🔍',
+      },
+      {
+        key: 'playfulness',
+        label: 'Playfulness',
+        description: 'Tendency toward games and fun',
+        icon: '🎮',
+      },
+      {
+        key: 'confidence',
+        label: 'Confidence',
+        description: 'Self-assurance in abilities',
+        icon: '💪',
+      },
+      {
+        key: 'empathy',
+        label: 'Empathy',
+        description: 'Understanding and responding to emotions',
+        icon: '💝',
+      },
     ];
-    
+
     return `
       <div class="personality-builder">
         <h2>Build Your Character's Personality</h2>
@@ -418,10 +472,10 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateTraitSlider(trait) {
     const value = this.characterData.personality.traits[trait.key] || 50;
-    
+
     return `
       <div class="trait-slider-container">
         <div class="trait-header">
@@ -451,28 +505,52 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateLearningStyleOptions() {
     const styles = [
-      { id: 'visual', name: 'Visual', icon: '👁️', description: 'Learns through images and demonstrations' },
-      { id: 'auditory', name: 'Auditory', icon: '👂', description: 'Learns through listening and discussion' },
-      { id: 'kinesthetic', name: 'Kinesthetic', icon: '🤹', description: 'Learns through hands-on activities' },
-      { id: 'balanced', name: 'Balanced', icon: '⚖️', description: 'Combines all learning approaches' }
+      {
+        id: 'visual',
+        name: 'Visual',
+        icon: '👁️',
+        description: 'Learns through images and demonstrations',
+      },
+      {
+        id: 'auditory',
+        name: 'Auditory',
+        icon: '👂',
+        description: 'Learns through listening and discussion',
+      },
+      {
+        id: 'kinesthetic',
+        name: 'Kinesthetic',
+        icon: '🤹',
+        description: 'Learns through hands-on activities',
+      },
+      {
+        id: 'balanced',
+        name: 'Balanced',
+        icon: '⚖️',
+        description: 'Combines all learning approaches',
+      },
     ];
-    
-    return styles.map(style => `
+
+    return styles
+      .map(
+        style => `
       <div class="style-option ${this.characterData.personality.learningStyle === style.id ? 'selected' : ''}"
            data-action="update-learning-style" data-style="${style.id}">
         <div class="style-icon">${style.icon}</div>
         <div class="style-name">${style.name}</div>
         <div class="style-description">${style.description}</div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   generateVoiceControls() {
     const voice = this.characterData.personality.voice || {};
-    
+
     return `
       <div class="voice-control-grid">
         <div class="voice-slider">
@@ -505,7 +583,7 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateReviewSection() {
     return `
       <div class="review-section">
@@ -559,22 +637,26 @@ class CharacterCustomizationWizard extends BaseComponent {
       </div>
     `;
   }
-  
+
   generateValidationMessages() {
     if (this.validationErrors.length === 0) return '';
-    
+
     return `
       <div class="validation-messages">
-        ${this.validationErrors.map(error => `
+        ${this.validationErrors
+          .map(
+            error => `
           <div class="validation-error">
             <span class="error-icon">⚠️</span>
             <span class="error-message">${error}</span>
           </div>
-        `).join('')}
+        `
+          )
+          .join('')}
       </div>
     `;
   }
-  
+
   // Event Handlers
   selectSpecies(speciesId) {
     this.characterData.species.primary = speciesId;
@@ -582,86 +664,87 @@ class CharacterCustomizationWizard extends BaseComponent {
     this.updatePreview();
     this.updateUI();
   }
-  
+
   updateColor(colorType, value) {
     this.characterData.appearance.colors[colorType] = value;
     this.isDirty = true;
     this.updatePreview();
-    
+
     // Update color preview
     const preview = document.getElementById(`${colorType}-color-preview`);
     if (preview) {
       preview.style.background = value;
     }
   }
-  
+
   updatePattern(pattern) {
     this.characterData.appearance.pattern = pattern;
     this.isDirty = true;
     this.updatePreview();
     this.updateUI();
   }
-  
+
   updateFeature(feature, value) {
     this.characterData.appearance.features[feature] = parseInt(value);
     this.isDirty = true;
     this.updatePreview();
   }
-  
+
   toggleAccessory(category, item) {
     const accessories = this.characterData.appearance.accessories[category];
     const index = accessories.indexOf(item);
-    
+
     if (index > -1) {
       accessories.splice(index, 1);
     } else {
       accessories.push(item);
     }
-    
+
     this.isDirty = true;
     this.updatePreview();
     this.updateUI();
   }
-  
+
   updateTrait(trait, value) {
     this.characterData.personality.traits[trait] = parseInt(value);
     this.isDirty = true;
-    
+
     // Update value display
     const valueDisplay = document.getElementById(`${trait}-value`);
     if (valueDisplay) {
       valueDisplay.textContent = value;
     }
-    
+
     // Update effect description
     const effectDisplay = document.getElementById(`${trait}-effect`);
     if (effectDisplay) {
       effectDisplay.textContent = this.getTraitEffect(trait, value);
     }
-    
+
     // Update character message if visible
     this.updateCharacterMessage();
   }
-  
+
   updateLearningStyle(style) {
     this.characterData.personality.learningStyle = style;
     this.isDirty = true;
     this.updateUI();
   }
-  
+
   updateVoice(property, value) {
     if (!this.characterData.personality.voice) {
       this.characterData.personality.voice = {};
     }
-    this.characterData.personality.voice[property] = property === 'accent' ? value : parseFloat(value);
+    this.characterData.personality.voice[property] =
+      property === 'accent' ? value : parseFloat(value);
     this.isDirty = true;
   }
-  
+
   updateName(name) {
     this.characterData.name = name;
     this.isDirty = true;
   }
-  
+
   // Navigation
   previousStep() {
     if (this.currentStep > 0) {
@@ -669,13 +752,13 @@ class CharacterCustomizationWizard extends BaseComponent {
       this.updateUI();
     }
   }
-  
+
   async nextStep() {
     // Validate current step
     if (!this.validateCurrentStep()) {
       return;
     }
-    
+
     if (this.currentStep < this.steps.length - 1) {
       this.currentStep++;
       this.updateUI();
@@ -684,34 +767,34 @@ class CharacterCustomizationWizard extends BaseComponent {
       await this.saveCharacter();
     }
   }
-  
+
   // Validation
   validateCurrentStep() {
     this.validationErrors = [];
-    
+
     switch (this.steps[this.currentStep].id) {
-    case 'species':
-      if (!this.characterData.species.primary) {
-        this.validationErrors.push('Please select a species');
-      }
-      break;
-      
-    case 'review':
-      if (!this.characterData.name || this.characterData.name.trim().length === 0) {
-        this.validationErrors.push('Please enter a name for your character');
-      }
-      break;
+      case 'species':
+        if (!this.characterData.species.primary) {
+          this.validationErrors.push('Please select a species');
+        }
+        break;
+
+      case 'review':
+        if (!this.characterData.name || this.characterData.name.trim().length === 0) {
+          this.validationErrors.push('Please enter a name for your character');
+        }
+        break;
     }
-    
+
     this.updateUI();
     return this.validationErrors.length === 0;
   }
-  
+
   // Character Preview
   async updatePreview() {
     const container = document.getElementById('character-preview-container');
     if (!container) return;
-    
+
     // Create or update renderer
     if (!this.previewRenderer) {
       this.previewRenderer = new CharacterRenderer({
@@ -719,57 +802,57 @@ class CharacterCustomizationWizard extends BaseComponent {
         size: 200,
         interactive: true,
         animated: true,
-        container: container
+        container: container,
       });
       await this.previewRenderer.render();
     } else {
       this.previewRenderer.updateCharacter(this.characterData);
     }
   }
-  
+
   testAnimation(state) {
     if (this.previewRenderer) {
       this.previewRenderer.setAnimationState(state);
     }
   }
-  
+
   hearVoice() {
     const message = generateCharacterMessage(this.characterData, 'greeting');
     this.speak(message);
   }
-  
+
   speak(text) {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
       const voice = this.characterData.personality.voice || {};
-      
+
       utterance.pitch = voice.pitch || 1;
       utterance.rate = voice.speed || 1;
       utterance.volume = 1;
-      
+
       speechSynthesis.speak(utterance);
     }
   }
-  
+
   // Message Preview
   previewMessage(context) {
     const message = generateCharacterMessage(this.characterData, context);
     const messageElement = document.getElementById('message-text');
     if (messageElement) {
       messageElement.textContent = message;
-      
+
       // Trigger appropriate animation
       if (this.previewRenderer) {
         const animationMap = {
           greeting: 'waving',
           encouragement: 'encouraging',
-          celebration: 'celebrating'
+          celebration: 'celebrating',
         };
         this.previewRenderer.setAnimationState(animationMap[context] || 'happy');
       }
     }
   }
-  
+
   updateCharacterMessage() {
     const message = generateCharacterMessage(this.characterData, 'greeting');
     const messageElement = document.getElementById('message-text');
@@ -777,21 +860,21 @@ class CharacterCustomizationWizard extends BaseComponent {
       messageElement.textContent = message;
     }
   }
-  
+
   getCharacterGreeting() {
     return generateCharacterMessage(this.characterData, 'greeting');
   }
-  
+
   // Save/Export Functions
   async saveCharacter() {
     try {
       await this.storage.init();
-      
+
       // Set metadata
       this.characterData.created = this.characterData.created || new Date();
       this.characterData.lastModified = new Date();
       this.characterData.isCustom = true;
-      
+
       // Validate character
       const validation = validateCharacter(this.characterData);
       if (!validation.valid) {
@@ -799,48 +882,47 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.updateUI();
         return;
       }
-      
+
       // Save to storage
       const characterId = await this.storage.saveCharacter(this.characterData);
-      
+
       // Show success message
       this.showSuccess(`Character "${this.characterData.name}" saved successfully!`);
-      
+
       // Emit save event
       this.emit('character:saved', { characterId, character: this.characterData });
-      
+
       // Mark as clean
       this.isDirty = false;
-      
     } catch (error) {
       console.error('Failed to save character:', error);
       this.showError('Failed to save character. Please try again.');
     }
   }
-  
+
   exportCharacter() {
     const data = JSON.stringify(this.characterData, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = `${this.characterData.name || 'character'}-${Date.now()}.json`;
     a.click();
-    
+
     URL.revokeObjectURL(url);
   }
-  
+
   shareCharacter() {
     // TODO: Implement sharing functionality
     this.showInfo('Sharing feature coming soon!');
   }
-  
+
   // Helper Methods
   hasAccessory(category, item) {
     return this.characterData.appearance.accessories[category].includes(item);
   }
-  
+
   getAccessoryIcon(item) {
     const icons = {
       hat: '🎩',
@@ -854,61 +936,61 @@ class CharacterCustomizationWizard extends BaseComponent {
       wand: '🪄',
       book: '📚',
       paintbrush: '🖌️',
-      calculator: '🧮'
+      calculator: '🧮',
     };
     return icons[item] || '🎁';
   }
-  
+
   getTraitEffect(trait, value) {
     const val = parseInt(value);
-    
+
     const effects = {
       enthusiasm: {
         low: 'Calm and measured in approach',
         medium: 'Balanced excitement about learning',
-        high: 'Very energetic and enthusiastic!'
+        high: 'Very energetic and enthusiastic!',
       },
       patience: {
         low: 'Quick to move on to new topics',
         medium: 'Takes reasonable time to explain',
-        high: 'Very patient with mistakes'
+        high: 'Very patient with mistakes',
       },
       curiosity: {
         low: 'Focused on core concepts',
         medium: 'Open to exploring related topics',
-        high: 'Loves discovering new things!'
+        high: 'Loves discovering new things!',
       },
       playfulness: {
         low: 'Serious and focused approach',
         medium: 'Mixes fun with learning',
-        high: 'Makes everything a game!'
+        high: 'Makes everything a game!',
       },
       confidence: {
         low: 'Humble and encouraging',
         medium: 'Balanced self-assurance',
-        high: 'Bold and inspiring!'
+        high: 'Bold and inspiring!',
       },
       empathy: {
         low: 'Task-focused helper',
         medium: 'Understands feelings well',
-        high: 'Deeply caring and supportive'
-      }
+        high: 'Deeply caring and supportive',
+      },
     };
-    
+
     const level = val < 33 ? 'low' : val < 67 ? 'medium' : 'high';
     return effects[trait]?.[level] || 'Balanced trait';
   }
-  
+
   getPersonalitySummary() {
     const traits = this.characterData.personality.traits;
     const topTraits = Object.entries(traits)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 2)
       .map(([trait]) => trait);
-    
+
     return topTraits.map(t => t.charAt(0).toUpperCase() + t.slice(1)).join(' & ');
   }
-  
+
   // UI Updates
   updateUI() {
     const wizardElement = document.getElementById(this.options.id);
@@ -918,21 +1000,21 @@ class CharacterCustomizationWizard extends BaseComponent {
       this.updatePreview();
     }
   }
-  
+
   bindEvents() {
     // Initialize event delegation system (CSP-compliant)
     if (this.eventDelegation) {
       this.eventDelegation.destroy();
     }
-    
+
     this.eventDelegation = new EventDelegation(this.element, {
       stopPropagation: false,
-      preventDefault: false
+      preventDefault: false,
     });
-    
+
     // Initialize for click, input, and change events
     this.eventDelegation.init(['click', 'input', 'change', 'keyup']);
-    
+
     // Bind this context to methods
     this.selectSpecies = this.selectSpecies.bind(this);
     this.updateColor = this.updateColor.bind(this);
@@ -952,31 +1034,31 @@ class CharacterCustomizationWizard extends BaseComponent {
     this.exportCharacter = this.exportCharacter.bind(this);
     this.shareCharacter = this.shareCharacter.bind(this);
     this.filterSpecies = this.filterSpecies.bind(this);
-    
+
     // Register event handlers using event delegation
     this.registerEventHandlers();
   }
-  
+
   registerEventHandlers() {
     // Preview controls
     this.eventDelegation.onAction('test-animation', (event, element) => {
       const animationType = element.dataset.animation || 'happy';
       this.testAnimation(animationType);
     });
-    
+
     this.eventDelegation.onAction('hear-voice', () => {
       this.hearVoice();
     });
-    
+
     // Navigation
     this.eventDelegation.onAction('previous-step', () => {
       this.previousStep();
     });
-    
+
     this.eventDelegation.onAction('next-step', () => {
       this.nextStep();
     });
-    
+
     // Species selection
     this.eventDelegation.onAction('select-species', (event, element) => {
       const speciesId = element.dataset.speciesId;
@@ -984,25 +1066,25 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.selectSpecies(speciesId);
       }
     });
-    
+
     // Search/filter
     this.eventDelegation.onClass('species-search', (event, _element) => {
       this.filterSpecies(event.originalEvent);
     });
-    
+
     // Color updates
     this.eventDelegation.on('input[data-color-type]', (event, element) => {
       const colorType = element.dataset.colorType;
       const value = element.value;
       this.updateColor(colorType, value);
     });
-    
+
     this.eventDelegation.on('select[data-color-type]', (event, element) => {
       const colorType = element.dataset.colorType;
       const value = element.value;
       this.updateColor(colorType, value);
     });
-    
+
     // Color preset buttons
     this.eventDelegation.onAction('color-preset', (event, element) => {
       const colorType = element.dataset.colorType;
@@ -1011,7 +1093,7 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.updateColor(colorType, color);
       }
     });
-    
+
     // Pattern updates
     this.eventDelegation.onAction('update-pattern', (event, element) => {
       const pattern = element.dataset.pattern;
@@ -1019,14 +1101,14 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.updatePattern(pattern);
       }
     });
-    
+
     // Feature updates (sliders)
     this.eventDelegation.on('input[data-feature]', (event, element) => {
       const feature = element.dataset.feature;
       const value = parseFloat(element.value);
       this.updateFeature(feature, value);
     });
-    
+
     // Accessory toggles
     this.eventDelegation.onAction('toggle-accessory', (event, element) => {
       const category = element.dataset.category;
@@ -1035,14 +1117,14 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.toggleAccessory(category, item);
       }
     });
-    
+
     // Trait sliders
     this.eventDelegation.on('input[data-trait]', (event, element) => {
       const trait = element.dataset.trait;
       const value = parseFloat(element.value);
       this.updateTrait(trait, value);
     });
-    
+
     // Learning style selection
     this.eventDelegation.onAction('update-learning-style', (event, element) => {
       const style = element.dataset.style;
@@ -1050,38 +1132,38 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.updateLearningStyle(style);
       }
     });
-    
+
     // Voice controls
     this.eventDelegation.on('input[data-voice-property]', (event, element) => {
       const property = element.dataset.voiceProperty;
       const value = parseFloat(element.value);
       this.updateVoice(property, value);
     });
-    
+
     // Name input
     this.eventDelegation.on('input[data-name-input]', (event, element) => {
       this.updateName(element.value);
     });
-    
+
     // Message preview
     this.eventDelegation.onAction('preview-message', (event, element) => {
       const messageType = element.dataset.messageType || 'greeting';
       this.previewMessage(messageType);
     });
-    
+
     // Save/Export/Share actions
     this.eventDelegation.onAction('save-character', () => {
       this.saveCharacter();
     });
-    
+
     this.eventDelegation.onAction('export-character', () => {
       this.exportCharacter();
     });
-    
+
     this.eventDelegation.onAction('share-character', () => {
       this.shareCharacter();
     });
-    
+
     // Tab switching
     this.eventDelegation.onClass('tab-button', (event, element) => {
       const tab = element.dataset.tab;
@@ -1089,7 +1171,7 @@ class CharacterCustomizationWizard extends BaseComponent {
         this.switchTab(tab);
       }
     });
-    
+
     // Category filtering
     this.eventDelegation.onClass('category-chip', (event, element) => {
       const category = element.dataset.category;
@@ -1098,33 +1180,33 @@ class CharacterCustomizationWizard extends BaseComponent {
       }
     });
   }
-  
+
   switchTab(tabId) {
     // Update tab buttons
     document.querySelectorAll('.tab-button').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tabId);
     });
-    
+
     // Update tab content
     document.querySelectorAll('.tab-content').forEach(content => {
       content.classList.toggle('active', content.id === `${tabId}-tab`);
     });
   }
-  
+
   filterByCategory(category) {
     // Update category chips
     document.querySelectorAll('.category-chip').forEach(chip => {
       chip.classList.toggle('active', chip.dataset.category === category);
     });
-    
+
     // Filter species cards
     // TODO: Implement category filtering
   }
-  
+
   filterSpecies(event) {
     const searchTerm = event.target.value.toLowerCase();
     const speciesCards = document.querySelectorAll('.species-card');
-    
+
     speciesCards.forEach(card => {
       const name = card.querySelector('.species-name').textContent.toLowerCase();
       const description = card.querySelector('.species-description').textContent.toLowerCase();
@@ -1132,37 +1214,37 @@ class CharacterCustomizationWizard extends BaseComponent {
       card.style.display = matches ? 'block' : 'none';
     });
   }
-  
+
   // Notification Methods
   showSuccess(message) {
     // TODO: Implement toast notification
     alert(message);
   }
-  
+
   showError(message) {
     // TODO: Implement toast notification
     alert('Error: ' + message);
   }
-  
+
   showInfo(message) {
     // TODO: Implement toast notification
     alert(message);
   }
-  
+
   // Event Emitter
   emit(event, data) {
     if (this.listeners.has(event)) {
       this.listeners.get(event).forEach(callback => callback(data));
     }
   }
-  
+
   on(event, callback) {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
     this.listeners.get(event).push(callback);
   }
-  
+
   off(event, callback) {
     if (this.listeners.has(event)) {
       const callbacks = this.listeners.get(event);
@@ -1172,29 +1254,29 @@ class CharacterCustomizationWizard extends BaseComponent {
       }
     }
   }
-  
+
   // Lifecycle
   async afterRender() {
     await super.afterRender();
     this.bindEvents();
     await this.updatePreview();
   }
-  
+
   destroy() {
     // Clean up event delegation
     if (this.eventDelegation) {
       this.eventDelegation.destroy();
       this.eventDelegation = null;
     }
-    
+
     // Clean up event listeners
     this.listeners.clear();
-    
+
     // Clean up preview renderer
     if (this.previewRenderer) {
       this.previewRenderer.destroy();
     }
-    
+
     super.destroy();
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Form Keyboard Navigation Tests
- * 
+ *
  * Comprehensive tests for form keyboard accessibility including:
  * - Tab and Shift+Tab navigation through form fields
  * - Enter key submission and field navigation
@@ -38,10 +38,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Form Keyboard Navigation Tests', () => {
@@ -55,18 +55,18 @@ describe('Form Keyboard Navigation Tests', () => {
     document.body.appendChild(testContainer);
 
     // Mock focus methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     });
@@ -96,8 +96,8 @@ describe('Form Keyboard Navigation Tests', () => {
           { name: 'lastName', type: 'text', label: 'Last Name', required: true },
           { name: 'email', type: 'email', label: 'Email Address', required: true },
           { name: 'phone', type: 'tel', label: 'Phone Number' },
-          { name: 'comments', type: 'textarea', label: 'Comments' }
-        ]
+          { name: 'comments', type: 'textarea', label: 'Comments' },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -128,9 +128,9 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(document.activeElement).toBe(firstNameField);
 
       // Simulate Tab key
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
       });
       firstNameField.dispatchEvent(tabEvent);
 
@@ -147,10 +147,10 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(document.activeElement).toBe(lastNameField);
 
       // Simulate Shift+Tab key
-      const shiftTabEvent = new KeyboardEvent('keydown', { 
+      const shiftTabEvent = new KeyboardEvent('keydown', {
         key: 'Tab',
         shiftKey: true,
-        bubbles: true 
+        bubbles: true,
       });
       lastNameField.dispatchEvent(shiftTabEvent);
 
@@ -166,10 +166,10 @@ describe('Form Keyboard Navigation Tests', () => {
 
       // Test Enter in text field - should move to next field or submit
       textField.focus();
-      const enterInTextEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
+      const enterInTextEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       enterInTextEvent.preventDefault = vi.fn();
       textField.dispatchEvent(enterInTextEvent);
@@ -179,10 +179,10 @@ describe('Form Keyboard Navigation Tests', () => {
 
       // Test Enter in textarea - should create new line (not prevent default)
       textareaField.focus();
-      const enterInTextareaEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
+      const enterInTextareaEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       enterInTextareaEvent.preventDefault = vi.fn();
       textareaField.dispatchEvent(enterInTextareaEvent);
@@ -195,10 +195,10 @@ describe('Form Keyboard Navigation Tests', () => {
       formComponent.options.onSubmit = onSubmitSpy;
 
       submitButton.focus();
-      const enterOnSubmitEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
+      const enterOnSubmitEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       enterOnSubmitEvent.preventDefault = vi.fn();
       submitButton.dispatchEvent(enterOnSubmitEvent);
@@ -212,16 +212,16 @@ describe('Form Keyboard Navigation Tests', () => {
       formComponent = new FormComponent({
         id: 'choice-form',
         fields: [
-          { 
-            name: 'experience', 
-            type: 'radio', 
+          {
+            name: 'experience',
+            type: 'radio',
             label: 'Experience Level',
             options: [
               { value: 'beginner', label: 'Beginner' },
               { value: 'intermediate', label: 'Intermediate' },
               { value: 'advanced', label: 'Advanced' },
-              { value: 'expert', label: 'Expert' }
-            ]
+              { value: 'expert', label: 'Expert' },
+            ],
           },
           {
             name: 'interests',
@@ -231,10 +231,10 @@ describe('Form Keyboard Navigation Tests', () => {
               { value: 'math', label: 'Mathematics' },
               { value: 'science', label: 'Science' },
               { value: 'reading', label: 'Reading' },
-              { value: 'art', label: 'Art' }
-            ]
-          }
-        ]
+              { value: 'art', label: 'Art' },
+            ],
+          },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -266,23 +266,23 @@ describe('Form Keyboard Navigation Tests', () => {
 
       // Set up arrow key navigation
       radioButtons.forEach((radio, index) => {
-        radio.addEventListener('keydown', (e) => {
+        radio.addEventListener('keydown', e => {
           let nextIndex;
           switch (e.key) {
-          case 'ArrowDown':
-          case 'ArrowRight':
-            e.preventDefault();
-            nextIndex = (index + 1) % radioButtons.length;
-            radioButtons[nextIndex].focus();
-            radioButtons[nextIndex].checked = true;
-            break;
-          case 'ArrowUp':
-          case 'ArrowLeft':
-            e.preventDefault();
-            nextIndex = index > 0 ? index - 1 : radioButtons.length - 1;
-            radioButtons[nextIndex].focus();
-            radioButtons[nextIndex].checked = true;
-            break;
+            case 'ArrowDown':
+            case 'ArrowRight':
+              e.preventDefault();
+              nextIndex = (index + 1) % radioButtons.length;
+              radioButtons[nextIndex].focus();
+              radioButtons[nextIndex].checked = true;
+              break;
+            case 'ArrowUp':
+            case 'ArrowLeft':
+              e.preventDefault();
+              nextIndex = index > 0 ? index - 1 : radioButtons.length - 1;
+              radioButtons[nextIndex].focus();
+              radioButtons[nextIndex].checked = true;
+              break;
           }
         });
       });
@@ -291,10 +291,10 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(document.activeElement).toBe(radioButtons[0]);
 
       // Test Arrow Down
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       radioButtons[0].dispatchEvent(arrowDownEvent);
@@ -305,10 +305,10 @@ describe('Form Keyboard Navigation Tests', () => {
 
       // Test Arrow Up (should wrap to last)
       radioButtons[0].focus();
-      const arrowUpEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowUp', 
+      const arrowUpEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowUp',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       arrowUpEvent.preventDefault = vi.fn();
       radioButtons[0].dispatchEvent(arrowUpEvent);
@@ -326,10 +326,10 @@ describe('Form Keyboard Navigation Tests', () => {
       firstRadio.focus();
       expect(firstRadio.checked).toBe(false);
 
-      const spaceOnRadioEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
+      const spaceOnRadioEvent = new KeyboardEvent('keydown', {
+        key: ' ',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       spaceOnRadioEvent.preventDefault = vi.fn();
       firstRadio.dispatchEvent(spaceOnRadioEvent);
@@ -341,10 +341,10 @@ describe('Form Keyboard Navigation Tests', () => {
       firstCheckbox.focus();
       expect(firstCheckbox.checked).toBe(false);
 
-      const spaceOnCheckboxEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
+      const spaceOnCheckboxEvent = new KeyboardEvent('keydown', {
+        key: ' ',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       spaceOnCheckboxEvent.preventDefault = vi.fn();
       firstCheckbox.dispatchEvent(spaceOnCheckboxEvent);
@@ -366,9 +366,9 @@ describe('Form Keyboard Navigation Tests', () => {
       checkboxes[0].focus();
       expect(document.activeElement).toBe(checkboxes[0]);
 
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
       });
       checkboxes[0].dispatchEvent(tabEvent);
 
@@ -390,8 +390,8 @@ describe('Form Keyboard Navigation Tests', () => {
               { value: 'us', label: 'United States' },
               { value: 'ca', label: 'Canada' },
               { value: 'uk', label: 'United Kingdom' },
-              { value: 'au', label: 'Australia' }
-            ]
+              { value: 'au', label: 'Australia' },
+            ],
           },
           {
             name: 'grade',
@@ -403,10 +403,10 @@ describe('Form Keyboard Navigation Tests', () => {
               { value: '2', label: '2nd Grade' },
               { value: '3', label: '3rd Grade' },
               { value: '4', label: '4th Grade' },
-              { value: '5', label: '5th Grade' }
-            ]
-          }
-        ]
+              { value: '5', label: '5th Grade' },
+            ],
+          },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -421,37 +421,37 @@ describe('Form Keyboard Navigation Tests', () => {
 
       // Mock select dropdown behavior
       let selectedIndex = 0;
-      countrySelect.addEventListener('keydown', (e) => {
+      countrySelect.addEventListener('keydown', e => {
         const options = countrySelect.options;
         switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          selectedIndex = Math.min(selectedIndex + 1, options.length - 1);
-          countrySelect.selectedIndex = selectedIndex;
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          selectedIndex = Math.max(selectedIndex - 1, 0);
-          countrySelect.selectedIndex = selectedIndex;
-          break;
-        case 'Home':
-          e.preventDefault();
-          selectedIndex = 0;
-          countrySelect.selectedIndex = selectedIndex;
-          break;
-        case 'End':
-          e.preventDefault();
-          selectedIndex = options.length - 1;
-          countrySelect.selectedIndex = selectedIndex;
-          break;
+          case 'ArrowDown':
+            e.preventDefault();
+            selectedIndex = Math.min(selectedIndex + 1, options.length - 1);
+            countrySelect.selectedIndex = selectedIndex;
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            selectedIndex = Math.max(selectedIndex - 1, 0);
+            countrySelect.selectedIndex = selectedIndex;
+            break;
+          case 'Home':
+            e.preventDefault();
+            selectedIndex = 0;
+            countrySelect.selectedIndex = selectedIndex;
+            break;
+          case 'End':
+            e.preventDefault();
+            selectedIndex = options.length - 1;
+            countrySelect.selectedIndex = selectedIndex;
+            break;
         }
       });
 
       // Test Arrow Down
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       countrySelect.dispatchEvent(arrowDownEvent);
@@ -460,10 +460,10 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(countrySelect.selectedIndex).toBe(1);
 
       // Test Home key
-      const homeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
+      const homeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       homeEvent.preventDefault = vi.fn();
       countrySelect.dispatchEvent(homeEvent);
@@ -479,17 +479,17 @@ describe('Form Keyboard Navigation Tests', () => {
       countrySelect.focus();
 
       // Mock letter key navigation
-      countrySelect.addEventListener('keydown', (e) => {
+      countrySelect.addEventListener('keydown', e => {
         if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
           const options = Array.from(countrySelect.options);
           const currentIndex = countrySelect.selectedIndex;
-          
+
           // Find next option starting with the typed letter
-          const nextOption = options.find((option, index) => 
-            index > currentIndex && 
-            option.text.toLowerCase().startsWith(e.key.toLowerCase())
+          const nextOption = options.find(
+            (option, index) =>
+              index > currentIndex && option.text.toLowerCase().startsWith(e.key.toLowerCase())
           );
-          
+
           if (nextOption) {
             countrySelect.selectedIndex = options.indexOf(nextOption);
           }
@@ -497,9 +497,9 @@ describe('Form Keyboard Navigation Tests', () => {
       });
 
       // Test typing 'c' to select 'Canada'
-      const cKeyEvent = new KeyboardEvent('keydown', { 
-        key: 'c', 
-        bubbles: true 
+      const cKeyEvent = new KeyboardEvent('keydown', {
+        key: 'c',
+        bubbles: true,
       });
       countrySelect.dispatchEvent(cKeyEvent);
 
@@ -515,7 +515,7 @@ describe('Form Keyboard Navigation Tests', () => {
 
       // Mock select open/close behavior
       let isOpen = false;
-      countrySelect.addEventListener('keydown', (e) => {
+      countrySelect.addEventListener('keydown', e => {
         if (e.key === ' ' || e.key === 'Enter') {
           e.preventDefault();
           isOpen = !isOpen;
@@ -524,10 +524,10 @@ describe('Form Keyboard Navigation Tests', () => {
       });
 
       // Test Space key
-      const spaceEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
+      const spaceEvent = new KeyboardEvent('keydown', {
+        key: ' ',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       spaceEvent.preventDefault = vi.fn();
       countrySelect.dispatchEvent(spaceEvent);
@@ -536,10 +536,10 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(isOpen).toBe(true);
 
       // Test Enter key
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       countrySelect.dispatchEvent(enterEvent);
@@ -554,37 +554,37 @@ describe('Form Keyboard Navigation Tests', () => {
       formComponent = new FormComponent({
         id: 'validation-form',
         fields: [
-          { 
-            name: 'username', 
-            type: 'text', 
-            label: 'Username', 
+          {
+            name: 'username',
+            type: 'text',
+            label: 'Username',
             required: true,
-            validate: (value) => {
+            validate: value => {
               if (value.length < 3) return 'Username must be at least 3 characters';
               return true;
-            }
+            },
           },
-          { 
-            name: 'email', 
-            type: 'email', 
-            label: 'Email', 
+          {
+            name: 'email',
+            type: 'email',
+            label: 'Email',
             required: true,
-            validate: (value) => {
+            validate: value => {
               if (!value.includes('@')) return 'Please enter a valid email address';
               return true;
-            }
+            },
           },
-          { 
-            name: 'password', 
-            type: 'password', 
-            label: 'Password', 
+          {
+            name: 'password',
+            type: 'password',
+            label: 'Password',
             required: true,
-            validate: (value) => {
+            validate: value => {
               if (value.length < 8) return 'Password must be at least 8 characters';
               return true;
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -595,7 +595,9 @@ describe('Form Keyboard Navigation Tests', () => {
       const usernameField = form.querySelector('[name="username"]');
 
       // Test initial state
-      expect(usernameField.getAttribute('aria-describedby')).toContain('validation-form-username-error');
+      expect(usernameField.getAttribute('aria-describedby')).toContain(
+        'validation-form-username-error'
+      );
 
       // Trigger validation error
       usernameField.value = 'ab'; // Too short
@@ -645,7 +647,7 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(errorElement.textContent).toContain('at least 3 characters');
 
       // Mock Escape key behavior to clear errors
-      usernameField.addEventListener('keydown', (e) => {
+      usernameField.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           e.preventDefault();
           // Clear the field and error
@@ -656,10 +658,10 @@ describe('Form Keyboard Navigation Tests', () => {
         }
       });
 
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       escapeEvent.preventDefault = vi.fn();
       usernameField.dispatchEvent(escapeEvent);
@@ -767,7 +769,7 @@ describe('Form Keyboard Navigation Tests', () => {
         const isOpen = !calendar.hidden;
         calendar.hidden = isOpen;
         dateTrigger.setAttribute('aria-expanded', (!isOpen).toString());
-        
+
         if (!isOpen) {
           // Focus first day when opening
           const firstDay = calendar.querySelector('[role="gridcell"]');
@@ -779,40 +781,40 @@ describe('Form Keyboard Navigation Tests', () => {
       // Set up calendar navigation
       const calendarCells = testContainer.querySelectorAll('[role="gridcell"]');
       calendarCells.forEach((cell, index) => {
-        cell.addEventListener('keydown', (e) => {
+        cell.addEventListener('keydown', e => {
           let nextIndex;
           switch (e.key) {
-          case 'ArrowRight':
-            e.preventDefault();
-            nextIndex = (index + 1) % calendarCells.length;
-            focusCalendarCell(calendarCells, nextIndex);
-            break;
-          case 'ArrowLeft':
-            e.preventDefault();
-            nextIndex = index > 0 ? index - 1 : calendarCells.length - 1;
-            focusCalendarCell(calendarCells, nextIndex);
-            break;
-          case 'ArrowDown':
-            e.preventDefault();
-            nextIndex = (index + 7) % calendarCells.length;
-            focusCalendarCell(calendarCells, nextIndex);
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            nextIndex = index >= 7 ? index - 7 : calendarCells.length + index - 7;
-            focusCalendarCell(calendarCells, nextIndex);
-            break;
-          case 'Enter':
-          case ' ':
-            e.preventDefault();
-            selectDate(cell, dateInput, calendar, dateTrigger);
-            break;
-          case 'Escape':
-            e.preventDefault();
-            calendar.hidden = true;
-            dateTrigger.setAttribute('aria-expanded', 'false');
-            dateTrigger.focus();
-            break;
+            case 'ArrowRight':
+              e.preventDefault();
+              nextIndex = (index + 1) % calendarCells.length;
+              focusCalendarCell(calendarCells, nextIndex);
+              break;
+            case 'ArrowLeft':
+              e.preventDefault();
+              nextIndex = index > 0 ? index - 1 : calendarCells.length - 1;
+              focusCalendarCell(calendarCells, nextIndex);
+              break;
+            case 'ArrowDown':
+              e.preventDefault();
+              nextIndex = (index + 7) % calendarCells.length;
+              focusCalendarCell(calendarCells, nextIndex);
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              nextIndex = index >= 7 ? index - 7 : calendarCells.length + index - 7;
+              focusCalendarCell(calendarCells, nextIndex);
+              break;
+            case 'Enter':
+            case ' ':
+              e.preventDefault();
+              selectDate(cell, dateInput, calendar, dateTrigger);
+              break;
+            case 'Escape':
+              e.preventDefault();
+              calendar.hidden = true;
+              dateTrigger.setAttribute('aria-expanded', 'false');
+              dateTrigger.focus();
+              break;
           }
         });
       });
@@ -847,10 +849,10 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(firstCell.focus).toHaveBeenCalled();
 
       // Test arrow navigation
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       firstCell.dispatchEvent(arrowRightEvent);
@@ -876,10 +878,10 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(dateInput.value).toBe('');
 
       // Select date with Enter
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       firstCell.dispatchEvent(enterEvent);
@@ -899,10 +901,10 @@ describe('Form Keyboard Navigation Tests', () => {
       dateTrigger.click();
       firstCell.focus();
 
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       escapeEvent.preventDefault = vi.fn();
       firstCell.dispatchEvent(escapeEvent);
@@ -924,7 +926,7 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(document.activeElement).toBe(hoursInput);
 
       // Test arrow keys for number inputs
-      hoursInput.addEventListener('keydown', (e) => {
+      hoursInput.addEventListener('keydown', e => {
         if (e.key === 'ArrowUp') {
           e.preventDefault();
           const currentValue = parseInt(hoursInput.value);
@@ -936,10 +938,10 @@ describe('Form Keyboard Navigation Tests', () => {
         }
       });
 
-      const arrowUpEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowUp', 
+      const arrowUpEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowUp',
         bubbles: true,
-        cancelable: true 
+        cancelable: true,
       });
       arrowUpEvent.preventDefault = vi.fn();
       hoursInput.dispatchEvent(arrowUpEvent);
@@ -954,21 +956,21 @@ describe('Form Keyboard Navigation Tests', () => {
       formComponent = new FormComponent({
         id: 'accessible-form',
         fields: [
-          { 
-            name: 'name', 
-            type: 'text', 
-            label: 'Full Name', 
+          {
+            name: 'name',
+            type: 'text',
+            label: 'Full Name',
             required: true,
-            helpText: 'Enter your first and last name'
+            helpText: 'Enter your first and last name',
           },
-          { 
-            name: 'email', 
-            type: 'email', 
-            label: 'Email Address', 
+          {
+            name: 'email',
+            type: 'email',
+            label: 'Email Address',
             required: true,
-            helpText: 'We will use this to send you updates'
-          }
-        ]
+            helpText: 'We will use this to send you updates',
+          },
+        ],
       });
 
       formComponent.render(testContainer);
@@ -1009,7 +1011,7 @@ describe('Form Keyboard Navigation Tests', () => {
 
     it('should announce form submission results', () => {
       const form = testContainer.querySelector('#accessible-form');
-      
+
       // Create status region
       const statusRegion = document.createElement('div');
       statusRegion.setAttribute('aria-live', 'polite');

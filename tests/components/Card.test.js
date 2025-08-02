@@ -31,7 +31,7 @@ describe('Card Component', () => {
   describe('Constructor', () => {
     it('should initialize with default options', () => {
       card = new Card({ title: 'Test Card' });
-      
+
       expect(card.options.title).toBe('Test Card');
       expect(card.options.content).toBe('');
       expect(card.options.imageUrl).toBeNull();
@@ -50,11 +50,11 @@ describe('Card Component', () => {
         linkUrl: '/test/link',
         linkText: 'Custom Link',
         theme: 'alt',
-        cssClasses: ['custom-class']
+        cssClasses: ['custom-class'],
       };
-      
+
       card = new Card(options);
-      
+
       expect(card.options.title).toBe('Custom Card');
       expect(card.options.content).toBe('Custom content');
       expect(card.options.imageUrl).toBe('/test/image.jpg');
@@ -70,11 +70,11 @@ describe('Card Component', () => {
     it('should generate basic card HTML', () => {
       card = new Card({
         title: 'Test Card',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('class="component feature-card"');
       expect(html).toContain('role="article"');
       expect(html).toContain('<h3 class="card-title">Test Card</h3>');
@@ -87,11 +87,11 @@ describe('Card Component', () => {
         title: 'Test Card',
         content: 'Test content',
         imageUrl: '/test/image.jpg',
-        imageAlt: 'Test image'
+        imageAlt: 'Test image',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('<div class="card-image">');
       expect(html).toContain('<img src="/test/image.jpg" alt="Test image" loading="lazy">');
     });
@@ -101,23 +101,25 @@ describe('Card Component', () => {
         title: 'Test Card',
         content: 'Test content',
         linkUrl: '/test/link',
-        linkText: 'Custom Link'
+        linkText: 'Custom Link',
       });
-      
+
       const html = card.generateHTML();
-      
-      expect(html).toContain('<a href="/test/link" class="card-link component-button component-button--primary">Custom Link</a>');
+
+      expect(html).toContain(
+        '<a href="/test/link" class="card-link component-button component-button--primary">Custom Link</a>'
+      );
     });
 
     it('should apply alt theme class', () => {
       card = new Card({
         title: 'Test Card',
         content: 'Test content',
-        theme: 'alt'
+        theme: 'alt',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('class="component feature-card feature-card--alt"');
     });
 
@@ -125,21 +127,21 @@ describe('Card Component', () => {
       card = new Card({
         title: 'Test Card',
         content: 'Test content',
-        cssClasses: ['custom-class', 'another-class']
+        cssClasses: ['custom-class', 'another-class'],
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('class="component feature-card custom-class another-class"');
     });
 
     it('should handle missing title', () => {
       card = new Card({
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).not.toContain('<h3 class="card-title">');
       expect(html).toContain('<div class="card-content">Test content</div>');
     });
@@ -147,11 +149,11 @@ describe('Card Component', () => {
     it('should handle HTML content', () => {
       card = new Card({
         title: 'Test Card',
-        content: '<p>HTML <strong>content</strong></p>'
+        content: '<p>HTML <strong>content</strong></p>',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('<p>HTML <strong>content</strong></p>');
     });
   });
@@ -160,11 +162,11 @@ describe('Card Component', () => {
     it('should render card to container', () => {
       card = new Card({
         title: 'Test Card',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       card.render(container);
-      
+
       expect(card.isRendered).toBe(true);
       expect(container.querySelector('.feature-card')).toBeTruthy();
       expect(container.querySelector('.card-title').textContent).toBe('Test Card');
@@ -178,11 +180,11 @@ describe('Card Component', () => {
         imageUrl: '/test/image.jpg',
         imageAlt: 'Test image',
         linkUrl: '/test/link',
-        linkText: 'Test Link'
+        linkText: 'Test Link',
       });
-      
+
       card.render(container);
-      
+
       expect(container.querySelector('.card-image img')).toBeTruthy();
       expect(container.querySelector('.card-image img').src).toContain('/test/image.jpg');
       expect(container.querySelector('.card-image img').alt).toBe('Test image');
@@ -197,17 +199,17 @@ describe('Card Component', () => {
       card = new Card({
         title: 'Test Card',
         content: 'Test content',
-        linkUrl: '/test/link'
+        linkUrl: '/test/link',
       });
-      
+
       card.render(container);
-      
+
       const cardClickHandler = vi.fn();
       card.element.addEventListener('cardClick', cardClickHandler);
-      
+
       const link = container.querySelector('.card-link');
       link.click();
-      
+
       expect(cardClickHandler).toHaveBeenCalled();
       expect(cardClickHandler.mock.calls[0][0].detail.linkUrl).toBe('/test/link');
     });
@@ -215,21 +217,21 @@ describe('Card Component', () => {
     it('should handle card hover', () => {
       card = new Card({
         title: 'Test Card',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       card.render(container);
-      
+
       const cardHoverHandler = vi.fn();
       card.element.addEventListener('cardHover', cardHoverHandler);
-      
+
       // Simulate mouseenter
       const mouseEnterEvent = new dom.window.MouseEvent('mouseenter', {
         bubbles: true,
-        cancelable: true
+        cancelable: true,
       });
       card.element.dispatchEvent(mouseEnterEvent);
-      
+
       expect(cardHoverHandler).toHaveBeenCalled();
       expect(cardHoverHandler.mock.calls[0][0].detail.card).toEqual(card.options);
     });
@@ -237,20 +239,20 @@ describe('Card Component', () => {
     it('should not have click handler without link', () => {
       card = new Card({
         title: 'Test Card',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       card.render(container);
-      
+
       const cardClickHandler = vi.fn();
       card.element.addEventListener('cardClick', cardClickHandler);
-      
+
       // No link element should exist
       expect(container.querySelector('.card-link')).toBeNull();
-      
+
       // Click the card itself
       card.element.click();
-      
+
       expect(cardClickHandler).not.toHaveBeenCalled();
     });
   });
@@ -259,11 +261,11 @@ describe('Card Component', () => {
     it('should create linked card', () => {
       const options = {
         title: 'Linked Card',
-        content: 'Linked content'
+        content: 'Linked content',
       };
-      
+
       const linkedCardHTML = Card.createLinkedCard(options, '/test/link');
-      
+
       expect(linkedCardHTML).toContain('<a href="/test/link" class="feature-card-link">');
       expect(linkedCardHTML).toContain('Linked Card');
       expect(linkedCardHTML).toContain('Linked content');
@@ -274,11 +276,11 @@ describe('Card Component', () => {
         title: 'Complex Linked Card',
         content: 'Complex content',
         imageUrl: '/test/image.jpg',
-        theme: 'alt'
+        theme: 'alt',
       };
-      
+
       const linkedCardHTML = Card.createLinkedCard(options, '/test/complex-link');
-      
+
       expect(linkedCardHTML).toContain('<a href="/test/complex-link" class="feature-card-link">');
       expect(linkedCardHTML).toContain('feature-card--alt');
       expect(linkedCardHTML).toContain('/test/image.jpg');
@@ -289,11 +291,11 @@ describe('Card Component', () => {
     it('should have proper ARIA attributes', () => {
       card = new Card({
         title: 'Accessible Card',
-        content: 'Accessible content'
+        content: 'Accessible content',
       });
-      
+
       card.render(container);
-      
+
       expect(card.element.getAttribute('role')).toBe('article');
     });
 
@@ -302,11 +304,11 @@ describe('Card Component', () => {
         title: 'Image Card',
         content: 'Card with image',
         imageUrl: '/test/image.jpg',
-        imageAlt: 'Descriptive alt text'
+        imageAlt: 'Descriptive alt text',
       });
-      
+
       card.render(container);
-      
+
       const img = container.querySelector('.card-image img');
       expect(img.alt).toBe('Descriptive alt text');
       expect(img.getAttribute('loading')).toBe('lazy');
@@ -317,11 +319,11 @@ describe('Card Component', () => {
     it('should apply default theme', () => {
       card = new Card({
         title: 'Default Card',
-        content: 'Default content'
+        content: 'Default content',
       });
-      
+
       card.render(container);
-      
+
       expect(card.element.classList.contains('feature-card')).toBe(true);
       expect(card.element.classList.contains('feature-card--alt')).toBe(false);
     });
@@ -330,11 +332,11 @@ describe('Card Component', () => {
       card = new Card({
         title: 'Alt Card',
         content: 'Alt content',
-        theme: 'alt'
+        theme: 'alt',
       });
-      
+
       card.render(container);
-      
+
       expect(card.element.classList.contains('feature-card')).toBe(true);
       expect(card.element.classList.contains('feature-card--alt')).toBe(true);
     });
@@ -344,11 +346,11 @@ describe('Card Component', () => {
     it('should handle empty content', () => {
       card = new Card({
         title: 'Empty Content Card',
-        content: ''
+        content: '',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('<div class="card-content"></div>');
     });
 
@@ -356,22 +358,22 @@ describe('Card Component', () => {
       card = new Card({
         title: 'No Alt Card',
         content: 'Card without alt text',
-        imageUrl: '/test/image.jpg'
+        imageUrl: '/test/image.jpg',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('alt=""');
     });
 
     it('should handle special characters in content', () => {
       card = new Card({
         title: 'Special Characters',
-        content: 'Content with "quotes" & <tags>'
+        content: 'Content with "quotes" & <tags>',
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain('Content with "quotes" & <tags>');
     });
 
@@ -379,11 +381,11 @@ describe('Card Component', () => {
       const longContent = 'A'.repeat(1000);
       card = new Card({
         title: 'Long Content Card',
-        content: longContent
+        content: longContent,
       });
-      
+
       const html = card.generateHTML();
-      
+
       expect(html).toContain(longContent);
     });
   });
@@ -392,24 +394,24 @@ describe('Card Component', () => {
     it('should work with BaseComponent methods', () => {
       card = new Card({
         title: 'Integration Card',
-        content: 'Integration content'
+        content: 'Integration content',
       });
-      
+
       card.render(container);
-      
+
       // Test BaseComponent methods
       card.addClass('integration-test');
       expect(card.element.classList.contains('integration-test')).toBe(true);
-      
+
       card.hide();
       expect(card.element.style.display).toBe('none');
-      
+
       card.show();
       expect(card.element.style.display).toBe('');
-      
+
       const customEventHandler = vi.fn();
       card.element.addEventListener('customEvent', customEventHandler);
-      
+
       card.emit('customEvent', { test: 'data' });
       expect(customEventHandler).toHaveBeenCalled();
     });

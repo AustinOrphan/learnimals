@@ -6,7 +6,7 @@
 /**
  * Logger Mock - matches the actual logger.js exports
  */
-export const createLoggerMock = (vi) => ({
+export const createLoggerMock = vi => ({
   default: {
     level: 2, // INFO level
     enabled: true,
@@ -26,10 +26,10 @@ export const createLoggerMock = (vi) => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 });
 
 /**
@@ -47,8 +47,8 @@ export const createProgressTrackerMock = () => ({
     getTotalScore: vi.fn().mockReturnValue(0),
     getCurrentLevel: vi.fn().mockReturnValue(1),
     getAchievements: vi.fn().mockReturnValue([]),
-    getStats: vi.fn().mockReturnValue({})
-  }))
+    getStats: vi.fn().mockReturnValue({}),
+  })),
 });
 
 /**
@@ -64,8 +64,8 @@ export const createAchievementSystemMock = () => ({
     getUnlockedCount: vi.fn().mockReturnValue(0),
     getTotalCount: vi.fn().mockReturnValue(10),
     getCategories: vi.fn().mockReturnValue([]),
-    reset: vi.fn()
-  }))
+    reset: vi.fn(),
+  })),
 });
 
 /**
@@ -86,7 +86,7 @@ export const createModalMock = () => ({
         add: vi.fn(),
         remove: vi.fn(),
         contains: vi.fn().mockReturnValue(false),
-        toggle: vi.fn()
+        toggle: vi.fn(),
       },
       style: {},
       addEventListener: vi.fn(),
@@ -94,10 +94,10 @@ export const createModalMock = () => ({
       querySelector: vi.fn(),
       setAttribute: vi.fn(),
       getAttribute: vi.fn(),
-      removeAttribute: vi.fn()
-    }
+      removeAttribute: vi.fn(),
+    },
   })),
-  Modal: vi.fn()
+  Modal: vi.fn(),
 });
 
 /**
@@ -106,18 +106,18 @@ export const createModalMock = () => ({
 export const createThemeRegistryMock = () => ({
   themes: new Map([
     ['default', { name: 'Default', colors: { primary: '#007bff' } }],
-    ['dark', { name: 'Dark', colors: { primary: '#6c757d' } }]
+    ['dark', { name: 'Dark', colors: { primary: '#6c757d' } }],
   ]),
-  getTheme: vi.fn().mockImplementation((name) => ({
+  getTheme: vi.fn().mockImplementation(name => ({
     name: name || 'Default',
-    colors: { primary: '#007bff' }
+    colors: { primary: '#007bff' },
   })),
   getAllThemes: vi.fn().mockReturnValue([
     { name: 'Default', colors: { primary: '#007bff' } },
-    { name: 'Dark', colors: { primary: '#6c757d' } }
+    { name: 'Dark', colors: { primary: '#6c757d' } },
   ]),
   registerTheme: vi.fn(),
-  hasTheme: vi.fn().mockReturnValue(true)
+  hasTheme: vi.fn().mockReturnValue(true),
 });
 
 /**
@@ -128,7 +128,7 @@ export const createThemeManagerUtilsMock = () => ({
   removeTheme: vi.fn(),
   getAppliedTheme: vi.fn().mockReturnValue('default'),
   validateTheme: vi.fn().mockReturnValue(true),
-  mergeThemes: vi.fn().mockImplementation((base, override) => ({ ...base, ...override }))
+  mergeThemes: vi.fn().mockImplementation((base, override) => ({ ...base, ...override })),
 });
 
 /**
@@ -139,24 +139,24 @@ export const createPerformanceUtilsMock = () => ({
     mark: vi.fn(),
     measure: vi.fn(),
     getMetrics: vi.fn().mockReturnValue({}),
-    clear: vi.fn()
+    clear: vi.fn(),
   },
   memoryMonitor: {
     check: vi.fn().mockReturnValue({ used: 1000000, total: 10000000 }),
     startMonitoring: vi.fn(),
-    stopMonitoring: vi.fn()
+    stopMonitoring: vi.fn(),
   },
   fpsMonitor: {
     start: vi.fn(),
     stop: vi.fn(),
     getFPS: vi.fn().mockReturnValue(60),
-    getAverageFPS: vi.fn().mockReturnValue(58)
+    getAverageFPS: vi.fn().mockReturnValue(58),
   },
   domBatcher: {
-    batch: vi.fn().mockImplementation((fn) => fn()),
-    flush: vi.fn()
+    batch: vi.fn().mockImplementation(fn => fn()),
+    flush: vi.fn(),
   },
-  rafThrottle: vi.fn().mockImplementation((fn) => fn)
+  rafThrottle: vi.fn().mockImplementation(fn => fn),
 });
 
 /**
@@ -166,31 +166,34 @@ export const createGameRegistryMock = () => ({
   GameRegistryUtil: {
     validateGameConfig: vi.fn().mockReturnValue({
       isValid: true,
-      errors: []
+      errors: [],
     }),
-    normalizeConfig: vi.fn().mockImplementation((config) => config),
+    normalizeConfig: vi.fn().mockImplementation(config => config),
     getRequiredFields: vi.fn().mockReturnValue(['id', 'name', 'gameClass', 'scriptPath']),
     getSupportedSubjects: vi.fn().mockReturnValue(['math', 'science', 'reading', 'art', 'coding']),
-    getSupportedDifficulties: vi.fn().mockReturnValue(['easy', 'medium', 'hard'])
+    getSupportedDifficulties: vi.fn().mockReturnValue(['easy', 'medium', 'hard']),
   },
   gameRegistry: new Map([
-    ['test-game', {
-      id: 'test-game',
-      name: 'Test Game',
-      gameClass: 'TestGame',
-      scriptPath: '/test.js',
-      subject: 'math'
-    }]
+    [
+      'test-game',
+      {
+        id: 'test-game',
+        name: 'Test Game',
+        gameClass: 'TestGame',
+        scriptPath: '/test.js',
+        subject: 'math',
+      },
+    ],
   ]),
   registerGame: vi.fn(),
-  getGame: vi.fn().mockImplementation((id) => ({
+  getGame: vi.fn().mockImplementation(id => ({
     id: id || 'test-game',
     name: 'Test Game',
     gameClass: 'TestGame',
     scriptPath: '/test.js',
-    subject: 'math'
+    subject: 'math',
   })),
-  getAllGames: vi.fn().mockReturnValue([])
+  getAllGames: vi.fn().mockReturnValue([]),
 });
 
 /**
@@ -211,11 +214,11 @@ export const createAccessibilityServiceMock = () => ({
       highContrast: false,
       largeText: false,
       screenReader: false,
-      keyboardOnly: false
+      keyboardOnly: false,
     }),
-    updatePreference: vi.fn()
+    updatePreference: vi.fn(),
   })),
-  AccessibilityService: vi.fn()
+  AccessibilityService: vi.fn(),
 });
 
 /**
@@ -232,17 +235,17 @@ export const createMobileOptimizationServiceMock = () => ({
     getMetrics: vi.fn().mockReturnValue({
       fps: 60,
       memory: { used: 1000000, total: 10000000 },
-      network: { type: '4g', downlink: 10 }
+      network: { type: '4g', downlink: 10 },
     }),
     isMobile: vi.fn().mockReturnValue(false),
-    isTablet: vi.fn().mockReturnValue(false)
+    isTablet: vi.fn().mockReturnValue(false),
   })),
   MobileOptimizationService: vi.fn(),
   mobileOptimizationService: {
     initialize: vi.fn(),
     destroy: vi.fn(),
-    getMetrics: vi.fn().mockReturnValue({})
-  }
+    getMetrics: vi.fn().mockReturnValue({}),
+  },
 });
 
 /**
@@ -258,17 +261,17 @@ export const createLazyLoadManagerMock = () => ({
     getLoadingStats: vi.fn().mockReturnValue({
       totalImages: 0,
       loadedImages: 0,
-      failedImages: 0
+      failedImages: 0,
     }),
     observeElement: vi.fn(),
-    unobserveElement: vi.fn()
+    unobserveElement: vi.fn(),
   })),
   LazyLoadManager: vi.fn(),
   lazyLoadManager: {
     initialize: vi.fn(),
     loadImage: vi.fn(),
-    getLoadingStats: vi.fn().mockReturnValue({})
-  }
+    getLoadingStats: vi.fn().mockReturnValue({}),
+  },
 });
 
 /**
@@ -283,19 +286,19 @@ export const createBundleOptimizerMock = () => ({
     getMetrics: vi.fn().mockReturnValue({
       totalBundles: 0,
       totalSize: 0,
-      averageLoadTime: 0
+      averageLoadTime: 0,
     }),
     clearCache: vi.fn(),
     on: vi.fn(),
     off: vi.fn(),
-    emit: vi.fn()
+    emit: vi.fn(),
   })),
   BundleOptimizer: vi.fn(),
   bundleOptimizer: {
     initialize: vi.fn(),
     preloadResource: vi.fn(),
-    getMetrics: vi.fn().mockReturnValue({})
-  }
+    getMetrics: vi.fn().mockReturnValue({}),
+  },
 });
 
 /**
@@ -303,13 +306,13 @@ export const createBundleOptimizerMock = () => ({
  */
 export const createDOMMocks = () => ({
   document: {
-    createElement: vi.fn().mockImplementation((tag) => ({
+    createElement: vi.fn().mockImplementation(tag => ({
       tagName: tag.toUpperCase(),
       classList: {
         add: vi.fn(),
         remove: vi.fn(),
         contains: vi.fn().mockReturnValue(false),
-        toggle: vi.fn()
+        toggle: vi.fn(),
       },
       style: {},
       addEventListener: vi.fn(),
@@ -322,7 +325,7 @@ export const createDOMMocks = () => ({
       getAttribute: vi.fn(),
       removeAttribute: vi.fn(),
       textContent: '',
-      innerHTML: ''
+      innerHTML: '',
     })),
     querySelector: vi.fn(),
     querySelectorAll: vi.fn().mockReturnValue([]),
@@ -335,14 +338,14 @@ export const createDOMMocks = () => ({
       classList: {
         add: vi.fn(),
         remove: vi.fn(),
-        contains: vi.fn().mockReturnValue(false)
-      }
+        contains: vi.fn().mockReturnValue(false),
+      },
     },
     head: {
       appendChild: vi.fn(),
-      removeChild: vi.fn()
-    }
-  }
+      removeChild: vi.fn(),
+    },
+  },
 });
 
 /**
@@ -373,7 +376,7 @@ export const mockFactory = {
   mobileOptimizationService: createMobileOptimizationServiceMock,
   lazyLoadManager: createLazyLoadManagerMock,
   bundleOptimizer: createBundleOptimizerMock,
-  dom: createDOMMocks
+  dom: createDOMMocks,
 };
 
 export default mockFactory;

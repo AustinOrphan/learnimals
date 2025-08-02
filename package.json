@@ -57,6 +57,9 @@
     ],
     "src/**/*.{html,css}": [
       "prettier --write --ignore-unknown"
+    ],
+    "*.md": [
+      "prettier --write"
     ]
   }
 }

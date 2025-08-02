@@ -12,16 +12,16 @@ vi.mock('../../src/utils/logger.js', () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-    debug: vi.fn()
-  }
+    debug: vi.fn(),
+  },
 }));
 
 // Mock performance utilities
 vi.mock('../../src/utils/performanceUtils.js', () => ({
   performanceMonitor: {
     start: vi.fn(),
-    end: vi.fn()
-  }
+    end: vi.fn(),
+  },
 }));
 
 describe('BundleOptimizer', () => {
@@ -33,65 +33,65 @@ describe('BundleOptimizer', () => {
     // Reset DOM
     document.head.innerHTML = '';
     document.body.innerHTML = '';
-    
+
     // Mock performance API
     global.performance = {
       now: vi.fn(() => Date.now()),
       getEntriesByType: vi.fn(() => []),
-      ...global.performance
+      ...global.performance,
     };
 
     // Mock PerformanceObserver
-    mockPerformanceObserver = vi.fn().mockImplementation((callback) => ({
+    mockPerformanceObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(),
       disconnect: vi.fn(),
-      callback
+      callback,
     }));
     global.PerformanceObserver = mockPerformanceObserver;
 
     // Mock MutationObserver
-    mockMutationObserver = vi.fn().mockImplementation((callback) => ({
+    mockMutationObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(),
       disconnect: vi.fn(),
-      callback
+      callback,
     }));
     global.MutationObserver = mockMutationObserver;
 
     // Mock IntersectionObserver
-    global.IntersectionObserver = vi.fn().mockImplementation((callback) => ({
+    global.IntersectionObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(),
       unobserve: vi.fn(),
       disconnect: vi.fn(),
-      callback
+      callback,
     }));
 
     // Mock navigator
     Object.defineProperty(navigator, 'serviceWorker', {
       value: {
         register: vi.fn().mockResolvedValue({
-          addEventListener: vi.fn()
-        })
+          addEventListener: vi.fn(),
+        }),
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
 
     // Mock window properties
     Object.defineProperty(window, 'requestIdleCallback', {
       value: vi.fn(cb => setTimeout(cb, 0)),
-      writable: true
+      writable: true,
     });
 
     // Mock canvas for WebP detection
     const mockCanvas = {
       width: 1,
       height: 1,
-      toDataURL: vi.fn((format) => {
+      toDataURL: vi.fn(format => {
         if (format === 'image/webp') {
           return 'data:image/webp;base64,test';
         }
         return 'data:image/png;base64,test';
-      })
+      }),
     };
 
     // Mock link element for feature detection
@@ -104,11 +104,11 @@ describe('BundleOptimizer', () => {
       crossOrigin: '',
       media: '',
       relList: {
-        supports: vi.fn((rel) => rel === 'modulepreload' || rel === 'prefetch')
+        supports: vi.fn(rel => rel === 'modulepreload' || rel === 'prefetch'),
       },
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
+      dispatchEvent: vi.fn(),
     };
 
     // Mock script element
@@ -117,7 +117,7 @@ describe('BundleOptimizer', () => {
       defer: false,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn()
+      dispatchEvent: vi.fn(),
     };
 
     // Mock style element
@@ -125,7 +125,7 @@ describe('BundleOptimizer', () => {
       textContent: '',
       setAttribute: vi.fn(),
       addEventListener: vi.fn(),
-      removeEventListener: vi.fn()
+      removeEventListener: vi.fn(),
     };
 
     // Mock div element
@@ -138,7 +138,7 @@ describe('BundleOptimizer', () => {
         add: vi.fn(),
         remove: vi.fn(),
         contains: vi.fn(() => false),
-        toggle: vi.fn()
+        toggle: vi.fn(),
       },
       querySelector: vi.fn(),
       querySelectorAll: vi.fn(() => []),
@@ -150,66 +150,66 @@ describe('BundleOptimizer', () => {
         width: 100,
         height: 100,
         x: 0,
-        y: 0
+        y: 0,
       })),
-      matches: vi.fn((selector) => {
+      matches: vi.fn(selector => {
         // Simple selector matching for common cases
         if (selector === 'div') return true;
         return false;
       }),
       addEventListener: vi.fn(),
-      removeEventListener: vi.fn()
+      removeEventListener: vi.fn(),
     };
 
     // Comprehensive document.createElement mock
-    document.createElement = vi.fn((tagName) => {
+    document.createElement = vi.fn(tagName => {
       switch (tagName.toLowerCase()) {
-      case 'canvas':
-        return { ...mockCanvas };
-      case 'link':
-        return { ...mockLink };
-      case 'script':
-        return { ...mockScript };
-      case 'style':
-        return { ...mockStyle };
-      case 'div':
-        return { ...mockDiv };
-      default:
-        return {
-          tagName: tagName.toUpperCase(),
-          setAttribute: vi.fn(),
-          getAttribute: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-          appendChild: vi.fn(),
-          removeChild: vi.fn(),
-          innerHTML: '',
-          textContent: '',
-          style: {},
-          classList: {
-            add: vi.fn(),
-            remove: vi.fn(),
-            contains: vi.fn(() => false),
-            toggle: vi.fn()
-          }
-        };
+        case 'canvas':
+          return { ...mockCanvas };
+        case 'link':
+          return { ...mockLink };
+        case 'script':
+          return { ...mockScript };
+        case 'style':
+          return { ...mockStyle };
+        case 'div':
+          return { ...mockDiv };
+        default:
+          return {
+            tagName: tagName.toUpperCase(),
+            setAttribute: vi.fn(),
+            getAttribute: vi.fn(),
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+            appendChild: vi.fn(),
+            removeChild: vi.fn(),
+            innerHTML: '',
+            textContent: '',
+            style: {},
+            classList: {
+              add: vi.fn(),
+              remove: vi.fn(),
+              contains: vi.fn(() => false),
+              toggle: vi.fn(),
+            },
+          };
       }
     });
 
     // Mock HTMLCanvasElement prototype
-    global.HTMLCanvasElement = function() {};
+    global.HTMLCanvasElement = function () {};
     global.HTMLCanvasElement.prototype.toDataURL = mockCanvas.toDataURL;
 
     // Mock CompressionStream for Brotli detection
     global.CompressionStream = vi.fn();
 
     // Mock dynamic import
-    global.import = vi.fn().mockImplementation((modulePath) => {
+    global.import = vi.fn().mockImplementation(modulePath => {
       // Default successful import for testing
       return Promise.resolve({
         default: vi.fn(),
-        [modulePath.split('/').pop().replace('.js', '')]: vi.fn()
+        [modulePath.split('/').pop().replace('.js', '')]: vi.fn(),
       });
     });
     vi.stubGlobal('import', global.import);
@@ -218,7 +218,7 @@ describe('BundleOptimizer', () => {
     Object.defineProperty(window, 'innerHeight', {
       value: 768,
       writable: true,
-      configurable: true
+      configurable: true,
     });
 
     // Mock CSSRule constants
@@ -228,32 +228,36 @@ describe('BundleOptimizer', () => {
       IMPORT_RULE: 3,
       MEDIA_RULE: 4,
       FONT_FACE_RULE: 5,
-      PAGE_RULE: 6
+      PAGE_RULE: 6,
     };
 
     // Mock process.env to control test environment behavior
     global.process = {
-      env: {}
+      env: {},
     };
 
     // Create shared storage for mock elements
     const mockElementsStorage = new Map();
-    
+
     // Mock document.head and document.body methods with element tracking
     const headElements = [];
     const bodyElements = [];
-    
-    document.head.appendChild = vi.fn((element) => {
+
+    document.head.appendChild = vi.fn(element => {
       headElements.push(element);
       if (element.rel === 'modulepreload' || element.rel === 'preload') {
         mockElementsStorage.set(element.href, element);
       }
-      if (element.tagName === 'STYLE' && element.getAttribute && element.getAttribute('data-critical') === 'true') {
+      if (
+        element.tagName === 'STYLE' &&
+        element.getAttribute &&
+        element.getAttribute('data-critical') === 'true'
+      ) {
         mockElementsStorage.set('critical-style', element);
       }
       return element;
     });
-    
+
     document.head.insertBefore = vi.fn((element, beforeElement) => {
       const index = headElements.indexOf(beforeElement);
       if (index >= 0) {
@@ -263,20 +267,20 @@ describe('BundleOptimizer', () => {
       }
       return element;
     });
-    
-    document.head.removeChild = vi.fn((element) => {
+
+    document.head.removeChild = vi.fn(element => {
       const index = headElements.indexOf(element);
       if (index >= 0) {
         headElements.splice(index, 1);
       }
       return element;
     });
-    
-    document.body.appendChild = vi.fn((element) => {
+
+    document.body.appendChild = vi.fn(element => {
       bodyElements.push(element);
       return element;
     });
-    
+
     document.body.insertBefore = vi.fn((element, beforeElement) => {
       const index = bodyElements.indexOf(beforeElement);
       if (index >= 0) {
@@ -286,8 +290,8 @@ describe('BundleOptimizer', () => {
       }
       return element;
     });
-    
-    document.body.removeChild = vi.fn((element) => {
+
+    document.body.removeChild = vi.fn(element => {
       const index = bodyElements.indexOf(element);
       if (index >= 0) {
         bodyElements.splice(index, 1);
@@ -300,8 +304,8 @@ describe('BundleOptimizer', () => {
     document._bodyElements = bodyElements;
 
     // Mock document query methods with more realistic behavior
-    
-    document.querySelector = vi.fn((selector) => {
+
+    document.querySelector = vi.fn(selector => {
       // Return specific mock elements for common selectors
       if (selector === 'link[rel="stylesheet"]') {
         const link = { ...mockLink, href: '/critical.css' };
@@ -316,7 +320,7 @@ describe('BundleOptimizer', () => {
         if (href) {
           const existingLink = mockElementsStorage.get(href);
           if (existingLink) return existingLink;
-          
+
           const newLink = { ...mockLink, href };
           mockElementsStorage.set(href, newLink);
           return newLink;
@@ -329,25 +333,25 @@ describe('BundleOptimizer', () => {
         return { ...mockDiv };
       }
       if (selector === 'a') {
-        return { 
-          href: '/page1', 
-          dispatchEvent: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn() 
-        };
-      }
-      if (selector === 'a[href="/page1"]') {
-        return { 
+        return {
           href: '/page1',
           dispatchEvent: vi.fn(),
           addEventListener: vi.fn(),
-          removeEventListener: vi.fn() 
+          removeEventListener: vi.fn(),
+        };
+      }
+      if (selector === 'a[href="/page1"]') {
+        return {
+          href: '/page1',
+          dispatchEvent: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
         };
       }
       return null;
     });
 
-    document.querySelectorAll = vi.fn((selector) => {
+    document.querySelectorAll = vi.fn(selector => {
       // Return realistic mock elements arrays for common selectors
       if (selector === 'link[rel="modulepreload"], link[rel="preload"]') {
         return headElements.filter(el => el.rel === 'modulepreload' || el.rel === 'preload');
@@ -355,30 +359,28 @@ describe('BundleOptimizer', () => {
       if (selector === 'link[rel="stylesheet"]') {
         return [
           { ...mockLink, href: '/critical.css' },
-          { ...mockLink, href: '/non-critical.css' }
+          { ...mockLink, href: '/non-critical.css' },
         ];
       }
       if (selector === 'script[src]') {
         return [
           { ...mockScript, src: '/critical.js' },
-          { ...mockScript, src: '/non-critical.js' }
+          { ...mockScript, src: '/non-critical.js' },
         ];
       }
       if (selector === 'a[href^="/"], a[href^="./"], a[href^="../"]') {
         return [
           { href: '/page1', addEventListener: vi.fn() },
-          { href: './relative', addEventListener: vi.fn() }
+          { href: './relative', addEventListener: vi.fn() },
         ];
       }
       if (selector === 'a[href]') {
-        return [
-          { getAttribute: vi.fn(() => '/games/word-scramble'), addEventListener: vi.fn() }
-        ];
+        return [{ getAttribute: vi.fn(() => '/games/word-scramble'), addEventListener: vi.fn() }];
       }
       if (selector === '*') {
         return [
           { ...mockDiv, getBoundingClientRect: vi.fn(() => ({ top: 0, bottom: 100 })) },
-          { ...mockDiv, getBoundingClientRect: vi.fn(() => ({ top: 1000, bottom: 1100 })) }
+          { ...mockDiv, getBoundingClientRect: vi.fn(() => ({ top: 1000, bottom: 1100 })) },
         ];
       }
       // Handle specific href queries
@@ -398,14 +400,14 @@ describe('BundleOptimizer', () => {
     Object.defineProperty(document, 'styleSheets', {
       value: [],
       writable: true,
-      configurable: true
+      configurable: true,
     });
 
     // Mock document.readyState
     Object.defineProperty(document, 'readyState', {
       value: 'complete',
       writable: true,
-      configurable: true
+      configurable: true,
     });
 
     // Mock window.addEventListener
@@ -438,10 +440,10 @@ describe('BundleOptimizer', () => {
       const customOptions = {
         maxBundleSize: 500 * 1024,
         loadingStrategy: 'lazy',
-        enableServiceWorker: false
+        enableServiceWorker: false,
       };
       const customOptimizer = new BundleOptimizer(customOptions);
-      
+
       expect(customOptimizer.options.maxBundleSize).toBe(500 * 1024);
       expect(customOptimizer.options.loadingStrategy).toBe('lazy');
       expect(customOptimizer.options.enableServiceWorker).toBe(false);
@@ -463,7 +465,7 @@ describe('BundleOptimizer', () => {
         intersectionObserver: true,
         serviceWorker: true,
         webp: true,
-        brotli: true
+        brotli: true,
       });
     });
 
@@ -473,8 +475,8 @@ describe('BundleOptimizer', () => {
           name: 'test.js',
           transferSize: 50000,
           duration: 100,
-          startTime: 50
-        }
+          startTime: 50,
+        },
       ]);
 
       await optimizer.initialize();
@@ -492,24 +494,24 @@ describe('BundleOptimizer', () => {
           transferSize: 100000,
           encodedBodySize: 95000,
           duration: 200,
-          startTime: 100
+          startTime: 100,
         },
         {
           name: 'styles.css',
           transferSize: 50000,
           duration: 150,
-          startTime: 50
+          startTime: 50,
         },
         {
           name: 'vendor.js',
           transferSize: 200000,
           duration: 300,
-          startTime: 500 // Not critical
-        }
+          startTime: 500, // Not critical
+        },
       ];
 
       global.performance.getEntriesByType = vi.fn(() => mockResources);
-      
+
       const emitSpy = vi.spyOn(optimizer, 'emit');
       await optimizer.analyzeBundles();
 
@@ -523,18 +525,18 @@ describe('BundleOptimizer', () => {
         name: 'critical.css',
         transferSize: 30000,
         duration: 100,
-        startTime: 50
+        startTime: 50,
       };
 
       const lateResource = {
         name: 'late.js',
         transferSize: 40000,
         duration: 100,
-        startTime: 2000
+        startTime: 2000,
       };
 
       global.performance.getEntriesByType = vi.fn(() => [earlyResource, lateResource]);
-      
+
       await optimizer.analyzeBundles();
 
       expect(optimizer.criticalResources.has('critical.css')).toBe(true);
@@ -547,18 +549,18 @@ describe('BundleOptimizer', () => {
           name: 'huge.js',
           transferSize: 300000, // Exceeds budget
           duration: 500,
-          startTime: 100
-        }
+          startTime: 100,
+        },
       ];
 
       global.performance.getEntriesByType = vi.fn(() => largeBundles);
       const emitSpy = vi.spyOn(optimizer, 'emit');
-      
+
       await optimizer.analyzeBundles();
 
       expect(emitSpy).toHaveBeenCalledWith('budgetExceeded', {
         totalSize: 300000,
-        budget: optimizer.options.maxBundleSize
+        budget: optimizer.options.maxBundleSize,
       });
     });
   });
@@ -567,9 +569,11 @@ describe('BundleOptimizer', () => {
     it('should preload critical resources', () => {
       optimizer.preloadCriticalResources();
 
-      const preloadLinks = document.querySelectorAll('link[rel="modulepreload"], link[rel="preload"]');
+      const preloadLinks = document.querySelectorAll(
+        'link[rel="modulepreload"], link[rel="preload"]'
+      );
       expect(preloadLinks.length).toBeGreaterThan(0);
-      
+
       const firstLink = preloadLinks[0];
       expect(firstLink.fetchPriority).toBe('high');
     });
@@ -604,7 +608,7 @@ describe('BundleOptimizer', () => {
 
     it('should add integrity if available', () => {
       optimizer.getResourceIntegrity = vi.fn(() => 'sha384-test');
-      
+
       optimizer.preloadResource('/secure.js');
 
       const link = document.querySelector('link[href="/secure.js"]');
@@ -619,7 +623,7 @@ describe('BundleOptimizer', () => {
         <div style="position: absolute; top: 0; height: 100px;">Above fold</div>
         <div style="position: absolute; top: 1000px; height: 100px;">Below fold</div>
       `;
-      
+
       // Mock window dimensions
       Object.defineProperty(window, 'innerHeight', { value: 768, writable: true });
     });
@@ -634,29 +638,29 @@ describe('BundleOptimizer', () => {
       const mockRule = {
         type: CSSRule.STYLE_RULE,
         selectorText: 'div',
-        cssText: 'div { color: red; }'
+        cssText: 'div { color: red; }',
       };
 
       const mockSheet = {
-        cssRules: [mockRule]
+        cssRules: [mockRule],
       };
 
       Object.defineProperty(document, 'styleSheets', {
         value: [mockSheet],
-        writable: true
+        writable: true,
       });
 
       const criticalElements = [document.querySelector('div')];
       const styles = optimizer.extractStylesForElements(criticalElements);
-      
+
       expect(styles).toContain('div { color: red; }');
     });
 
     it('should inline critical styles', () => {
       const styles = ['body { margin: 0; }', 'h1 { font-size: 2em; }'];
-      
+
       optimizer.inlineCriticalStyles(styles);
-      
+
       const inlinedStyle = document.querySelector('style[data-critical="true"]');
       expect(inlinedStyle).toBeTruthy();
       expect(inlinedStyle.textContent).toContain('body { margin: 0; }');
@@ -667,17 +671,17 @@ describe('BundleOptimizer', () => {
       const mockSheet = {
         get cssRules() {
           throw new DOMException('Cross-origin');
-        }
+        },
       };
 
       Object.defineProperty(document, 'styleSheets', {
         value: [mockSheet],
-        writable: true
+        writable: true,
       });
 
       const elements = [document.createElement('div')];
       const styles = optimizer.extractStylesForElements(elements);
-      
+
       expect(styles).toEqual([]);
     });
   });
@@ -694,25 +698,25 @@ describe('BundleOptimizer', () => {
 
     it('should defer non-critical stylesheets', () => {
       optimizer.criticalResources.add('/critical.css');
-      
+
       optimizer.deferNonCriticalResources();
-      
+
       const criticalLink = document.querySelector('link[href="/critical.css"]');
       const nonCriticalLink = document.querySelector('link[href="/non-critical.css"]');
-      
+
       expect(criticalLink.media).not.toBe('print');
       expect(nonCriticalLink.media).toBe('print');
     });
 
-    it('should restore stylesheet media on load', (done) => {
+    it('should restore stylesheet media on load', done => {
       const link = document.querySelector('link[href="/non-critical.css"]');
       link.media = 'screen';
-      
+
       optimizer.deferStylesheet(link);
-      
+
       // Simulate load event
       link.dispatchEvent(new Event('load'));
-      
+
       setTimeout(() => {
         expect(link.media).toBe('screen');
         done();
@@ -721,12 +725,12 @@ describe('BundleOptimizer', () => {
 
     it('should defer non-critical scripts', () => {
       optimizer.criticalResources.add('/critical.js');
-      
+
       optimizer.deferNonCriticalResources();
-      
+
       const criticalScript = document.querySelector('script[src="/critical.js"]');
       const nonCriticalScript = document.querySelector('script[src="/non-critical.js"]');
-      
+
       expect(criticalScript.defer).toBeFalsy();
       expect(nonCriticalScript.defer).toBe(true);
     });
@@ -745,32 +749,34 @@ describe('BundleOptimizer', () => {
     it('should set up link prefetching with intersection observer', () => {
       optimizer.setupLinkPrefetching();
 
-      const internalLinks = document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="../"]');
+      const internalLinks = document.querySelectorAll(
+        'a[href^="/"], a[href^="./"], a[href^="../"]'
+      );
       expect(IntersectionObserver).toHaveBeenCalled();
-      
+
       const observerInstance = IntersectionObserver.mock.results[0].value;
       expect(observerInstance.observe).toHaveBeenCalledTimes(internalLinks.length);
     });
 
     it('should prefetch link when it becomes visible', () => {
       optimizer.setupLinkPrefetching();
-      
+
       const link = document.querySelector('a[href="/page1"]');
       const observerCallback = IntersectionObserver.mock.calls[0][0];
-      
+
       // Simulate intersection
       observerCallback([{ isIntersecting: true, target: link }]);
-      
+
       const prefetchLink = document.querySelector('link[rel="prefetch"][href="/page1"]');
       expect(prefetchLink).toBeTruthy();
     });
 
     it('should not prefetch external links', () => {
       optimizer.setupLinkPrefetching();
-      
+
       const externalLink = document.querySelector('a[href="https://external.com"]');
       const observerInstance = IntersectionObserver.mock.results[0].value;
-      
+
       expect(observerInstance.observe).not.toHaveBeenCalledWith(externalLink);
     });
   });
@@ -778,26 +784,28 @@ describe('BundleOptimizer', () => {
   describe('Idle Prefetching', () => {
     it('should prefetch idle resources when page is complete', () => {
       Object.defineProperty(document, 'readyState', { value: 'complete' });
-      
+
       optimizer.setupIdlePrefetching();
-      
+
       expect(requestIdleCallback).toHaveBeenCalled();
     });
 
     it('should wait for load event if page not ready', () => {
       Object.defineProperty(document, 'readyState', { value: 'loading' });
       const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
-      
+
       optimizer.setupIdlePrefetching();
-      
-      expect(addEventListenerSpy).toHaveBeenCalledWith('load', expect.any(Function), { once: true });
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('load', expect.any(Function), {
+        once: true,
+      });
     });
 
     it('should prefetch idle resources', () => {
       optimizer.preloadResource = vi.fn();
-      
+
       optimizer.prefetchIdleResources();
-      
+
       expect(optimizer.preloadResource).toHaveBeenCalledTimes(5); // Based on implementation
       expect(optimizer.preloadResource).toHaveBeenCalledWith(expect.any(String), 'low');
     });
@@ -806,16 +814,16 @@ describe('BundleOptimizer', () => {
   describe('Code Splitting', () => {
     it('should create dynamic import wrapper', () => {
       optimizer.createDynamicImportWrapper();
-      
+
       expect(window.lazyImport).toBeInstanceOf(Function);
     });
 
     it('should handle successful dynamic import', async () => {
       const mockModule = { default: class TestComponent {} };
       global.import = vi.fn().mockResolvedValue(mockModule);
-      
+
       optimizer.createDynamicImportWrapper();
-      
+
       const result = await window.lazyImport('/test-module.js');
       expect(result).toBe(mockModule);
       expect(optimizer.bundleCache.has('/test-module.js')).toBe(true);
@@ -824,25 +832,25 @@ describe('BundleOptimizer', () => {
     it('should cache successful imports', async () => {
       const mockModule = { TestClass: class {} };
       global.import = vi.fn().mockResolvedValue(mockModule);
-      
+
       optimizer.createDynamicImportWrapper();
-      
+
       // First import
       await window.lazyImport('/cached-module.js');
       // Second import (should use cache)
       await window.lazyImport('/cached-module.js');
-      
+
       expect(global.import).toHaveBeenCalledTimes(1);
     });
 
     it('should handle import timeout', async () => {
       global.import = vi.fn(() => new Promise(() => {})); // Never resolves
-      
+
       optimizer.createDynamicImportWrapper();
-      
-      await expect(
-        window.lazyImport('/slow-module.js', { timeout: 100 })
-      ).rejects.toThrow('Module import timeout');
+
+      await expect(window.lazyImport('/slow-module.js', { timeout: 100 })).rejects.toThrow(
+        'Module import timeout'
+      );
     });
 
     it('should retry failed imports', async () => {
@@ -854,9 +862,9 @@ describe('BundleOptimizer', () => {
         }
         return Promise.resolve({ default: {} });
       });
-      
+
       optimizer.createDynamicImportWrapper();
-      
+
       const result = await window.lazyImport('/flaky-module.js');
       expect(result).toBeTruthy();
       expect(attempts).toBe(3);
@@ -865,9 +873,9 @@ describe('BundleOptimizer', () => {
     it('should use fallback on import failure', async () => {
       const fallback = { fallback: true };
       global.import = vi.fn().mockRejectedValue(new Error('Module not found'));
-      
+
       optimizer.createDynamicImportWrapper();
-      
+
       const result = await window.lazyImport('/missing-module.js', { fallback });
       expect(result).toBe(fallback);
     });
@@ -876,38 +884,42 @@ describe('BundleOptimizer', () => {
   describe('Route-based Splitting', () => {
     it('should set up route splitting', () => {
       optimizer.prefetchLikelyRoutes = vi.fn();
-      
+
       optimizer.setupRouteSplitting();
-      
+
       expect(optimizer.prefetchLikelyRoutes).toHaveBeenCalled();
     });
 
     it('should prefetch current route module', async () => {
       Object.defineProperty(window.location, 'pathname', { value: '/games/bubble-pop' });
       global.lazyImport = vi.fn().mockResolvedValue({});
-      
+
       optimizer.setupRouteSplitting();
-      
-      expect(global.lazyImport).toHaveBeenCalledWith('/src/features/games/bubble-pop/BubblePopGame.js');
+
+      expect(global.lazyImport).toHaveBeenCalledWith(
+        '/src/features/games/bubble-pop/BubblePopGame.js'
+      );
     });
 
     it('should prefetch routes on hover', () => {
       document.body.innerHTML = '<a href="/games/word-scramble">Word Scramble</a>';
       global.lazyImport = vi.fn();
-      
+
       optimizer.setupRouteSplitting();
-      
+
       const link = document.querySelector('a');
       link.dispatchEvent(new Event('mouseenter'));
-      
-      expect(global.lazyImport).toHaveBeenCalledWith('/src/features/games/word-scramble/WordScrambleGame.js');
+
+      expect(global.lazyImport).toHaveBeenCalledWith(
+        '/src/features/games/word-scramble/WordScrambleGame.js'
+      );
     });
   });
 
   describe('Component-based Splitting', () => {
     it('should register lazy components', () => {
       optimizer.setupComponentSplitting();
-      
+
       expect(window.LazyModal).toBeInstanceOf(Function);
       expect(window.LazyToast).toBeInstanceOf(Function);
       expect(window.LazyCharacterCustomizer).toBeInstanceOf(Function);
@@ -915,16 +927,16 @@ describe('BundleOptimizer', () => {
 
     it('should load lazy component successfully', async () => {
       const MockComponent = vi.fn().mockImplementation(() => ({
-        render: vi.fn().mockResolvedValue()
+        render: vi.fn().mockResolvedValue(),
       }));
-      
+
       global.lazyImport = vi.fn().mockResolvedValue({ default: MockComponent });
-      
+
       optimizer.setupComponentSplitting();
-      
+
       const container = document.createElement('div');
       const component = await window.LazyModal(container, { title: 'Test' });
-      
+
       expect(MockComponent).toHaveBeenCalledWith({ title: 'Test' });
       expect(component.render).toHaveBeenCalledWith(container);
     });
@@ -933,52 +945,57 @@ describe('BundleOptimizer', () => {
   describe('Service Worker', () => {
     it('should register service worker successfully', async () => {
       const mockRegistration = {
-        addEventListener: vi.fn()
+        addEventListener: vi.fn(),
       };
       navigator.serviceWorker.register.mockResolvedValue(mockRegistration);
-      
+
       const emitSpy = vi.spyOn(optimizer, 'emit');
-      
+
       await optimizer.initializeServiceWorker();
-      
+
       expect(navigator.serviceWorker.register).toHaveBeenCalledWith('/serviceWorker.js');
-      expect(emitSpy).toHaveBeenCalledWith('serviceWorkerRegistered', { registration: mockRegistration });
+      expect(emitSpy).toHaveBeenCalledWith('serviceWorkerRegistered', {
+        registration: mockRegistration,
+      });
     });
 
     it('should handle service worker registration failure', async () => {
       const error = new Error('Registration failed');
       navigator.serviceWorker.register.mockRejectedValue(error);
-      
+
       const emitSpy = vi.spyOn(optimizer, 'emit');
-      
+
       await optimizer.initializeServiceWorker();
-      
+
       expect(emitSpy).toHaveBeenCalledWith('serviceWorkerError', { error });
     });
 
     it('should handle service worker updates', async () => {
       const mockRegistration = {
-        addEventListener: vi.fn()
+        addEventListener: vi.fn(),
       };
       navigator.serviceWorker.register.mockResolvedValue(mockRegistration);
-      
+
       const emitSpy = vi.spyOn(optimizer, 'emit');
-      
+
       await optimizer.initializeServiceWorker();
-      
+
       // Simulate update event
-      const updateHandler = mockRegistration.addEventListener.mock.calls
-        .find(([event]) => event === 'updatefound')[1];
+      const updateHandler = mockRegistration.addEventListener.mock.calls.find(
+        ([event]) => event === 'updatefound'
+      )[1];
       updateHandler();
-      
-      expect(emitSpy).toHaveBeenCalledWith('serviceWorkerUpdate', { registration: mockRegistration });
+
+      expect(emitSpy).toHaveBeenCalledWith('serviceWorkerUpdate', {
+        registration: mockRegistration,
+      });
     });
 
     it('should skip service worker if not supported', async () => {
       optimizer.features.serviceWorker = false;
-      
+
       await optimizer.initializeServiceWorker();
-      
+
       expect(navigator.serviceWorker.register).not.toHaveBeenCalled();
     });
   });
@@ -986,7 +1003,7 @@ describe('BundleOptimizer', () => {
   describe('Performance Monitoring', () => {
     it('should monitor bundle performance with PerformanceObserver', () => {
       optimizer.monitorBundlePerformance();
-      
+
       expect(PerformanceObserver).toHaveBeenCalled();
       const observerInstance = PerformanceObserver.mock.results[0].value;
       expect(observerInstance.observe).toHaveBeenCalledWith({ entryTypes: ['resource'] });
@@ -997,23 +1014,23 @@ describe('BundleOptimizer', () => {
         name: 'large-bundle.js',
         transferSize: 300000,
         duration: 2000,
-        startTime: 100
+        startTime: 100,
       };
-      
+
       const emitSpy = vi.spyOn(optimizer, 'emit');
-      
+
       optimizer.trackResourcePerformance(entry);
-      
+
       expect(emitSpy).toHaveBeenCalledWith('largeResource', {
         url: 'large-bundle.js',
         size: 300000,
-        loadTime: 2000
+        loadTime: 2000,
       });
-      
+
       expect(emitSpy).toHaveBeenCalledWith('slowResource', {
         url: 'large-bundle.js',
         size: 300000,
-        loadTime: 2000
+        loadTime: 2000,
       });
     });
 
@@ -1021,36 +1038,36 @@ describe('BundleOptimizer', () => {
       PerformanceObserver.mockImplementation(() => {
         throw new Error('Not supported');
       });
-      
+
       optimizer.monitorBundlePerformance();
-      
+
       expect(MutationObserver).toHaveBeenCalled();
     });
 
     it('should track element load time with fallback', () => {
       const script = document.createElement('script');
       script.src = '/test.js';
-      
+
       optimizer.trackElementLoad(script);
-      
+
       // Simulate load event
       script.dispatchEvent(new Event('load'));
-      
+
       expect(optimizer.performanceMetrics.has('/test.js')).toBe(true);
     });
 
     it('should handle resource errors', () => {
       const script = document.createElement('script');
       script.src = '/missing.js';
-      
+
       const emitSpy = vi.spyOn(optimizer, 'emit');
-      
+
       optimizer.trackElementLoad(script);
       script.dispatchEvent(new Event('error'));
-      
+
       expect(emitSpy).toHaveBeenCalledWith('resourceError', {
         url: '/missing.js',
-        element: script
+        element: script,
       });
     });
   });
@@ -1059,12 +1076,12 @@ describe('BundleOptimizer', () => {
     it('should detect module preload support', () => {
       const mockLink = {
         relList: {
-          supports: vi.fn(rel => rel === 'modulepreload')
-        }
+          supports: vi.fn(rel => rel === 'modulepreload'),
+        },
       };
-      
+
       document.createElement = vi.fn(() => mockLink);
-      
+
       expect(optimizer.supportsModulePreload()).toBe(true);
       expect(mockLink.relList.supports).toHaveBeenCalledWith('modulepreload');
     });
@@ -1072,12 +1089,12 @@ describe('BundleOptimizer', () => {
     it('should detect prefetch support', () => {
       const mockLink = {
         relList: {
-          supports: vi.fn(rel => rel === 'prefetch')
-        }
+          supports: vi.fn(rel => rel === 'prefetch'),
+        },
       };
-      
+
       document.createElement = vi.fn(() => mockLink);
-      
+
       expect(optimizer.supportsLinkPrefetch()).toBe(true);
     });
 
@@ -1088,15 +1105,15 @@ describe('BundleOptimizer', () => {
     it('should handle WebP detection in test environment', () => {
       const originalEnv = process.env;
       process.env = { NODE_ENV: 'test' };
-      
+
       expect(optimizer.supportsWebP()).toBe(false);
-      
+
       process.env = originalEnv;
     });
 
     it('should detect Brotli support', () => {
       expect(optimizer.supportsBrotli()).toBe(true);
-      
+
       delete window.CompressionStream;
       expect(optimizer.supportsBrotli()).toBe(false);
     });
@@ -1107,14 +1124,14 @@ describe('BundleOptimizer', () => {
       optimizer.performanceMetrics.set('test.js', {
         size: 50000,
         loadTime: 100,
-        type: 'javascript'
+        type: 'javascript',
       });
-      
+
       optimizer.loadedModules.add('module1');
       optimizer.bundleCache.set('cached', {});
-      
+
       const metrics = optimizer.getMetrics();
-      
+
       expect(metrics).toMatchObject({
         totalBundles: 1,
         totalSize: 50000,
@@ -1124,11 +1141,11 @@ describe('BundleOptimizer', () => {
             url: 'test.js',
             size: 50000,
             loadTime: 100,
-            type: 'javascript'
-          }
+            type: 'javascript',
+          },
         ],
         cacheHitRate: 1,
-        features: optimizer.features
+        features: optimizer.features,
       });
     });
 
@@ -1136,9 +1153,9 @@ describe('BundleOptimizer', () => {
       optimizer.bundleCache.set('test', {});
       optimizer.prefetchedModules.add('test');
       optimizer.loadingPromises.set('test', Promise.resolve());
-      
+
       optimizer.clearCache();
-      
+
       expect(optimizer.bundleCache.size).toBe(0);
       expect(optimizer.prefetchedModules.size).toBe(0);
       expect(optimizer.loadingPromises.size).toBe(0);
@@ -1146,14 +1163,11 @@ describe('BundleOptimizer', () => {
 
     it('should preload specific resources', () => {
       optimizer.preloadResource = vi.fn();
-      
-      const resources = [
-        '/style.css',
-        { url: '/script.js', priority: 'high' }
-      ];
-      
+
+      const resources = ['/style.css', { url: '/script.js', priority: 'high' }];
+
       optimizer.preloadResources(resources);
-      
+
       expect(optimizer.preloadResource).toHaveBeenCalledWith('/style.css');
       expect(optimizer.preloadResource).toHaveBeenCalledWith('/script.js', 'high');
     });
@@ -1164,15 +1178,15 @@ describe('BundleOptimizer', () => {
       optimizer.bundleCache.set('cached1', {});
       optimizer.loadingPromises.set('loading1', Promise.resolve());
       optimizer.criticalResources.add('critical1');
-      
+
       const stats = optimizer.getLoadingStats();
-      
+
       expect(stats).toEqual({
         loadedModules: 1,
         prefetchedModules: 1,
         cachedModules: 1,
         activeLoading: 1,
-        criticalResources: 1
+        criticalResources: 1,
       });
     });
   });
@@ -1181,16 +1195,12 @@ describe('BundleOptimizer', () => {
     it('should calculate splitting effectiveness', () => {
       const splittingMetrics = {
         originalBundleSize: 1000000,
-        splitBundles: [
-          { size: 300000 },
-          { size: 200000 },
-          { size: 100000 }
-        ],
-        cacheableSize: 400000
+        splitBundles: [{ size: 300000 }, { size: 200000 }, { size: 100000 }],
+        cacheableSize: 400000,
       };
-      
+
       const result = optimizer.calculateSplittingEffectiveness(splittingMetrics);
-      
+
       expect(result.bundleCount).toBe(3);
       expect(result.sizeReduction).toBe(40); // (1000000 - 600000) / 1000000 * 100
       expect(result.cacheability).toBeCloseTo(66.67, 1); // 400000 / 600000 * 100 (rounded)
@@ -1198,53 +1208,54 @@ describe('BundleOptimizer', () => {
 
     it('should detect circular dependencies', () => {
       const dependencyMap = {
-        'A': ['B'],
-        'B': ['C'],
-        'C': ['A'] // Circular dependency
+        A: ['B'],
+        B: ['C'],
+        C: ['A'], // Circular dependency
       };
-      
+
       expect(optimizer.detectCircularDependencies(dependencyMap)).toBe(true);
-      
+
       const noCycleDeps = {
-        'A': ['B'],
-        'B': ['C'],
-        'C': []
+        A: ['B'],
+        B: ['C'],
+        C: [],
       };
-      
+
       expect(optimizer.detectCircularDependencies(noCycleDeps)).toBe(false);
     });
 
     it('should optimize chunk grouping', () => {
       const modules = [
-        { frequency: 0.8, size: 50000 },  // High frequency, small
+        { frequency: 0.8, size: 50000 }, // High frequency, small
         { frequency: 0.6, size: 150000 }, // High frequency, large
-        { frequency: 0.3, size: 30000 },  // Low frequency, small
-        { frequency: 0.1, size: 200000 }  // Low frequency, large
+        { frequency: 0.3, size: 30000 }, // Low frequency, small
+        { frequency: 0.1, size: 200000 }, // Low frequency, large
       ];
-      
+
       const result = optimizer.optimizeChunkGrouping(modules);
-      
+
       expect(result.vendor).toHaveLength(1); // Only small high-frequency module
-      expect(result.lazy).toHaveLength(3);   // Rest go to lazy
+      expect(result.lazy).toHaveLength(3); // Rest go to lazy
     });
 
     it('should parse webpack magic comments', () => {
-      const importString = 'import(/* webpackChunkName: "my-chunk", webpackPrefetch: true, webpackPreload: false */ "./module.js")';
-      
+      const importString =
+        'import(/* webpackChunkName: "my-chunk", webpackPrefetch: true, webpackPreload: false */ "./module.js")';
+
       const result = optimizer.parseMagicComments(importString);
-      
+
       expect(result).toEqual({
         chunkName: 'my-chunk',
         prefetch: true,
-        preload: false
+        preload: false,
       });
     });
 
     it('should prefetch chunk by name', () => {
       optimizer.preloadResource = vi.fn();
-      
+
       optimizer.prefetchChunk('critical-chunk', 'high');
-      
+
       expect(optimizer.preloadResource).toHaveBeenCalledWith('/chunks/critical.js', 'high');
     });
 
@@ -1257,18 +1268,18 @@ describe('BundleOptimizer', () => {
 
     it('should apply loading strategy', () => {
       optimizer.preloadResource = vi.fn();
-      
+
       // Test eager strategy
       optimizer.options.loadingStrategy = 'eager';
       optimizer.applyLoadingStrategy('/test.js');
       expect(optimizer.preloadResource).toHaveBeenCalledWith('/test.js');
-      
+
       // Test lazy strategy
       optimizer.preloadResource.mockClear();
       optimizer.options.loadingStrategy = 'lazy';
       optimizer.applyLoadingStrategy('/test2.js');
       expect(optimizer.preloadResource).not.toHaveBeenCalled();
-      
+
       // Test auto strategy with critical resource
       optimizer.preloadResource.mockClear();
       optimizer.options.loadingStrategy = 'auto';
@@ -1282,23 +1293,23 @@ describe('BundleOptimizer', () => {
     it('should emit events', () => {
       const handler = vi.fn();
       document.addEventListener('bundleOptimizer:test', handler);
-      
+
       optimizer.emit('test', { data: 'test' });
-      
+
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          detail: { data: 'test' }
+          detail: { data: 'test' },
         })
       );
     });
 
     it('should add and remove event listeners', () => {
       const handler = vi.fn();
-      
+
       optimizer.on('test', handler);
       optimizer.emit('test', {});
       expect(handler).toHaveBeenCalled();
-      
+
       handler.mockClear();
       optimizer.off('test', handler);
       optimizer.emit('test', {});
@@ -1311,9 +1322,9 @@ describe('BundleOptimizer', () => {
       optimizer.bundleCache.set('test', {});
       optimizer.performanceMetrics.set('test', {});
       window.lazyImport = vi.fn();
-      
+
       optimizer.destroy();
-      
+
       expect(optimizer.bundleCache.size).toBe(0);
       expect(optimizer.performanceMetrics.size).toBe(0);
       expect(window.lazyImport).toBeUndefined();
@@ -1323,33 +1334,33 @@ describe('BundleOptimizer', () => {
   describe('Edge Cases', () => {
     it('should handle missing performance API gracefully', async () => {
       global.performance.getEntriesByType = undefined;
-      
+
       await expect(optimizer.analyzeBundles()).rejects.toThrow();
     });
 
     it('should handle empty resource list', async () => {
       global.performance.getEntriesByType = vi.fn(() => []);
-      
+
       await optimizer.analyzeBundles();
-      
+
       expect(optimizer.performanceMetrics.size).toBe(0);
     });
 
     it('should handle malformed import statements', () => {
       const result = optimizer.parseMagicComments('invalid import statement');
-      
+
       expect(result).toEqual({
         chunkName: null,
         prefetch: false,
-        preload: false
+        preload: false,
       });
     });
 
     it('should handle missing chunk URLs', () => {
       optimizer.preloadResource = vi.fn();
-      
+
       optimizer.prefetchChunk('non-existent-chunk');
-      
+
       expect(optimizer.preloadResource).not.toHaveBeenCalled();
     });
   });

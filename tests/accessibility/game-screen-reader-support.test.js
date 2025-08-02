@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -29,10 +32,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Game Screen Reader Support Tests', () => {
@@ -59,7 +62,7 @@ describe('Game Screen Reader Support Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock scrollIntoView
@@ -148,7 +151,8 @@ describe('Game Screen Reader Support Tests', () => {
       expect(problemDisplay.textContent).toContain('What is 9 + 4?');
 
       // Test game status updates
-      gameStatus.textContent = 'Problem 2 of 10. Score: 10 points. Time remaining: 1 minute 45 seconds.';
+      gameStatus.textContent =
+        'Problem 2 of 10. Score: 10 points. Time remaining: 1 minute 45 seconds.';
       expect(gameStatus.textContent).toContain('Problem 2 of 10');
       expect(gameStatus.textContent).toContain('Score: 10 points');
 
@@ -355,7 +359,7 @@ describe('Game Screen Reader Support Tests', () => {
       hintButton.setAttribute('aria-expanded', 'true');
       hintContent.setAttribute('aria-hidden', 'false');
       hintContent.textContent = 'This animal says meow and catches mice.';
-      
+
       expect(hintContent.getAttribute('aria-live')).toBe('polite');
       expect(hintContent.textContent).toContain('This animal says meow');
 
@@ -421,7 +425,7 @@ describe('Game Screen Reader Support Tests', () => {
       expect(urgentAlerts.textContent).toBe('10 seconds remaining!');
 
       // Test countdown sequence
-      const countdownSequence = ['3', '2', '1', 'Time\'s up!'];
+      const countdownSequence = ['3', '2', '1', "Time's up!"];
       countdownSequence.forEach(announcement => {
         countdownAnnouncements.textContent = announcement;
         expect(countdownAnnouncements.textContent).toBe(announcement);
@@ -459,7 +463,7 @@ describe('Game Screen Reader Support Tests', () => {
       pauseButton.setAttribute('aria-pressed', 'true');
       pauseButton.textContent = 'Resume Game';
       pauseStatus.textContent = 'Game paused. Press Resume to continue or use keyboard shortcuts.';
-      
+
       expect(pauseButton.getAttribute('aria-pressed')).toBe('true');
       expect(pauseStatus.textContent).toContain('Game paused');
       expect(pauseStatus.getAttribute('aria-live')).toBe('assertive');
@@ -475,7 +479,7 @@ describe('Game Screen Reader Support Tests', () => {
       pauseButton.setAttribute('aria-pressed', 'false');
       pauseButton.textContent = 'Pause Game';
       pauseStatus.textContent = 'Game resumed. Timer is now running.';
-      
+
       expect(pauseStatus.textContent).toContain('Game resumed');
     });
   });
@@ -539,22 +543,25 @@ describe('Game Screen Reader Support Tests', () => {
       // Test context help activation
       helpButton.setAttribute('aria-expanded', 'true');
       contextHelp.setAttribute('aria-hidden', 'false');
-      
+
       expect(contextHelp.getAttribute('role')).toBe('dialog');
       expect(contextHelp.getAttribute('aria-labelledby')).toBe('help-title');
 
       // Test tutorial announcements
-      tutorialAnnouncements.textContent = 'Welcome to the Fraction Pizza Game! Your goal is to divide pizzas into equal parts. Let\'s start with halves.';
+      tutorialAnnouncements.textContent =
+        "Welcome to the Fraction Pizza Game! Your goal is to divide pizzas into equal parts. Let's start with halves.";
       expect(tutorialAnnouncements.textContent).toContain('Welcome to the Fraction Pizza Game');
       expect(tutorialAnnouncements.getAttribute('aria-live')).toBe('polite');
 
       // Test smart hints
-      smartHints.textContent = 'Hint: Try dividing the pizza into 2 equal pieces first. Each piece will be 1/2 of the whole pizza.';
+      smartHints.textContent =
+        'Hint: Try dividing the pizza into 2 equal pieces first. Each piece will be 1/2 of the whole pizza.';
       expect(smartHints.textContent).toContain('Try dividing the pizza');
       expect(smartHints.getAttribute('aria-live')).toBe('polite');
 
       // Test mistake feedback
-      mistakeFeedback.textContent = 'That\'s not quite right. Remember, for halves, you need 2 equal pieces. Try again!';
+      mistakeFeedback.textContent =
+        "That's not quite right. Remember, for halves, you need 2 equal pieces. Try again!";
       expect(mistakeFeedback.textContent).toContain('not quite right');
       expect(mistakeFeedback.getAttribute('aria-live')).toBe('assertive');
     });
@@ -582,23 +589,26 @@ describe('Game Screen Reader Support Tests', () => {
       const encouragementMessages = testContainer.querySelector('.encouragement-messages');
 
       // Test skill progress updates
-      skillProgress.textContent = 'Skill Progress: 7 out of 10 problems correct. You\'re doing great!';
+      skillProgress.textContent =
+        "Skill Progress: 7 out of 10 problems correct. You're doing great!";
       expect(skillProgress.textContent).toContain('7 out of 10 problems correct');
 
       // Test mastery announcements
-      masteryAnnouncements.textContent = 'Skill Mastered! You\'ve successfully completed Beginner Addition. Ready for the next challenge?';
+      masteryAnnouncements.textContent =
+        "Skill Mastered! You've successfully completed Beginner Addition. Ready for the next challenge?";
       expect(masteryAnnouncements.textContent).toContain('Skill Mastered!');
       expect(masteryAnnouncements.getAttribute('aria-live')).toBe('assertive');
 
       // Test next skill preview
-      nextSkillPreview.textContent = 'Next up: Double-Digit Addition. You\'ll learn to add numbers like 25 + 17.';
+      nextSkillPreview.textContent =
+        "Next up: Double-Digit Addition. You'll learn to add numbers like 25 + 17.";
       expect(nextSkillPreview.textContent).toContain('Next up: Double-Digit Addition');
 
       // Test encouragement messages
       const encouragementMessages_array = [
-        'Great job! You\'re getting better at this.',
+        "Great job! You're getting better at this.",
         'Keep it up! Practice makes perfect.',
-        'You\'re on fire! Three correct answers in a row!'
+        "You're on fire! Three correct answers in a row!",
       ];
 
       encouragementMessages_array.forEach(message => {
@@ -652,8 +662,9 @@ describe('Game Screen Reader Support Tests', () => {
       const gameEvents = testContainer.querySelector('.game-events');
 
       // Test turn announcements
-      turnAnnouncements.textContent = 'It\'s now Mike\'s turn. Sarah, please wait for your next turn.';
-      expect(turnAnnouncements.textContent).toContain('It\'s now Mike\'s turn');
+      turnAnnouncements.textContent =
+        "It's now Mike's turn. Sarah, please wait for your next turn.";
+      expect(turnAnnouncements.textContent).toContain("It's now Mike's turn");
       expect(turnAnnouncements.getAttribute('aria-live')).toBe('assertive');
 
       // Test player action feed
@@ -703,11 +714,13 @@ describe('Game Screen Reader Support Tests', () => {
       expect(teamProgress.textContent).toContain('Step 1 complete');
 
       // Test teammate actions
-      teammateActions.textContent = 'Emma added a helpful hint: Remember to multiply before adding.';
+      teammateActions.textContent =
+        'Emma added a helpful hint: Remember to multiply before adding.';
       expect(teammateActions.textContent).toContain('Emma added a helpful hint');
 
       // Test team achievements
-      teamAchievements.textContent = 'Team Achievement: Perfect Collaboration! All members contributed to the solution.';
+      teamAchievements.textContent =
+        'Team Achievement: Perfect Collaboration! All members contributed to the solution.';
       expect(teamAchievements.textContent).toContain('Team Achievement');
       expect(teamAchievements.getAttribute('aria-live')).toBe('assertive');
     });
@@ -789,19 +802,21 @@ describe('Game Screen Reader Support Tests', () => {
 
       // Test verbose announcements toggle
       verboseCheckbox.checked = true;
-      settingsStatus.textContent = 'Verbose announcements enabled. You will now receive detailed descriptions.';
+      settingsStatus.textContent =
+        'Verbose announcements enabled. You will now receive detailed descriptions.';
       expect(settingsStatus.textContent).toContain('Verbose announcements enabled');
 
       // Test position announcements toggle
       positionCheckbox.checked = true;
-      settingsStatus.textContent = 'Position announcements enabled. Navigation changes will be announced.';
+      settingsStatus.textContent =
+        'Position announcements enabled. Navigation changes will be announced.';
       expect(settingsStatus.textContent).toContain('Position announcements enabled');
 
       // Test speed adjustment
       speedSlider.value = '1.5';
       speedValue.textContent = 'Current speed: Fast (1.5x)';
       settingsStatus.textContent = 'Announcement speed changed to 1.5x normal speed.';
-      
+
       expect(speedValue.textContent).toContain('Fast (1.5x)');
       expect(settingsStatus.textContent).toContain('speed changed to 1.5x');
     });
@@ -842,15 +857,17 @@ describe('Game Screen Reader Support Tests', () => {
       // Test difficulty change
       difficultyButtons[0].setAttribute('aria-pressed', 'true'); // Easy
       difficultyButtons[1].setAttribute('aria-pressed', 'false'); // Medium
-      
+
       currentDifficulty.textContent = 'Current Difficulty: Easy';
-      difficultyDescription.textContent = 'Easy difficulty: 3-5 problems, extra hints available, 5 minutes per problem.';
-      
+      difficultyDescription.textContent =
+        'Easy difficulty: 3-5 problems, extra hints available, 5 minutes per problem.';
+
       expect(currentDifficulty.textContent).toBe('Current Difficulty: Easy');
       expect(difficultyDescription.textContent).toContain('Easy difficulty');
 
       // Test adaptive difficulty
-      adaptiveStatus.textContent = 'Difficulty automatically adjusted to Medium based on your performance.';
+      adaptiveStatus.textContent =
+        'Difficulty automatically adjusted to Medium based on your performance.';
       expect(adaptiveStatus.textContent).toContain('automatically adjusted to Medium');
     });
   });

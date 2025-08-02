@@ -38,7 +38,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should get games by options criteria', () => {
       const timeBasedGames = GameRegistryUtil.getGamesByOptions({
-        timeLimit: { min: 30 }
+        timeLimit: { min: 30 },
       });
       expect(Array.isArray(timeBasedGames)).toBe(true);
       timeBasedGames.forEach(game => {
@@ -53,12 +53,12 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should filter games with multiple criteria', () => {
       const criteria = {
         subject: 'math',
-        features: ['analytics', 'progress']
+        features: ['analytics', 'progress'],
       };
-      
+
       const filteredGames = GameRegistryUtil.getGamesAdvanced(criteria);
       expect(Array.isArray(filteredGames)).toBe(true);
-      
+
       filteredGames.forEach(game => {
         expect(game.subject).toBe('math');
         expect(game.features).toContain('analytics');
@@ -68,10 +68,10 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should filter by search term', () => {
       const searchResults = GameRegistryUtil.getGamesAdvanced({
-        search: 'math'
+        search: 'math',
       });
       expect(Array.isArray(searchResults)).toBe(true);
-      
+
       searchResults.forEach(game => {
         const searchText = `${game.name} ${game.description} ${game.subject}`.toLowerCase();
         expect(searchText).toContain('math');
@@ -80,10 +80,10 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should filter by BaseGame only', () => {
       const baseGameOnly = GameRegistryUtil.getGamesAdvanced({
-        baseGameOnly: true
+        baseGameOnly: true,
       });
       expect(Array.isArray(baseGameOnly)).toBe(true);
-      
+
       baseGameOnly.forEach(game => {
         expect(game.features).toContain('analytics');
         expect(game.features).toContain('progress');
@@ -94,10 +94,10 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
   describe('Metadata-based Filtering', () => {
     it('should filter by metadata criteria', () => {
       const beginnerGames = GameRegistryUtil.getGamesByMetadata({
-        competencyLevel: 'beginner'
+        competencyLevel: 'beginner',
       });
       expect(Array.isArray(beginnerGames)).toBe(true);
-      
+
       beginnerGames.forEach(game => {
         expect(game.metadata?.competencyLevel).toBe('beginner');
       });
@@ -106,7 +106,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should filter by learning objectives', () => {
       const mathGames = GameRegistryUtil.getGamesByLearningObjectives(['arithmetic']);
       expect(Array.isArray(mathGames)).toBe(true);
-      
+
       mathGames.forEach(game => {
         expect(game.metadata?.learningObjectives).toContain('arithmetic');
       });
@@ -115,7 +115,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should filter by tags', () => {
       const educationalGames = GameRegistryUtil.getGamesByTags(['educational']);
       expect(Array.isArray(educationalGames)).toBe(true);
-      
+
       educationalGames.forEach(game => {
         expect(game.metadata?.tags).toContain('educational');
       });
@@ -124,7 +124,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should filter by age range', () => {
       const youngKidGames = GameRegistryUtil.getGamesByAgeRange('6-8');
       expect(Array.isArray(youngKidGames)).toBe(true);
-      
+
       youngKidGames.forEach(game => {
         if (game.metadata?.ageRange) {
           expect(GameRegistryUtil.isAgeRangeMatch(game.metadata.ageRange, '6-8')).toBe(true);
@@ -135,7 +135,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should filter by play time', () => {
       const shortGames = GameRegistryUtil.getGamesByPlayTime({ max: 8 });
       expect(Array.isArray(shortGames)).toBe(true);
-      
+
       shortGames.forEach(game => {
         if (game.metadata?.estimatedPlayTime) {
           expect(game.metadata.estimatedPlayTime).toBeLessThanOrEqual(8);
@@ -184,41 +184,43 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should sort games by name', () => {
       const allGames = GameRegistryUtil.getAllGames();
       const sortedGames = GameRegistryUtil.sortGames(allGames, 'name', 'asc');
-      
+
       expect(sortedGames.length).toBe(allGames.length);
-      
+
       for (let i = 1; i < sortedGames.length; i++) {
-        expect(sortedGames[i-1].name.localeCompare(sortedGames[i].name)).toBeLessThanOrEqual(0);
+        expect(sortedGames[i - 1].name.localeCompare(sortedGames[i].name)).toBeLessThanOrEqual(0);
       }
     });
 
     it('should sort games by subject', () => {
       const allGames = GameRegistryUtil.getAllGames();
       const sortedGames = GameRegistryUtil.sortGames(allGames, 'subject', 'asc');
-      
+
       expect(sortedGames.length).toBe(allGames.length);
-      
+
       for (let i = 1; i < sortedGames.length; i++) {
-        expect(sortedGames[i-1].subject.localeCompare(sortedGames[i].subject)).toBeLessThanOrEqual(0);
+        expect(
+          sortedGames[i - 1].subject.localeCompare(sortedGames[i].subject)
+        ).toBeLessThanOrEqual(0);
       }
     });
 
     it('should sort games by difficulty', () => {
       const allGames = GameRegistryUtil.getAllGames();
       const sortedGames = GameRegistryUtil.sortGames(allGames, 'difficulty', 'asc');
-      
+
       expect(sortedGames.length).toBe(allGames.length);
-      
+
       // Difficulty sorting should work based on the minimum difficulty level
       // This is a complex sort, so we'll just check it returns the same number of games
     });
 
     it('should group games by subject', () => {
       const groupedGames = GameRegistryUtil.getGamesGrouped('subject');
-      
+
       expect(typeof groupedGames).toBe('object');
       expect(Object.keys(groupedGames).length).toBeGreaterThan(0);
-      
+
       Object.values(groupedGames).forEach(gameGroup => {
         expect(Array.isArray(gameGroup)).toBe(true);
         expect(gameGroup.length).toBeGreaterThan(0);
@@ -227,9 +229,9 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should group games by nested metadata property', () => {
       const groupedGames = GameRegistryUtil.getGamesGrouped('metadata.gameType');
-      
+
       expect(typeof groupedGames).toBe('object');
-      
+
       Object.entries(groupedGames).forEach(([gameType, games]) => {
         if (gameType !== 'Unknown') {
           games.forEach(game => {
@@ -247,10 +249,10 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
       if (allGames.length > 1) {
         const targetGame = allGames[0];
         const similarGames = GameRegistryUtil.getSimilarGames(targetGame.id, 3);
-        
+
         expect(Array.isArray(similarGames)).toBe(true);
         expect(similarGames.length).toBeLessThanOrEqual(3);
-        
+
         // Should not include the original game
         expect(similarGames.find(game => game.id === targetGame.id)).toBeUndefined();
       }
@@ -261,7 +263,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
       if (allGames.length >= 2) {
         const game1 = allGames[0];
         const game2 = allGames[1];
-        
+
         const similarity = GameRegistryUtil.calculateSimilarity(game1, game2);
         expect(typeof similarity).toBe('number');
         expect(similarity).toBeGreaterThanOrEqual(0);
@@ -274,14 +276,14 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
         subjects: ['math'],
         ageRange: '6-10',
         playTime: { max: 15 },
-        learningObjectives: ['problem-solving']
+        learningObjectives: ['problem-solving'],
       };
-      
+
       const recommendations = GameRegistryUtil.getRecommendations(preferences, 5);
-      
+
       expect(Array.isArray(recommendations)).toBe(true);
       expect(recommendations.length).toBeLessThanOrEqual(5);
-      
+
       // The getRecommendations method strips the score before returning
       // So we'll just verify we got recommendations
       recommendations.forEach(game => {
@@ -297,9 +299,9 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
         const preferences = {
           subjects: [game.subject],
           ageRange: '6-10',
-          learningObjectives: game.metadata?.learningObjectives || []
+          learningObjectives: game.metadata?.learningObjectives || [],
         };
-        
+
         const score = GameRegistryUtil.calculateRecommendationScore(game, preferences);
         expect(typeof score).toBe('number');
         expect(score).toBeGreaterThan(0);
@@ -310,9 +312,9 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
   describe('Data Export and Statistics', () => {
     it('should export registry as JSON', () => {
       const jsonExport = GameRegistryUtil.exportRegistry('json');
-      
+
       expect(typeof jsonExport).toBe('string');
-      
+
       const parsed = JSON.parse(jsonExport);
       expect(Array.isArray(parsed)).toBe(true);
       expect(parsed.length).toBe(gameRegistry.length);
@@ -320,20 +322,20 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should export registry as CSV', () => {
       const csvExport = GameRegistryUtil.exportRegistry('csv');
-      
+
       expect(typeof csvExport).toBe('string');
       expect(csvExport).toContain('id,name,subject');
-      
+
       const lines = csvExport.split('\n');
       expect(lines.length).toBeGreaterThan(1); // Header + at least one game
     });
 
     it('should get unique metadata values', () => {
       const gameTypes = GameRegistryUtil.getUniqueMetadataValues('gameType');
-      
+
       expect(Array.isArray(gameTypes)).toBe(true);
       expect(gameTypes.length).toBeGreaterThan(0);
-      
+
       // Should not contain duplicates
       const uniqueTypes = [...new Set(gameTypes)];
       expect(uniqueTypes.length).toBe(gameTypes.length);
@@ -341,14 +343,14 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should get template statistics', () => {
       const stats = GameRegistryUtil.getTemplateStats();
-      
+
       expect(typeof stats).toBe('object');
       // The method returns template counts directly, not nested in byTemplate
       Object.values(stats).forEach(count => {
         expect(typeof count).toBe('number');
         expect(count).toBeGreaterThan(0);
       });
-      
+
       // Verify total count matches game registry
       const totalGames = Object.values(stats).reduce((sum, count) => sum + count, 0);
       expect(totalGames).toBe(gameRegistry.length);
@@ -358,9 +360,9 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
   describe('Search and Legacy Methods', () => {
     it('should search games by query', () => {
       const results = GameRegistryUtil.searchGames('word');
-      
+
       expect(Array.isArray(results)).toBe(true);
-      
+
       results.forEach(game => {
         const searchableText = `${game.name} ${game.description}`.toLowerCase();
         expect(searchableText).toContain('word');
@@ -369,24 +371,22 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should identify games needing conversion', () => {
       const needingConversion = GameRegistryUtil.getGamesNeedingConversion();
-      
+
       expect(Array.isArray(needingConversion)).toBe(true);
-      
+
       needingConversion.forEach(game => {
         const fullFeatures = ['analytics', 'progress', 'mobile', 'themes', 'audio'];
-        const hasAllFeatures = fullFeatures.every(feature => 
-          game.features?.includes(feature)
-        );
+        const hasAllFeatures = fullFeatures.every(feature => game.features?.includes(feature));
         expect(hasAllFeatures).toBe(false);
       });
     });
 
     it('should get all subjects', () => {
       const subjects = GameRegistryUtil.getSubjects();
-      
+
       expect(Array.isArray(subjects)).toBe(true);
       expect(subjects.length).toBeGreaterThan(0);
-      
+
       // Should contain expected subjects
       expect(subjects).toContain('math');
       expect(subjects).toContain('reading');
@@ -394,10 +394,10 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should get all characters', () => {
       const characters = GameRegistryUtil.getCharacters();
-      
+
       expect(Array.isArray(characters)).toBe(true);
       expect(characters.length).toBeGreaterThan(0);
-      
+
       // Should not contain duplicates
       const uniqueCharacters = [...new Set(characters)];
       expect(uniqueCharacters.length).toBe(characters.length);
@@ -405,7 +405,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should get all difficulty levels', () => {
       const difficulties = GameRegistryUtil.getDifficulties();
-      
+
       expect(Array.isArray(difficulties)).toBe(true);
       expect(difficulties).toContain('easy');
       expect(difficulties).toContain('medium');
@@ -414,7 +414,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
 
     it('should provide comprehensive statistics', () => {
       const stats = GameRegistryUtil.getStats();
-      
+
       expect(typeof stats).toBe('object');
       expect(stats.totalGames).toBe(gameRegistry.length);
       expect(typeof stats.subjects).toBe('object');
@@ -433,7 +433,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should handle non-existent game IDs', () => {
       const game = GameRegistryUtil.getGameById('non-existent-game');
       expect(game).toBeNull();
-      
+
       const similarGames = GameRegistryUtil.getSimilarGames('non-existent-game');
       expect(similarGames).toEqual([]);
     });
@@ -441,7 +441,7 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
     it('should handle invalid sort criteria', () => {
       const allGames = GameRegistryUtil.getAllGames();
       const sortedGames = GameRegistryUtil.sortGames(allGames, 'invalidField');
-      
+
       expect(sortedGames.length).toBe(allGames.length);
       // Should fall back to name sorting
     });
@@ -457,9 +457,9 @@ describe('GameRegistryUtil - Enhanced Methods', () => {
         id: null,
         name: '',
         gameClass: 123,
-        scriptPath: []
+        scriptPath: [],
       };
-      
+
       const result = GameRegistryUtil.validateGameConfig(malformedConfig);
       expect(result.isValid).toBe(false);
       expect(result.errors.length).toBeGreaterThan(0);

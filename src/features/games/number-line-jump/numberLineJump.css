@@ -4,10 +4,10 @@
   font-family: 'Comic Sans MS', cursive, sans-serif;
   max-width: 100%;
   margin: 0 auto;
-  background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 100%);
+  background: linear-gradient(135deg, #87ceeb 0%, #98d8e8 100%);
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .game-canvas {
@@ -35,7 +35,7 @@
     aspect-ratio: 4 / 3;
     min-height: 300px;
   }
-  
+
   .number-line-jump-game {
     margin: 10px;
     border-radius: 10px;
@@ -47,7 +47,7 @@
     aspect-ratio: 1 / 1;
     min-height: 280px;
   }
-  
+
   .number-line-jump-game {
     margin: 5px;
     border-radius: 8px;
@@ -69,22 +69,26 @@
   align-items: center;
   height: 400px;
   font-size: 1.2rem;
-  color: #2C3E50;
+  color: #2c3e50;
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #4ECDC4;
+  border-top: 4px solid #4ecdc4;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 15px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Game UI overlay styles */
@@ -121,7 +125,7 @@
 }
 
 .control-button {
-  background: #4ECDC4;
+  background: #4ecdc4;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -134,7 +138,7 @@
 }
 
 .control-button:hover {
-  background: #45B7B8;
+  background: #45b7b8;
   transform: scale(1.05);
 }
 
@@ -143,8 +147,8 @@
 }
 
 .control-button:disabled {
-  background: #BDC3C7;
-  color: #7F8C8D;
+  background: #bdc3c7;
+  color: #7f8c8d;
   cursor: not-allowed;
   transform: none;
 }
@@ -160,31 +164,31 @@
   border-radius: 15px;
   text-align: center;
   max-width: 400px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
 }
 
 .game-instructions h3 {
-  color: #2C3E50;
+  color: #2c3e50;
   margin-bottom: 15px;
   font-size: 1.4rem;
 }
 
 .game-instructions p {
-  color: #34495E;
+  color: #34495e;
   margin-bottom: 10px;
   line-height: 1.5;
 }
 
 .game-instructions .character-intro {
   font-size: 1.1rem;
-  color: #FF6B35;
+  color: #ff6b35;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
 .start-game-btn {
-  background: #2ECC71;
+  background: #2ecc71;
   color: white;
   border: none;
   padding: 12px 25px;
@@ -197,13 +201,17 @@
 }
 
 .start-game-btn:hover {
-  background: #27AE60;
+  background: #27ae60;
   transform: scale(1.05);
 }
 
 /* Success/Error animations */
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -215,13 +223,21 @@
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-5px);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(5px);
   }
 }
@@ -236,30 +252,30 @@
 
 /* Accessibility improvements */
 .game-container:focus {
-  outline: 3px solid #4ECDC4;
+  outline: 3px solid #4ecdc4;
   outline-offset: 2px;
 }
 
 .control-button:focus {
-  outline: 2px solid #2C3E50;
+  outline: 2px solid #2c3e50;
   outline-offset: 2px;
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .number-line-jump-game {
-    background: #FFFFFF;
+    background: #ffffff;
     border: 2px solid #000000;
   }
-  
+
   .control-button {
     background: #000000;
-    color: #FFFFFF;
+    color: #ffffff;
     border: 2px solid #000000;
   }
-  
+
   .control-button:hover {
-    background: #FFFFFF;
+    background: #ffffff;
     color: #000000;
   }
 }
@@ -271,7 +287,7 @@
   .error-animation {
     animation: none;
   }
-  
+
   .control-button,
   .start-game-btn {
     transition: none;

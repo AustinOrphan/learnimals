@@ -14,7 +14,7 @@ export default class PizzaMakerGame {
     this.currentToppings = [];
     this.orderTimer = null;
     this.timeRemaining = 30;
-    
+
     // Store bound event handlers for cleanup
     this.boundHandlers = {
       startGame: () => this.startGame(),
@@ -22,27 +22,27 @@ export default class PizzaMakerGame {
       restartGame: () => this.restartGame(),
       servePizza: () => this.servePizza(),
       clearPizza: () => this.clearPizza(),
-      handleDrag: (e) => this.handleDrag(e),
-      endDrag: (e) => this.endDrag(e)
+      handleDrag: e => this.handleDrag(e),
+      endDrag: e => this.endDrag(e),
     };
-    
+
     // Level progression
     this.ordersPerLevel = 3;
     this.ordersCompleted = 0;
     this.levelScore = 0;
-    
+
     // Customer types with different personalities
     this.customers = [
       { emoji: '👧', name: 'Sarah', greeting: 'Hi! Can I have' },
       { emoji: '👦', name: 'Tommy', greeting: 'Hey! I want' },
-      { emoji: '👨', name: 'Mr. Jones', greeting: 'Good day! I\'d like' },
+      { emoji: '👨', name: 'Mr. Jones', greeting: "Good day! I'd like" },
       { emoji: '👩', name: 'Mrs. Smith', greeting: 'Hello! Please make me' },
       { emoji: '🧑', name: 'Alex', greeting: 'Yo! Give me' },
       { emoji: '👴', name: 'Grandpa Joe', greeting: 'Hello there! May I have' },
-      { emoji: '👵', name: 'Grandma Sue', greeting: 'Hi sweetie! I\'d love' },
-      { emoji: '👶', name: 'Baby Max', greeting: 'Goo goo! Want' }
+      { emoji: '👵', name: 'Grandma Sue', greeting: "Hi sweetie! I'd love" },
+      { emoji: '👶', name: 'Baby Max', greeting: 'Goo goo! Want' },
     ];
-    
+
     // Available toppings
     this.toppings = {
       cheese: { emoji: '🧀', name: 'Cheese', color: '#FFD93D' },
@@ -52,40 +52,43 @@ export default class PizzaMakerGame {
       tomatoes: { emoji: '🍅', name: 'Tomatoes', color: '#FF4136' },
       olives: { emoji: '🫒', name: 'Olives', color: '#3D9970' },
       pineapple: { emoji: '🍍', name: 'Pineapple', color: '#FFDC00' },
-      bacon: { emoji: '🥓', name: 'Bacon', color: '#85144B' }
+      bacon: { emoji: '🥓', name: 'Bacon', color: '#85144B' },
     };
-    
+
     // Pizza templates for different difficulty levels
     this.pizzaTemplates = {
-      1: [ // Level 1 - Simple pizzas (1-2 toppings)
+      1: [
+        // Level 1 - Simple pizzas (1-2 toppings)
         ['cheese'],
         ['pepperoni'],
         ['cheese', 'pepperoni'],
-        ['cheese', 'mushrooms']
+        ['cheese', 'mushrooms'],
       ],
-      2: [ // Level 2 - Medium pizzas (2-3 toppings)
+      2: [
+        // Level 2 - Medium pizzas (2-3 toppings)
         ['cheese', 'pepperoni', 'mushrooms'],
         ['cheese', 'peppers', 'olives'],
         ['cheese', 'tomatoes', 'bacon'],
-        ['cheese', 'pineapple']
+        ['cheese', 'pineapple'],
       ],
-      3: [ // Level 3+ - Complex pizzas (3-4 toppings)
+      3: [
+        // Level 3+ - Complex pizzas (3-4 toppings)
         ['cheese', 'pepperoni', 'mushrooms', 'peppers'],
         ['cheese', 'bacon', 'pineapple', 'olives'],
         ['cheese', 'tomatoes', 'peppers', 'mushrooms'],
-        ['cheese', 'pepperoni', 'bacon', 'olives']
-      ]
+        ['cheese', 'pepperoni', 'bacon', 'olives'],
+      ],
     };
-    
+
     // Drag and drop state
     this.isDragging = false;
     this.dragElement = null;
     this.dragClone = null;
     this.touchOffset = { x: 0, y: 0 };
-    
+
     // Get DOM elements
     this.initializeDOMElements();
-    
+
     // Initialize game
     this.init();
   }
@@ -97,25 +100,25 @@ export default class PizzaMakerGame {
     this.toppingsGrid = document.getElementById('toppingsGrid');
     this.bakeButton = document.getElementById('bakeButton');
     this.trashButton = document.getElementById('trashButton');
-    
+
     // UI elements
     this.totalStarsElement = document.getElementById('totalStars');
     this.currentLevelElement = document.getElementById('currentLevel');
     this.totalTipsElement = document.getElementById('totalTips');
     this.orderTimerElement = document.getElementById('orderTimer');
-    
+
     // Customer elements
     this.customerCharacter = document.getElementById('customerCharacter');
     this.speechBubble = document.getElementById('speechBubble');
     this.orderRequest = document.getElementById('orderRequest');
     this.progressBar = document.getElementById('progressBar');
     this.starRating = document.getElementById('starRating');
-    
+
     // Modal elements
     this.startScreen = document.getElementById('startScreen');
     this.levelCompleteModal = document.getElementById('levelCompleteModal');
     this.gameOverModal = document.getElementById('gameOverModal');
-    
+
     // Buttons
     this.startGameButton = document.getElementById('startGameButton');
     this.nextLevelButton = document.getElementById('nextLevelButton');
@@ -133,14 +136,14 @@ export default class PizzaMakerGame {
     this.startGameButton.addEventListener('click', this.boundHandlers.startGame);
     this.nextLevelButton.addEventListener('click', this.boundHandlers.nextLevel);
     this.restartButton.addEventListener('click', this.boundHandlers.restartGame);
-    
+
     // Pizza making buttons
     this.bakeButton.addEventListener('click', this.boundHandlers.servePizza);
     this.trashButton.addEventListener('click', this.boundHandlers.clearPizza);
-    
+
     // Close modals on backdrop click
     document.querySelectorAll('.game-modal').forEach(modal => {
-      modal.addEventListener('click', (e) => {
+      modal.addEventListener('click', e => {
         if (e.target === modal && modal.id !== 'startScreen') {
           e.target.classList.remove('show');
         }
@@ -150,14 +153,14 @@ export default class PizzaMakerGame {
 
   setupTouchDragAndDrop() {
     const toppings = this.toppingsGrid.querySelectorAll('.topping-item');
-    
+
     toppings.forEach(topping => {
       // Mouse events
-      topping.addEventListener('mousedown', (e) => this.startDrag(e, topping));
-      
+      topping.addEventListener('mousedown', e => this.startDrag(e, topping));
+
       // Touch events
-      topping.addEventListener('touchstart', (e) => this.startDrag(e, topping), { passive: false });
-      
+      topping.addEventListener('touchstart', e => this.startDrag(e, topping), { passive: false });
+
       // Accessibility
       topping.setAttribute('tabindex', '0');
       topping.setAttribute('role', 'button');
@@ -178,7 +181,7 @@ export default class PizzaMakerGame {
     this.totalTips = 0;
     this.ordersCompleted = 0;
     this.levelScore = 0;
-    
+
     this.startScreen.classList.remove('show');
     this.startNewOrder();
     this.updateUI();
@@ -187,42 +190,44 @@ export default class PizzaMakerGame {
   startNewOrder() {
     // Clear previous pizza
     this.clearPizza();
-    
+
     // Select random customer
     const customer = this.customers[Math.floor(Math.random() * this.customers.length)];
     this.customerCharacter.querySelector('.customer-emoji').textContent = customer.emoji;
-    
+
     // Generate order based on level
     const templates = this.pizzaTemplates[Math.min(this.currentLevel, 3)];
     const orderTemplate = templates[Math.floor(Math.random() * templates.length)];
-    
+
     this.currentOrder = {
       customer: customer,
       toppings: orderTemplate,
-      timeLimit: Math.max(30 - (this.currentLevel - 1) * 2, 15) // Decreasing time as levels progress
+      timeLimit: Math.max(30 - (this.currentLevel - 1) * 2, 15), // Decreasing time as levels progress
     };
-    
+
     // Display order
     this.displayOrder();
-    
+
     // Start timer
     this.startOrderTimer();
-    
+
     // Animate customer entrance
     this.animateCustomerEntrance();
   }
 
   displayOrder() {
-    const orderHTML = this.currentOrder.toppings.map(topping => {
-      const toppingData = this.toppings[topping];
-      return `<span class="order-topping">${toppingData.emoji} ${toppingData.name}</span>`;
-    }).join('');
-    
+    const orderHTML = this.currentOrder.toppings
+      .map(topping => {
+        const toppingData = this.toppings[topping];
+        return `<span class="order-topping">${toppingData.emoji} ${toppingData.name}</span>`;
+      })
+      .join('');
+
     this.orderRequest.innerHTML = `
       <p>${this.currentOrder.customer.greeting} a pizza with:</p>
       <div class="order-toppings">${orderHTML}</div>
     `;
-    
+
     // Reset star rating
     this.starRating.querySelectorAll('.star').forEach(star => {
       star.classList.remove('filled');
@@ -233,17 +238,17 @@ export default class PizzaMakerGame {
   startOrderTimer() {
     this.timeRemaining = this.currentOrder.timeLimit;
     this.updateTimerDisplay();
-    
+
     if (this.orderTimer) clearInterval(this.orderTimer);
-    
+
     this.orderTimer = setInterval(() => {
       this.timeRemaining--;
       this.updateTimerDisplay();
-      
+
       // Update progress bar
       const progress = (this.timeRemaining / this.currentOrder.timeLimit) * 100;
       this.progressBar.style.width = `${progress}%`;
-      
+
       // Change color based on time remaining
       if (this.timeRemaining <= 5) {
         this.progressBar.style.backgroundColor = '#e74c3c';
@@ -251,7 +256,7 @@ export default class PizzaMakerGame {
       } else if (this.timeRemaining <= 10) {
         this.progressBar.style.backgroundColor = '#f39c12';
       }
-      
+
       // Time's up!
       if (this.timeRemaining <= 0) {
         this.orderFailed();
@@ -266,29 +271,29 @@ export default class PizzaMakerGame {
   // Drag and drop methods
   startDrag(e, toppingElement) {
     if (this.gameState !== 'playing') return;
-    
+
     e.preventDefault();
-    
+
     if (this.isDragging) return;
-    
+
     this.isDragging = true;
     this.dragElement = toppingElement;
-    
+
     toppingElement.classList.add('dragging');
-    
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    
+
     const rect = toppingElement.getBoundingClientRect();
     this.touchOffset.x = clientX - rect.left - rect.width / 2;
     this.touchOffset.y = clientY - rect.top - rect.height / 2;
-    
+
     this.createDragClone(toppingElement, clientX, clientY);
-    
+
     if (navigator.vibrate) {
       navigator.vibrate(50);
     }
-    
+
     this.playSound('pickup');
   }
 
@@ -300,7 +305,7 @@ export default class PizzaMakerGame {
     this.dragClone.style.zIndex = '1000';
     this.dragClone.style.transform = 'scale(1.2) rotate(5deg)';
     this.dragClone.style.transition = 'none';
-    
+
     this.updateClonePosition(x, y);
     document.body.appendChild(this.dragClone);
   }
@@ -314,45 +319,43 @@ export default class PizzaMakerGame {
 
   handleDrag(e) {
     if (!this.isDragging || !this.dragClone) return;
-    
+
     e.preventDefault();
-    
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    
+
     this.updateClonePosition(clientX, clientY);
-    
+
     const pizzaRect = this.pizzaBase.getBoundingClientRect();
-    const isOverPizza = (
+    const isOverPizza =
       clientX >= pizzaRect.left &&
       clientX <= pizzaRect.right &&
       clientY >= pizzaRect.top &&
-      clientY <= pizzaRect.bottom
-    );
-    
+      clientY <= pizzaRect.bottom;
+
     this.pizzaBase.classList.toggle('drop-target', isOverPizza);
   }
 
   endDrag(e) {
     if (!this.isDragging) return;
-    
+
     this.isDragging = false;
-    
+
     const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
     const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-    
+
     const pizzaRect = this.pizzaBase.getBoundingClientRect();
-    const droppedOnPizza = (
+    const droppedOnPizza =
       clientX >= pizzaRect.left &&
       clientX <= pizzaRect.right &&
       clientY >= pizzaRect.top &&
-      clientY <= pizzaRect.bottom
-    );
-    
+      clientY <= pizzaRect.bottom;
+
     if (droppedOnPizza && this.dragElement) {
       this.addToppingToPizza(this.dragElement.dataset.topping, clientX, clientY);
     }
-    
+
     this.cleanupDrag();
   }
 
@@ -360,34 +363,34 @@ export default class PizzaMakerGame {
     const pizzaRect = this.pizzaBase.getBoundingClientRect();
     const relativeX = ((dropX - pizzaRect.left) / pizzaRect.width) * 100;
     const relativeY = ((dropY - pizzaRect.top) / pizzaRect.height) * 100;
-    
+
     const toppingElement = document.createElement('div');
     toppingElement.className = `pizza-topping ${toppingType}-topping`;
     toppingElement.dataset.topping = toppingType;
-    
+
     // Random rotation for natural look
     const rotation = Math.random() * 30 - 15;
     toppingElement.style.left = `${Math.max(10, Math.min(85, relativeX))}%`;
     toppingElement.style.top = `${Math.max(10, Math.min(85, relativeY))}%`;
     toppingElement.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(0)`;
-    
+
     const toppingData = this.toppings[toppingType];
     toppingElement.textContent = toppingData.emoji;
     toppingElement.setAttribute('aria-label', `${toppingType} topping`);
-    
+
     this.pizzaToppings.appendChild(toppingElement);
-    
+
     // Animate in
     requestAnimationFrame(() => {
       toppingElement.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(1)`;
       toppingElement.style.transition = 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
     });
-    
+
     this.currentToppings.push(toppingType);
     this.updateUI();
-    
+
     this.playSound('drop');
-    
+
     if (navigator.vibrate) {
       navigator.vibrate(100);
     }
@@ -398,12 +401,12 @@ export default class PizzaMakerGame {
       this.dragElement.classList.remove('dragging');
       this.dragElement = null;
     }
-    
+
     if (this.dragClone) {
       this.dragClone.remove();
       this.dragClone = null;
     }
-    
+
     this.pizzaBase.classList.remove('drop-target');
   }
 
@@ -416,40 +419,43 @@ export default class PizzaMakerGame {
 
   servePizza() {
     if (this.currentToppings.length === 0 || this.gameState !== 'playing') return;
-    
+
     // Stop timer
     clearInterval(this.orderTimer);
-    
+
     // Check if pizza matches order
     const orderCorrect = this.checkOrder();
-    
+
     // Calculate score
     const timeBonus = Math.floor(this.timeRemaining * 10);
-    const accuracyBonus = orderCorrect.perfectMatch ? 500 : (orderCorrect.score * 100);
+    const accuracyBonus = orderCorrect.perfectMatch ? 500 : orderCorrect.score * 100;
     const totalScore = timeBonus + accuracyBonus;
-    
+
     // Calculate stars (1-3)
     let stars = 0;
     if (orderCorrect.perfectMatch && this.timeRemaining > this.currentOrder.timeLimit * 0.7) {
       stars = 3;
-    } else if (orderCorrect.score >= 0.8 && this.timeRemaining > this.currentOrder.timeLimit * 0.5) {
+    } else if (
+      orderCorrect.score >= 0.8 &&
+      this.timeRemaining > this.currentOrder.timeLimit * 0.5
+    ) {
       stars = 2;
     } else if (orderCorrect.score >= 0.6) {
       stars = 1;
     }
-    
+
     // Calculate tip
     const tip = Math.floor(stars * 5 * (this.currentLevel * 0.5));
-    
+
     // Update game state
     this.levelScore += totalScore;
     this.totalStars += stars;
     this.totalTips += tip;
     this.ordersCompleted++;
-    
+
     // Show feedback
     this.showOrderFeedback(orderCorrect, stars, tip);
-    
+
     // Check if level complete using frame-based timing
     animationDelay(() => {
       if (this.ordersCompleted >= this.ordersPerLevel) {
@@ -463,11 +469,11 @@ export default class PizzaMakerGame {
   checkOrder() {
     const orderSet = new Set(this.currentOrder.toppings);
     const pizzaSet = new Set(this.currentToppings);
-    
+
     let correctToppings = 0;
     let extraToppings = 0;
     let missingToppings = 0;
-    
+
     // Check what's on the pizza
     this.currentToppings.forEach(topping => {
       if (orderSet.has(topping)) {
@@ -476,23 +482,24 @@ export default class PizzaMakerGame {
         extraToppings++;
       }
     });
-    
+
     // Check what's missing
     this.currentOrder.toppings.forEach(topping => {
       if (!pizzaSet.has(topping)) {
         missingToppings++;
       }
     });
-    
-    const perfectMatch = correctToppings === this.currentOrder.toppings.length && extraToppings === 0;
+
+    const perfectMatch =
+      correctToppings === this.currentOrder.toppings.length && extraToppings === 0;
     const score = correctToppings / (this.currentOrder.toppings.length + extraToppings);
-    
+
     return {
       perfectMatch,
       score,
       correctToppings,
       extraToppings,
-      missingToppings
+      missingToppings,
     };
   }
 
@@ -506,7 +513,7 @@ export default class PizzaMakerGame {
         this.playSound('star');
       }, i * 300);
     }
-    
+
     // Show feedback message
     let message = '';
     if (orderResult.perfectMatch) {
@@ -518,10 +525,10 @@ export default class PizzaMakerGame {
     } else {
       message = 'Not quite right... 😅';
     }
-    
+
     // Animate customer reaction
     this.animateCustomerReaction(message, stars > 0);
-    
+
     // Play appropriate sound
     if (stars >= 2) {
       this.playSound('success');
@@ -530,18 +537,18 @@ export default class PizzaMakerGame {
     } else {
       this.playSound('fail');
     }
-    
+
     this.updateUI();
   }
 
   levelComplete() {
     this.gameState = 'levelComplete';
     clearInterval(this.orderTimer);
-    
+
     // Show level complete modal
     document.getElementById('levelScore').textContent = this.levelScore;
     document.getElementById('levelTips').textContent = this.totalTips;
-    
+
     // Display stars earned
     const starsContainer = document.getElementById('levelStars');
     starsContainer.innerHTML = '';
@@ -551,7 +558,7 @@ export default class PizzaMakerGame {
       star.textContent = '⭐';
       starsContainer.appendChild(star);
     }
-    
+
     this.levelCompleteModal.classList.add('show');
     this.playSound('levelComplete');
   }
@@ -561,7 +568,7 @@ export default class PizzaMakerGame {
     this.ordersCompleted = 0;
     this.levelScore = 0;
     this.gameState = 'playing';
-    
+
     this.levelCompleteModal.classList.remove('show');
     this.startNewOrder();
     this.updateUI();
@@ -570,10 +577,10 @@ export default class PizzaMakerGame {
   orderFailed() {
     this.gameState = 'gameOver';
     clearInterval(this.orderTimer);
-    
+
     document.getElementById('finalScore').textContent = this.totalStars;
     document.getElementById('finalLevel').textContent = this.currentLevel;
-    
+
     this.gameOverModal.classList.add('show');
     this.playSound('gameOver');
   }
@@ -587,10 +594,10 @@ export default class PizzaMakerGame {
     this.totalStarsElement.textContent = this.totalStars;
     this.currentLevelElement.textContent = this.currentLevel;
     this.totalTipsElement.textContent = this.totalTips;
-    
+
     // Update bake button
     this.bakeButton.disabled = this.currentToppings.length === 0 || this.gameState !== 'playing';
-    
+
     if (this.currentToppings.length > 0) {
       this.bakeButton.innerHTML = `<span class="bake-icon">🔥</span> Bake & Serve! (${this.currentToppings.length})`;
     } else {
@@ -601,13 +608,13 @@ export default class PizzaMakerGame {
   animateCustomerEntrance() {
     this.customerCharacter.style.transform = 'translateX(-200%)';
     this.customerCharacter.style.opacity = '0';
-    
+
     requestAnimationFrame(() => {
       this.customerCharacter.style.transition = 'all 0.5s ease-out';
       this.customerCharacter.style.transform = 'translateX(0)';
       this.customerCharacter.style.opacity = '1';
     });
-    
+
     this.speechBubble.style.transform = 'scale(0)';
     animationDelay(() => {
       this.speechBubble.style.transition = 'transform 0.3s ease-out';
@@ -618,15 +625,15 @@ export default class PizzaMakerGame {
   animateCustomerReaction(message, happy) {
     const emoji = happy ? '😊' : '😔';
     const originalEmoji = this.customerCharacter.querySelector('.customer-emoji').textContent;
-    
+
     this.customerCharacter.querySelector('.customer-emoji').textContent = emoji;
-    
+
     // Add reaction text
     const reaction = document.createElement('div');
     reaction.className = 'customer-reaction';
     reaction.textContent = message;
     this.customerCharacter.appendChild(reaction);
-    
+
     animationDelay(() => {
       reaction.remove();
       this.customerCharacter.querySelector('.customer-emoji').textContent = originalEmoji;
@@ -639,59 +646,65 @@ export default class PizzaMakerGame {
       if (!this.audioContext || this.audioContext.state === 'closed') {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
-      
+
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
-      
+
       gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-      
+
       switch (type) {
-      case 'pickup':
-        oscillator.frequency.value = 600;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-        break;
-      case 'drop':
-        oscillator.frequency.value = 800;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-        break;
-      case 'success':
-        // Happy arpeggio
-        oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(659, this.audioContext.currentTime + 0.1);
-        oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
-        break;
-      case 'star':
-        oscillator.frequency.value = 1047; // High C
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
-        break;
-      case 'levelComplete':
-        // Victory fanfare
-        oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
-        oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
-        oscillator.frequency.setValueAtTime(1047, this.audioContext.currentTime + 0.4);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.6);
-        break;
-      case 'gameOver':
-        // Sad sound
-        oscillator.frequency.value = 200;
-        oscillator.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.5);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
-        break;
-      case 'trash':
-        oscillator.frequency.value = 150;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-        break;
-      default:
-        oscillator.frequency.value = 440;
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+        case 'pickup':
+          oscillator.frequency.value = 600;
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+          break;
+        case 'drop':
+          oscillator.frequency.value = 800;
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+          break;
+        case 'success':
+          // Happy arpeggio
+          oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(659, this.audioContext.currentTime + 0.1);
+          oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+          break;
+        case 'star':
+          oscillator.frequency.value = 1047; // High C
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+          break;
+        case 'levelComplete':
+          // Victory fanfare
+          oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
+          oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
+          oscillator.frequency.setValueAtTime(1047, this.audioContext.currentTime + 0.4);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.6);
+          break;
+        case 'gameOver':
+          // Sad sound
+          oscillator.frequency.value = 200;
+          oscillator.frequency.exponentialRampToValueAtTime(
+            100,
+            this.audioContext.currentTime + 0.5
+          );
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+          break;
+        case 'trash':
+          oscillator.frequency.value = 150;
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+          break;
+        default:
+          oscillator.frequency.value = 440;
+          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
       }
-      
+
       oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + (type === 'levelComplete' ? 0.6 : type === 'gameOver' ? 0.5 : 0.3));
+      oscillator.stop(
+        this.audioContext.currentTime +
+          (type === 'levelComplete' ? 0.6 : type === 'gameOver' ? 0.5 : 0.3)
+      );
     } catch (error) {
       console.log('Audio not available:', error);
     }
@@ -760,7 +773,7 @@ export default class PizzaMakerGame {
     this.dragClone = null;
     this.audioContext = null;
     this.boundHandlers = null;
-    
+
     // Clear DOM element references
     this.pizzaBase = null;
     this.pizzaToppings = null;

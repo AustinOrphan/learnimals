@@ -20,13 +20,13 @@ export class AccessibleComponent extends BaseComponent {
       announceChanges: options.announceChanges !== false,
       content: options.content || 'Accessible Component',
       tagName: options.tagName || 'div',
-      ...options
+      ...options,
     });
 
     this.focusTrap = null;
     this.keyboardHandler = null;
     this.announcements = [];
-    
+
     // Bind accessibility methods
     this.handleAccessibleKeydown = this.handleAccessibleKeydown.bind(this);
     this.handleFocusIn = this.handleFocusIn.bind(this);
@@ -40,7 +40,7 @@ export class AccessibleComponent extends BaseComponent {
     const attributes = this.buildAttributes();
     const content = this.options.content || 'Accessible Component';
     const tagName = this.options.tagName || 'div';
-    
+
     return `<${tagName}${attributes}>${content}</${tagName}>`;
   }
 
@@ -49,16 +49,16 @@ export class AccessibleComponent extends BaseComponent {
    */
   buildAttributes() {
     const attrs = [];
-    
+
     // Add ID
     if (this.options.id) {
       attrs.push(`id="${this.options.id}"`);
     }
-    
+
     // Add CSS classes
     const classes = ['accessible-component', ...(this.options.cssClasses || [])];
     attrs.push(`class="${classes.join(' ')}"`);
-    
+
     // Add ARIA attributes
     if (this.options.ariaLabel) {
       attrs.push(`aria-label="${this.options.ariaLabel}"`);
@@ -75,17 +75,21 @@ export class AccessibleComponent extends BaseComponent {
     if (this.options.ariaHidden !== null) {
       attrs.push(`aria-hidden="${this.options.ariaHidden}"`);
     }
-    
+
     // Add focusable attribute
-    if (this.options.focusable && this.options.tagName !== 'button' && this.options.tagName !== 'a') {
+    if (
+      this.options.focusable &&
+      this.options.tagName !== 'button' &&
+      this.options.tagName !== 'a'
+    ) {
       attrs.push('tabindex="0"');
     }
-    
+
     // Add custom attributes
     Object.entries(this.options.attributes || {}).forEach(([key, value]) => {
       attrs.push(`${key}="${value}"`);
     });
-    
+
     return attrs.length > 0 ? ' ' + attrs.join(' ') : '';
   }
 
@@ -94,11 +98,11 @@ export class AccessibleComponent extends BaseComponent {
    */
   render(container) {
     const result = super.render(container);
-    
+
     if (this.element) {
       this.setupAccessibility();
     }
-    
+
     return result;
   }
 
@@ -169,7 +173,7 @@ export class AccessibleComponent extends BaseComponent {
    */
   handleAccessibleKeydown(e) {
     const handled = this.handleComponentSpecificKeys(e);
-    
+
     if (!handled) {
       this.handleGenericKeys(e);
     }
@@ -189,48 +193,48 @@ export class AccessibleComponent extends BaseComponent {
    */
   handleGenericKeys(e) {
     switch (e.key) {
-    case 'Enter':
-    case ' ': // Space
-      if (this.isActivatable()) {
-        e.preventDefault();
-        this.activate();
-      }
-      break;
-    
-    case 'Escape':
-      if (this.isCloseable()) {
-        e.preventDefault();
-        this.close();
-      }
-      break;
+      case 'Enter':
+      case ' ': // Space
+        if (this.isActivatable()) {
+          e.preventDefault();
+          this.activate();
+        }
+        break;
 
-    case 'Tab':
-      this.handleTabNavigation(e);
-      break;
+      case 'Escape':
+        if (this.isCloseable()) {
+          e.preventDefault();
+          this.close();
+        }
+        break;
 
-    case 'ArrowUp':
-    case 'ArrowDown':
-    case 'ArrowLeft':
-    case 'ArrowRight':
-      if (this.hasDirectionalNavigation()) {
-        e.preventDefault();
-        this.handleArrowNavigation(e.key);
-      }
-      break;
+      case 'Tab':
+        this.handleTabNavigation(e);
+        break;
 
-    case 'Home':
-      if (this.hasListNavigation()) {
-        e.preventDefault();
-        this.navigateToFirst();
-      }
-      break;
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'ArrowLeft':
+      case 'ArrowRight':
+        if (this.hasDirectionalNavigation()) {
+          e.preventDefault();
+          this.handleArrowNavigation(e.key);
+        }
+        break;
 
-    case 'End':
-      if (this.hasListNavigation()) {
-        e.preventDefault();
-        this.navigateToLast();
-      }
-      break;
+      case 'Home':
+        if (this.hasListNavigation()) {
+          e.preventDefault();
+          this.navigateToFirst();
+        }
+        break;
+
+      case 'End':
+        if (this.hasListNavigation()) {
+          e.preventDefault();
+          this.navigateToLast();
+        }
+        break;
     }
   }
 
@@ -253,21 +257,21 @@ export class AccessibleComponent extends BaseComponent {
     const items = this.getNavigableItems();
     if (items.length === 0) return;
 
-    const currentIndex = items.findIndex(item => 
-      item === document.activeElement || item.contains(document.activeElement)
+    const currentIndex = items.findIndex(
+      item => item === document.activeElement || item.contains(document.activeElement)
     );
 
     let nextIndex;
-    
+
     switch (key) {
-    case 'ArrowUp':
-    case 'ArrowLeft':
-      nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-      break;
-    case 'ArrowDown':
-    case 'ArrowRight':
-      nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-      break;
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+        break;
+      case 'ArrowDown':
+      case 'ArrowRight':
+        nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+        break;
     }
 
     if (nextIndex !== undefined) {
@@ -285,7 +289,7 @@ export class AccessibleComponent extends BaseComponent {
     // Initialize roving tabindex
     items.forEach((item, index) => {
       item.setAttribute('tabindex', index === 0 ? '0' : '-1');
-      
+
       item.addEventListener('focus', () => {
         this.updateRovingTabindex(items, index);
       });
@@ -352,10 +356,10 @@ export class AccessibleComponent extends BaseComponent {
   setupSemanticStructure() {
     // Ensure proper landmark roles
     this.ensureLandmarkRoles();
-    
+
     // Set up heading hierarchy
     this.setupHeadingHierarchy();
-    
+
     // Ensure proper list semantics
     this.setupListSemantics();
   }
@@ -365,14 +369,14 @@ export class AccessibleComponent extends BaseComponent {
    */
   ensureLandmarkRoles() {
     const componentType = this.getComponentType();
-    
+
     const landmarkMap = {
-      'navigation': 'navigation',
-      'search': 'search',
-      'main': 'main',
-      'sidebar': 'complementary',
-      'header': 'banner',
-      'footer': 'contentinfo'
+      navigation: 'navigation',
+      search: 'search',
+      main: 'main',
+      sidebar: 'complementary',
+      header: 'banner',
+      footer: 'contentinfo',
     };
 
     if (landmarkMap[componentType] && !this.element.getAttribute('role')) {
@@ -385,12 +389,12 @@ export class AccessibleComponent extends BaseComponent {
    */
   setupHeadingHierarchy() {
     const headings = this.element.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+
     // Ensure headings have proper structure
     let previousLevel = 0;
     headings.forEach(heading => {
       const level = parseInt(heading.tagName.charAt(1));
-      
+
       if (previousLevel > 0 && level > previousLevel + 1) {
         // Fix skipped heading levels
         const correctLevel = Math.min(level, previousLevel + 1);
@@ -399,7 +403,7 @@ export class AccessibleComponent extends BaseComponent {
         newHeading.className = heading.className;
         heading.parentNode.replaceChild(newHeading, heading);
       }
-      
+
       previousLevel = level;
     });
   }
@@ -410,13 +414,13 @@ export class AccessibleComponent extends BaseComponent {
   setupListSemantics() {
     // Find lists that might need role="list"
     const lists = this.element.querySelectorAll('ul, ol');
-    
+
     lists.forEach(list => {
       // If list has no list-style, add role="list" to ensure screen reader recognition
       const style = window.getComputedStyle(list);
       if (style.listStyle === 'none' || style.listStyleType === 'none') {
         list.setAttribute('role', 'list');
-        
+
         const items = list.querySelectorAll('li');
         items.forEach(item => {
           if (!item.getAttribute('role')) {
@@ -485,7 +489,7 @@ export class AccessibleComponent extends BaseComponent {
   focusItem(item) {
     if (item && item.focus) {
       item.focus();
-      
+
       // Update roving tabindex if applicable
       if (this.rovingTabindexItems) {
         const index = this.rovingTabindexItems.indexOf(item);
@@ -525,14 +529,14 @@ export class AccessibleComponent extends BaseComponent {
    */
   setState(state, announce = true) {
     const oldState = this.getState();
-    
+
     // Update state
     this.updateState(state);
-    
+
     if (announce && this.options.announceChanges) {
       this.announceStateChange(oldState, state);
     }
-    
+
     return this;
   }
 
@@ -565,14 +569,18 @@ export class AccessibleComponent extends BaseComponent {
   isInteractiveElement() {
     const interactiveTags = ['button', 'a', 'input', 'select', 'textarea'];
     const interactiveRoles = ['button', 'link', 'menuitem', 'tab', 'option'];
-    
-    return interactiveTags.includes(this.element.tagName.toLowerCase()) ||
-           interactiveRoles.includes(this.element.getAttribute('role'));
+
+    return (
+      interactiveTags.includes(this.element.tagName.toLowerCase()) ||
+      interactiveRoles.includes(this.element.getAttribute('role'))
+    );
   }
 
   isActivatable() {
-    return this.element.hasAttribute('role') && 
-           ['button', 'link', 'menuitem', 'tab'].includes(this.element.getAttribute('role'));
+    return (
+      this.element.hasAttribute('role') &&
+      ['button', 'link', 'menuitem', 'tab'].includes(this.element.getAttribute('role'))
+    );
   }
 
   isCloseable() {
@@ -580,21 +588,26 @@ export class AccessibleComponent extends BaseComponent {
   }
 
   isModal() {
-    return this.element.getAttribute('role') === 'dialog' ||
-           this.element.classList.contains('modal');
+    return (
+      this.element.getAttribute('role') === 'dialog' || this.element.classList.contains('modal')
+    );
   }
 
   hasDirectionalNavigation() {
     const directionalRoles = ['tablist', 'menubar', 'toolbar', 'grid'];
-    return directionalRoles.includes(this.element.getAttribute('role')) ||
-           this.element.classList.contains('directional-nav');
+    return (
+      directionalRoles.includes(this.element.getAttribute('role')) ||
+      this.element.classList.contains('directional-nav')
+    );
   }
 
   hasListNavigation() {
     const listRoles = ['listbox', 'menu', 'tablist', 'grid'];
-    return listRoles.includes(this.element.getAttribute('role')) ||
-           this.element.tagName.toLowerCase() === 'ul' ||
-           this.element.tagName.toLowerCase() === 'ol';
+    return (
+      listRoles.includes(this.element.getAttribute('role')) ||
+      this.element.tagName.toLowerCase() === 'ul' ||
+      this.element.tagName.toLowerCase() === 'ol'
+    );
   }
 
   getNavigableItems() {
@@ -608,7 +621,7 @@ export class AccessibleComponent extends BaseComponent {
       '[role="button"]:not([aria-disabled="true"])',
       '[role="link"]:not([aria-disabled="true"])',
       '[role="menuitem"]:not([aria-disabled="true"])',
-      '[role="tab"]:not([aria-disabled="true"])'
+      '[role="tab"]:not([aria-disabled="true"])',
     ].join(', ');
 
     return Array.from(this.element.querySelectorAll(selectors));
@@ -618,7 +631,7 @@ export class AccessibleComponent extends BaseComponent {
     // Determine component type from class name or role
     const className = this.constructor.name.toLowerCase();
     const role = this.element?.getAttribute('role');
-    
+
     return role || className;
   }
 

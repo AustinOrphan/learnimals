@@ -14,9 +14,43 @@ function convertNumber() {
 
   const formattedNumber = Number(numStr).toLocaleString();
   const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-  const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-  const scales = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion'];
+  const teens = [
+    'ten',
+    'eleven',
+    'twelve',
+    'thirteen',
+    'fourteen',
+    'fifteen',
+    'sixteen',
+    'seventeen',
+    'eighteen',
+    'nineteen',
+  ];
+  const tens = [
+    '',
+    '',
+    'twenty',
+    'thirty',
+    'forty',
+    'fifty',
+    'sixty',
+    'seventy',
+    'eighty',
+    'ninety',
+  ];
+  const scales = [
+    '',
+    'thousand',
+    'million',
+    'billion',
+    'trillion',
+    'quadrillion',
+    'quintillion',
+    'sextillion',
+    'septillion',
+    'octillion',
+    'nonillion',
+  ];
 
   function chunkToWords(chunk) {
     let word = '';
@@ -67,19 +101,38 @@ window.convertNumber = convertNumber;
 // Educational tools and games for children - check if already defined to avoid redeclaration
 if (typeof window.mathDifficulty === 'undefined') {
   window.mathDifficulty = [
-    'easy', 'medium', 'hard',
-    'very-easy', 'basic', 'beginner',
-    'intermediate', 'advanced',
-    'expert', 'graduate-level'
+    'easy',
+    'medium',
+    'hard',
+    'very-easy',
+    'basic',
+    'beginner',
+    'intermediate',
+    'advanced',
+    'expert',
+    'graduate-level',
   ];
 }
 
 if (typeof window.mathBasicLevels === 'undefined') {
-  window.mathBasicLevels = ['Place Value', 'Counting', 'Addition', 'Subtraction', 'Multiplication', 'Division'];
+  window.mathBasicLevels = [
+    'Place Value',
+    'Counting',
+    'Addition',
+    'Subtraction',
+    'Multiplication',
+    'Division',
+  ];
 }
 
 if (typeof window.mathIntermediateLevels === 'undefined') {
-  window.mathIntermediateLevels = ['Fractions', 'Decimals', 'Percentages', 'Algebra Basics', 'Geometry Basics'];
+  window.mathIntermediateLevels = [
+    'Fractions',
+    'Decimals',
+    'Percentages',
+    'Algebra Basics',
+    'Geometry Basics',
+  ];
 }
 
 if (typeof window.mathAdvancedLevels === 'undefined') {
@@ -87,12 +140,26 @@ if (typeof window.mathAdvancedLevels === 'undefined') {
 }
 
 if (typeof window.mathExpertLevels === 'undefined') {
-  window.mathExpertLevels = ['Advanced Calculus', 'Complex Analysis', 'Linear Algebra', 'Differential Equations'];
+  window.mathExpertLevels = [
+    'Advanced Calculus',
+    'Complex Analysis',
+    'Linear Algebra',
+    'Differential Equations',
+  ];
 }
 
 // TODO: Game features to be implemented
 if (typeof window.mathWords === 'undefined') {
-  window.mathWords = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Fractions', 'Decimals', 'Percentages', 'Exponents'];
+  window.mathWords = [
+    'Addition',
+    'Subtraction',
+    'Multiplication',
+    'Division',
+    'Fractions',
+    'Decimals',
+    'Percentages',
+    'Exponents',
+  ];
 }
 
 // Only log once when first loaded
@@ -104,11 +171,11 @@ if (!window.mathJsLoaded) {
 
 // Export features for other modules
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { 
-    difficulty: window.mathDifficulty, 
-    basicLevels: window.mathBasicLevels, 
-    intermediateLevels: window.mathIntermediateLevels, 
-    advancedLevels: window.mathAdvancedLevels, 
-    expertLevels: window.mathExpertLevels 
+  module.exports = {
+    difficulty: window.mathDifficulty,
+    basicLevels: window.mathBasicLevels,
+    intermediateLevels: window.mathIntermediateLevels,
+    advancedLevels: window.mathAdvancedLevels,
+    expertLevels: window.mathExpertLevels,
   };
 }

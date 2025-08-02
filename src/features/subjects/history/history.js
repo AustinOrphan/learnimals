@@ -11,21 +11,23 @@ class HistorySubject {
     this.character = {
       name: 'Chrono',
       type: 'Turtle',
-      role: 'History Keeper'
+      role: 'History Keeper',
     };
     this.features = [
       'Timeline Explorer',
       'Historical Figures',
       'Ancient Civilizations',
-      'Time Machine'
+      'Time Machine',
     ];
-        
+
     this.init();
   }
 
   init() {
-    console.log(`🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`);
-        
+    console.log(
+      `🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`
+    );
+
     // Set up event listeners when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setupEventListeners());
@@ -43,7 +45,7 @@ class HistorySubject {
 
   setupFeatureCards() {
     const featureCards = document.querySelectorAll('.feature-card');
-        
+
     featureCards.forEach((card, index) => {
       const feature = this.features[index];
       if (feature) {
@@ -59,7 +61,7 @@ class HistorySubject {
       characterImage.addEventListener('click', () => {
         this.showCharacterMessage();
       });
-            
+
       // Add hover effect
       characterImage.style.cursor = 'pointer';
       characterImage.title = `Click to interact with ${this.character.name}!`;
@@ -68,27 +70,27 @@ class HistorySubject {
 
   setupThemeIntegration() {
     // Listen for theme changes and update character accordingly
-    document.addEventListener('themeChanged', (event) => {
+    document.addEventListener('themeChanged', event => {
       this.onThemeChange(event.detail.theme);
     });
   }
 
   handleFeatureClick(feature) {
     console.log(`🎯 User clicked on: ${feature}`);
-        
+
     // Show character encouragement
     this.showCharacterMessage(`Great choice! Let's explore ${feature} together!`);
-        
+
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'timeline explorer':
-      this.startFirstFeature();
-      break;
-    case 'historical figures':
-      this.startSecondFeature();
-      break;
-    default:
-      this.showComingSoon(feature);
+      case 'timeline explorer':
+        this.startFirstFeature();
+        break;
+      case 'historical figures':
+        this.startSecondFeature();
+        break;
+      default:
+        this.showComingSoon(feature);
     }
   }
 
@@ -113,12 +115,13 @@ class HistorySubject {
     const defaultMessages = [
       `Hi! I'm ${this.character.name} the ${this.character.type}!`,
       `Ready to learn some amazing ${this.subjectName.toLowerCase()}?`,
-      'Let\'s explore and have fun together!',
-      'Click on any activity to get started!'
+      "Let's explore and have fun together!",
+      'Click on any activity to get started!',
     ];
-        
-    const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
-        
+
+    const displayMessage =
+      message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
+
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
   }
@@ -136,7 +139,7 @@ class HistorySubject {
       confirmButtonText: 'Got it!',
       showClose: true,
       size: 'medium',
-      onConfirm: () => modal.hide()
+      onConfirm: () => modal.hide(),
     });
     modal.show();
   }
@@ -154,7 +157,7 @@ class HistorySubject {
       subject: this.subjectName,
       completedFeatures: [],
       totalFeatures: this.features.length,
-      level: 1
+      level: 1,
     };
   }
 

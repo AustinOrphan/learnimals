@@ -3,14 +3,7 @@
  * Provides a robust, promise-based interface to IndexedDB for user data storage
  */
 
-import { 
-  DB_NAME, 
-  DB_VERSION, 
-  STORES, 
-  MIGRATIONS,
-  validateData,
-  generateId 
-} from './schema.js';
+import { DB_NAME, DB_VERSION, STORES, MIGRATIONS, validateData, generateId } from './schema.js';
 import logger from '../../utils/logger.js';
 
 export class IndexedDBService {
@@ -35,7 +28,7 @@ export class IndexedDBService {
     }
 
     this.initPromise = this._openDatabase();
-    
+
     try {
       this.db = await this.initPromise;
       this.isInitialized = true;
@@ -71,7 +64,7 @@ export class IndexedDBService {
         resolve(request.result);
       };
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         logger.info(`Upgrading database from version ${event.oldVersion} to ${event.newVersion}`);
         const db = event.target.result;
         this._handleUpgrade(db, event.oldVersion, event.newVersion);
@@ -352,9 +345,9 @@ export class IndexedDBService {
    */
   async exportData() {
     await this.initialize();
-    
+
     const backup = {};
-    
+
     for (const storeName of Object.values(STORES)) {
       try {
         backup[storeName] = await this.getAll(storeName);
@@ -363,13 +356,13 @@ export class IndexedDBService {
         backup[storeName] = [];
       }
     }
-    
+
     backup.metadata = {
       version: DB_VERSION,
       exportedAt: new Date(),
-      stores: Object.keys(backup).filter(key => key !== 'metadata')
+      stores: Object.keys(backup).filter(key => key !== 'metadata'),
     };
-    
+
     logger.info('Data export completed');
     return backup;
   }
@@ -381,21 +374,21 @@ export class IndexedDBService {
    */
   async importData(backupData) {
     await this.initialize();
-    
+
     if (!backupData.metadata) {
       throw new Error('Invalid backup data - missing metadata');
     }
-    
+
     const transaction = this.db.transaction(Object.values(STORES), 'readwrite');
-    
+
     try {
       for (const [storeName, records] of Object.entries(backupData)) {
         if (storeName === 'metadata' || !Array.isArray(records)) {
           continue;
         }
-        
+
         const store = transaction.objectStore(storeName);
-        
+
         for (const record of records) {
           await new Promise((resolve, reject) => {
             const request = store.put(record);
@@ -404,7 +397,7 @@ export class IndexedDBService {
           });
         }
       }
-      
+
       logger.info('Data import completed successfully');
       return true;
     } catch (error) {
@@ -433,17 +426,17 @@ export class IndexedDBService {
   static async deleteDatabase() {
     return new Promise((resolve, reject) => {
       const request = indexedDB.deleteDatabase(DB_NAME);
-      
+
       request.onsuccess = () => {
         logger.info('Database deleted successfully');
         resolve(true);
       };
-      
+
       request.onerror = () => {
         logger.error('Failed to delete database:', request.error);
         reject(request.error);
       };
-      
+
       request.onblocked = () => {
         logger.warn('Database deletion blocked - close other tabs');
       };
@@ -456,15 +449,15 @@ export class IndexedDBService {
    */
   async getInfo() {
     await this.initialize();
-    
+
     const info = {
       name: DB_NAME,
       version: DB_VERSION,
       stores: Object.values(STORES),
       isConnected: !!this.db,
-      objectStoreNames: Array.from(this.db.objectStoreNames)
+      objectStoreNames: Array.from(this.db.objectStoreNames),
     };
-    
+
     // Get record counts for each store
     for (const storeName of Object.values(STORES)) {
       try {
@@ -474,7 +467,7 @@ export class IndexedDBService {
         info[`${storeName}Count`] = 0;
       }
     }
-    
+
     return info;
   }
 }

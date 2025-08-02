@@ -7,19 +7,19 @@
 
 /* ===== ROOT VARIABLES ===== */
 .performance-monitor {
-  --perf-primary: var(--accent-primary, #4A90E2);
+  --perf-primary: var(--accent-primary, #4a90e2);
   --perf-surface: var(--bg-card, #ffffff);
   --perf-surface-variant: var(--bg-surface, #f8f9fa);
   --perf-outline: var(--border-color, #e0e0e0);
   --perf-text-primary: var(--text-primary, #333333);
   --perf-text-secondary: var(--text-secondary, #666666);
-  
+
   /* Performance indicator colors */
-  --perf-excellent: #4CAF50;
-  --perf-good: #8BC34A;
-  --perf-fair: #FFC107;
-  --perf-poor: #FF5722;
-  
+  --perf-excellent: #4caf50;
+  --perf-good: #8bc34a;
+  --perf-fair: #ffc107;
+  --perf-poor: #ff5722;
+
   /* Animation variables */
   --perf-transition: 0.2s ease;
 }
@@ -162,11 +162,11 @@
 }
 
 .render-time-metric .metric-value {
-  color: #E91E63;
+  color: #e91e63;
 }
 
 .memory-metric .metric-value {
-  color: #9C27B0;
+  color: #9c27b0;
 }
 
 .score-metric .metric-value {
@@ -325,7 +325,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -338,7 +339,8 @@
 }
 
 @keyframes flash {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -357,7 +359,8 @@
 }
 
 @keyframes alertPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   50% {
@@ -370,25 +373,25 @@
   .performance-monitor {
     min-width: 280px;
   }
-  
+
   .perf-metric-group {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .perf-monitor-charts {
     grid-template-columns: 1fr;
   }
-  
+
   .chart-canvas {
     width: 180px;
     height: 50px;
   }
-  
+
   .perf-monitor-summary {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .perf-summary-item {
     flex-direction: row;
     gap: 0.5rem;
@@ -399,19 +402,19 @@
   .performance-monitor {
     min-width: 240px;
   }
-  
+
   .perf-metric-group {
     grid-template-columns: 1fr;
   }
-  
+
   .perf-metric {
     padding: 0.75rem;
   }
-  
+
   .metric-value {
     font-size: 1.3rem;
   }
-  
+
   .performance-monitor.floating {
     position: relative;
     top: auto;
@@ -430,7 +433,7 @@
     --perf-text-primary: #ffffff;
     --perf-text-secondary: #b3b3b3;
   }
-  
+
   .chart-canvas {
     background-color: #2d2d2d;
     border-color: #404040;
@@ -451,11 +454,11 @@
   .performance-monitor {
     border: 2px solid var(--perf-text-primary);
   }
-  
+
   .perf-metric {
     border: 1px solid var(--perf-text-primary);
   }
-  
+
   .metric-indicator {
     border: 1px solid var(--perf-text-primary);
   }
@@ -475,15 +478,15 @@
     box-shadow: none;
     border: 1px solid #ccc;
   }
-  
+
   .perf-monitor-controls {
     display: none;
   }
-  
+
   .perf-monitor-charts {
     display: none;
   }
-  
+
   .metric-indicator {
     box-shadow: none !important;
   }

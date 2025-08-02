@@ -1,9 +1,9 @@
 /**
  * Core Performance Tests
- * 
+ *
  * Comprehensive performance testing suite covering:
  * - Load time optimization
- * - Runtime performance 
+ * - Runtime performance
  * - Memory usage
  * - Rendering performance
  * - Game performance
@@ -13,7 +13,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { GameFactory, CharacterFactory } from '../fixtures/testDataFactory.js';
 
 // Utility function for controlled delays in tests using fake timers
-const delayWithFakeTimers = async (ms) => {
+const delayWithFakeTimers = async ms => {
   vi.useFakeTimers();
   const promise = new Promise(resolve => setTimeout(resolve, ms));
   vi.advanceTimersByTime(ms);
@@ -31,28 +31,30 @@ describe('Core Performance Tests', () => {
     performanceMonitor = {
       marks: new Map(),
       measures: new Map(),
-      
-      mark: vi.fn().mockImplementation((name) => {
+
+      mark: vi.fn().mockImplementation(name => {
         performanceMonitor.marks.set(name, 100);
         return { name, startTime: 100 };
       }),
-      
-      measure: vi.fn().mockImplementation((name) => {
+
+      measure: vi.fn().mockImplementation(name => {
         const duration = 50; // Fixed duration for predictable tests
         performanceMonitor.measures.set(name, duration);
         return { name, duration };
       }),
-      
-      getEntriesByType: vi.fn().mockReturnValue([{
-        loadEventEnd: 1200,
-        loadEventStart: 1150,
-        domContentLoadedEventEnd: 800,
-        domContentLoadedEventStart: 750,
-        responseEnd: 500,
-        requestStart: 100
-      }]),
-      
-      now: vi.fn().mockReturnValue(100)
+
+      getEntriesByType: vi.fn().mockReturnValue([
+        {
+          loadEventEnd: 1200,
+          loadEventStart: 1150,
+          domContentLoadedEventEnd: 800,
+          domContentLoadedEventStart: 750,
+          responseEnd: 500,
+          requestStart: 100,
+        },
+      ]),
+
+      now: vi.fn().mockReturnValue(100),
     };
 
     // Simplified memory tracking mocks
@@ -60,38 +62,38 @@ describe('Core Performance Tests', () => {
       measureHeap: vi.fn().mockReturnValue({
         usedJSHeapSize: 10 * 1024 * 1024,
         totalJSHeapSize: 50 * 1024 * 1024,
-        jsHeapSizeLimit: 100 * 1024 * 1024
+        jsHeapSizeLimit: 100 * 1024 * 1024,
       }),
-      
+
       trackMemoryLeak: vi.fn().mockReturnValue({
         baseline: 10 * 1024 * 1024,
         checkLeak: vi.fn().mockReturnValue({
           increase: 1024 * 1024, // 1MB increase
-          isLeak: false
-        })
-      })
+          isLeak: false,
+        }),
+      }),
     };
 
     // Simplified render profiler mocks
     renderProfiler = {
       frameData: [],
-      
+
       startProfiling: vi.fn().mockReturnValue({ started: true }),
-      
-      recordFrame: vi.fn().mockImplementation((frameTime) => {
+
+      recordFrame: vi.fn().mockImplementation(frameTime => {
         renderProfiler.frameData.push({ duration: frameTime });
       }),
-      
+
       stopProfiling: vi.fn().mockReturnValue({
         frames: 60,
         averageFrameTime: 16,
         averageFPS: 60,
-        droppedFrames: 1
+        droppedFrames: 1,
       }),
-      
+
       measureRenderTime: vi.fn().mockReturnValue({
-        end: vi.fn().mockReturnValue(10) // 10ms render time
-      })
+        end: vi.fn().mockReturnValue(10), // 10ms render time
+      }),
     };
 
     // Mock performance.memory if available
@@ -102,9 +104,9 @@ describe('Core Performance Tests', () => {
         mark: performanceMonitor.mark,
         measure: performanceMonitor.measure,
         getEntriesByType: performanceMonitor.getEntriesByType,
-        now: performanceMonitor.now
+        now: performanceMonitor.now,
       },
-      writable: true
+      writable: true,
     });
   });
 
@@ -118,8 +120,12 @@ describe('Core Performance Tests', () => {
     it('should load homepage within performance budget', () => {
       performanceMonitor.mark('homepage-start');
       performanceMonitor.mark('homepage-end');
-      const loadTime = performanceMonitor.measure('homepage-load', 'homepage-start', 'homepage-end');
-      
+      const loadTime = performanceMonitor.measure(
+        'homepage-load',
+        'homepage-start',
+        'homepage-end'
+      );
+
       // Performance budget: 2 seconds for initial load
       expect(loadTime.duration).toBeLessThan(2000);
       expect(performanceMonitor.mark).toHaveBeenCalledWith('homepage-start');
@@ -138,9 +144,9 @@ describe('Core Performance Tests', () => {
         // First Contentful Paint (should be < 1.8s)
         FCP: 1.2,
         // Time to Interactive (should be < 3.8s)
-        TTI: 2.1
+        TTI: 2.1,
       };
-      
+
       expect(webVitals.LCP).toBeLessThan(2.5);
       expect(webVitals.FID).toBeLessThan(100);
       expect(webVitals.CLS).toBeLessThan(0.1);
@@ -154,13 +160,13 @@ describe('Core Performance Tests', () => {
         { name: 'style.css', transferSize: 25 * 1024, duration: 200 },
         { name: 'main.js', transferSize: 45 * 1024, duration: 300 },
         { name: 'character.jpg', transferSize: 15 * 1024, duration: 150 },
-        { name: 'font.woff2', transferSize: 8 * 1024, duration: 100 }
+        { name: 'font.woff2', transferSize: 8 * 1024, duration: 100 },
       ];
-      
+
       // Check resource sizes are optimized
       const totalSize = resources.reduce((sum, r) => sum + r.transferSize, 0);
       expect(totalSize).toBeLessThan(200 * 1024); // 200KB budget
-      
+
       // Check loading times
       resources.forEach(resource => {
         expect(resource.duration).toBeLessThan(500); // 500ms per resource
@@ -172,23 +178,23 @@ describe('Core Performance Tests', () => {
       const cachePerformance = {
         staticAssets: {
           cacheHitRate: 0.95,
-          averageLoadTime: 50
+          averageLoadTime: 50,
         },
         dynamicContent: {
           cacheHitRate: 0.85,
-          averageLoadTime: 120
+          averageLoadTime: 120,
         },
         api: {
-          cacheHitRate: 0.70,
-          averageLoadTime: 200
-        }
+          cacheHitRate: 0.7,
+          averageLoadTime: 200,
+        },
       };
-      
+
       // Verify cache effectiveness
       expect(cachePerformance.staticAssets.cacheHitRate).toBeGreaterThan(0.9);
       expect(cachePerformance.dynamicContent.cacheHitRate).toBeGreaterThan(0.8);
       expect(cachePerformance.api.cacheHitRate).toBeGreaterThan(0.6);
-      
+
       // Verify cache improves load times
       expect(cachePerformance.staticAssets.averageLoadTime).toBeLessThan(100);
       expect(cachePerformance.dynamicContent.averageLoadTime).toBeLessThan(200);
@@ -198,28 +204,28 @@ describe('Core Performance Tests', () => {
   describe('Runtime Performance', () => {
     it('should maintain smooth UI interactions', async () => {
       renderProfiler.startProfiling();
-      
+
       // Simulate UI interactions
       const interactions = [
         'menu-toggle',
         'card-hover',
         'modal-open',
         'form-input',
-        'theme-switch'
+        'theme-switch',
       ];
-      
+
       for (const interaction of interactions) {
         const renderMeasure = renderProfiler.measureRenderTime();
-        
+
         // Simulate interaction processing
         await delayWithFakeTimers(10);
-        
+
         const renderTime = renderMeasure.end();
         renderProfiler.recordFrame(renderTime);
       }
-      
+
       const results = renderProfiler.stopProfiling();
-      
+
       // Verify smooth 60fps performance
       expect(results.averageFPS).toBeGreaterThanOrEqual(55);
       expect(results.averageFrameTime).toBeLessThan(20); // < 16.67ms for 60fps
@@ -228,22 +234,20 @@ describe('Core Performance Tests', () => {
 
     it('should handle large datasets efficiently', () => {
       // Mock large character dataset
-      const largeDataset = Array.from({ length: 1000 }, () => 
-        CharacterFactory.create()
-      );
-      
+      const largeDataset = Array.from({ length: 1000 }, () => CharacterFactory.create());
+
       performanceMonitor.mark('render-start');
-      
+
       // Simulate rendering large dataset
       const processedData = largeDataset.map(character => ({
         id: character.id,
         name: character.name,
-        rendered: true
+        rendered: true,
       }));
-      
+
       performanceMonitor.mark('render-end');
       const renderTime = performanceMonitor.measure('large-render', 'render-start', 'render-end');
-      
+
       expect(processedData).toHaveLength(1000);
       expect(renderTime.duration).toBeLessThan(100); // 100ms for 1000 items
     });
@@ -252,27 +256,27 @@ describe('Core Performance Tests', () => {
       const domOperations = {
         batchedUpdates: 0,
         individualUpdates: 0,
-        
-        batchUpdate: vi.fn().mockImplementation((updates) => {
+
+        batchUpdate: vi.fn().mockImplementation(updates => {
           domOperations.batchedUpdates += updates.length;
           return { processed: updates.length, time: 5 };
         }),
-        
+
         individualUpdate: vi.fn().mockImplementation(() => {
           domOperations.individualUpdates += 1;
           return { processed: 1, time: 2 };
-        })
+        }),
       };
-      
+
       // Test batched vs individual updates
       const updates = Array.from({ length: 10 }, (_, i) => ({ id: i, value: `update-${i}` }));
-      
+
       // Batched approach
       const batchResult = domOperations.batchUpdate(updates);
-      
+
       // Individual approach
       updates.forEach(() => domOperations.individualUpdate());
-      
+
       // Verify batching is more efficient
       expect(batchResult.time).toBeLessThan(updates.length * 2);
       expect(domOperations.batchedUpdates).toBe(10);
@@ -283,25 +287,27 @@ describe('Core Performance Tests', () => {
   describe('Memory Management', () => {
     it('should prevent memory leaks', () => {
       const leakTracker = memoryTracker.trackMemoryLeak();
-      
+
       // Simulate memory-intensive operations
       const largeObjects = [];
       for (let i = 0; i < 100; i++) {
         largeObjects.push({
           id: i,
           data: new Array(1000).fill(`item-${i}`),
-          cleanup: () => { /* cleanup function */ }
+          cleanup: () => {
+            /* cleanup function */
+          },
         });
       }
-      
+
       // Simulate cleanup
       largeObjects.forEach(obj => {
         if (obj.cleanup) obj.cleanup();
       });
       largeObjects.length = 0;
-      
+
       const leakCheck = leakTracker.checkLeak();
-      
+
       expect(leakCheck.isLeak).toBe(false);
       expect(leakCheck.increase).toBeLessThan(5 * 1024 * 1024); // < 5MB increase
     });
@@ -310,33 +316,33 @@ describe('Core Performance Tests', () => {
       const componentMemory = {
         created: new Set(),
         destroyed: new Set(),
-        
-        createComponent: vi.fn().mockImplementation((id) => {
+
+        createComponent: vi.fn().mockImplementation(id => {
           componentMemory.created.add(id);
           return {
             id,
             destroy: () => {
               componentMemory.destroyed.add(id);
               componentMemory.created.delete(id);
-            }
+            },
           };
         }),
-        
+
         getActiveComponents: () => componentMemory.created.size,
-        getDestroyedComponents: () => componentMemory.destroyed.size
+        getDestroyedComponents: () => componentMemory.destroyed.size,
       };
-      
+
       // Create components
       const components = [];
       for (let i = 0; i < 50; i++) {
         components.push(componentMemory.createComponent(`comp-${i}`));
       }
-      
+
       expect(componentMemory.getActiveComponents()).toBe(50);
-      
+
       // Destroy half the components
       components.slice(0, 25).forEach(comp => comp.destroy());
-      
+
       expect(componentMemory.getActiveComponents()).toBe(25);
       expect(componentMemory.getDestroyedComponents()).toBe(25);
     });
@@ -345,22 +351,22 @@ describe('Core Performance Tests', () => {
       const gcMetrics = {
         collections: 0,
         totalTime: 0,
-        
+
         mockGC: vi.fn().mockImplementation(() => {
           gcMetrics.collections++;
           const gcTime = Math.random() * 10; // 0-10ms
           gcMetrics.totalTime += gcTime;
           return { duration: gcTime };
-        })
+        }),
       };
-      
+
       // Simulate operations that trigger GC
       for (let i = 0; i < 5; i++) {
         gcMetrics.mockGC();
       }
-      
+
       const averageGCTime = gcMetrics.totalTime / gcMetrics.collections;
-      
+
       expect(gcMetrics.collections).toBe(5);
       expect(averageGCTime).toBeLessThan(15); // Average GC should be < 15ms
     });
@@ -368,36 +374,36 @@ describe('Core Performance Tests', () => {
 
   describe('Game Performance', () => {
     it('should maintain stable framerate during gameplay', () => {
-      const gameData = GameFactory.create({ 
+      const gameData = GameFactory.create({
         type: 'bubble-pop',
-        difficulty: 'medium'
+        difficulty: 'medium',
       });
-      
+
       renderProfiler.startProfiling();
-      
+
       // Simulate game loop
       const gameLoop = {
         frames: 0,
         update: vi.fn().mockImplementation(() => {
           const frameStart = Date.now();
-          
+
           // Simulate game logic
           const updateTime = 5; // 5ms update time
-          
+
           const renderStart = Date.now();
           renderProfiler.recordFrame(updateTime + 5); // 5ms render time
-          
+
           gameLoop.frames++;
-        })
+        }),
       };
-      
+
       // Run game loop for 60 frames (1 second at 60fps)
       for (let i = 0; i < 60; i++) {
         gameLoop.update();
       }
-      
+
       const performance = renderProfiler.stopProfiling();
-      
+
       expect(gameLoop.frames).toBe(60);
       expect(performance.averageFPS).toBeGreaterThanOrEqual(55);
       expect(performance.droppedFrames).toBeLessThanOrEqual(3);
@@ -408,7 +414,7 @@ describe('Core Performance Tests', () => {
         particles: [],
         activeCount: 0,
         poolSize: 100,
-        
+
         createParticle: vi.fn().mockImplementation(() => {
           if (particleSystem.activeCount < particleSystem.poolSize) {
             const particle = {
@@ -417,7 +423,7 @@ describe('Core Performance Tests', () => {
               y: Math.random() * 600,
               active: true,
               update: vi.fn(),
-              render: vi.fn()
+              render: vi.fn(),
             };
             particleSystem.particles.push(particle);
             particleSystem.activeCount++;
@@ -425,21 +431,21 @@ describe('Core Performance Tests', () => {
           }
           return null;
         }),
-        
+
         updateParticles: vi.fn().mockImplementation(() => {
           const startTime = Date.now();
           particleSystem.particles.forEach(p => p.update());
           return Date.now() - startTime;
-        })
+        }),
       };
-      
+
       // Create many particles
       for (let i = 0; i < 80; i++) {
         particleSystem.createParticle();
       }
-      
+
       const updateTime = particleSystem.updateParticles();
-      
+
       expect(particleSystem.activeCount).toBe(80);
       expect(updateTime).toBeLessThan(5); // Update 80 particles in < 5ms
       expect(particleSystem.particles).toHaveLength(80);
@@ -449,9 +455,9 @@ describe('Core Performance Tests', () => {
       const collisionSystem = {
         objects: [],
         checks: 0,
-        
-        addObject: (obj) => collisionSystem.objects.push(obj),
-        
+
+        addObject: obj => collisionSystem.objects.push(obj),
+
         bruteForceCheck: vi.fn().mockImplementation(() => {
           let checks = 0;
           for (let i = 0; i < collisionSystem.objects.length; i++) {
@@ -462,28 +468,28 @@ describe('Core Performance Tests', () => {
           collisionSystem.checks = checks;
           return checks;
         }),
-        
+
         spatialHashCheck: vi.fn().mockImplementation(() => {
           // Optimized spatial hashing (mock)
           const optimizedChecks = Math.floor(collisionSystem.objects.length * 0.3);
           collisionSystem.checks = optimizedChecks;
           return optimizedChecks;
-        })
+        }),
       };
-      
+
       // Add game objects
       for (let i = 0; i < 50; i++) {
         collisionSystem.addObject({
           id: i,
           x: Math.random() * 800,
           y: Math.random() * 600,
-          radius: 20
+          radius: 20,
         });
       }
-      
+
       const bruteForceChecks = collisionSystem.bruteForceCheck();
       const spatialHashChecks = collisionSystem.spatialHashCheck();
-      
+
       expect(collisionSystem.objects).toHaveLength(50);
       expect(spatialHashChecks).toBeLessThan(bruteForceChecks);
       expect(spatialHashChecks).toBeLessThan(100); // Significantly reduced checks
@@ -496,12 +502,12 @@ describe('Core Performance Tests', () => {
         main: { size: 45 * 1024, gzipped: 15 * 1024 }, // 45KB / 15KB gzipped
         vendor: { size: 120 * 1024, gzipped: 35 * 1024 }, // 120KB / 35KB gzipped
         components: { size: 25 * 1024, gzipped: 8 * 1024 }, // 25KB / 8KB gzipped
-        styles: { size: 15 * 1024, gzipped: 4 * 1024 } // 15KB / 4KB gzipped
+        styles: { size: 15 * 1024, gzipped: 4 * 1024 }, // 15KB / 4KB gzipped
       };
-      
+
       const totalSize = Object.values(bundles).reduce((sum, bundle) => sum + bundle.size, 0);
       const totalGzipped = Object.values(bundles).reduce((sum, bundle) => sum + bundle.gzipped, 0);
-      
+
       // Bundle size budgets
       expect(totalSize).toBeLessThan(250 * 1024); // 250KB total
       expect(totalGzipped).toBeLessThan(75 * 1024); // 75KB gzipped
@@ -513,17 +519,15 @@ describe('Core Performance Tests', () => {
         { name: 'character-max.webp', size: 8 * 1024, format: 'webp' },
         { name: 'background.webp', size: 12 * 1024, format: 'webp' },
         { name: 'icon.svg', size: 2 * 1024, format: 'svg' },
-        { name: 'logo.png', size: 6 * 1024, format: 'png' }
+        { name: 'logo.png', size: 6 * 1024, format: 'png' },
       ];
-      
+
       const totalImageSize = images.reduce((sum, img) => sum + img.size, 0);
-      
+
       expect(totalImageSize).toBeLessThan(50 * 1024); // 50KB total images
-      
+
       // Verify modern formats are used
-      const modernFormats = images.filter(img => 
-        img.format === 'webp' || img.format === 'svg'
-      );
+      const modernFormats = images.filter(img => img.format === 'webp' || img.format === 'svg');
       expect(modernFormats.length).toBeGreaterThanOrEqual(3);
     });
 
@@ -531,23 +535,23 @@ describe('Core Performance Tests', () => {
       const lazyLoadSystem = {
         images: new Map(),
         components: new Map(),
-        
-        lazyLoadImage: vi.fn().mockImplementation((src) => {
+
+        lazyLoadImage: vi.fn().mockImplementation(src => {
           lazyLoadSystem.images.set(src, {
             loaded: false,
             inViewport: false,
-            loadTime: null
+            loadTime: null,
           });
         }),
-        
-        lazyLoadComponent: vi.fn().mockImplementation((name) => {
+
+        lazyLoadComponent: vi.fn().mockImplementation(name => {
           lazyLoadSystem.components.set(name, {
             loaded: false,
             requested: false,
-            loadTime: null
+            loadTime: null,
           });
         }),
-        
+
         triggerLoad: vi.fn().mockImplementation((type, key) => {
           const map = type === 'image' ? lazyLoadSystem.images : lazyLoadSystem.components;
           const item = map.get(key);
@@ -555,24 +559,24 @@ describe('Core Performance Tests', () => {
             item.loaded = true;
             item.loadTime = Date.now();
           }
-        })
+        }),
       };
-      
+
       // Setup lazy loaded resources
       const imagesToLoad = ['hero.webp', 'gallery-1.webp', 'gallery-2.webp'];
       const componentsToLoad = ['GameComponent', 'ChartComponent', 'AdvancedModal'];
-      
+
       imagesToLoad.forEach(img => lazyLoadSystem.lazyLoadImage(img));
       componentsToLoad.forEach(comp => lazyLoadSystem.lazyLoadComponent(comp));
-      
+
       // Verify resources are registered for lazy loading
       expect(lazyLoadSystem.images.size).toBe(3);
       expect(lazyLoadSystem.components.size).toBe(3);
-      
+
       // Trigger some loads
       lazyLoadSystem.triggerLoad('image', 'hero.webp');
       lazyLoadSystem.triggerLoad('component', 'GameComponent');
-      
+
       expect(lazyLoadSystem.images.get('hero.webp').loaded).toBe(true);
       expect(lazyLoadSystem.components.get('GameComponent').loaded).toBe(true);
     });
@@ -584,16 +588,17 @@ describe('Core Performance Tests', () => {
         htmlOnlyLoad: 200, // 200ms
         basicCSSLoad: 300, // 300ms
         basicJSLoad: 450, // 450ms
-        
-        isUsable: vi.fn().mockImplementation((loadTime) => {
+
+        isUsable: vi.fn().mockImplementation(loadTime => {
           return loadTime < 1000; // Usable within 1 second
-        })
+        }),
       };
-      
-      const totalBaseline = baselineExperience.htmlOnlyLoad + 
-                           baselineExperience.basicCSSLoad + 
-                           baselineExperience.basicJSLoad;
-      
+
+      const totalBaseline =
+        baselineExperience.htmlOnlyLoad +
+        baselineExperience.basicCSSLoad +
+        baselineExperience.basicJSLoad;
+
       expect(totalBaseline).toBeLessThan(1000);
       expect(baselineExperience.isUsable(totalBaseline)).toBe(true);
     });
@@ -603,17 +608,18 @@ describe('Core Performance Tests', () => {
         { name: 'basic-interactions', loadTime: 200, blocking: false },
         { name: 'animations', loadTime: 150, blocking: false },
         { name: 'advanced-features', loadTime: 300, blocking: false },
-        { name: 'analytics', loadTime: 100, blocking: false }
+        { name: 'analytics', loadTime: 100, blocking: false },
       ];
-      
+
       // Verify no enhancement blocks the experience
       enhancementLayers.forEach(layer => {
         expect(layer.blocking).toBe(false);
         expect(layer.loadTime).toBeLessThan(500);
       });
-      
+
       const totalEnhancementTime = enhancementLayers.reduce(
-        (sum, layer) => sum + layer.loadTime, 0
+        (sum, layer) => sum + layer.loadTime,
+        0
       );
       expect(totalEnhancementTime).toBeLessThan(1000);
     });

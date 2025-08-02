@@ -1,8 +1,8 @@
 /**
  * Character Generation System - Main Export Module
- * 
+ *
  * Part of Phase D: Character Generator Core
- * 
+ *
  * This module provides the complete character generation system including:
  * - Character schemas and validation
  * - Character factory for creation and management
@@ -16,10 +16,10 @@ export { CharacterValidator } from './validation/CharacterValidator.js';
 export { CharacterStorage } from './storage/CharacterStorage.js';
 
 // Schema exports
-export { 
-  CharacterSchema, 
-  DefaultCharacterTemplate, 
-  SubjectTemplates 
+export {
+  CharacterSchema,
+  DefaultCharacterTemplate,
+  SubjectTemplates,
 } from './schemas/CharacterSchema.js';
 
 // Default instances for easy usage
@@ -94,7 +94,7 @@ export const CharacterGenerationAPI = {
 
   async importCharacters(exportData, options = {}) {
     return characterStorage.importCharacters(exportData, options);
-  }
+  },
 };
 
 /**
@@ -170,8 +170,9 @@ export const CharacterUtils = {
    * Get name suggestions for a subject
    */
   getNameSuggestions(subject, count = 5) {
-    const names = characterFactory.generationRules.nameGenerators[subject] || 
-                  characterFactory.generationRules.nameGenerators.general;
+    const names =
+      characterFactory.generationRules.nameGenerators[subject] ||
+      characterFactory.generationRules.nameGenerators.general;
     return names.slice(0, count);
   },
 
@@ -210,7 +211,7 @@ export const CharacterUtils = {
       primaryColor: character.appearance?.primaryColor,
       specialties: character.education?.specialties?.slice(0, 3) || [],
       created: character.metadata?.created,
-      popularity: character.metadata?.popularity || 0
+      popularity: character.metadata?.popularity || 0,
     };
   },
 
@@ -228,18 +229,23 @@ export const CharacterUtils = {
       }
 
       // Check for very similar appearance
-      if (existing.appearance?.primaryColor === character.appearance?.primaryColor &&
-          existing.subject === character.subject) {
+      if (
+        existing.appearance?.primaryColor === character.appearance?.primaryColor &&
+        existing.subject === character.subject
+      ) {
         similarities.push(`Similar appearance to "${existing.name}"`);
       }
 
       // Check for identical specialties
-      const sharedSpecialties = character.education?.specialties?.filter(
-        specialty => existing.education?.specialties?.includes(specialty)
-      ) || [];
-      
+      const sharedSpecialties =
+        character.education?.specialties?.filter(specialty =>
+          existing.education?.specialties?.includes(specialty)
+        ) || [];
+
       if (sharedSpecialties.length >= 2) {
-        similarities.push(`Shares specialties with "${existing.name}": ${sharedSpecialties.join(', ')}`);
+        similarities.push(
+          `Shares specialties with "${existing.name}": ${sharedSpecialties.join(', ')}`
+        );
       }
     });
 
@@ -247,9 +253,9 @@ export const CharacterUtils = {
       hasIssues: issues.length > 0,
       issues,
       similarities,
-      isCompatible: issues.length === 0
+      isCompatible: issues.length === 0,
     };
-  }
+  },
 };
 
 // Default export for easy importing

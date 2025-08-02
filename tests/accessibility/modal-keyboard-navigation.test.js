@@ -1,6 +1,6 @@
 /**
  * Modal Dialog Keyboard Navigation Tests
- * 
+ *
  * Specialized tests for modal dialog keyboard accessibility including:
  * - Focus trapping and restoration
  * - Escape key handling
@@ -35,10 +35,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Modal Dialog Keyboard Navigation Tests', () => {
@@ -53,18 +53,18 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
     document.body.appendChild(testContainer);
 
     // Mock focus methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     });
@@ -94,15 +94,17 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
           <input type="text" id="second-input" placeholder="Second field">
         `,
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
       });
 
       modal.create();
       modal.open();
 
       const modalElement = document.getElementById('focus-test-modal');
-      const firstFocusable = modalElement.querySelector('input, button, [tabindex]:not([tabindex="-1"])');
-      
+      const firstFocusable = modalElement.querySelector(
+        'input, button, [tabindex]:not([tabindex="-1"])'
+      );
+
       expect(firstFocusable).toBeTruthy();
       expect(firstFocusable.focus).toHaveBeenCalled();
     });
@@ -115,7 +117,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'restore-focus-modal',
         title: 'Focus Restore Test',
         content: '<p>Test content</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -135,7 +137,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
           <input type="text" id="input2" placeholder="Input 2">
         `,
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
       });
 
       modal.create();
@@ -148,10 +150,10 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       // Simulate Tab on last element - should wrap to first
       lastElement.focus();
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true, 
-        cancelable: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
+        cancelable: true,
       });
       tabEvent.preventDefault = vi.fn();
       lastElement.dispatchEvent(tabEvent);
@@ -160,11 +162,11 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       // Simulate Shift+Tab on first element - should wrap to last
       firstElement.focus();
-      const shiftTabEvent = new KeyboardEvent('keydown', { 
+      const shiftTabEvent = new KeyboardEvent('keydown', {
         key: 'Tab',
         shiftKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       shiftTabEvent.preventDefault = vi.fn();
       firstElement.dispatchEvent(shiftTabEvent);
@@ -179,7 +181,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'escape-modal',
         title: 'Escape Test',
         content: '<p>Press Escape to close</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -187,10 +189,10 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       expect(modal.isOpen).toBe(true);
 
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
 
       document.dispatchEvent(escapeEvent);
@@ -211,7 +213,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
             </select>
           </div>
         `,
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -222,10 +224,10 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       expect(modal.isOpen).toBe(true);
 
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
 
       nestedInput.dispatchEvent(escapeEvent);
@@ -242,16 +244,16 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
             <input type="text" id="escape-handler" placeholder="Handles its own escape">
           </div>
         `,
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
       modal.open();
 
       const escapeHandler = document.getElementById('escape-handler');
-      
+
       // Add event listener that prevents default
-      escapeHandler.addEventListener('keydown', (e) => {
+      escapeHandler.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           e.stopPropagation();
           e.preventDefault();
@@ -260,10 +262,10 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       escapeHandler.focus();
 
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
       escapeEvent.stopPropagation = vi.fn();
       escapeEvent.preventDefault = vi.fn();
@@ -312,7 +314,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
           </form>
         `,
         showConfirmButton: false,
-        showCancelButton: true
+        showCancelButton: true,
       });
 
       modal.create();
@@ -327,7 +329,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
       // Test tab order through form elements
       const expectedOrder = ['name', 'email', 'category'];
       const actualElements = focusableElements.slice(0, 3);
-      
+
       actualElements.forEach((element, index) => {
         expect(element.id || element.name).toBe(expectedOrder[index]);
       });
@@ -355,7 +357,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
             <p>Panel 3 content</p>
           </div>
         `,
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -367,11 +369,11 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       // Test arrow navigation within tabs
       tab1.focus();
-      
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       tab1.dispatchEvent(arrowRightEvent);
@@ -379,10 +381,10 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
       expect(arrowRightEvent.preventDefault).toHaveBeenCalled();
 
       // Test Tab key to move from tablist to tabpanel content
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true, 
-        cancelable: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
+        cancelable: true,
       });
       tab1.dispatchEvent(tabEvent);
 
@@ -418,7 +420,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
             </div>
           </div>
         `,
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -429,11 +431,11 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       // Test arrow navigation in listbox
       listbox.focus();
-      
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       listbox.dispatchEvent(arrowDownEvent);
@@ -442,11 +444,11 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       // Test arrow navigation in grid
       grid.focus();
-      
-      const arrowRightEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowRight', 
-        bubbles: true, 
-        cancelable: true 
+
+      const arrowRightEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        bubbles: true,
+        cancelable: true,
       });
       arrowRightEvent.preventDefault = vi.fn();
       grid.dispatchEvent(arrowRightEvent);
@@ -462,7 +464,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'modal1',
         title: 'First Modal',
         content: '<button id="open-modal2">Open Second Modal</button>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal1.create();
@@ -473,7 +475,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'modal2',
         title: 'Second Modal',
         content: '<p>Second modal content</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal2.create();
@@ -486,10 +488,10 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
       expect(modal2FocusableElements.length).toBeGreaterThan(0);
 
       // Test escape closes topmost modal first
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
 
       document.dispatchEvent(escapeEvent);
@@ -510,7 +512,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'stacked-modal1',
         title: 'First Modal',
         content: '<button id="modal1-btn">Modal 1 Button</button>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal1.create();
@@ -524,7 +526,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'stacked-modal2',
         title: 'Second Modal',
         content: '<button id="modal2-btn">Modal 2 Button</button>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal2.create();
@@ -556,11 +558,11 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         content: '<p>This modal has no focusable elements</p>',
         showConfirmButton: false,
         showCancelButton: false,
-        showClose: false
+        showClose: false,
       });
 
       modal.create();
-      
+
       // Should not throw error when opening
       expect(() => modal.open()).not.toThrow();
 
@@ -576,7 +578,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'removed-trigger-modal',
         title: 'Removed Trigger Test',
         content: '<p>Trigger will be removed</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -597,7 +599,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'rapid-modal',
         title: 'Rapid Test',
         content: '<p>Rapid open/close test</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -618,14 +620,14 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'animation-modal1',
         title: 'Animation Test 1',
         content: '<p>First modal</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       const modal2 = new Modal({
         id: 'animation-modal2',
         title: 'Animation Test 2',
         content: '<p>Second modal</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal1.create();
@@ -633,7 +635,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
 
       // Open first modal
       modal1.open();
-      
+
       // Immediately open second modal before first animation completes
       modal2.open();
 
@@ -652,7 +654,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'aria-modal',
         title: 'ARIA Test Modal',
         content: '<p>Testing ARIA attributes</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
@@ -677,23 +679,17 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
         id: 'announce-modal',
         title: 'Announcement Test',
         content: '<p>Testing announcements</p>',
-        showConfirmButton: true
+        showConfirmButton: true,
       });
 
       modal.create();
       modal.open();
 
-      expect(announceSpy).toHaveBeenCalledWith(
-        expect.stringContaining('modal opened'),
-        'polite'
-      );
+      expect(announceSpy).toHaveBeenCalledWith(expect.stringContaining('modal opened'), 'polite');
 
       modal.close();
 
-      expect(announceSpy).toHaveBeenCalledWith(
-        expect.stringContaining('modal closed'),
-        'polite'
-      );
+      expect(announceSpy).toHaveBeenCalledWith(expect.stringContaining('modal closed'), 'polite');
     });
 
     it('should pass automated accessibility audit', () => {
@@ -709,7 +705,7 @@ describe('Modal Dialog Keyboard Navigation Tests', () => {
           </div>
         `,
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
       });
 
       modal.create();

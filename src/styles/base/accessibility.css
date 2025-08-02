@@ -85,7 +85,7 @@ textarea:focus-visible,
     outline: 4px solid currentColor;
     outline-offset: 4px;
   }
-  
+
   button:focus-visible,
   a:focus-visible,
   input:focus-visible,
@@ -134,14 +134,14 @@ textarea:focus-visible,
   textarea {
     border-width: 2px;
   }
-  
+
   /* Ensure separators are visible */
   hr,
   .divider {
     border-width: 2px;
     border-color: currentColor;
   }
-  
+
   /* Make focus indicators more prominent */
   :focus-visible {
     outline-width: 4px;
@@ -156,29 +156,29 @@ textarea:focus-visible,
   --bg-primary: #ffffff;
   --bg-secondary: #ffffff;
   --border-color: #000000;
-  
+
   /* Ensure good contrast for interactive elements */
   button {
     background: #ffffff !important;
     color: #000000 !important;
     border: 2px solid #000000 !important;
   }
-  
+
   button:hover,
   button:focus {
     background: #000000 !important;
     color: #ffffff !important;
   }
-  
+
   a {
     color: #0000ff !important;
     text-decoration: underline !important;
   }
-  
+
   a:visited {
     color: #800080 !important;
   }
-  
+
   a:hover,
   a:focus {
     background: #ffff00 !important;
@@ -192,12 +192,24 @@ textarea:focus-visible,
   line-height: 1.6 !important;
 }
 
-.large-text h1 { font-size: 2.5rem !important; }
-.large-text h2 { font-size: 2rem !important; }
-.large-text h3 { font-size: 1.75rem !important; }
-.large-text h4 { font-size: 1.5rem !important; }
-.large-text h5 { font-size: 1.25rem !important; }
-.large-text h6 { font-size: 1.125rem !important; }
+.large-text h1 {
+  font-size: 2.5rem !important;
+}
+.large-text h2 {
+  font-size: 2rem !important;
+}
+.large-text h3 {
+  font-size: 1.75rem !important;
+}
+.large-text h4 {
+  font-size: 1.5rem !important;
+}
+.large-text h5 {
+  font-size: 1.25rem !important;
+}
+.large-text h6 {
+  font-size: 1.125rem !important;
+}
 
 .large-text button,
 .large-text input,
@@ -215,17 +227,17 @@ textarea:focus-visible,
   input,
   select,
   textarea,
-  [role="button"],
+  [role='button'],
   [tabindex] {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Add spacing between touch targets */
   .button-group > * + * {
     margin-left: 8px;
   }
-  
+
   .nav-links > * + * {
     margin-top: 8px;
   }
@@ -240,7 +252,7 @@ textarea:focus-visible,
 }
 
 .error-message::before {
-  content: "⚠ ";
+  content: '⚠ ';
   font-weight: bold;
 }
 
@@ -252,7 +264,7 @@ textarea:focus-visible,
 }
 
 .success-message::before {
-  content: "✓ ";
+  content: '✓ ';
   font-weight: bold;
 }
 
@@ -273,7 +285,7 @@ textarea:valid {
 
 /* Required field indicators */
 .required::after {
-  content: " *";
+  content: ' *';
   color: var(--color-error, #dc3545);
   font-weight: bold;
 }
@@ -298,7 +310,7 @@ label {
 }
 
 .loading::after {
-  content: "Loading...";
+  content: 'Loading...';
   position: absolute;
   top: 50%;
   left: 50%;
@@ -309,8 +321,8 @@ label {
   font-weight: 600;
 }
 
-.loading[aria-busy="true"]::after {
-  content: "Loading, please wait...";
+.loading[aria-busy='true']::after {
+  content: 'Loading, please wait...';
 }
 
 /* Progress Indicators */
@@ -364,7 +376,7 @@ label {
 }
 
 .tooltip::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 100%;
   left: 50%;
@@ -378,11 +390,11 @@ label {
 }
 
 /* Modal Accessibility */
-.modal-overlay[aria-hidden="true"] {
+.modal-overlay[aria-hidden='true'] {
   display: none;
 }
 
-.modal-overlay[aria-hidden="false"] {
+.modal-overlay[aria-hidden='false'] {
   display: flex;
 }
 
@@ -427,51 +439,51 @@ td {
 }
 
 /* Sortable table headers */
-th[role="columnheader"] {
+th[role='columnheader'] {
   cursor: pointer;
   position: relative;
 }
 
-th[role="columnheader"]:hover {
+th[role='columnheader']:hover {
   background: var(--bg-hover, #e9ecef);
 }
 
-th[aria-sort="ascending"]::after {
-  content: " ↑";
+th[aria-sort='ascending']::after {
+  content: ' ↑';
   position: absolute;
   right: 8px;
 }
 
-th[aria-sort="descending"]::after {
-  content: " ↓";
+th[aria-sort='descending']::after {
+  content: ' ↓';
   position: absolute;
   right: 8px;
 }
 
 /* List Accessibility */
-ul[role="list"],
-ol[role="list"] {
+ul[role='list'],
+ol[role='list'] {
   list-style: none;
   padding: 0;
 }
 
-ul[role="list"] li::before,
-ol[role="list"] li::before {
-  content: "• ";
+ul[role='list'] li::before,
+ol[role='list'] li::before {
+  content: '• ';
   font-weight: bold;
   margin-right: 8px;
 }
 
-ol[role="list"] {
+ol[role='list'] {
   counter-reset: list-counter;
 }
 
-ol[role="list"] li {
+ol[role='list'] li {
   counter-increment: list-counter;
 }
 
-ol[role="list"] li::before {
-  content: counter(list-counter) ". ";
+ol[role='list'] li::before {
+  content: counter(list-counter) '. ';
 }
 
 /* Button States */
@@ -483,14 +495,14 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
-button[aria-pressed="true"] {
+button[aria-pressed='true'] {
   background: var(--color-primary, #007bff);
   color: white;
 }
 
 /* Checkbox and Radio Improvements */
-input[type="checkbox"],
-input[type="radio"] {
+input[type='checkbox'],
+input[type='radio'] {
   width: 16px;
   height: 16px;
   margin-right: 8px;
@@ -515,7 +527,7 @@ input[type="radio"] {
 }
 
 .custom-checkbox::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -532,7 +544,7 @@ input[type="radio"] {
 }
 
 .custom-checkbox input:checked::before {
-  content: "✓";
+  content: '✓';
   position: absolute;
   top: 2px;
   left: 4px;
@@ -556,7 +568,7 @@ input[type="radio"] {
 }
 
 .breadcrumb li:not(:last-child)::after {
-  content: "/";
+  content: '/';
   margin: 0 8px;
   color: var(--text-secondary, #666);
 }
@@ -571,7 +583,7 @@ input[type="radio"] {
   text-decoration: underline;
 }
 
-.breadcrumb [aria-current="page"] {
+.breadcrumb [aria-current='page'] {
   color: var(--text-primary, #333);
   font-weight: 600;
 }
@@ -604,19 +616,19 @@ input[type="radio"] {
   .skip-links,
   .animation-control,
   .tooltip,
-  [aria-hidden="true"] {
+  [aria-hidden='true'] {
     display: none !important;
   }
-  
+
   a::after {
-    content: " (" attr(href) ")";
+    content: ' (' attr(href) ')';
     font-size: 0.8em;
     color: #666;
   }
-  
-  a[href^="#"]::after,
-  a[href^="javascript:"]::after {
-    content: "";
+
+  a[href^='#']::after,
+  a[href^='javascript:']::after {
+    content: '';
   }
 }
 
@@ -669,8 +681,8 @@ input[type="radio"] {
 }
 
 /* Status indicators for screen readers */
-[aria-busy="true"]::after {
-  content: "";
+[aria-busy='true']::after {
+  content: '';
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -682,12 +694,14 @@ input[type="radio"] {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.reduce-motion [aria-busy="true"]::after {
+.reduce-motion [aria-busy='true']::after {
   animation: none;
-  content: "⏳";
+  content: '⏳';
   width: auto;
   height: auto;
   border: none;
@@ -709,7 +723,7 @@ input[type="radio"] {
 }
 
 .status-success::before {
-  content: "✓ ";
+  content: '✓ ';
   font-weight: bold;
 }
 
@@ -718,7 +732,7 @@ input[type="radio"] {
 }
 
 .status-warning::before {
-  content: "⚠ ";
+  content: '⚠ ';
   font-weight: bold;
 }
 
@@ -727,7 +741,7 @@ input[type="radio"] {
 }
 
 .status-error::before {
-  content: "✗ ";
+  content: '✗ ';
   font-weight: bold;
 }
 
@@ -743,17 +757,17 @@ a:hover {
 }
 
 /* External link indicator */
-a[href^="http"]:not([href*="learnimals.com"])::after {
-  content: " ↗";
+a[href^='http']:not([href*='learnimals.com'])::after {
+  content: ' ↗';
   font-size: 0.8em;
 }
 
 /* File download indicator */
 a[download]::after,
-a[href$=".pdf"]::after,
-a[href$=".doc"]::after,
-a[href$=".docx"]::after {
-  content: " ⬇";
+a[href$='.pdf']::after,
+a[href$='.doc']::after,
+a[href$='.docx']::after {
+  content: ' ⬇';
   font-size: 0.8em;
 }
 
@@ -829,7 +843,7 @@ a[href$=".docx"]::after {
   margin-bottom: 8px;
 }
 
-.accessibility-setting input[type="checkbox"] {
+.accessibility-setting input[type='checkbox'] {
   width: 18px;
   height: 18px;
   margin-right: 12px;
@@ -1090,7 +1104,7 @@ a[href$=".docx"]::after {
     border-radius: 0;
     border: none;
   }
-  
+
   .accessibility-results-panel {
     position: fixed;
     top: 0;
@@ -1103,22 +1117,22 @@ a[href$=".docx"]::after {
     border-radius: 0;
     border: none;
   }
-  
+
   .results-panel-content {
     height: 100vh;
     max-height: none;
   }
-  
+
   .summary-stats {
     flex-wrap: wrap;
     gap: 16px;
   }
-  
+
   .accessibility-panel-footer,
   .results-actions {
     flex-direction: column;
   }
-  
+
   .accessibility-panel-footer .btn,
   .results-actions .btn {
     width: 100%;

@@ -33,7 +33,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         { tag: 'a', attributes: { href: '#' }, content: 'Link text' },
         { tag: 'input', attributes: { type: 'text', 'aria-label': 'Search' } },
         { tag: 'select', attributes: { 'aria-label': 'Choose option' } },
-        { tag: 'textarea', attributes: { 'aria-label': 'Comments' } }
+        { tag: 'textarea', attributes: { 'aria-label': 'Comments' } },
       ];
 
       interactiveElements.forEach(({ tag, attributes = {}, content = '' }) => {
@@ -47,9 +47,20 @@ describe('Comprehensive ARIA Implementation Tests', () => {
 
     it('should validate all ARIA roles are valid', () => {
       const roleTests = [
-        'button', 'dialog', 'alert', 'status', 'progressbar',
-        'tab', 'tablist', 'tabpanel', 'menu', 'menuitem',
-        'navigation', 'main', 'complementary', 'banner'
+        'button',
+        'dialog',
+        'alert',
+        'status',
+        'progressbar',
+        'tab',
+        'tablist',
+        'tabpanel',
+        'menu',
+        'menuitem',
+        'navigation',
+        'main',
+        'complementary',
+        'banner',
       ];
 
       roleTests.forEach(role => {
@@ -63,23 +74,23 @@ describe('Comprehensive ARIA Implementation Tests', () => {
     it('should validate all ARIA relationships reference existing elements', () => {
       // Create elements with relationships
       const label = utils.createMockElement('span', {
-        id: 'test-label'
+        id: 'test-label',
       });
       label.textContent = 'Test Label';
 
       const description = utils.createMockElement('div', {
-        id: 'test-description'
+        id: 'test-description',
       });
       description.textContent = 'Test description';
 
       const controlledElement = utils.createMockElement('div', {
-        id: 'controlled-element'
+        id: 'controlled-element',
       });
 
       const mainElement = utils.createMockElement('div', {
         'aria-labelledby': 'test-label',
         'aria-describedby': 'test-description',
-        'aria-controls': 'controlled-element'
+        'aria-controls': 'controlled-element',
       });
 
       testContainer.appendChild(label);
@@ -95,7 +106,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         { 'aria-live': 'polite', 'aria-atomic': 'true' },
         { 'aria-live': 'assertive', 'aria-atomic': 'true' },
         { role: 'status' },
-        { role: 'alert' }
+        { role: 'alert' },
       ];
 
       liveRegionConfigs.forEach(config => {
@@ -110,7 +121,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
   describe('Educational Game ARIA Patterns', () => {
     it('should validate quiz question accessibility', () => {
       const quiz = utils.createMockElement('fieldset', {
-        'aria-describedby': 'quiz-feedback'
+        'aria-describedby': 'quiz-feedback',
       });
 
       const legend = document.createElement('legend');
@@ -119,7 +130,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
       const feedback = utils.createMockElement('div', {
         id: 'quiz-feedback',
         role: 'status',
-        'aria-live': 'polite'
+        'aria-live': 'polite',
       });
 
       const options = ['6', '7', '8', '9'];
@@ -128,7 +139,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
           type: 'radio',
           name: 'quiz-q1',
           value: option,
-          id: `q1-${index}`
+          id: `q1-${index}`,
         });
 
         const label = document.createElement('label');
@@ -156,11 +167,11 @@ describe('Comprehensive ARIA Implementation Tests', () => {
       const gameBoard = utils.createMockElement('div', {
         role: 'application',
         'aria-label': 'Math sorting game',
-        'aria-describedby': 'game-instructions'
+        'aria-describedby': 'game-instructions',
       });
 
       const instructions = utils.createMockElement('div', {
-        id: 'game-instructions'
+        id: 'game-instructions',
       });
       instructions.textContent = 'Drag numbers to correct boxes';
 
@@ -169,14 +180,14 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         draggable: 'true',
         'aria-grabbed': 'false',
         tabindex: '0',
-        'aria-label': 'Number 5 - draggable'
+        'aria-label': 'Number 5 - draggable',
       });
 
       const dropZone = utils.createMockElement('div', {
         role: 'button',
         'aria-dropeffect': 'move',
         'aria-label': 'Even numbers drop zone',
-        tabindex: '0'
+        tabindex: '0',
       });
 
       testContainer.appendChild(instructions);
@@ -192,14 +203,14 @@ describe('Comprehensive ARIA Implementation Tests', () => {
 
     it('should validate progress tracking accessibility', () => {
       const progressData = factory.createProgressTestData();
-      
+
       const overallProgress = utils.createMockElement('div', {
         role: 'progressbar',
         'aria-label': 'Overall learning progress',
         'aria-valuenow': progressData.overallProgress.toString(),
         'aria-valuemin': '0',
         'aria-valuemax': '100',
-        'aria-valuetext': `${progressData.overallProgress}% complete`
+        'aria-valuetext': `${progressData.overallProgress}% complete`,
       });
 
       const progressAnnouncements = utils.createLiveRegion('polite');
@@ -224,24 +235,28 @@ describe('Comprehensive ARIA Implementation Tests', () => {
   describe('Form and Input Accessibility', () => {
     it('should validate comprehensive form accessibility', () => {
       const form = utils.createMockElement('form', {
-        'aria-label': 'Student registration form'
+        'aria-label': 'Student registration form',
       });
 
-      const { container: fieldContainer, label, input } = utils.createAccessibleField('email', {
+      const {
+        container: fieldContainer,
+        label,
+        input,
+      } = utils.createAccessibleField('email', {
         label: 'Email Address',
         required: true,
-        describedBy: 'email-help email-error'
+        describedBy: 'email-help email-error',
       });
 
       const helpText = utils.createMockElement('div', {
-        id: 'email-help'
+        id: 'email-help',
       });
       helpText.textContent = 'We will never share your email';
 
       const errorMessage = utils.createMockElement('div', {
         id: 'email-error',
         role: 'alert',
-        'aria-live': 'assertive'
+        'aria-live': 'assertive',
       });
 
       form.appendChild(fieldContainer);
@@ -268,12 +283,12 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         'aria-expanded': 'false',
         'aria-autocomplete': 'list',
         'aria-owns': 'suggestions-list',
-        'aria-label': 'Choose subject'
+        'aria-label': 'Choose subject',
       });
 
       const listbox = utils.createMockElement('ul', {
         id: 'suggestions-list',
-        role: 'listbox'
+        role: 'listbox',
       });
 
       const options = ['Math', 'Science', 'Reading'];
@@ -281,7 +296,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         const option = utils.createMockElement('li', {
           role: 'option',
           'aria-selected': 'false',
-          id: `option-${index}`
+          id: `option-${index}`,
         });
         option.textContent = optionText;
         listbox.appendChild(option);
@@ -305,23 +320,23 @@ describe('Comprehensive ARIA Implementation Tests', () => {
   describe('Navigation and Landmark Accessibility', () => {
     it('should validate navigation structure', () => {
       const nav = utils.createMockElement('nav', {
-        'aria-label': 'Main navigation'
+        'aria-label': 'Main navigation',
       });
 
       const menubar = utils.createMockElement('ul', {
-        role: 'menubar'
+        role: 'menubar',
       });
 
       const menuItems = ['Home', 'Subjects', 'Games', 'Progress'];
       menuItems.forEach((itemText, index) => {
         const listItem = utils.createMockElement('li', {
-          role: 'none'
+          role: 'none',
         });
 
         const menuItem = utils.createMockElement('a', {
           href: '#',
           role: 'menuitem',
-          'aria-current': index === 0 ? 'page' : null
+          'aria-current': index === 0 ? 'page' : null,
         });
         menuItem.textContent = itemText;
 
@@ -349,13 +364,13 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         { tag: 'aside', role: 'complementary', label: 'Sidebar' },
         { tag: 'header', role: 'banner', label: 'Site header' },
         { tag: 'footer', role: 'contentinfo', label: 'Site footer' },
-        { tag: 'section', role: 'search', label: 'Search games' }
+        { tag: 'section', role: 'search', label: 'Search games' },
       ];
 
       landmarks.forEach(({ tag, role, label }) => {
         const element = utils.createMockElement(tag, {
           role,
-          'aria-label': label
+          'aria-label': label,
         });
 
         testContainer.appendChild(element);
@@ -389,7 +404,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
       const announcements = [
         { region: gameStatus, message: 'Level 2 completed!' },
         { region: gameScore, message: 'Score: 150 points' },
-        { region: urgentAlerts, message: 'Achievement unlocked!' }
+        { region: urgentAlerts, message: 'Achievement unlocked!' },
       ];
 
       announcements.forEach(({ region, message }) => {
@@ -401,11 +416,11 @@ describe('Comprehensive ARIA Implementation Tests', () => {
     it('should validate timer and countdown accessibility', () => {
       const timer = utils.createMockElement('div', {
         role: 'timer',
-        'aria-labelledby': 'timer-label'
+        'aria-labelledby': 'timer-label',
       });
 
       const timerLabel = utils.createMockElement('h3', {
-        id: 'timer-label'
+        id: 'timer-label',
       });
       timerLabel.textContent = 'Game Timer';
 
@@ -415,7 +430,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
       const timerAlerts = utils.createMockElement('div', {
         role: 'alert',
         'aria-live': 'assertive',
-        id: 'timer-alerts'
+        id: 'timer-alerts',
       });
 
       testContainer.appendChild(timerLabel);
@@ -433,7 +448,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         { region: timerStatus, message: '2 minutes remaining' },
         { region: timerStatus, message: '1 minute remaining' },
         { region: timerAlerts, message: '30 seconds remaining!' },
-        { region: timerAlerts, message: 'Time up!' }
+        { region: timerAlerts, message: 'Time up!' },
       ];
 
       timerMessages.forEach(({ region, message }) => {
@@ -478,7 +493,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         'aria-valuemin': '0',
         'aria-valuemax': '100',
         'aria-valuetext': '50 percent',
-        tabindex: '0'
+        tabindex: '0',
       });
 
       const sliderFeedback = utils.createLiveRegion('polite');
@@ -513,7 +528,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
     it('should validate data table accessibility', () => {
       const table = utils.createMockElement('table', {
         role: 'table',
-        'aria-labelledby': 'table-caption'
+        'aria-labelledby': 'table-caption',
       });
 
       const caption = document.createElement('caption');
@@ -584,12 +599,12 @@ describe('Comprehensive ARIA Implementation Tests', () => {
         'Instructions for screen reader users',
         'Skip to main content',
         'Additional context for this section',
-        'Current status: Level 3 of 5'
+        'Current status: Level 3 of 5',
       ];
 
       srOnlyElements.forEach(text => {
         const element = utils.createMockElement('span', {
-          class: 'sr-only'
+          class: 'sr-only',
         });
         element.textContent = text;
         testContainer.appendChild(element);
@@ -603,7 +618,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
       const decorativeElements = [
         { tag: 'img', attributes: { 'aria-hidden': 'true', alt: '' } },
         { tag: 'span', attributes: { 'aria-hidden': 'true' }, content: '🎮' },
-        { tag: 'div', attributes: { 'aria-hidden': 'true' }, content: '• • •' }
+        { tag: 'div', attributes: { 'aria-hidden': 'true' }, content: '• • •' },
       ];
 
       decorativeElements.forEach(({ tag, attributes, content = '' }) => {
@@ -617,7 +632,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
 
     it('should validate keyboard navigation paths', () => {
       const focusableElements = utils.getFocusableElements(testContainer);
-      
+
       focusableElements.forEach(element => {
         expect(element).toSupportKeyboardNavigation();
       });
@@ -650,11 +665,11 @@ describe('Comprehensive ARIA Implementation Tests', () => {
 
     it('should validate all images have appropriate alt text', () => {
       const images = testContainer.querySelectorAll('img');
-      
+
       images.forEach(img => {
         const hasAlt = img.hasAttribute('alt');
         const isDecorative = img.getAttribute('aria-hidden') === 'true';
-        
+
         if (isDecorative) {
           expect(img.alt).toBe('');
         } else {
@@ -670,22 +685,23 @@ describe('Comprehensive ARIA Implementation Tests', () => {
       // This would typically require visual testing
       // For now, we ensure important elements have text labels
       const buttons = testContainer.querySelectorAll('button');
-      
+
       buttons.forEach(button => {
-        const hasText = button.textContent.trim() || 
-                       button.getAttribute('aria-label') ||
-                       button.getAttribute('aria-labelledby');
+        const hasText =
+          button.textContent.trim() ||
+          button.getAttribute('aria-label') ||
+          button.getAttribute('aria-labelledby');
         expect(hasText).toBeTruthy();
       });
     });
 
     it('should validate focus indicators are present', () => {
       const focusableElements = utils.getFocusableElements(testContainer);
-      
+
       focusableElements.forEach(element => {
         // Ensure element can receive focus
         expect(element.tabIndex).toBeGreaterThanOrEqual(-1);
-        
+
         // In a real browser test, we would check for visible focus indicators
         // For now, we ensure the element is not explicitly disabled
         expect(element.disabled).not.toBe(true);

@@ -4,11 +4,11 @@
 
 import logger from '../../../utils/logger.js';
 import BaseGame from '../../../components/games/BaseGame.js';
-import { 
-  getRandomSentences, 
-  validateSentenceOrder, 
+import {
+  getRandomSentences,
+  validateSentenceOrder,
   shuffleWords,
-  getGrammarCategory 
+  getGrammarCategory,
 } from './sentenceData.js';
 
 class SentenceBuilderGame extends BaseGame {
@@ -20,9 +20,9 @@ class SentenceBuilderGame extends BaseGame {
       subject: 'reading',
       difficulty: options.difficulty || 'easy',
       enableProgressTracking: true,
-      ...options
+      ...options,
     });
-    
+
     // Game-specific properties
     this.currentSentenceIndex = 0;
     this.maxSentences = 5;
@@ -31,14 +31,14 @@ class SentenceBuilderGame extends BaseGame {
     this.shuffledWords = [];
     this.sentenceArea = [];
     this.wordBank = [];
-    
+
     // DOM elements
     this.wordBankElement = null;
     this.sentenceAreaElement = null;
     this.bellaCharacter = null;
     this.feedbackElement = null;
     this.progressElement = null;
-    
+
     // Game state
     this.draggedElement = null;
     this.touchStartPos = { x: 0, y: 0 };
@@ -46,14 +46,14 @@ class SentenceBuilderGame extends BaseGame {
     this.sentenceStartTime = null;
     this.attempts = 0;
     this.hintsUsed = 0;
-    
+
     // Scoring
     this.streakCount = 0;
     this.maxStreak = 0;
     this.totalWordsPlaced = 0;
     this.correctPlacements = 0;
   }
-  
+
   /**
    * Override BaseGame's onInitialized
    */
@@ -63,7 +63,7 @@ class SentenceBuilderGame extends BaseGame {
     this.loadSentences();
     logger.debug('Sentence Builder game initialized successfully');
   }
-  
+
   /**
    * Override BaseGame's onStart
    */
@@ -71,7 +71,7 @@ class SentenceBuilderGame extends BaseGame {
     super.onStart();
     this.startNewGame();
   }
-  
+
   /**
    * Override BaseGame's onRestart
    */
@@ -88,7 +88,7 @@ class SentenceBuilderGame extends BaseGame {
     this.attempts = 0;
     this.hintsUsed = 0;
   }
-  
+
   /**
    * Setup game layout and DOM elements
    */
@@ -96,13 +96,13 @@ class SentenceBuilderGame extends BaseGame {
     if (!this.container) {
       throw new Error('Game container not found');
     }
-    
+
     // Apply mobile optimizations
     this.container.classList.add('sentence-builder-game');
     if (this.isMobile) {
       this.container.classList.add('mobile-optimized');
     }
-    
+
     // Create game structure
     this.container.innerHTML = `
       <div class="game-header">
@@ -143,33 +143,37 @@ class SentenceBuilderGame extends BaseGame {
       
       <div class="feedback-area" id="feedback-area"></div>
     `;
-    
+
     // Store references to key elements
     this.wordBankElement = this.container.querySelector('#word-tiles');
     this.sentenceAreaElement = this.container.querySelector('#sentence-area');
     this.bellaCharacter = this.container.querySelector('#bella-character');
     this.feedbackElement = this.container.querySelector('#feedback-area');
     this.progressElement = this.container.querySelector('#progress-fill');
-    
+
     // Setup event listeners
     this.setupEventListeners();
   }
-  
+
   /**
    * Setup event listeners for game interactions
    */
   setupEventListeners() {
     // Button controls
     this.container.querySelector('#hint-btn').addEventListener('click', () => this.showHint());
-    this.container.querySelector('#check-btn').addEventListener('click', () => this.checkSentence());
-    this.container.querySelector('#clear-btn').addEventListener('click', () => this.clearSentence());
+    this.container
+      .querySelector('#check-btn')
+      .addEventListener('click', () => this.checkSentence());
+    this.container
+      .querySelector('#clear-btn')
+      .addEventListener('click', () => this.clearSentence());
     this.container.querySelector('#next-btn').addEventListener('click', () => this.nextSentence());
-    
+
     // Drag and drop events (will be added to word tiles dynamically)
     // Touch events for mobile support
     this.setupDragAndDrop();
   }
-  
+
   /**
    * Setup drag and drop functionality
    */
@@ -177,17 +181,21 @@ class SentenceBuilderGame extends BaseGame {
     // Event delegation for dynamic word tiles
     this.wordBankElement.addEventListener('dragstart', this.handleDragStart.bind(this));
     this.wordBankElement.addEventListener('dragend', this.handleDragEnd.bind(this));
-    
+
     this.sentenceAreaElement.addEventListener('dragover', this.handleDragOver.bind(this));
     this.sentenceAreaElement.addEventListener('drop', this.handleDrop.bind(this));
     this.sentenceAreaElement.addEventListener('click', this.handleSentenceAreaClick.bind(this));
-    
+
     // Touch events for mobile
-    this.wordBankElement.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-    this.wordBankElement.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+    this.wordBankElement.addEventListener('touchstart', this.handleTouchStart.bind(this), {
+      passive: false,
+    });
+    this.wordBankElement.addEventListener('touchmove', this.handleTouchMove.bind(this), {
+      passive: false,
+    });
     this.wordBankElement.addEventListener('touchend', this.handleTouchEnd.bind(this));
   }
-  
+
   /**
    * Load sentences for the game session
    */
@@ -195,7 +203,7 @@ class SentenceBuilderGame extends BaseGame {
     this.sentences = getRandomSentences(this.difficulty, this.maxSentences);
     logger.debug(`Loaded ${this.sentences.length} sentences for difficulty: ${this.difficulty}`);
   }
-  
+
   /**
    * Start a new game session
    */
@@ -203,9 +211,9 @@ class SentenceBuilderGame extends BaseGame {
     this.currentSentenceIndex = 0;
     this.loadCurrentSentence();
     this.updateProgress();
-    this.updateBellaSpeech('Ready to build some sentences? Let\'s start!');
+    this.updateBellaSpeech("Ready to build some sentences? Let's start!");
   }
-  
+
   /**
    * Load the current sentence for building
    */
@@ -214,28 +222,28 @@ class SentenceBuilderGame extends BaseGame {
       this.gameOver();
       return;
     }
-    
+
     this.currentSentence = this.sentences[this.currentSentenceIndex];
     this.shuffledWords = shuffleWords(this.currentSentence.words);
     this.sentenceArea = [];
     this.attempts = 0;
     this.sentenceStartTime = performance.now();
-    
+
     // Update UI
     this.renderWordBank();
     this.renderSentenceArea();
     this.showSentenceHint();
     this.updateGameControls();
-    
+
     logger.debug(`Loaded sentence: ${this.currentSentence.correctOrder.join(' ')}`);
   }
-  
+
   /**
    * Render word bank with draggable tiles
    */
   renderWordBank() {
     this.wordBankElement.innerHTML = '';
-    
+
     this.shuffledWords.forEach((word, index) => {
       const wordTile = document.createElement('div');
       wordTile.className = 'word-tile';
@@ -243,41 +251,41 @@ class SentenceBuilderGame extends BaseGame {
       wordTile.dataset.word = word;
       wordTile.dataset.index = index;
       wordTile.textContent = word;
-      
+
       // Add grammar category class
       const grammarClass = getGrammarCategory(word);
       wordTile.classList.add(`grammar-${grammarClass}`);
-      
+
       this.wordBankElement.appendChild(wordTile);
     });
   }
-  
+
   /**
    * Render sentence building area
    */
   renderSentenceArea() {
     const dropInstruction = this.sentenceAreaElement.querySelector('.drop-instruction');
-    
+
     // Clear existing content except instruction
     this.sentenceAreaElement.innerHTML = '';
     if (this.sentenceArea.length === 0) {
       this.sentenceAreaElement.appendChild(dropInstruction);
     }
-    
+
     // Create drop zones for each word position
     this.sentenceArea.forEach((word, index) => {
       const wordSlot = document.createElement('div');
       wordSlot.className = 'word-slot filled';
       wordSlot.dataset.position = index;
       wordSlot.textContent = word;
-      
+
       // Add grammar category class
       const grammarClass = getGrammarCategory(word);
       wordSlot.classList.add(`grammar-${grammarClass}`);
-      
+
       this.sentenceAreaElement.appendChild(wordSlot);
     });
-    
+
     // Add empty slots for remaining words
     const remainingSlots = this.currentSentence.words.length - this.sentenceArea.length;
     for (let i = 0; i < remainingSlots; i++) {
@@ -286,10 +294,10 @@ class SentenceBuilderGame extends BaseGame {
       emptySlot.dataset.position = this.sentenceArea.length + i;
       this.sentenceAreaElement.appendChild(emptySlot);
     }
-    
+
     this.updateGameControls();
   }
-  
+
   /**
    * Show hint for current sentence
    */
@@ -302,29 +310,29 @@ class SentenceBuilderGame extends BaseGame {
       </div>
     `;
   }
-  
+
   /**
    * Handle drag start event
    */
   handleDragStart(event) {
     if (!event.target.classList.contains('word-tile')) return;
-    
+
     this.draggedElement = event.target;
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/html', event.target.outerHTML);
     event.target.classList.add('dragging');
   }
-  
+
   /**
    * Handle drag end event
    */
   handleDragEnd(event) {
     if (!event.target.classList.contains('word-tile')) return;
-    
+
     event.target.classList.remove('dragging');
     this.draggedElement = null;
   }
-  
+
   /**
    * Handle drag over event
    */
@@ -332,23 +340,23 @@ class SentenceBuilderGame extends BaseGame {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }
-  
+
   /**
    * Handle drop event
    */
   handleDrop(event) {
     event.preventDefault();
-    
+
     if (!this.draggedElement) return;
-    
+
     const word = this.draggedElement.dataset.word;
     this.addWordToSentence(word);
-    
+
     // Remove word from bank
     this.draggedElement.remove();
     this.draggedElement = null;
   }
-  
+
   /**
    * Handle sentence area click (for mobile and alternative input)
    */
@@ -360,72 +368,73 @@ class SentenceBuilderGame extends BaseGame {
       this.addWordToBank(word);
     }
   }
-  
+
   /**
    * Handle touch start for mobile drag
    */
   handleTouchStart(event) {
     if (!event.target.classList.contains('word-tile')) return;
-    
+
     event.preventDefault();
     this.draggedElement = event.target;
     this.isDragging = true;
-    
+
     const touch = event.touches[0];
     this.touchStartPos = { x: touch.clientX, y: touch.clientY };
-    
+
     event.target.classList.add('dragging');
   }
-  
+
   /**
    * Handle touch move for mobile drag
    */
   handleTouchMove(event) {
     if (!this.isDragging || !this.draggedElement) return;
-    
+
     event.preventDefault();
     const touch = event.touches[0];
-    
+
     // Move the element with touch
     this.draggedElement.style.position = 'fixed';
     this.draggedElement.style.left = `${touch.clientX - 50}px`;
     this.draggedElement.style.top = `${touch.clientY - 25}px`;
     this.draggedElement.style.zIndex = '1000';
   }
-  
+
   /**
    * Handle touch end for mobile drag
    */
   handleTouchEnd(event) {
     if (!this.isDragging || !this.draggedElement) return;
-    
+
     event.preventDefault();
     this.isDragging = false;
-    
+
     const touch = event.changedTouches[0];
     const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-    
+
     // Reset dragged element position
     this.draggedElement.style.position = '';
     this.draggedElement.style.left = '';
     this.draggedElement.style.top = '';
     this.draggedElement.style.zIndex = '';
     this.draggedElement.classList.remove('dragging');
-    
+
     // Check if dropped on sentence area
-    if (elementBelow && (
-      elementBelow.classList.contains('sentence-area') ||
-      elementBelow.classList.contains('word-slot') ||
-      elementBelow.closest('.sentence-area')
-    )) {
+    if (
+      elementBelow &&
+      (elementBelow.classList.contains('sentence-area') ||
+        elementBelow.classList.contains('word-slot') ||
+        elementBelow.closest('.sentence-area'))
+    ) {
       const word = this.draggedElement.dataset.word;
       this.addWordToSentence(word);
       this.draggedElement.remove();
     }
-    
+
     this.draggedElement = null;
   }
-  
+
   /**
    * Add word to sentence building area
    */
@@ -433,14 +442,14 @@ class SentenceBuilderGame extends BaseGame {
     this.sentenceArea.push(word);
     this.totalWordsPlaced++;
     this.renderSentenceArea();
-    
+
     // Provide audio feedback
     this.playSound(400, 100, 'sine');
-    
+
     // Track word placement
     this.trackProgress();
   }
-  
+
   /**
    * Remove word from sentence area
    */
@@ -451,7 +460,7 @@ class SentenceBuilderGame extends BaseGame {
       this.renderSentenceArea();
     }
   }
-  
+
   /**
    * Add word back to word bank
    */
@@ -461,25 +470,25 @@ class SentenceBuilderGame extends BaseGame {
     wordTile.draggable = true;
     wordTile.dataset.word = word;
     wordTile.textContent = word;
-    
+
     const grammarClass = getGrammarCategory(word);
     wordTile.classList.add(`grammar-${grammarClass}`);
-    
+
     this.wordBankElement.appendChild(wordTile);
   }
-  
+
   /**
    * Show hint for current sentence
    */
   showHint() {
     this.hintsUsed++;
-    
+
     if (this.sentenceArea.length < this.currentSentence.words.length) {
       const nextWordIndex = this.sentenceArea.length;
       const nextWord = this.currentSentence.correctOrder[nextWordIndex];
-      
+
       this.updateBellaSpeech(`💡 The next word should be "${nextWord}". Can you find it?`);
-      
+
       // Highlight the correct word in word bank
       const wordTiles = this.wordBankElement.querySelectorAll('.word-tile');
       wordTiles.forEach(tile => {
@@ -493,22 +502,22 @@ class SentenceBuilderGame extends BaseGame {
       this.updateBellaSpeech('💡 Check your sentence order. Is everything in the right place?');
     }
   }
-  
+
   /**
    * Check if current sentence is correct
    */
   checkSentence() {
     this.attempts++;
-    
+
     const validation = validateSentenceOrder(this.sentenceArea, this.currentSentence.correctOrder);
-    
+
     if (validation.isCorrect) {
       this.handleCorrectSentence(validation);
     } else {
       this.handleIncorrectSentence(validation);
     }
   }
-  
+
   /**
    * Handle correct sentence completion
    */
@@ -516,81 +525,89 @@ class SentenceBuilderGame extends BaseGame {
     this.correctPlacements += this.sentenceArea.length;
     this.streakCount++;
     this.maxStreak = Math.max(this.maxStreak, this.streakCount);
-    
+
     // Calculate score with bonuses
     const baseScore = validation.score;
     const speedBonus = this.calculateSpeedBonus();
     const efficiencyBonus = this.calculateEfficiencyBonus();
     const streakBonus = this.streakCount * 5;
-    
+
     const totalScore = baseScore + speedBonus + efficiencyBonus + streakBonus;
     this.addScore(totalScore);
-    
+
     // Track correct answer
     this.trackCorrectAnswer({
       sentence: this.currentSentence.id,
       timeToComplete: performance.now() - this.sentenceStartTime,
       attempts: this.attempts,
       hintsUsed: this.hintsUsed,
-      streakCount: this.streakCount
+      streakCount: this.streakCount,
     });
-    
+
     // Show success feedback
-    this.showFeedback('success', 'Excellent! You built the sentence perfectly!', this.currentSentence.explanation);
+    this.showFeedback(
+      'success',
+      'Excellent! You built the sentence perfectly!',
+      this.currentSentence.explanation
+    );
     this.updateBellaSpeech('🎉 Wonderful! That sentence is perfect!');
-    
+
     // Play success sound
     this.playSound(600, 200, 'sine');
-    
+
     // Haptic feedback
     if (this.hapticFeedback) {
       navigator.vibrate(100);
     }
-    
+
     // Show next button
     this.container.querySelector('#next-btn').classList.remove('hidden');
   }
-  
+
   /**
    * Handle incorrect sentence attempt
    */
   handleIncorrectSentence(validation) {
     this.streakCount = 0;
-    
+
     // Track incorrect answer
     this.trackIncorrectAnswer({
       sentence: this.currentSentence.id,
       userOrder: [...this.sentenceArea],
       correctOrder: [...this.currentSentence.correctOrder],
-      attempts: this.attempts
+      attempts: this.attempts,
     });
-    
+
     // Show feedback
-    this.showFeedback('error', validation.feedback, 'Try rearranging the words. Remember to start with a capital letter!');
-    this.updateBellaSpeech('🤔 Not quite right. Let\'s try again!');
-    
+    this.showFeedback(
+      'error',
+      validation.feedback,
+      'Try rearranging the words. Remember to start with a capital letter!'
+    );
+    this.updateBellaSpeech("🤔 Not quite right. Let's try again!");
+
     // Play error sound
     this.playSound(200, 300, 'sawtooth');
-    
+
     // Error haptic feedback
     if (this.hapticFeedback) {
       navigator.vibrate([100, 50, 100]);
     }
   }
-  
+
   /**
    * Calculate speed bonus based on completion time
    */
   calculateSpeedBonus() {
     const timeSpent = (performance.now() - this.sentenceStartTime) / 1000;
     const targetTime = this.currentSentence.words.length * 5; // 5 seconds per word
-    
+
     if (timeSpent < targetTime) {
       return Math.round((targetTime - timeSpent) * 2);
     }
     return 0;
   }
-  
+
   /**
    * Calculate efficiency bonus based on attempts
    */
@@ -599,7 +616,7 @@ class SentenceBuilderGame extends BaseGame {
     if (this.attempts === 2) return 10;
     return 0;
   }
-  
+
   /**
    * Clear current sentence and return words to bank
    */
@@ -608,9 +625,9 @@ class SentenceBuilderGame extends BaseGame {
     this.sentenceArea.forEach(word => this.addWordToBank(word));
     this.sentenceArea = [];
     this.renderSentenceArea();
-    this.updateBellaSpeech('Let\'s start fresh! Drag words to build your sentence.');
+    this.updateBellaSpeech("Let's start fresh! Drag words to build your sentence.");
   }
-  
+
   /**
    * Move to next sentence
    */
@@ -618,7 +635,7 @@ class SentenceBuilderGame extends BaseGame {
     this.currentSentenceIndex++;
     this.hideFeedback();
     this.container.querySelector('#next-btn').classList.add('hidden');
-    
+
     if (this.currentSentenceIndex < this.sentences.length) {
       this.loadCurrentSentence();
       this.updateProgress();
@@ -626,7 +643,7 @@ class SentenceBuilderGame extends BaseGame {
       this.gameOver();
     }
   }
-  
+
   /**
    * Show feedback message
    */
@@ -639,74 +656,77 @@ class SentenceBuilderGame extends BaseGame {
     `;
     this.feedbackElement.classList.remove('hidden');
   }
-  
+
   /**
    * Hide feedback message
    */
   hideFeedback() {
     this.feedbackElement.classList.add('hidden');
   }
-  
+
   /**
    * Update Bella's speech bubble
    */
   updateBellaSpeech(message) {
     const speechBubble = this.container.querySelector('#bella-speech');
     speechBubble.textContent = message;
-    
+
     // Add animation
     speechBubble.classList.add('new-message');
     setTimeout(() => speechBubble.classList.remove('new-message'), 500);
   }
-  
+
   /**
    * Update game progress display
    */
   updateProgress() {
     const progressPercentage = ((this.currentSentenceIndex + 1) / this.sentences.length) * 100;
     this.progressElement.style.width = `${progressPercentage}%`;
-    
+
     this.container.querySelector('#current-sentence').textContent = this.currentSentenceIndex + 1;
     this.container.querySelector('#total-sentences').textContent = this.sentences.length;
   }
-  
+
   /**
    * Update game controls based on current state
    */
   updateGameControls() {
     const checkBtn = this.container.querySelector('#check-btn');
     const clearBtn = this.container.querySelector('#clear-btn');
-    
+
     checkBtn.disabled = this.sentenceArea.length !== this.currentSentence.words.length;
     clearBtn.disabled = this.sentenceArea.length === 0;
   }
-  
+
   /**
    * Track progress for analytics
    */
   trackProgress() {
     // Track word placement accuracy
     const currentIndex = this.sentenceArea.length - 1;
-    const isCorrectPosition = this.sentenceArea[currentIndex] === this.currentSentence.correctOrder[currentIndex];
-    
+    const isCorrectPosition =
+      this.sentenceArea[currentIndex] === this.currentSentence.correctOrder[currentIndex];
+
     if (isCorrectPosition) {
       this.correctPlacements++;
     }
-    
+
     // Update level based on accuracy
-    const accuracy = this.totalWordsPlaced > 0 ? (this.correctPlacements / this.totalWordsPlaced) * 100 : 0;
+    const accuracy =
+      this.totalWordsPlaced > 0 ? (this.correctPlacements / this.totalWordsPlaced) * 100 : 0;
     this.updateLevel(Math.floor(accuracy / 20) + 1);
   }
-  
+
   /**
    * Override BaseGame's onGameEnd
    */
   onGameEnd() {
     super.onGameEnd();
-    
+
     // Track final game statistics
-    const accuracy = this.totalWordsPlaced > 0 ? (this.correctPlacements / this.totalWordsPlaced) * 100 : 0;
-    
+    const accuracy =
+      this.totalWordsPlaced > 0 ? (this.correctPlacements / this.totalWordsPlaced) * 100 : 0;
+
     this.trackLevelComplete({
       sentencesCompleted: this.currentSentenceIndex,
       totalSentences: this.sentences.length,
@@ -714,11 +734,13 @@ class SentenceBuilderGame extends BaseGame {
       maxStreak: this.maxStreak,
       totalHintsUsed: this.hintsUsed,
       difficulty: this.difficulty,
-      finalScore: this.score
+      finalScore: this.score,
     });
-    
+
     // Show final message
-    this.updateBellaSpeech(`🎉 Great job! You completed ${this.currentSentenceIndex} sentences with ${Math.round(accuracy)}% accuracy!`);
+    this.updateBellaSpeech(
+      `🎉 Great job! You completed ${this.currentSentenceIndex} sentences with ${Math.round(accuracy)}% accuracy!`
+    );
   }
 }
 

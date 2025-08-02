@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Modal and Dialog Accessibility Tests', () => {
@@ -56,27 +59,29 @@ describe('Modal and Dialog Accessibility Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock focus and blur methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
       this.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       const previousElement = this;
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
-      this.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body }));
+      this.dispatchEvent(
+        new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body })
+      );
     });
 
     service = new AccessibilityService();
@@ -161,7 +166,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
       `;
 
       const alertDialog = testContainer.querySelector('#delete-dialog');
-      
+
       expect(alertDialog.getAttribute('role')).toBe('alertdialog');
       expect(alertDialog.getAttribute('aria-modal')).toBe('true');
       expect(alertDialog.getAttribute('aria-labelledby')).toBe('delete-title');
@@ -232,7 +237,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
 
       // Create focus trap
       const focusTrap = service.createFocusTrap(modal);
-      
+
       expect(focusTrap).toBeTruthy();
       expect(focusTrap.container).toBe(modal);
       expect(focusTrap.firstFocusable).toBe(firstInput);
@@ -244,10 +249,10 @@ describe('Modal and Dialog Accessibility Tests', () => {
 
       // Test tab trapping at end
       closeButton.focus();
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true, 
-        cancelable: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
+        cancelable: true,
       });
       tabEvent.preventDefault = vi.fn();
       modal.dispatchEvent(tabEvent);
@@ -256,11 +261,11 @@ describe('Modal and Dialog Accessibility Tests', () => {
 
       // Test shift+tab trapping at beginning
       firstInput.focus();
-      const shiftTabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
+      const shiftTabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
         shiftKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       shiftTabEvent.preventDefault = vi.fn();
       modal.dispatchEvent(shiftTabEvent);
@@ -298,7 +303,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
       // Simulate opening modal
       modal.style.display = 'block';
       modal.setAttribute('aria-hidden', 'false');
-      
+
       const focusTrap = service.createFocusTrap(modal);
       focusTrap.activate();
 
@@ -367,10 +372,10 @@ describe('Modal and Dialog Accessibility Tests', () => {
       closeButton.focus();
 
       // Press Escape
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
 
       document.dispatchEvent(escapeEvent);
@@ -420,20 +425,20 @@ describe('Modal and Dialog Accessibility Tests', () => {
 
       // Test Enter on confirm button
       confirmButton.focus();
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
-        bubbles: true, 
-        cancelable: true 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        bubbles: true,
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       confirmButton.dispatchEvent(enterEvent);
 
-      // Test Space on cancel button  
+      // Test Space on cancel button
       cancelButton.focus();
-      const spaceEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
-        bubbles: true, 
-        cancelable: true 
+      const spaceEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        bubbles: true,
+        cancelable: true,
       });
       spaceEvent.preventDefault = vi.fn();
       cancelButton.dispatchEvent(spaceEvent);
@@ -472,10 +477,10 @@ describe('Modal and Dialog Accessibility Tests', () => {
       expect(document.activeElement).toBe(options[0]);
 
       // Test Arrow Down
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       options[0].dispatchEvent(arrowDownEvent);
@@ -483,10 +488,10 @@ describe('Modal and Dialog Accessibility Tests', () => {
       expect(arrowDownEvent.preventDefault).toHaveBeenCalled();
 
       // Test Home key
-      const homeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
-        bubbles: true, 
-        cancelable: true 
+      const homeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
+        bubbles: true,
+        cancelable: true,
       });
       homeEvent.preventDefault = vi.fn();
       options[2].dispatchEvent(homeEvent);
@@ -797,7 +802,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
       const panels = testContainer.querySelectorAll('[role="tabpanel"]');
 
       expect(tablist.getAttribute('aria-label')).toBe('Settings categories');
-      
+
       // First tab should be selected
       expect(tabs[0].getAttribute('aria-selected')).toBe('true');
       expect(tabs[0].getAttribute('tabindex')).toBe('0');
@@ -847,7 +852,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
 
       // Simulate opening second modal (should close first or stack appropriately)
       openModal2Button.click();
-      
+
       // Implementation would determine stacking behavior
       // For this example, assume second modal replaces first
       modal1.setAttribute('aria-hidden', 'true');
@@ -939,10 +944,10 @@ describe('Modal and Dialog Accessibility Tests', () => {
       // Backdrop click should dismiss
       const backdropClickSpy = vi.fn();
       backdrop.addEventListener('click', backdropClickSpy);
-      
+
       const backdropClickEvent = new MouseEvent('click', { bubbles: true });
       backdrop.dispatchEvent(backdropClickEvent);
-      
+
       expect(backdropClickSpy).toHaveBeenCalled();
     });
 

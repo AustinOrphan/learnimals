@@ -26,15 +26,15 @@ export const screenReaderTestConfig = {
         platform: 'Windows',
         announceChanges: true,
         supportsLiveRegions: true,
-        supportsAriaDescribedBy: true
+        supportsAriaDescribedBy: true,
       },
       {
         name: 'JAWS',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) JAWS/2023',
-        platform: 'Windows', 
+        platform: 'Windows',
         announceChanges: true,
         supportsLiveRegions: true,
-        supportsAriaDescribedBy: true
+        supportsAriaDescribedBy: true,
       },
       {
         name: 'VoiceOver',
@@ -45,8 +45,8 @@ export const screenReaderTestConfig = {
         supportsAriaDescribedBy: true,
         speechSynthesisVoices: [
           { name: 'Alex', lang: 'en-US' },
-          { name: 'Victoria', lang: 'en-US' }
-        ]
+          { name: 'Victoria', lang: 'en-US' },
+        ],
       },
       {
         name: 'TalkBack',
@@ -54,8 +54,8 @@ export const screenReaderTestConfig = {
         platform: 'Android',
         announceChanges: true,
         supportsLiveRegions: true,
-        supportsAriaDescribedBy: true
-      }
+        supportsAriaDescribedBy: true,
+      },
     ],
 
     // Test timeouts for announcements
@@ -63,7 +63,7 @@ export const screenReaderTestConfig = {
       politeAnnouncement: 150,
       assertiveAnnouncement: 100,
       liveRegionUpdate: 200,
-      focusChange: 50
+      focusChange: 50,
     },
 
     // DOM elements that should always be present
@@ -71,8 +71,8 @@ export const screenReaderTestConfig = {
       politeAnnouncer: '#accessibility-announcer-polite',
       assertiveAnnouncer: '#accessibility-announcer-assertive',
       statusRegion: '#status-messages',
-      alertRegion: '#alert-messages'
-    }
+      alertRegion: '#alert-messages',
+    },
   },
 
   // WCAG 2.1 Level AA compliance requirements
@@ -86,110 +86,110 @@ export const screenReaderTestConfig = {
         landmarkRoles: true,
         listStructure: true,
         tableHeaders: true,
-        formLabels: true
+        formLabels: true,
       },
-      
+
       // 1.3.2 Meaningful Sequence
       readingOrder: {
         logicalFlow: true,
         tabOrder: true,
-        visualOrder: true
+        visualOrder: true,
       },
-      
+
       // 1.4.3 Contrast (Minimum)
       colorContrast: {
         normalText: 4.5,
-        largeText: 3.0
+        largeText: 3.0,
       },
-      
+
       // 2.1.1 Keyboard
       keyboardAccess: {
         allFunctionality: true,
         noKeyboardTrap: true,
-        skipLinks: true
+        skipLinks: true,
       },
-      
+
       // 2.4.1 Bypass Blocks
       navigation: {
         skipToContent: true,
         landmarkNavigation: true,
-        headingNavigation: true
+        headingNavigation: true,
       },
-      
+
       // 2.4.2 Page Titled
       pageStructure: {
         uniqueTitles: true,
-        descriptiveTitles: true
+        descriptiveTitles: true,
       },
-      
+
       // 2.4.3 Focus Order
       focusManagement: {
         logicalOrder: true,
         visibleFocus: true,
-        focusTrapping: true
+        focusTrapping: true,
       },
-      
+
       // 2.4.4 Link Purpose
       linkPurpose: {
         descriptiveText: true,
-        contextAvailable: true
+        contextAvailable: true,
       },
-      
+
       // 2.4.6 Headings and Labels
       headingsLabels: {
         descriptiveHeadings: true,
-        descriptiveLabels: true
+        descriptiveLabels: true,
       },
-      
+
       // 3.1.1 Language of Page
       language: {
         pageLanguage: true,
-        partLanguage: true
+        partLanguage: true,
       },
-      
+
       // 3.2.1 On Focus
       predictableOnFocus: {
-        noContextChange: true
+        noContextChange: true,
       },
-      
+
       // 3.2.2 On Input
       predictableOnInput: {
-        noUnexpectedChange: true
+        noUnexpectedChange: true,
       },
-      
+
       // 3.3.1 Error Identification
       errorIdentification: {
         errorMessages: true,
-        errorLocation: true
+        errorLocation: true,
       },
-      
+
       // 3.3.2 Labels or Instructions
       formInstructions: {
         requiredFields: true,
         inputFormat: true,
-        helpText: true
+        helpText: true,
       },
-      
+
       // 4.1.1 Parsing
       validMarkup: {
         wellFormed: true,
-        uniqueIds: true
+        uniqueIds: true,
       },
-      
+
       // 4.1.2 Name, Role, Value
       nameRoleValue: {
         accessibleName: true,
         accessibleRole: true,
-        accessibleState: true
+        accessibleState: true,
       },
-      
+
       // 4.1.3 Status Messages
       statusMessages: {
         liveRegions: true,
         roleStatus: true,
-        roleAlert: true
-      }
-    }
+        roleAlert: true,
+      },
+    },
   },
 
   // Educational content specific requirements
@@ -201,25 +201,25 @@ export const screenReaderTestConfig = {
       announceAchievements: true,
       announceInstructions: true,
       announceHints: true,
-      announceFeedback: true
+      announceFeedback: true,
     },
-    
+
     lessonStructure: {
       clearObjectives: true,
       stepByStepInstructions: true,
       practiceExercises: true,
       progressIndicators: true,
-      vocabularyDefinitions: true
+      vocabularyDefinitions: true,
     },
-    
+
     interactiveElements: {
       dragDropAccessibility: true,
       sortingActivities: true,
       multipleChoice: true,
       fillInBlanks: true,
-      matchingExercises: true
-    }
-  }
+      matchingExercises: true,
+    },
+  },
 };
 
 /**
@@ -237,9 +237,10 @@ export class ScreenReaderTestUtils {
    * Set up mock screen reader environment
    */
   setupMockScreenReader(screenReaderName) {
-    const config = screenReaderTestConfig.environment.mockScreenReaders
-      .find(sr => sr.name === screenReaderName);
-    
+    const config = screenReaderTestConfig.environment.mockScreenReaders.find(
+      sr => sr.name === screenReaderName
+    );
+
     if (!config) {
       throw new Error(`Unknown screen reader: ${screenReaderName}`);
     }
@@ -250,7 +251,7 @@ export class ScreenReaderTestUtils {
     Object.defineProperty(navigator, 'userAgent', {
       writable: true,
       configurable: true,
-      value: config.userAgent
+      value: config.userAgent,
     });
 
     // Mock speech synthesis if needed
@@ -260,7 +261,7 @@ export class ScreenReaderTestUtils {
         configurable: true,
         value: {
           getVoices: vi.fn(() => config.speechSynthesisVoices),
-          speak: vi.fn((utterance) => {
+          speak: vi.fn(utterance => {
             this.recordAnnouncement(utterance.text, 'speech');
           }),
           cancel: vi.fn(),
@@ -268,8 +269,8 @@ export class ScreenReaderTestUtils {
           resume: vi.fn(),
           speaking: false,
           pending: false,
-          paused: false
-        }
+          paused: false,
+        },
       });
     }
 
@@ -285,7 +286,7 @@ export class ScreenReaderTestUtils {
       type,
       priority,
       timestamp: Date.now(),
-      screenReader: this.currentScreenReader?.name || 'unknown'
+      screenReader: this.currentScreenReader?.name || 'unknown',
     });
   }
 
@@ -298,11 +299,11 @@ export class ScreenReaderTestUtils {
     if (filterBy.type) {
       history = history.filter(a => a.type === filterBy.type);
     }
-    
+
     if (filterBy.priority) {
       history = history.filter(a => a.priority === filterBy.priority);
     }
-    
+
     if (filterBy.screenReader) {
       history = history.filter(a => a.screenReader === filterBy.screenReader);
     }
@@ -323,21 +324,21 @@ export class ScreenReaderTestUtils {
   async waitForAnnouncement(expectedText, timeout = 1000) {
     return new Promise((resolve, reject) => {
       const startTime = Date.now();
-      
+
       const checkAnnouncement = () => {
-        const found = this.announcementHistory.find(a => 
-          a.text.includes(expectedText)
-        );
-        
+        const found = this.announcementHistory.find(a => a.text.includes(expectedText));
+
         if (found) {
           resolve(found);
         } else if (Date.now() - startTime > timeout) {
-          reject(new Error(`Expected announcement "${expectedText}" not found within ${timeout}ms`));
+          reject(
+            new Error(`Expected announcement "${expectedText}" not found within ${timeout}ms`)
+          );
         } else {
           setTimeout(checkAnnouncement, 50);
         }
       };
-      
+
       checkAnnouncement();
     });
   }
@@ -349,15 +350,15 @@ export class ScreenReaderTestUtils {
     const results = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     // Check for required live regions
     const requiredRegions = screenReaderTestConfig.environment.requiredElements;
-    
+
     Object.entries(requiredRegions).forEach(([name, selector]) => {
       const element = container.querySelector(selector);
-      
+
       if (!element) {
         results.valid = false;
         results.errors.push(`Missing required live region: ${name} (${selector})`);
@@ -367,7 +368,7 @@ export class ScreenReaderTestUtils {
         if (!ariaLive) {
           results.warnings.push(`Live region ${name} missing aria-live attribute`);
         }
-        
+
         if (!element.classList.contains('sr-only')) {
           results.warnings.push(`Live region ${name} should be visually hidden with sr-only class`);
         }
@@ -384,13 +385,13 @@ export class ScreenReaderTestUtils {
     const results = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     // Check heading hierarchy
     const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const levels = Array.from(headings).map(h => parseInt(h.tagName.charAt(1)));
-    
+
     if (levels.length === 0) {
       results.warnings.push('No headings found');
     } else {
@@ -399,18 +400,20 @@ export class ScreenReaderTestUtils {
         results.errors.push('Page should start with h1');
         results.valid = false;
       }
-      
+
       // Check for skipped levels
       for (let i = 1; i < levels.length; i++) {
-        if (levels[i] - levels[i-1] > 1) {
-          results.errors.push(`Heading level skipped: h${levels[i-1]} to h${levels[i]}`);
+        if (levels[i] - levels[i - 1] > 1) {
+          results.errors.push(`Heading level skipped: h${levels[i - 1]} to h${levels[i]}`);
           results.valid = false;
         }
       }
     }
 
     // Check for landmarks
-    const landmarks = container.querySelectorAll('[role="banner"], [role="main"], [role="contentinfo"], [role="navigation"], [role="complementary"]');
+    const landmarks = container.querySelectorAll(
+      '[role="banner"], [role="main"], [role="contentinfo"], [role="navigation"], [role="complementary"]'
+    );
     if (landmarks.length === 0) {
       results.warnings.push('No ARIA landmarks found');
     }
@@ -433,7 +436,7 @@ export class ScreenReaderTestUtils {
       valid: true,
       errors: [],
       warnings: [],
-      focusableElements: []
+      focusableElements: [],
     };
 
     // Find all focusable elements
@@ -444,7 +447,7 @@ export class ScreenReaderTestUtils {
       'select:not([disabled])',
       'textarea:not([disabled])',
       '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]'
+      '[contenteditable="true"]',
     ].join(', ');
 
     const focusableElements = Array.from(container.querySelectorAll(focusableSelector));
@@ -459,11 +462,12 @@ export class ScreenReaderTestUtils {
       }
 
       // Check for appropriate ARIA labels
-      const hasLabel = element.getAttribute('aria-label') || 
-                      element.getAttribute('aria-labelledby') ||
-                      element.textContent.trim() ||
-                      (element.tagName === 'INPUT' && element.labels?.length > 0);
-      
+      const hasLabel =
+        element.getAttribute('aria-label') ||
+        element.getAttribute('aria-labelledby') ||
+        element.textContent.trim() ||
+        (element.tagName === 'INPUT' && element.labels?.length > 0);
+
       if (!hasLabel) {
         results.errors.push(`Focusable element lacks accessible name: ${element.tagName}`);
         results.valid = false;
@@ -484,27 +488,27 @@ export class ScreenReaderTestUtils {
         totalTests: 0,
         passed: 0,
         failed: 0,
-        warnings: 0
+        warnings: 0,
       },
       details: {
         liveRegions: null,
         semanticMarkup: null,
         keyboardNavigation: null,
-        announcements: this.getAnnouncementHistory()
+        announcements: this.getAnnouncementHistory(),
       },
-      recommendations: []
+      recommendations: [],
     };
 
     // Process test results
     Object.entries(testResults).forEach(([testName, result]) => {
       report.summary.totalTests++;
-      
+
       if (result.valid) {
         report.summary.passed++;
       } else {
         report.summary.failed++;
       }
-      
+
       report.summary.warnings += result.warnings?.length || 0;
       report.details[testName] = result;
     });
@@ -513,11 +517,11 @@ export class ScreenReaderTestUtils {
     if (report.summary.failed > 0) {
       report.recommendations.push('Fix failing accessibility tests before deployment');
     }
-    
+
     if (report.summary.warnings > 0) {
       report.recommendations.push('Review and address accessibility warnings');
     }
-    
+
     if (report.details.announcements.length === 0) {
       report.recommendations.push('Ensure screen reader announcements are working properly');
     }
@@ -531,7 +535,7 @@ export class ScreenReaderTestUtils {
   cleanup() {
     this.currentScreenReader = null;
     this.clearAnnouncementHistory();
-    
+
     if (this.mockTimer) {
       vi.clearAllTimers();
       this.mockTimer = null;
@@ -551,15 +555,23 @@ export class GameScreenReaderTestHelpers extends ScreenReaderTestUtils {
       valid: true,
       errors: [],
       warnings: [],
-      announcementTypes: []
+      announcementTypes: [],
     };
 
     // Check for game-specific live regions
     const gameRegions = {
-      gameStatus: gameContainer.querySelector('[aria-live="polite"].game-status, .game-status[aria-live="polite"]'),
-      gameFeedback: gameContainer.querySelector('[aria-live="assertive"].game-feedback, .game-feedback[aria-live="assertive"]'),
-      scoreAnnouncements: gameContainer.querySelector('[aria-live="polite"].score-announcements, .score-announcements[aria-live="polite"]'),
-      achievementAnnouncements: gameContainer.querySelector('[aria-live].achievement, .achievement[aria-live]')
+      gameStatus: gameContainer.querySelector(
+        '[aria-live="polite"].game-status, .game-status[aria-live="polite"]'
+      ),
+      gameFeedback: gameContainer.querySelector(
+        '[aria-live="assertive"].game-feedback, .game-feedback[aria-live="assertive"]'
+      ),
+      scoreAnnouncements: gameContainer.querySelector(
+        '[aria-live="polite"].score-announcements, .score-announcements[aria-live="polite"]'
+      ),
+      achievementAnnouncements: gameContainer.querySelector(
+        '[aria-live].achievement, .achievement[aria-live]'
+      ),
     };
 
     Object.entries(gameRegions).forEach(([regionName, element]) => {
@@ -573,10 +585,11 @@ export class GameScreenReaderTestHelpers extends ScreenReaderTestUtils {
     // Check for game controls accessibility
     const gameControls = gameContainer.querySelectorAll('button, [role="button"]');
     gameControls.forEach(control => {
-      const hasLabel = control.getAttribute('aria-label') || 
-                      control.getAttribute('aria-labelledby') ||
-                      control.textContent.trim();
-      
+      const hasLabel =
+        control.getAttribute('aria-label') ||
+        control.getAttribute('aria-labelledby') ||
+        control.textContent.trim();
+
       if (!hasLabel) {
         results.errors.push('Game control lacks accessible name');
         results.valid = false;
@@ -594,7 +607,7 @@ export class GameScreenReaderTestHelpers extends ScreenReaderTestUtils {
       valid: true,
       errors: [],
       warnings: [],
-      interactiveElements: []
+      interactiveElements: [],
     };
 
     // Test drag-drop elements
@@ -612,12 +625,12 @@ export class GameScreenReaderTestHelpers extends ScreenReaderTestUtils {
     gameGrids.forEach(grid => {
       const rowCount = grid.getAttribute('aria-rowcount');
       const colCount = grid.getAttribute('aria-colcount');
-      
+
       if (!rowCount || !colCount) {
         results.errors.push('Game grid missing row/column count');
         results.valid = false;
       }
-      
+
       results.interactiveElements.push({ type: 'grid', rows: rowCount, cols: colCount });
     });
 
@@ -626,16 +639,16 @@ export class GameScreenReaderTestHelpers extends ScreenReaderTestUtils {
     appRegions.forEach(app => {
       const hasLabel = app.getAttribute('aria-label') || app.getAttribute('aria-labelledby');
       const hasDescription = app.getAttribute('aria-describedby');
-      
+
       if (!hasLabel) {
         results.errors.push('Application region lacks accessible name');
         results.valid = false;
       }
-      
+
       if (!hasDescription) {
         results.warnings.push('Application region should have instructions');
       }
-      
+
       results.interactiveElements.push({ type: 'application', labeled: !!hasLabel });
     });
 

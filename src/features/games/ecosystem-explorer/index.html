@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sky's Ecosystem Explorer</title>
+    <link rel="stylesheet" href="ecosystemExplorer.css" />
+  </head>
+  <body>
+    <div class="game-wrapper">
+      <header class="game-header">
+        <div class="character-intro">
+          <div class="character-avatar">
+            <div class="parrot-icon">🦜</div>
+          </div>
+          <div class="character-dialogue">
+            <h1>Sky's Ecosystem Explorer</h1>
+            <p>Help me build balanced ecosystems! Drag species from the palette below to create thriving habitats.</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="game-container">
+        <div class="game-controls">
+          <button id="start-btn" class="control-btn primary">Start</button>
+          <button id="pause-btn" class="control-btn">Pause</button>
+          <button id="reset-btn" class="control-btn">Reset</button>
+          <button id="help-btn" class="control-btn">Help</button>
+        </div>
+
+        <div class="game-canvas-container">
+          <canvas id="ecosystem-canvas" width="800" height="600"></canvas>
+          <div id="game-messages" class="game-messages"></div>
+        </div>
+
+        <div class="game-info">
+          <div class="info-panel">
+            <h3>🎯 Game Goals</h3>
+            <ul>
+              <li>Build a balanced ecosystem</li>
+              <li>Place producers, herbivores, and carnivores</li>
+              <li>Watch the ecosystem health bar</li>
+              <li>Green = healthy, Red = unbalanced</li>
+            </ul>
+          </div>
+
+          <div class="info-panel">
+            <h3>🌱 Species Types</h3>
+            <div class="species-info">
+              <div class="species-type">
+                <span class="species-icon producer">🌱</span>
+                <span>Producers (Plants)</span>
+              </div>
+              <div class="species-type">
+                <span class="species-icon herbivore">🐰</span>
+                <span>Herbivores (Plant-eaters)</span>
+              </div>
+              <div class="species-type">
+                <span class="species-icon carnivore">🦊</span>
+                <span>Carnivores (Meat-eaters)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-panel">
+            <h3>📚 Learning Focus</h3>
+            <ul>
+              <li>Food chains and energy flow</li>
+              <li>Species interdependence</li>
+              <li>Ecosystem balance</li>
+              <li>Habitat requirements</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="instructions-panel" id="instructions" style="display: none">
+        <div class="instructions-content">
+          <h3>How to Play Sky's Ecosystem Explorer</h3>
+          <div class="instruction-steps">
+            <div class="step">
+              <span class="step-number">1</span>
+              <div class="step-content">
+                <strong>Select Species:</strong> Click on species in the bottom palette or drag them directly
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-number">2</span>
+              <div class="step-content">
+                <strong>Place Species:</strong> Click on the grid or drag species to place them
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-number">3</span>
+              <div class="step-content">
+                <strong>Balance Ecosystem:</strong> Watch the health bar - aim for green (balanced)
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-number">4</span>
+              <div class="step-content">
+                <strong>Level Up:</strong> Complete levels by maintaining balance with 5+ species
+              </div>
+            </div>
+          </div>
+          <button id="close-instructions" class="control-btn primary">Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import EcosystemGame from './EcosystemGame.js';
+
+      class EcosystemGameController {
+        constructor() {
+          this.game = null;
+          this.init();
+        }
+
+        init() {
+          this.setupEventListeners();
+          this.startGame();
+        }
+
+        setupEventListeners() {
+          document.getElementById('start-btn').addEventListener('click', () => {
+            if (this.game) {
+              this.game.start();
+              this.showMessage('Game started!');
+            }
+          });
+
+          document.getElementById('pause-btn').addEventListener('click', () => {
+            if (this.game) {
+              this.game.pause();
+              this.showMessage('Game paused');
+            }
+          });
+
+          document.getElementById('reset-btn').addEventListener('click', () => {
+            if (this.game) {
+              this.game.reset();
+              this.showMessage('Game reset!');
+            }
+          });
+
+          document.getElementById('help-btn').addEventListener('click', () => {
+            this.toggleInstructions();
+          });
+
+          document.getElementById('close-instructions').addEventListener('click', () => {
+            this.toggleInstructions();
+          });
+        }
+
+        startGame() {
+          try {
+            this.game = new EcosystemGame('ecosystem-canvas');
+            console.log('Ecosystem Explorer game initialized successfully');
+          } catch (error) {
+            console.error('Failed to initialize game:', error);
+            this.showMessage('Failed to start game. Please refresh the page.');
+          }
+        }
+
+        toggleInstructions() {
+          const instructions = document.getElementById('instructions');
+          const isVisible = instructions.style.display !== 'none';
+          instructions.style.display = isVisible ? 'none' : 'block';
+        }
+
+        showMessage(text, duration = 2000) {
+          const messagesContainer = document.getElementById('game-messages');
+          const messageEl = document.createElement('div');
+          messageEl.className = 'game-message';
+          messageEl.textContent = text;
+
+          messagesContainer.appendChild(messageEl);
+
+          setTimeout(() => {
+            if (messageEl.parentElement) {
+              messageEl.parentElement.removeChild(messageEl);
+            }
+          }, duration);
+        }
+      }
+
+      // Initialize the game when the page loads
+      document.addEventListener('DOMContentLoaded', () => {
+        new EcosystemGameController();
+      });
+    </script>
+  </body>
+</html>

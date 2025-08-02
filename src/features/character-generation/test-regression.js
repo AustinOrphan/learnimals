@@ -3,7 +3,12 @@
  * Tests to prevent previously fixed bugs from reoccurring
  */
 
-import { CharacterGenerationAPI, CharacterFactory, CharacterUtils, SubjectTemplates } from './index.js';
+import {
+  CharacterGenerationAPI,
+  CharacterFactory,
+  CharacterUtils,
+  SubjectTemplates,
+} from './index.js';
 
 /**
  * Run all regression tests
@@ -11,32 +16,32 @@ import { CharacterGenerationAPI, CharacterFactory, CharacterUtils, SubjectTempla
  */
 export async function runRegressionTests() {
   console.log('\n🔧 Running Character Generation Regression Tests...\n');
-  
+
   const results = {
     tests: 0,
     passed: 0,
     failed: 0,
-    errors: []
+    errors: [],
   };
 
   // Test 1: Timestamp Uniqueness (Bug #1: Static Date)
   await testTimestampUniqueness(results);
-  
+
   // Test 2: All Subjects Have Templates (Bug #2)
   await testAllSubjectTemplates(results);
-  
+
   // Test 3: Name Generation for All Subjects (Bug #3)
   await testNameGenerationCompleteness(results);
-  
+
   // Test 4: Education Specialties for All Subjects (Bug #4)
   await testEducationSpecialties(results);
-  
+
   // Test 5: Color Palettes for All Subjects (Bug #5)
   await testColorPalettes(results);
-  
+
   // Test 6: Rapid Generation Stress Test
   await testRapidGeneration(results);
-  
+
   // Test 7: Subject-Specific Validation
   await testSubjectValidation(results);
 
@@ -48,7 +53,7 @@ export async function runRegressionTests() {
   console.log(`Passed: ${results.passed} ✅`);
   console.log(`Failed: ${results.failed} ❌`);
   console.log(`Success Rate: ${((results.passed / results.tests) * 100).toFixed(1)}%`);
-  
+
   if (results.errors.length > 0) {
     console.log('\n🚨 Errors:');
     results.errors.forEach((error, index) => {
@@ -65,49 +70,50 @@ export async function runRegressionTests() {
 async function testTimestampUniqueness(results) {
   console.log('Test 1: Timestamp Uniqueness');
   results.tests++;
-  
+
   try {
     const timestamps = new Set();
     const characters = [];
-    
+
     // Generate 10 characters rapidly
     for (let i = 0; i < 10; i++) {
       const result = await CharacterGenerationAPI.createCharacter({
         name: `Timestamp Test ${i}`,
         subject: 'math',
-        autoSave: false
+        autoSave: false,
       });
-      
+
       if (result.success) {
         characters.push(result.character);
         timestamps.add(result.character.metadata.created);
         timestamps.add(result.character.metadata.modified);
       }
     }
-    
+
     // Check if all timestamps are unique
     const expectedTimestamps = characters.length * 2; // created + modified for each
     if (timestamps.size === expectedTimestamps) {
       console.log('✅ All timestamps are unique');
       results.passed++;
     } else {
-      console.log(`❌ Timestamp collision detected: ${timestamps.size}/${expectedTimestamps} unique`);
+      console.log(
+        `❌ Timestamp collision detected: ${timestamps.size}/${expectedTimestamps} unique`
+      );
       results.failed++;
       results.errors.push('Timestamp uniqueness test failed - static date bug may have returned');
     }
-    
+
     // Additional check: timestamps should be recent
     const now = Date.now();
     const allRecent = characters.every(char => {
       const created = new Date(char.metadata.created).getTime();
       return now - created < 60000; // Within last minute
     });
-    
+
     if (!allRecent) {
       console.log('❌ Some timestamps are not recent');
       results.errors.push('Timestamps are not being generated dynamically');
     }
-    
   } catch (error) {
     console.log('❌ Timestamp uniqueness test error:', error.message);
     results.failed++;
@@ -121,11 +127,11 @@ async function testTimestampUniqueness(results) {
 async function testAllSubjectTemplates(results) {
   console.log('\nTest 2: All Subjects Have Templates');
   results.tests++;
-  
+
   try {
     const allSubjects = CharacterUtils.getAvailableSubjects();
     const missingTemplates = [];
-    
+
     allSubjects.forEach(subject => {
       if (!SubjectTemplates[subject]) {
         missingTemplates.push(subject);
@@ -137,7 +143,7 @@ async function testAllSubjectTemplates(results) {
         }
       }
     });
-    
+
     if (missingTemplates.length === 0) {
       console.log(`✅ All ${allSubjects.length} subjects have complete templates`);
       results.passed++;
@@ -146,7 +152,6 @@ async function testAllSubjectTemplates(results) {
       results.failed++;
       results.errors.push(`Missing subject templates: ${missingTemplates.join(', ')}`);
     }
-    
   } catch (error) {
     console.log('❌ Subject template test error:', error.message);
     results.failed++;
@@ -160,26 +165,26 @@ async function testAllSubjectTemplates(results) {
 async function testNameGenerationCompleteness(results) {
   console.log('\nTest 3: Name Generation for All Subjects');
   results.tests++;
-  
+
   try {
     const factory = new CharacterFactory();
     const allSubjects = CharacterUtils.getAvailableSubjects();
     const failedSubjects = [];
-    
+
     for (const subject of allSubjects) {
       const name = factory.generateRandomName(subject);
       if (!name || name === '' || name === 'Unknown') {
         failedSubjects.push(subject);
       }
     }
-    
+
     // Also test that names are different
     const names = new Set();
     for (let i = 0; i < 20; i++) {
       const subject = allSubjects[i % allSubjects.length];
       names.add(factory.generateRandomName(subject));
     }
-    
+
     if (failedSubjects.length === 0 && names.size > 10) {
       console.log(`✅ Name generation works for all ${allSubjects.length} subjects`);
       console.log(`   Generated ${names.size} unique names in test`);
@@ -195,7 +200,6 @@ async function testNameGenerationCompleteness(results) {
       }
       results.failed++;
     }
-    
   } catch (error) {
     console.log('❌ Name generation test error:', error.message);
     results.failed++;
@@ -209,28 +213,29 @@ async function testNameGenerationCompleteness(results) {
 async function testEducationSpecialties(results) {
   console.log('\nTest 4: Education Specialties for All Subjects');
   results.tests++;
-  
+
   try {
     const factory = new CharacterFactory();
     const allSubjects = CharacterUtils.getAvailableSubjects();
     const missingSpecialties = [];
-    
+
     for (const subject of allSubjects) {
       const specialties = factory.generationRules.educationSpecialties[subject];
       if (!specialties || specialties.length === 0) {
         missingSpecialties.push(subject);
       }
     }
-    
+
     // Test that specialties are appropriate
     const testCharacter = await CharacterGenerationAPI.generateRandomCharacter('music', {
-      autoSave: false
+      autoSave: false,
     });
-    
-    const musicSpecialtiesValid = testCharacter.success && 
+
+    const musicSpecialtiesValid =
+      testCharacter.success &&
       testCharacter.character.education.specialties.length > 0 &&
       !testCharacter.character.education.specialties.includes('General Learning');
-    
+
     if (missingSpecialties.length === 0 && musicSpecialtiesValid) {
       console.log(`✅ All ${allSubjects.length} subjects have education specialties`);
       results.passed++;
@@ -245,7 +250,6 @@ async function testEducationSpecialties(results) {
       }
       results.failed++;
     }
-    
   } catch (error) {
     console.log('❌ Education specialties test error:', error.message);
     results.failed++;
@@ -259,23 +263,23 @@ async function testEducationSpecialties(results) {
 async function testColorPalettes(results) {
   console.log('\nTest 5: Color Palettes for All Subjects');
   results.tests++;
-  
+
   try {
     const allSubjects = CharacterUtils.getAvailableSubjects();
     const failedSubjects = [];
-    
+
     for (const subject of allSubjects) {
       const palettes = CharacterUtils.getColorPalettes(subject);
       if (!palettes || palettes.length === 0) {
         failedSubjects.push(subject);
       }
     }
-    
+
     // Test that different subjects get different colors
     const colorSets = new Map();
     for (const subject of allSubjects) {
       const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
-        autoSave: false
+        autoSave: false,
       });
       if (result.success) {
         const colors = `${result.character.appearance.primaryColor}-${result.character.appearance.secondaryColor}`;
@@ -285,10 +289,10 @@ async function testColorPalettes(results) {
         colorSets.get(colors).push(subject);
       }
     }
-    
+
     // Check for color diversity
     const hasGoodDiversity = colorSets.size >= allSubjects.length * 0.7; // At least 70% unique
-    
+
     if (failedSubjects.length === 0 && hasGoodDiversity) {
       console.log(`✅ All ${allSubjects.length} subjects have color palettes`);
       console.log(`   ${colorSets.size} unique color combinations found`);
@@ -304,7 +308,6 @@ async function testColorPalettes(results) {
       }
       results.failed++;
     }
-    
   } catch (error) {
     console.log('❌ Color palette test error:', error.message);
     results.failed++;
@@ -318,12 +321,12 @@ async function testColorPalettes(results) {
 async function testRapidGeneration(results) {
   console.log('\nTest 6: Rapid Generation Stress Test');
   results.tests++;
-  
+
   try {
     const startTime = Date.now();
     const successCount = { total: 0, passed: 0 };
     const errors = new Map();
-    
+
     // Generate 50 characters rapidly
     const allSubjects = CharacterUtils.getAvailableSubjects();
     const promises = [];
@@ -331,30 +334,32 @@ async function testRapidGeneration(results) {
       const subject = allSubjects[i % allSubjects.length];
       promises.push(
         CharacterGenerationAPI.generateRandomCharacter(subject, {
-          autoSave: false
-        }).then(result => {
-          successCount.total++;
-          if (result.success) {
-            successCount.passed++;
-          } else {
-            const error = result.error || 'Unknown error';
-            errors.set(error, (errors.get(error) || 0) + 1);
-          }
-        }).catch(error => {
-          successCount.total++;
-          const errorMsg = error.message || 'Exception thrown';
-          errors.set(errorMsg, (errors.get(errorMsg) || 0) + 1);
+          autoSave: false,
         })
+          .then(result => {
+            successCount.total++;
+            if (result.success) {
+              successCount.passed++;
+            } else {
+              const error = result.error || 'Unknown error';
+              errors.set(error, (errors.get(error) || 0) + 1);
+            }
+          })
+          .catch(error => {
+            successCount.total++;
+            const errorMsg = error.message || 'Exception thrown';
+            errors.set(errorMsg, (errors.get(errorMsg) || 0) + 1);
+          })
       );
     }
-    
+
     await Promise.all(promises);
     const duration = Date.now() - startTime;
-    const successRate = (successCount.passed / successCount.total * 100).toFixed(1);
-    
+    const successRate = ((successCount.passed / successCount.total) * 100).toFixed(1);
+
     console.log(`   Generated ${successCount.total} characters in ${duration}ms`);
     console.log(`   Success rate: ${successRate}%`);
-    
+
     if (successRate >= 95) {
       console.log('✅ Rapid generation stress test passed');
       results.passed++;
@@ -367,7 +372,6 @@ async function testRapidGeneration(results) {
       results.failed++;
       results.errors.push(`Rapid generation only ${successRate}% reliable`);
     }
-    
   } catch (error) {
     console.log('❌ Rapid generation test error:', error.message);
     results.failed++;
@@ -381,34 +385,34 @@ async function testRapidGeneration(results) {
 async function testSubjectValidation(results) {
   console.log('\nTest 7: Subject-Specific Validation');
   results.tests++;
-  
+
   try {
     const allSubjects = CharacterUtils.getAvailableSubjects();
     const validationFailures = [];
-    
+
     for (const subject of allSubjects) {
       const result = await CharacterGenerationAPI.createFromTemplate(subject, {
         name: `${subject} Test Character`,
-        autoSave: false
+        autoSave: false,
       });
-      
+
       if (!result.success) {
         validationFailures.push({
           subject,
           error: result.error,
-          details: result.details
+          details: result.details,
         });
       } else {
         // Verify subject was set correctly
         if (result.character.subject !== subject) {
           validationFailures.push({
             subject,
-            error: `Subject mismatch: expected ${subject}, got ${result.character.subject}`
+            error: `Subject mismatch: expected ${subject}, got ${result.character.subject}`,
           });
         }
       }
     }
-    
+
     if (validationFailures.length === 0) {
       console.log(`✅ All ${allSubjects.length} subject templates pass validation`);
       results.passed++;
@@ -421,9 +425,10 @@ async function testSubjectValidation(results) {
         }
       });
       results.failed++;
-      results.errors.push(`Subject validation failures: ${validationFailures.map(f => f.subject).join(', ')}`);
+      results.errors.push(
+        `Subject validation failures: ${validationFailures.map(f => f.subject).join(', ')}`
+      );
     }
-    
   } catch (error) {
     console.log('❌ Subject validation test error:', error.message);
     results.failed++;
@@ -439,5 +444,5 @@ export {
   testEducationSpecialties,
   testColorPalettes,
   testRapidGeneration,
-  testSubjectValidation
+  testSubjectValidation,
 };

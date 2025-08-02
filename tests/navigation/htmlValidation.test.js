@@ -22,20 +22,20 @@ describe('HTML Navigation Validation', () => {
       'src/features/subjects/shared',
       'src/features/subjects/geography',
       'src/features/subjects/music',
-      'src/templates'
+      'src/templates',
     ];
 
     searchDirs.forEach(dir => {
       try {
         const dirPath = join(process.cwd(), dir);
         const dirFiles = readdirSync(dirPath);
-        
+
         dirFiles.forEach(file => {
           if (file.endsWith('.html')) {
             files.push({
               path: join(dirPath, file),
               relativePath: join(dir, file),
-              name: file
+              name: file,
             });
           }
         });
@@ -79,7 +79,7 @@ describe('HTML Navigation Validation', () => {
               issues.push({
                 file: file.relativePath,
                 issue: 'navbarLoader.js loaded as module (should be regular script)',
-                line: match
+                line: match,
               });
             }
 
@@ -88,7 +88,7 @@ describe('HTML Navigation Validation', () => {
               issues.push({
                 file: file.relativePath,
                 issue: 'navbarLoader.js missing defer attribute',
-                line: match
+                line: match,
               });
             }
           });
@@ -97,13 +97,14 @@ describe('HTML Navigation Validation', () => {
           issues.push({
             file: file.relativePath,
             issue: 'Has navbar-placeholder but no navbarLoader.js script',
-            line: 'Missing navbarLoader.js'
+            line: 'Missing navbarLoader.js',
           });
         }
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'Navigation loading issues found:\n' + 
+        const errorMessage =
+          'Navigation loading issues found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}\n    ${issue.line}`).join('\n');
         expect(issues).toEqual([], errorMessage);
       }
@@ -127,7 +128,7 @@ describe('HTML Navigation Validation', () => {
               issues.push({
                 file: file.relativePath,
                 issue: 'navigationHelper.js loaded as module (should be regular script)',
-                line: match
+                line: match,
               });
             }
 
@@ -136,7 +137,7 @@ describe('HTML Navigation Validation', () => {
               issues.push({
                 file: file.relativePath,
                 issue: 'navigationHelper.js missing defer attribute',
-                line: match
+                line: match,
               });
             }
           });
@@ -144,7 +145,8 @@ describe('HTML Navigation Validation', () => {
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'NavigationHelper loading issues found:\n' + 
+        const errorMessage =
+          'NavigationHelper loading issues found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}\n    ${issue.line}`).join('\n');
         expect(issues).toEqual([], errorMessage);
       }
@@ -174,7 +176,7 @@ describe('HTML Navigation Validation', () => {
               issues.push({
                 file: file.relativePath,
                 issue: 'navigation.js missing defer attribute',
-                line: match
+                line: match,
               });
             }
           });
@@ -182,7 +184,8 @@ describe('HTML Navigation Validation', () => {
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'Navigation.js loading issues found:\n' + 
+        const errorMessage =
+          'Navigation.js loading issues found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}\n    ${issue.line}`).join('\n');
         expect(issues).toEqual([], errorMessage);
       }
@@ -203,13 +206,14 @@ describe('HTML Navigation Validation', () => {
           issues.push({
             file: file.relativePath,
             issue: 'References non-existent navbar.js file',
-            line: brokenMatches[0]
+            line: brokenMatches[0],
           });
         }
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'Broken navbar.js references found:\n' + 
+        const errorMessage =
+          'Broken navbar.js references found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}\n    ${issue.line}`).join('\n');
         expect(issues).toEqual([], errorMessage);
       }
@@ -237,7 +241,7 @@ describe('HTML Navigation Validation', () => {
             issues.push({
               file: file.relativePath,
               issue: 'Uses navbarLoader.js but missing navbar-placeholder',
-              line: 'Missing <div id="navbar-placeholder"></div>'
+              line: 'Missing <div id="navbar-placeholder"></div>',
             });
           }
 
@@ -245,14 +249,15 @@ describe('HTML Navigation Validation', () => {
             issues.push({
               file: file.relativePath,
               issue: 'Uses navbarLoader.js but has direct navbar element (conflict)',
-              line: hasDirectNavbar[0]
+              line: hasDirectNavbar[0],
             });
           }
         }
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'Navbar structure issues found:\n' + 
+        const errorMessage =
+          'Navbar structure issues found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}\n    ${issue.line}`).join('\n');
         expect(issues).toEqual([], errorMessage);
       }
@@ -260,9 +265,9 @@ describe('HTML Navigation Validation', () => {
 
     it('should validate consistent navigation patterns across pages', () => {
       const patterns = {
-        standardPattern: 0,  // navbar-placeholder + navbarLoader.js
-        directPattern: 0,    // direct navbar element
-        noNavigation: 0      // no navigation
+        standardPattern: 0, // navbar-placeholder + navbarLoader.js
+        directPattern: 0, // direct navbar element
+        noNavigation: 0, // no navigation
       };
 
       const issues = [];
@@ -294,12 +299,13 @@ describe('HTML Navigation Validation', () => {
       if (patterns.directPattern > patterns.standardPattern) {
         issues.push({
           issue: 'More pages use direct navbar than standard pattern',
-          details: `Direct: ${patterns.directPattern}, Standard: ${patterns.standardPattern}`
+          details: `Direct: ${patterns.directPattern}, Standard: ${patterns.standardPattern}`,
         });
       }
 
       if (issues.length > 0) {
-        const errorMessage = 'Navigation pattern consistency issues:\n' + 
+        const errorMessage =
+          'Navigation pattern consistency issues:\n' +
           issues.map(issue => `  ${issue.issue}: ${issue.details}`).join('\n');
         console.warn(errorMessage); // Warning only, not failure
       }
@@ -318,7 +324,8 @@ describe('HTML Navigation Validation', () => {
         if (!content) return;
 
         // Find all script tags
-        const scriptRegex = /<script[^>]*src=[^>]*(?:navbarLoader|navigationHelper|navigation)\.js[^>]*>/g;
+        const scriptRegex =
+          /<script[^>]*src=[^>]*(?:navbarLoader|navigationHelper|navigation)\.js[^>]*>/g;
         const scripts = content.match(scriptRegex) || [];
 
         if (scripts.length > 1) {
@@ -331,7 +338,7 @@ describe('HTML Navigation Validation', () => {
               issues.push({
                 file: file.relativePath,
                 issue: 'navigation.js loads before navbarLoader.js (may cause timing issues)',
-                line: 'Script order issue'
+                line: 'Script order issue',
               });
             }
           }
@@ -339,7 +346,8 @@ describe('HTML Navigation Validation', () => {
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'Script loading order issues found:\n' + 
+        const errorMessage =
+          'Script loading order issues found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}`).join('\n');
         console.warn(errorMessage); // Warning only, since defer should handle this
       }
@@ -360,29 +368,34 @@ describe('HTML Navigation Validation', () => {
         // If file has navigation, check for accessibility
         if (content.includes('mobile-menu') || content.includes('nav-menu')) {
           // Check for aria-label on mobile menu button
-          if (!content.includes('aria-label="Toggle mobile menu"') && 
-              !content.includes('aria-label=\'Toggle mobile menu\'')) {
+          if (
+            !content.includes('aria-label="Toggle mobile menu"') &&
+            !content.includes("aria-label='Toggle mobile menu'")
+          ) {
             issues.push({
               file: file.relativePath,
               issue: 'Mobile menu button missing aria-label',
-              line: 'Missing accessibility attribute'
+              line: 'Missing accessibility attribute',
             });
           }
 
           // Check for aria-label on nav element
-          if (!content.includes('aria-label="Main navigation"') && 
-              !content.includes('aria-label=\'Main navigation\'')) {
+          if (
+            !content.includes('aria-label="Main navigation"') &&
+            !content.includes("aria-label='Main navigation'")
+          ) {
             issues.push({
               file: file.relativePath,
               issue: 'Navigation element missing aria-label',
-              line: 'Missing accessibility attribute'
+              line: 'Missing accessibility attribute',
             });
           }
         }
       });
 
       if (issues.length > 0) {
-        const errorMessage = 'Navigation accessibility issues found:\n' + 
+        const errorMessage =
+          'Navigation accessibility issues found:\n' +
           issues.map(issue => `  ${issue.file}: ${issue.issue}`).join('\n');
         console.warn(errorMessage); // Warning only
       }

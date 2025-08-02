@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Focus Management Tests', () => {
@@ -56,30 +59,32 @@ describe('Focus Management Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock scrollIntoView
     Element.prototype.scrollIntoView = vi.fn();
 
     // Mock focus and blur methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
       this.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       const previousElement = this;
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
-      this.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body }));
+      this.dispatchEvent(
+        new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body })
+      );
     });
 
     // Mock getComputedStyle for focus indicators
@@ -89,7 +94,7 @@ describe('Focus Management Tests', () => {
           outline: element.classList.contains('no-outline') ? 'none' : '2px solid blue',
           outlineOffset: '2px',
           boxShadow: 'none',
-          backgroundColor: 'white'
+          backgroundColor: 'white',
         };
       }
       return {
@@ -101,7 +106,7 @@ describe('Focus Management Tests', () => {
         boxShadow: 'none',
         backgroundColor: 'white',
         listStyle: 'disc',
-        listStyleType: 'disc'
+        listStyleType: 'disc',
       };
     });
 
@@ -155,7 +160,7 @@ describe('Focus Management Tests', () => {
       `;
 
       const customBtn = testContainer.querySelector('#custom-btn');
-      
+
       // Mock custom focus styles
       window.getComputedStyle = vi.fn((element, pseudoElement) => {
         if (pseudoElement === ':focus' && element.classList.contains('custom-focus')) {
@@ -163,14 +168,14 @@ describe('Focus Management Tests', () => {
             outline: 'none',
             outlineOffset: '0px',
             boxShadow: '0 0 0 3px rgba(0, 123, 255, 0.5)',
-            backgroundColor: 'white'
+            backgroundColor: 'white',
           };
         }
         return {
           outline: 'none',
           outlineOffset: '0px',
           boxShadow: 'none',
-          backgroundColor: 'white'
+          backgroundColor: 'white',
         };
       });
 
@@ -194,7 +199,7 @@ describe('Focus Management Tests', () => {
       const goodContrast = service.checkContrast('#0066cc', '#ffffff');
       expect(goodContrast.isAA).toBe(true);
 
-      // Poor contrast: light blue focus on gray background  
+      // Poor contrast: light blue focus on gray background
       const poorContrast = service.checkContrast('#66ccff', '#666666');
       expect(poorContrast.isAA).toBe(false);
     });
@@ -220,7 +225,7 @@ describe('Focus Management Tests', () => {
 
       // Create focus trap for modal
       const focusTrap = service.createFocusTrap(modal);
-      
+
       // Simulate opening modal
       modal.style.display = 'block';
       focusTrap.activate();
@@ -249,7 +254,7 @@ describe('Focus Management Tests', () => {
 
       trigger.focus();
       const focusTrap = service.createFocusTrap(dialog);
-      
+
       dialog.style.display = 'block';
       focusTrap.activate();
 
@@ -291,11 +296,11 @@ describe('Focus Management Tests', () => {
 
       // Simulate navigation to page 2
       navPage2.click();
-      
+
       // Hide page 1, show page 2
       page1.style.display = 'none';
       page2.style.display = 'block';
-      
+
       // Focus should move to main content area
       mainContent.focus();
       expect(focusSpy).toHaveBeenCalled();
@@ -318,7 +323,7 @@ describe('Focus Management Tests', () => {
       const confirmBtn = testContainer.querySelector('#confirm');
 
       const focusTrap = service.createFocusTrap(modal);
-      
+
       expect(focusTrap).toBeTruthy();
       expect(focusTrap.container).toBe(modal);
       expect(focusTrap.firstFocusable).toBe(firstInput);
@@ -347,10 +352,10 @@ describe('Focus Management Tests', () => {
 
       // Test Tab from last element (should wrap to first)
       lastBtn.focus();
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true, 
-        cancelable: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
+        cancelable: true,
       });
       tabEvent.preventDefault = vi.fn();
       modal.dispatchEvent(tabEvent);
@@ -359,11 +364,11 @@ describe('Focus Management Tests', () => {
 
       // Test Shift+Tab from first element (should wrap to last)
       firstBtn.focus();
-      const shiftTabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
+      const shiftTabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
         shiftKey: true,
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       shiftTabEvent.preventDefault = vi.fn();
       modal.dispatchEvent(shiftTabEvent);
@@ -382,7 +387,7 @@ describe('Focus Management Tests', () => {
 
       const modal = testContainer.querySelector('#empty-modal');
       const focusTrap = service.createFocusTrap(modal);
-      
+
       expect(focusTrap.focusableElements.length).toBe(0);
       expect(focusTrap.firstFocusable).toBeNull();
       expect(focusTrap.lastFocusable).toBeNull();
@@ -391,10 +396,10 @@ describe('Focus Management Tests', () => {
       expect(() => focusTrap.activate()).not.toThrow();
 
       // Tab should be prevented when no focusable elements
-      const tabEvent = new KeyboardEvent('keydown', { 
+      const tabEvent = new KeyboardEvent('keydown', {
         key: 'Tab',
-        bubbles: true, 
-        cancelable: true 
+        bubbles: true,
+        cancelable: true,
       });
       tabEvent.preventDefault = vi.fn();
       modal.dispatchEvent(tabEvent);
@@ -437,7 +442,7 @@ describe('Focus Management Tests', () => {
       testContainer.appendChild(button);
 
       const component = new AccessibleComponent({
-        focusable: true
+        focusable: true,
       });
       component.element = button;
       component.setupAccessibility();
@@ -502,7 +507,7 @@ describe('Focus Management Tests', () => {
       testContainer.appendChild(button);
 
       const component = new AccessibleComponent({
-        keyboardNavigation: true
+        keyboardNavigation: true,
       });
       component.element = button;
       component.setupAccessibility();
@@ -511,17 +516,17 @@ describe('Focus Management Tests', () => {
       service.preferences.keyboardOnly = true;
 
       // Simulate focus in
-      const focusInEvent = new FocusEvent('focusin', { 
+      const focusInEvent = new FocusEvent('focusin', {
         target: button,
-        relatedTarget: null
+        relatedTarget: null,
       });
       button.dispatchEvent(focusInEvent);
 
       expect(button.classList.contains('keyboard-focused')).toBe(true);
 
       // Simulate focus out
-      const focusOutEvent = new FocusEvent('focusout', { 
-        target: button
+      const focusOutEvent = new FocusEvent('focusout', {
+        target: button,
       });
       button.dispatchEvent(focusOutEvent);
 
@@ -549,7 +554,7 @@ describe('Focus Management Tests', () => {
         width: 100,
         height: 40,
         x: 0,
-        y: -50
+        y: -50,
       });
 
       const scrollSpy = vi.spyOn(button, 'scrollIntoView');
@@ -561,7 +566,7 @@ describe('Focus Management Tests', () => {
       expect(scrollSpy).toHaveBeenCalledWith({
         behavior: 'smooth',
         block: 'center',
-        inline: 'nearest'
+        inline: 'nearest',
       });
     });
 
@@ -582,7 +587,7 @@ describe('Focus Management Tests', () => {
         width: 100,
         height: 40,
         x: 0,
-        y: 1000
+        y: 1000,
       });
 
       const scrollSpy = vi.spyOn(button, 'scrollIntoView');
@@ -594,7 +599,7 @@ describe('Focus Management Tests', () => {
       expect(scrollSpy).toHaveBeenCalledWith({
         behavior: 'auto',
         block: 'center',
-        inline: 'nearest'
+        inline: 'nearest',
       });
     });
 
@@ -614,7 +619,7 @@ describe('Focus Management Tests', () => {
         width: 100,
         height: 40,
         x: 0,
-        y: 100
+        y: 100,
       });
 
       const scrollSpy = vi.spyOn(button, 'scrollIntoView');
@@ -638,7 +643,7 @@ describe('Focus Management Tests', () => {
       `;
 
       const focusableElements = accessibilityTester.getFocusableElements(testContainer);
-      
+
       // Should exclude disabled button but include aria-disabled (it's still focusable)
       expect(focusableElements.length).toBe(4);
       expect(focusableElements.find(el => el.id === 'disabled')).toBeUndefined();
@@ -655,12 +660,20 @@ describe('Focus Management Tests', () => {
       `;
 
       const buttons = testContainer.querySelectorAll('button');
-      
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#visible'))).toBe(true);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#display-none'))).toBe(false);
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#visibility-hidden'))).toBe(false);
+
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#visible'))
+      ).toBe(true);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#display-none'))
+      ).toBe(false);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#visibility-hidden'))
+      ).toBe(false);
       // ARIA hidden elements can still be focusable but shouldn't be
-      expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#opacity-zero'))).toBe(true);
+      expect(
+        accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#opacity-zero'))
+      ).toBe(true);
     });
 
     it('should handle dynamically inserted focusable elements', () => {
@@ -672,7 +685,7 @@ describe('Focus Management Tests', () => {
 
       const container = testContainer.querySelector('#dynamic-container');
       let focusableElements = accessibilityTester.getFocusableElements(container);
-      
+
       expect(focusableElements.length).toBe(1);
 
       // Add new button
@@ -686,7 +699,7 @@ describe('Focus Management Tests', () => {
       expect(focusableElements[1]).toBe(newButton);
     });
 
-    it('should handle focus management during animations', (done) => {
+    it('should handle focus management during animations', done => {
       testContainer.innerHTML = `
         <button id="trigger">Trigger Animation</button>
         <div id="animated-content" style="opacity: 0; transition: opacity 0.3s;">
@@ -699,10 +712,10 @@ describe('Focus Management Tests', () => {
       const animatedButton = testContainer.querySelector('#animated-button');
 
       trigger.focus();
-      
+
       // Start animation
       content.style.opacity = '1';
-      
+
       // Focus should wait for animation to complete
       setTimeout(() => {
         animatedButton.focus();
@@ -719,7 +732,7 @@ describe('Focus Management Tests', () => {
       testContainer.appendChild(button);
 
       const component = new AccessibleComponent({
-        keyboardNavigation: true
+        keyboardNavigation: true,
       });
       component.element = button;
       component.setupKeyboardNavigation();
@@ -729,7 +742,10 @@ describe('Focus Management Tests', () => {
       // Destroy component
       component.destroy();
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', component.handleAccessibleKeydown);
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(
+        'keydown',
+        component.handleAccessibleKeydown
+      );
       expect(removeEventListenerSpy).toHaveBeenCalledWith('focusin', component.handleFocusIn);
       expect(removeEventListenerSpy).toHaveBeenCalledWith('focusout', component.handleFocusOut);
     });
@@ -746,7 +762,7 @@ describe('Focus Management Tests', () => {
       testContainer.appendChild(componentButton);
 
       originalButton.focus();
-      
+
       const component = new AccessibleComponent();
       component.element = componentButton;
       component.previousFocus = originalButton;

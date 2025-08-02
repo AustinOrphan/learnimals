@@ -1,7 +1,7 @@
 /**
  * Customization Presets
  * Quick theme application and preset management system
- * 
+ *
  * Part of Phase G: Character Customization Studio
  */
 
@@ -15,10 +15,10 @@ export default class CustomizationPresets extends BaseComponent {
       tagName: 'div',
       className: 'customization-presets',
       attributes: {
-        'role': 'region',
-        'aria-label': 'Customization Presets'
+        role: 'region',
+        'aria-label': 'Customization Presets',
       },
-      ...options
+      ...options,
     });
 
     // Preset state
@@ -32,7 +32,7 @@ export default class CustomizationPresets extends BaseComponent {
       showCategories: options.showCategories !== false,
       allowCustomPresets: options.allowCustomPresets !== false,
       showPreview: options.showPreview !== false,
-      compactMode: options.compactMode || false
+      compactMode: options.compactMode || false,
     };
 
     // Initialize built-in presets
@@ -77,17 +77,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: false },
           outline: { enabled: false },
           gradient: { enabled: true, intensity: 0.4 },
-          texture: { enabled: false }
+          texture: { enabled: false },
         },
         animations: {
           idle: 'breathe',
           hover: 'lift',
           click: 'bounce',
-          speed: 1.0
+          speed: 1.0,
         },
         accessories: [],
-        background: null
-      }
+        background: null,
+      },
     });
 
     this.addPreset('educational-professional', {
@@ -104,17 +104,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: false },
           outline: { enabled: true, intensity: 0.5 },
           gradient: { enabled: true, intensity: 0.2 },
-          texture: { enabled: false }
+          texture: { enabled: false },
         },
         animations: {
           idle: 'none',
           hover: 'subtle',
           click: 'gentle',
-          speed: 0.8
+          speed: 0.8,
         },
         accessories: [],
-        background: null
-      }
+        background: null,
+      },
     });
 
     // Playful presets
@@ -132,17 +132,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: true, density: 0.3 },
           outline: { enabled: false },
           gradient: { enabled: true, intensity: 0.6 },
-          texture: { enabled: false }
+          texture: { enabled: false },
         },
         animations: {
           idle: 'float',
           hover: 'wiggle',
           click: 'spin',
-          speed: 1.2
+          speed: 1.2,
         },
         accessories: ['stars', 'hearts'],
-        background: null
-      }
+        background: null,
+      },
     });
 
     this.addPreset('playful-magical', {
@@ -159,17 +159,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: true, density: 0.5 },
           outline: { enabled: false },
           gradient: { enabled: true, intensity: 0.8 },
-          texture: { enabled: true, type: 'sparkle' }
+          texture: { enabled: true, type: 'sparkle' },
         },
         animations: {
           idle: 'sway',
           hover: 'dance',
           click: 'jump',
-          speed: 1.0
+          speed: 1.0,
         },
         accessories: ['wizard-hat', 'stars', 'lightning'],
-        background: 'space'
-      }
+        background: 'space',
+      },
     });
 
     // Technical presets
@@ -187,17 +187,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: false },
           outline: { enabled: true, intensity: 0.3 },
           gradient: { enabled: true, intensity: 0.5 },
-          texture: { enabled: false }
+          texture: { enabled: false },
         },
         animations: {
           idle: 'breathe',
           hover: 'glow',
           click: 'pulse',
-          speed: 0.9
+          speed: 0.9,
         },
         accessories: ['calculator', 'microscope'],
-        background: null
-      }
+        background: null,
+      },
     });
 
     this.addPreset('tech-futuristic', {
@@ -214,17 +214,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: true, density: 0.2 },
           outline: { enabled: true, intensity: 0.7 },
           gradient: { enabled: true, intensity: 0.9 },
-          texture: { enabled: true, type: 'circuit' }
+          texture: { enabled: true, type: 'circuit' },
         },
         animations: {
           idle: 'pulse',
           hover: 'electric',
           click: 'flash',
-          speed: 1.1
+          speed: 1.1,
         },
         accessories: ['lightning', 'calculator'],
-        background: 'space'
-      }
+        background: 'space',
+      },
     });
 
     // Creative presets
@@ -242,17 +242,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: true, density: 0.4 },
           outline: { enabled: false },
           gradient: { enabled: true, intensity: 0.8 },
-          texture: { enabled: true, type: 'brush' }
+          texture: { enabled: true, type: 'brush' },
         },
         animations: {
           idle: 'sway',
           hover: 'dance',
           click: 'splash',
-          speed: 1.0
+          speed: 1.0,
         },
         accessories: ['paintbrush', 'rainbow'],
-        background: 'nature'
-      }
+        background: 'nature',
+      },
     });
 
     this.addPreset('creative-retro', {
@@ -269,17 +269,17 @@ export default class CustomizationPresets extends BaseComponent {
           sparkles: { enabled: false },
           outline: { enabled: true, intensity: 0.4 },
           gradient: { enabled: true, intensity: 0.3 },
-          texture: { enabled: true, type: 'paper' }
+          texture: { enabled: true, type: 'paper' },
         },
         animations: {
           idle: 'none',
           hover: 'lift',
           click: 'bounce',
-          speed: 0.8
+          speed: 0.8,
         },
         accessories: [],
-        background: 'library'
-      }
+        background: 'library',
+      },
     });
 
     // Initialize categories
@@ -294,35 +294,35 @@ export default class CustomizationPresets extends BaseComponent {
       name: 'Educational',
       description: 'Professional themes for learning environments',
       icon: '🎓',
-      color: '#4A90E2'
+      color: '#4A90E2',
     });
 
     this.categories.set('playful', {
       name: 'Playful',
       description: 'Fun and energetic themes for young learners',
       icon: '🎈',
-      color: '#FF6B6B'
+      color: '#FF6B6B',
     });
 
     this.categories.set('technical', {
       name: 'Technical',
       description: 'Modern themes for STEM and technical subjects',
       icon: '⚙️',
-      color: '#4ECDC4'
+      color: '#4ECDC4',
     });
 
     this.categories.set('creative', {
       name: 'Creative',
       description: 'Artistic themes for creative expression',
       icon: '🎨',
-      color: '#9980FA'
+      color: '#9980FA',
     });
 
     this.categories.set('custom', {
       name: 'Custom',
       description: 'User-created and saved presets',
       icon: '💾',
-      color: '#6AB04C'
+      color: '#6AB04C',
     });
   }
 
@@ -335,7 +335,7 @@ export default class CustomizationPresets extends BaseComponent {
       ...preset,
       created: preset.created || new Date().toISOString(),
       lastUsed: null,
-      useCount: 0
+      useCount: 0,
     });
   }
 
@@ -366,12 +366,16 @@ export default class CustomizationPresets extends BaseComponent {
           <span class="category-icon">🌟</span>
           <span class="category-label">All Presets</span>
         </button>
-        ${Array.from(this.categories.entries()).map(([id, category]) => `
+        ${Array.from(this.categories.entries())
+          .map(
+            ([id, category]) => `
           <button class="category-tab" data-category="${id}">
             <span class="category-icon">${category.icon}</span>
             <span class="category-label">${category.name}</span>
           </button>
-        `).join('')}
+        `
+          )
+          .join('')}
       </div>
     `;
   }
@@ -392,7 +396,7 @@ export default class CustomizationPresets extends BaseComponent {
    */
   renderPresetsByCategory() {
     const presetsByCategory = new Map();
-    
+
     // Group presets by category
     for (const [id, preset] of this.presets) {
       const category = preset.category || 'custom';
@@ -411,7 +415,7 @@ export default class CustomizationPresets extends BaseComponent {
     }
 
     let html = '';
-    
+
     for (const [categoryId, presets] of presetsByCategory) {
       const category = this.categories.get(categoryId);
       if (!category || presets.length === 0) continue;
@@ -442,7 +446,7 @@ export default class CustomizationPresets extends BaseComponent {
   renderPresetCard(preset) {
     const isSelected = this.selectedPreset === preset.id;
     const category = this.categories.get(preset.category) || { color: '#666' };
-    
+
     return `
       <div class="preset-card ${isSelected ? 'selected' : ''}" 
            data-preset-id="${preset.id}"
@@ -476,7 +480,9 @@ export default class CustomizationPresets extends BaseComponent {
             <span>👁️</span>
             Preview
           </button>
-          ${!preset.builtIn ? `
+          ${
+            !preset.builtIn
+              ? `
             <button class="btn-small btn-edit" data-action="edit" data-preset-id="${preset.id}">
               <span>✏️</span>
               Edit
@@ -485,7 +491,9 @@ export default class CustomizationPresets extends BaseComponent {
               <span>🗑️</span>
               Delete
             </button>
-          ` : ''}
+          `
+              : ''
+          }
         </div>
       </div>
     `;
@@ -498,10 +506,10 @@ export default class CustomizationPresets extends BaseComponent {
     const customization = preset.customization;
     const theme = customization.theme || 'educational';
     const colorScheme = customization.colorScheme || 'primary';
-    
+
     // Generate preview based on customization
     const previewStyle = this.generatePreviewStyle(customization);
-    
+
     return `
       <div class="preset-preview" style="${previewStyle}">
         <div class="preview-character">
@@ -516,7 +524,7 @@ export default class CustomizationPresets extends BaseComponent {
    */
   generatePreviewStyle(customization) {
     let style = '';
-    
+
     // Base background
     const colorSchemes = {
       primary: '#4A90E2',
@@ -524,21 +532,21 @@ export default class CustomizationPresets extends BaseComponent {
       cool: '#4ECDC4',
       nature: '#6AB04C',
       royal: '#9980FA',
-      monochrome: '#2C3E50'
+      monochrome: '#2C3E50',
     };
-    
+
     const baseColor = colorSchemes[customization.colorScheme] || '#4A90E2';
     style += `background: linear-gradient(135deg, ${baseColor}20, ${baseColor}40);`;
-    
+
     // Effects
     if (customization.effects?.glow?.enabled) {
       style += `box-shadow: 0 0 20px ${baseColor}40;`;
     }
-    
+
     if (customization.effects?.shadow?.enabled) {
       style += 'box-shadow: 0 4px 12px rgba(0,0,0,0.2);';
     }
-    
+
     return style;
   }
 
@@ -547,12 +555,12 @@ export default class CustomizationPresets extends BaseComponent {
    */
   getPreviewCharacterIcon(preset) {
     const accessories = preset.customization.accessories || [];
-    
+
     if (accessories.includes('wizard-hat')) return '🧙‍♂️';
     if (accessories.includes('graduation-hat')) return '🎓';
     if (accessories.includes('chef-hat')) return '👨‍🍳';
     if (accessories.includes('crown')) return '👑';
-    
+
     return '😊';
   }
 
@@ -561,29 +569,31 @@ export default class CustomizationPresets extends BaseComponent {
    */
   renderPresetFeatures(customization) {
     const features = [];
-    
+
     if (customization.theme) {
       features.push(`<span class="feature-tag theme">${customization.theme}</span>`);
     }
-    
+
     if (customization.effects) {
       const activeEffects = Object.entries(customization.effects)
         .filter(([_, effect]) => effect.enabled)
         .map(([name, _]) => name);
-      
+
       if (activeEffects.length > 0) {
         features.push(`<span class="feature-tag effects">${activeEffects.length} effects</span>`);
       }
     }
-    
+
     if (customization.animations?.idle && customization.animations.idle !== 'none') {
       features.push('<span class="feature-tag animated">Animated</span>');
     }
-    
+
     if (customization.accessories?.length > 0) {
-      features.push(`<span class="feature-tag accessories">${customization.accessories.length} accessories</span>`);
+      features.push(
+        `<span class="feature-tag accessories">${customization.accessories.length} accessories</span>`
+      );
     }
-    
+
     return features.join('');
   }
 
@@ -621,7 +631,7 @@ export default class CustomizationPresets extends BaseComponent {
    */
   setupEventListeners() {
     this.element.addEventListener('click', this.handleClick.bind(this));
-    
+
     // Listen for customization events
     characterEvents.on('customizationChanged', this.handleCustomizationChange.bind(this));
   }
@@ -651,18 +661,18 @@ export default class CustomizationPresets extends BaseComponent {
    */
   handleAction(action, presetId, target) {
     switch (action) {
-    case 'apply':
-      this.applyPreset(presetId);
-      break;
-    case 'preview':
-      this.previewPreset(presetId);
-      break;
-    case 'edit':
-      this.editPreset(presetId);
-      break;
-    case 'delete':
-      this.deletePreset(presetId);
-      break;
+      case 'apply':
+        this.applyPreset(presetId);
+        break;
+      case 'preview':
+        this.previewPreset(presetId);
+        break;
+      case 'edit':
+        this.editPreset(presetId);
+        break;
+      case 'delete':
+        this.deletePreset(presetId);
+        break;
     }
   }
 
@@ -693,7 +703,7 @@ export default class CustomizationPresets extends BaseComponent {
     characterEvents.emit('presetApplied', {
       presetId,
       preset,
-      customization: preset.customization
+      customization: preset.customization,
     });
 
     // Call callback
@@ -713,7 +723,7 @@ export default class CustomizationPresets extends BaseComponent {
     characterEvents.emit('presetPreviewed', {
       presetId,
       preset,
-      customization: preset.customization
+      customization: preset.customization,
     });
 
     console.log(`Previewing preset: ${preset.name}`);
@@ -729,7 +739,7 @@ export default class CustomizationPresets extends BaseComponent {
     // Emit edit event
     characterEvents.emit('presetEditRequested', {
       presetId,
-      preset
+      preset,
     });
 
     console.log(`Edit requested for preset: ${preset.name}`);
@@ -745,7 +755,7 @@ export default class CustomizationPresets extends BaseComponent {
     if (confirm(`Delete preset "${preset.name}"?`)) {
       this.customPresets.delete(presetId);
       this.saveCustomPresets();
-      
+
       // Update UI
       this.updatePresetsList();
 
@@ -816,12 +826,12 @@ export default class CustomizationPresets extends BaseComponent {
       customization,
       created: new Date().toISOString(),
       useCount: 0,
-      lastUsed: null
+      lastUsed: null,
     };
 
     this.customPresets.set(presetId, preset);
     await this.saveCustomPresets();
-    
+
     // Update UI
     this.updatePresetsList();
 
@@ -878,11 +888,11 @@ export default class CustomizationPresets extends BaseComponent {
       builtin: Object.fromEntries(this.presets),
       custom: Object.fromEntries(this.customPresets),
       exported: new Date().toISOString(),
-      version: '1.0'
+      version: '1.0',
     };
 
     const blob = new Blob([JSON.stringify(allPresets, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
 
     const url = URL.createObjectURL(blob);
@@ -899,23 +909,23 @@ export default class CustomizationPresets extends BaseComponent {
   importPresets(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
-      reader.onload = (e) => {
+
+      reader.onload = e => {
         try {
           const data = JSON.parse(e.target.result);
-          
+
           if (data.custom) {
             // Import custom presets
             for (const [id, preset] of Object.entries(data.custom)) {
               this.customPresets.set(id, preset);
             }
-            
+
             this.saveCustomPresets();
             this.updatePresetsList();
-            
+
             resolve({
               success: true,
-              imported: Object.keys(data.custom).length
+              imported: Object.keys(data.custom).length,
             });
           } else {
             reject(new Error('Invalid preset file format'));
@@ -924,7 +934,7 @@ export default class CustomizationPresets extends BaseComponent {
           reject(error);
         }
       };
-      
+
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsText(file);
     });
@@ -945,7 +955,7 @@ export default class CustomizationPresets extends BaseComponent {
       total: this.presets.size + this.customPresets.size,
       builtin: this.presets.size,
       custom: this.customPresets.size,
-      byCategory: {}
+      byCategory: {},
     };
 
     // Count by category

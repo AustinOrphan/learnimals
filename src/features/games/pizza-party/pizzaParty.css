@@ -11,15 +11,15 @@
   width: 100%;
   height: 100vh;
   min-height: 600px;
-  background: linear-gradient(135deg, #FFE4E1 0%, #FFF8DC 50%, #F0E68C 100%);
+  background: linear-gradient(135deg, #ffe4e1 0%, #fff8dc 50%, #f0e68c 100%);
   font-family: 'Nunito', 'Segoe UI', sans-serif;
   overflow: hidden;
   user-select: none;
-  
+
   /* Custom properties for gradient colors */
-  --bg-gradient-start: #FFE4E1;
-  --bg-gradient-middle: #FFF8DC;
-  --bg-gradient-end: #F0E68C;
+  --bg-gradient-start: #ffe4e1;
+  --bg-gradient-middle: #fff8dc;
+  --bg-gradient-end: #f0e68c;
 }
 
 .pizza-party-canvas {
@@ -70,7 +70,9 @@
   border: 2px solid rgba(255, 255, 255, 0.3);
   min-width: 120px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .score-display:hover,
@@ -113,13 +115,24 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-.heart:nth-child(1) { animation: heartbeat 2s ease-in-out infinite; }
-.heart:nth-child(2) { animation: heartbeat 2s ease-in-out infinite 0.3s; }
-.heart:nth-child(3) { animation: heartbeat 2s ease-in-out infinite 0.6s; }
+.heart:nth-child(1) {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+.heart:nth-child(2) {
+  animation: heartbeat 2s ease-in-out infinite 0.3s;
+}
+.heart:nth-child(3) {
+  animation: heartbeat 2s ease-in-out infinite 0.6s;
+}
 
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* ===== Center HUD ===== */
@@ -171,7 +184,7 @@
 .fraction-line {
   width: 40px;
   height: 4px;
-  background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
   border-radius: 2px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -213,7 +226,7 @@
 }
 
 .hint-btn {
-  background: linear-gradient(135deg, #FFD93D 0%, #FF6B9D 100%);
+  background: linear-gradient(135deg, #ffd93d 0%, #ff6b9d 100%);
   box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
 }
 
@@ -222,7 +235,7 @@
 }
 
 .reset-btn {
-  background: linear-gradient(135deg, #FF9A9E 0%, #FAD0C4 100%);
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
   box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
 }
 
@@ -251,7 +264,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4ECDC4 0%, #44A08D 100%);
+  background: linear-gradient(90deg, #4ecdc4 0%, #44a08d 100%);
   border-radius: 6px;
   transition: width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 0 10px rgba(68, 160, 141, 0.5);
@@ -271,8 +284,12 @@
 }
 
 @keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 /* ===== Message Area ===== */
@@ -299,7 +316,7 @@
 }
 
 .message-area.success {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
   color: white;
   border-color: rgba(76, 175, 80, 0.3);
   box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4);
@@ -313,7 +330,7 @@
 }
 
 .message-area.info {
-  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
   color: white;
   border-color: rgba(33, 150, 243, 0.3);
   box-shadow: 0 8px 30px rgba(33, 150, 243, 0.4);
@@ -324,55 +341,55 @@
   .pizza-game-hud {
     padding: 15px;
   }
-  
+
   .hud-top {
     flex-direction: column;
     gap: 10px;
     align-items: center;
   }
-  
+
   .score-display,
   .level-display,
   .lives-display {
     min-width: 100px;
     padding: 10px 16px;
   }
-  
+
   .score-value,
   .level-value {
     font-size: 20px;
   }
-  
+
   .fraction-challenge {
     padding: 16px 24px;
     transform: translateY(-30px);
   }
-  
+
   .numerator,
   .denominator {
     font-size: 28px;
   }
-  
+
   .fraction-line {
     width: 30px;
   }
-  
+
   .hud-bottom {
     flex-direction: column;
     gap: 10px;
     align-items: center;
   }
-  
+
   .game-btn {
     min-width: 120px;
     padding: 14px 20px;
   }
-  
+
   .progress-bar {
     margin: 0;
     width: 100%;
   }
-  
+
   .message-area {
     bottom: 80px;
     min-width: 250px;
@@ -385,29 +402,29 @@
   .pizza-party-game {
     min-height: 500px;
   }
-  
+
   .pizza-game-hud {
     padding: 10px;
   }
-  
+
   .fraction-challenge {
     padding: 12px 20px;
   }
-  
+
   .numerator,
   .denominator {
     font-size: 24px;
   }
-  
+
   .challenge-text {
     font-size: 14px;
   }
-  
+
   .game-btn {
     padding: 12px 16px;
     font-size: 13px;
   }
-  
+
   .btn-text {
     display: none;
   }
@@ -418,11 +435,11 @@
   .heart {
     animation: none;
   }
-  
+
   .progress-fill::after {
     animation: none;
   }
-  
+
   .game-btn,
   .fraction-challenge,
   .message-area {
@@ -435,7 +452,7 @@
     background: rgba(255, 255, 255, 0.98);
     color: #000;
   }
-  
+
   .score-display,
   .level-display,
   .lives-display,
@@ -443,7 +460,7 @@
     background: rgba(255, 255, 255, 1);
     border: 3px solid #000;
   }
-  
+
   .game-btn {
     background: #000;
     color: #fff;
@@ -502,9 +519,23 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }
 
 /* ===== Custom Scrollbar ===== */
@@ -551,8 +582,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* ===== Achievement Popup ===== */
@@ -561,7 +596,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
   color: #333;
   padding: 30px 40px;
   border-radius: 20px;

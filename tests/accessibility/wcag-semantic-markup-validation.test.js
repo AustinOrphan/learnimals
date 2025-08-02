@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -29,10 +32,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('WCAG Semantic Markup Validation Tests', () => {
@@ -176,7 +179,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
         main: testContainer.querySelector('[role="main"]'),
         complementary: testContainer.querySelectorAll('[role="complementary"]'),
         contentinfo: testContainer.querySelector('[role="contentinfo"]'),
-        navigation: testContainer.querySelectorAll('[role="navigation"]')
+        navigation: testContainer.querySelectorAll('[role="navigation"]'),
       };
 
       // Verify all major landmarks exist
@@ -202,7 +205,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Verify heading hierarchy
       const headings = testContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
       const levels = Array.from(headings).map(h => parseInt(h.tagName.charAt(1)));
-      
+
       // Should start with h1 and not skip levels
       expect(levels[0]).toBe(1);
       for (let i = 1; i < levels.length; i++) {
@@ -322,12 +325,12 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       const headings = testContainer.querySelectorAll('h1, h2, h3');
 
       expect(article.getAttribute('aria-labelledby')).toBe('lesson-title');
-      
+
       // Verify all sections have proper labeling
       sections.forEach(section => {
         const ariaLabelledBy = section.getAttribute('aria-labelledby');
         expect(ariaLabelledBy).toBeTruthy();
-        
+
         const labelElement = testContainer.querySelector(`#${ariaLabelledBy}`);
         expect(labelElement).toBeTruthy();
       });
@@ -335,7 +338,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Verify figure and figcaption relationship
       const figure = testContainer.querySelector('figure');
       const figcaption = testContainer.querySelector('figcaption');
-      
+
       expect(figure.getAttribute('aria-labelledby')).toBe(figcaption.id);
 
       // Verify exercise structure
@@ -463,7 +466,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       const unorderedLists = testContainer.querySelectorAll('ul[role="list"]');
       unorderedLists.forEach(list => {
         expect(list.getAttribute('role')).toBe('list');
-        
+
         const listItems = list.querySelectorAll('li');
         listItems.forEach(item => {
           expect(item.getAttribute('role')).toBe('listitem');
@@ -477,7 +480,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate ordered list structure
       const orderedList = testContainer.querySelector('ol[role="list"]');
       expect(orderedList.getAttribute('role')).toBe('list');
-      
+
       const orderedItems = orderedList.querySelectorAll('li');
       orderedItems.forEach((item, index) => {
         expect(item.getAttribute('role')).toBe('listitem');
@@ -490,14 +493,14 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       const definitionList = testContainer.querySelector('dl');
       const terms = definitionList.querySelectorAll('dt');
       const definitions = definitionList.querySelectorAll('dd');
-      
+
       expect(terms.length).toEqual(definitions.length);
-      
+
       // Verify term-definition relationships
       terms.forEach((term, index) => {
         const termId = term.id;
         const relatedDefinition = definitions[index];
-        
+
         expect(termId).toBeTruthy();
         expect(relatedDefinition.getAttribute('aria-labelledby')).toBe(termId);
       });
@@ -505,10 +508,10 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate custom list with ARIA
       const customList = testContainer.querySelector('.activity-grid[role="list"]');
       const customItems = customList.querySelectorAll('[role="listitem"]');
-      
+
       expect(customList.getAttribute('role')).toBe('list');
       expect(customItems.length).toBeGreaterThan(0);
-      
+
       customItems.forEach(item => {
         expect(item.getAttribute('role')).toBe('listitem');
       });
@@ -806,7 +809,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Verify all form controls have proper labeling
       inputs.forEach(input => {
         const inputId = input.id;
-        
+
         if (input.type === 'radio' || input.type === 'checkbox') {
           // Radio and checkbox inputs can be labeled by parent fieldset/group
           const parentFieldset = input.closest('fieldset');
@@ -833,7 +836,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       requiredFields.forEach(field => {
         expect(field.getAttribute('aria-required')).toBe('true');
         expect(field.getAttribute('aria-invalid')).toBe('false');
-        
+
         // Check for required indicator in label
         const fieldId = field.id;
         const label = testContainer.querySelector(`label[for="${fieldId}"]`);
@@ -852,10 +855,10 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Verify radio group structure
       const radioGroup = testContainer.querySelector('[role="radiogroup"]');
       expect(radioGroup.getAttribute('aria-required')).toBe('true');
-      
+
       const radioButtons = radioGroup.querySelectorAll('input[type="radio"]');
       expect(radioButtons.length).toBeGreaterThan(1);
-      
+
       // All radio buttons should have the same name
       const radioName = radioButtons[0].name;
       radioButtons.forEach(radio => {
@@ -865,10 +868,10 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Verify select with optgroups
       const select = testContainer.querySelector('select');
       const optgroups = select.querySelectorAll('optgroup');
-      
+
       optgroups.forEach(optgroup => {
         expect(optgroup.getAttribute('label')).toBeTruthy();
-        
+
         const options = optgroup.querySelectorAll('option');
         expect(options.length).toBeGreaterThan(0);
       });
@@ -1034,7 +1037,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate conditional form structure
       const assessmentSelect = testContainer.querySelector('#assessment-type');
       const conditionalFields = testContainer.querySelector('#conditional-fields');
-      
+
       expect(assessmentSelect.getAttribute('aria-controls')).toBe('conditional-fields');
       expect(conditionalFields.getAttribute('aria-hidden')).toBe('true');
       expect(conditionalFields.getAttribute('aria-expanded')).toBe('false');
@@ -1052,14 +1055,14 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       tabs.forEach((tab, index) => {
         const controls = tab.getAttribute('aria-controls');
         const panel = testContainer.querySelector(`#${controls}`);
-        
+
         expect(panel).toBeTruthy();
         expect(panel.getAttribute('aria-labelledby')).toBe(tab.id);
-        
+
         // Verify initial state
         const isSelected = tab.getAttribute('aria-selected') === 'true';
         const panelHidden = panel.getAttribute('aria-hidden') === 'true';
-        
+
         if (index === 0) {
           expect(isSelected).toBe(true);
           expect(panelHidden).toBe(false);
@@ -1342,10 +1345,10 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       const dataCells = testContainer.querySelectorAll('td[role="cell"]');
       dataCells.forEach(cell => {
         expect(cell.getAttribute('role')).toBe('cell');
-        
+
         const headers = cell.getAttribute('headers');
         expect(headers).toBeTruthy();
-        
+
         // Verify that referenced header elements exist
         const headerIds = headers.split(' ');
         headerIds.forEach(headerId => {
@@ -1558,14 +1561,14 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate filter control
       const subjectFilter = testContainer.querySelector('#subject-filter');
       const filterStatus = testContainer.querySelector('#filter-status');
-      
+
       expect(subjectFilter.getAttribute('aria-describedby')).toContain('filter-status');
       expect(filterStatus.getAttribute('aria-live')).toBe('polite');
 
       // Validate search control
       const studentSearch = testContainer.querySelector('#student-search');
       const searchResults = testContainer.querySelector('#search-results');
-      
+
       expect(studentSearch.type).toBe('search');
       expect(studentSearch.getAttribute('aria-describedby')).toContain('search-results');
       expect(searchResults.getAttribute('aria-live')).toBe('polite');
@@ -1573,19 +1576,19 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate sortable headers
       const sortableHeaders = testContainer.querySelectorAll('th[aria-sort]');
       const sortButtons = testContainer.querySelectorAll('.sort-button');
-      
+
       expect(sortableHeaders.length).toBe(sortButtons.length);
-      
+
       sortableHeaders.forEach((header, index) => {
         expect(header.getAttribute('tabindex')).toBe('0');
-        
+
         const sortValue = header.getAttribute('aria-sort');
         expect(['none', 'ascending', 'descending'].includes(sortValue)).toBe(true);
-        
+
         const button = sortButtons[index];
         const ariaLabel = button.getAttribute('aria-label');
         expect(ariaLabel).toContain('Sort by');
-        
+
         if (sortValue === 'descending') {
           expect(ariaLabel).toContain('currently sorted descending');
         }
@@ -1602,7 +1605,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       const pagination = testContainer.querySelector('.table-pagination');
       const paginationInfo = testContainer.querySelector('.pagination-info');
       const currentPage = testContainer.querySelector('[aria-current="page"]');
-      
+
       expect(pagination.getAttribute('role')).toBe('navigation');
       expect(pagination.getAttribute('aria-label')).toBe('Table pagination');
       expect(paginationInfo.getAttribute('aria-live')).toBe('polite');

@@ -8,16 +8,11 @@ import FeedbackToast from './FeedbackToast.js';
 import FeedbackProgress from './FeedbackProgress.js';
 import ToastManager from './ToastManager.js';
 
-export {
-  FeedbackOverlay,
-  FeedbackToast, 
-  FeedbackProgress,
-  ToastManager
-};
+export { FeedbackOverlay, FeedbackToast, FeedbackProgress, ToastManager };
 
 export default {
   FeedbackOverlay,
   FeedbackToast,
   FeedbackProgress,
-  ToastManager
+  ToastManager,
 };

@@ -1,9 +1,9 @@
 /**
  * Subject Generator Script for Learnimals
- * 
+ *
  * This script programmatically creates new subjects with their animal characters,
  * directory structures, templates, and updates the main configuration.
- * 
+ *
  * Usage:
  *   node scripts/generateSubjects.js
  *   node scripts/generateSubjects.js --subjects=music,geography
@@ -26,88 +26,93 @@ const subjectTemplates = {
       name: 'Melody',
       type: 'Songbird',
       role: 'Music Teacher',
-      description: 'Teaches rhythm, melody, and musical instruments'
+      description: 'Teaches rhythm, melody, and musical instruments',
     },
     description: 'Learn music theory, rhythm, and instruments with fun activities',
     features: ['Music Theory', 'Virtual Instruments', 'Rhythm Games', 'Song Composition'],
     color: '#9b59b6',
     difficulty: 'beginner',
-    ageRange: '4-12'
+    ageRange: '4-12',
   },
-  
+
   geography: {
     name: 'Geography',
     character: {
       name: 'Atlas',
       type: 'Eagle',
       role: 'Geography Guide',
-      description: 'Explores countries, continents, and cultures from above'
+      description: 'Explores countries, continents, and cultures from above',
     },
     description: 'Discover countries, capitals, and cultures around the world',
     features: ['World Map', 'Country Explorer', 'Capital Quiz', 'Culture Corner'],
     color: '#27ae60',
     difficulty: 'intermediate',
-    ageRange: '6-12'
+    ageRange: '6-12',
   },
-  
+
   history: {
     name: 'History',
     character: {
       name: 'Chrono',
       type: 'Turtle',
       role: 'History Keeper',
-      description: 'Has lived through ages and remembers ancient stories'
+      description: 'Has lived through ages and remembers ancient stories',
     },
     description: 'Journey through time and learn about historical events',
     features: ['Timeline Explorer', 'Historical Figures', 'Ancient Civilizations', 'Time Machine'],
     color: '#8e44ad',
     difficulty: 'intermediate',
-    ageRange: '7-12'
+    ageRange: '7-12',
   },
-  
+
   language: {
     name: 'Language',
     character: {
       name: 'Polyglot',
       type: 'Parrot',
       role: 'Language Teacher',
-      description: 'Speaks multiple languages and loves sharing words'
+      description: 'Speaks multiple languages and loves sharing words',
     },
     description: 'Learn new languages through interactive games and stories',
-    features: ['Vocabulary Builder', 'Pronunciation Practice', 'Language Games', 'Cultural Stories'],
+    features: [
+      'Vocabulary Builder',
+      'Pronunciation Practice',
+      'Language Games',
+      'Cultural Stories',
+    ],
     color: '#e74c3c',
     difficulty: 'beginner',
-    ageRange: '5-12'
+    ageRange: '5-12',
   },
-  
+
   physics: {
     name: 'Physics',
     character: {
       name: 'Newton',
       type: 'Owl',
       role: 'Physics Professor',
-      description: 'Wise owl who understands the laws of nature'
+      description: 'Wise owl who understands the laws of nature',
     },
     description: 'Explore forces, motion, and the fundamental laws of physics',
     features: ['Force & Motion', 'Simple Machines', 'Energy Lab', 'Physics Playground'],
     color: '#3498db',
     difficulty: 'advanced',
-    ageRange: '8-12'
+    ageRange: '8-12',
   },
-  
+
   cooking: {
     name: 'Cooking',
     character: {
       name: 'Chef',
       type: 'Bear',
       role: 'Head Chef',
-      description: 'Master chef who loves teaching kitchen skills and nutrition'
+      description: 'Master chef who loves teaching kitchen skills and nutrition',
     },
     description: 'Learn cooking basics, nutrition, and kitchen safety',
     features: ['Recipe Maker', 'Nutrition Guide', 'Kitchen Safety', 'Virtual Cooking'],
     color: '#f39c12',
     difficulty: 'beginner',
-    ageRange: '4-10'
+    ageRange: '4-10',
   },
 
   environment: {
@@ -116,25 +121,25 @@ const subjectTemplates = {
       name: 'Terra',
       type: 'Fox',
       role: 'Environmental Guardian',
-      description: 'Protects nature and teaches about our planet'
+      description: 'Protects nature and teaches about our planet',
     },
     description: 'Learn about ecosystems, conservation, and protecting our planet',
     features: ['Ecosystem Explorer', 'Recycling Center', 'Climate Lab', 'Green Living'],
     color: '#2ecc71',
     difficulty: 'intermediate',
-    ageRange: '6-12'
-  }
+    ageRange: '6-12',
+  },
 };
 
 // Animal character image placeholders
 const animalImages = {
   songbird: '🐦',
-  eagle: '🦅', 
+  eagle: '🦅',
   turtle: '🐢',
   parrot: '🦜',
   owl: '🦉',
   bear: '🐻',
-  fox: '🦊'
+  fox: '🦊',
 };
 
 class SubjectGenerator {
@@ -147,17 +152,17 @@ class SubjectGenerator {
 
   async generateSubjects(subjectKeys = []) {
     console.log('🚀 Starting Subject Generation...');
-    
+
     const results = {
       created: [],
       updated: [],
-      errors: []
+      errors: [],
     };
 
     for (const subjectKey of subjectKeys) {
       try {
         console.log(`\n📚 Processing subject: ${subjectKey}`);
-        
+
         if (!subjectTemplates[subjectKey]) {
           throw new Error(`Unknown subject template: ${subjectKey}`);
         }
@@ -165,7 +170,7 @@ class SubjectGenerator {
         const subject = subjectTemplates[subjectKey];
         await this.createSubjectStructure(subjectKey, subject);
         results.created.push(subjectKey);
-        
+
         console.log(`✅ Successfully created ${subjectKey}`);
       } catch (error) {
         console.error(`❌ Error creating ${subjectKey}:`, error.message);
@@ -185,16 +190,16 @@ class SubjectGenerator {
   async createSubjectStructure(subjectKey, subject) {
     // 1. Create directory structure
     await this.createDirectories(subjectKey);
-    
+
     // 2. Generate HTML templates
     await this.createHTMLTemplates(subjectKey, subject);
-    
+
     // 3. Create CSS files
     await this.createCSSFiles(subjectKey, subject);
-    
+
     // 4. Create JavaScript files
     await this.createJavaScriptFiles(subjectKey, subject);
-    
+
     // 5. Generate placeholder image
     await this.createPlaceholderImage(subjectKey, subject);
   }
@@ -202,7 +207,7 @@ class SubjectGenerator {
   async createDirectories(subjectKey) {
     const directories = [
       path.join(this.subjectsDir, subjectKey),
-      path.join(this.subjectsDir, 'shared')
+      path.join(this.subjectsDir, 'shared'),
     ];
 
     for (const dir of directories) {
@@ -223,8 +228,9 @@ class SubjectGenerator {
   }
 
   generateSharedTemplate(subjectKey, subject) {
-    const features = subject.features.map((feature, index) => {
-      return `
+    const features = subject.features
+      .map((feature, index) => {
+        return `
                 {
                     title: '${feature}',
                     content: '<p>Interactive ${feature.toLowerCase()} activities and games!</p>',
@@ -232,7 +238,8 @@ class SubjectGenerator {
                     linkText: 'Explore Now',
                     theme: 'default'
                 }${index < subject.features.length - 1 ? ',' : ''}`;
-    }).join('');
+      })
+      .join('');
 
     return `<!doctype html>
 <html lang="en">
@@ -285,12 +292,16 @@ class SubjectGenerator {
   }
 
   generateSubjectPage(subjectKey, subject) {
-    const featureCards = subject.features.map(feature => `
+    const featureCards = subject.features
+      .map(
+        feature => `
                 <div class="feature-card">
                     <h3>${feature}</h3>
                     <p>Interactive ${feature.toLowerCase()} activities!</p>
                     <button onclick="alert('${feature} coming soon!')">Explore</button>
-                </div>`).join('');
+                </div>`
+      )
+      .join('');
 
     return `<!doctype html>
 <html lang="en">
@@ -679,21 +690,27 @@ export default ${subject.name}Subject;`;
   </text>
 </svg>`;
 
-    const imagePath = path.join(this.imagesDir, `${subjectKey}-${subject.character.type.toLowerCase()}.svg`);
+    const imagePath = path.join(
+      this.imagesDir,
+      `${subjectKey}-${subject.character.type.toLowerCase()}.svg`
+    );
     await fs.writeFile(imagePath, svgContent);
-    
-    console.log(`📸 Created placeholder image: ${subjectKey}-${subject.character.type.toLowerCase()}.svg`);
+
+    console.log(
+      `📸 Created placeholder image: ${subjectKey}-${subject.character.type.toLowerCase()}.svg`
+    );
   }
 
   async updateMainConfig(createdSubjects) {
     try {
       // Read current config
       const configContent = await fs.readFile(this.configPath, 'utf8');
-      
+
       // Generate new subjects object
-      const newSubjects = createdSubjects.map(subjectKey => {
-        const subject = subjectTemplates[subjectKey];
-        return `    ${subjectKey}: {
+      const newSubjects = createdSubjects
+        .map(subjectKey => {
+          const subject = subjectTemplates[subjectKey];
+          return `    ${subjectKey}: {
       name: '${subject.name}',
       character: {
         name: '${subject.character.name}',
@@ -707,30 +724,29 @@ export default ${subject.name}Subject;`;
       ageRange: '${subject.ageRange}',
       features: ${JSON.stringify(subject.features)}
     }`;
-      }).join(',\n\n');
+        })
+        .join(',\n\n');
 
       // Find subjects section and update it
       const subjectsRegex = /(\/\/ Subject configurations\s+subjects:\s*{)([\s\S]*?)(}\s*,?\s*\n)/;
       const match = configContent.match(subjectsRegex);
-      
+
       if (match) {
         const existingSubjects = match[2].trim();
-        const updatedSubjects = existingSubjects 
+        const updatedSubjects = existingSubjects
           ? `${existingSubjects},\n\n${newSubjects}`
           : newSubjects;
-          
-        const updatedConfig = configContent.replace(
-          subjectsRegex,
-          `$1\n${updatedSubjects}\n  $3`
-        );
-        
+
+        const updatedConfig = configContent.replace(subjectsRegex, `$1\n${updatedSubjects}\n  $3`);
+
         await fs.writeFile(this.configPath, updatedConfig);
       } else {
         // If subjects section doesn't exist, add it
         const subjectsSection = `\n  // Subject configurations\n  subjects: {\n${newSubjects}\n  },\n`;
         const insertPoint = configContent.search(/^};?\s*$/m);
-        const updatedConfig = configContent.slice(0, insertPoint) + subjectsSection + configContent.slice(insertPoint);
-        
+        const updatedConfig =
+          configContent.slice(0, insertPoint) + subjectsSection + configContent.slice(insertPoint);
+
         await fs.writeFile(this.configPath, updatedConfig);
       }
     } catch (error) {
@@ -743,7 +759,7 @@ export default ${subject.name}Subject;`;
     try {
       const batchContent = await fs.readFile(filePath, 'utf8');
       const batchData = JSON.parse(batchContent);
-      
+
       if (batchData.subjects && Array.isArray(batchData.subjects)) {
         return await this.generateSubjects(batchData.subjects);
       } else {
@@ -758,7 +774,7 @@ export default ${subject.name}Subject;`;
   listAvailableTemplates() {
     console.log('\n📋 Available Subject Templates:');
     console.log('================================');
-    
+
     Object.keys(subjectTemplates).forEach(key => {
       const subject = subjectTemplates[key];
       console.log(`\n🎓 ${key.toUpperCase()}`);
@@ -769,7 +785,7 @@ export default ${subject.name}Subject;`;
       console.log(`   Features: ${subject.features.join(', ')}`);
       console.log(`   Difficulty: ${subject.difficulty} | Age: ${subject.ageRange}`);
     });
-    
+
     console.log(`\n📊 Total Templates Available: ${Object.keys(subjectTemplates).length}`);
   }
 }
@@ -781,12 +797,15 @@ function parseArgs() {
     subjects: [],
     batchFile: null,
     listTemplates: false,
-    help: false
+    help: false,
   };
 
   for (const arg of args) {
     if (arg.startsWith('--subjects=')) {
-      options.subjects = arg.split('=')[1].split(',').map(s => s.trim());
+      options.subjects = arg
+        .split('=')[1]
+        .split(',')
+        .map(s => s.trim());
     } else if (arg.startsWith('--batch-file=')) {
       options.batchFile = arg.split('=')[1];
     } else if (arg === '--list-templates' || arg === '-l') {
@@ -846,7 +865,7 @@ async function main() {
     }
 
     let results;
-    
+
     if (options.batchFile) {
       console.log(`📁 Processing batch file: ${options.batchFile}`);
       results = await generator.generateBatchFromFile(options.batchFile);
@@ -866,11 +885,11 @@ async function main() {
     console.log(`✅ Created: ${results.created.length} subjects`);
     console.log(`📝 Updated: ${results.updated.length} configurations`);
     console.log(`❌ Errors: ${results.errors.length} failures`);
-    
+
     if (results.created.length > 0) {
       console.log(`\n🎓 New Subjects Created: ${results.created.join(', ')}`);
     }
-    
+
     if (results.errors.length > 0) {
       console.log('\n❌ Errors:');
       results.errors.forEach(error => {
@@ -884,7 +903,6 @@ async function main() {
     console.log('   3. Test the new subjects in your browser');
     console.log('   4. Customize the generated templates as needed');
     console.log('   5. The About page will automatically show new animal educators!');
-
   } catch (error) {
     console.error('\n💥 Fatal Error:', error.message);
     process.exit(1);

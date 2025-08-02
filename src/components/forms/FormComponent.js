@@ -25,7 +25,7 @@ class FormComponent extends BaseComponent {
       onValidate: options.onValidate || null,
       submitButtonText: options.submitButtonText || 'Submit',
       useLocalStorage: options.useLocalStorage || false,
-      ...options
+      ...options,
     });
 
     // Set storageKey AFTER super() call when this.options.id is guaranteed to exist
@@ -58,12 +58,12 @@ class FormComponent extends BaseComponent {
       max,
       pattern,
       helpText,
-      cssClasses = []
+      cssClasses = [],
     } = field;
 
     // Generate unique ID for the field
     const fieldId = `${this.options.id}-${name}`;
-    
+
     // Common attributes
     const requiredAttr = required ? 'required' : '';
     const minAttr = min !== undefined ? `min="${min}"` : '';
@@ -71,19 +71,19 @@ class FormComponent extends BaseComponent {
     const patternAttr = pattern ? `pattern="${pattern}"` : '';
     const cssClass = ['form-field', ...cssClasses].join(' ');
     const ariaDescribedBy = helpText ? `aria-describedby="${fieldId}-help"` : '';
-    
+
     // Field wrapper
     let html = `<div class="${cssClass}">`;
-    
+
     // Label
     if (label) {
       html += `<label for="${fieldId}" class="component-label">${label}${required ? ' <span class="required">*</span>' : ''}</label>`;
     }
-    
+
     // Field based on type
     switch (type) {
-    case 'textarea':
-      html += `
+      case 'textarea':
+        html += `
           <textarea 
             id="${fieldId}" 
             name="${name}" 
@@ -94,10 +94,10 @@ class FormComponent extends BaseComponent {
             rows="4"
           >${value}</textarea>
         `;
-      break;
-        
-    case 'select':
-      html += `
+        break;
+
+      case 'select':
+        html += `
           <select 
             id="${fieldId}" 
             name="${name}"
@@ -106,28 +106,29 @@ class FormComponent extends BaseComponent {
             ${ariaDescribedBy}
           >
         `;
-        
-      // Add options
-      options.forEach(opt => {
-        const isSelected = opt.value === value ? 'selected' : '';
-        html += `<option value="${opt.value}" ${isSelected}>${opt.label}</option>`;
-      });
-        
-      html += '</select>';
-      break;
-        
-    case 'radio':
-    case 'checkbox':
-      html += '<div class="option-group">';
-        
-      options.forEach((opt, index) => {
-        const optionId = `${fieldId}-${index}`;
-        const isChecked = 
-            (type === 'checkbox' && Array.isArray(value) && value.includes(opt.value)) || 
-            (type === 'radio' && opt.value === value) ? 
-              'checked' : '';
-            
-        html += `
+
+        // Add options
+        options.forEach(opt => {
+          const isSelected = opt.value === value ? 'selected' : '';
+          html += `<option value="${opt.value}" ${isSelected}>${opt.label}</option>`;
+        });
+
+        html += '</select>';
+        break;
+
+      case 'radio':
+      case 'checkbox':
+        html += '<div class="option-group">';
+
+        options.forEach((opt, index) => {
+          const optionId = `${fieldId}-${index}`;
+          const isChecked =
+            (type === 'checkbox' && Array.isArray(value) && value.includes(opt.value)) ||
+            (type === 'radio' && opt.value === value)
+              ? 'checked'
+              : '';
+
+          html += `
             <div class="option-item">
               <input 
                 type="${type}" 
@@ -140,14 +141,14 @@ class FormComponent extends BaseComponent {
               <label for="${optionId}">${opt.label}</label>
             </div>
           `;
-      });
-        
-      html += '</div>';
-      break;
-        
-    default:
-      // Default to normal input field
-      html += `
+        });
+
+        html += '</div>';
+        break;
+
+      default:
+        // Default to normal input field
+        html += `
           <input 
             type="${type}" 
             id="${fieldId}" 
@@ -163,17 +164,17 @@ class FormComponent extends BaseComponent {
           >
         `;
     }
-    
+
     // Help text
     if (helpText) {
       html += `<div class="component-help" id="${fieldId}-help">${helpText}</div>`;
     }
-    
+
     // Error message container
     html += `<div class="component-error" id="${fieldId}-error"></div>`;
-    
+
     html += '</div>';
-    
+
     return html;
   }
 
@@ -183,16 +184,16 @@ class FormComponent extends BaseComponent {
    */
   generateHTML() {
     const { method, action, fields, submitButtonText } = this.options;
-    
+
     let html = `
       <form id="${this.options.id}" class="component" method="${method}" action="${action}" novalidate>
     `;
-    
+
     // Generate fields
     fields.forEach(field => {
       html += this.generateFieldHTML(field);
     });
-    
+
     // Submit button
     html += `
         <div class="form-actions">
@@ -200,43 +201,50 @@ class FormComponent extends BaseComponent {
         </div>
       </form>
     `;
-    
+
     return html;
   }
-
 
   /**
    * Attach event listeners to the form
    */
   attachEventListeners() {
     // Add submit handler
-    this.addEventListener('submit', (e) => {
+    this.addEventListener('submit', e => {
       e.preventDefault();
       this.handleSubmit();
     });
-    
+
     // Add input handlers for live validation
     this.options.fields.forEach(field => {
       // Input change handling
-      this.addEventListener('input', () => {
-        this.validateField(field.name);
-        
-        // Save to localStorage if enabled
-        if (this.options.useLocalStorage) {
-          this.saveToLocalStorage();
-        }
-        
-        // Emit field change event
-        this.emit('fieldChange', { field: field.name, value: this.getFieldValue(field.name) });
-      }, `[name="${field.name}"]`);
-      
+      this.addEventListener(
+        'input',
+        () => {
+          this.validateField(field.name);
+
+          // Save to localStorage if enabled
+          if (this.options.useLocalStorage) {
+            this.saveToLocalStorage();
+          }
+
+          // Emit field change event
+          this.emit('fieldChange', { field: field.name, value: this.getFieldValue(field.name) });
+        },
+        `[name="${field.name}"]`
+      );
+
       // Blur handling for validation
-      this.addEventListener('blur', () => {
-        this.validateField(field.name);
-      }, `[name="${field.name}"]`);
+      this.addEventListener(
+        'blur',
+        () => {
+          this.validateField(field.name);
+        },
+        `[name="${field.name}"]`
+      );
     });
   }
-  
+
   /**
    * Get value of a specific field
    * @param {string} fieldName - Name of the field
@@ -244,7 +252,7 @@ class FormComponent extends BaseComponent {
    */
   getFieldValue(fieldName) {
     if (!this.element) return null;
-    
+
     const input = this.element.querySelector(`[name="${fieldName}"]`);
     return input ? input.value : null;
   }
@@ -255,10 +263,10 @@ class FormComponent extends BaseComponent {
    */
   getFormData() {
     if (!this.element) return this.formData;
-    
+
     const formData = new FormData(this.element);
     const data = {};
-    
+
     // Convert FormData to object
     for (const [key, value] of formData.entries()) {
       // Handle multiple checkboxes with same name
@@ -271,10 +279,10 @@ class FormComponent extends BaseComponent {
         data[key] = value;
       }
     }
-    
+
     // Update internal formData
     this.formData = data;
-    
+
     return data;
   }
 
@@ -286,31 +294,31 @@ class FormComponent extends BaseComponent {
   validateField(fieldName) {
     const form = document.getElementById(this.options.id);
     if (!form) return true;
-    
+
     const field = this.options.fields.find(f => f.name === fieldName);
     if (!field) return true;
-    
+
     const input = form.querySelector(`[name="${fieldName}"]`);
     if (!input) return true;
-    
+
     const errorElement = document.getElementById(`${this.options.id}-${fieldName}-error`);
-    
+
     // Clear previous error
     if (errorElement) {
       errorElement.textContent = '';
       errorElement.style.display = 'none';
       input.classList.remove('invalid');
     }
-    
+
     let isValid = true;
     let errorMessage = '';
-    
+
     // Check built-in validation
     if (!input.checkValidity()) {
       isValid = false;
       errorMessage = input.validationMessage;
     }
-    
+
     // Custom validation rules
     if (isValid && field.validate) {
       const value = input.value;
@@ -325,20 +333,20 @@ class FormComponent extends BaseComponent {
         errorMessage = err.message || 'Validation error';
       }
     }
-    
+
     // Show error if invalid
     if (!isValid && errorElement) {
       errorElement.textContent = errorMessage;
       errorElement.style.display = 'block';
       input.classList.add('invalid');
-      
+
       // Store error
       this.errors[fieldName] = errorMessage;
     } else {
       // Clear error
       delete this.errors[fieldName];
     }
-    
+
     return isValid;
   }
 
@@ -348,21 +356,21 @@ class FormComponent extends BaseComponent {
    */
   validate() {
     let isValid = true;
-    
+
     // Validate all fields
     this.options.fields.forEach(field => {
       if (!this.validateField(field.name)) {
         isValid = false;
       }
     });
-    
+
     // Run custom validation if provided
     if (isValid && this.options.onValidate) {
       try {
         const customValid = this.options.onValidate(this.getFormData());
         if (customValid !== true) {
           isValid = false;
-          
+
           // Show general error
           const form = document.getElementById(this.options.id);
           if (form) {
@@ -372,7 +380,8 @@ class FormComponent extends BaseComponent {
               errorEl.className = 'form-general-error';
               form.insertBefore(errorEl, form.querySelector('.form-actions'));
             }
-            errorEl.textContent = typeof customValid === 'string' ? customValid : 'Form validation failed';
+            errorEl.textContent =
+              typeof customValid === 'string' ? customValid : 'Form validation failed';
             errorEl.style.display = 'block';
           }
         }
@@ -381,7 +390,7 @@ class FormComponent extends BaseComponent {
         console.error('Validation error:', err);
       }
     }
-    
+
     return isValid;
   }
 
@@ -390,26 +399,26 @@ class FormComponent extends BaseComponent {
    */
   handleSubmit() {
     const data = this.getFormData();
-    
+
     // Validate form
     if (!this.validate()) {
       return;
     }
-    
+
     // Clear general error if it exists
     const form = document.getElementById(this.options.id);
     const generalError = form.querySelector('.form-general-error');
     if (generalError) {
       generalError.style.display = 'none';
     }
-    
+
     // Call onSubmit handler if provided
     if (this.options.onSubmit) {
       try {
         this.options.onSubmit(data, form);
       } catch (err) {
         console.error('Submit error:', err);
-        
+
         // Show error
         if (!generalError) {
           const errorEl = document.createElement('div');
@@ -430,7 +439,7 @@ class FormComponent extends BaseComponent {
    */
   saveToLocalStorage() {
     if (!this.options.useLocalStorage) return;
-    
+
     try {
       const data = this.getFormData();
       localStorage.setItem(this.options.storageKey, JSON.stringify(data));
@@ -444,12 +453,12 @@ class FormComponent extends BaseComponent {
    */
   loadFromLocalStorage() {
     if (!this.options.useLocalStorage) return;
-    
+
     try {
       const dataStr = localStorage.getItem(this.options.storageKey);
       if (dataStr) {
         this.formData = JSON.parse(dataStr);
-        
+
         // Update field values in options
         this.options.fields = this.options.fields.map(field => {
           if (field.name in this.formData) {
@@ -470,29 +479,29 @@ class FormComponent extends BaseComponent {
     const form = document.getElementById(this.options.id);
     if (form) {
       form.reset();
-      
+
       // Clear errors
       this.errors = {};
-      
+
       // Clear error displays
       const errorElements = form.querySelectorAll('.error-message');
       errorElements.forEach(el => {
         el.textContent = '';
         el.style.display = 'none';
       });
-      
+
       // Remove invalid classes
       const inputs = form.querySelectorAll('input, select, textarea');
       inputs.forEach(input => {
         input.classList.remove('invalid');
       });
-      
+
       // Clear general error
       const generalError = form.querySelector('.form-general-error');
       if (generalError) {
         generalError.style.display = 'none';
       }
-      
+
       // Clear localStorage if used
       if (this.options.useLocalStorage) {
         localStorage.removeItem(this.options.storageKey);

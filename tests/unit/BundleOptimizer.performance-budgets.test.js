@@ -1,9 +1,9 @@
 /**
  * Performance Budgets Tests for BundleOptimizer
- * 
+ *
  * Comprehensive test suite for performance budget functionality:
  * - Budget configuration and validation
- * - Budget checking against bundle sizes  
+ * - Budget checking against bundle sizes
  * - Warning/error handling for violations
  * - Different budget types (size, time, asset count)
  * - Budget reporting and metrics collection
@@ -18,21 +18,21 @@ vi.mock('../../src/utils/logger.js', () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-    debug: vi.fn()
-  }
+    debug: vi.fn(),
+  },
 }));
 
 vi.mock('../../src/utils/performanceUtils.js', () => ({
   performanceMonitor: {
     startTimer: vi.fn(),
     endTimer: vi.fn(),
-    logMetric: vi.fn()
-  }
+    logMetric: vi.fn(),
+  },
 }));
 
 // Mock DOM environment for tests
 global.document = {
-  createElement: vi.fn((tagName) => ({
+  createElement: vi.fn(tagName => ({
     tagName: tagName.toUpperCase(),
     rel: '',
     href: '',
@@ -48,24 +48,41 @@ global.document = {
     getBoundingClientRect: vi.fn(() => ({ top: 0, bottom: 100, left: 0, right: 100 })),
     toDataURL: vi.fn(() => 'data:image/png;base64,test'),
     relList: {
-      supports: vi.fn(() => true)
-    }
+      supports: vi.fn(() => true),
+    },
   })),
   querySelector: vi.fn(() => null),
   querySelectorAll: vi.fn(() => []),
   head: {
     appendChild: vi.fn(),
-    insertBefore: vi.fn()
+    insertBefore: vi.fn(),
   },
   body: {
     appendChild: vi.fn(),
-    contains: vi.fn(() => false)
+    contains: vi.fn(() => false),
   },
   styleSheets: [],
   readyState: 'complete',
-  dispatchEvent: vi.fn(),
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn()
+  dispatchEvent: vi.fn((event) => {
+    const listeners = global.eventListeners?.get(event.type) || [];
+    listeners.forEach(listener => listener(event));
+    return true;
+  }),
+  addEventListener: vi.fn((type, listener) => {
+    if (!global.eventListeners) global.eventListeners = new Map();
+    if (!global.eventListeners.has(type)) {
+      global.eventListeners.set(type, []);
+    }
+    global.eventListeners.get(type).push(listener);
+  }),
+  removeEventListener: vi.fn((type, listener) => {
+    if (!global.eventListeners) return;
+    const listeners = global.eventListeners.get(type) || [];
+    const index = listeners.indexOf(listener);
+    if (index > -1) {
+      listeners.splice(index, 1);
+    }
+  }),
 };
 
 global.window = {
@@ -76,30 +93,30 @@ global.window = {
   removeEventListener: vi.fn(),
   performance: {
     now: vi.fn(() => Date.now()),
-    getEntriesByType: vi.fn(() => [])
+    getEntriesByType: vi.fn(() => []),
   },
-  requestIdleCallback: vi.fn((callback) => setTimeout(callback, 0)),
+  requestIdleCallback: vi.fn(callback => setTimeout(callback, 0)),
   IntersectionObserver: vi.fn(() => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
-    disconnect: vi.fn()
+    disconnect: vi.fn(),
   })),
   PerformanceObserver: vi.fn(() => ({
     observe: vi.fn(),
-    disconnect: vi.fn()
+    disconnect: vi.fn(),
   })),
   MutationObserver: vi.fn(() => ({
     observe: vi.fn(),
-    disconnect: vi.fn()
+    disconnect: vi.fn(),
   })),
   CompressionStream: vi.fn(),
-  CustomEvent: vi.fn((type, options) => ({ type, detail: options?.detail }))
+  CustomEvent: vi.fn((type, options) => ({ type, detail: options?.detail })),
 };
 
 global.navigator = {
   serviceWorker: {
-    register: vi.fn()
-  }
+    register: vi.fn(),
+  },
 };
 
 // Set NODE_ENV for test environment detection
@@ -110,13 +127,18 @@ describe('BundleOptimizer - Performance Budgets', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
+    // Clear event listeners
+    if (global.eventListeners) {
+      global.eventListeners.clear();
+    }
+
     bundleOptimizer = new BundleOptimizer({
       enableCriticalCSS: true,
       criticalCSSThreshold: 1000,
       maxBundleSize: 250 * 1024,
       maxInitialLoad: 100 * 1024,
-      warningThreshold: 200 * 1024
+      warningThreshold: 200 * 1024,
     });
   });
 
@@ -142,8 +164,8 @@ describe('BundleOptimizer - Performance Budgets', () => {
           javascript: 200 * 1024,
           css: 100 * 1024,
           images: 1024 * 1024,
-          fonts: 50 * 1024
-        }
+          fonts: 50 * 1024,
+        },
       });
 
       expect(customOptimizer.options.maxBundleSize).toBe(500 * 1024);
@@ -153,7 +175,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         javascript: 200 * 1024,
         css: 100 * 1024,
         images: 1024 * 1024,
-        fonts: 50 * 1024
+        fonts: 50 * 1024,
       });
 
       customOptimizer.destroy();
@@ -162,13 +184,13 @@ describe('BundleOptimizer - Performance Budgets', () => {
     it('should validate budget configuration gracefully', () => {
       expect(() => {
         new BundleOptimizer({
-          maxBundleSize: -100 // Invalid negative size
+          maxBundleSize: -100, // Invalid negative size
         });
       }).not.toThrow(); // Should handle gracefully
 
       expect(() => {
         new BundleOptimizer({
-          maxBundleSize: 'invalid' // Invalid type
+          maxBundleSize: 'invalid', // Invalid type
         });
       }).not.toThrow(); // Should handle gracefully
     });
@@ -179,7 +201,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         time: { max: 3000, unit: 'ms' },
         count: { max: 50, unit: 'assets' },
         fps: { min: 30, unit: 'fps' },
-        memory: { max: 50 * 1024 * 1024, unit: 'bytes' }
+        memory: { max: 50 * 1024 * 1024, unit: 'bytes' },
       };
 
       Object.entries(budgetTypes).forEach(([type, config]) => {
@@ -198,22 +220,22 @@ describe('BundleOptimizer - Performance Budgets', () => {
           transferSize: 150 * 1024, // 150KB
           encodedBodySize: 140 * 1024,
           duration: 250,
-          startTime: 100
+          startTime: 100,
         },
         {
           name: '/src/styles.css',
           transferSize: 80 * 1024, // 80KB
           encodedBodySize: 75 * 1024,
           duration: 150,
-          startTime: 200
+          startTime: 200,
         },
         {
           name: '/src/vendor.js',
           transferSize: 200 * 1024, // 200KB
           encodedBodySize: 190 * 1024,
           duration: 400,
-          startTime: 50
-        }
+          startTime: 50,
+        },
       ]);
     });
 
@@ -231,8 +253,8 @@ describe('BundleOptimizer - Performance Budgets', () => {
         expect.objectContaining({
           detail: expect.objectContaining({
             totalSize: 430 * 1024,
-            budget: 300 * 1024
-          })
+            budget: 300 * 1024,
+          }),
         })
       );
     });
@@ -254,8 +276,8 @@ describe('BundleOptimizer - Performance Budgets', () => {
         expect.objectContaining({
           detail: expect.objectContaining({
             criticalSize: 430 * 1024,
-            budget: 200 * 1024
-          })
+            budget: 200 * 1024,
+          }),
         })
       );
     });
@@ -263,7 +285,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
     it('should not trigger budget events when within limits', async () => {
       const budgetEventListener = vi.fn();
       const criticalEventListener = vi.fn();
-      
+
       bundleOptimizer.on('budgetExceeded', budgetEventListener);
       bundleOptimizer.on('criticalBudgetExceeded', criticalEventListener);
 
@@ -285,15 +307,15 @@ describe('BundleOptimizer - Performance Budgets', () => {
           transferSize: undefined,
           encodedBodySize: 100 * 1024,
           duration: 200,
-          startTime: 100
+          startTime: 100,
         },
         {
           name: '/fallback2.js',
           transferSize: undefined,
           encodedBodySize: undefined,
           duration: 300,
-          startTime: 200
-        }
+          startTime: 200,
+        },
       ]);
 
       await bundleOptimizer.analyzeBundles();
@@ -310,20 +332,20 @@ describe('BundleOptimizer - Performance Budgets', () => {
           name: '/app.js',
           transferSize: 100 * 1024,
           duration: 200,
-          startTime: 50
+          startTime: 50,
         },
         {
           name: '/styles.css',
           transferSize: 50 * 1024,
           duration: 150,
-          startTime: 100
+          startTime: 100,
         },
         {
           name: '/image.png', // Should be ignored
           transferSize: 200 * 1024,
           duration: 300,
-          startTime: 200
-        }
+          startTime: 200,
+        },
       ]);
 
       await bundleOptimizer.analyzeBundles();
@@ -344,7 +366,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         name: '/large-bundle.js',
         transferSize: 300 * 1024, // 300KB > 200KB warning threshold
         duration: 500,
-        startTime: 100
+        startTime: 100,
       };
 
       bundleOptimizer.trackResourcePerformance(largeResource);
@@ -354,8 +376,8 @@ describe('BundleOptimizer - Performance Budgets', () => {
           detail: expect.objectContaining({
             url: '/large-bundle.js',
             size: 300 * 1024,
-            loadTime: 500
-          })
+            loadTime: 500,
+          }),
         })
       );
     });
@@ -368,7 +390,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         name: '/slow-bundle.js',
         transferSize: 100 * 1024,
         duration: 1500, // > 1000ms threshold
-        startTime: 100
+        startTime: 100,
       };
 
       bundleOptimizer.trackResourcePerformance(slowResource);
@@ -378,8 +400,8 @@ describe('BundleOptimizer - Performance Budgets', () => {
           detail: expect.objectContaining({
             url: '/slow-bundle.js',
             size: 100 * 1024,
-            loadTime: 1500
-          })
+            loadTime: 1500,
+          }),
         })
       );
     });
@@ -387,7 +409,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
     it('should handle multiple budget violations simultaneously', async () => {
       const budgetListener = vi.fn();
       const criticalListener = vi.fn();
-      
+
       bundleOptimizer.on('budgetExceeded', budgetListener);
       bundleOptimizer.on('criticalBudgetExceeded', criticalListener);
 
@@ -397,14 +419,14 @@ describe('BundleOptimizer - Performance Budgets', () => {
           name: '/huge-app.js',
           transferSize: 400 * 1024, // Exceeds warning threshold
           duration: 800,
-          startTime: 50 // Critical resource
+          startTime: 50, // Critical resource
         },
         {
-          name: '/large-vendor.js', 
+          name: '/large-vendor.js',
           transferSize: 300 * 1024, // Exceeds warning threshold
           duration: 600,
-          startTime: 100 // Critical resource
-        }
+          startTime: 100, // Critical resource
+        },
       ]);
 
       // Set tight budgets
@@ -438,7 +460,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         type: 'size',
         max: 500 * 1024, // 500KB
         current: 450 * 1024, // 450KB
-        unit: 'bytes'
+        unit: 'bytes',
       };
 
       const isWithinBudget = sizeBudget.current <= sizeBudget.max;
@@ -453,7 +475,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         type: 'time',
         max: 3000, // 3 seconds
         current: 2500, // 2.5 seconds
-        unit: 'ms'
+        unit: 'ms',
       };
 
       const isWithinBudget = timeBudget.current <= timeBudget.max;
@@ -468,7 +490,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         type: 'count',
         max: 20, // Maximum 20 assets
         current: 15, // Currently 15 assets
-        unit: 'assets'
+        unit: 'assets',
       };
 
       const isWithinBudget = countBudget.current <= countBudget.max;
@@ -483,7 +505,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         { name: '/app.js', transferSize: 100 * 1024, duration: 200, startTime: 100 },
         { name: '/vendor.js', transferSize: 150 * 1024, duration: 300, startTime: 200 },
         { name: '/styles.css', transferSize: 50 * 1024, duration: 150, startTime: 300 },
-        { name: '/theme.css', transferSize: 30 * 1024, duration: 100, startTime: 400 }
+        { name: '/theme.css', transferSize: 30 * 1024, duration: 100, startTime: 400 },
       ];
 
       window.performance.getEntriesByType.mockReturnValue(resources);
@@ -508,19 +530,19 @@ describe('BundleOptimizer - Performance Budgets', () => {
         size: 150 * 1024,
         loadTime: 300,
         type: 'javascript',
-        critical: true
+        critical: true,
       });
       bundleOptimizer.performanceMetrics.set('/vendor.js', {
         size: 200 * 1024,
         loadTime: 450,
         type: 'javascript',
-        critical: false
+        critical: false,
       });
       bundleOptimizer.performanceMetrics.set('/styles.css', {
         size: 80 * 1024,
         loadTime: 200,
         type: 'css',
-        critical: true
+        critical: true,
       });
     });
 
@@ -543,12 +565,12 @@ describe('BundleOptimizer - Performance Budgets', () => {
       const budgets = {
         maxBundleSize: bundleOptimizer.options.maxBundleSize,
         maxInitialLoad: bundleOptimizer.options.maxInitialLoad,
-        warningThreshold: bundleOptimizer.options.warningThreshold
+        warningThreshold: bundleOptimizer.options.warningThreshold,
       };
 
       // Calculate utilization percentages
       const totalSizeUtilization = (metrics.totalSize / budgets.maxBundleSize) * 100;
-      
+
       // Calculate critical resource size
       const criticalSize = metrics.bundles
         .filter(bundle => bundle.critical)
@@ -562,7 +584,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
       const largeResources = metrics.bundles.filter(
         bundle => bundle.size > budgets.warningThreshold
       );
-      
+
       expect(largeResources).toHaveLength(0); // All test resources are under 200KB threshold
     });
 
@@ -575,11 +597,11 @@ describe('BundleOptimizer - Performance Budgets', () => {
 
       // CSV format simulation
       const csvHeaders = ['url', 'size', 'loadTime', 'type', 'critical'];
-      const csvRows = metrics.bundles.map(bundle => 
+      const csvRows = metrics.bundles.map(bundle =>
         csvHeaders.map(header => bundle[header] || '').join(',')
       );
-      const csvReport = [csvHeaders.join(','), ...csvRows].join('\\n');
-      
+      const csvReport = [csvHeaders.join(','), ...csvRows].join('\n');
+
       expect(csvReport).toContain('url,size,loadTime,type,critical');
       expect(csvReport).toContain('/app.js');
 
@@ -588,12 +610,12 @@ describe('BundleOptimizer - Performance Budgets', () => {
         totalBundles: metrics.totalBundles,
         totalSize: `${(metrics.totalSize / 1024).toFixed(2)}KB`,
         averageLoadTime: `${metrics.averageLoadTime.toFixed(2)}ms`,
-        cacheHitRate: `${(metrics.cacheHitRate * 100).toFixed(1)}%`
+        cacheHitRate: `${(metrics.cacheHitRate * 100).toFixed(1)}%`,
       };
 
-      expect(summaryReport.totalSize).toMatch(/\\d+\\.\\d+KB/);
-      expect(summaryReport.averageLoadTime).toMatch(/\\d+\\.\\d+ms/);
-      expect(summaryReport.cacheHitRate).toMatch(/\\d+\\.\\d+%/);
+      expect(summaryReport.totalSize).toMatch(/\d+\.\d+KB/);
+      expect(summaryReport.averageLoadTime).toMatch(/\d+\.\d+ms/);
+      expect(summaryReport.cacheHitRate).toMatch(/\d+\.\d+%/);
     });
   });
 
@@ -606,7 +628,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         name: '/integration-test.js',
         transferSize: 250 * 1024, // Exceeds warning threshold
         duration: 600,
-        startTime: 100
+        startTime: 100,
       };
 
       bundleOptimizer.trackResourcePerformance(largeResource);
@@ -615,13 +637,27 @@ describe('BundleOptimizer - Performance Budgets', () => {
         expect.objectContaining({
           detail: expect.objectContaining({
             url: '/integration-test.js',
-            size: 250 * 1024
-          })
+            size: 250 * 1024,
+          }),
         })
       );
     });
 
     it('should provide budget-aware resource loading recommendations', () => {
+      // Set up test data to trigger recommendations
+      bundleOptimizer.performanceMetrics.set('/large-app.js', {
+        size: 150 * 1024,
+        loadTime: 300,
+        type: 'javascript',
+        critical: true,
+      });
+      bundleOptimizer.performanceMetrics.set('/large-vendor.js', {
+        size: 120 * 1024, // Exceeds warning threshold of 100KB
+        loadTime: 450,
+        type: 'javascript',
+        critical: false,
+      });
+
       const getLoadingRecommendations = (metrics, budgets) => {
         const recommendations = [];
 
@@ -630,7 +666,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
           recommendations.push({
             type: 'code-splitting',
             priority: 'high',
-            description: 'Implement code splitting to reduce initial bundle size'
+            description: 'Implement code splitting to reduce initial bundle size',
           });
         }
 
@@ -643,7 +679,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
             type: 'resource-optimization',
             priority: 'medium',
             description: `Optimize ${largeResources.length} large resources`,
-            resources: largeResources.map(r => r.url)
+            resources: largeResources.map(r => r.url),
           });
         }
 
@@ -653,7 +689,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
       const metrics = bundleOptimizer.getMetrics();
       const budgets = {
         maxBundleSize: 200 * 1024, // Tight budget to trigger recommendations
-        warningThreshold: 100 * 1024
+        warningThreshold: 100 * 1024,
       };
 
       const recommendations = getLoadingRecommendations(metrics, budgets);

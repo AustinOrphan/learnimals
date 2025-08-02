@@ -1,6 +1,6 @@
 /**
  * DOM Test Utilities
- * 
+ *
  * Provides common utilities for setting up and managing DOM in tests
  */
 
@@ -10,11 +10,11 @@ import { vi } from 'vitest';
  * Create a mock focus method that updates document.activeElement
  */
 export function createMockFocus() {
-  return vi.fn(function() {
+  return vi.fn(function () {
     Object.defineProperty(document, 'activeElement', {
       value: this,
       writable: true,
-      configurable: true
+      configurable: true,
     });
   });
 }
@@ -23,10 +23,10 @@ export function createMockFocus() {
  * Create a mock click method that dispatches a proper click event
  */
 export function createMockClick() {
-  return vi.fn(function() {
+  return vi.fn(function () {
     const event = new MouseEvent('click', {
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     });
     this.dispatchEvent(event);
   });
@@ -60,7 +60,7 @@ export function setupModalTestDOM() {
     </main>
   `;
   document.body.appendChild(appContainer);
-  
+
   // Create modal-specific styles
   const style = document.createElement('style');
   style.textContent = `
@@ -158,10 +158,10 @@ export function setupModalTestDOM() {
     }
   `;
   document.head.appendChild(style);
-  
+
   return {
     appContainer,
-    style
+    style,
   };
 }
 
@@ -176,16 +176,16 @@ export function cleanupModalTestDOM(refs) {
   if (refs.style) {
     refs.style.remove();
   }
-  
+
   // Reset body state
   document.body.style.overflow = '';
   document.body.className = '';
-  
+
   // Reset activeElement
   Object.defineProperty(document, 'activeElement', {
     value: document.body,
     writable: true,
-    configurable: true
+    configurable: true,
   });
 }
 
@@ -197,9 +197,9 @@ export function createEnhancedQuerySelectors() {
   const originalQuerySelector = document.querySelector;
   const originalQuerySelectorAll = document.querySelectorAll;
   const originalGetElementById = document.getElementById;
-  
+
   return {
-    querySelector: vi.fn((selector) => {
+    querySelector: vi.fn(selector => {
       try {
         const element = originalQuerySelector.call(document, selector);
         return element ? enhanceElement(element) : null;
@@ -208,8 +208,8 @@ export function createEnhancedQuerySelectors() {
         return null;
       }
     }),
-    
-    querySelectorAll: vi.fn((selector) => {
+
+    querySelectorAll: vi.fn(selector => {
       try {
         const elements = originalQuerySelectorAll.call(document, selector);
         elements.forEach(el => enhanceElement(el));
@@ -219,8 +219,8 @@ export function createEnhancedQuerySelectors() {
         return [];
       }
     }),
-    
-    getElementById: vi.fn((id) => {
+
+    getElementById: vi.fn(id => {
       try {
         const element = originalGetElementById.call(document, id);
         return element ? enhanceElement(element) : null;
@@ -229,13 +229,13 @@ export function createEnhancedQuerySelectors() {
         return null;
       }
     }),
-    
+
     // Store originals for restoration
     _originals: {
       querySelector: originalQuerySelector,
       querySelectorAll: originalQuerySelectorAll,
-      getElementById: originalGetElementById
-    }
+      getElementById: originalGetElementById,
+    },
   };
 }
 
@@ -247,7 +247,7 @@ export function applyEnhancedQuerySelectors(enhanced) {
   document.querySelector = enhanced.querySelector;
   document.querySelectorAll = enhanced.querySelectorAll;
   document.getElementById = enhanced.getElementById;
-  
+
   // Store originals on document for cleanup
   document._originalQuerySelector = enhanced._originals.querySelector;
   document._originalQuerySelectorAll = enhanced._originals.querySelectorAll;
@@ -278,14 +278,14 @@ export function restoreOriginalQuerySelectors() {
  */
 export function overrideCreateElement() {
   const originalCreateElement = document.createElement;
-  
-  document.createElement = function(tagName) {
+
+  document.createElement = function (tagName) {
     const element = originalCreateElement.call(document, tagName);
     return enhanceElement(element);
   };
-  
+
   document._originalCreateElement = originalCreateElement;
-  
+
   return originalCreateElement;
 }
 
@@ -307,12 +307,12 @@ export function restoreOriginalCreateElement() {
  */
 export function createFocusableElement(type = 'button', attributes = {}) {
   const element = document.createElement(type);
-  
+
   // Set default attributes for focusability
   if (type === 'button' && !attributes.type) {
     element.type = 'button';
   }
-  
+
   // Apply provided attributes
   Object.entries(attributes).forEach(([key, value]) => {
     if (key === 'textContent') {
@@ -323,7 +323,7 @@ export function createFocusableElement(type = 'button', attributes = {}) {
       element.setAttribute(key, value);
     }
   });
-  
+
   return enhanceElement(element);
 }
 
@@ -347,9 +347,9 @@ export function triggerKeyboardEvent(key, options = {}, target = document) {
     key,
     bubbles: true,
     cancelable: true,
-    ...options
+    ...options,
   });
-  
+
   target.dispatchEvent(event);
   return event;
 }
@@ -361,7 +361,7 @@ export function triggerKeyboardEvent(key, options = {}, target = document) {
 export function createAnimationMocks() {
   const originalRAF = global.requestAnimationFrame;
   const originalSetTimeout = global.setTimeout;
-  
+
   return {
     requestAnimationFrame: vi.fn(cb => setTimeout(cb, 0)),
     setTimeout: vi.fn((cb, delay) => {
@@ -374,6 +374,6 @@ export function createAnimationMocks() {
     restore: () => {
       global.requestAnimationFrame = originalRAF;
       global.setTimeout = originalSetTimeout;
-    }
+    },
   };
 }

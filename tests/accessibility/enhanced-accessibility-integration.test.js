@@ -7,7 +7,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -31,10 +34,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Enhanced Accessibility Integration Tests', () => {
@@ -57,33 +60,35 @@ describe('Enhanced Accessibility Integration Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock scrollIntoView
     Element.prototype.scrollIntoView = vi.fn();
 
     // Mock focus and blur methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
       this.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
-      this.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body }));
+      this.dispatchEvent(
+        new FocusEvent('focusout', { bubbles: true, relatedTarget: document.body })
+      );
     });
 
     // Mock getComputedStyle
-    window.getComputedStyle = vi.fn((element) => ({
+    window.getComputedStyle = vi.fn(element => ({
       color: element.dataset.color || 'rgb(0, 0, 0)',
       backgroundColor: element.dataset.backgroundColor || 'rgb(255, 255, 255)',
       fontSize: element.dataset.fontSize || '16px',
@@ -92,7 +97,7 @@ describe('Enhanced Accessibility Integration Tests', () => {
       visibility: element.style.visibility || 'visible',
       opacity: element.style.opacity || '1',
       outline: element.classList.contains('no-outline') ? 'none' : '2px solid blue',
-      outlineOffset: '2px'
+      outlineOffset: '2px',
     }));
 
     service = new AccessibilityService();
@@ -428,7 +433,7 @@ describe('Enhanced Accessibility Integration Tests', () => {
       // Test modal opening
       openButton.focus();
       openButton.click();
-      
+
       modal.style.display = 'block';
       const focusTrap = service.createFocusTrap(modal);
       focusTrap.activate();
@@ -694,7 +699,7 @@ describe('Enhanced Accessibility Integration Tests', () => {
       const arrowDownEvent = new KeyboardEvent('keydown', {
         key: 'ArrowDown',
         bubbles: true,
-        cancelable: true
+        cancelable: true,
       });
       menuTrigger.dispatchEvent(arrowDownEvent);
 
@@ -711,7 +716,7 @@ describe('Enhanced Accessibility Integration Tests', () => {
       const arrowRightEvent = new KeyboardEvent('keydown', {
         key: 'ArrowRight',
         bubbles: true,
-        cancelable: true
+        cancelable: true,
       });
       mathCard.dispatchEvent(arrowRightEvent);
 
@@ -807,7 +812,7 @@ describe('Enhanced Accessibility Integration Tests', () => {
       // Test connection error
       connectionStatus.textContent = 'Connection lost';
       connectionStatus.className = 'connection-status error';
-      
+
       expect(connectionStatus.getAttribute('role')).toBe('status');
       expect(connectionStatus.getAttribute('aria-live')).toBe('polite');
       expect(connectionStatus.textContent).toBe('Connection lost');
@@ -1005,7 +1010,9 @@ describe('Enhanced Accessibility Integration Tests', () => {
       // Batch multiple updates into single announcement
       setTimeout(() => {
         batchedUpdates.textContent = batchedContent.join('. ') + '.';
-        expect(batchedUpdates.textContent).toBe('Item 1 completed. Item 2 completed. Item 3 completed.');
+        expect(batchedUpdates.textContent).toBe(
+          'Item 1 completed. Item 2 completed. Item 3 completed.'
+        );
       }, 500);
     });
   });
@@ -1086,7 +1093,9 @@ describe('Enhanced Accessibility Integration Tests', () => {
       expect(headings.length).toBeGreaterThan(0);
 
       // Test landmark roles
-      const landmarks = testContainer.querySelectorAll('[role="banner"], [role="navigation"], [role="main"], [role="contentinfo"], main');
+      const landmarks = testContainer.querySelectorAll(
+        '[role="banner"], [role="navigation"], [role="main"], [role="contentinfo"], main'
+      );
       expect(landmarks.length).toBeGreaterThanOrEqual(4);
 
       // Test ARIA labels and descriptions

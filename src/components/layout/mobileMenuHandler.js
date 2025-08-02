@@ -22,7 +22,11 @@ class MobileMenuHandler {
     const navMenu = document.getElementById(this.navMenuId);
 
     if (!mobileMenuButton || !navMenu) {
-      console.warn('Mobile menu elements not found. Expected elements with IDs:', this.menuButtonId, this.navMenuId);
+      console.warn(
+        'Mobile menu elements not found. Expected elements with IDs:',
+        this.menuButtonId,
+        this.navMenuId
+      );
       return;
     }
 
@@ -31,14 +35,14 @@ class MobileMenuHandler {
     });
 
     // Close menu when clicking outside
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', event => {
       if (!mobileMenuButton.contains(event.target) && !navMenu.contains(event.target)) {
         this.closeMenu();
       }
     });
 
     // Close menu on escape key
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
         this.closeMenu();
       }

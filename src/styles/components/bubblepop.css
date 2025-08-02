@@ -12,7 +12,10 @@
   display: block;
   margin: 0 auto;
   border-radius: 10px;
-  font: 16px "Comic Sans MS", cursive, sans-serif;
+  font:
+    16px 'Comic Sans MS',
+    cursive,
+    sans-serif;
 }
 
 .hero-image {
@@ -25,8 +28,7 @@
   justify-self: center;
 }
 
-
-.hero-image  img {
+.hero-image img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -85,7 +87,7 @@
     margin-top: 16px;
     padding: 0 16px;
   }
-  
+
   #gameCanvas {
     width: 100%;
     height: 320px;
@@ -98,7 +100,7 @@
     /* Improve touch response */
     touch-action: manipulation;
   }
-  
+
   .fullscreen-btn {
     top: 8px;
     right: 8px;
@@ -106,7 +108,7 @@
     height: 48px;
     font-size: 22px;
   }
-  
+
   .hero-image {
     width: 150px;
     height: 150px;
@@ -120,15 +122,13 @@
     height: 280px;
     border-width: 2px;
   }
-  
+
   .game-container {
     padding: 0 12px;
   }
-  
+
   .hero-image {
     width: 120px;
     height: 120px;
   }
 }
-
-

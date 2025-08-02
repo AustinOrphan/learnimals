@@ -11,20 +11,20 @@ class GoalTracker extends BaseComponent {
     super('goal-tracker', {
       // Goal types
       goalTypes: ['daily', 'weekly', 'monthly', 'custom'],
-      
+
       // Default goals
       defaultGoals: {
         dailyXP: 50,
         weeklyActivities: 10,
-        monthlyStreak: 20
+        monthlyStreak: 20,
       },
-      
+
       // Display options
       showProgress: true,
       showRecommendations: true,
       maxActiveGoals: 5,
-      
-      ...options
+
+      ...options,
     });
 
     this.progressData = options.progressData || {};
@@ -52,14 +52,14 @@ class GoalTracker extends BaseComponent {
       // In a full implementation, goals would be stored in the repository
       // For now, we'll use localStorage with a fallback to default goals
       const storedGoals = localStorage.getItem(`learnimals_goals_${this.user.id}`);
-      
+
       if (storedGoals) {
         this.goals = JSON.parse(storedGoals);
       } else {
         this.goals = this.createDefaultGoals();
         await this.saveGoals();
       }
-      
+
       this.categorizeGoals();
     } catch (error) {
       console.error('Failed to load goals:', error);
@@ -71,7 +71,7 @@ class GoalTracker extends BaseComponent {
     const now = new Date();
     const endOfWeek = new Date(now);
     endOfWeek.setDate(now.getDate() + (7 - now.getDay()));
-    
+
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
     return [
@@ -89,7 +89,7 @@ class GoalTracker extends BaseComponent {
         isActive: true,
         isCompleted: false,
         priority: 'high',
-        icon: '⭐'
+        icon: '⭐',
       },
       {
         id: this.generateId(),
@@ -105,7 +105,7 @@ class GoalTracker extends BaseComponent {
         isActive: true,
         isCompleted: false,
         priority: 'medium',
-        icon: '📚'
+        icon: '📚',
       },
       {
         id: this.generateId(),
@@ -121,22 +121,20 @@ class GoalTracker extends BaseComponent {
         isActive: true,
         isCompleted: false,
         priority: 'high',
-        icon: '🔥'
-      }
+        icon: '🔥',
+      },
     ];
   }
 
   categorizeGoals() {
     const now = new Date();
-    
-    this.activeGoals = this.goals.filter(goal => 
-      goal.isActive && 
-      !goal.isCompleted && 
-      new Date(goal.endDate) > now
+
+    this.activeGoals = this.goals.filter(
+      goal => goal.isActive && !goal.isCompleted && new Date(goal.endDate) > now
     );
-    
+
     this.completedGoals = this.goals.filter(goal => goal.isCompleted);
-    
+
     // Check for expired goals
     this.goals.forEach(goal => {
       if (goal.isActive && !goal.isCompleted && new Date(goal.endDate) <= now) {
@@ -149,62 +147,62 @@ class GoalTracker extends BaseComponent {
   updateGoalProgress() {
     this.goals.forEach(goal => {
       const newProgress = this.calculateGoalProgress(goal);
-      
+
       if (newProgress !== goal.current) {
         goal.current = newProgress;
-        
+
         // Check if goal is completed
         if (newProgress >= goal.target && !goal.isCompleted) {
           this.completeGoal(goal);
         }
       }
     });
-    
+
     this.categorizeGoals();
     this.saveGoals();
   }
 
   calculateGoalProgress(goal) {
     const startDate = new Date(goal.startDate);
-    
+
     switch (goal.category) {
-    case 'xp':
-      if (goal.type === 'daily') {
-        // Calculate XP earned today
-        return this.calculateDailyXP();
-      } else if (goal.type === 'weekly') {
-        return this.calculateWeeklyXP(startDate);
-      } else if (goal.type === 'monthly') {
-        return this.calculateMonthlyXP(startDate);
-      }
-      return this.progressData.totalXP || 0;
-        
-    case 'activities':
-      if (goal.type === 'daily') {
-        return this.calculateDailyActivities();
-      } else if (goal.type === 'weekly') {
-        return this.calculateWeeklyActivities(startDate);
-      } else if (goal.type === 'monthly') {
-        return this.calculateMonthlyActivities(startDate);
-      }
-      return this.getTotalActivities();
-        
-    case 'streak':
-      return this.progressData.streakDays || 0;
-        
-    case 'time':
-      if (goal.type === 'daily') {
-        return this.calculateDailyTime();
-      } else if (goal.type === 'weekly') {
-        return this.calculateWeeklyTime(startDate);
-      }
-      return this.progressData.totalTimeSpent || 0;
-        
-    case 'subject':
-      return this.progressData.subjects?.[goal.subject]?.level || 0;
-        
-    default:
-      return goal.current || 0;
+      case 'xp':
+        if (goal.type === 'daily') {
+          // Calculate XP earned today
+          return this.calculateDailyXP();
+        } else if (goal.type === 'weekly') {
+          return this.calculateWeeklyXP(startDate);
+        } else if (goal.type === 'monthly') {
+          return this.calculateMonthlyXP(startDate);
+        }
+        return this.progressData.totalXP || 0;
+
+      case 'activities':
+        if (goal.type === 'daily') {
+          return this.calculateDailyActivities();
+        } else if (goal.type === 'weekly') {
+          return this.calculateWeeklyActivities(startDate);
+        } else if (goal.type === 'monthly') {
+          return this.calculateMonthlyActivities(startDate);
+        }
+        return this.getTotalActivities();
+
+      case 'streak':
+        return this.progressData.streakDays || 0;
+
+      case 'time':
+        if (goal.type === 'daily') {
+          return this.calculateDailyTime();
+        } else if (goal.type === 'weekly') {
+          return this.calculateWeeklyTime(startDate);
+        }
+        return this.progressData.totalTimeSpent || 0;
+
+      case 'subject':
+        return this.progressData.subjects?.[goal.subject]?.level || 0;
+
+      default:
+        return goal.current || 0;
     }
   }
 
@@ -240,8 +238,10 @@ class GoalTracker extends BaseComponent {
   }
 
   getTotalActivities() {
-    return Object.values(this.progressData.subjects || {})
-      .reduce((sum, subject) => sum + (subject.activitiesCompleted || 0), 0);
+    return Object.values(this.progressData.subjects || {}).reduce(
+      (sum, subject) => sum + (subject.activitiesCompleted || 0),
+      0
+    );
   }
 
   calculateDailyTime() {
@@ -258,41 +258,43 @@ class GoalTracker extends BaseComponent {
     goal.isCompleted = true;
     goal.completedAt = new Date().toISOString();
     goal.isActive = false;
-    
+
     // Award bonus XP for completing goal
     const bonusXP = this.calculateGoalBonusXP(goal);
     if (bonusXP > 0) {
       this.awardBonusXP(bonusXP, goal);
     }
-    
+
     // Show completion notification
     this.showGoalCompletionNotification(goal);
-    
+
     // Dispatch completion event
-    document.dispatchEvent(new CustomEvent('goalCompleted', {
-      detail: { goal, bonusXP }
-    }));
-    
+    document.dispatchEvent(
+      new CustomEvent('goalCompleted', {
+        detail: { goal, bonusXP },
+      })
+    );
+
     await this.saveGoals();
   }
 
   calculateGoalBonusXP(goal) {
     const baseBonusMap = {
-      'daily': 25,
-      'weekly': 100,
-      'monthly': 300,
-      'custom': 150
+      daily: 25,
+      weekly: 100,
+      monthly: 300,
+      custom: 150,
     };
-    
+
     const priorityMultiplier = {
-      'low': 0.5,
-      'medium': 1,
-      'high': 1.5
+      low: 0.5,
+      medium: 1,
+      high: 1.5,
     };
-    
+
     const baseBonus = baseBonusMap[goal.type] || 50;
     const multiplier = priorityMultiplier[goal.priority] || 1;
-    
+
     return Math.floor(baseBonus * multiplier);
   }
 
@@ -337,9 +339,11 @@ class GoalTracker extends BaseComponent {
   }
 
   awardBonusXP(amount, goal) {
-    document.dispatchEvent(new CustomEvent('xpAwarded', {
-      detail: { amount, source: 'goal_completion', goal }
-    }));
+    document.dispatchEvent(
+      new CustomEvent('xpAwarded', {
+        detail: { amount, source: 'goal_completion', goal },
+      })
+    );
   }
 
   generateHTML() {
@@ -368,27 +372,35 @@ class GoalTracker extends BaseComponent {
         <!-- Active Goals -->
         <div class="active-goals">
           <h4>Current Goals</h4>
-          ${this.activeGoals.length > 0 ? `
+          ${
+            this.activeGoals.length > 0
+              ? `
             <div class="goals-list">
               ${this.activeGoals.map(goal => this.generateGoalCardHTML(goal)).join('')}
             </div>
-          ` : `
+          `
+              : `
             <div class="no-goals">
               <p>No active goals yet!</p>
               <p>Set your first learning goal to get started.</p>
             </div>
-          `}
+          `
+          }
         </div>
 
         <!-- Goal Recommendations -->
-        ${this.options.showRecommendations ? `
+        ${
+          this.options.showRecommendations
+            ? `
           <div class="goal-recommendations">
             <h4>Recommended Goals</h4>
             <div class="recommendations-list">
               ${this.generateRecommendationsHTML()}
             </div>
           </div>
-        ` : ''}
+        `
+            : ''
+        }
       </div>
     `;
   }
@@ -397,7 +409,7 @@ class GoalTracker extends BaseComponent {
     const progressPercentage = Math.min((goal.current / goal.target) * 100, 100);
     const timeRemaining = this.calculateTimeRemaining(goal);
     const isNearDeadline = timeRemaining.hours <= 24 && timeRemaining.hours > 0;
-    
+
     return `
       <div class="goal-card ${goal.priority}" data-goal-id="${goal.id}">
         <div class="goal-header">
@@ -443,8 +455,10 @@ class GoalTracker extends BaseComponent {
 
   generateRecommendationsHTML() {
     const recommendations = this.getGoalRecommendations();
-    
-    return recommendations.map(rec => `
+
+    return recommendations
+      .map(
+        rec => `
       <div class="recommendation-card" data-recommendation="${rec.id}">
         <div class="rec-icon">${rec.icon}</div>
         <div class="rec-content">
@@ -457,14 +471,16 @@ class GoalTracker extends BaseComponent {
           Add Goal
         </button>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   getGoalRecommendations() {
     const recommendations = [];
     const totalActivities = this.getTotalActivities();
     const currentStreak = this.progressData.streakDays || 0;
-    
+
     // Recommend based on current progress
     if (totalActivities < 5) {
       recommendations.push({
@@ -476,10 +492,10 @@ class GoalTracker extends BaseComponent {
         type: 'custom',
         category: 'activities',
         target: 5,
-        priority: 'medium'
+        priority: 'medium',
       });
     }
-    
+
     if (currentStreak < 3) {
       recommendations.push({
         id: 'streak_starter',
@@ -490,10 +506,10 @@ class GoalTracker extends BaseComponent {
         type: 'custom',
         category: 'streak',
         target: 3,
-        priority: 'high'
+        priority: 'high',
       });
     }
-    
+
     // Subject-specific recommendations
     Object.entries(this.progressData.subjects || {}).forEach(([subject, data]) => {
       if ((data.level || 1) < 3) {
@@ -507,11 +523,11 @@ class GoalTracker extends BaseComponent {
           category: 'subject',
           subject: subject,
           target: 3,
-          priority: 'medium'
+          priority: 'medium',
         });
       }
     });
-    
+
     return recommendations.slice(0, 3); // Limit to 3 recommendations
   }
 
@@ -519,29 +535,29 @@ class GoalTracker extends BaseComponent {
     const now = new Date();
     const endDate = new Date(goal.endDate);
     const diffMs = endDate - now;
-    
+
     if (diffMs <= 0) {
       return { text: 'Expired', hours: 0 };
     }
-    
+
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    
+
     if (diffDays > 0) {
-      return { 
+      return {
         text: `${diffDays} day${diffDays !== 1 ? 's' : ''} left`,
-        hours: diffDays * 24 + diffHours
+        hours: diffDays * 24 + diffHours,
       };
     } else if (diffHours > 0) {
-      return { 
+      return {
         text: `${diffHours} hour${diffHours !== 1 ? 's' : ''} left`,
-        hours: diffHours
+        hours: diffHours,
       };
     } else {
       const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      return { 
+      return {
         text: `${diffMins} minute${diffMins !== 1 ? 's' : ''} left`,
-        hours: 0
+        hours: 0,
       };
     }
   }
@@ -556,7 +572,7 @@ class GoalTracker extends BaseComponent {
     // Edit goal buttons
     const editButtons = this.element.querySelectorAll('.edit-goal');
     editButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const goalId = e.target.getAttribute('data-goal-id');
         this.editGoal(goalId);
       });
@@ -565,7 +581,7 @@ class GoalTracker extends BaseComponent {
     // Delete goal buttons
     const deleteButtons = this.element.querySelectorAll('.delete-goal');
     deleteButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const goalId = e.target.getAttribute('data-goal-id');
         this.deleteGoal(goalId);
       });
@@ -574,7 +590,7 @@ class GoalTracker extends BaseComponent {
     // Add recommended goal buttons
     const addRecButtons = this.element.querySelectorAll('.add-recommended-goal');
     addRecButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const recId = e.target.getAttribute('data-recommendation');
         this.addRecommendedGoal(recId);
       });
@@ -590,14 +606,14 @@ class GoalTracker extends BaseComponent {
           type: 'text',
           label: 'Goal Title',
           placeholder: 'Enter your goal title',
-          required: true
+          required: true,
         },
         {
           name: 'description',
           type: 'textarea',
           label: 'Description',
           placeholder: 'Describe your goal...',
-          rows: 3
+          rows: 3,
         },
         {
           name: 'type',
@@ -607,9 +623,9 @@ class GoalTracker extends BaseComponent {
             { value: 'daily', label: 'Daily Goal' },
             { value: 'weekly', label: 'Weekly Goal' },
             { value: 'monthly', label: 'Monthly Goal' },
-            { value: 'custom', label: 'Custom Goal' }
+            { value: 'custom', label: 'Custom Goal' },
           ],
-          required: true
+          required: true,
         },
         {
           name: 'category',
@@ -620,9 +636,9 @@ class GoalTracker extends BaseComponent {
             { value: 'activities', label: 'Activities' },
             { value: 'time', label: 'Time Spent' },
             { value: 'streak', label: 'Learning Streak' },
-            { value: 'subject', label: 'Subject Level' }
+            { value: 'subject', label: 'Subject Level' },
           ],
-          required: true
+          required: true,
         },
         {
           name: 'target',
@@ -630,7 +646,7 @@ class GoalTracker extends BaseComponent {
           label: 'Target Amount',
           placeholder: 'Enter target number',
           min: 1,
-          required: true
+          required: true,
         },
         {
           name: 'priority',
@@ -639,13 +655,13 @@ class GoalTracker extends BaseComponent {
           options: [
             { value: 'low', label: 'Low Priority' },
             { value: 'medium', label: 'Medium Priority' },
-            { value: 'high', label: 'High Priority' }
+            { value: 'high', label: 'High Priority' },
           ],
-          value: 'medium'
-        }
+          value: 'medium',
+        },
       ],
       submitButtonText: 'Create Goal',
-      onSubmit: (data) => this.handleCreateGoal(data)
+      onSubmit: data => this.handleCreateGoal(data),
     });
 
     const modal = new Modal({
@@ -653,7 +669,7 @@ class GoalTracker extends BaseComponent {
       content: '',
       size: 'medium',
       showConfirmButton: false,
-      showCancelButton: false
+      showCancelButton: false,
     });
 
     const modalInstance = modal.create();
@@ -670,13 +686,13 @@ class GoalTracker extends BaseComponent {
       this.goals.push(goal);
       this.categorizeGoals();
       await this.saveGoals();
-      
+
       // Re-render
       if (this.element) {
         const container = this.element.parentNode;
         this.render(container);
       }
-      
+
       this.showSuccessMessage('Goal created successfully!');
     } catch (error) {
       console.error('Failed to create goal:', error);
@@ -687,21 +703,21 @@ class GoalTracker extends BaseComponent {
   createGoalFromData(data) {
     const now = new Date();
     let endDate;
-    
+
     switch (data.type) {
-    case 'daily':
-      endDate = this.getEndOfDay(now);
-      break;
-    case 'weekly':
-      endDate = new Date(now);
-      endDate.setDate(now.getDate() + 7);
-      break;
-    case 'monthly':
-      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      break;
-    default:
-      endDate = new Date(now);
-      endDate.setDate(now.getDate() + 30); // Default to 30 days
+      case 'daily':
+        endDate = this.getEndOfDay(now);
+        break;
+      case 'weekly':
+        endDate = new Date(now);
+        endDate.setDate(now.getDate() + 7);
+        break;
+      case 'monthly':
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+      default:
+        endDate = new Date(now);
+        endDate.setDate(now.getDate() + 30); // Default to 30 days
     }
 
     return {
@@ -718,14 +734,14 @@ class GoalTracker extends BaseComponent {
       isActive: true,
       isCompleted: false,
       priority: data.priority || 'medium',
-      icon: this.getIconForCategory(data.category)
+      icon: this.getIconForCategory(data.category),
     };
   }
 
   addRecommendedGoal(recId) {
     const recommendations = this.getGoalRecommendations();
     const rec = recommendations.find(r => r.id === recId);
-    
+
     if (rec) {
       const goalData = {
         title: rec.title,
@@ -734,9 +750,9 @@ class GoalTracker extends BaseComponent {
         category: rec.category,
         target: rec.target,
         priority: rec.priority,
-        subject: rec.subject
+        subject: rec.subject,
       };
-      
+
       this.handleCreateGoal(goalData);
     }
   }
@@ -746,7 +762,7 @@ class GoalTracker extends BaseComponent {
       this.goals = this.goals.filter(goal => goal.id !== goalId);
       this.categorizeGoals();
       await this.saveGoals();
-      
+
       // Re-render
       if (this.element) {
         const container = this.element.parentNode;
@@ -758,7 +774,7 @@ class GoalTracker extends BaseComponent {
   // Render method for dashboard integration
   async renderCurrent(container, limit = 3) {
     const currentGoals = this.activeGoals.slice(0, limit);
-    
+
     if (currentGoals.length === 0) {
       container.innerHTML = `
         <div class="no-current-goals">
@@ -768,7 +784,7 @@ class GoalTracker extends BaseComponent {
           </button>
         </div>
       `;
-      
+
       // Add event listener
       const setGoalBtn = container.querySelector('#set-first-goal');
       if (setGoalBtn) {
@@ -777,10 +793,11 @@ class GoalTracker extends BaseComponent {
       return;
     }
 
-    container.innerHTML = currentGoals.map(goal => {
-      const progressPercentage = Math.min((goal.current / goal.target) * 100, 100);
-      
-      return `
+    container.innerHTML = currentGoals
+      .map(goal => {
+        const progressPercentage = Math.min((goal.current / goal.target) * 100, 100);
+
+        return `
         <div class="current-goal-item">
           <div class="goal-header">
             <span class="goal-icon">${goal.icon}</span>
@@ -794,7 +811,8 @@ class GoalTracker extends BaseComponent {
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join('');
   }
 
   // Utility methods
@@ -809,7 +827,7 @@ class GoalTracker extends BaseComponent {
   async updateData(newProgressData) {
     this.progressData = newProgressData;
     this.updateGoalProgress();
-    
+
     // Re-render if component is already rendered
     if (this.element) {
       const container = this.element.parentNode;
@@ -825,22 +843,22 @@ class GoalTracker extends BaseComponent {
 
   getUnitForCategory(category) {
     const units = {
-      'xp': 'XP',
-      'activities': 'activities',
-      'time': 'minutes',
-      'streak': 'days',
-      'subject': 'level'
+      xp: 'XP',
+      activities: 'activities',
+      time: 'minutes',
+      streak: 'days',
+      subject: 'level',
     };
     return units[category] || 'points';
   }
 
   getIconForCategory(category) {
     const icons = {
-      'xp': '⭐',
-      'activities': '📚',
-      'time': '⏰',
-      'streak': '🔥',
-      'subject': '🎯'
+      xp: '⭐',
+      activities: '📚',
+      time: '⏰',
+      streak: '🔥',
+      subject: '🎯',
     };
     return icons[category] || '🎯';
   }
@@ -851,7 +869,7 @@ class GoalTracker extends BaseComponent {
       science: '🔬',
       reading: '📖',
       art: '🎨',
-      coding: '💻'
+      coding: '💻',
     };
     return icons[subject] || '📚';
   }

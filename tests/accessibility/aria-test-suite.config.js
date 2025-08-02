@@ -12,27 +12,76 @@ export const ariaValidators = {
   isValidRole(role) {
     const validRoles = [
       // Widget roles
-      'alert', 'alertdialog', 'button', 'checkbox', 'dialog', 'gridcell',
-      'link', 'log', 'marquee', 'menuitem', 'menuitemcheckbox', 'menuitemradio',
-      'option', 'progressbar', 'radio', 'scrollbar', 'slider', 'spinbutton',
-      'status', 'tab', 'tabpanel', 'textbox', 'timer', 'tooltip', 'tree',
+      'alert',
+      'alertdialog',
+      'button',
+      'checkbox',
+      'dialog',
+      'gridcell',
+      'link',
+      'log',
+      'marquee',
+      'menuitem',
+      'menuitemcheckbox',
+      'menuitemradio',
+      'option',
+      'progressbar',
+      'radio',
+      'scrollbar',
+      'slider',
+      'spinbutton',
+      'status',
+      'tab',
+      'tabpanel',
+      'textbox',
+      'timer',
+      'tooltip',
+      'tree',
       'treeitem',
-      
+
       // Composite roles
-      'combobox', 'grid', 'listbox', 'menu', 'menubar', 'radiogroup',
-      'tablist', 'toolbar', 'treegrid',
-      
-      // Document structure roles
-      'article', 'columnheader', 'definition', 'directory', 'document',
-      'group', 'heading', 'img', 'list', 'listitem', 'math', 'note',
-      'presentation', 'region', 'row', 'rowgroup', 'rowheader', 'separator',
+      'combobox',
+      'grid',
+      'listbox',
+      'menu',
+      'menubar',
+      'radiogroup',
+      'tablist',
       'toolbar',
-      
+      'treegrid',
+
+      // Document structure roles
+      'article',
+      'columnheader',
+      'definition',
+      'directory',
+      'document',
+      'group',
+      'heading',
+      'img',
+      'list',
+      'listitem',
+      'math',
+      'note',
+      'presentation',
+      'region',
+      'row',
+      'rowgroup',
+      'rowheader',
+      'separator',
+      'toolbar',
+
       // Landmark roles
-      'application', 'banner', 'complementary', 'contentinfo', 'form',
-      'main', 'navigation', 'search'
+      'application',
+      'banner',
+      'complementary',
+      'contentinfo',
+      'form',
+      'main',
+      'navigation',
+      'search',
     ];
-    
+
     return !role || validRoles.includes(role);
   },
 
@@ -41,47 +90,56 @@ export const ariaValidators = {
    */
   isValidPropertyValue(property, value) {
     const booleanProperties = [
-      'aria-atomic', 'aria-busy', 'aria-disabled', 'aria-expanded',
-      'aria-grabbed', 'aria-hidden', 'aria-invalid', 'aria-multiline',
-      'aria-multiselectable', 'aria-readonly', 'aria-required', 'aria-selected'
+      'aria-atomic',
+      'aria-busy',
+      'aria-disabled',
+      'aria-expanded',
+      'aria-grabbed',
+      'aria-hidden',
+      'aria-invalid',
+      'aria-multiline',
+      'aria-multiselectable',
+      'aria-readonly',
+      'aria-required',
+      'aria-selected',
     ];
-    
+
     const tristateProperties = ['aria-checked', 'aria-pressed'];
-    
+
     if (booleanProperties.includes(property)) {
       return ['true', 'false'].includes(value);
     }
-    
+
     if (tristateProperties.includes(property)) {
       return ['true', 'false', 'mixed'].includes(value);
     }
-    
+
     if (property === 'aria-autocomplete') {
       return ['inline', 'list', 'both', 'none'].includes(value);
     }
-    
+
     if (property === 'aria-dropeffect') {
       const validValues = ['copy', 'execute', 'link', 'move', 'none', 'popup'];
       return value.split(' ').every(v => validValues.includes(v));
     }
-    
+
     if (property === 'aria-live') {
       return ['off', 'polite', 'assertive'].includes(value);
     }
-    
+
     if (property === 'aria-orientation') {
       return ['horizontal', 'vertical', 'undefined'].includes(value);
     }
-    
+
     if (property === 'aria-relevant') {
       const validValues = ['additions', 'removals', 'text', 'all'];
       return value.split(' ').every(v => validValues.includes(v));
     }
-    
+
     if (property === 'aria-sort') {
       return ['ascending', 'descending', 'none', 'other'].includes(value);
     }
-    
+
     // For properties with ID references or numbers, just check they exist
     return true;
   },
@@ -94,19 +152,25 @@ export const ariaValidators = {
     const ariaLabelledBy = element.getAttribute('aria-labelledby');
     const associatedLabel = element.labels?.[0];
     const title = element.getAttribute('title');
-    
+
     // Interactive elements must have accessible names
     const interactiveRoles = ['button', 'link', 'textbox', 'combobox', 'slider'];
     const interactiveTags = ['button', 'a', 'input', 'select', 'textarea'];
     const role = element.getAttribute('role');
     const tag = element.tagName.toLowerCase();
-    
+
     const isInteractive = interactiveRoles.includes(role) || interactiveTags.includes(tag);
-    
+
     if (isInteractive) {
-      return !!(ariaLabel || ariaLabelledBy || associatedLabel || title || element.textContent.trim());
+      return !!(
+        ariaLabel ||
+        ariaLabelledBy ||
+        associatedLabel ||
+        title ||
+        element.textContent.trim()
+      );
     }
-    
+
     return true;
   },
 
@@ -116,18 +180,18 @@ export const ariaValidators = {
   isValidLiveRegion(element) {
     const ariaLive = element.getAttribute('aria-live');
     const role = element.getAttribute('role');
-    
+
     // Check for explicit aria-live or implicit roles
     const implicitLiveRoles = ['alert', 'status', 'log', 'marquee', 'timer'];
-    
+
     if (ariaLive) {
       return ['off', 'polite', 'assertive'].includes(ariaLive);
     }
-    
+
     if (role && implicitLiveRoles.includes(role)) {
       return true;
     }
-    
+
     return false;
   },
 
@@ -136,10 +200,14 @@ export const ariaValidators = {
    */
   hasValidRelationships(element) {
     const relationshipAttributes = [
-      'aria-labelledby', 'aria-describedby', 'aria-controls', 'aria-owns',
-      'aria-flowto', 'aria-activedescendant'
+      'aria-labelledby',
+      'aria-describedby',
+      'aria-controls',
+      'aria-owns',
+      'aria-flowto',
+      'aria-activedescendant',
     ];
-    
+
     for (const attr of relationshipAttributes) {
       const value = element.getAttribute(attr);
       if (value) {
@@ -151,9 +219,9 @@ export const ariaValidators = {
         }
       }
     }
-    
+
     return true;
-  }
+  },
 };
 
 // Test utilities for ARIA testing
@@ -163,11 +231,11 @@ export const ariaTestUtils = {
    */
   createMockElement(tag, attributes = {}) {
     const element = document.createElement(tag);
-    
+
     Object.entries(attributes).forEach(([key, value]) => {
       element.setAttribute(key, value);
     });
-    
+
     return element;
   },
 
@@ -180,7 +248,7 @@ export const ariaTestUtils = {
     region.setAttribute('aria-atomic', atomic.toString());
     region.className = 'sr-only';
     region.id = `live-region-${Date.now()}`;
-    
+
     return region;
   },
 
@@ -189,27 +257,27 @@ export const ariaTestUtils = {
    */
   createAccessibleField(type = 'text', options = {}) {
     const container = document.createElement('div');
-    
+
     const label = document.createElement('label');
     label.textContent = options.label || 'Field Label';
     label.htmlFor = options.id || `field-${Date.now()}`;
-    
+
     const input = document.createElement('input');
     input.type = type;
     input.id = label.htmlFor;
-    
+
     if (options.required) {
       input.setAttribute('required', '');
       input.setAttribute('aria-required', 'true');
     }
-    
+
     if (options.describedBy) {
       input.setAttribute('aria-describedby', options.describedBy);
     }
-    
+
     container.appendChild(label);
     container.appendChild(input);
-    
+
     return { container, label, input };
   },
 
@@ -220,10 +288,10 @@ export const ariaTestUtils = {
     const tablist = document.createElement('div');
     tablist.setAttribute('role', 'tablist');
     tablist.setAttribute('aria-label', 'Content tabs');
-    
+
     const panels = document.createElement('div');
     panels.className = 'tab-panels';
-    
+
     tabs.forEach((tabText, index) => {
       const tab = document.createElement('button');
       tab.setAttribute('role', 'tab');
@@ -231,21 +299,21 @@ export const ariaTestUtils = {
       tab.setAttribute('aria-controls', `panel-${index}`);
       tab.id = `tab-${index}`;
       tab.textContent = tabText;
-      
+
       const panel = document.createElement('div');
       panel.setAttribute('role', 'tabpanel');
       panel.setAttribute('aria-labelledby', `tab-${index}`);
       panel.id = `panel-${index}`;
       panel.textContent = `Content for ${tabText}`;
-      
+
       if (index !== 0) {
         panel.setAttribute('aria-hidden', 'true');
       }
-      
+
       tablist.appendChild(tab);
       panels.appendChild(panel);
     });
-    
+
     return { tablist, panels };
   },
 
@@ -254,21 +322,21 @@ export const ariaTestUtils = {
    */
   async waitForAnnouncement(element, timeout = 1000) {
     return new Promise((resolve, reject) => {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
           if (mutation.type === 'childList' || mutation.type === 'characterData') {
             observer.disconnect();
             resolve(element.textContent);
           }
         });
       });
-      
+
       observer.observe(element, {
         childList: true,
         characterData: true,
-        subtree: true
+        subtree: true,
       });
-      
+
       setTimeout(() => {
         observer.disconnect();
         reject(new Error('Timeout waiting for announcement'));
@@ -287,9 +355,9 @@ export const ariaTestUtils = {
       'select:not([disabled])',
       'textarea:not([disabled])',
       '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]'
+      '[contenteditable="true"]',
     ].join(', ');
-    
+
     return Array.from(container.querySelectorAll(focusableSelectors));
   },
 
@@ -302,12 +370,12 @@ export const ariaTestUtils = {
       code: key,
       bubbles: true,
       cancelable: true,
-      ...options
+      ...options,
     });
-    
+
     element.dispatchEvent(event);
     return event;
-  }
+  },
 };
 
 // Custom test matchers for ARIA
@@ -318,10 +386,10 @@ export const ariaMatchers = {
   toHaveValidAriaRole(element) {
     const role = element.getAttribute('role');
     const isValid = ariaValidators.isValidRole(role);
-    
+
     return {
       pass: isValid,
-      message: () => `Expected element to have valid ARIA role, got "${role}"`
+      message: () => `Expected element to have valid ARIA role, got "${role}"`,
     };
   },
 
@@ -330,10 +398,11 @@ export const ariaMatchers = {
    */
   toHaveAccessibleName(element) {
     const hasName = ariaValidators.hasProperLabeling(element);
-    
+
     return {
       pass: hasName,
-      message: () => 'Expected element to have accessible name (aria-label, aria-labelledby, or associated label)'
+      message: () =>
+        'Expected element to have accessible name (aria-label, aria-labelledby, or associated label)',
     };
   },
 
@@ -342,10 +411,10 @@ export const ariaMatchers = {
    */
   toHaveValidAriaRelationships(element) {
     const hasValid = ariaValidators.hasValidRelationships(element);
-    
+
     return {
       pass: hasValid,
-      message: () => 'Expected all ARIA relationship attributes to reference existing elements'
+      message: () => 'Expected all ARIA relationship attributes to reference existing elements',
     };
   },
 
@@ -354,10 +423,10 @@ export const ariaMatchers = {
    */
   toBeValidLiveRegion(element) {
     const isValid = ariaValidators.isValidLiveRegion(element);
-    
+
     return {
       pass: isValid,
-      message: () => 'Expected element to be a valid ARIA live region'
+      message: () => 'Expected element to be a valid ARIA live region',
     };
   },
 
@@ -368,25 +437,24 @@ export const ariaMatchers = {
     const tabIndex = element.getAttribute('tabindex');
     const role = element.getAttribute('role');
     const tag = element.tagName.toLowerCase();
-    
+
     const interactiveElements = ['button', 'a', 'input', 'select', 'textarea'];
     const interactiveRoles = ['button', 'link', 'tab', 'menuitem', 'option'];
-    
-    const isInteractive = interactiveElements.includes(tag) || 
-                         interactiveRoles.includes(role);
-    
+
+    const isInteractive = interactiveElements.includes(tag) || interactiveRoles.includes(role);
+
     if (isInteractive) {
-      const isAccessible = tabIndex !== '-1' && 
-                          (tabIndex === '0' || !tabIndex || interactiveElements.includes(tag));
-      
+      const isAccessible =
+        tabIndex !== '-1' && (tabIndex === '0' || !tabIndex || interactiveElements.includes(tag));
+
       return {
         pass: isAccessible,
-        message: () => 'Expected interactive element to be keyboard accessible'
+        message: () => 'Expected interactive element to be keyboard accessible',
       };
     }
-    
+
     return { pass: true, message: () => '' };
-  }
+  },
 };
 
 // Test data factories
@@ -401,7 +469,7 @@ export const testDataFactory = {
       validPassword: 'SecurePass123!',
       shortPassword: '123',
       requiredField: 'Required value',
-      emptyField: ''
+      emptyField: '',
     };
   },
 
@@ -415,9 +483,9 @@ export const testDataFactory = {
       achievements: [
         { name: 'First Steps', description: 'Complete first level', earned: true },
         { name: 'Speed Demon', description: 'Solve 10 problems in 1 minute', earned: false },
-        { name: 'Perfect Score', description: 'Get 100% on any level', earned: false }
+        { name: 'Perfect Score', description: 'Get 100% on any level', earned: false },
       ],
-      subjects: ['Math', 'Science', 'Reading', 'Art', 'Coding']
+      subjects: ['Math', 'Science', 'Reading', 'Art', 'Coding'],
     };
   },
 
@@ -432,13 +500,13 @@ export const testDataFactory = {
         Science: 70,
         Reading: 90,
         Art: 45,
-        Coding: 25
+        Coding: 25,
       },
       streakDays: 7,
       totalProblems: 150,
-      correctAnswers: 132
+      correctAnswers: 132,
     };
-  }
+  },
 };
 
 // Setup helpers for tests
@@ -462,7 +530,7 @@ export const testSetup = {
         </main>
       </div>
     `;
-    
+
     return document.getElementById('test-container');
   },
 
@@ -472,13 +540,13 @@ export const testSetup = {
   setupLiveRegions() {
     const politeRegion = ariaTestUtils.createLiveRegion('polite');
     politeRegion.id = 'test-polite-region';
-    
+
     const assertiveRegion = ariaTestUtils.createLiveRegion('assertive');
     assertiveRegion.id = 'test-assertive-region';
-    
+
     document.body.appendChild(politeRegion);
     document.body.appendChild(assertiveRegion);
-    
+
     return { politeRegion, assertiveRegion };
   },
 
@@ -487,7 +555,7 @@ export const testSetup = {
    */
   cleanup() {
     document.body.innerHTML = '';
-  }
+  },
 };
 
 // Export all utilities as default
@@ -496,5 +564,5 @@ export default {
   utils: ariaTestUtils,
   matchers: ariaMatchers,
   factory: testDataFactory,
-  setup: testSetup
+  setup: testSetup,
 };

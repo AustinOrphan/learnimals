@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Screen Reader Support Tests', () => {
@@ -56,7 +59,7 @@ describe('Screen Reader Support Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock speechSynthesis
@@ -64,17 +67,15 @@ describe('Screen Reader Support Tests', () => {
       writable: true,
       configurable: true,
       value: {
-        getVoices: vi.fn(() => [
-          { name: 'Test Voice', lang: 'en-US' }
-        ]),
+        getVoices: vi.fn(() => [{ name: 'Test Voice', lang: 'en-US' }]),
         speak: vi.fn(),
         cancel: vi.fn(),
         pause: vi.fn(),
         resume: vi.fn(),
         speaking: false,
         pending: false,
-        paused: false
-      }
+        paused: false,
+      },
     });
 
     service = new AccessibilityService();
@@ -93,7 +94,7 @@ describe('Screen Reader Support Tests', () => {
       // Mock user agent with NVDA
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 NVDA'
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 NVDA',
       });
 
       const isDetected = service.detectScreenReader();
@@ -103,7 +104,7 @@ describe('Screen Reader Support Tests', () => {
     it('should detect screen reader from JAWS user agent', () => {
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) JAWS/2023'
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) JAWS/2023',
       });
 
       const isDetected = service.detectScreenReader();
@@ -114,13 +115,13 @@ describe('Screen Reader Support Tests', () => {
       // Reset user agent
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       });
 
       // Mock speechSynthesis with voices
       window.speechSynthesis.getVoices.mockReturnValue([
         { name: 'Microsoft David', lang: 'en-US' },
-        { name: 'Microsoft Zira', lang: 'en-US' }
+        { name: 'Microsoft Zira', lang: 'en-US' },
       ]);
 
       const isDetected = service.detectScreenReader();
@@ -132,7 +133,7 @@ describe('Screen Reader Support Tests', () => {
       Object.defineProperty(window, 'speechSynthesis', {
         get: () => {
           throw new Error('Not available');
-        }
+        },
       });
 
       const isDetected = service.detectScreenReader();
@@ -160,11 +161,11 @@ describe('Screen Reader Support Tests', () => {
       expect(assertiveRegion.className).toContain('sr-only');
     });
 
-    it('should announce polite messages', (done) => {
+    it('should announce polite messages', done => {
       const message = 'Form saved successfully';
-      
+
       service.announce(message, 'polite', 500);
-      
+
       setTimeout(() => {
         const announcer = document.getElementById('accessibility-announcer-polite');
         expect(announcer.textContent).toBe(message);
@@ -172,11 +173,11 @@ describe('Screen Reader Support Tests', () => {
       }, 150);
     });
 
-    it('should announce assertive messages', (done) => {
+    it('should announce assertive messages', done => {
       const message = 'Error: Please correct the highlighted fields';
-      
+
       service.announce(message, 'assertive', 500);
-      
+
       setTimeout(() => {
         const announcer = document.getElementById('accessibility-announcer-assertive');
         expect(announcer.textContent).toBe(message);
@@ -184,11 +185,11 @@ describe('Screen Reader Support Tests', () => {
       }, 150);
     });
 
-    it('should clear announcements after timeout', (done) => {
+    it('should clear announcements after timeout', done => {
       const message = 'Temporary message';
-      
+
       service.announce(message, 'polite', 300);
-      
+
       setTimeout(() => {
         const announcer = document.getElementById('accessibility-announcer-polite');
         expect(announcer.textContent).toBe('');
@@ -196,11 +197,11 @@ describe('Screen Reader Support Tests', () => {
       }, 400);
     });
 
-    it('should handle multiple rapid announcements', (done) => {
+    it('should handle multiple rapid announcements', done => {
       service.announce('First message', 'polite', 100);
       service.announce('Second message', 'polite', 100);
       service.announce('Third message', 'polite', 100);
-      
+
       setTimeout(() => {
         const announcer = document.getElementById('accessibility-announcer-polite');
         expect(announcer.textContent).toBe('Third message');
@@ -212,10 +213,10 @@ describe('Screen Reader Support Tests', () => {
       service.announce('', 'polite');
       service.announce(null, 'polite');
       service.announce(undefined, 'polite');
-      
+
       const politeAnnouncer = document.getElementById('accessibility-announcer-polite');
       const assertiveAnnouncer = document.getElementById('accessibility-announcer-assertive');
-      
+
       expect(politeAnnouncer.textContent).toBe('');
       expect(assertiveAnnouncer.textContent).toBe('');
     });
@@ -228,7 +229,7 @@ describe('Screen Reader Support Tests', () => {
 
     it('should create status region for non-urgent messages', () => {
       const statusRegion = document.getElementById('status-messages');
-      
+
       expect(statusRegion).toBeTruthy();
       expect(statusRegion.getAttribute('aria-live')).toBe('polite');
       expect(statusRegion.getAttribute('aria-atomic')).toBe('false');
@@ -237,7 +238,7 @@ describe('Screen Reader Support Tests', () => {
 
     it('should create alert region for urgent messages', () => {
       const alertRegion = document.getElementById('alert-messages');
-      
+
       expect(alertRegion).toBeTruthy();
       expect(alertRegion.getAttribute('aria-live')).toBe('assertive');
       expect(alertRegion.getAttribute('aria-atomic')).toBe('true');
@@ -246,7 +247,7 @@ describe('Screen Reader Support Tests', () => {
 
     it('should announce status changes properly', () => {
       const component = new AccessibleComponent({
-        announceChanges: true
+        announceChanges: true,
       });
 
       const div = document.createElement('div');
@@ -254,9 +255,9 @@ describe('Screen Reader Support Tests', () => {
       testContainer.appendChild(div);
 
       const announceSpy = vi.spyOn(component, 'announce');
-      
+
       component.setState({ loading: true }, true);
-      
+
       expect(announceSpy).toHaveBeenCalled();
     });
 
@@ -298,7 +299,7 @@ describe('Screen Reader Support Tests', () => {
 
       const headings = testContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
       expect(headings.length).toBe(3);
-      
+
       // Verify logical heading order
       expect(headings[0].tagName).toBe('H1');
       expect(headings[1].tagName).toBe('H2');
@@ -402,7 +403,7 @@ describe('Screen Reader Support Tests', () => {
     it('should announce component ready state', () => {
       const component = new AccessibleComponent({
         announceChanges: true,
-        ariaLabel: 'Navigation menu'
+        ariaLabel: 'Navigation menu',
       });
 
       const nav = document.createElement('nav');
@@ -410,9 +411,9 @@ describe('Screen Reader Support Tests', () => {
       testContainer.appendChild(nav);
 
       const announceSpy = vi.spyOn(component, 'announce');
-      
+
       component.announceComponentReady();
-      
+
       expect(announceSpy).toHaveBeenCalledWith('Navigation menu is ready', 'polite');
     });
 
@@ -420,12 +421,12 @@ describe('Screen Reader Support Tests', () => {
       const button = document.createElement('button');
       button.textContent = 'Load Data';
       button.setAttribute('aria-describedby', 'loading-status');
-      
+
       const status = document.createElement('div');
       status.id = 'loading-status';
       status.setAttribute('aria-live', 'polite');
       status.className = 'sr-only';
-      
+
       testContainer.appendChild(button);
       testContainer.appendChild(status);
 
@@ -463,7 +464,7 @@ describe('Screen Reader Support Tests', () => {
       const progressBar = testContainer.querySelector('.progress-bar');
 
       // Simulate progress updates
-      const updateProgress = (value) => {
+      const updateProgress = value => {
         progressbar.setAttribute('aria-valuenow', value.toString());
         progressBar.style.width = `${value}%`;
         status.textContent = `Upload ${value}% complete`;
@@ -526,7 +527,7 @@ describe('Screen Reader Support Tests', () => {
       `;
 
       const images = testContainer.querySelectorAll('img');
-      
+
       expect(images[0].alt).toBe('Sales increased by 25% from Q1 to Q2 2023');
       expect(images[1].alt).toBe(''); // Decorative image
       expect(images[1].getAttribute('role')).toBe('presentation');

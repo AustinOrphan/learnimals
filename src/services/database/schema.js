@@ -8,11 +8,11 @@ export const DB_VERSION = 1;
 
 export const STORES = {
   USERS: 'users',
-  PROGRESS: 'progress', 
+  PROGRESS: 'progress',
   ACHIEVEMENTS: 'achievements',
   ACTIVITIES: 'activities',
   SETTINGS: 'settings',
-  SESSIONS: 'sessions'
+  SESSIONS: 'sessions',
 };
 
 export const SCHEMAS = {
@@ -21,10 +21,10 @@ export const SCHEMAS = {
     indexes: [
       { name: 'email', keyPath: 'email', unique: true },
       { name: 'createdAt', keyPath: 'createdAt', unique: false },
-      { name: 'lastActive', keyPath: 'lastActive', unique: false }
-    ]
+      { name: 'lastActive', keyPath: 'lastActive', unique: false },
+    ],
   },
-  
+
   [STORES.PROGRESS]: {
     keyPath: 'id',
     indexes: [
@@ -32,10 +32,10 @@ export const SCHEMAS = {
       { name: 'activityId', keyPath: 'activityId', unique: false },
       { name: 'subject', keyPath: 'subject', unique: false },
       { name: 'timestamp', keyPath: 'timestamp', unique: false },
-      { name: 'userActivity', keyPath: ['userId', 'activityId'], unique: false }
-    ]
+      { name: 'userActivity', keyPath: ['userId', 'activityId'], unique: false },
+    ],
   },
-  
+
   [STORES.ACHIEVEMENTS]: {
     keyPath: 'id',
     indexes: [
@@ -43,37 +43,37 @@ export const SCHEMAS = {
       { name: 'type', keyPath: 'type', unique: false },
       { name: 'subject', keyPath: 'subject', unique: false },
       { name: 'unlockedAt', keyPath: 'unlockedAt', unique: false },
-      { name: 'userType', keyPath: ['userId', 'type'], unique: false }
-    ]
+      { name: 'userType', keyPath: ['userId', 'type'], unique: false },
+    ],
   },
-  
+
   [STORES.ACTIVITIES]: {
     keyPath: 'id',
     indexes: [
       { name: 'subject', keyPath: 'subject', unique: false },
       { name: 'difficulty', keyPath: 'difficulty', unique: false },
       { name: 'type', keyPath: 'type', unique: false },
-      { name: 'createdAt', keyPath: 'createdAt', unique: false }
-    ]
+      { name: 'createdAt', keyPath: 'createdAt', unique: false },
+    ],
   },
-  
+
   [STORES.SETTINGS]: {
     keyPath: 'userId',
     indexes: [
       { name: 'theme', keyPath: 'preferences.theme', unique: false },
-      { name: 'updatedAt', keyPath: 'updatedAt', unique: false }
-    ]
+      { name: 'updatedAt', keyPath: 'updatedAt', unique: false },
+    ],
   },
-  
+
   [STORES.SESSIONS]: {
     keyPath: 'id',
     indexes: [
       { name: 'userId', keyPath: 'userId', unique: false },
       { name: 'startTime', keyPath: 'startTime', unique: false },
       { name: 'endTime', keyPath: 'endTime', unique: false },
-      { name: 'duration', keyPath: 'duration', unique: false }
-    ]
-  }
+      { name: 'duration', keyPath: 'duration', unique: false },
+    ],
+  },
 };
 
 /**
@@ -86,9 +86,9 @@ export const VALIDATION_SCHEMAS = {
     name: { type: 'string', required: true },
     preferences: { type: 'object', required: false },
     createdAt: { type: 'date', required: true },
-    lastActive: { type: 'date', required: true }
+    lastActive: { type: 'date', required: true },
   },
-  
+
   PROGRESS: {
     id: { type: 'string', required: true },
     userId: { type: 'string', required: true },
@@ -98,9 +98,9 @@ export const VALIDATION_SCHEMAS = {
     completion: { type: 'number', required: true },
     timeSpent: { type: 'number', required: true },
     timestamp: { type: 'date', required: true },
-    data: { type: 'object', required: false }
+    data: { type: 'object', required: false },
   },
-  
+
   ACHIEVEMENT: {
     id: { type: 'string', required: true },
     userId: { type: 'string', required: true },
@@ -110,8 +110,8 @@ export const VALIDATION_SCHEMAS = {
     description: { type: 'string', required: true },
     points: { type: 'number', required: true },
     unlockedAt: { type: 'date', required: true },
-    metadata: { type: 'object', required: false }
-  }
+    metadata: { type: 'object', required: false },
+  },
 };
 
 /**
@@ -124,14 +124,14 @@ export const MIGRATIONS = {
       // Create all stores with their schemas
       Object.entries(SCHEMAS).forEach(([storeName, schema]) => {
         const store = db.createObjectStore(storeName, { keyPath: schema.keyPath });
-        
+
         // Create indexes
         schema.indexes.forEach(index => {
           store.createIndex(index.name, index.keyPath, { unique: index.unique });
         });
       });
-    }
-  }
+    },
+  },
 };
 
 /**
@@ -139,46 +139,46 @@ export const MIGRATIONS = {
  */
 export function validateData(data, schema) {
   const errors = [];
-  
+
   Object.entries(schema).forEach(([field, rules]) => {
     const value = data[field];
-    
+
     // Check required fields
     if (rules.required && (value === undefined || value === null)) {
       errors.push(`Field '${field}' is required`);
       return;
     }
-    
+
     // Skip validation if field is not present and not required
     if (value === undefined || value === null) {
       return;
     }
-    
+
     // Type validation
     switch (rules.type) {
-    case 'string':
-      if (typeof value !== 'string') {
-        errors.push(`Field '${field}' must be a string`);
-      }
-      break;
-    case 'number':
-      if (typeof value !== 'number' || isNaN(value)) {
-        errors.push(`Field '${field}' must be a number`);
-      }
-      break;
-    case 'date':
-      if (!(value instanceof Date) && !Date.parse(value)) {
-        errors.push(`Field '${field}' must be a valid date`);
-      }
-      break;
-    case 'object':
-      if (typeof value !== 'object' || Array.isArray(value)) {
-        errors.push(`Field '${field}' must be an object`);
-      }
-      break;
+      case 'string':
+        if (typeof value !== 'string') {
+          errors.push(`Field '${field}' must be a string`);
+        }
+        break;
+      case 'number':
+        if (typeof value !== 'number' || isNaN(value)) {
+          errors.push(`Field '${field}' must be a number`);
+        }
+        break;
+      case 'date':
+        if (!(value instanceof Date) && !Date.parse(value)) {
+          errors.push(`Field '${field}' must be a valid date`);
+        }
+        break;
+      case 'object':
+        if (typeof value !== 'object' || Array.isArray(value)) {
+          errors.push(`Field '${field}' must be an object`);
+        }
+        break;
     }
   });
-  
+
   return errors;
 }
 

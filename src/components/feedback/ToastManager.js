@@ -21,13 +21,13 @@ class ToastManager {
   show(options) {
     const toastId = this.generateToastId();
     const position = options.position || this.defaultPosition;
-    
+
     // Limit number of toasts
     this.enforceMaxToasts(position);
-    
+
     // Update stack indices for existing toasts in this position
     this.updateStackIndices(position);
-    
+
     // Create new toast
     const toast = new FeedbackToast({
       ...options,
@@ -39,19 +39,19 @@ class ToastManager {
         if (options.onDismiss) {
           options.onDismiss();
         }
-      }
+      },
     });
-    
+
     // Store toast
     this.toasts.set(toastId, {
       toast,
       position,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     });
-    
+
     // Show toast
     toast.show();
-    
+
     return toastId;
   }
 
@@ -62,15 +62,15 @@ class ToastManager {
   async remove(toastId) {
     const toastData = this.toasts.get(toastId);
     if (!toastData) return;
-    
+
     const { toast, position } = toastData;
-    
+
     // Remove from tracking
     this.toasts.delete(toastId);
-    
+
     // Dismiss toast
     await toast.dismiss();
-    
+
     // Update stack positions for remaining toasts
     this.updateStackIndices(position);
   }
@@ -81,13 +81,13 @@ class ToastManager {
    */
   async clear(position = null) {
     const toastsToRemove = [];
-    
+
     for (const [toastId, toastData] of this.toasts) {
       if (!position || toastData.position === position) {
         toastsToRemove.push(toastId);
       }
     }
-    
+
     // Remove all matching toasts
     await Promise.all(toastsToRemove.map(id => this.remove(id)));
   }
@@ -100,7 +100,7 @@ class ToastManager {
   update(toastId, newOptions) {
     const toastData = this.toasts.get(toastId);
     if (!toastData) return false;
-    
+
     toastData.toast.update(newOptions);
     return true;
   }
@@ -122,18 +122,18 @@ class ToastManager {
    */
   getToasts(position = null) {
     const results = [];
-    
+
     for (const [toastId, toastData] of this.toasts) {
       if (!position || toastData.position === position) {
         results.push({
           id: toastId,
           toast: toastData.toast,
           position: toastData.position,
-          createdAt: toastData.createdAt
+          createdAt: toastData.createdAt,
         });
       }
     }
-    
+
     return results.sort((a, b) => b.createdAt - a.createdAt);
   }
 
@@ -155,7 +155,7 @@ class ToastManager {
     if (!position) {
       return this.toasts.size;
     }
-    
+
     let count = 0;
     for (const toastData of this.toasts.values()) {
       if (toastData.position === position) {
@@ -171,7 +171,7 @@ class ToastManager {
    */
   setMaxToasts(max) {
     this.maxToasts = Math.max(1, max);
-    
+
     // Enforce new limit
     for (const position of this.getPositions()) {
       this.enforceMaxToasts(position);
@@ -192,13 +192,11 @@ class ToastManager {
    */
   enforceMaxToasts(position) {
     const positionToasts = this.getToasts(position);
-    
+
     if (positionToasts.length >= this.maxToasts) {
       // Remove oldest toasts
-      const toastsToRemove = positionToasts
-        .slice(this.maxToasts - 1)
-        .map(t => t.id);
-      
+      const toastsToRemove = positionToasts.slice(this.maxToasts - 1).map(t => t.id);
+
       toastsToRemove.forEach(id => this.remove(id));
     }
   }
@@ -209,7 +207,7 @@ class ToastManager {
    */
   updateStackIndices(position) {
     const positionToasts = this.getToasts(position);
-    
+
     positionToasts.forEach((toastData, index) => {
       const { toast } = toastData;
       toast.options.stackIndex = index;
@@ -223,11 +221,11 @@ class ToastManager {
    */
   getPositions() {
     const positions = new Set();
-    
+
     for (const toastData of this.toasts.values()) {
       positions.add(toastData.position);
     }
-    
+
     return Array.from(positions);
   }
 
@@ -273,7 +271,7 @@ class ToastManager {
     return this.show({
       type: 'success',
       message,
-      ...options
+      ...options,
     });
   }
 
@@ -288,7 +286,7 @@ class ToastManager {
       type: 'error',
       message,
       duration: 6000, // Longer duration for errors
-      ...options
+      ...options,
     });
   }
 
@@ -302,7 +300,7 @@ class ToastManager {
     return this.show({
       type: 'hint',
       message,
-      ...options
+      ...options,
     });
   }
 
@@ -317,7 +315,7 @@ class ToastManager {
       type: 'progress',
       message,
       duration: 5000,
-      ...options
+      ...options,
     });
   }
 
@@ -332,7 +330,7 @@ class ToastManager {
       type: 'achievement',
       message,
       duration: 8000, // Longer duration for achievements
-      ...options
+      ...options,
     });
   }
 
@@ -342,7 +340,7 @@ class ToastManager {
   destroy() {
     // Clear all toasts
     this.clear();
-    
+
     // Clear internal state
     this.toasts.clear();
   }

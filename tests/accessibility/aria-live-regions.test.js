@@ -14,8 +14,8 @@ vi.mock('../../src/utils/logger.js', () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-    debug: vi.fn()
-  }
+    debug: vi.fn(),
+  },
 }));
 
 describe('ARIA Live Regions Testing Suite', () => {
@@ -46,9 +46,9 @@ describe('ARIA Live Regions Testing Suite', () => {
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.id = 'polite-announcements';
       liveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       expect(liveRegion.getAttribute('aria-live')).toBe('polite');
       expect(liveRegion.getAttribute('aria-atomic')).toBe('true');
       expect(liveRegion.classList.contains('sr-only')).toBe(true);
@@ -60,9 +60,9 @@ describe('ARIA Live Regions Testing Suite', () => {
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.id = 'assertive-announcements';
       liveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       expect(liveRegion.getAttribute('aria-live')).toBe('assertive');
       expect(liveRegion.getAttribute('aria-atomic')).toBe('true');
     });
@@ -71,12 +71,12 @@ describe('ARIA Live Regions Testing Suite', () => {
       const liveRegion = document.createElement('div');
       liveRegion.setAttribute('aria-live', 'polite');
       liveRegion.setAttribute('aria-relevant', 'additions text');
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       const relevant = liveRegion.getAttribute('aria-relevant');
       expect(relevant).toBe('additions text');
-      
+
       const validValues = ['additions', 'removals', 'text', 'all'];
       const relevantValues = relevant.split(' ');
       relevantValues.forEach(value => {
@@ -88,9 +88,9 @@ describe('ARIA Live Regions Testing Suite', () => {
       const statusRegion = document.createElement('div');
       statusRegion.setAttribute('role', 'status');
       statusRegion.id = 'game-status';
-      
+
       testContainer.appendChild(statusRegion);
-      
+
       expect(statusRegion.getAttribute('role')).toBe('status');
       // Status role implies aria-live="polite" and aria-atomic="true"
     });
@@ -99,9 +99,9 @@ describe('ARIA Live Regions Testing Suite', () => {
       const alertRegion = document.createElement('div');
       alertRegion.setAttribute('role', 'alert');
       alertRegion.id = 'error-alerts';
-      
+
       testContainer.appendChild(alertRegion);
-      
+
       expect(alertRegion.getAttribute('role')).toBe('alert');
       // Alert role implies aria-live="assertive" and aria-atomic="true"
     });
@@ -113,12 +113,12 @@ describe('ARIA Live Regions Testing Suite', () => {
       progressRegion.setAttribute('aria-live', 'polite');
       progressRegion.id = 'game-progress';
       progressRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(progressRegion);
-      
+
       // Simulate level completion
       progressRegion.textContent = 'Level 2 completed! Score: 150 points. Moving to Level 3.';
-      
+
       expect(progressRegion.textContent).toContain('Level');
       expect(progressRegion.textContent).toContain('completed');
       expect(progressRegion.textContent).toContain('Score');
@@ -131,12 +131,12 @@ describe('ARIA Live Regions Testing Suite', () => {
       scoreRegion.setAttribute('aria-label', 'Score updates');
       scoreRegion.id = 'score-announcements';
       scoreRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(scoreRegion);
-      
+
       // Simulate score change
       scoreRegion.textContent = 'Score increased to 75 points';
-      
+
       expect(scoreRegion.textContent).toContain('Score');
       expect(scoreRegion.textContent).toContain('75');
       expect(scoreRegion.textContent).toContain('points');
@@ -147,12 +147,13 @@ describe('ARIA Live Regions Testing Suite', () => {
       achievementRegion.setAttribute('aria-live', 'assertive');
       achievementRegion.id = 'achievement-announcements';
       achievementRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(achievementRegion);
-      
+
       // Simulate achievement unlock
-      achievementRegion.textContent = 'Achievement unlocked: Math Master! Completed 10 addition problems.';
-      
+      achievementRegion.textContent =
+        'Achievement unlocked: Math Master! Completed 10 addition problems.';
+
       expect(achievementRegion.textContent).toContain('Achievement');
       expect(achievementRegion.textContent).toContain('unlocked');
       expect(achievementRegion.getAttribute('aria-live')).toBe('assertive');
@@ -163,18 +164,18 @@ describe('ARIA Live Regions Testing Suite', () => {
       gameStateRegion.setAttribute('aria-live', 'polite');
       gameStateRegion.id = 'game-state';
       gameStateRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(gameStateRegion);
-      
+
       // Test various game states
       const gameStates = [
         'Game paused',
         'Game resumed',
         'Game over. Final score: 200 points',
         'New game started',
-        'Timer: 30 seconds remaining'
+        'Timer: 30 seconds remaining',
       ];
-      
+
       gameStates.forEach(state => {
         gameStateRegion.textContent = state;
         expect(gameStateRegion.textContent).toBe(state);
@@ -186,12 +187,12 @@ describe('ARIA Live Regions Testing Suite', () => {
       hintRegion.setAttribute('aria-live', 'polite');
       hintRegion.id = 'hint-announcements';
       hintRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(hintRegion);
-      
+
       // Simulate hint announcement
       hintRegion.textContent = 'Hint available: Try breaking down the problem into smaller parts.';
-      
+
       expect(hintRegion.textContent).toContain('Hint');
       expect(hintRegion.textContent).toContain('available');
     });
@@ -204,16 +205,16 @@ describe('ARIA Live Regions Testing Suite', () => {
       input.id = 'email-input';
       input.setAttribute('aria-invalid', 'true');
       input.setAttribute('aria-describedby', 'email-error');
-      
+
       const errorRegion = document.createElement('div');
       errorRegion.id = 'email-error';
       errorRegion.setAttribute('role', 'alert');
       errorRegion.setAttribute('aria-live', 'assertive');
       errorRegion.textContent = 'Please enter a valid email address';
-      
+
       testContainer.appendChild(input);
       testContainer.appendChild(errorRegion);
-      
+
       expect(input.getAttribute('aria-invalid')).toBe('true');
       expect(errorRegion.getAttribute('role')).toBe('alert');
       expect(errorRegion.textContent).toContain('valid email');
@@ -225,12 +226,12 @@ describe('ARIA Live Regions Testing Suite', () => {
       successRegion.setAttribute('aria-live', 'polite');
       successRegion.id = 'form-success';
       successRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(successRegion);
-      
+
       // Simulate successful submission
       successRegion.textContent = 'Form submitted successfully. Thank you for your message.';
-      
+
       expect(successRegion.textContent).toContain('submitted successfully');
       expect(successRegion.getAttribute('role')).toBe('status');
     });
@@ -239,18 +240,18 @@ describe('ARIA Live Regions Testing Suite', () => {
       const textarea = document.createElement('textarea');
       textarea.maxLength = 100;
       textarea.setAttribute('aria-describedby', 'char-count');
-      
+
       const charCountRegion = document.createElement('div');
       charCountRegion.id = 'char-count';
       charCountRegion.setAttribute('aria-live', 'polite');
       charCountRegion.setAttribute('aria-atomic', 'false');
-      
+
       testContainer.appendChild(textarea);
       testContainer.appendChild(charCountRegion);
-      
+
       // Simulate character count update
       charCountRegion.textContent = '25 characters remaining';
-      
+
       expect(charCountRegion.textContent).toContain('characters remaining');
       expect(charCountRegion.getAttribute('aria-live')).toBe('polite');
     });
@@ -259,22 +260,22 @@ describe('ARIA Live Regions Testing Suite', () => {
       const passwordInput = document.createElement('input');
       passwordInput.type = 'password';
       passwordInput.setAttribute('aria-describedby', 'password-strength');
-      
+
       const strengthRegion = document.createElement('div');
       strengthRegion.id = 'password-strength';
       strengthRegion.setAttribute('aria-live', 'polite');
       strengthRegion.setAttribute('aria-atomic', 'true');
-      
+
       testContainer.appendChild(passwordInput);
       testContainer.appendChild(strengthRegion);
-      
+
       // Test different strength levels
       const strengthLevels = [
         'Password strength: Weak',
         'Password strength: Medium',
-        'Password strength: Strong'
+        'Password strength: Strong',
       ];
-      
+
       strengthLevels.forEach(strength => {
         strengthRegion.textContent = strength;
         expect(strengthRegion.textContent).toContain('Password strength');
@@ -288,17 +289,17 @@ describe('ARIA Live Regions Testing Suite', () => {
       loadingRegion.setAttribute('aria-live', 'polite');
       loadingRegion.id = 'loading-status';
       loadingRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(loadingRegion);
-      
+
       // Test loading progression
       const loadingStates = [
         'Loading game assets...',
         'Loading complete. Game ready to start.',
         'Saving progress...',
-        'Progress saved successfully.'
+        'Progress saved successfully.',
       ];
-      
+
       loadingStates.forEach(state => {
         loadingRegion.textContent = state;
         expect(loadingRegion.textContent).toBe(state);
@@ -313,15 +314,15 @@ describe('ARIA Live Regions Testing Suite', () => {
       progressbar.setAttribute('aria-valuemax', '100');
       progressbar.setAttribute('aria-valuetext', '45 percent complete');
       progressbar.setAttribute('aria-describedby', 'progress-status');
-      
+
       const statusRegion = document.createElement('div');
       statusRegion.id = 'progress-status';
       statusRegion.setAttribute('aria-live', 'polite');
       statusRegion.textContent = 'Download 45% complete';
-      
+
       testContainer.appendChild(progressbar);
       testContainer.appendChild(statusRegion);
-      
+
       expect(progressbar.getAttribute('aria-valuetext')).toContain('45 percent');
       expect(statusRegion.textContent).toContain('45%');
     });
@@ -331,21 +332,21 @@ describe('ARIA Live Regions Testing Suite', () => {
       connectionRegion.setAttribute('aria-live', 'assertive');
       connectionRegion.id = 'connection-status';
       connectionRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(connectionRegion);
-      
+
       // Test connection states
       const connectionStates = [
         'Connection lost. Working offline.',
         'Connection restored. Syncing data.',
-        'All data synchronized.'
+        'All data synchronized.',
       ];
-      
+
       connectionStates.forEach(state => {
         connectionRegion.textContent = state;
         expect(connectionRegion.textContent).toBe(state);
       });
-      
+
       expect(connectionRegion.getAttribute('aria-live')).toBe('assertive');
     });
   });
@@ -358,19 +359,19 @@ describe('ARIA Live Regions Testing Suite', () => {
       slider.max = '100';
       slider.value = '50';
       slider.setAttribute('aria-describedby', 'slider-value');
-      
+
       const valueRegion = document.createElement('div');
       valueRegion.id = 'slider-value';
       valueRegion.setAttribute('aria-live', 'polite');
       valueRegion.textContent = 'Volume: 50%';
-      
+
       testContainer.appendChild(slider);
       testContainer.appendChild(valueRegion);
-      
+
       // Simulate value change
       slider.value = '75';
       valueRegion.textContent = 'Volume: 75%';
-      
+
       expect(valueRegion.textContent).toBe('Volume: 75%');
     });
 
@@ -379,18 +380,18 @@ describe('ARIA Live Regions Testing Suite', () => {
       combobox.setAttribute('role', 'combobox');
       combobox.setAttribute('aria-expanded', 'false');
       combobox.setAttribute('aria-describedby', 'selection-status');
-      
+
       const statusRegion = document.createElement('div');
       statusRegion.id = 'selection-status';
       statusRegion.setAttribute('aria-live', 'polite');
       statusRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(combobox);
       testContainer.appendChild(statusRegion);
-      
+
       // Simulate selection
       statusRegion.textContent = 'Mathematics selected. 1 of 5 options.';
-      
+
       expect(statusRegion.textContent).toContain('selected');
       expect(statusRegion.textContent).toContain('1 of 5');
     });
@@ -401,16 +402,16 @@ describe('ARIA Live Regions Testing Suite', () => {
       tabPanel.id = 'panel-1';
       tabPanel.setAttribute('aria-labelledby', 'tab-1');
       tabPanel.setAttribute('aria-describedby', 'panel-status');
-      
+
       const statusRegion = document.createElement('div');
       statusRegion.id = 'panel-status';
       statusRegion.setAttribute('aria-live', 'polite');
       statusRegion.className = 'sr-only';
       statusRegion.textContent = 'Mathematics panel displayed';
-      
+
       testContainer.appendChild(tabPanel);
       testContainer.appendChild(statusRegion);
-      
+
       expect(statusRegion.textContent).toContain('panel displayed');
     });
   });
@@ -422,17 +423,17 @@ describe('ARIA Live Regions Testing Suite', () => {
       searchResults.setAttribute('aria-live', 'polite');
       searchResults.id = 'search-results-status';
       searchResults.className = 'sr-only';
-      
+
       testContainer.appendChild(searchResults);
-      
+
       // Test different result counts
       const resultAnnouncements = [
         '5 results found for "math games"',
         'No results found for "xyz"',
         '1 result found for "science"',
-        'Showing 10 of 25 results'
+        'Showing 10 of 25 results',
       ];
-      
+
       resultAnnouncements.forEach(announcement => {
         searchResults.textContent = announcement;
         expect(searchResults.textContent).toBe(announcement);
@@ -444,12 +445,12 @@ describe('ARIA Live Regions Testing Suite', () => {
       filterStatus.setAttribute('aria-live', 'polite');
       filterStatus.id = 'filter-status';
       filterStatus.className = 'sr-only';
-      
+
       testContainer.appendChild(filterStatus);
-      
+
       // Test filter announcements
       filterStatus.textContent = 'Filter applied: Grade 3. Showing 8 results.';
-      
+
       expect(filterStatus.textContent).toContain('Filter applied');
       expect(filterStatus.textContent).toContain('8 results');
     });
@@ -459,16 +460,16 @@ describe('ARIA Live Regions Testing Suite', () => {
       sortStatus.setAttribute('aria-live', 'polite');
       sortStatus.id = 'sort-status';
       sortStatus.className = 'sr-only';
-      
+
       testContainer.appendChild(sortStatus);
-      
+
       // Test sort announcements
       const sortAnnouncements = [
         'Sorted by name, ascending',
         'Sorted by date, descending',
-        'Sorted by difficulty, ascending'
+        'Sorted by difficulty, ascending',
       ];
-      
+
       sortAnnouncements.forEach(announcement => {
         sortStatus.textContent = announcement;
         expect(sortStatus.textContent).toBe(announcement);
@@ -482,17 +483,17 @@ describe('ARIA Live Regions Testing Suite', () => {
       timerRegion.setAttribute('aria-live', 'polite');
       timerRegion.id = 'timer-announcements';
       timerRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(timerRegion);
-      
+
       // Test timer milestones
       const timerAnnouncements = [
         '2 minutes remaining',
         '1 minute remaining',
         '30 seconds remaining',
-        'Time up!'
+        'Time up!',
       ];
-      
+
       timerAnnouncements.forEach(announcement => {
         timerRegion.textContent = announcement;
         expect(timerRegion.textContent).toBe(announcement);
@@ -504,17 +505,17 @@ describe('ARIA Live Regions Testing Suite', () => {
       countdownRegion.setAttribute('aria-live', 'assertive');
       countdownRegion.id = 'countdown';
       countdownRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(countdownRegion);
-      
+
       // Test countdown sequence
       const countdownNumbers = ['3', '2', '1', 'Go!'];
-      
+
       countdownNumbers.forEach(number => {
         countdownRegion.textContent = number;
         expect(countdownRegion.textContent).toBe(number);
       });
-      
+
       expect(countdownRegion.getAttribute('aria-live')).toBe('assertive');
     });
   });
@@ -526,17 +527,17 @@ describe('ARIA Live Regions Testing Suite', () => {
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.id = 'rapid-updates';
       liveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       // Simulate rapid updates
       liveRegion.textContent = 'Update 1';
       liveRegion.textContent = 'Update 2';
       liveRegion.textContent = 'Final update';
-      
+
       // Fast-forward timers to test debouncing
       mockTimer.advanceTimersByTime(100);
-      
+
       expect(liveRegion.textContent).toBe('Final update');
     });
 
@@ -545,16 +546,16 @@ describe('ARIA Live Regions Testing Suite', () => {
       liveRegion.setAttribute('aria-live', 'polite');
       liveRegion.id = 'timeout-test';
       liveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       // Set content
       liveRegion.textContent = 'Temporary message';
       expect(liveRegion.textContent).toBe('Temporary message');
-      
+
       // Fast-forward past timeout
       mockTimer.advanceTimersByTime(3000);
-      
+
       // Content should remain (actual clearing is handled by AccessibilityService)
       expect(liveRegion.textContent).toBe('Temporary message');
     });
@@ -564,19 +565,19 @@ describe('ARIA Live Regions Testing Suite', () => {
       politeRegion.setAttribute('aria-live', 'polite');
       politeRegion.id = 'polite-region';
       politeRegion.className = 'sr-only';
-      
+
       const assertiveRegion = document.createElement('div');
       assertiveRegion.setAttribute('aria-live', 'assertive');
       assertiveRegion.id = 'assertive-region';
       assertiveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(politeRegion);
       testContainer.appendChild(assertiveRegion);
-      
+
       // Set different content
       politeRegion.textContent = 'Polite announcement';
       assertiveRegion.textContent = 'Urgent announcement';
-      
+
       expect(politeRegion.textContent).toBe('Polite announcement');
       expect(assertiveRegion.textContent).toBe('Urgent announcement');
       expect(politeRegion.getAttribute('aria-live')).toBe('polite');
@@ -590,33 +591,33 @@ describe('ARIA Live Regions Testing Suite', () => {
       const mockService = {
         announcer: {
           polite: document.createElement('div'),
-          assertive: document.createElement('div')
+          assertive: document.createElement('div'),
         },
-        announce: vi.fn()
+        announce: vi.fn(),
       };
-      
+
       mockService.announcer.polite.setAttribute('aria-live', 'polite');
       mockService.announcer.polite.setAttribute('aria-atomic', 'true');
       mockService.announcer.polite.className = 'sr-only';
-      
+
       mockService.announcer.assertive.setAttribute('aria-live', 'assertive');
       mockService.announcer.assertive.setAttribute('aria-atomic', 'true');
       mockService.announcer.assertive.className = 'sr-only';
-      
+
       testContainer.appendChild(mockService.announcer.polite);
       testContainer.appendChild(mockService.announcer.assertive);
-      
+
       expect(mockService.announcer.polite.getAttribute('aria-live')).toBe('polite');
       expect(mockService.announcer.assertive.getAttribute('aria-live')).toBe('assertive');
     });
 
     it('should handle announcement priority correctly', () => {
       const mockAnnounce = vi.fn();
-      
+
       // Test different priority levels
       mockAnnounce('Low priority message', 'polite');
       mockAnnounce('High priority message', 'assertive');
-      
+
       expect(mockAnnounce).toHaveBeenCalledWith('Low priority message', 'polite');
       expect(mockAnnounce).toHaveBeenCalledWith('High priority message', 'assertive');
     });
@@ -629,9 +630,9 @@ describe('ARIA Live Regions Testing Suite', () => {
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.setAttribute('aria-relevant', 'additions text');
       liveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       expect(liveRegion.classList.contains('sr-only')).toBe(true);
       expect(liveRegion.getAttribute('aria-live')).toBeTruthy();
       expect(liveRegion.getAttribute('aria-atomic')).toBeTruthy();
@@ -642,17 +643,17 @@ describe('ARIA Live Regions Testing Suite', () => {
       const liveRegion = document.createElement('div');
       liveRegion.setAttribute('aria-live', 'polite');
       liveRegion.id = 'empty-content-test';
-      
+
       testContainer.appendChild(liveRegion);
-      
+
       // Set empty content
       liveRegion.textContent = '';
       expect(liveRegion.textContent).toBe('');
-      
+
       // Set content then clear it
       liveRegion.textContent = 'Some content';
       expect(liveRegion.textContent).toBe('Some content');
-      
+
       liveRegion.textContent = '';
       expect(liveRegion.textContent).toBe('');
     });
@@ -660,15 +661,15 @@ describe('ARIA Live Regions Testing Suite', () => {
     it('should maintain proper element hierarchy', () => {
       const container = document.createElement('main');
       container.setAttribute('role', 'main');
-      
+
       const liveRegion = document.createElement('div');
       liveRegion.setAttribute('aria-live', 'polite');
       liveRegion.id = 'main-announcements';
       liveRegion.className = 'sr-only';
-      
+
       container.appendChild(liveRegion);
       testContainer.appendChild(container);
-      
+
       expect(container.contains(liveRegion)).toBe(true);
       expect(liveRegion.parentElement).toBe(container);
     });

@@ -12,17 +12,17 @@ vi.mock('../../src/utils/logger.js', () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-    debug: vi.fn()
-  }
+    debug: vi.fn(),
+  },
 }));
 
 // Mock performance utilities
 vi.mock('../../src/utils/performanceUtils.js', () => ({
   performanceMonitor: {
     start: vi.fn(),
-    end: vi.fn()
+    end: vi.fn(),
   },
-  rafThrottle: vi.fn(fn => fn)
+  rafThrottle: vi.fn(fn => fn),
 }));
 
 describe('LazyLoadManager', () => {
@@ -33,7 +33,7 @@ describe('LazyLoadManager', () => {
   beforeEach(() => {
     // Reset DOM
     document.body.innerHTML = '';
-    
+
     // Mock IntersectionObserver
     observeCallback = null;
     mockIntersectionObserver = vi.fn().mockImplementation((callback, options) => {
@@ -43,7 +43,7 @@ describe('LazyLoadManager', () => {
         unobserve: vi.fn(),
         disconnect: vi.fn(),
         callback,
-        options
+        options,
       };
     });
     global.IntersectionObserver = mockIntersectionObserver;
@@ -58,7 +58,7 @@ describe('LazyLoadManager', () => {
       onload: null,
       onerror: null,
       src: '',
-      crossOrigin: null
+      crossOrigin: null,
     }));
 
     // Mock fetch
@@ -78,10 +78,10 @@ describe('LazyLoadManager', () => {
         rtt: 100,
         saveData: false,
         addEventListener: vi.fn(),
-        removeEventListener: vi.fn()
+        removeEventListener: vi.fn(),
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
 
     // Create manager instance
@@ -109,10 +109,10 @@ describe('LazyLoadManager', () => {
       const customOptions = {
         imageRootMargin: '100px',
         batchSize: 10,
-        enableBlurUpEffect: false
+        enableBlurUpEffect: false,
       };
       const customManager = new LazyLoadManager(customOptions);
-      
+
       expect(customManager.options.imageRootMargin).toBe('100px');
       expect(customManager.options.batchSize).toBe(10);
       expect(customManager.options.enableBlurUpEffect).toBe(false);
@@ -131,7 +131,7 @@ describe('LazyLoadManager', () => {
         effectiveType: '4g',
         downlink: 10,
         rtt: 100,
-        saveData: false
+        saveData: false,
       });
     });
 
@@ -153,14 +153,14 @@ describe('LazyLoadManager', () => {
       // Save original IntersectionObserver
       const originalIO = global.IntersectionObserver;
       const originalWindowIO = window.IntersectionObserver;
-      
+
       // Delete properties to simulate absence
       delete global.IntersectionObserver;
       delete window.IntersectionObserver;
-      
+
       // Create new manager instance after removing IntersectionObserver
       const fallbackManager = new LazyLoadManager();
-      
+
       const scrollHandler = vi.fn();
       const originalAddEventListener = window.addEventListener;
       window.addEventListener = vi.fn((event, handler) => {
@@ -171,7 +171,7 @@ describe('LazyLoadManager', () => {
 
       expect(window.addEventListener).toHaveBeenCalledWith('scroll', expect.any(Function));
       expect(window.addEventListener).toHaveBeenCalledWith('resize', expect.any(Function));
-      
+
       // Restore
       global.IntersectionObserver = originalIO;
       window.IntersectionObserver = originalWindowIO;
@@ -193,7 +193,7 @@ describe('LazyLoadManager', () => {
 
     it('should set up image lazy loading observers', () => {
       manager.setupImageLazyLoading();
-      
+
       const observer = manager.observers.get('images');
       expect(observer).toBeDefined();
       expect(observer.observe).toHaveBeenCalledTimes(5);
@@ -201,12 +201,12 @@ describe('LazyLoadManager', () => {
 
     it('should handle image intersection correctly', () => {
       manager.setupImageLazyLoading();
-      
+
       const images = document.querySelectorAll('img');
       const entries = [
         { isIntersecting: true, target: images[0] },
         { isIntersecting: false, target: images[1] },
-        { isIntersecting: true, target: images[2] }
+        { isIntersecting: true, target: images[2] },
       ];
 
       manager.handleImageIntersection(entries);
@@ -216,17 +216,17 @@ describe('LazyLoadManager', () => {
 
     it('should prioritize images correctly', () => {
       const images = document.querySelectorAll('img');
-      
+
       // Mock getBoundingClientRect for above-the-fold calculation
       images.forEach(img => {
         img.getBoundingClientRect = vi.fn().mockReturnValue({
           top: 100, // Above viewport (768px)
           bottom: 200,
           left: 100,
-          right: 200
+          right: 200,
         });
       });
-      
+
       // Test critical image
       const criticalPriority = manager.getImagePriority(images[1]);
       expect(criticalPriority).toBe(1);
@@ -246,22 +246,22 @@ describe('LazyLoadManager', () => {
 
     it('should load image successfully', async () => {
       const img = document.querySelector('img');
-      
+
       global.Image = vi.fn().mockImplementation(() => {
         const mockImage = {
           onload: null,
           onerror: null,
           src: '',
-          crossOrigin: null
+          crossOrigin: null,
         };
         setTimeout(() => mockImage.onload && mockImage.onload(), 0);
         return mockImage;
       });
 
       const loadPromise = manager.loadImage(img);
-      
+
       await loadPromise;
-      
+
       expect(img.src).toContain('image1.jpg'); // Use toContain to handle absolute URLs
       expect(img.hasAttribute('data-src')).toBe(false);
       expect(img.classList.contains('lazy-loaded')).toBe(true);
@@ -271,13 +271,13 @@ describe('LazyLoadManager', () => {
     it('should handle image loading errors with retry', async () => {
       const img = document.querySelector('img');
       let attemptCount = 0;
-      
+
       global.Image = vi.fn().mockImplementation(() => {
         const mockImage = {
           onload: null,
           onerror: null,
           src: '',
-          crossOrigin: null
+          crossOrigin: null,
         };
         setTimeout(() => {
           attemptCount++;
@@ -294,7 +294,7 @@ describe('LazyLoadManager', () => {
       manager.options.retryDelay = 0;
 
       await manager.loadImage(img);
-      
+
       expect(attemptCount).toBe(3);
       expect(img.src).toContain('image1.jpg');
       expect(manager.loadedItems.has(img)).toBe(true);
@@ -303,14 +303,14 @@ describe('LazyLoadManager', () => {
     it('should fall back to fallback image on failure', async () => {
       const img = document.querySelector('img');
       img.dataset.fallback = 'fallback.jpg';
-      
+
       let callCount = 0;
       global.Image = vi.fn().mockImplementation(() => {
         const mockImage = {
           onload: null,
           onerror: null,
           src: '',
-          crossOrigin: null
+          crossOrigin: null,
         };
         setTimeout(() => {
           callCount++;
@@ -328,19 +328,19 @@ describe('LazyLoadManager', () => {
       manager.options.retryDelay = 0;
 
       await manager.loadImage(img);
-      
+
       expect(img.src).toContain('fallback.jpg');
       expect(manager.loadedItems.has(img)).toBe(true);
     });
 
     it('should select optimal image source for responsive images', () => {
       const img = document.querySelectorAll('img')[4]; // Image with srcset
-      
+
       // Test for mobile viewport
       window.innerWidth = 400;
       const sources = manager.getResponsiveImageSources(img);
       expect(sources).toHaveLength(3);
-      
+
       const optimalSource = manager.selectOptimalSource(sources);
       expect(optimalSource).toBe('small.jpg');
 
@@ -371,7 +371,7 @@ describe('LazyLoadManager', () => {
       document.body.appendChild(parent);
 
       await manager.applyBlurUpEffect(img);
-      
+
       const placeholder = parent.querySelector('.lazy-placeholder');
       expect(placeholder).toBeTruthy();
       expect(placeholder.style.filter).toContain('blur');
@@ -384,11 +384,11 @@ describe('LazyLoadManager', () => {
       document.body.appendChild(parent);
 
       manager.addImageSkeleton(img);
-      
+
       const skeleton = parent.querySelector('.lazy-skeleton');
       expect(skeleton).toBeTruthy();
       expect(img.classList.contains('has-skeleton')).toBe(true);
-      
+
       manager.removeImageSkeleton(img);
       expect(parent.querySelector('.lazy-skeleton')).toBeFalsy();
       expect(img.classList.contains('has-skeleton')).toBe(false);
@@ -397,10 +397,10 @@ describe('LazyLoadManager', () => {
     it('should handle retina display images', async () => {
       window.devicePixelRatio = 2;
       const img = document.querySelector('img');
-      
+
       // Mock image exists check
       manager.imageExists = vi.fn().mockResolvedValue(true);
-      
+
       const optimalSrc = await manager.getOptimalImageSource(img);
       expect(optimalSrc).toBe('image1@2x.jpg');
     });
@@ -409,7 +409,7 @@ describe('LazyLoadManager', () => {
       manager.options.lowQualityMode = true;
       window.devicePixelRatio = 2;
       const img = document.querySelector('img');
-      
+
       const optimalSrc = await manager.getOptimalImageSource(img);
       expect(optimalSrc).toBe('image1.jpg'); // Should not use retina version
     });
@@ -427,7 +427,7 @@ describe('LazyLoadManager', () => {
 
     it('should set up component lazy loading observers', () => {
       manager.setupComponentLazyLoading();
-      
+
       const observer = manager.observers.get('components');
       expect(observer).toBeDefined();
       expect(observer.observe).toHaveBeenCalledTimes(3);
@@ -435,51 +435,51 @@ describe('LazyLoadManager', () => {
 
     it('should handle component intersection', () => {
       manager.setupComponentLazyLoading();
-      
+
       const components = document.querySelectorAll('[data-lazy-component]');
       const entries = [
         { isIntersecting: true, target: components[0] },
-        { isIntersecting: true, target: components[1] }
+        { isIntersecting: true, target: components[1] },
       ];
 
       manager.handleComponentIntersection(entries);
-      
+
       expect(manager.loadingQueue.size).toBe(2);
     });
 
     it('should prioritize components correctly', () => {
       const components = document.querySelectorAll('[data-lazy-component]');
-      
+
       // High priority component
       expect(manager.getComponentPriority(components[1])).toBe(1);
-      
+
       // Default priority
       expect(manager.getComponentPriority(components[0])).toBe(3);
     });
 
     it('should load component successfully', async () => {
       const component = document.querySelector('[data-lazy-component]');
-      
+
       // Mock dynamic import
-      const MockComponent = vi.fn().mockImplementation((options) => ({
-        render: vi.fn().mockImplementation(async (container) => {
+      const MockComponent = vi.fn().mockImplementation(options => ({
+        render: vi.fn().mockImplementation(async container => {
           container.innerHTML = '<div>Mock Component</div>';
         }),
         initialize: vi.fn().mockResolvedValue(),
-        options
+        options,
       }));
-      
+
       // Use vi.doMock to mock the dynamic import
       vi.doMock('/components/Card.js', () => ({
-        default: MockComponent
+        default: MockComponent,
       }));
 
       await manager.loadComponent(component);
-      
+
       expect(manager.componentCache.has('Card')).toBe(true);
       expect(manager.loadedItems.has(component)).toBe(true);
       expect(component.classList.contains('component-loading-state')).toBe(false);
-      
+
       // Clean up
       vi.doUnmock('/components/Card.js');
     });
@@ -487,17 +487,17 @@ describe('LazyLoadManager', () => {
     it('should use cached component on subsequent loads', async () => {
       const component = document.querySelector('[data-lazy-component]');
       const MockComponent = vi.fn().mockImplementation(() => ({
-        render: vi.fn().mockImplementation(async (container) => {
+        render: vi.fn().mockImplementation(async container => {
           container.innerHTML = '<div>Cached Component</div>';
         }),
-        initialize: vi.fn().mockResolvedValue()
+        initialize: vi.fn().mockResolvedValue(),
       }));
-      
+
       // Pre-cache the component
       manager.componentCache.set('Card', MockComponent);
-      
+
       await manager.loadComponent(component);
-      
+
       // Should use the cached component
       expect(MockComponent).toHaveBeenCalled();
       expect(manager.loadedItems.has(component)).toBe(true);
@@ -506,34 +506,34 @@ describe('LazyLoadManager', () => {
     it('should parse component options correctly', () => {
       const component = document.querySelectorAll('[data-lazy-component]')[2];
       const options = manager.parseComponentOptions(component);
-      
+
       expect(options).toMatchObject({
         items: [{ id: 1, name: 'Item 1' }],
-        showheader: true // Should be parsed as boolean, not string
+        showheader: true, // Should be parsed as boolean, not string
       });
     });
 
     it('should show loading state while loading component', async () => {
       const component = document.querySelector('[data-lazy-component]');
-      
+
       manager.showComponentLoading(component);
-      
+
       expect(component.innerHTML).toContain('loading-spinner');
       expect(component.classList.contains('component-loading-state')).toBe(true);
     });
 
     it('should handle component loading errors', async () => {
       const component = document.querySelector('[data-lazy-component]');
-      
+
       const originalImport = global.import;
       global.import = vi.fn().mockRejectedValue(new Error('Module not found'));
 
       await manager.loadComponent(component);
-      
+
       expect(component.innerHTML).toContain('Failed to load component');
       expect(component.classList.contains('component-error-state')).toBe(true);
       expect(manager.failedItems.has(component)).toBe(true);
-      
+
       // Restore original import
       global.import = originalImport;
     });
@@ -542,33 +542,33 @@ describe('LazyLoadManager', () => {
       const component = document.querySelector('[data-lazy-component]');
       const loadedHandler = vi.fn();
       const errorHandler = vi.fn();
-      
+
       manager.on('componentLoaded', loadedHandler);
       manager.on('componentError', errorHandler);
-      
+
       // Success case
       const MockComponent = vi.fn().mockImplementation(() => ({
-        render: vi.fn().mockImplementation(async (container) => {
+        render: vi.fn().mockImplementation(async container => {
           container.innerHTML = '<div>Mock Component</div>';
         }),
-        initialize: vi.fn().mockResolvedValue()
+        initialize: vi.fn().mockResolvedValue(),
       }));
-      
+
       vi.doMock('/components/Card.js', () => ({
-        default: MockComponent
+        default: MockComponent,
       }));
-      
+
       await manager.loadComponent(component);
-      
+
       expect(loadedHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           detail: expect.objectContaining({
             component,
-            componentName: 'Card'
-          })
+            componentName: 'Card',
+          }),
         })
       );
-      
+
       // Clean up
       vi.doUnmock('/components/Card.js');
     });
@@ -585,7 +585,7 @@ describe('LazyLoadManager', () => {
 
     it('should set up content lazy loading observers', () => {
       manager.setupContentLazyLoading();
-      
+
       const observer = manager.observers.get('content');
       expect(observer).toBeDefined();
       expect(observer.observe).toHaveBeenCalledTimes(3);
@@ -594,14 +594,14 @@ describe('LazyLoadManager', () => {
     it('should load HTML content successfully', async () => {
       const element = document.querySelector('[data-lazy-content]');
       const mockContent = '<h1>Test Content</h1>';
-      
+
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
-        text: vi.fn().mockResolvedValue(mockContent)
+        text: vi.fn().mockResolvedValue(mockContent),
       });
 
       await manager.loadContent(element);
-      
+
       expect(fetch).toHaveBeenCalledWith('/api/content/1');
       expect(element.innerHTML).toBe(mockContent);
       expect(element.classList.contains('content-loaded')).toBe(true);
@@ -611,42 +611,42 @@ describe('LazyLoadManager', () => {
     it('should load JSON content successfully', async () => {
       const element = document.querySelectorAll('[data-lazy-content]')[1];
       const mockData = { title: 'Test', description: 'Test description' };
-      
+
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
-        json: vi.fn().mockResolvedValue(mockData)
+        json: vi.fn().mockResolvedValue(mockData),
       });
 
       await manager.loadContent(element);
-      
+
       expect(element.innerHTML).toContain('Template: card');
     });
 
     it('should load text content successfully', async () => {
       const element = document.querySelectorAll('[data-lazy-content]')[2];
       const mockText = 'Plain text content';
-      
+
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
-        text: vi.fn().mockResolvedValue(mockText)
+        text: vi.fn().mockResolvedValue(mockText),
       });
 
       await manager.loadContent(element);
-      
+
       expect(element.textContent).toBe(mockText);
     });
 
     it('should handle content loading errors', async () => {
       const element = document.querySelector('[data-lazy-content]');
-      
+
       global.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 404,
-        statusText: 'Not Found'
+        statusText: 'Not Found',
       });
 
       await manager.loadContent(element);
-      
+
       expect(element.innerHTML).toContain('Failed to load content');
       expect(element.classList.contains('content-error')).toBe(true);
       expect(manager.failedItems.has(element)).toBe(true);
@@ -654,11 +654,11 @@ describe('LazyLoadManager', () => {
 
     it('should handle network errors', async () => {
       const element = document.querySelector('[data-lazy-content]');
-      
+
       global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
 
       await manager.loadContent(element);
-      
+
       expect(element.innerHTML).toContain('Failed to load content');
       expect(manager.failedItems.has(element)).toBe(true);
     });
@@ -672,29 +672,29 @@ describe('LazyLoadManager', () => {
         element: document.createElement('img'),
         priority: 3,
         attempts: 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
-      
+
       manager.loadingQueue.set('item2', {
         type: 'component',
         element: document.createElement('div'),
         priority: 1,
         attempts: 0,
-        timestamp: Date.now() + 100
+        timestamp: Date.now() + 100,
       });
-      
+
       manager.loadingQueue.set('item3', {
         type: 'image',
         element: document.createElement('img'),
         priority: 2,
         attempts: 0,
-        timestamp: Date.now() + 200
+        timestamp: Date.now() + 200,
       });
 
       // Mock processing
       manager.processLoadingItem = vi.fn();
       manager.processLoadingQueue();
-      
+
       // Should process in priority order (1, 2, 3)
       expect(manager.processLoadingItem).toHaveBeenCalledTimes(3);
       const calls = manager.processLoadingItem.mock.calls;
@@ -705,7 +705,7 @@ describe('LazyLoadManager', () => {
 
     it('should respect batch size', () => {
       manager.options.batchSize = 2;
-      
+
       // Add 5 items
       for (let i = 0; i < 5; i++) {
         manager.loadingQueue.set(`item${i}`, {
@@ -713,13 +713,13 @@ describe('LazyLoadManager', () => {
           element: document.createElement('img'),
           priority: 1,
           attempts: 0,
-          timestamp: Date.now() + i
+          timestamp: Date.now() + i,
         });
       }
 
       manager.processLoadingItem = vi.fn();
       manager.processLoadingQueue();
-      
+
       // Should only process batch size (2)
       expect(manager.processLoadingItem).toHaveBeenCalledTimes(2);
     });
@@ -730,18 +730,18 @@ describe('LazyLoadManager', () => {
         element: document.createElement('img'),
         priority: 1,
         attempts: 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      
+
       manager.loadingQueue.set('item1', item);
       manager.options.retryAttempts = 3;
       manager.options.retryDelay = 0;
-      
+
       // Mock loadImage to fail
       manager.loadImage = vi.fn().mockRejectedValue(new Error('Load failed'));
-      
+
       await manager.processLoadingItem('item1', item);
-      
+
       expect(item.attempts).toBe(1);
       expect(manager.loadingQueue.has('item1')).toBe(true);
     });
@@ -752,16 +752,16 @@ describe('LazyLoadManager', () => {
         element: document.createElement('img'),
         priority: 1,
         attempts: 2, // Already at max - 1
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      
+
       manager.loadingQueue.set('item1', item);
       manager.options.retryAttempts = 3;
-      
+
       manager.loadImage = vi.fn().mockRejectedValue(new Error('Load failed'));
-      
+
       await manager.processLoadingItem('item1', item);
-      
+
       expect(item.attempts).toBe(3);
       expect(manager.loadingQueue.has('item1')).toBe(false);
     });
@@ -769,19 +769,19 @@ describe('LazyLoadManager', () => {
     it('should apply loading delay', async () => {
       manager.options.loadingDelay = 100;
       const startTime = performance.now();
-      
+
       const item = {
         type: 'image',
         element: document.createElement('img'),
         priority: 1,
         attempts: 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
-      
+
       manager.loadImage = vi.fn().mockResolvedValue();
-      
+
       await manager.processLoadingItem('item1', item);
-      
+
       const endTime = performance.now();
       expect(endTime - startTime).toBeGreaterThanOrEqual(100);
     });
@@ -791,7 +791,7 @@ describe('LazyLoadManager', () => {
     it('should monitor network conditions when enabled', () => {
       manager.options.adaptToNetwork = true;
       manager.monitorNetworkConditions();
-      
+
       expect(navigator.connection.addEventListener).toHaveBeenCalledWith(
         'change',
         expect.any(Function)
@@ -803,11 +803,11 @@ describe('LazyLoadManager', () => {
         effectiveType: '2g',
         downlink: 0.5,
         rtt: 800,
-        saveData: true
+        saveData: true,
       };
-      
+
       manager.adaptToNetworkConditions();
-      
+
       expect(manager.options.lowQualityMode).toBe(true);
       expect(manager.options.batchSize).toBe(2);
       expect(manager.options.loadingDelay).toBe(500);
@@ -818,11 +818,11 @@ describe('LazyLoadManager', () => {
         effectiveType: '3g',
         downlink: 2,
         rtt: 300,
-        saveData: false
+        saveData: false,
       };
-      
+
       manager.adaptToNetworkConditions();
-      
+
       expect(manager.options.lowQualityMode).toBe(false);
       expect(manager.options.batchSize).toBe(3);
       expect(manager.options.loadingDelay).toBe(200);
@@ -833,11 +833,11 @@ describe('LazyLoadManager', () => {
         effectiveType: '4g',
         downlink: 10,
         rtt: 100,
-        saveData: false
+        saveData: false,
       };
-      
+
       manager.adaptToNetworkConditions();
-      
+
       expect(manager.options.lowQualityMode).toBe(false);
       expect(manager.options.batchSize).toBe(5);
       expect(manager.options.loadingDelay).toBe(100);
@@ -848,11 +848,11 @@ describe('LazyLoadManager', () => {
         effectiveType: '4g',
         downlink: 10,
         rtt: 100,
-        saveData: true
+        saveData: true,
       };
-      
+
       manager.adaptToNetworkConditions();
-      
+
       expect(manager.options.lowQualityMode).toBe(true);
     });
   });
@@ -860,9 +860,9 @@ describe('LazyLoadManager', () => {
   describe('Public API', () => {
     it('should load all visible items on demand', () => {
       manager.processLoadingQueue = vi.fn();
-      
+
       manager.loadVisible();
-      
+
       expect(manager.processLoadingQueue).toHaveBeenCalled();
     });
 
@@ -872,13 +872,13 @@ describe('LazyLoadManager', () => {
         <div data-lazy-component="Preload" class="preload-me"></div>
         <div data-lazy-content="/preload" class="preload-me"></div>
       `;
-      
+
       manager.queueImageLoad = vi.fn();
       manager.queueComponentLoad = vi.fn();
       manager.queueContentLoad = vi.fn();
-      
+
       manager.preload(['.preload-me']);
-      
+
       expect(manager.queueImageLoad).toHaveBeenCalledTimes(1);
       expect(manager.queueComponentLoad).toHaveBeenCalledTimes(1);
       expect(manager.queueContentLoad).toHaveBeenCalledTimes(1);
@@ -889,14 +889,14 @@ describe('LazyLoadManager', () => {
       manager.loadingQueue.set('q1', { type: 'image' });
       manager.loadingQueue.set('q2', { type: 'component' });
       manager.loadingQueue.set('q3', { type: 'image' });
-      
+
       manager.loadedItems.add('loaded1');
       manager.loadedItems.add('loaded2');
-      
+
       manager.failedItems.add('failed1');
-      
+
       const stats = manager.getStats();
-      
+
       expect(stats).toMatchObject({
         totalQueued: 3,
         totalLoaded: 2,
@@ -904,9 +904,9 @@ describe('LazyLoadManager', () => {
         queueByType: {
           image: 2,
           component: 1,
-          content: 0
+          content: 0,
         },
-        networkInfo: expect.any(Object)
+        networkInfo: expect.any(Object),
       });
     });
   });
@@ -914,24 +914,24 @@ describe('LazyLoadManager', () => {
   describe('Event System', () => {
     it('should emit and handle events', () => {
       const handler = vi.fn();
-      
+
       manager.on('imageLoaded', handler);
       manager.emit('imageLoaded', { img: 'test' });
-      
+
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          detail: { img: 'test' }
+          detail: { img: 'test' },
         })
       );
     });
 
     it('should remove event listeners', () => {
       const handler = vi.fn();
-      
+
       manager.on('imageLoaded', handler);
       manager.off('imageLoaded', handler);
       manager.emit('imageLoaded', { img: 'test' });
-      
+
       expect(handler).not.toHaveBeenCalled();
     });
   });
@@ -939,18 +939,18 @@ describe('LazyLoadManager', () => {
   describe('Utility Methods', () => {
     it('should check IntersectionObserver support', () => {
       expect(manager.supportsIntersectionObserver()).toBe(true);
-      
+
       // Save original and test undefined case
       const originalIO = global.IntersectionObserver;
       const originalWindowIO = window.IntersectionObserver;
-      
+
       // Delete properties to simulate absence
       delete global.IntersectionObserver;
       delete window.IntersectionObserver;
-      
+
       const testManager = new LazyLoadManager();
       expect(testManager.supportsIntersectionObserver()).toBe(false);
-      
+
       // Restore
       global.IntersectionObserver = originalIO;
       window.IntersectionObserver = originalWindowIO;
@@ -962,9 +962,9 @@ describe('LazyLoadManager', () => {
         effectiveType: expect.any(String),
         downlink: expect.any(Number),
         rtt: expect.any(Number),
-        saveData: expect.any(Boolean)
+        saveData: expect.any(Boolean),
       });
-      
+
       // Test fallback
       delete navigator.connection;
       const fallbackInfo = manager.getNetworkInfo();
@@ -972,7 +972,7 @@ describe('LazyLoadManager', () => {
         effectiveType: '4g',
         downlink: 10,
         rtt: 100,
-        saveData: false
+        saveData: false,
       });
     });
 
@@ -986,24 +986,24 @@ describe('LazyLoadManager', () => {
       const mockImage = {
         onload: null,
         onerror: null,
-        src: ''
+        src: '',
       };
-      
+
       global.Image = vi.fn().mockImplementation(() => {
         setTimeout(() => mockImage.onload && mockImage.onload(), 0);
         return mockImage;
       });
-      
+
       const exists = await manager.imageExists('test.jpg');
       expect(exists).toBe(true);
-      
+
       // Test non-existent image
       global.Image = vi.fn().mockImplementation(() => {
         const errorImage = { ...mockImage };
         setTimeout(() => errorImage.onerror && errorImage.onerror(), 0);
         return errorImage;
       });
-      
+
       const notExists = await manager.imageExists('not-found.jpg');
       expect(notExists).toBe(false);
     });
@@ -1014,19 +1014,19 @@ describe('LazyLoadManager', () => {
         top: 100,
         bottom: 200,
         left: 100,
-        right: 200
+        right: 200,
       });
-      
+
       expect(manager.isInViewport(element)).toBe(true);
-      
+
       // Test element below viewport
       element.getBoundingClientRect = vi.fn().mockReturnValue({
         top: 1000,
         bottom: 1100,
         left: 100,
-        right: 200
+        right: 200,
       });
-      
+
       expect(manager.isInViewport(element)).toBe(false);
     });
   });
@@ -1034,18 +1034,18 @@ describe('LazyLoadManager', () => {
   describe('Progressive Enhancement', () => {
     it('should apply fade-in effect', () => {
       const img = document.createElement('img');
-      
+
       // Mock requestAnimationFrame to not execute immediately
       global.requestAnimationFrame = vi.fn();
-      
+
       manager.applyFadeInEffect(img);
-      
+
       expect(img.style.transition).toContain('opacity');
       expect(img.style.opacity).toBe('0');
-      
+
       // After RAF
       expect(requestAnimationFrame).toHaveBeenCalled();
-      
+
       // Restore original RAF
       global.requestAnimationFrame = vi.fn(cb => {
         cb();
@@ -1058,10 +1058,10 @@ describe('LazyLoadManager', () => {
       const parent = document.createElement('div');
       parent.appendChild(img);
       document.body.appendChild(parent);
-      
+
       manager.options.enableSkeletonLoading = true;
       manager.addImageSkeleton(img);
-      
+
       const skeleton = parent.querySelector('.lazy-skeleton');
       expect(skeleton).toBeTruthy();
       expect(skeleton.style.background).toContain('linear-gradient');
@@ -1078,11 +1078,11 @@ describe('LazyLoadManager', () => {
       manager.failedItems.add('item2');
       manager.componentCache.set('Component', {});
       manager.queueInterval = setInterval(() => {}, 1000);
-      
+
       const clearIntervalSpy = vi.spyOn(global, 'clearInterval');
-      
+
       manager.destroy();
-      
+
       expect(manager.observers.size).toBe(0);
       expect(manager.loadingQueue.size).toBe(0);
       expect(manager.loadedItems.size).toBe(0);
@@ -1095,7 +1095,7 @@ describe('LazyLoadManager', () => {
   describe('Edge Cases', () => {
     it('should handle images without src or data-src', async () => {
       const img = document.createElement('img');
-      
+
       await expect(manager.loadImage(img)).rejects.toThrow('No image source found');
     });
 
@@ -1103,15 +1103,15 @@ describe('LazyLoadManager', () => {
       const component = document.createElement('div');
       component.dataset.lazyComponent = 'Missing';
       component.dataset.componentPath = '/missing.js';
-      
+
       const originalImport = global.import;
       global.import = vi.fn().mockResolvedValue({});
-      
+
       await manager.loadComponent(component);
-      
+
       expect(component.innerHTML).toContain('Failed to load component');
       expect(manager.failedItems.has(component)).toBe(true);
-      
+
       // Restore original import
       global.import = originalImport;
     });
@@ -1124,7 +1124,7 @@ describe('LazyLoadManager', () => {
 
     it('should handle queue processing with empty queue', () => {
       manager.loadingQueue.clear();
-      
+
       // Should not throw
       expect(() => manager.processLoadingQueue()).not.toThrow();
     });
@@ -1135,7 +1135,7 @@ describe('LazyLoadManager', () => {
       if (changeHandler) {
         navigator.connection.effectiveType = '3g';
         changeHandler();
-        
+
         expect(manager.networkInfo.effectiveType).toBe('3g');
       }
     });

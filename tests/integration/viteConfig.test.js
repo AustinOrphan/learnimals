@@ -1,6 +1,6 @@
 /**
  * Integration test for Vite configuration
- * 
+ *
  * This test verifies that the Vite aliases work correctly
  * in the testing environment using Vitest.
  */
@@ -36,7 +36,9 @@ describe('Vite Configuration Integration', () => {
       expect(typeof config === 'object' || config.default).toBeTruthy();
     } catch (error) {
       // If the config file doesn't exist or alias doesn't work
-      console.warn(`Config import failed (this is expected if config.js doesn't exist): ${error.message}`);
+      console.warn(
+        `Config import failed (this is expected if config.js doesn't exist): ${error.message}`
+      );
     }
   });
 
@@ -59,11 +61,10 @@ describe('Vite Configuration Integration', () => {
       // This tests the @utils alias with a specific utility
       const themeModule = await import('@utils/themeManager.js');
       expect(themeModule).toBeDefined();
-      
+
       // Check if it exports themeManager or has named exports
-      const hasThemeManager = themeModule.themeManager || 
-                             themeModule.default || 
-                             Object.keys(themeModule).length > 0;
+      const hasThemeManager =
+        themeModule.themeManager || themeModule.default || Object.keys(themeModule).length > 0;
       expect(hasThemeManager).toBeTruthy();
     } catch (error) {
       console.warn(`ThemeManager import failed: ${error.message}`);
@@ -72,7 +73,7 @@ describe('Vite Configuration Integration', () => {
 
   test('should resolve feature imports using alias', async () => {
     try {
-      // This tests the @components alias  
+      // This tests the @components alias
       const baseGameModule = await import('@components/games/BaseGame.js');
       expect(baseGameModule).toBeDefined();
     } catch (error) {
@@ -87,7 +88,7 @@ describe('Vite Configuration Integration', () => {
     expect(typeof __DEV__).toBe('boolean');
     expect(typeof __PROD__).toBe('boolean');
     expect(typeof __APP_VERSION__).toBe('string');
-    
+
     // In test environment, should be development mode
     expect(__DEV__).toBe(true);
     expect(__PROD__).toBe(false);
@@ -130,12 +131,12 @@ describe('Vite Build Configuration', () => {
     expect(__APP_VERSION__).toBeDefined();
     expect(__DEV__).toBeDefined();
     expect(__PROD__).toBeDefined();
-    
+
     // Verify they have correct types
     expect(typeof __APP_VERSION__).toBe('string');
     expect(typeof __DEV__).toBe('boolean');
     expect(typeof __PROD__).toBe('boolean');
-    
+
     // In test environment, dev should be true
     expect(__DEV__).toBe(true);
     expect(__PROD__).toBe(false);
@@ -143,19 +144,19 @@ describe('Vite Build Configuration', () => {
 
   test('should support ES2020 features', () => {
     // Test that modern JavaScript features are supported
-    
+
     // Optional chaining
     const obj = { nested: { value: 'test' } };
     expect(obj?.nested?.value).toBe('test');
     expect(obj?.missing?.value).toBeUndefined();
-    
+
     // Nullish coalescing
     const value = null ?? 'default';
     expect(value).toBe('default');
-    
+
     // BigInt (ES2020 feature)
     expect(typeof BigInt).toBe('function');
-    
+
     // Dynamic imports (already tested above)
     // import is a keyword, not a function, so we test its usage instead
     expect(import('@utils/logger.js')).toBeInstanceOf(Promise);
@@ -174,7 +175,7 @@ describe('Vitest + Vite Integration', () => {
     expect(document).toBeDefined();
     expect(window).toBeDefined();
     expect(typeof document.createElement).toBe('function');
-    
+
     // Test DOM manipulation
     const div = document.createElement('div');
     div.textContent = 'Test';
@@ -185,7 +186,7 @@ describe('Vitest + Vite Integration', () => {
     // Test that Vitest mocking works
     const mockFn = vi.fn();
     mockFn('test');
-    
+
     expect(mockFn).toHaveBeenCalledWith('test');
     expect(mockFn).toHaveBeenCalledTimes(1);
   });

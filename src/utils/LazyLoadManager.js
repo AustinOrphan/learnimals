@@ -13,34 +13,34 @@ export class LazyLoadManager {
       imageSelector: 'img[data-src], img[loading="lazy"]',
       imageRootMargin: '50px',
       imageThreshold: 0.1,
-      
+
       // Component lazy loading
       componentSelector: '[data-lazy-component]',
       componentRootMargin: '100px',
       componentThreshold: 0.1,
-      
+
       // Content lazy loading
       contentSelector: '[data-lazy-content]',
       contentRootMargin: '200px',
       contentThreshold: 0.1,
-      
+
       // Progressive enhancement
       enableProgressiveLoading: true,
       enableBlurUpEffect: true,
       enableSkeletonLoading: true,
-      
+
       // Performance options
       enablePerformanceMonitoring: true,
       batchSize: 5,
       loadingDelay: 100,
       retryAttempts: 3,
       retryDelay: 1000,
-      
+
       // Network adaptation
       adaptToNetwork: true,
       lowQualityMode: false,
-      
-      ...options
+
+      ...options,
     };
 
     this.observers = new Map();
@@ -49,7 +49,7 @@ export class LazyLoadManager {
     this.failedItems = new Set();
     this.componentCache = new Map();
     this.networkInfo = this.getNetworkInfo();
-    
+
     // Bind methods
     this.handleImageIntersection = this.handleImageIntersection.bind(this);
     this.handleComponentIntersection = this.handleComponentIntersection.bind(this);
@@ -73,7 +73,7 @@ export class LazyLoadManager {
 
       // Set up observers
       this.setupImageLazyLoading();
-      this.setupComponentLazyLoading();  
+      this.setupComponentLazyLoading();
       this.setupContentLazyLoading();
 
       // Monitor network conditions
@@ -85,7 +85,6 @@ export class LazyLoadManager {
       this.startQueueProcessor();
 
       logger.info('✅ Lazy load manager initialized');
-
     } catch (error) {
       logger.error('❌ Failed to initialize lazy load manager:', error);
       throw error;
@@ -99,17 +98,17 @@ export class LazyLoadManager {
     const options = {
       root: null,
       rootMargin: this.options.imageRootMargin,
-      threshold: this.options.imageThreshold
+      threshold: this.options.imageThreshold,
     };
 
     // eslint-disable-next-line no-undef
     const observer = new IntersectionObserver(this.handleImageIntersection, options);
-    
+
     // Observe all lazy images
     const images = document.querySelectorAll(this.options.imageSelector);
     images.forEach(img => {
       observer.observe(img);
-      
+
       // Add placeholder or skeleton
       if (this.options.enableSkeletonLoading) {
         this.addImageSkeleton(img);
@@ -139,13 +138,13 @@ export class LazyLoadManager {
   queueImageLoad(img) {
     const priority = this.getImagePriority(img);
     const queueKey = `image-${Date.now()}-${Math.random()}`;
-    
+
     this.loadingQueue.set(queueKey, {
       type: 'image',
       element: img,
       priority,
       attempts: 0,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     this.processLoadingQueue();
@@ -158,13 +157,13 @@ export class LazyLoadManager {
     // Higher priority for above-the-fold images
     const rect = img.getBoundingClientRect();
     const isAboveTheFold = rect.top < window.innerHeight;
-    
+
     // Higher priority for larger images
     const isLarge = img.dataset.width > 500 || img.dataset.height > 300;
-    
+
     // Higher priority for critical images
     const isCritical = img.classList.contains('critical') || img.dataset.priority === 'high';
-    
+
     if (isCritical) return 1;
     if (isAboveTheFold && isLarge) return 2;
     if (isAboveTheFold) return 3;
@@ -177,7 +176,7 @@ export class LazyLoadManager {
    */
   async loadImage(img) {
     const startTime = performance.now();
-    
+
     try {
       if (this.options.enablePerformanceMonitoring) {
         performanceMonitor.start(`image-load-${img.src || img.dataset.src}`);
@@ -185,16 +184,15 @@ export class LazyLoadManager {
 
       // Get optimal image source
       const src = await this.getOptimalImageSource(img);
-      
+
       // Load image
       await this.loadImageWithFallback(img, src);
-      
+
       // Apply progressive enhancement
       await this.applyImageEnhancements(img);
-      
+
       this.loadedItems.add(img);
       this.emit('imageLoaded', { img, loadTime: performance.now() - startTime });
-
     } catch (error) {
       logger.error('Failed to load image:', error);
       this.failedItems.add(img);
@@ -237,7 +235,7 @@ export class LazyLoadManager {
    */
   getResponsiveImageSources(img) {
     const sources = [];
-    
+
     // Check for srcset attribute
     if (img.dataset.srcset) {
       const srcset = img.dataset.srcset.split(',');
@@ -269,7 +267,7 @@ export class LazyLoadManager {
       .filter(source => source.descriptor.endsWith('w'))
       .map(source => ({
         ...source,
-        width: parseInt(source.descriptor.replace('w', ''))
+        width: parseInt(source.descriptor.replace('w', '')),
       }))
       .sort((a, b) => a.width - b.width);
 
@@ -279,7 +277,7 @@ export class LazyLoadManager {
 
     // Find the smallest source that's larger than the effective width
     const optimalSource = widthSources.find(source => source.width >= effectiveWidth);
-    
+
     // If no source is large enough, use the largest available
     return optimalSource?.url || widthSources[widthSources.length - 1].url;
   }
@@ -297,7 +295,7 @@ export class LazyLoadManager {
         return; // Success
       } catch (error) {
         lastError = error;
-        
+
         if (attempt < maxAttempts) {
           // Wait before retry
           await this.delay(this.options.retryDelay * attempt);
@@ -325,7 +323,7 @@ export class LazyLoadManager {
   loadImagePromise(img, src) {
     return new Promise((resolve, reject) => {
       const tempImg = new Image();
-      
+
       tempImg.onload = () => {
         // Use requestAnimationFrame to avoid layout thrashing
         requestAnimationFrame(() => {
@@ -334,16 +332,16 @@ export class LazyLoadManager {
           resolve(img);
         });
       };
-      
+
       tempImg.onerror = () => {
         reject(new Error(`Failed to load image: ${src}`));
       };
-      
+
       // Set crossOrigin if needed
       if (img.crossOrigin) {
         tempImg.crossOrigin = img.crossOrigin;
       }
-      
+
       tempImg.src = src;
     });
   }
@@ -354,15 +352,15 @@ export class LazyLoadManager {
   async applyImageEnhancements(img) {
     // Remove skeleton loading
     this.removeImageSkeleton(img);
-    
+
     // Add loaded class
     img.classList.add('lazy-loaded');
-    
+
     // Apply blur-up effect
     if (this.options.enableBlurUpEffect && img.dataset.placeholder) {
       await this.applyBlurUpEffect(img);
     }
-    
+
     // Fade in effect
     this.applyFadeInEffect(img);
   }
@@ -391,14 +389,18 @@ export class LazyLoadManager {
 
     // Insert placeholder behind the image
     img.parentNode.insertBefore(placeholder, img);
-    
+
     // Wait for main image to load, then fade out placeholder
-    img.addEventListener('load', () => {
-      setTimeout(() => {
-        placeholder.style.opacity = '0';
-        setTimeout(() => placeholder.remove(), 300);
-      }, 100);
-    }, { once: true });
+    img.addEventListener(
+      'load',
+      () => {
+        setTimeout(() => {
+          placeholder.style.opacity = '0';
+          setTimeout(() => placeholder.remove(), 300);
+        }, 100);
+      },
+      { once: true }
+    );
   }
 
   /**
@@ -450,7 +452,7 @@ export class LazyLoadManager {
   applyFadeInEffect(img) {
     img.style.transition = 'opacity 0.3s ease';
     img.style.opacity = '0';
-    
+
     requestAnimationFrame(() => {
       img.style.opacity = '1';
     });
@@ -463,12 +465,12 @@ export class LazyLoadManager {
     const options = {
       root: null,
       rootMargin: this.options.componentRootMargin,
-      threshold: this.options.componentThreshold
+      threshold: this.options.componentThreshold,
     };
 
     // eslint-disable-next-line no-undef
     const observer = new IntersectionObserver(this.handleComponentIntersection, options);
-    
+
     const components = document.querySelectorAll(this.options.componentSelector);
     components.forEach(component => {
       observer.observe(component);
@@ -497,13 +499,13 @@ export class LazyLoadManager {
   queueComponentLoad(component) {
     const priority = this.getComponentPriority(component);
     const queueKey = `component-${Date.now()}-${Math.random()}`;
-    
+
     this.loadingQueue.set(queueKey, {
       type: 'component',
       element: component,
       priority,
       attempts: 0,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     this.processLoadingQueue();
@@ -525,7 +527,7 @@ export class LazyLoadManager {
   async loadComponent(component) {
     const componentName = component.dataset.lazyComponent;
     const componentPath = component.dataset.componentPath;
-    
+
     try {
       // Check cache first
       if (this.componentCache.has(componentName)) {
@@ -542,20 +544,19 @@ export class LazyLoadManager {
       // Dynamic import
       const module = await import(componentPath);
       const ComponentClass = module.default || module[componentName];
-      
+
       if (!ComponentClass) {
         throw new Error(`Component ${componentName} not found in ${componentPath}`);
       }
 
       // Cache the component
       this.componentCache.set(componentName, ComponentClass);
-      
+
       // Render component
       await this.renderComponent(component, ComponentClass);
-      
+
       this.loadedItems.add(component);
       this.emit('componentLoaded', { component, componentName });
-
     } catch (error) {
       logger.error(`Failed to load component ${componentName}:`, error);
       this.showComponentError(component, error);
@@ -598,14 +599,14 @@ export class LazyLoadManager {
   async renderComponent(container, ComponentClass) {
     const options = this.parseComponentOptions(container);
     const component = new ComponentClass(options);
-    
+
     // Clear loading state
     container.innerHTML = '';
     container.classList.remove('component-loading-state');
-    
+
     // Render component
     await component.render(container);
-    
+
     // Initialize component
     if (component.initialize) {
       await component.initialize();
@@ -618,23 +619,23 @@ export class LazyLoadManager {
   parseComponentOptions(container) {
     const options = {};
     const dataset = container.dataset;
-    
+
     Object.keys(dataset).forEach(key => {
       if (key.startsWith('option')) {
         const optionName = key.replace('option', '').toLowerCase();
         let value = dataset[key];
-        
+
         // Try to parse JSON values
         try {
           value = JSON.parse(value);
         } catch (e) {
           // Keep as string if not valid JSON
         }
-        
+
         options[optionName] = value;
       }
     });
-    
+
     return options;
   }
 
@@ -645,12 +646,12 @@ export class LazyLoadManager {
     const options = {
       root: null,
       rootMargin: this.options.contentRootMargin,
-      threshold: this.options.contentThreshold
+      threshold: this.options.contentThreshold,
     };
 
     // eslint-disable-next-line no-undef
     const observer = new IntersectionObserver(this.handleContentIntersection, options);
-    
+
     const contentElements = document.querySelectorAll(this.options.contentSelector);
     contentElements.forEach(element => {
       observer.observe(element);
@@ -678,13 +679,13 @@ export class LazyLoadManager {
    */
   queueContentLoad(element) {
     const queueKey = `content-${Date.now()}-${Math.random()}`;
-    
+
     this.loadingQueue.set(queueKey, {
       type: 'content',
       element,
       priority: 3,
       attempts: 0,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     this.processLoadingQueue();
@@ -696,32 +697,31 @@ export class LazyLoadManager {
   async loadContent(element) {
     const contentUrl = element.dataset.lazyContent;
     const contentType = element.dataset.contentType || 'html';
-    
+
     try {
       const response = await fetch(contentUrl);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       let content;
       switch (contentType) {
-      case 'json':
-        content = await response.json();
-        await this.renderJsonContent(element, content);
-        break;
-      case 'text':
-        content = await response.text();
-        element.textContent = content;
-        break;
-      default:
-        content = await response.text();
-        element.innerHTML = content;
+        case 'json':
+          content = await response.json();
+          await this.renderJsonContent(element, content);
+          break;
+        case 'text':
+          content = await response.text();
+          element.textContent = content;
+          break;
+        default:
+          content = await response.text();
+          element.innerHTML = content;
       }
-      
+
       element.classList.add('content-loaded');
       this.loadedItems.add(element);
       this.emit('contentLoaded', { element, content });
-
     } catch (error) {
       logger.error('Failed to load content:', error);
       element.innerHTML = '<p>Failed to load content</p>';
@@ -753,13 +753,12 @@ export class LazyLoadManager {
     if (this.loadingQueue.size === 0) return;
 
     // Sort by priority and timestamp
-    const sortedItems = Array.from(this.loadingQueue.entries())
-      .sort(([, a], [, b]) => {
-        if (a.priority !== b.priority) {
-          return a.priority - b.priority; // Lower number = higher priority
-        }
-        return a.timestamp - b.timestamp; // Earlier timestamp first
-      });
+    const sortedItems = Array.from(this.loadingQueue.entries()).sort(([, a], [, b]) => {
+      if (a.priority !== b.priority) {
+        return a.priority - b.priority; // Lower number = higher priority
+      }
+      return a.timestamp - b.timestamp; // Earlier timestamp first
+    });
 
     // Process items in batches
     const batchSize = this.options.batchSize;
@@ -781,23 +780,22 @@ export class LazyLoadManager {
       }
 
       switch (item.type) {
-      case 'image':
-        await this.loadImage(item.element);
-        break;
-      case 'component':
-        await this.loadComponent(item.element);
-        break;
-      case 'content':
-        await this.loadContent(item.element);
-        break;
+        case 'image':
+          await this.loadImage(item.element);
+          break;
+        case 'component':
+          await this.loadComponent(item.element);
+          break;
+        case 'content':
+          await this.loadContent(item.element);
+          break;
       }
 
       // Remove from queue on success
       this.loadingQueue.delete(key);
-
     } catch (error) {
       item.attempts++;
-      
+
       if (item.attempts >= this.options.retryAttempts) {
         // Max attempts reached, remove from queue
         this.loadingQueue.delete(key);
@@ -827,13 +825,13 @@ export class LazyLoadManager {
   monitorNetworkConditions() {
     if ('connection' in navigator) {
       const connection = navigator.connection;
-      
+
       const updateNetworkInfo = () => {
         this.networkInfo = {
           effectiveType: connection.effectiveType,
           downlink: connection.downlink,
           rtt: connection.rtt,
-          saveData: connection.saveData
+          saveData: connection.saveData,
         };
 
         // Adapt loading behavior
@@ -850,10 +848,10 @@ export class LazyLoadManager {
    */
   adaptToNetworkConditions() {
     const { effectiveType, saveData } = this.networkInfo;
-    
+
     // Enable low quality mode on slow connections
     this.options.lowQualityMode = effectiveType === '2g' || saveData;
-    
+
     // Adjust batch size based on connection
     if (effectiveType === '2g') {
       this.options.batchSize = 2;
@@ -870,7 +868,7 @@ export class LazyLoadManager {
       effectiveType,
       saveData,
       lowQualityMode: this.options.lowQualityMode,
-      batchSize: this.options.batchSize
+      batchSize: this.options.batchSize,
     });
   }
 
@@ -888,7 +886,7 @@ export class LazyLoadManager {
         effectiveType: connection.effectiveType,
         downlink: connection.downlink,
         rtt: connection.rtt,
-        saveData: connection.saveData
+        saveData: connection.saveData,
       };
     }
     return { effectiveType: '4g', downlink: 10, rtt: 100, saveData: false };
@@ -915,13 +913,13 @@ export class LazyLoadManager {
   getTemplate(templateName) {
     // This would integrate with a template system
     // For now, return a simple function
-    return (_data) => `<div>Template: ${templateName}</div>`;
+    return _data => `<div>Template: ${templateName}</div>`;
   }
 
   /**
    * Public API methods
    */
-  
+
   /**
    * Load all visible items immediately
    */
@@ -956,7 +954,7 @@ export class LazyLoadManager {
       totalLoaded: this.loadedItems.size,
       totalFailed: this.failedItems.size,
       queueByType: this.getQueueByType(),
-      networkInfo: this.networkInfo
+      networkInfo: this.networkInfo,
     };
   }
 
@@ -1000,7 +998,7 @@ export class LazyLoadManager {
 
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('resize', handleScroll);
-    
+
     // Initial check
     handleScroll();
   }

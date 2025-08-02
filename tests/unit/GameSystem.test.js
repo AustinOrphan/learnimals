@@ -27,10 +27,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('GameSystem', () => {
@@ -60,11 +60,11 @@ describe('GameSystem', () => {
         id: 'test-game',
         name: 'Test Game',
         gameClass: 'TestGame',
-        scriptPath: '/test/game.js'
+        scriptPath: '/test/game.js',
       };
 
       const registered = await gameSystem.registerGame(gameConfig);
-      
+
       expect(registered.id).toBe('test-game');
       expect(gameSystem.registry.has('test-game')).toBe(true);
     });
@@ -72,12 +72,11 @@ describe('GameSystem', () => {
     it('should validate game configuration', async () => {
       const invalidConfig = {
         id: 'test game', // Invalid ID with space
-        name: 'Test Game'
+        name: 'Test Game',
         // Missing required fields
       };
 
-      await expect(gameSystem.registerGame(invalidConfig))
-        .rejects.toThrow();
+      await expect(gameSystem.registerGame(invalidConfig)).rejects.toThrow();
     });
 
     it('should set default values for optional fields', async () => {
@@ -85,11 +84,11 @@ describe('GameSystem', () => {
         id: 'minimal-game',
         name: 'Minimal Game',
         gameClass: 'MinimalGame',
-        scriptPath: '/minimal/game.js'
+        scriptPath: '/minimal/game.js',
       };
 
       const registered = await gameSystem.registerGame(minimalConfig);
-      
+
       expect(registered.subject).toBe('general');
       expect(registered.difficulty).toEqual(['easy']);
       expect(registered.template).toBe('game');
@@ -106,7 +105,7 @@ describe('GameSystem', () => {
         gameClass: 'MathGame',
         scriptPath: '/math/game.js',
         subject: 'math',
-        difficulty: ['easy', 'medium']
+        difficulty: ['easy', 'medium'],
       });
 
       await gameSystem.registerGame({
@@ -115,7 +114,7 @@ describe('GameSystem', () => {
         gameClass: 'ReadingGame',
         scriptPath: '/reading/game.js',
         subject: 'reading',
-        difficulty: ['medium', 'hard']
+        difficulty: ['medium', 'hard'],
       });
     });
 
@@ -155,26 +154,26 @@ describe('GameSystem', () => {
   describe('event system', () => {
     it('should add and remove event listeners', () => {
       const handler = vi.fn();
-      
+
       gameSystem.on('test-event', handler);
       gameSystem.emit('test-event', { data: 'test' });
-      
+
       expect(handler).toHaveBeenCalledWith({ data: 'test' });
-      
+
       gameSystem.off('test-event', handler);
       gameSystem.emit('test-event', { data: 'test2' });
-      
+
       expect(handler).toHaveBeenCalledTimes(1);
     });
 
     it('should handle multiple listeners for same event', () => {
       const handler1 = vi.fn();
       const handler2 = vi.fn();
-      
+
       gameSystem.on('test-event', handler1);
       gameSystem.on('test-event', handler2);
       gameSystem.emit('test-event', { data: 'test' });
-      
+
       expect(handler1).toHaveBeenCalled();
       expect(handler2).toHaveBeenCalled();
     });
@@ -184,10 +183,10 @@ describe('GameSystem', () => {
         throw new Error('Handler error');
       });
       const goodHandler = vi.fn();
-      
+
       gameSystem.on('test-event', errorHandler);
       gameSystem.on('test-event', goodHandler);
-      
+
       // Should not throw
       expect(() => gameSystem.emit('test-event')).not.toThrow();
       expect(goodHandler).toHaveBeenCalled();
@@ -200,13 +199,13 @@ describe('GameSystem', () => {
         id: 'stats-game',
         name: 'Stats Game',
         gameClass: 'StatsGame',
-        scriptPath: '/stats/game.js'
+        scriptPath: '/stats/game.js',
       });
     });
 
     it('should provide system statistics', () => {
       const stats = gameSystem.getStats();
-      
+
       expect(stats.registeredGames).toBe(1);
       expect(stats.activeGames).toBe(0);
       expect(stats.initialized).toBe(false);
@@ -224,7 +223,7 @@ describe('GameSystem', () => {
         subject: 'math',
         difficulty: ['easy', 'medium'],
         template: 'game',
-        features: ['analytics', 'progress']
+        features: ['analytics', 'progress'],
       };
 
       const result = gameSystem.validateGameConfig(validConfig);
@@ -237,22 +236,22 @@ describe('GameSystem', () => {
         id: 'Invalid Game ID!', // Contains invalid characters
         name: 'Test Game',
         gameClass: 'TestGame',
-        scriptPath: '/test/game.js'
+        scriptPath: '/test/game.js',
       };
 
-      await expect(gameSystem.registerGame(invalidConfig))
-        .rejects.toThrow('Game ID must be lowercase alphanumeric with hyphens only');
+      await expect(gameSystem.registerGame(invalidConfig)).rejects.toThrow(
+        'Game ID must be lowercase alphanumeric with hyphens only'
+      );
     });
 
     it('should reject missing required fields', async () => {
       const incompleteConfig = {
         id: 'incomplete-game',
-        name: 'Incomplete Game'
+        name: 'Incomplete Game',
         // Missing gameClass and scriptPath
       };
 
-      await expect(gameSystem.registerGame(incompleteConfig))
-        .rejects.toThrow();
+      await expect(gameSystem.registerGame(incompleteConfig)).rejects.toThrow();
     });
   });
 });
@@ -267,7 +266,7 @@ describe('GameRegistryUtil', () => {
         scriptPath: '/test/game.js',
         subject: 'math',
         difficulty: ['easy', 'medium'],
-        template: 'game'
+        template: 'game',
       };
 
       const result = GameRegistryUtil.validateGameConfig(validConfig);
@@ -277,7 +276,7 @@ describe('GameRegistryUtil', () => {
 
     it('should detect missing required fields', () => {
       const invalidConfig = {
-        name: 'Invalid Game'
+        name: 'Invalid Game',
         // Missing id, gameClass, scriptPath
       };
 
@@ -294,7 +293,7 @@ describe('GameRegistryUtil', () => {
         name: 'Test Game',
         gameClass: 'TestGame',
         scriptPath: '/test/game.js',
-        subject: 'invalid-subject'
+        subject: 'invalid-subject',
       };
 
       const result = GameRegistryUtil.validateGameConfig(invalidConfig);
@@ -308,7 +307,7 @@ describe('GameRegistryUtil', () => {
         name: 'Test Game',
         gameClass: 'TestGame',
         scriptPath: '/test/game.js',
-        difficulty: ['easy', 'impossible']
+        difficulty: ['easy', 'impossible'],
       };
 
       const result = GameRegistryUtil.validateGameConfig(invalidConfig);
@@ -322,7 +321,7 @@ describe('GameRegistryUtil', () => {
         name: 'Test Game',
         gameClass: 'TestGame',
         scriptPath: '/test/game.js',
-        template: 'invalid-template'
+        template: 'invalid-template',
       };
 
       const result = GameRegistryUtil.validateGameConfig(invalidConfig);

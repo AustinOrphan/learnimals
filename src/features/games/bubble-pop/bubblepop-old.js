@@ -14,20 +14,21 @@ export default class BubblePopGame {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d', { alpha: false });
-    
+
     // Initialize game variables
     this.bubbles = [];
     this.currentQuestion = {};
     this.score = 0;
     this.message = '';
     this.messageTimer = null;
-    this.messageColor = this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
+    this.messageColor =
+      this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'; // Dynamic theme color
     this.lastFrameTime = 0;
     this.gameActive = true;
-    
+
     // Bubble cache for performance
     this.bubbleCache = {};
-    
+
     // Bind methods to preserve 'this' context
     this.handlePointerEvent = this.handlePointerEvent.bind(this);
     this.animate = this.animate.bind(this);
@@ -37,10 +38,10 @@ export default class BubblePopGame {
     this.generateQuestion = this.generateQuestion.bind(this);
     this.spawnBubbles = this.spawnBubbles.bind(this);
     this.nextRound = this.nextRound.bind(this);
-    
+
     // Initialize event listeners and start game
     this.setupEventListeners();
-    
+
     // Listen for theme changes to update bubble cache
     this.setupThemeListener();
   }
@@ -51,9 +52,9 @@ export default class BubblePopGame {
    * @returns {string} - Computed color value
    */
   getThemeColor(cssVariable) {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(cssVariable)
-      .trim() || '#333'; // Fallback color
+    return (
+      getComputedStyle(document.documentElement).getPropertyValue(cssVariable).trim() || '#333'
+    ); // Fallback color
   }
 
   /**
@@ -73,12 +74,12 @@ export default class BubblePopGame {
     // Canvas interaction
     this.canvas.addEventListener('click', this.handlePointerEvent);
     this.canvas.addEventListener('touchstart', this.handlePointerEvent, { passive: false });
-    
+
     // Window events
     window.addEventListener('resize', debounce(this.resizeCanvas, 250));
     window.addEventListener('blur', this.pauseGame);
     window.addEventListener('focus', this.resumeGame);
-    
+
     // Document visibility
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
@@ -87,14 +88,14 @@ export default class BubblePopGame {
         this.resumeGame();
       }
     });
-    
+
     // Theme changes
     document.addEventListener('themeChanged', () => {
       if (this.gameActive) {
         requestAnimationFrame(this.animate);
       }
     });
-    
+
     // Initial setup
     this.resizeCanvas();
     this.generateQuestion();
@@ -121,7 +122,7 @@ export default class BubblePopGame {
       const widthRatio = this.canvas.width / oldWidth;
       const heightRatio = this.canvas.height / oldHeight;
 
-      this.bubbles.forEach((bubble) => {
+      this.bubbles.forEach(bubble => {
         bubble.x *= widthRatio;
         bubble.y *= heightRatio;
       });
@@ -144,9 +145,13 @@ export default class BubblePopGame {
 
       bubbleCtx.beginPath();
       bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
-      bubbleCtx.fillStyle = this.getThemeColor('--secondary-color') || this.getThemeColor('--bg-secondary') || '#a2e8ff';
+      bubbleCtx.fillStyle =
+        this.getThemeColor('--secondary-color') ||
+        this.getThemeColor('--bg-secondary') ||
+        '#a2e8ff';
       bubbleCtx.fill();
-      bubbleCtx.strokeStyle = this.getThemeColor('--primary-color') || this.getThemeColor('--bg-primary') || '#008cba';
+      bubbleCtx.strokeStyle =
+        this.getThemeColor('--primary-color') || this.getThemeColor('--bg-primary') || '#008cba';
       bubbleCtx.lineWidth = 2;
       bubbleCtx.stroke();
       bubbleCtx.closePath();
@@ -193,23 +198,23 @@ export default class BubblePopGame {
         } while (
           answer === this.currentQuestion.answer ||
           answer < 0 ||
-          this.bubbles.some((b) => b.answer === answer)
+          this.bubbles.some(b => b.answer === answer)
         );
       }
 
       const isCorrect = answer === this.currentQuestion.answer;
-      
+
       // Create the bubble
       const bubble = new Bubble({
-        x, 
-        y, 
-        radius, 
-        answer, 
-        isCorrect, 
+        x,
+        y,
+        radius,
+        answer,
+        isCorrect,
         bubbleBackground: this.createBubbleBackground(radius),
-        ctx: this.ctx
+        ctx: this.ctx,
       });
-      
+
       this.bubbles.push(bubble);
     }
   }
@@ -242,17 +247,25 @@ export default class BubblePopGame {
       if (bubble.containsPoint(clickX, clickY)) {
         if (bubble.isCorrect) {
           this.score++;
-          this.showMessage('Correct! Well done!', this.getThemeColor('--accent-color') || this.getThemeColor('--success-color') || '#5cb85c');
+          this.showMessage(
+            'Correct! Well done!',
+            this.getThemeColor('--accent-color') ||
+              this.getThemeColor('--success-color') ||
+              '#5cb85c'
+          );
           // Clear the bubbles and spawn new ones
           this.nextRound();
         } else {
-          this.showMessage('Oops! Try again.', this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
+          this.showMessage(
+            'Oops! Try again.',
+            this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'
+          );
         }
         break;
       }
     }
   }
-  
+
   /**
    * Display a message on the canvas
    * @param {string} text - Message to display
@@ -261,12 +274,12 @@ export default class BubblePopGame {
   showMessage(text, color) {
     this.message = text;
     this.messageColor = color;
-    
+
     // Clear previous message timer if exists
     if (this.messageTimer) {
       clearTimeout(this.messageTimer);
     }
-    
+
     // Set new timer to clear message
     this.messageTimer = setTimeout(() => {
       this.message = '';
@@ -318,12 +331,14 @@ export default class BubblePopGame {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Apply theme-based background
-    this.ctx.fillStyle = this.getThemeColor('--bg-card') || this.getThemeColor('--bg-body') || '#e0f7fa';
+    this.ctx.fillStyle =
+      this.getThemeColor('--bg-card') || this.getThemeColor('--bg-body') || '#e0f7fa';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw game UI with shadow effect for better readability
     this.ctx.font = '20px Comic Sans MS, Comic Sans, cursive';
-    this.ctx.fillStyle = this.getThemeColor('--text-primary') || this.getThemeColor('--text-color') || '#333';
+    this.ctx.fillStyle =
+      this.getThemeColor('--text-primary') || this.getThemeColor('--text-color') || '#333';
     this.ctx.textAlign = 'left';
     this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Or a dedicated shadow variable
     this.ctx.shadowBlur = 4;
@@ -347,7 +362,7 @@ export default class BubblePopGame {
     // Update bubbles with time-based movement
     let missedCorrect = false;
 
-    this.bubbles.forEach((bubble) => {
+    this.bubbles.forEach(bubble => {
       bubble.update(deltaTime);
       // Check if a correct bubble has left the screen
       if (!bubble.active && bubble.isCorrect) {
@@ -356,11 +371,14 @@ export default class BubblePopGame {
     });
 
     // Remove inactive bubbles using efficient filter
-    this.bubbles = this.bubbles.filter((bubble) => bubble.active);
+    this.bubbles = this.bubbles.filter(bubble => bubble.active);
 
     // If the correct bubble was missed, show message and start next round
     if (missedCorrect) {
-      this.showMessage('Oops! The correct answer got away!', this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f');
+      this.showMessage(
+        'Oops! The correct answer got away!',
+        this.getThemeColor('--text-danger') || this.getThemeColor('--text-primary') || '#d9534f'
+      );
       this.nextRound();
     }
 

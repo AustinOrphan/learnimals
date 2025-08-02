@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Visual Accessibility Tests', () => {
@@ -56,11 +59,11 @@ describe('Visual Accessibility Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock getComputedStyle
-    window.getComputedStyle = vi.fn((element) => {
+    window.getComputedStyle = vi.fn(element => {
       const styles = {
         color: element.dataset.color || 'rgb(0, 0, 0)',
         backgroundColor: element.dataset.backgroundColor || 'rgb(255, 255, 255)',
@@ -68,7 +71,7 @@ describe('Visual Accessibility Tests', () => {
         fontWeight: element.dataset.fontWeight || 'normal',
         display: element.style.display || 'block',
         visibility: element.style.visibility || 'visible',
-        opacity: element.style.opacity || '1'
+        opacity: element.style.opacity || '1',
       };
       return styles;
     });
@@ -148,9 +151,9 @@ describe('Visual Accessibility Tests', () => {
 
       // The test should identify contrast issues
       expect(accessibilityTester.warnings.length).toBeGreaterThan(0);
-      
+
       // Should have warnings about poor contrast
-      const contrastWarnings = accessibilityTester.warnings.filter(warning => 
+      const contrastWarnings = accessibilityTester.warnings.filter(warning =>
         warning.includes('Low color contrast')
       );
       expect(contrastWarnings.length).toBeGreaterThan(0);
@@ -164,7 +167,7 @@ describe('Visual Accessibility Tests', () => {
       `;
 
       const paragraphs = testContainer.querySelectorAll('p');
-      
+
       // Test that large text (18px+) has different requirements
       const largeTextStyle = window.getComputedStyle(paragraphs[0]);
       const fontSize = parseInt(largeTextStyle.fontSize);
@@ -437,19 +440,47 @@ describe('Visual Accessibility Tests', () => {
       const smallLink = testContainer.querySelector('#small-link');
 
       vi.spyOn(goodButton, 'getBoundingClientRect').mockReturnValue({
-        width: 44, height: 44, top: 0, left: 0, bottom: 44, right: 44, x: 0, y: 0
+        width: 44,
+        height: 44,
+        top: 0,
+        left: 0,
+        bottom: 44,
+        right: 44,
+        x: 0,
+        y: 0,
       });
 
       vi.spyOn(smallButton, 'getBoundingClientRect').mockReturnValue({
-        width: 20, height: 20, top: 0, left: 0, bottom: 20, right: 20, x: 0, y: 0
+        width: 20,
+        height: 20,
+        top: 0,
+        left: 0,
+        bottom: 20,
+        right: 20,
+        x: 0,
+        y: 0,
       });
 
       vi.spyOn(goodLink, 'getBoundingClientRect').mockReturnValue({
-        width: 48, height: 44, top: 0, left: 0, bottom: 44, right: 48, x: 0, y: 0
+        width: 48,
+        height: 44,
+        top: 0,
+        left: 0,
+        bottom: 44,
+        right: 48,
+        x: 0,
+        y: 0,
       });
 
       vi.spyOn(smallLink, 'getBoundingClientRect').mockReturnValue({
-        width: 24, height: 16, top: 0, left: 0, bottom: 16, right: 24, x: 0, y: 0
+        width: 24,
+        height: 16,
+        top: 0,
+        left: 0,
+        bottom: 16,
+        right: 24,
+        x: 0,
+        y: 0,
       });
 
       const goodButtonRect = goodButton.getBoundingClientRect();
@@ -505,7 +536,7 @@ describe('Visual Accessibility Tests', () => {
 
       // Form groups should have adequate spacing
       expect(formGroups.length).toBe(2);
-      
+
       // Button should have adequate spacing from form fields
       expect(submitButton.style.marginTop).toBe('24px');
     });
@@ -699,7 +730,7 @@ describe('Visual Accessibility Tests', () => {
       const colorPairs = [
         { name: 'Blue and Orange', color1: '#0066cc', color2: '#ff8800' },
         { name: 'Green and Red with high contrast', color1: '#006600', color2: '#cc0000' },
-        { name: 'Purple and Yellow', color1: '#6600cc', color2: '#cccc00' }
+        { name: 'Purple and Yellow', color1: '#6600cc', color2: '#cccc00' },
       ];
 
       colorPairs.forEach(pair => {
@@ -726,14 +757,14 @@ describe('Visual Accessibility Tests', () => {
             outline: '3px solid #ffff00',
             outlineOffset: '2px',
             boxShadow: '0 0 0 5px rgba(255, 255, 0, 0.3)',
-            backgroundColor: 'white'
+            backgroundColor: 'white',
           };
         }
         return {
           outline: 'none',
           outlineOffset: '0px',
           boxShadow: 'none',
-          backgroundColor: 'white'
+          backgroundColor: 'white',
         };
       });
 

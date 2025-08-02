@@ -124,7 +124,7 @@
 }
 
 .pause-btn.paused .btn-icon::before {
-  content: "▶️";
+  content: '▶️';
 }
 
 .restart-btn {
@@ -167,18 +167,18 @@
     gap: 0.5rem;
     padding: 0.75rem;
   }
-  
+
   .game-btn {
     padding: 0.625rem 0.75rem;
     font-size: 0.85rem;
     min-width: 48px; /* Larger touch target on mobile */
     min-height: 48px;
   }
-  
+
   .btn-text {
     display: none; /* Hide text on mobile, show only icons */
   }
-  
+
   .btn-icon {
     font-size: 1.2rem;
   }
@@ -189,7 +189,7 @@
     gap: 0.375rem;
     padding: 0.5rem;
   }
-  
+
   .game-btn {
     padding: 0.5rem;
     min-width: 44px;
@@ -236,7 +236,7 @@
     border-width: 2px;
     font-weight: 600;
   }
-  
+
   .game-btn:focus {
     outline-width: 3px;
   }
@@ -247,12 +247,12 @@
   .game-btn {
     transition: none;
   }
-  
+
   .game-btn:hover,
   .game-btn:active {
     transform: none;
   }
-  
+
   .game-btn.loading::after {
     animation: none;
     border-top-color: currentColor;
@@ -266,7 +266,7 @@
     border-color: var(--border-color, #495057);
     color: var(--text-primary, #fff);
   }
-  
+
   .game-btn:hover {
     background: var(--bg-tertiary, #495057);
     border-color: var(--border-hover, #6c757d);

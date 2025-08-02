@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sky's Ecosystem Explorer - Demo</title>
+    <style>
+      /* Inline styles for demo */
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+        min-height: 100vh;
+      }
+
+      .game-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .game-header {
+        background: linear-gradient(135deg, #4caf50, #2e7d32);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        color: white;
+        text-align: center;
+      }
+
+      .game-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 28px;
+      }
+
+      .game-controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        justify-content: center;
+      }
+
+      .control-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #4caf50;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .control-btn:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+      }
+
+      .game-canvas-container {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      #ecosystem-canvas {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        cursor: crosshair;
+      }
+
+      #ecosystem-canvas:hover {
+        border-color: #4caf50;
+      }
+
+      .game-info {
+        margin-top: 20px;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .info-section h3 {
+        color: #2e7d32;
+        margin-bottom: 10px;
+      }
+
+      .species-demo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 5px 0;
+        padding: 5px;
+        background: #f8f9fa;
+        border-radius: 5px;
+      }
+
+      .species-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+      }
+
+      .message-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1000;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-wrapper">
+      <header class="game-header">
+        <h1>🦜 Sky's Ecosystem Explorer</h1>
+        <p>Build balanced ecosystems by placing species on the grid!</p>
+      </header>
+
+      <div class="game-controls">
+        <button id="start-btn" class="control-btn">Start Game</button>
+        <button id="pause-btn" class="control-btn">Pause</button>
+        <button id="reset-btn" class="control-btn">Reset</button>
+      </div>
+
+      <div class="game-canvas-container">
+        <canvas id="ecosystem-canvas" width="800" height="600"></canvas>
+      </div>
+
+      <div class="game-info">
+        <div class="info-grid">
+          <div class="info-section">
+            <h3>🎯 How to Play</h3>
+            <ul>
+              <li>Click species in the bottom palette</li>
+              <li>Click on the grid to place them</li>
+              <li>Create a balanced ecosystem</li>
+              <li>Watch the health bar turn green!</li>
+            </ul>
+          </div>
+          <div class="info-section">
+            <h3>🌱 Available Species</h3>
+            <div class="species-demo">
+              <div class="species-color" style="background: #4caf50"></div>
+              <span>Grass (Producer)</span>
+            </div>
+            <div class="species-demo">
+              <div class="species-color" style="background: #8bc34a"></div>
+              <span>Rabbit (Herbivore)</span>
+            </div>
+            <div class="species-demo">
+              <div class="species-color" style="background: #ff9800"></div>
+              <span>Fox (Carnivore)</span>
+            </div>
+          </div>
+          <div class="info-section">
+            <h3>📚 Learning Goals</h3>
+            <ul>
+              <li>Food chains & energy flow</li>
+              <li>Species interdependence</li>
+              <li>Ecosystem balance</li>
+              <li>Environmental science</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Inline utility functions to avoid import issues
+      function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Simplified EcosystemGame class inline
+      class EcosystemGame {
+        constructor(canvasId) {
+          this.canvas = document.getElementById(canvasId);
+          this.ctx = this.canvas.getContext('2d');
+
+          // Game configuration
+          this.config = {
+            gridSize: 40,
+            maxSpecies: 20,
+            balanceThreshold: 0.8,
+          };
+
+          // Game state
+          this.gameState = {
+            level: 1,
+            score: 0,
+            ecosystemHealth: 1.0,
+            placedSpecies: new Map(),
+            selectedSpecies: null,
+            particles: [],
+            gameActive: true,
+          };
+
+          // Available species
+          this.availableSpecies = [
+            { id: 'grass', name: 'Grass', type: 'producer', energy: 1, color: '#4CAF50' },
+            { id: 'rabbit', name: 'Rabbit', type: 'herbivore', energy: 2, color: '#8BC34A', eats: ['grass'] },
+            { id: 'fox', name: 'Fox', type: 'carnivore', energy: 3, color: '#FF9800', eats: ['rabbit'] },
+          ];
+
+          this.init();
+        }
+
+        init() {
+          this.setupCanvas();
+          this.setupEventListeners();
+          this.startGameLoop();
+          this.showMessage("Welcome to Sky's Ecosystem Explorer!", 3000);
+        }
+
+        setupCanvas() {
+          this.gridWidth = Math.floor(this.canvas.width / this.config.gridSize);
+          this.gridHeight = Math.floor((this.canvas.height - 100) / this.config.gridSize);
+        }
+
+        setupEventListeners() {
+          this.canvas.addEventListener('click', e => {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            this.handleClick(x, y);
+          });
+        }
+
+        startGameLoop() {
+          this.animate();
+        }
+
+        animate() {
+          if (this.gameState.gameActive) {
+            this.update();
+            this.render();
+          }
+          requestAnimationFrame(() => this.animate());
+        }
+
+        update() {
+          this.updateEcosystemBalance();
+          this.updateParticles();
+          this.checkWinConditions();
+        }
+
+        updateEcosystemBalance() {
+          const speciesCount = { producer: 0, herbivore: 0, carnivore: 0 };
+
+          this.gameState.placedSpecies.forEach(species => {
+            speciesCount[species.type]++;
+          });
+
+          const total = speciesCount.producer + speciesCount.herbivore + speciesCount.carnivore;
+          if (total === 0) {
+            this.gameState.ecosystemHealth = 1.0;
+            return;
+          }
+
+          // Ideal ratios: many producers, some herbivores, few carnivores
+          const idealRatio = { producer: 0.6, herbivore: 0.3, carnivore: 0.1 };
+
+          let balance = 0;
+          Object.keys(idealRatio).forEach(type => {
+            const actualRatio = speciesCount[type] / total;
+            const difference = Math.abs(actualRatio - idealRatio[type]);
+            balance += 1 - difference;
+          });
+
+          this.gameState.ecosystemHealth = Math.max(0, Math.min(1, balance / 3));
+        }
+
+        updateParticles() {
+          this.gameState.particles = this.gameState.particles.filter(particle => {
+            particle.age += 16;
+            particle.y -= particle.speed;
+            particle.alpha = Math.max(0, 1 - particle.age / particle.lifetime);
+            return particle.age < particle.lifetime;
+          });
+        }
+
+        checkWinConditions() {
+          if (this.gameState.ecosystemHealth > this.config.balanceThreshold && this.gameState.placedSpecies.size >= 5) {
+            this.levelComplete();
+          }
+        }
+
+        render() {
+          // Clear canvas
+          this.ctx.fillStyle = this.getBackgroundColor();
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // Draw grid
+          this.drawGrid();
+
+          // Draw placed species
+          this.drawPlacedSpecies();
+
+          // Draw species palette
+          this.drawSpeciesPalette();
+
+          // Draw particles
+          this.drawParticles();
+
+          // Draw UI
+          this.drawUI();
+        }
+
+        getBackgroundColor() {
+          const health = this.gameState.ecosystemHealth;
+          const red = Math.floor(255 * (1 - health));
+          const green = Math.floor(255 * health);
+          return `rgb(${red + 200}, ${green + 230}, 200)`;
+        }
+
+        drawGrid() {
+          this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+          this.ctx.lineWidth = 1;
+
+          // Vertical lines
+          for (let x = 0; x <= this.gridWidth; x++) {
+            const xPos = x * this.config.gridSize;
+            this.ctx.beginPath();
+            this.ctx.moveTo(xPos, 0);
+            this.ctx.lineTo(xPos, this.canvas.height - 100);
+            this.ctx.stroke();
+          }
+
+          // Horizontal lines
+          for (let y = 0; y <= this.gridHeight; y++) {
+            const yPos = y * this.config.gridSize;
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, yPos);
+            this.ctx.lineTo(this.canvas.width, yPos);
+            this.ctx.stroke();
+          }
+        }
+
+        drawPlacedSpecies() {
+          this.gameState.placedSpecies.forEach((species, position) => {
+            const [x, y] = position.split(',').map(Number);
+            this.drawSpecies(species, x * this.config.gridSize, y * this.config.gridSize);
+          });
+        }
+
+        drawSpecies(species, x, y) {
+          const size = this.config.gridSize - 4;
+
+          this.ctx.fillStyle = species.color;
+          this.ctx.fillRect(x + 2, y + 2, size, size);
+
+          // Draw species name
+          this.ctx.fillStyle = 'white';
+          this.ctx.font = '12px Arial';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText(species.name, x + size / 2, y + size / 2 + 4);
+        }
+
+        drawSpeciesPalette() {
+          const paletteY = this.canvas.height - 80;
+          const speciesWidth = 100;
+
+          // Palette background
+          this.ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+          this.ctx.fillRect(0, paletteY, this.canvas.width, 80);
+
+          // Draw available species
+          this.availableSpecies.forEach((species, index) => {
+            const x = 20 + index * speciesWidth;
+            const y = paletteY + 10;
+
+            // Highlight selected species
+            if (this.gameState.selectedSpecies === species.id) {
+              this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+              this.ctx.fillRect(x - 5, y - 5, 70, 60);
+            }
+
+            // Draw species icon
+            this.ctx.fillStyle = species.color;
+            this.ctx.fillRect(x, y, 60, 40);
+
+            // Draw species name
+            this.ctx.fillStyle = 'white';
+            this.ctx.font = '14px Arial';
+            this.ctx.textAlign = 'left';
+            this.ctx.fillText(species.name, x, y + 55);
+          });
+        }
+
+        drawParticles() {
+          this.gameState.particles.forEach(particle => {
+            this.ctx.save();
+            this.ctx.globalAlpha = particle.alpha;
+            this.ctx.fillStyle = particle.color;
+            this.ctx.fillRect(particle.x - 2, particle.y - 2, 4, 4);
+            this.ctx.restore();
+          });
+        }
+
+        drawUI() {
+          // Score
+          this.ctx.fillStyle = 'white';
+          this.ctx.font = 'bold 18px Arial';
+          this.ctx.textAlign = 'left';
+          this.ctx.fillText(`Score: ${this.gameState.score}`, 10, 30);
+
+          // Level
+          this.ctx.fillText(`Level: ${this.gameState.level}`, 10, 55);
+
+          // Ecosystem health bar
+          const barWidth = 200;
+          const barHeight = 20;
+          const barX = this.canvas.width - barWidth - 20;
+          const barY = 20;
+
+          this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          this.ctx.fillRect(barX, barY, barWidth, barHeight);
+
+          const healthColor =
+            this.gameState.ecosystemHealth > 0.8
+              ? '#4CAF50'
+              : this.gameState.ecosystemHealth > 0.5
+                ? '#FFC107'
+                : '#F44336';
+          this.ctx.fillStyle = healthColor;
+          this.ctx.fillRect(barX, barY, barWidth * this.gameState.ecosystemHealth, barHeight);
+
+          this.ctx.fillStyle = 'white';
+          this.ctx.font = '12px Arial';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillText('Ecosystem Health', barX + barWidth / 2, barY + 14);
+        }
+
+        handleClick(x, y) {
+          // Check if clicking on species palette
+          if (y > this.canvas.height - 80) {
+            this.handlePaletteClick(x, y);
+            return;
+          }
+
+          // Place species on grid
+          if (this.gameState.selectedSpecies) {
+            this.placeSpecies(x, y);
+          }
+        }
+
+        handlePaletteClick(x, y) {
+          const speciesIndex = Math.floor((x - 20) / 100);
+          if (speciesIndex >= 0 && speciesIndex < this.availableSpecies.length) {
+            this.gameState.selectedSpecies = this.availableSpecies[speciesIndex].id;
+          }
+        }
+
+        placeSpecies(x, y) {
+          const species = this.availableSpecies.find(s => s.id === this.gameState.selectedSpecies);
+          if (!species) return;
+
+          const gridX = Math.floor(x / this.config.gridSize);
+          const gridY = Math.floor(y / this.config.gridSize);
+          const position = `${gridX},${gridY}`;
+
+          // Check bounds
+          if (gridX < 0 || gridX >= this.gridWidth || gridY < 0 || gridY >= this.gridHeight) {
+            return;
+          }
+
+          // Check if position is already occupied
+          if (this.gameState.placedSpecies.has(position)) {
+            this.showMessage('Position already occupied!', 1000);
+            return;
+          }
+
+          // Place the species
+          this.gameState.placedSpecies.set(position, { ...species, position });
+          this.gameState.score += species.energy * 10;
+
+          // Create success particles
+          this.createParticles(
+            gridX * this.config.gridSize + this.config.gridSize / 2,
+            gridY * this.config.gridSize + this.config.gridSize / 2,
+            species.color
+          );
+
+          this.showMessage(`${species.name} placed! +${species.energy * 10} points`, 1000);
+        }
+
+        createParticles(x, y, color) {
+          for (let i = 0; i < 10; i++) {
+            this.gameState.particles.push({
+              x: x + (Math.random() - 0.5) * 20,
+              y: y + (Math.random() - 0.5) * 20,
+              speed: 0.5 + Math.random(),
+              color,
+              alpha: 1,
+              age: 0,
+              lifetime: 1000 + Math.random() * 1000,
+            });
+          }
+        }
+
+        showMessage(text, duration) {
+          const messageEl = document.createElement('div');
+          messageEl.textContent = text;
+          messageEl.className = 'message-overlay';
+
+          this.canvas.parentElement.style.position = 'relative';
+          this.canvas.parentElement.appendChild(messageEl);
+
+          setTimeout(() => {
+            if (messageEl.parentElement) {
+              messageEl.parentElement.removeChild(messageEl);
+            }
+          }, duration);
+        }
+
+        levelComplete() {
+          this.gameState.level++;
+          this.gameState.score += 1000;
+          this.showMessage(`Level ${this.gameState.level - 1} Complete! Bonus: +1000 points`, 3000);
+
+          // Add new species for next level
+          if (this.gameState.level === 2) {
+            this.availableSpecies.push(
+              { id: 'tree', name: 'Tree', type: 'producer', energy: 2, color: '#2E7D32' },
+              { id: 'deer', name: 'Deer', type: 'herbivore', energy: 3, color: '#6D4C41', eats: ['grass', 'tree'] }
+            );
+          }
+
+          // Reset for next level
+          this.gameState.placedSpecies.clear();
+          this.gameState.ecosystemHealth = 1.0;
+        }
+
+        // Public methods for game control
+        start() {
+          this.gameState.gameActive = true;
+          this.showMessage('Game Started!', 1000);
+        }
+
+        pause() {
+          this.gameState.gameActive = false;
+          this.showMessage('Game Paused', 1000);
+        }
+
+        reset() {
+          this.gameState = {
+            level: 1,
+            score: 0,
+            ecosystemHealth: 1.0,
+            placedSpecies: new Map(),
+            selectedSpecies: null,
+            particles: [],
+            gameActive: true,
+          };
+
+          this.availableSpecies = [
+            { id: 'grass', name: 'Grass', type: 'producer', energy: 1, color: '#4CAF50' },
+            { id: 'rabbit', name: 'Rabbit', type: 'herbivore', energy: 2, color: '#8BC34A', eats: ['grass'] },
+            { id: 'fox', name: 'Fox', type: 'carnivore', energy: 3, color: '#FF9800', eats: ['rabbit'] },
+          ];
+
+          this.showMessage('Game Reset!', 1000);
+        }
+      }
+
+      // Initialize game when page loads
+      document.addEventListener('DOMContentLoaded', () => {
+        const game = new EcosystemGame('ecosystem-canvas');
+
+        // Set up control buttons
+        document.getElementById('start-btn').addEventListener('click', () => game.start());
+        document.getElementById('pause-btn').addEventListener('click', () => game.pause());
+        document.getElementById('reset-btn').addEventListener('click', () => game.reset());
+
+        console.log('Ecosystem Explorer game initialized successfully');
+      });
+    </script>
+  </body>
+</html>

@@ -24,14 +24,14 @@ const SHARD_CONFIG = {
     navigation: { weight: 2, pattern: 'tests/navigation/**/*.test.js' },
     security: { weight: 2, pattern: 'tests/security/**/*.test.js' },
     performance: { weight: 4, pattern: 'tests/performance/**/*.test.js' },
-    e2e: { weight: 5, pattern: 'tests/e2e/**/*.test.js' }
+    e2e: { weight: 5, pattern: 'tests/e2e/**/*.test.js' },
   },
-  
+
   // Number of shards (can be overridden by environment variable)
   shardCount: parseInt(process.env.SHARD_COUNT || '4', 10),
-  
+
   // Current shard index (0-based, from environment variable)
-  shardIndex: parseInt(process.env.SHARD_INDEX || '0', 10)
+  shardIndex: parseInt(process.env.SHARD_INDEX || '0', 10),
 };
 
 /**
@@ -39,20 +39,20 @@ const SHARD_CONFIG = {
  */
 function getTestFiles() {
   const testFiles = [];
-  
+
   for (const [category, config] of Object.entries(SHARD_CONFIG.categories)) {
     const files = globSync(config.pattern, { cwd: projectRoot });
-    
+
     files.forEach(file => {
       testFiles.push({
         path: file,
         category,
         weight: config.weight,
-        size: getFileSize(path.join(projectRoot, file))
+        size: getFileSize(path.join(projectRoot, file)),
       });
     });
   }
-  
+
   return testFiles;
 }
 
@@ -85,20 +85,22 @@ function calculateShardWeight(shard) {
 function distributeTests(testFiles, shardCount) {
   // Sort files by weight (heaviest first)
   const sortedFiles = testFiles.sort((a, b) => {
-    const weightA = a.weight + (a.size / 10000);
-    const weightB = b.weight + (b.size / 10000);
+    const weightA = a.weight + a.size / 10000;
+    const weightB = b.weight + b.size / 10000;
     return weightB - weightA;
   });
-  
+
   // Initialize shards
-  const shards = Array(shardCount).fill(null).map(() => []);
-  
+  const shards = Array(shardCount)
+    .fill(null)
+    .map(() => []);
+
   // Distribute files using greedy algorithm
   sortedFiles.forEach(file => {
     // Find shard with minimum weight
     let minWeight = Infinity;
     let targetShard = 0;
-    
+
     for (let i = 0; i < shardCount; i++) {
       const weight = calculateShardWeight(shards[i]);
       if (weight < minWeight) {
@@ -106,10 +108,10 @@ function distributeTests(testFiles, shardCount) {
         targetShard = i;
       }
     }
-    
+
     shards[targetShard].push(file);
   });
-  
+
   return shards;
 }
 
@@ -119,12 +121,12 @@ function distributeTests(testFiles, shardCount) {
 function getShardTests() {
   const testFiles = getTestFiles();
   const shards = distributeTests(testFiles, SHARD_CONFIG.shardCount);
-  
+
   if (SHARD_CONFIG.shardIndex >= shards.length) {
     console.error(`Invalid shard index ${SHARD_CONFIG.shardIndex} for ${shards.length} shards`);
     process.exit(1);
   }
-  
+
   return shards[SHARD_CONFIG.shardIndex];
 }
 
@@ -134,16 +136,16 @@ function getShardTests() {
 function generateShardReport(shards) {
   console.log('Test Sharding Report');
   console.log('===================\n');
-  
+
   shards.forEach((shard, index) => {
     const weight = calculateShardWeight(shard);
     const fileCount = shard.length;
-    
+
     console.log(`Shard ${index + 1}:`);
     console.log(`  Files: ${fileCount}`);
     console.log(`  Weight: ${weight.toFixed(2)}`);
     console.log('  Categories:');
-    
+
     // Group by category
     const categories = {};
     shard.forEach(file => {
@@ -152,11 +154,11 @@ function generateShardReport(shards) {
       }
       categories[file.category]++;
     });
-    
+
     Object.entries(categories).forEach(([category, count]) => {
       console.log(`    - ${category}: ${count} files`);
     });
-    
+
     console.log('');
   });
 }
@@ -166,33 +168,38 @@ function generateShardReport(shards) {
  */
 function main() {
   const args = process.argv.slice(2);
-  
+
   if (args.includes('--report')) {
     // Generate sharding report
     const testFiles = getTestFiles();
     const shards = distributeTests(testFiles, SHARD_CONFIG.shardCount);
     generateShardReport(shards);
-    
+
     // Show total stats
     const totalFiles = testFiles.length;
-    const totalWeight = testFiles.reduce((sum, file) => sum + file.weight + (file.size / 10000), 0);
-    
+    const totalWeight = testFiles.reduce((sum, file) => sum + file.weight + file.size / 10000, 0);
+
     console.log('Total Statistics:');
     console.log(`  Total files: ${totalFiles}`);
     console.log(`  Total weight: ${totalWeight.toFixed(2)}`);
     console.log(`  Average per shard: ${(totalWeight / SHARD_CONFIG.shardCount).toFixed(2)}`);
-    
   } else if (args.includes('--list')) {
     // List files for current shard
     const shardTests = getShardTests();
-    
+
     if (args.includes('--json')) {
       // Output as JSON for CI consumption
-      console.log(JSON.stringify({
-        shardIndex: SHARD_CONFIG.shardIndex,
-        shardCount: SHARD_CONFIG.shardCount,
-        files: shardTests.map(f => f.path)
-      }, null, 2));
+      console.log(
+        JSON.stringify(
+          {
+            shardIndex: SHARD_CONFIG.shardIndex,
+            shardCount: SHARD_CONFIG.shardCount,
+            files: shardTests.map(f => f.path),
+          },
+          null,
+          2
+        )
+      );
     } else {
       // Human-readable output
       console.log(`Shard ${SHARD_CONFIG.shardIndex + 1} of ${SHARD_CONFIG.shardCount}:`);
@@ -202,13 +209,11 @@ function main() {
         console.log(`  - ${file.path} (${file.category})`);
       });
     }
-    
   } else if (args.includes('--pattern')) {
     // Output as glob pattern for vitest
     const shardTests = getShardTests();
     const patterns = shardTests.map(f => f.path).join(',');
     console.log(patterns);
-    
   } else {
     // Default: output file paths for current shard
     const shardTests = getShardTests();

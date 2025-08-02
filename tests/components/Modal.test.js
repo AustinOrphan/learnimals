@@ -14,14 +14,14 @@ global.window.BaseComponent = class BaseComponent {
     this.options = options;
     this.element = null;
   }
-  
+
   render(container) {
     if (container && this.element) {
       container.appendChild(this.element);
     }
     return this;
   }
-  
+
   destroy() {
     if (this.element && this.element.parentNode) {
       this.element.parentNode.removeChild(this.element);
@@ -29,7 +29,7 @@ global.window.BaseComponent = class BaseComponent {
     this.element = null;
     return this;
   }
-  
+
   emit(eventName, data) {
     if (this.element) {
       const event = new CustomEvent(eventName, { detail: data });
@@ -37,21 +37,21 @@ global.window.BaseComponent = class BaseComponent {
     }
     return this;
   }
-  
+
   on(eventName, handler) {
     if (this.element) {
       this.element.addEventListener(eventName, handler);
     }
     return this;
   }
-  
+
   off(eventName, handler) {
     if (this.element) {
       this.element.removeEventListener(eventName, handler);
     }
     return this;
   }
-  
+
   addEventListener(eventType, handler, selector) {
     if (selector) {
       // If selector provided, find elements and add listener
@@ -67,11 +67,11 @@ global.window.BaseComponent = class BaseComponent {
     }
     return this;
   }
-  
+
   getOption(key) {
     return this.options[key];
   }
-  
+
   setOption(key, value) {
     this.options[key] = value;
     return this;
@@ -86,35 +86,35 @@ describe('Modal Component', () => {
     // Reset DOM
     document.body.innerHTML = '';
     document.body.className = '';
-    
+
     // Mock window.location by directly assigning properties
     if (global.window.location) {
       // Store original values
       if (!global.originalLocationProps) {
         global.originalLocationProps = {
           pathname: global.window.location.pathname,
-          href: global.window.location.href
+          href: global.window.location.href,
         };
       }
-      
-      // Override specific properties safely  
+
+      // Override specific properties safely
       try {
         Object.defineProperty(global.window.location, 'pathname', {
           value: '/src/pages/index.html',
           writable: true,
-          configurable: true
+          configurable: true,
         });
         Object.defineProperty(global.window.location, 'href', {
           value: 'http://localhost:3000/src/pages/index.html',
           writable: true,
-          configurable: true
+          configurable: true,
         });
       } catch (error) {
         // If we can't redefine properties, just continue
         console.warn('Could not mock location properties:', error.message);
       }
     }
-    
+
     // Import Modal after BaseComponent is set up
     const modalModule = await import('../../src/components/ui/Modal.js');
     Modal = modalModule.default;
@@ -126,19 +126,19 @@ describe('Modal Component', () => {
     }
     document.body.innerHTML = '';
     document.body.className = '';
-    
+
     // Restore original location properties
     if (global.originalLocationProps && global.window.location) {
       try {
         Object.defineProperty(global.window.location, 'pathname', {
           value: global.originalLocationProps.pathname,
           writable: true,
-          configurable: true
+          configurable: true,
         });
         Object.defineProperty(global.window.location, 'href', {
           value: global.originalLocationProps.href,
           writable: true,
-          configurable: true
+          configurable: true,
         });
       } catch (error) {
         // If we can't restore, just continue
@@ -151,9 +151,9 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       expect(modal.options.title).toBe('Test Modal');
       expect(modal.options.content).toBe('Test content');
       expect(modal.options.confirmButtonText).toBe('OK');
@@ -175,11 +175,11 @@ describe('Modal Component', () => {
         showClose: false,
         size: 'large',
         showConfirmButton: false,
-        showCancelButton: true
+        showCancelButton: true,
       };
-      
+
       modal = new Modal(options);
-      
+
       expect(modal.options.title).toBe('Custom Modal');
       expect(modal.options.content).toBe('Custom content');
       expect(modal.options.confirmButtonText).toBe('Save');
@@ -194,16 +194,16 @@ describe('Modal Component', () => {
       const onConfirm = vi.fn();
       const onCancel = vi.fn();
       const onClose = vi.fn();
-      
+
       modal = new Modal({
         id: 'callback-modal',
         title: 'Callback Modal',
         content: 'Test content',
         onConfirm,
         onCancel,
-        onClose
+        onClose,
       });
-      
+
       expect(modal.options.onConfirm).toBe(onConfirm);
       expect(modal.options.onCancel).toBe(onCancel);
       expect(modal.options.onClose).toBe(onClose);
@@ -215,11 +215,11 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('id="test-modal"');
       expect(html).toContain('class="component modal-overlay"');
       expect(html).toContain('aria-hidden="true"');
@@ -236,11 +236,11 @@ describe('Modal Component', () => {
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
-        showClose: true
+        showClose: true,
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('class="modal-close component-button component-button--ghost"');
       expect(html).toContain('aria-label="Close"');
       expect(html).toContain('&times;');
@@ -251,11 +251,11 @@ describe('Modal Component', () => {
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
-        showClose: false
+        showClose: false,
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).not.toContain('modal-close');
     });
 
@@ -265,11 +265,11 @@ describe('Modal Component', () => {
         title: 'Test Modal',
         content: 'Test content',
         showConfirmButton: true,
-        confirmButtonText: 'Confirm'
+        confirmButtonText: 'Confirm',
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('class="modal-confirm component-button component-button--primary"');
       expect(html).toContain('Confirm');
     });
@@ -280,11 +280,11 @@ describe('Modal Component', () => {
         title: 'Test Modal',
         content: 'Test content',
         showCancelButton: true,
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('class="modal-cancel component-button component-button--outline"');
       expect(html).toContain('Cancel');
     });
@@ -295,11 +295,11 @@ describe('Modal Component', () => {
         title: 'Test Modal',
         content: 'Test content',
         showConfirmButton: true,
-        showCancelButton: true
+        showCancelButton: true,
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('modal-footer');
       expect(html).toContain('modal-confirm');
       expect(html).toContain('modal-cancel');
@@ -311,28 +311,28 @@ describe('Modal Component', () => {
         title: 'Test Modal',
         content: 'Test content',
         showConfirmButton: false,
-        showCancelButton: false
+        showCancelButton: false,
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).not.toContain('modal-footer');
     });
 
     it('should apply size classes', () => {
       const sizes = ['small', 'medium', 'large'];
-      
+
       sizes.forEach(size => {
         modal = new Modal({
           id: 'test-modal',
           title: 'Test Modal',
           content: 'Test content',
-          size
+          size,
         });
-        
+
         const html = modal.generateHTML();
         expect(html).toContain(`modal--${size}`);
-        
+
         modal.destroy();
       });
     });
@@ -341,11 +341,11 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'HTML Modal',
-        content: '<p>HTML <strong>content</strong></p>'
+        content: '<p>HTML <strong>content</strong></p>',
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('<p>HTML <strong>content</strong></p>');
     });
   });
@@ -355,11 +355,11 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.create();
-      
+
       expect(document.getElementById('test-modal')).toBeTruthy();
       expect(document.querySelector('.modal-overlay')).toBeTruthy();
       expect(document.querySelector('.modal-title').textContent).toBe('Test Modal');
@@ -369,12 +369,12 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.create();
       modal.create();
-      
+
       const modals = document.querySelectorAll('#test-modal');
       expect(modals.length).toBe(1);
     });
@@ -385,11 +385,11 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       expect(modal.isOpen).toBe(true);
       expect(document.getElementById('test-modal')).toBeTruthy();
       expect(document.getElementById('test-modal').getAttribute('aria-hidden')).toBe('false');
@@ -400,12 +400,12 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
       modal.close();
-      
+
       expect(modal.isOpen).toBe(false);
       expect(document.getElementById('test-modal').getAttribute('aria-hidden')).toBe('true');
       expect(document.body.classList.contains('modal-open')).toBe(false);
@@ -413,17 +413,17 @@ describe('Modal Component', () => {
 
     it('should call onClose callback when closing', () => {
       const onClose = vi.fn();
-      
+
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
-        onClose
+        onClose,
       });
-      
+
       modal.open();
       modal.close();
-      
+
       expect(onClose).toHaveBeenCalled();
     });
   });
@@ -431,40 +431,40 @@ describe('Modal Component', () => {
   describe('Button Interactions', () => {
     it('should handle confirm button click', () => {
       const onConfirm = vi.fn();
-      
+
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
         onConfirm,
-        showConfirmButton: true
+        showConfirmButton: true,
       });
-      
+
       modal.open();
-      
+
       const confirmButton = document.querySelector('.modal-confirm');
       confirmButton.click();
-      
+
       expect(onConfirm).toHaveBeenCalled();
       expect(modal.isOpen).toBe(false);
     });
 
     it('should handle cancel button click', () => {
       const onCancel = vi.fn();
-      
+
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
         onCancel,
-        showCancelButton: true
+        showCancelButton: true,
       });
-      
+
       modal.open();
-      
+
       const cancelButton = document.querySelector('.modal-cancel');
       cancelButton.click();
-      
+
       expect(onCancel).toHaveBeenCalled();
       expect(modal.isOpen).toBe(false);
     });
@@ -474,14 +474,14 @@ describe('Modal Component', () => {
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
-        showClose: true
+        showClose: true,
       });
-      
+
       modal.open();
-      
+
       const closeButton = document.querySelector('.modal-close');
       closeButton.click();
-      
+
       expect(modal.isOpen).toBe(false);
     });
 
@@ -489,14 +489,14 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       const overlay = document.querySelector('.modal-overlay');
       overlay.click();
-      
+
       expect(modal.isOpen).toBe(false);
     });
 
@@ -504,14 +504,14 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       const modalContent = document.querySelector('.modal');
       modalContent.click();
-      
+
       expect(modal.isOpen).toBe(true);
     });
   });
@@ -521,18 +521,18 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       // Simulate Escape key press
       const escapeEvent = new dom.window.KeyboardEvent('keydown', {
         key: 'Escape',
-        bubbles: true
+        bubbles: true,
       });
       document.dispatchEvent(escapeEvent);
-      
+
       expect(modal.isOpen).toBe(false);
     });
 
@@ -540,18 +540,18 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       // Simulate other key press
       const enterEvent = new dom.window.KeyboardEvent('keydown', {
         key: 'Enter',
-        bubbles: true
+        bubbles: true,
       });
       document.dispatchEvent(enterEvent);
-      
+
       expect(modal.isOpen).toBe(true);
     });
 
@@ -559,18 +559,18 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.create();
-      
+
       // Simulate Escape key press when modal is closed
       const escapeEvent = new dom.window.KeyboardEvent('keydown', {
         key: 'Escape',
-        bubbles: true
+        bubbles: true,
       });
       document.dispatchEvent(escapeEvent);
-      
+
       expect(modal.isOpen).toBe(false);
     });
   });
@@ -580,16 +580,16 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Original Title',
-        content: 'Original content'
+        content: 'Original content',
       });
-      
+
       modal.open();
-      
+
       modal.update({
         title: 'Updated Title',
-        content: 'Updated content'
+        content: 'Updated content',
       });
-      
+
       expect(document.querySelector('.modal-title').textContent).toBe('Updated Title');
       expect(document.querySelector('.modal-content').textContent.trim()).toBe('Updated content');
     });
@@ -598,15 +598,15 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       modal.update({
-        title: 'Updated Title'
+        title: 'Updated Title',
       });
-      
+
       expect(modal.isOpen).toBe(true);
       expect(document.getElementById('test-modal').getAttribute('aria-hidden')).toBe('false');
     });
@@ -615,15 +615,15 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.create();
-      
+
       modal.update({
-        title: 'Updated Title'
+        title: 'Updated Title',
       });
-      
+
       expect(modal.isOpen).toBe(false);
       expect(document.querySelector('.modal-title').textContent).toBe('Updated Title');
     });
@@ -634,13 +634,13 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       modal.destroy();
-      
+
       expect(document.getElementById('test-modal')).toBeNull();
       expect(document.body.classList.contains('modal-open')).toBe(false);
       expect(modal.isOpen).toBe(false);
@@ -650,33 +650,33 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
-      
+
       const escapeHandler = modal.escapeHandler;
       modal.destroy();
-      
+
       // Create new modal to test that old handler is removed
       const newModal = new Modal({
         id: 'new-modal',
         title: 'New Modal',
-        content: 'New content'
+        content: 'New content',
       });
-      
+
       newModal.open();
-      
+
       // Simulate Escape key press
       const escapeEvent = new dom.window.KeyboardEvent('keydown', {
         key: 'Escape',
-        bubbles: true
+        bubbles: true,
       });
       document.dispatchEvent(escapeEvent);
-      
+
       // Only the new modal should close
       expect(newModal.isOpen).toBe(false);
-      
+
       newModal.destroy();
     });
   });
@@ -686,16 +686,16 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Accessible Modal',
-        content: 'Accessible content'
+        content: 'Accessible content',
       });
-      
+
       modal.open();
-      
+
       const modalElement = document.querySelector('.modal');
       expect(modalElement.getAttribute('role')).toBe('dialog');
       expect(modalElement.getAttribute('aria-modal')).toBe('true');
       expect(modalElement.getAttribute('aria-labelledby')).toBe('test-modal-title');
-      
+
       const overlay = document.querySelector('.modal-overlay');
       expect(overlay.getAttribute('aria-hidden')).toBe('false');
     });
@@ -704,12 +704,12 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
       expect(document.getElementById('test-modal').getAttribute('aria-hidden')).toBe('false');
-      
+
       modal.close();
       expect(document.getElementById('test-modal').getAttribute('aria-hidden')).toBe('true');
     });
@@ -719,11 +719,11 @@ describe('Modal Component', () => {
         id: 'test-modal',
         title: 'Test Modal',
         content: 'Test content',
-        showClose: true
+        showClose: true,
       });
-      
+
       modal.open();
-      
+
       const closeButton = document.querySelector('.modal-close');
       expect(closeButton.getAttribute('aria-label')).toBe('Close');
     });
@@ -734,9 +734,9 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       // Try to close without creating/opening
       expect(() => modal.close()).not.toThrow();
       expect(modal.isOpen).toBe(false);
@@ -746,12 +746,12 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
       modal.open();
-      
+
       expect(modal.isOpen).toBe(true);
       expect(document.querySelectorAll('#test-modal').length).toBe(1);
     });
@@ -760,13 +760,13 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Test Modal',
-        content: 'Test content'
+        content: 'Test content',
       });
-      
+
       modal.open();
       modal.close();
       modal.close();
-      
+
       expect(modal.isOpen).toBe(false);
       expect(document.body.classList.contains('modal-open')).toBe(false);
     });
@@ -775,11 +775,11 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Empty Modal',
-        content: ''
+        content: '',
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('class="modal-content"');
     });
 
@@ -787,11 +787,11 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Special Characters',
-        content: 'Content with "quotes" & <tags>'
+        content: 'Content with "quotes" & <tags>',
       });
-      
+
       const html = modal.generateHTML();
-      
+
       expect(html).toContain('Content with "quotes" & <tags>');
     });
   });
@@ -801,20 +801,20 @@ describe('Modal Component', () => {
       modal = new Modal({
         id: 'test-modal',
         title: 'Integration Modal',
-        content: 'Integration content'
+        content: 'Integration content',
       });
-      
+
       modal.open();
-      
+
       // Test BaseComponent methods
       expect(modal.getOption('title')).toBe('Integration Modal');
-      
+
       modal.setOption('title', 'Updated Title');
       expect(modal.getOption('title')).toBe('Updated Title');
-      
+
       const customEventHandler = vi.fn();
       modal.element.addEventListener('customEvent', customEventHandler);
-      
+
       modal.emit('customEvent', { test: 'data' });
       expect(customEventHandler).toHaveBeenCalled();
     });

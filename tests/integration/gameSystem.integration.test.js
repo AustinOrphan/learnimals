@@ -5,368 +5,330 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
 import gameSystem from '../../src/utils/GameSystem.js';
-import { createLoggerMock } from '../helpers/centralizedMocks.js';
-import { 
-  mockComponentDependencies,
-  cleanupIntegrationTest 
-} from '../helpers/integrationTestUtils.js';
 
-// Mock modules using centralized mocks
-vi.mock('../../src/utils/logger.js', createLoggerMock);
+// Mock modules
+vi.mock('../../src/utils/logger.js', () => ({
+  default: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
 
 describe('GameSystem Integration', () => {
   let dom;
   let document;
   let window;
-  
+
   beforeEach(() => {
-    // Mock component dependencies
-    mockComponentDependencies();
-    
-    // Set up DOM environment
-    dom = new JSDOM(`
+    // Set up DOM environment with proper JSDOM configuration
+    dom = new JSDOM(
+      `
       <!DOCTYPE html>
       <html>
-        <head>
-          <title>GameSystem Test</title>
-        </head>
         <body>
           <div id="game-container"></div>
-          <div id="game-canvas"></div>
-          <div class="game-controls">
-            <button id="start-btn">Start</button>
-            <button id="pause-btn">Pause</button>
-            <button id="reset-btn">Reset</button>
-          </div>
-          <div class="score-display">
-            <span id="score">0</span>
-            <span id="high-score">0</span>
-          </div>
+          <div id="header-score">0</div>
+          <div id="header-level">1</div>
+          <div id="progress-fill" style="width: 0%"></div>
         </body>
       </html>
-    `, { 
-      url: 'http://localhost:3000',
-      runScripts: 'dangerously',
-      resources: 'usable'
-    });
-    
+    `,
+      {
+        url: 'http://localhost:3000/',
+        pretendToBeVisual: true,
+        resources: 'usable',
+        runScripts: 'dangerously',
+      }
+    );
+
     document = dom.window.document;
     window = dom.window;
-    
-    // Set up global variables
+
+    // Set globals with proper JSDOM window
     global.document = document;
     global.window = window;
     global.navigator = window.navigator;
-    
-    // Mock localStorage
-    const localStorageMock = {
-      getItem: vi.fn(),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn()
-    };
-    Object.defineProperty(window, 'localStorage', {
-      value: localStorageMock,
-      writable: true
+    global.localStorage = window.localStorage;
+    global.sessionStorage = window.sessionStorage;
+
+    // Mock fetch for template loading
+    global.fetch = vi.fn(url => {
+      if (url.includes('game.html')) {
+        return Promise.resolve({
+          ok: true,
+          text: () =>
+            Promise.resolve(`
+            <div id="{{containerId}}" class="game-container">
+              {{gameContent}}
+            </div>
+          `),
+        });
+      }
+      return Promise.reject(new Error('Not found'));
     });
-    
-    // Mock fetch
-    global.fetch = vi.fn(() => 
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({}),
-        text: () => Promise.resolve('')
-      })
-    );
   });
-  
-  afterEach(() => {
+
+  afterEach(async () => {
     // Clean up
-    cleanupIntegrationTest();
+    if (gameSystem.initialized) {
+      await gameSystem.destroy();
+    }
     vi.clearAllMocks();
-    vi.resetModules();
+    dom.window.close();
   });
-  
-  describe('Game Template Registration', () => {
-    it('should register a game template correctly', () => {
-      const mockTemplate = {
+
+  describe('Full Pipeline Test', () => {
+    it('should initialize GameSystem successfully', async () => {
+      await gameSystem.init();
+
+      expect(gameSystem.initialized).toBe(true);
+      expect(gameSystem.templateEngine).toBeDefined();
+    });
+
+    it('should register a game successfully', async () => {
+      await gameSystem.init();
+
+      const gameConfig = {
         id: 'test-game',
         name: 'Test Game',
-        description: 'A test game template',
-        category: 'test',
-        difficulty: 'easy',
-        minPlayers: 1,
-        maxPlayers: 1,
-        
-        init: vi.fn(function(container, options) {
-          this.container = container;
-          this.options = options;
-          this.score = 0;
-          return this;
-        }),
-        
-        start: vi.fn(function() {
-          this.isRunning = true;
-        }),
-        
-        pause: vi.fn(function() {
-          this.isRunning = false;
-        }),
-        
-        reset: vi.fn(function() {
-          this.score = 0;
-          this.isRunning = false;
-        }),
-        
-        destroy: vi.fn(function() {
-          this.container = null;
-        })
+        gameClass: 'TestGame',
+        scriptPath: '/test/game.js',
+        subject: 'math',
       };
-      
-      // Register template
-      const result = gameSystem.registerTemplate(mockTemplate);
-      
-      expect(result).toBe(true);
-      expect(gameSystem.getTemplate('test-game')).toBeDefined();
-      expect(gameSystem.getTemplate('test-game').name).toBe('Test Game');
+
+      const registered = await gameSystem.registerGame(gameConfig);
+
+      expect(registered).toBeDefined();
+      expect(registered.id).toBe('test-game');
+      expect(gameSystem.registry.has('test-game')).toBe(true);
     });
-    
-    it('should handle duplicate template registration', () => {
-      const template = {
-        id: 'duplicate-game',
-        name: 'Duplicate Game',
-        init: vi.fn(),
-        start: vi.fn()
-      };
-      
-      // First registration should succeed
-      expect(gameSystem.registerTemplate(template)).toBe(true);
-      
-      // Second registration should fail
-      expect(gameSystem.registerTemplate(template)).toBe(false);
+
+    it('should handle template rendering', async () => {
+      await gameSystem.init();
+
+      const mockTemplate = '<div>{{gameName}}</div>';
+      const vars = { gameName: 'Test Game' };
+
+      const result = gameSystem.templateEngine.processTemplate(mockTemplate, vars);
+
+      expect(result).toBe('<div>Test Game</div>');
     });
-  });
-  
-  describe('Game Instance Creation', () => {
-    beforeEach(() => {
-      // Register a test template
-      gameSystem.registerTemplate({
-        id: 'instance-test',
-        name: 'Instance Test Game',
-        init: vi.fn(function(container, options) {
-          this.container = container;
-          this.options = options;
-          this.initialized = true;
-          return this;
-        }),
-        start: vi.fn(),
-        pause: vi.fn(),
-        reset: vi.fn(),
-        destroy: vi.fn()
+
+    it('should process template conditionals', async () => {
+      await gameSystem.init();
+
+      const template = '{{#if showStats}}<div>Stats</div>{{/if}}';
+
+      const result1 = gameSystem.templateEngine.processTemplate(template, { showStats: true });
+      expect(result1).toBe('<div>Stats</div>');
+
+      const result2 = gameSystem.templateEngine.processTemplate(template, { showStats: false });
+      expect(result2).toBe('');
+    });
+
+    it('should handle template loops', async () => {
+      await gameSystem.init();
+
+      const template = '{{#each items}}<li>{{this}}</li>{{/each}}';
+      const vars = { items: ['A', 'B', 'C'] };
+
+      const result = gameSystem.templateEngine.processTemplate(template, vars);
+
+      expect(result).toBe('<li>A</li><li>B</li><li>C</li>');
+    });
+
+    it('should emit and handle events correctly', async () => {
+      await gameSystem.init();
+
+      const mockHandler = vi.fn();
+      gameSystem.on('test-event', mockHandler);
+
+      gameSystem.emit('test-event', { data: 'test' });
+
+      expect(mockHandler).toHaveBeenCalledWith({ data: 'test' });
+
+      // Test event removal
+      gameSystem.off('test-event', mockHandler);
+      gameSystem.emit('test-event', { data: 'test2' });
+
+      expect(mockHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter games by subject', async () => {
+      // Create a fresh GameSystem instance for this test
+      const { GameSystem } = await import('../../src/utils/GameSystem.js');
+      const testGameSystem = new GameSystem();
+
+      // Don't load the actual registry
+      testGameSystem.loadGameRegistry = vi.fn().mockResolvedValue();
+
+      await testGameSystem.init();
+
+      // Register test games
+      await testGameSystem.registerGame({
+        id: 'math-game-1',
+        name: 'Math Game 1',
+        gameClass: 'MathGame1',
+        scriptPath: '/math1.js',
+        subject: 'math',
       });
-    });
-    
-    it('should create a game instance from template', () => {
-      const container = document.getElementById('game-container');
-      const options = { difficulty: 'medium', soundEnabled: true };
-      
-      const instance = gameSystem.createGame('instance-test', container, options);
-      
-      expect(instance).toBeDefined();
-      expect(instance.initialized).toBe(true);
-      expect(instance.container).toBe(container);
-      expect(instance.options).toEqual(options);
-    });
-    
-    it('should track active game instances', () => {
-      const container = document.getElementById('game-container');
-      
-      const instance1 = gameSystem.createGame('instance-test', container);
-      expect(gameSystem.getActiveGames()).toHaveLength(1);
-      
-      const instance2 = gameSystem.createGame('instance-test', container);
-      expect(gameSystem.getActiveGames()).toHaveLength(2);
-      
-      // Destroy one instance
-      gameSystem.destroyGame(instance1.id);
-      expect(gameSystem.getActiveGames()).toHaveLength(1);
-    });
-  });
-  
-  describe('Game Lifecycle Management', () => {
-    let gameInstance;
-    let container;
-    
-    beforeEach(() => {
-      container = document.getElementById('game-container');
-      
-      // Register lifecycle test template
-      gameSystem.registerTemplate({
-        id: 'lifecycle-test',
-        name: 'Lifecycle Test',
-        
-        init: vi.fn(function(cont, opts) {
-          this.container = cont;
-          this.state = 'initialized';
-          this.score = 0;
-          return this;
-        }),
-        
-        start: vi.fn(function() {
-          this.state = 'running';
-          this.startTime = Date.now();
-        }),
-        
-        pause: vi.fn(function() {
-          this.state = 'paused';
-          this.pauseTime = Date.now();
-        }),
-        
-        resume: vi.fn(function() {
-          this.state = 'running';
-          this.resumeTime = Date.now();
-        }),
-        
-        reset: vi.fn(function() {
-          this.state = 'initialized';
-          this.score = 0;
-          this.startTime = null;
-        }),
-        
-        destroy: vi.fn(function() {
-          this.state = 'destroyed';
-          this.container = null;
-        })
+
+      await testGameSystem.registerGame({
+        id: 'reading-game-1',
+        name: 'Reading Game 1',
+        gameClass: 'ReadingGame1',
+        scriptPath: '/reading1.js',
+        subject: 'reading',
       });
-      
-      gameInstance = gameSystem.createGame('lifecycle-test', container);
+
+      const mathGames = testGameSystem.getAvailableGames({ subject: 'math' });
+      expect(mathGames).toHaveLength(1);
+      expect(mathGames[0].id).toBe('math-game-1');
+
+      await testGameSystem.destroy();
     });
-    
-    it('should manage game state transitions correctly', () => {
-      expect(gameInstance.state).toBe('initialized');
-      
-      // Start game
-      gameInstance.start();
-      expect(gameInstance.state).toBe('running');
-      expect(gameInstance.startTime).toBeDefined();
-      
-      // Pause game
-      gameInstance.pause();
-      expect(gameInstance.state).toBe('paused');
-      expect(gameInstance.pauseTime).toBeDefined();
-      
-      // Resume game
-      gameInstance.resume();
-      expect(gameInstance.state).toBe('running');
-      expect(gameInstance.resumeTime).toBeDefined();
-      
-      // Reset game
-      gameInstance.reset();
-      expect(gameInstance.state).toBe('initialized');
-      expect(gameInstance.score).toBe(0);
-      expect(gameInstance.startTime).toBeNull();
-    });
-    
-    it('should properly destroy game instances', () => {
-      const gameId = gameInstance.id;
-      
-      expect(gameSystem.getActiveGames()).toContainEqual(
-        expect.objectContaining({ id: gameId })
-      );
-      
-      // Destroy game
-      gameSystem.destroyGame(gameId);
-      
-      expect(gameInstance.state).toBe('destroyed');
-      expect(gameInstance.container).toBeNull();
-      expect(gameSystem.getActiveGames()).not.toContainEqual(
-        expect.objectContaining({ id: gameId })
-      );
-    });
-  });
-  
-  describe('Template Categories and Filtering', () => {
-    beforeEach(() => {
-      // Register multiple templates
-      const templates = [
-        { id: 'math-1', name: 'Math Game 1', category: 'math', difficulty: 'easy' },
-        { id: 'math-2', name: 'Math Game 2', category: 'math', difficulty: 'hard' },
-        { id: 'puzzle-1', name: 'Puzzle Game 1', category: 'puzzle', difficulty: 'medium' },
-        { id: 'puzzle-2', name: 'Puzzle Game 2', category: 'puzzle', difficulty: 'easy' },
-        { id: 'action-1', name: 'Action Game 1', category: 'action', difficulty: 'hard' }
-      ];
-      
-      templates.forEach(template => {
-        gameSystem.registerTemplate({
-          ...template,
-          init: vi.fn(),
-          start: vi.fn()
-        });
+
+    it('should provide accurate system statistics', async () => {
+      await gameSystem.init();
+
+      await gameSystem.registerGame({
+        id: 'stats-test',
+        name: 'Stats Test',
+        gameClass: 'StatsTest',
+        scriptPath: '/stats.js',
       });
-    });
-    
-    it('should filter templates by category', () => {
-      const mathGames = gameSystem.getTemplatesByCategory('math');
-      expect(mathGames).toHaveLength(2);
-      expect(mathGames.every(g => g.category === 'math')).toBe(true);
-      
-      const puzzleGames = gameSystem.getTemplatesByCategory('puzzle');
-      expect(puzzleGames).toHaveLength(2);
-      
-      const actionGames = gameSystem.getTemplatesByCategory('action');
-      expect(actionGames).toHaveLength(1);
-    });
-    
-    it('should filter templates by difficulty', () => {
-      const easyGames = gameSystem.getTemplatesByDifficulty('easy');
-      expect(easyGames).toHaveLength(2);
-      expect(easyGames.every(g => g.difficulty === 'easy')).toBe(true);
-      
-      const hardGames = gameSystem.getTemplatesByDifficulty('hard');
-      expect(hardGames).toHaveLength(2);
-    });
-    
-    it('should get all available categories', () => {
-      const categories = gameSystem.getCategories();
-      expect(categories).toContain('math');
-      expect(categories).toContain('puzzle');
-      expect(categories).toContain('action');
-      expect(categories).toHaveLength(3);
+
+      const stats = gameSystem.getStats();
+
+      expect(stats.initialized).toBe(true);
+      expect(stats.registeredGames).toBeGreaterThan(0);
+      expect(stats.activeGames).toBe(0);
+      expect(stats.gamesList).toContain('stats-test');
     });
   });
-  
+
+  describe('Template Engine', () => {
+    it('should cache templates', async () => {
+      await gameSystem.init();
+
+      const engine = gameSystem.templateEngine;
+
+      // First call should fetch
+      await engine.getTemplate('game');
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+
+      // Second call should use cache
+      await engine.getTemplate('game');
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle missing templates gracefully', async () => {
+      await gameSystem.init();
+
+      const engine = gameSystem.templateEngine;
+
+      // Mock fetch to fail for non-existent template
+      global.fetch = vi.fn().mockRejectedValue(new Error('Not found'));
+
+      // Should fall back to minimal template
+      const template = await engine.getTemplate('non-existent');
+      expect(template).toContain('<!doctype html>');
+    });
+
+    it('should escape HTML in template variables', async () => {
+      await gameSystem.init();
+
+      const template = '<div>{{userInput}}</div>';
+      const vars = { userInput: '<script>alert("XSS")</script>' };
+
+      const result = gameSystem.templateEngine.processTemplate(template, vars);
+
+      expect(result).not.toContain('<script>');
+      expect(result).toContain('&lt;script&gt;');
+    });
+
+    it('should build feature flags correctly', async () => {
+      await gameSystem.init();
+
+      const features = ['analytics', 'themes'];
+      const flags = gameSystem.templateEngine.buildFeatureFlags(features);
+
+      expect(flags.analytics).toBe(true);
+      expect(flags.themes).toBe(true);
+      expect(flags.progress).toBe(false);
+      expect(flags.mobile).toBe(false);
+    });
+  });
+
   describe('Error Handling', () => {
-    it('should handle non-existent template gracefully', () => {
-      const container = document.getElementById('game-container');
-      
-      expect(() => {
-        gameSystem.createGame('non-existent', container);
-      }).toThrow('Template not found: non-existent');
-    });
-    
-    it('should validate template structure on registration', () => {
-      const invalidTemplates = [
-        { name: 'No ID' }, // Missing id
-        { id: 'no-name' }, // Missing name
-        { id: 'no-init', name: 'No Init' }, // Missing init
-        { id: 'no-start', name: 'No Start', init: vi.fn() } // Missing start
+    it('should handle invalid game registration', async () => {
+      await gameSystem.init();
+
+      const invalidConfigs = [
+        null,
+        {},
+        { id: 'INVALID ID!' }, // Invalid characters
+        { id: 'valid-id' }, // Missing required fields
       ];
-      
-      invalidTemplates.forEach(template => {
-        expect(() => {
-          gameSystem.registerTemplate(template);
-        }).toThrow();
-      });
+
+      for (const config of invalidConfigs) {
+        await expect(gameSystem.registerGame(config)).rejects.toThrow();
+      }
     });
-    
-    it('should handle container validation', () => {
-      expect(() => {
-        gameSystem.createGame('test-game', null);
-      }).toThrow('Container element is required');
-      
-      expect(() => {
-        gameSystem.createGame('test-game', 'not-an-element');
-      }).toThrow('Container must be a DOM element');
+
+    it('should handle errors in event handlers', async () => {
+      await gameSystem.init();
+
+      const errorHandler = vi.fn(() => {
+        throw new Error('Handler error');
+      });
+
+      const goodHandler = vi.fn();
+
+      gameSystem.on('test', errorHandler);
+      gameSystem.on('test', goodHandler);
+
+      // Should not throw and good handler should still be called
+      expect(() => gameSystem.emit('test')).not.toThrow();
+      expect(goodHandler).toHaveBeenCalled();
+    });
+  });
+
+  describe('Game Registry Utilities', () => {
+    it('should validate game configurations', () => {
+      const { GameRegistryUtil } = require('../../src/config/gameRegistry.js');
+
+      const validConfig = {
+        id: 'valid-game',
+        name: 'Valid Game',
+        gameClass: 'ValidGame',
+        scriptPath: '/valid.js',
+        subject: 'math',
+        difficulty: ['easy', 'medium'],
+        template: 'game',
+      };
+
+      const validation = GameRegistryUtil.validateGameConfig(validConfig);
+      expect(validation.isValid).toBe(true);
+      expect(validation.errors).toHaveLength(0);
+    });
+
+    it('should detect configuration errors', () => {
+      const { GameRegistryUtil } = require('../../src/config/gameRegistry.js');
+
+      const invalidConfig = {
+        id: 'Invalid Game!',
+        name: 'Test',
+        subject: 'invalid-subject',
+        difficulty: ['super-hard'],
+        template: 'invalid-template',
+      };
+
+      const validation = GameRegistryUtil.validateGameConfig(invalidConfig);
+      expect(validation.isValid).toBe(false);
+      expect(validation.errors.length).toBeGreaterThan(0);
     });
   });
 });

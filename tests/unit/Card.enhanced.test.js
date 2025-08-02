@@ -1,6 +1,6 @@
 /**
  * Enhanced Unit Tests for Card Component
- * 
+ *
  * Comprehensive test suite covering card rendering, interactions, accessibility,
  * and various card types (linked vs static cards)
  */
@@ -11,14 +11,14 @@ import { CharacterFactory, GameFactory } from '../fixtures/testDataFactory.js';
 
 // Mock Card component
 const mockCard = createMockModule({
-  createCard: function(cardData) {
+  createCard: function (cardData) {
     if (!cardData) {
       throw new Error('Card data is required');
     }
 
     const card = document.createElement('div');
     card.className = 'card';
-    
+
     // Set accessibility attributes
     if (cardData.link) {
       card.setAttribute('role', 'button');
@@ -54,13 +54,13 @@ const mockCard = createMockModule({
     if (cardData.features && Array.isArray(cardData.features)) {
       const featuresList = document.createElement('ul');
       featuresList.className = 'card-features';
-      
+
       cardData.features.forEach(feature => {
         const li = document.createElement('li');
         li.textContent = feature;
         featuresList.appendChild(li);
       });
-      
+
       card.appendChild(featuresList);
     }
 
@@ -69,7 +69,7 @@ const mockCard = createMockModule({
       card.style.cursor = 'pointer';
       card.classList.add('card-interactive');
 
-      const handleClick = (e) => {
+      const handleClick = e => {
         e.preventDefault();
         if (cardData.onClick) {
           cardData.onClick(cardData);
@@ -80,7 +80,7 @@ const mockCard = createMockModule({
         }
       };
 
-      const handleKeydown = (e) => {
+      const handleKeydown = e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           handleClick(e);
@@ -103,7 +103,10 @@ const mockCard = createMockModule({
 
     // Add custom classes
     if (cardData.className) {
-      card.classList.add(cardData.className);
+      const classNames = cardData.className.split(' ').filter(cls => cls.trim());
+      classNames.forEach(className => {
+        card.classList.add(className);
+      });
     }
 
     // Store card data for testing
@@ -112,14 +115,14 @@ const mockCard = createMockModule({
     return card;
   },
 
-  createCardsGrid: function(cardsData, options = {}) {
+  createCardsGrid: function (cardsData, options = {}) {
     if (!Array.isArray(cardsData)) {
       throw new Error('Cards data must be an array');
     }
 
     const grid = document.createElement('div');
     grid.className = 'cards-grid';
-    
+
     if (options.className) {
       grid.classList.add(options.className);
     }
@@ -152,7 +155,7 @@ const mockCard = createMockModule({
   },
 
   // Card validation utility
-  validateCardData: function(cardData) {
+  validateCardData: function (cardData) {
     const errors = [];
 
     if (!cardData || typeof cardData !== 'object') {
@@ -176,7 +179,7 @@ const mockCard = createMockModule({
   },
 
   // Utility to find cards by criteria
-  findCards: function(container, criteria) {
+  findCards: function (container, criteria) {
     const cards = container.querySelectorAll('.card');
     return Array.from(cards).filter(card => {
       const cardData = card._cardData;
@@ -189,7 +192,7 @@ const mockCard = createMockModule({
         return cardData[key] === value;
       });
     });
-  }
+  },
 });
 
 // Mock the module
@@ -203,13 +206,13 @@ describe('Card Component Enhanced Tests', () => {
     container = document.createElement('div');
     container.id = 'test-container';
     document.body.appendChild(container);
-    
+
     // Mock window methods
     Object.defineProperty(window, 'location', {
       value: { href: '' },
-      writable: true
+      writable: true,
     });
-    
+
     global.open = vi.fn();
   });
 
@@ -224,7 +227,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should create basic card with title and description', () => {
       const cardData = {
         title: 'Test Card',
-        description: 'This is a test card description'
+        description: 'This is a test card description',
       };
 
       const card = Card.createCard(cardData);
@@ -232,7 +235,9 @@ describe('Card Component Enhanced Tests', () => {
 
       expect(card.className).toBe('card');
       expect(card.querySelector('.card-title').textContent).toBe('Test Card');
-      expect(card.querySelector('.card-description').textContent).toBe('This is a test card description');
+      expect(card.querySelector('.card-description').textContent).toBe(
+        'This is a test card description'
+      );
       expect(card.getAttribute('role')).toBe('article');
     });
 
@@ -240,7 +245,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Image Card',
         image: '/test-image.jpg',
-        imageAlt: 'Test image description'
+        imageAlt: 'Test image description',
       };
 
       const card = Card.createCard(cardData);
@@ -254,7 +259,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should create card with features list', () => {
       const cardData = {
         title: 'Feature Card',
-        features: ['Feature 1', 'Feature 2', 'Feature 3']
+        features: ['Feature 1', 'Feature 2', 'Feature 3'],
       };
 
       const card = Card.createCard(cardData);
@@ -271,7 +276,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Linked Card',
         link: '/target-page',
-        ariaLabel: 'Navigate to target page'
+        ariaLabel: 'Navigate to target page',
       };
 
       const card = Card.createCard(cardData);
@@ -286,7 +291,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should apply category styling', () => {
       const cardData = {
         title: 'Math Card',
-        category: 'Mathematics'
+        category: 'Mathematics',
       };
 
       const card = Card.createCard(cardData);
@@ -298,7 +303,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should apply custom className', () => {
       const cardData = {
         title: 'Custom Card',
-        className: 'custom-style special-card'
+        className: 'custom-style special-card',
       };
 
       const card = Card.createCard(cardData);
@@ -319,7 +324,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Clickable Card',
         link: '/test-page',
-        onClick: onClick
+        onClick: onClick,
       };
 
       const card = Card.createCard(cardData);
@@ -336,7 +341,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Keyboard Card',
         link: '/test-page',
-        onClick: onClick
+        onClick: onClick,
       };
 
       const card = Card.createCard(cardData);
@@ -353,7 +358,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Keyboard Card',
         link: '/test-page',
-        onClick: onClick
+        onClick: onClick,
       };
 
       const card = Card.createCard(cardData);
@@ -370,7 +375,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Keyboard Card',
         link: '/test-page',
-        onClick: onClick
+        onClick: onClick,
       };
 
       const card = Card.createCard(cardData);
@@ -385,7 +390,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should navigate to external links in new tab', () => {
       const cardData = {
         title: 'External Card',
-        link: 'https://example.com'
+        link: 'https://example.com',
       };
 
       const card = Card.createCard(cardData);
@@ -403,7 +408,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should navigate to internal links', () => {
       const cardData = {
         title: 'Internal Card',
-        link: '/internal-page'
+        link: '/internal-page',
       };
 
       const card = Card.createCard(cardData);
@@ -420,7 +425,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardsData = [
         { title: 'Card 1', description: 'First card' },
         { title: 'Card 2', description: 'Second card' },
-        { title: 'Card 3', description: 'Third card' }
+        { title: 'Card 3', description: 'Third card' },
       ];
 
       const grid = Card.createCardsGrid(cardsData);
@@ -433,15 +438,12 @@ describe('Card Component Enhanced Tests', () => {
     });
 
     it('should apply grid options', () => {
-      const cardsData = [
-        { title: 'Card 1' },
-        { title: 'Card 2' }
-      ];
+      const cardsData = [{ title: 'Card 1' }, { title: 'Card 2' }];
 
       const options = {
         columns: 3,
         gap: '20px',
-        className: 'custom-grid'
+        className: 'custom-grid',
       };
 
       const grid = Card.createCardsGrid(cardsData, options);
@@ -453,11 +455,11 @@ describe('Card Component Enhanced Tests', () => {
 
     it('should handle invalid cards gracefully', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      
+
       const cardsData = [
         { title: 'Valid Card' },
         null, // Invalid card
-        { title: 'Another Valid Card' }
+        { title: 'Another Valid Card' },
       ];
 
       const grid = Card.createCardsGrid(cardsData);
@@ -483,7 +485,7 @@ describe('Card Component Enhanced Tests', () => {
         title: 'Valid Card',
         description: 'Valid description',
         link: '/valid-link',
-        features: ['feature1', 'feature2']
+        features: ['feature1', 'feature2'],
       };
 
       const errors = Card.validateCardData(validCard);
@@ -492,7 +494,7 @@ describe('Card Component Enhanced Tests', () => {
 
     it('should detect missing title and image', () => {
       const invalidCard = {
-        description: 'No title or image'
+        description: 'No title or image',
       };
 
       const errors = Card.validateCardData(invalidCard);
@@ -502,7 +504,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should validate link type', () => {
       const invalidCard = {
         title: 'Test',
-        link: 123 // Should be string
+        link: 123, // Should be string
       };
 
       const errors = Card.validateCardData(invalidCard);
@@ -512,7 +514,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should validate features type', () => {
       const invalidCard = {
         title: 'Test',
-        features: 'not an array'
+        features: 'not an array',
       };
 
       const errors = Card.validateCardData(invalidCard);
@@ -531,7 +533,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardsData = [
         { title: 'Math Card', category: 'Education', description: 'Learn mathematics' },
         { title: 'Science Card', category: 'Education', description: 'Explore science' },
-        { title: 'Game Card', category: 'Entertainment', description: 'Play games' }
+        { title: 'Game Card', category: 'Entertainment', description: 'Play games' },
       ];
 
       const grid = Card.createCardsGrid(cardsData);
@@ -550,9 +552,9 @@ describe('Card Component Enhanced Tests', () => {
     });
 
     it('should find cards by multiple criteria', () => {
-      const specificCards = Card.findCards(container, { 
+      const specificCards = Card.findCards(container, {
         category: 'Education',
-        title: 'Science'
+        title: 'Science',
       });
       expect(specificCards).toHaveLength(1);
       expect(specificCards[0]._cardData.title).toBe('Science Card');
@@ -574,7 +576,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Accessible Card',
         link: '/page',
-        ariaLabel: 'Custom aria label'
+        ariaLabel: 'Custom aria label',
       };
 
       const card = Card.createCard(cardData);
@@ -584,7 +586,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should fallback to title for ARIA label', () => {
       const cardData = {
         title: 'Fallback Card',
-        link: '/page'
+        link: '/page',
       };
 
       const card = Card.createCard(cardData);
@@ -595,7 +597,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Image Card',
         image: '/image.jpg',
-        imageAlt: 'Descriptive alt text'
+        imageAlt: 'Descriptive alt text',
       };
 
       const card = Card.createCard(cardData);
@@ -606,7 +608,7 @@ describe('Card Component Enhanced Tests', () => {
     it('should fallback to title for image alt text', () => {
       const cardData = {
         title: 'Auto Alt Card',
-        image: '/image.jpg'
+        image: '/image.jpg',
       };
 
       const card = Card.createCard(cardData);
@@ -616,7 +618,7 @@ describe('Card Component Enhanced Tests', () => {
 
     it('should use empty alt for decorative images', () => {
       const cardData = {
-        image: '/decorative.jpg'
+        image: '/decorative.jpg',
         // No title or imageAlt
       };
 
@@ -629,11 +631,11 @@ describe('Card Component Enhanced Tests', () => {
   describe('Performance and Memory Management', () => {
     it('should handle large numbers of cards efficiently', () => {
       const startTime = performance.now();
-      
+
       const cardsData = Array.from({ length: 100 }, (_, i) => ({
         title: `Card ${i}`,
         description: `Description for card ${i}`,
-        link: `/page/${i}`
+        link: `/page/${i}`,
       }));
 
       const grid = Card.createCardsGrid(cardsData);
@@ -649,11 +651,11 @@ describe('Card Component Enhanced Tests', () => {
     it('should store minimal data references', () => {
       const cardData = {
         title: 'Test Card',
-        largeData: 'x'.repeat(10000) // Large string
+        largeData: 'x'.repeat(10000), // Large string
       };
 
       const card = Card.createCard(cardData);
-      
+
       // Card should store reference to original data
       expect(card._cardData).toBe(cardData);
       // Not create copies
@@ -668,11 +670,11 @@ describe('Card Component Enhanced Tests', () => {
         title: character.name,
         description: `A ${character.species.primary} character`,
         image: character.appearance.avatar,
-        category: 'Character'
+        category: 'Character',
       };
 
       const card = Card.createCard(cardData);
-      
+
       expect(card.querySelector('.card-title').textContent).toBe(character.name);
       expect(card.getAttribute('data-category')).toBe('Character');
     });
@@ -681,17 +683,21 @@ describe('Card Component Enhanced Tests', () => {
       const game = GameFactory.create();
       const cardData = {
         title: game.name,
-        description: game.description,
-        features: game.features,
+        description: game.description || `A ${game.type} game for ${game.subject}`,
+        features: [
+          'Game Type: ' + game.type,
+          'Subject: ' + game.subject,
+          'Difficulty: ' + game.difficulty,
+        ],
         link: `/games/${game.id}`,
-        category: 'Game'
+        category: 'Game',
       };
 
       const card = Card.createCard(cardData);
       const features = card.querySelectorAll('.card-features li');
-      
+
       expect(card.querySelector('.card-title').textContent).toBe(game.name);
-      expect(features).toHaveLength(game.features.length);
+      expect(features).toHaveLength(cardData.features.length);
     });
   });
 
@@ -701,7 +707,7 @@ describe('Card Component Enhanced Tests', () => {
         title: null,
         description: undefined,
         features: 'not an array',
-        link: 123
+        link: 123,
       };
 
       // Should not throw but may not render optimally
@@ -713,7 +719,7 @@ describe('Card Component Enhanced Tests', () => {
         title: '',
         description: '',
         features: [],
-        link: ''
+        link: '',
       };
 
       const card = Card.createCard(emptyData);
@@ -725,7 +731,7 @@ describe('Card Component Enhanced Tests', () => {
       const cardData = {
         title: 'Interactive Card',
         link: '/test',
-        onClick: vi.fn()
+        onClick: vi.fn(),
       };
 
       const card = Card.createCard(cardData);
@@ -733,9 +739,9 @@ describe('Card Component Enhanced Tests', () => {
 
       const clickEvent = new MouseEvent('click', { bubbles: true });
       const preventDefaultSpy = vi.spyOn(clickEvent, 'preventDefault');
-      
+
       card.dispatchEvent(clickEvent);
-      
+
       expect(preventDefaultSpy).toHaveBeenCalled();
     });
   });

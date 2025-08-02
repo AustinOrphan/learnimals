@@ -1,497 +1,556 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Palette Game Animations Test - Learnimals</title>
-  <link rel="stylesheet" href="../features/games/color-palette/colorPalette.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #FFE4E1 0%, #E6E6FA 50%, #F0F8FF 100%);
-      min-height: 100vh;
-    }
-    
-    .test-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    
-    .test-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    .test-section {
-      margin: 30px 0;
-      padding: 20px;
-      border: 2px solid #DDA0DD;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #F5F3E7 0%, #E6DDD4 100%);
-    }
-    
-    .demo-area {
-      position: relative;
-      height: 200px;
-      background: white;
-      border-radius: 10px;
-      margin: 15px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    
-    .demo-element {
-      width: 100px;
-      height: 100px;
-      background: #DA70D6;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .demo-element:hover {
-      transform: scale(1.1);
-    }
-    
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 15px;
-    }
-    
-    .demo-btn {
-      background: linear-gradient(135deg, #DA70D6, #BA55D3);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-    
-    .demo-btn:hover {
-      background: linear-gradient(135deg, #BA55D3, #9932CC);
-      transform: translateY(-2px);
-    }
-    
-    .demo-btn:active {
-      transform: translateY(0);
-    }
-    
-    .demo-btn.active {
-      background: linear-gradient(135deg, #32CD32, #228B22);
-    }
-    
-    .color-samples {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: 15px 0;
-    }
-    
-    .color-sample {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 3px solid #333;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    
-    .color-sample:hover {
-      transform: scale(1.1);
-    }
-    
-    .mixing-demo {
-      position: relative;
-      min-height: 150px;
-      background: linear-gradient(135deg, #F0F8FF, #E6E6FA);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    
-    h1 { color: #8B008B; }
-    h2 { color: #6B46C1; }
-    h3 { color: #9932CC; }
-    
-    .note {
-      background: rgba(255, 182, 193, 0.2);
-      padding: 10px;
-      border-radius: 8px;
-      margin: 10px 0;
-      border-left: 4px solid #FFB6C1;
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="test-container">
-    <div class="test-header">
-      <h1>🎨 Color Palette Game Animations Test</h1>
-      <p>Interactive demonstration of all color mixing animations for Aria the Owl's art studio</p>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Palette Game Animations Test - Learnimals</title>
+    <link rel="stylesheet" href="../features/games/color-palette/colorPalette.css" />
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #ffe4e1 0%, #e6e6fa 50%, #f0f8ff 100%);
+        min-height: 100vh;
+      }
 
-    <!-- Color Flow Animation -->
-    <div class="test-section">
-      <h2>Color Flow Animation</h2>
-      <p>Simulates liquid paint flowing and dropping into the mixing area</p>
-      <div class="demo-area">
-        <div class="demo-element" id="flow-demo" style="background: #FF6B6B;"></div>
-      </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="triggerAnimation('flow-demo', 'color-flowing')">🌊 Flow</button>
-        <button class="demo-btn" onclick="triggerAnimation('flow-demo', 'color-dropping')">💧 Drop</button>
-      </div>
-      <div class="note">Click animations to see paint flowing and dropping effects</div>
-    </div>
+      .test-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
 
-    <!-- Color Swirl Animation -->
-    <div class="test-section">
-      <h2>Color Swirl Mixing</h2>
-      <p>Creates swirling motion when colors are being mixed together</p>
-      <div class="demo-area">
-        <div class="demo-element" id="swirl-demo" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4);"></div>
-      </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="triggerAnimation('swirl-demo', 'color-swirling')">🌀 Swirl</button>
-        <button class="demo-btn" onclick="triggerAnimation('swirl-demo', 'color-transforming')">✨ Transform</button>
-      </div>
-      <div class="note">Watch colors swirl and transform during the mixing process</div>
-    </div>
+      .test-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
 
-    <!-- Paint Effects -->
-    <div class="test-section">
-      <h2>Paint Effects</h2>
-      <p>Artistic paint splatter and brush stroke animations</p>
-      <div class="demo-area mixing-demo" id="paint-area">
-        <div class="demo-element" id="paint-demo" style="background: #FFE66D;"></div>
-      </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="triggerPaintEffect('paint-splatter')">🎨 Splatter</button>
-        <button class="demo-btn" onclick="triggerPaintEffect('paint-drip')">💧 Drip</button>
-        <button class="demo-btn" onclick="triggerAnimation('paint-demo', 'brush-stroking')">🖌️ Brush</button>
-      </div>
-      <div class="note">Experience realistic paint effects for successful color mixing</div>
-    </div>
+      .test-section {
+        margin: 30px 0;
+        padding: 20px;
+        border: 2px solid #dda0dd;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #f5f3e7 0%, #e6ddd4 100%);
+      }
 
-    <!-- Color Wheel & Palette -->
-    <div class="test-section">
-      <h2>Palette & Wheel Animations</h2>
-      <p>Animations for color wheel rotation and palette filling</p>
-      <div class="demo-area">
-        <div class="demo-element" id="palette-demo" style="background: conic-gradient(#FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3, #FF0000);"></div>
-      </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="triggerAnimation('palette-demo', 'wheel-rotating')">🎡 Rotate</button>
-        <button class="demo-btn" onclick="triggerAnimation('palette-demo', 'palette-filling')">🎨 Fill</button>
-        <button class="demo-btn" onclick="triggerAnimation('palette-demo', 'color-pulsing')">💫 Pulse</button>
-      </div>
-      <div class="note">Color wheel rotations and palette filling effects</div>
-    </div>
+      .demo-area {
+        position: relative;
+        height: 200px;
+        background: white;
+        border-radius: 10px;
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
 
-    <!-- Celebration Animations -->
-    <div class="test-section">
-      <h2>Success Celebrations</h2>
-      <p>Special animations for successful color mixing and palette creation</p>
-      <div class="demo-area" id="celebration-area">
-        <div class="demo-element" id="celebration-demo" style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4, #FFE66D, #9B59B6);"></div>
-      </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="triggerAnimation('celebration-demo', 'art-celebrating')">🎉 Celebrate</button>
-        <button class="demo-btn" onclick="triggerFullCelebration()">🌟 Full Show</button>
-        <button class="demo-btn" onclick="triggerMixingBubbles()">🫧 Bubbles</button>
-      </div>
-      <div class="note">Celebratory animations for achievements and perfect mixes</div>
-    </div>
+      .demo-element {
+        width: 100px;
+        height: 100px;
+        background: #da70d6;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
 
-    <!-- Interactive Color Mixing Demo -->
-    <div class="test-section">
-      <h2>Interactive Mixing Demo</h2>
-      <p>Click colors to simulate the mixing process with animations</p>
-      <div class="color-samples">
-        <div class="color-sample" style="background: #FF0000;" onclick="selectColor('#FF0000', 'Red')" title="Red"></div>
-        <div class="color-sample" style="background: #0000FF;" onclick="selectColor('#0000FF', 'Blue')" title="Blue"></div>
-        <div class="color-sample" style="background: #FFFF00;" onclick="selectColor('#FFFF00', 'Yellow')" title="Yellow"></div>
-        <div class="color-sample" style="background: #00FF00;" onclick="selectColor('#00FF00', 'Green')" title="Green"></div>
-        <div class="color-sample" style="background: #FF7F00;" onclick="selectColor('#FF7F00', 'Orange')" title="Orange"></div>
-        <div class="color-sample" style="background: #9400D3;" onclick="selectColor('#9400D3', 'Purple')" title="Purple"></div>
+      .demo-element:hover {
+        transform: scale(1.1);
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+      }
+
+      .demo-btn {
+        background: linear-gradient(135deg, #da70d6, #ba55d3);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .demo-btn:hover {
+        background: linear-gradient(135deg, #ba55d3, #9932cc);
+        transform: translateY(-2px);
+      }
+
+      .demo-btn:active {
+        transform: translateY(0);
+      }
+
+      .demo-btn.active {
+        background: linear-gradient(135deg, #32cd32, #228b22);
+      }
+
+      .color-samples {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 15px 0;
+      }
+
+      .color-sample {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 3px solid #333;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .color-sample:hover {
+        transform: scale(1.1);
+      }
+
+      .mixing-demo {
+        position: relative;
+        min-height: 150px;
+        background: linear-gradient(135deg, #f0f8ff, #e6e6fa);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      h1 {
+        color: #8b008b;
+      }
+      h2 {
+        color: #6b46c1;
+      }
+      h3 {
+        color: #9932cc;
+      }
+
+      .note {
+        background: rgba(255, 182, 193, 0.2);
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border-left: 4px solid #ffb6c1;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <div class="test-header">
+        <h1>🎨 Color Palette Game Animations Test</h1>
+        <p>Interactive demonstration of all color mixing animations for Aria the Owl's art studio</p>
       </div>
-      <div class="demo-area mixing-demo" id="interactive-mixing">
-        <div id="mixing-bowl" style="width: 120px; height: 120px; border: 3px dashed #8B008B; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #8B008B;">
-          Mix Colors Here
+
+      <!-- Color Flow Animation -->
+      <div class="test-section">
+        <h2>Color Flow Animation</h2>
+        <p>Simulates liquid paint flowing and dropping into the mixing area</p>
+        <div class="demo-area">
+          <div class="demo-element" id="flow-demo" style="background: #ff6b6b"></div>
         </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="triggerAnimation('flow-demo', 'color-flowing')">🌊 Flow</button>
+          <button class="demo-btn" onclick="triggerAnimation('flow-demo', 'color-dropping')">💧 Drop</button>
+        </div>
+        <div class="note">Click animations to see paint flowing and dropping effects</div>
       </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="mixSelectedColors()" id="mix-btn" disabled>🎨 Mix Colors</button>
-        <button class="demo-btn" onclick="clearMixing()">🔄 Clear</button>
+
+      <!-- Color Swirl Animation -->
+      <div class="test-section">
+        <h2>Color Swirl Mixing</h2>
+        <p>Creates swirling motion when colors are being mixed together</p>
+        <div class="demo-area">
+          <div class="demo-element" id="swirl-demo" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4)"></div>
+        </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="triggerAnimation('swirl-demo', 'color-swirling')">🌀 Swirl</button>
+          <button class="demo-btn" onclick="triggerAnimation('swirl-demo', 'color-transforming')">✨ Transform</button>
+        </div>
+        <div class="note">Watch colors swirl and transform during the mixing process</div>
       </div>
-      <div class="note">Select two colors and click "Mix Colors" to see the full animation sequence</div>
+
+      <!-- Paint Effects -->
+      <div class="test-section">
+        <h2>Paint Effects</h2>
+        <p>Artistic paint splatter and brush stroke animations</p>
+        <div class="demo-area mixing-demo" id="paint-area">
+          <div class="demo-element" id="paint-demo" style="background: #ffe66d"></div>
+        </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="triggerPaintEffect('paint-splatter')">🎨 Splatter</button>
+          <button class="demo-btn" onclick="triggerPaintEffect('paint-drip')">💧 Drip</button>
+          <button class="demo-btn" onclick="triggerAnimation('paint-demo', 'brush-stroking')">🖌️ Brush</button>
+        </div>
+        <div class="note">Experience realistic paint effects for successful color mixing</div>
+      </div>
+
+      <!-- Color Wheel & Palette -->
+      <div class="test-section">
+        <h2>Palette & Wheel Animations</h2>
+        <p>Animations for color wheel rotation and palette filling</p>
+        <div class="demo-area">
+          <div
+            class="demo-element"
+            id="palette-demo"
+            style="background: conic-gradient(#ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000)"
+          ></div>
+        </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="triggerAnimation('palette-demo', 'wheel-rotating')">🎡 Rotate</button>
+          <button class="demo-btn" onclick="triggerAnimation('palette-demo', 'palette-filling')">🎨 Fill</button>
+          <button class="demo-btn" onclick="triggerAnimation('palette-demo', 'color-pulsing')">💫 Pulse</button>
+        </div>
+        <div class="note">Color wheel rotations and palette filling effects</div>
+      </div>
+
+      <!-- Celebration Animations -->
+      <div class="test-section">
+        <h2>Success Celebrations</h2>
+        <p>Special animations for successful color mixing and palette creation</p>
+        <div class="demo-area" id="celebration-area">
+          <div
+            class="demo-element"
+            id="celebration-demo"
+            style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #ffe66d, #9b59b6)"
+          ></div>
+        </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="triggerAnimation('celebration-demo', 'art-celebrating')">
+            🎉 Celebrate
+          </button>
+          <button class="demo-btn" onclick="triggerFullCelebration()">🌟 Full Show</button>
+          <button class="demo-btn" onclick="triggerMixingBubbles()">🫧 Bubbles</button>
+        </div>
+        <div class="note">Celebratory animations for achievements and perfect mixes</div>
+      </div>
+
+      <!-- Interactive Color Mixing Demo -->
+      <div class="test-section">
+        <h2>Interactive Mixing Demo</h2>
+        <p>Click colors to simulate the mixing process with animations</p>
+        <div class="color-samples">
+          <div
+            class="color-sample"
+            style="background: #ff0000"
+            onclick="selectColor('#FF0000', 'Red')"
+            title="Red"
+          ></div>
+          <div
+            class="color-sample"
+            style="background: #0000ff"
+            onclick="selectColor('#0000FF', 'Blue')"
+            title="Blue"
+          ></div>
+          <div
+            class="color-sample"
+            style="background: #ffff00"
+            onclick="selectColor('#FFFF00', 'Yellow')"
+            title="Yellow"
+          ></div>
+          <div
+            class="color-sample"
+            style="background: #00ff00"
+            onclick="selectColor('#00FF00', 'Green')"
+            title="Green"
+          ></div>
+          <div
+            class="color-sample"
+            style="background: #ff7f00"
+            onclick="selectColor('#FF7F00', 'Orange')"
+            title="Orange"
+          ></div>
+          <div
+            class="color-sample"
+            style="background: #9400d3"
+            onclick="selectColor('#9400D3', 'Purple')"
+            title="Purple"
+          ></div>
+        </div>
+        <div class="demo-area mixing-demo" id="interactive-mixing">
+          <div
+            id="mixing-bowl"
+            style="
+              width: 120px;
+              height: 120px;
+              border: 3px dashed #8b008b;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+              color: #8b008b;
+            "
+          >
+            Mix Colors Here
+          </div>
+        </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="mixSelectedColors()" id="mix-btn" disabled>🎨 Mix Colors</button>
+          <button class="demo-btn" onclick="clearMixing()">🔄 Clear</button>
+        </div>
+        <div class="note">Select two colors and click "Mix Colors" to see the full animation sequence</div>
+      </div>
+
+      <!-- Canvas Texture Effects -->
+      <div class="test-section">
+        <h2>Canvas & Background Effects</h2>
+        <p>Subtle background animations and texture effects</p>
+        <div class="demo-area" id="texture-area">
+          <div class="demo-element" id="texture-demo" style="background: #f5f3e7; border: 2px solid #8b4513"></div>
+        </div>
+        <div class="controls">
+          <button class="demo-btn" onclick="triggerAnimation('texture-area', 'canvas-animating')">🖼️ Canvas</button>
+          <button class="demo-btn" onclick="toggleTexturePattern()">📐 Pattern</button>
+        </div>
+        <div class="note">Background texture animations and canvas effects</div>
+      </div>
+
+      <!-- Accessibility Settings -->
+      <div class="test-section">
+        <h2>Accessibility Controls</h2>
+        <p>Test reduced motion and accessibility features</p>
+        <div class="controls">
+          <button class="demo-btn" onclick="toggleReducedMotion()" id="motion-btn">🔄 Toggle Motion</button>
+          <button class="demo-btn" onclick="testAllAnimations()">🎬 Test All</button>
+        </div>
+        <div class="note">Test animations with reduced motion preferences</div>
+      </div>
     </div>
 
-    <!-- Canvas Texture Effects -->
-    <div class="test-section">
-      <h2>Canvas & Background Effects</h2>
-      <p>Subtle background animations and texture effects</p>
-      <div class="demo-area" id="texture-area">
-        <div class="demo-element" id="texture-demo" style="background: #F5F3E7; border: 2px solid #8B4513;"></div>
-      </div>
-      <div class="controls">
-        <button class="demo-btn" onclick="triggerAnimation('texture-area', 'canvas-animating')">🖼️ Canvas</button>
-        <button class="demo-btn" onclick="toggleTexturePattern()">📐 Pattern</button>
-      </div>
-      <div class="note">Background texture animations and canvas effects</div>
-    </div>
+    <script>
+      let selectedColors = [];
+      let reducedMotion = false;
 
-    <!-- Accessibility Settings -->
-    <div class="test-section">
-      <h2>Accessibility Controls</h2>
-      <p>Test reduced motion and accessibility features</p>
-      <div class="controls">
-        <button class="demo-btn" onclick="toggleReducedMotion()" id="motion-btn">🔄 Toggle Motion</button>
-        <button class="demo-btn" onclick="testAllAnimations()">🎬 Test All</button>
-      </div>
-      <div class="note">Test animations with reduced motion preferences</div>
-    </div>
-  </div>
+      function triggerAnimation(elementId, animationClass) {
+        const element = document.getElementById(elementId);
+        element.classList.remove(animationClass);
 
-  <script>
-    let selectedColors = [];
-    let reducedMotion = false;
-
-    function triggerAnimation(elementId, animationClass) {
-      const element = document.getElementById(elementId);
-      element.classList.remove(animationClass);
-      
-      setTimeout(() => {
-        element.classList.add(animationClass);
         setTimeout(() => {
-          element.classList.remove(animationClass);
-        }, 2000);
-      }, 10);
-    }
+          element.classList.add(animationClass);
+          setTimeout(() => {
+            element.classList.remove(animationClass);
+          }, 2000);
+        }, 10);
+      }
 
-    function triggerPaintEffect(effectType) {
-      const paintArea = document.getElementById('paint-area');
-      
-      for (let i = 0; i < 3; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'paint-particle';
-        particle.style.position = 'absolute';
-        particle.style.width = '15px';
-        particle.style.height = '15px';
-        particle.style.borderRadius = '50%';
-        particle.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
-        particle.style.left = `${30 + Math.random() * 40}%`;
-        particle.style.top = `${30 + Math.random() * 40}%`;
-        particle.style.pointerEvents = 'none';
-        
-        if (effectType === 'paint-splatter') {
-          particle.classList.add('paint-splattering');
-        } else if (effectType === 'paint-drip') {
-          particle.classList.add('paint-dripping');
+      function triggerPaintEffect(effectType) {
+        const paintArea = document.getElementById('paint-area');
+
+        for (let i = 0; i < 3; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'paint-particle';
+          particle.style.position = 'absolute';
+          particle.style.width = '15px';
+          particle.style.height = '15px';
+          particle.style.borderRadius = '50%';
+          particle.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+          particle.style.left = `${30 + Math.random() * 40}%`;
+          particle.style.top = `${30 + Math.random() * 40}%`;
+          particle.style.pointerEvents = 'none';
+
+          if (effectType === 'paint-splatter') {
+            particle.classList.add('paint-splattering');
+          } else if (effectType === 'paint-drip') {
+            particle.classList.add('paint-dripping');
+          }
+
+          paintArea.appendChild(particle);
+
+          setTimeout(() => particle.remove(), 2000);
         }
-        
-        paintArea.appendChild(particle);
-        
-        setTimeout(() => particle.remove(), 2000);
       }
-    }
 
-    function triggerFullCelebration() {
-      const celebrationArea = document.getElementById('celebration-area');
-      
-      // Add multiple effects
-      triggerAnimation('celebration-demo', 'art-celebrating');
-      
-      // Create rainbow particles
-      for (let i = 0; i < 8; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'absolute';
-        particle.style.width = '20px';
-        particle.style.height = '20px';
-        particle.style.borderRadius = '50%';
-        particle.style.backgroundColor = `hsl(${i * 45}, 80%, 60%)`;
-        particle.style.left = `${20 + Math.random() * 60}%`;
-        particle.style.top = `${20 + Math.random() * 60}%`;
-        particle.style.animation = 'paintSplatter 1.5s ease-out';
-        particle.style.pointerEvents = 'none';
-        
-        celebrationArea.appendChild(particle);
-        
-        setTimeout(() => particle.remove(), 1500);
+      function triggerFullCelebration() {
+        const celebrationArea = document.getElementById('celebration-area');
+
+        // Add multiple effects
+        triggerAnimation('celebration-demo', 'art-celebrating');
+
+        // Create rainbow particles
+        for (let i = 0; i < 8; i++) {
+          const particle = document.createElement('div');
+          particle.style.position = 'absolute';
+          particle.style.width = '20px';
+          particle.style.height = '20px';
+          particle.style.borderRadius = '50%';
+          particle.style.backgroundColor = `hsl(${i * 45}, 80%, 60%)`;
+          particle.style.left = `${20 + Math.random() * 60}%`;
+          particle.style.top = `${20 + Math.random() * 60}%`;
+          particle.style.animation = 'paintSplatter 1.5s ease-out';
+          particle.style.pointerEvents = 'none';
+
+          celebrationArea.appendChild(particle);
+
+          setTimeout(() => particle.remove(), 1500);
+        }
       }
-    }
 
-    function triggerMixingBubbles() {
-      const celebrationArea = document.getElementById('celebration-area');
-      
-      for (let i = 0; i < 6; i++) {
-        const bubble = document.createElement('div');
-        bubble.style.position = 'absolute';
-        bubble.style.width = '10px';
-        bubble.style.height = '10px';
-        bubble.style.borderRadius = '50%';
-        bubble.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-        bubble.style.border = '2px solid #4ECDC4';
-        bubble.style.left = `${40 + Math.random() * 20}%`;
-        bubble.style.top = '70%';
-        bubble.style.animation = 'mixingBubble 2s ease-out infinite';
-        bubble.style.animationDelay = `${i * 300}ms`;
-        bubble.style.pointerEvents = 'none';
-        
-        celebrationArea.appendChild(bubble);
-        
-        setTimeout(() => bubble.remove(), 6000);
+      function triggerMixingBubbles() {
+        const celebrationArea = document.getElementById('celebration-area');
+
+        for (let i = 0; i < 6; i++) {
+          const bubble = document.createElement('div');
+          bubble.style.position = 'absolute';
+          bubble.style.width = '10px';
+          bubble.style.height = '10px';
+          bubble.style.borderRadius = '50%';
+          bubble.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+          bubble.style.border = '2px solid #4ECDC4';
+          bubble.style.left = `${40 + Math.random() * 20}%`;
+          bubble.style.top = '70%';
+          bubble.style.animation = 'mixingBubble 2s ease-out infinite';
+          bubble.style.animationDelay = `${i * 300}ms`;
+          bubble.style.pointerEvents = 'none';
+
+          celebrationArea.appendChild(bubble);
+
+          setTimeout(() => bubble.remove(), 6000);
+        }
       }
-    }
 
-    function selectColor(color, name) {
-      if (selectedColors.length < 2) {
-        selectedColors.push({ color, name });
+      function selectColor(color, name) {
+        if (selectedColors.length < 2) {
+          selectedColors.push({ color, name });
+          updateMixingBowl();
+        }
+      }
+
+      function updateMixingBowl() {
+        const mixingBowl = document.getElementById('mixing-bowl');
+        const mixBtn = document.getElementById('mix-btn');
+
+        if (selectedColors.length === 0) {
+          mixingBowl.innerHTML = 'Mix Colors Here';
+          mixingBowl.style.background = 'transparent';
+          mixBtn.disabled = true;
+        } else if (selectedColors.length === 1) {
+          mixingBowl.innerHTML = selectedColors[0].name;
+          mixingBowl.style.background = selectedColors[0].color;
+          mixBtn.disabled = true;
+        } else if (selectedColors.length === 2) {
+          mixingBowl.innerHTML = `${selectedColors[0].name} + ${selectedColors[1].name}`;
+          mixingBowl.style.background = `linear-gradient(45deg, ${selectedColors[0].color}, ${selectedColors[1].color})`;
+          mixBtn.disabled = false;
+        }
+      }
+
+      function mixSelectedColors() {
+        if (selectedColors.length !== 2) return;
+
+        const mixingArea = document.getElementById('interactive-mixing');
+        const mixingBowl = document.getElementById('mixing-bowl');
+
+        // Start mixing animation
+        mixingArea.classList.add('color-swirling');
+
+        // Simulate mixing process
+        setTimeout(() => {
+          // Create result color (simplified mixing)
+          const resultColor = blendColors(selectedColors[0].color, selectedColors[1].color);
+          mixingBowl.style.background = resultColor;
+          mixingBowl.innerHTML = '✨ Mixed!';
+
+          // Add success effects
+          triggerPaintEffect('paint-splatter');
+
+          setTimeout(() => {
+            mixingArea.classList.remove('color-swirling');
+            clearMixing();
+          }, 1500);
+        }, 1000);
+      }
+
+      function blendColors(color1, color2) {
+        // Simple color blending (for demo purposes)
+        const colors = {
+          '#FF0000': [255, 0, 0], // Red
+          '#0000FF': [0, 0, 255], // Blue
+          '#FFFF00': [255, 255, 0], // Yellow
+          '#00FF00': [0, 255, 0], // Green
+          '#FF7F00': [255, 127, 0], // Orange
+          '#9400D3': [148, 0, 211], // Purple
+        };
+
+        const c1 = colors[color1] || [128, 128, 128];
+        const c2 = colors[color2] || [128, 128, 128];
+
+        const result = [
+          Math.floor((c1[0] + c2[0]) / 2),
+          Math.floor((c1[1] + c2[1]) / 2),
+          Math.floor((c1[2] + c2[2]) / 2),
+        ];
+
+        return `rgb(${result[0]}, ${result[1]}, ${result[2]})`;
+      }
+
+      function clearMixing() {
+        selectedColors = [];
         updateMixingBowl();
+
+        const mixingArea = document.getElementById('interactive-mixing');
+        mixingArea.classList.remove('color-swirling');
       }
-    }
 
-    function updateMixingBowl() {
-      const mixingBowl = document.getElementById('mixing-bowl');
-      const mixBtn = document.getElementById('mix-btn');
-      
-      if (selectedColors.length === 0) {
-        mixingBowl.innerHTML = 'Mix Colors Here';
-        mixingBowl.style.background = 'transparent';
-        mixBtn.disabled = true;
-      } else if (selectedColors.length === 1) {
-        mixingBowl.innerHTML = selectedColors[0].name;
-        mixingBowl.style.background = selectedColors[0].color;
-        mixBtn.disabled = true;
-      } else if (selectedColors.length === 2) {
-        mixingBowl.innerHTML = `${selectedColors[0].name} + ${selectedColors[1].name}`;
-        mixingBowl.style.background = `linear-gradient(45deg, ${selectedColors[0].color}, ${selectedColors[1].color})`;
-        mixBtn.disabled = false;
+      function toggleTexturePattern() {
+        const textureArea = document.getElementById('texture-area');
+        textureArea.classList.toggle('art-studio-pattern');
       }
-    }
 
-    function mixSelectedColors() {
-      if (selectedColors.length !== 2) return;
-      
-      const mixingArea = document.getElementById('interactive-mixing');
-      const mixingBowl = document.getElementById('mixing-bowl');
-      
-      // Start mixing animation
-      mixingArea.classList.add('color-swirling');
-      
-      // Simulate mixing process
-      setTimeout(() => {
-        // Create result color (simplified mixing)
-        const resultColor = blendColors(selectedColors[0].color, selectedColors[1].color);
-        mixingBowl.style.background = resultColor;
-        mixingBowl.innerHTML = '✨ Mixed!';
-        
-        // Add success effects
-        triggerPaintEffect('paint-splatter');
-        
-        setTimeout(() => {
-          mixingArea.classList.remove('color-swirling');
-          clearMixing();
-        }, 1500);
-      }, 1000);
-    }
+      function toggleReducedMotion() {
+        reducedMotion = !reducedMotion;
+        const motionBtn = document.getElementById('motion-btn');
 
-    function blendColors(color1, color2) {
-      // Simple color blending (for demo purposes)
-      const colors = {
-        '#FF0000': [255, 0, 0],    // Red
-        '#0000FF': [0, 0, 255],    // Blue  
-        '#FFFF00': [255, 255, 0],  // Yellow
-        '#00FF00': [0, 255, 0],    // Green
-        '#FF7F00': [255, 127, 0],  // Orange
-        '#9400D3': [148, 0, 211]   // Purple
-      };
-      
-      const c1 = colors[color1] || [128, 128, 128];
-      const c2 = colors[color2] || [128, 128, 128];
-      
-      const result = [
-        Math.floor((c1[0] + c2[0]) / 2),
-        Math.floor((c1[1] + c2[1]) / 2),
-        Math.floor((c1[2] + c2[2]) / 2)
-      ];
-      
-      return `rgb(${result[0]}, ${result[1]}, ${result[2]})`;
-    }
+        if (reducedMotion) {
+          document.body.style.setProperty('--animation-state', 'paused');
+          motionBtn.textContent = '▶️ Enable Motion';
+          motionBtn.classList.add('active');
 
-    function clearMixing() {
-      selectedColors = [];
+          // Add reduced motion CSS
+          const style = document.createElement('style');
+          style.id = 'reduced-motion-style';
+          style.textContent = '* { animation: none !important; transition: none !important; }';
+          document.head.appendChild(style);
+        } else {
+          document.body.style.removeProperty('--animation-state');
+          motionBtn.textContent = '⏸️ Reduce Motion';
+          motionBtn.classList.remove('active');
+
+          // Remove reduced motion CSS
+          const style = document.getElementById('reduced-motion-style');
+          if (style) style.remove();
+        }
+      }
+
+      function testAllAnimations() {
+        const animations = [
+          { element: 'flow-demo', animation: 'color-flowing' },
+          { element: 'swirl-demo', animation: 'color-swirling' },
+          { element: 'paint-demo', animation: 'brush-stroking' },
+          { element: 'palette-demo', animation: 'wheel-rotating' },
+          { element: 'celebration-demo', animation: 'art-celebrating' },
+        ];
+
+        animations.forEach((anim, index) => {
+          setTimeout(() => {
+            triggerAnimation(anim.element, anim.animation);
+          }, index * 500);
+        });
+
+        // Add paint effects
+        setTimeout(() => triggerPaintEffect('paint-splatter'), 2000);
+        setTimeout(() => triggerFullCelebration(), 3000);
+      }
+
+      // Initialize
       updateMixingBowl();
-      
-      const mixingArea = document.getElementById('interactive-mixing');
-      mixingArea.classList.remove('color-swirling');
-    }
-
-    function toggleTexturePattern() {
-      const textureArea = document.getElementById('texture-area');
-      textureArea.classList.toggle('art-studio-pattern');
-    }
-
-    function toggleReducedMotion() {
-      reducedMotion = !reducedMotion;
-      const motionBtn = document.getElementById('motion-btn');
-      
-      if (reducedMotion) {
-        document.body.style.setProperty('--animation-state', 'paused');
-        motionBtn.textContent = '▶️ Enable Motion';
-        motionBtn.classList.add('active');
-        
-        // Add reduced motion CSS
-        const style = document.createElement('style');
-        style.id = 'reduced-motion-style';
-        style.textContent = '* { animation: none !important; transition: none !important; }';
-        document.head.appendChild(style);
-      } else {
-        document.body.style.removeProperty('--animation-state');
-        motionBtn.textContent = '⏸️ Reduce Motion';
-        motionBtn.classList.remove('active');
-        
-        // Remove reduced motion CSS
-        const style = document.getElementById('reduced-motion-style');
-        if (style) style.remove();
-      }
-    }
-
-    function testAllAnimations() {
-      const animations = [
-        { element: 'flow-demo', animation: 'color-flowing' },
-        { element: 'swirl-demo', animation: 'color-swirling' },
-        { element: 'paint-demo', animation: 'brush-stroking' },
-        { element: 'palette-demo', animation: 'wheel-rotating' },
-        { element: 'celebration-demo', animation: 'art-celebrating' }
-      ];
-      
-      animations.forEach((anim, index) => {
-        setTimeout(() => {
-          triggerAnimation(anim.element, anim.animation);
-        }, index * 500);
-      });
-      
-      // Add paint effects
-      setTimeout(() => triggerPaintEffect('paint-splatter'), 2000);
-      setTimeout(() => triggerFullCelebration(), 3000);
-    }
-
-    // Initialize
-    updateMixingBowl();
-  </script>
-</body>
+    </script>
+  </body>
 </html>

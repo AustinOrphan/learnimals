@@ -83,7 +83,7 @@
   pointer-events: none;
 }
 
-.progress-character-celebration[data-celebration="active"] {
+.progress-character-celebration[data-celebration='active'] {
   opacity: 1;
   transform: translateX(-50%) translateY(-20px) scale(1);
 }
@@ -182,9 +182,15 @@
 }
 
 @keyframes progressShine {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 /* Milestone markers */
@@ -240,7 +246,7 @@
   transition: all 0.6s ease;
 }
 
-.progress-sparkles[data-active="true"] .sparkle {
+.progress-sparkles[data-active='true'] .sparkle {
   opacity: 1;
   transform: scale(1);
   animation: sparkleFloat 2s ease-out;
@@ -265,10 +271,22 @@
 }
 
 @keyframes sparkleFloat {
-  0% { transform: scale(0) translateY(0); opacity: 0; }
-  20% { transform: scale(1) translateY(-5px); opacity: 1; }
-  80% { transform: scale(1) translateY(-15px); opacity: 1; }
-  100% { transform: scale(0) translateY(-20px); opacity: 0; }
+  0% {
+    transform: scale(0) translateY(0);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1) translateY(-5px);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(1) translateY(-15px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) translateY(-20px);
+    opacity: 0;
+  }
 }
 
 /* Progress percentage display */
@@ -316,8 +334,13 @@
 }
 
 @keyframes streakFlicker {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .streak-count {
@@ -344,8 +367,13 @@
 }
 
 @keyframes achievementGlow {
-  0%, 100% { filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5)); }
-  50% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8)); }
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+  }
 }
 
 .achievement-text {
@@ -386,11 +414,21 @@
 }
 
 @keyframes levelUpBounce {
-  0% { transform: scale(1); }
-  25% { transform: scale(1.2) rotate(5deg); }
-  50% { transform: scale(1.1) rotate(-3deg); }
-  75% { transform: scale(1.15) rotate(2deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(-3deg);
+  }
+  75% {
+    transform: scale(1.15) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .feedback-progress--streak .progress-bar-fill {
@@ -400,39 +438,60 @@
 }
 
 @keyframes streakGradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .feedback-progress--achievement .progress-bar-fill {
-  background: linear-gradient(90deg, 
-    var(--purple-color, #6f42c1), 
-    var(--accent-primary), 
-    var(--purple-color, #6f42c1)
-  );
+  background: linear-gradient(90deg, var(--purple-color, #6f42c1), var(--accent-primary), var(--purple-color, #6f42c1));
   background-size: 200% 100%;
   animation: achievementShimmer 3s ease-in-out infinite;
 }
 
 @keyframes achievementShimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Completion celebration */
-.feedback-progress[aria-valuenow="100"] .progress-character-avatar,
-.feedback-progress[data-completed="true"] .progress-character-avatar {
+.feedback-progress[aria-valuenow='100'] .progress-character-avatar,
+.feedback-progress[data-completed='true'] .progress-character-avatar {
   animation: completionCelebration 2s ease-in-out;
 }
 
 @keyframes completionCelebration {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  10% { transform: scale(1.1) rotate(5deg); }
-  20% { transform: scale(1.05) rotate(-5deg); }
-  30% { transform: scale(1.15) rotate(3deg); }
-  40% { transform: scale(1.02) rotate(-2deg); }
-  50% { transform: scale(1.1) rotate(0deg); }
-  60% { transform: scale(1) rotate(0deg); }
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  10% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  20% {
+    transform: scale(1.05) rotate(-5deg);
+  }
+  30% {
+    transform: scale(1.15) rotate(3deg);
+  }
+  40% {
+    transform: scale(1.02) rotate(-2deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(0deg);
+  }
+  60% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* Reduced motion support */
@@ -447,11 +506,11 @@
     animation: none !important;
     transition: opacity 0.2s ease !important;
   }
-  
+
   .progress-character-celebration {
     transition: opacity 0.3s ease !important;
   }
-  
+
   .milestone-marker {
     transition: background-color 0.3s ease !important;
   }
@@ -464,23 +523,23 @@
     gap: 0.75rem;
     padding: 0.875rem;
   }
-  
+
   .progress-character {
     align-self: center;
   }
-  
+
   .progress-header {
     margin-bottom: 0.5rem;
   }
-  
+
   .progress-label {
     font-size: 0.85rem;
   }
-  
+
   .progress-value {
     font-size: 0.8rem;
   }
-  
+
   .progress-percentage {
     position: static;
     display: inline-block;
@@ -501,15 +560,15 @@
   .feedback-progress {
     border-width: 3px;
   }
-  
+
   .progress-bar-track {
     border-width: 2px;
   }
-  
+
   .progress-character-avatar {
     border-width: 4px;
   }
-  
+
   .milestone-marker {
     border-width: 3px;
   }
@@ -520,7 +579,7 @@
   .progress-bar-shine {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   }
-  
+
   .progress-percentage {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
@@ -532,11 +591,11 @@
     border: 2px solid black !important;
     box-shadow: none !important;
   }
-  
+
   .progress-bar-fill {
     background: black !important;
   }
-  
+
   .progress-sparkles,
   .progress-character-celebration {
     display: none !important;

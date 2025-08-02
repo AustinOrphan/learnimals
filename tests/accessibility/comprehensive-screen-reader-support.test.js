@@ -6,7 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService, AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import {
+  accessibilityService,
+  AccessibilityService,
+} from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -30,10 +33,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Comprehensive Screen Reader Support Tests', () => {
@@ -60,7 +63,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       width: 100,
       height: 100,
       x: 0,
-      y: 0
+      y: 0,
     }));
 
     // Mock scrollIntoView
@@ -71,17 +74,15 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       writable: true,
       configurable: true,
       value: {
-        getVoices: vi.fn(() => [
-          { name: 'Test Voice', lang: 'en-US' }
-        ]),
+        getVoices: vi.fn(() => [{ name: 'Test Voice', lang: 'en-US' }]),
         speak: vi.fn(),
         cancel: vi.fn(),
         pause: vi.fn(),
         resume: vi.fn(),
         speaking: false,
         pending: false,
-        paused: false
-      }
+        paused: false,
+      },
     });
 
     service = new AccessibilityService();
@@ -100,7 +101,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     it('should detect NVDA screen reader', () => {
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 NVDA/2023.1'
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 NVDA/2023.1',
       });
 
       const isDetected = service.detectScreenReader();
@@ -110,7 +111,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     it('should detect JAWS screen reader', () => {
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) JAWS/2023'
+        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) JAWS/2023',
       });
 
       const isDetected = service.detectScreenReader();
@@ -120,13 +121,13 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     it('should detect VoiceOver on macOS', () => {
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15'
+        value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15',
       });
 
       // Mock VoiceOver detection through speech synthesis
       window.speechSynthesis.getVoices.mockReturnValue([
         { name: 'Alex', lang: 'en-US' },
-        { name: 'Victoria', lang: 'en-US' }
+        { name: 'Victoria', lang: 'en-US' },
       ]);
 
       const isDetected = service.detectScreenReader();
@@ -136,12 +137,12 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     it('should detect TalkBack on Android', () => {
       Object.defineProperty(navigator, 'userAgent', {
         writable: true,
-        value: 'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36'
+        value: 'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36',
       });
 
       // Mock TalkBack indicators
       Object.defineProperty(window, 'accessibility', {
-        value: { talkBackEnabled: true }
+        value: { talkBackEnabled: true },
       });
 
       const isDetected = service.detectScreenReader();
@@ -151,12 +152,12 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     it('should optimize interface for detected screen readers', async () => {
       // Mock screen reader detection
       vi.spyOn(service, 'detectScreenReader').mockReturnValue(true);
-      
+
       await service.initialize();
-      
+
       // Check for screen reader optimizations
       expect(document.body.classList.contains('screen-reader-detected')).toBeTruthy();
-      
+
       // Verify enhanced semantics are applied
       const liveRegions = document.querySelectorAll('[aria-live]');
       expect(liveRegions.length).toBeGreaterThan(0);
@@ -167,7 +168,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       Object.defineProperty(window, 'speechSynthesis', {
         get: () => {
           throw new Error('Speech synthesis not available');
-        }
+        },
       });
 
       expect(() => service.detectScreenReader()).not.toThrow();
@@ -181,11 +182,11 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       await service.initialize();
     });
 
-    it('should announce content changes with proper timing', (done) => {
+    it('should announce content changes with proper timing', done => {
       const message = 'New content has loaded';
-      
+
       service.announce(message, 'polite', 500);
-      
+
       setTimeout(() => {
         const announcer = document.getElementById('accessibility-announcer-polite');
         expect(announcer.textContent).toBe(message);
@@ -193,16 +194,16 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       }, 150);
     });
 
-    it('should prioritize urgent announcements', (done) => {
+    it('should prioritize urgent announcements', done => {
       const urgentMessage = 'Error: Form submission failed';
       const normalMessage = 'Loading complete';
-      
+
       // Send normal message first
       service.announce(normalMessage, 'polite');
-      
+
       // Then urgent message should override
       service.announce(urgentMessage, 'assertive');
-      
+
       setTimeout(() => {
         const assertiveAnnouncer = document.getElementById('accessibility-announcer-assertive');
         expect(assertiveAnnouncer.textContent).toBe(urgentMessage);
@@ -301,7 +302,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const headings = testContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      
+
       // Verify heading levels are sequential
       const levels = Array.from(headings).map(h => parseInt(h.tagName.charAt(1)));
       expect(levels).toEqual([1, 2, 3, 4, 2, 3]);
@@ -344,7 +345,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
         navigation: testContainer.querySelector('[role="navigation"]'),
         main: testContainer.querySelector('[role="main"]'),
         complementary: testContainer.querySelector('[role="complementary"]'),
-        contentinfo: testContainer.querySelector('[role="contentinfo"]')
+        contentinfo: testContainer.querySelector('[role="contentinfo"]'),
       };
 
       Object.entries(landmarks).forEach(([role, element]) => {
@@ -406,7 +407,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       columnHeaders.forEach(th => {
         expect(th.getAttribute('scope')).toBe('col');
       });
-      
+
       rowHeaders.forEach(th => {
         expect(th.getAttribute('scope')).toBe('row');
       });
@@ -531,7 +532,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       // Verify form has proper labeling
       expect(form.getAttribute('aria-labelledby')).toBe('form-title');
-      
+
       // Verify fieldsets have legends
       fieldsets.forEach(fieldset => {
         const legend = fieldset.querySelector('legend');
@@ -551,7 +552,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       requiredInputs.forEach(input => {
         expect(input.hasAttribute('required')).toBe(true);
         expect(input.getAttribute('aria-invalid')).toBe('false');
-        
+
         const label = testContainer.querySelector(`label[for="${input.id}"]`);
         if (label) {
           const requiredIndicator = label.querySelector('[aria-label="required"]');
@@ -575,7 +576,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const images = testContainer.querySelectorAll('img');
-      
+
       images.forEach(img => {
         const alt = img.getAttribute('alt');
         expect(alt).toBeTruthy();
@@ -596,7 +597,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const decorativeImages = testContainer.querySelectorAll('img[alt=""]');
-      
+
       decorativeImages.forEach(img => {
         expect(img.getAttribute('alt')).toBe('');
         const hasPresentation = img.getAttribute('role') === 'presentation';
@@ -806,12 +807,14 @@ describe('Comprehensive Screen Reader Support Tests', () => {
         </footer>
       `;
 
-      const landmarks = testContainer.querySelectorAll('[role="banner"], [role="navigation"], [role="main"], [role="complementary"], [role="contentinfo"]');
+      const landmarks = testContainer.querySelectorAll(
+        '[role="banner"], [role="navigation"], [role="main"], [role="complementary"], [role="contentinfo"]'
+      );
 
       landmarks.forEach(landmark => {
         // All landmarks should be focusable for F6 navigation
         expect(landmark.getAttribute('tabindex')).toBe('-1');
-        
+
         // All landmarks should have descriptive labels
         const label = landmark.getAttribute('aria-label');
         expect(label).toBeTruthy();
@@ -820,11 +823,11 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       // Verify landmark roles are correct
       const roleMap = {
-        'HEADER': 'banner',
-        'NAV': 'navigation', 
-        'MAIN': 'main',
-        'ASIDE': 'complementary',
-        'FOOTER': 'contentinfo'
+        HEADER: 'banner',
+        NAV: 'navigation',
+        MAIN: 'main',
+        ASIDE: 'complementary',
+        FOOTER: 'contentinfo',
       };
 
       landmarks.forEach(landmark => {
@@ -865,10 +868,10 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       expect(breadcrumb.getAttribute('aria-label')).toBe('Breadcrumb');
       expect(breadcrumbList.getAttribute('role')).toBe('list');
       expect(breadcrumbItems.length).toBe(4);
-      
+
       // Verify current page indicator
       expect(currentPage.getAttribute('aria-current')).toBe('page');
-      
+
       // Verify all items have proper roles
       breadcrumbItems.forEach(item => {
         expect(item.getAttribute('role')).toBe('listitem');
@@ -924,7 +927,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       expect(pagination.getAttribute('aria-label')).toBe('Pagination navigation');
       expect(currentPage.getAttribute('aria-current')).toBe('page');
-      
+
       // Verify all pagination links have descriptive labels
       const paginationLinks = pagination.querySelectorAll('a');
       paginationLinks.forEach(link => {
@@ -950,7 +953,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       politeRegion.setAttribute('aria-atomic', 'true');
       politeRegion.setAttribute('aria-relevant', 'additions text');
       politeRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(politeRegion);
 
       expect(politeRegion.getAttribute('aria-live')).toBe('polite');
@@ -963,7 +966,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       assertiveRegion.setAttribute('aria-live', 'assertive');
       assertiveRegion.setAttribute('aria-atomic', 'true');
       assertiveRegion.className = 'sr-only';
-      
+
       testContainer.appendChild(assertiveRegion);
 
       expect(assertiveRegion.getAttribute('aria-live')).toBe('assertive');
@@ -1012,7 +1015,8 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       expect(gameAchievements.getAttribute('aria-live')).toBe('polite');
 
       // Test different types of announcements
-      gameStatus.textContent = 'Question 2 of 10. Score: 10 points. Time remaining: 1 minute 45 seconds.';
+      gameStatus.textContent =
+        'Question 2 of 10. Score: 10 points. Time remaining: 1 minute 45 seconds.';
       expect(gameStatus.textContent).toContain('Question 2');
 
       gameFeedback.textContent = 'Correct! Well done.';
@@ -1194,21 +1198,21 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       // Verify document structure follows logical flow
       const article = testContainer.querySelector('article');
       const children = Array.from(article.children);
-      
+
       expect(children[0].tagName).toBe('HEADER');
       expect(children[1].tagName).toBe('NAV');
-      expect(children[2].tagName).toBe('MAIN'); 
+      expect(children[2].tagName).toBe('MAIN');
       expect(children[3].tagName).toBe('ASIDE');
       expect(children[4].tagName).toBe('FOOTER');
 
       // Verify heading hierarchy within sections
       const headings = testContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
       const headingLevels = Array.from(headings).map(h => parseInt(h.tagName.charAt(1)));
-      
+
       // Should start with h1, then h2s, then h3s
       expect(headingLevels[0]).toBe(1); // Main title
       expect(headingLevels[1]).toBe(2); // Introduction
-      expect(headingLevels[2]).toBe(2); // Examples  
+      expect(headingLevels[2]).toBe(2); // Examples
       expect(headingLevels[3]).toBe(3); // Example 1
       expect(headingLevels[4]).toBe(2); // Practice
       expect(headingLevels[5]).toBe(3); // Related Topics
@@ -1290,7 +1294,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       // Verify main sections maintain proper order
       const dashboardContent = testContainer.querySelector('.dashboard-content');
       const contentChildren = Array.from(dashboardContent.children);
-      
+
       expect(contentChildren[0].classList.contains('sidebar')).toBe(true);
       expect(contentChildren[1].tagName).toBe('MAIN');
       expect(contentChildren[2].tagName).toBe('ASIDE');
@@ -1299,16 +1303,17 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       const focusableElements = testContainer.querySelectorAll(
         'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
-      
+
       // Should be able to tab through in logical order
       expect(focusableElements.length).toBeGreaterThan(0);
-      
+
       // Verify each focusable element has appropriate labels/descriptions
       focusableElements.forEach(element => {
-        const hasLabel = element.getAttribute('aria-label') || 
-                        element.getAttribute('aria-labelledby') ||
-                        element.getAttribute('aria-describedby') ||
-                        element.textContent.trim();
+        const hasLabel =
+          element.getAttribute('aria-label') ||
+          element.getAttribute('aria-labelledby') ||
+          element.getAttribute('aria-describedby') ||
+          element.textContent.trim();
         expect(hasLabel).toBeTruthy();
       });
     });
@@ -1546,7 +1551,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       const requiredInputs = testContainer.querySelectorAll('[required]');
       requiredInputs.forEach(input => {
         expect(input.getAttribute('aria-required')).toBe('true');
-        
+
         const label = testContainer.querySelector(`label[for="${input.id}"]`);
         if (label) {
           const requiredIndicator = label.querySelector('[aria-label="required"]');
@@ -1625,7 +1630,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       const usernameInput = testContainer.querySelector('#username');
       const passwordInput = testContainer.querySelector('#password');
       const confirmPasswordInput = testContainer.querySelector('#confirm-password');
-      
+
       const usernameError = testContainer.querySelector('#username-error');
       const passwordStrength = testContainer.querySelector('#password-strength');
       const passwordError = testContainer.querySelector('#password-error');
@@ -1635,7 +1640,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       usernameInput.setAttribute('aria-invalid', 'true');
       usernameError.style.display = 'block';
       usernameError.textContent = 'Username must be at least 3 characters long';
-      
+
       expect(usernameInput.getAttribute('aria-invalid')).toBe('true');
       expect(usernameError.textContent).toContain('3 characters');
       expect(usernameError.getAttribute('aria-live')).toBe('assertive');
@@ -1652,7 +1657,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       confirmPasswordInput.setAttribute('aria-invalid', 'true');
       confirmPasswordError.style.display = 'block';
       confirmPasswordError.textContent = 'Passwords do not match';
-      
+
       expect(confirmPasswordInput.getAttribute('aria-invalid')).toBe('true');
       expect(confirmPasswordError.textContent).toBe('Passwords do not match');
 
@@ -1660,7 +1665,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       usernameInput.setAttribute('aria-invalid', 'false');
       usernameError.style.display = 'none';
       usernameError.textContent = '';
-      
+
       expect(usernameInput.getAttribute('aria-invalid')).toBe('false');
       expect(usernameError.textContent).toBe('');
     });
@@ -2082,7 +2087,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       // Test feedback announcements
       expect(feedbackRegion.getAttribute('aria-live')).toBe('assertive');
-      
+
       // Simulate activity interactions
       feedbackRegion.textContent = 'Fish moved to ocean habitat. Correct!';
       expect(feedbackRegion.textContent).toContain('Correct!');
@@ -2335,24 +2340,24 @@ describe('Comprehensive Screen Reader Support Tests', () => {
         {
           name: 'NVDA',
           userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) NVDA/2023.1',
-          expected: true
+          expected: true,
         },
         {
-          name: 'JAWS', 
+          name: 'JAWS',
           userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) JAWS/2023',
-          expected: true
+          expected: true,
         },
         {
           name: 'VoiceOver',
           userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15',
           speechSynthesis: true,
-          expected: true
+          expected: true,
         },
         {
           name: 'No Screen Reader',
           userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124',
-          expected: false
-        }
+          expected: false,
+        },
       ];
 
       for (const test of screenReaderTests) {
@@ -2360,18 +2365,18 @@ describe('Comprehensive Screen Reader Support Tests', () => {
         if (service) {
           service.destroy();
         }
-        
+
         // Mock user agent
         Object.defineProperty(navigator, 'userAgent', {
           writable: true,
-          value: test.userAgent
+          value: test.userAgent,
         });
 
         // Mock speech synthesis if needed
         if (test.speechSynthesis) {
           window.speechSynthesis.getVoices.mockReturnValue([
             { name: 'Alex', lang: 'en-US' },
-            { name: 'Victoria', lang: 'en-US' }
+            { name: 'Victoria', lang: 'en-US' },
           ]);
         } else {
           window.speechSynthesis.getVoices.mockReturnValue([]);
@@ -2379,20 +2384,20 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
         service = new AccessibilityService();
         const detected = service.detectScreenReader();
-        
+
         expect(detected).toBe(test.expected);
-        
+
         if (detected) {
           await service.initialize();
-          
+
           // Verify screen reader optimizations are applied
           const announcer = document.getElementById('accessibility-announcer-polite');
           expect(announcer).toBeTruthy();
           expect(announcer.getAttribute('aria-live')).toBe('polite');
-          
+
           // Test announcement functionality
           service.announce('Test announcement for ' + test.name, 'polite');
-          
+
           setTimeout(() => {
             expect(announcer.textContent).toBe('Test announcement for ' + test.name);
           }, 150);

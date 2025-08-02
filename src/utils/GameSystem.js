@@ -11,7 +11,7 @@ class GameSystem {
     this.templateEngine = null;
     this.eventListeners = new Map();
     this.initialized = false;
-    
+
     // Bind methods to preserve 'this' context
     this.handleWindowUnload = this.handleWindowUnload.bind(this);
   }
@@ -38,10 +38,9 @@ class GameSystem {
 
       this.initialized = true;
       logger.info('GameSystem initialized successfully');
-      
+
       // Emit initialization event
       this.emit('systemInitialized');
-      
     } catch (error) {
       logger.error('Failed to initialize GameSystem:', error);
       throw error;
@@ -54,12 +53,12 @@ class GameSystem {
   async loadGameRegistry() {
     try {
       const { gameRegistry } = await import('../config/gameRegistry.js');
-      
+
       // Register all games from the registry
       for (const gameConfig of gameRegistry) {
         await this.registerGame(gameConfig);
       }
-      
+
       logger.info(`Loaded ${this.registry.size} games from registry`);
     } catch (error) {
       logger.warn('Game registry not found, starting with empty registry:', error);
@@ -74,15 +73,15 @@ class GameSystem {
     try {
       // Validate game configuration
       const validatedConfig = this.validateGameConfig(gameConfig);
-      
+
       // Store in registry
       this.registry.set(validatedConfig.id, validatedConfig);
-      
+
       logger.debug(`Registered game: ${validatedConfig.id}`);
-      
+
       // Emit registration event
       this.emit('gameRegistered', validatedConfig);
-      
+
       return validatedConfig;
     } catch (error) {
       logger.error(`Failed to register game ${gameConfig?.id}:`, error);
@@ -114,7 +113,7 @@ class GameSystem {
       difficulty: config.difficulty || ['easy'],
       template: config.template || 'game',
       features: config.features || ['analytics', 'progress', 'mobile', 'themes'],
-      options: config.options || {}
+      options: config.options || {},
     };
 
     // Validate ID format (alphanumeric with hyphens)
@@ -154,7 +153,7 @@ class GameSystem {
       // Dynamic import of game class
       const gameModule = await import(gameConfig.scriptPath);
       const GameClass = gameModule.default || gameModule[gameConfig.gameClass];
-      
+
       if (!GameClass) {
         throw new Error(`Game class not found: ${gameConfig.gameClass}`);
       }
@@ -164,25 +163,25 @@ class GameSystem {
         ...gameConfig.options,
         ...options,
         gameId: gameId,
-        gameConfig: gameConfig
+        gameConfig: gameConfig,
       };
 
       // Instantiate game
       const gameInstance = new GameClass(containerId, gameOptions);
-      
+
       // Store active game
       this.activeGames.set(gameId, {
         instance: gameInstance,
         config: gameConfig,
         containerId: containerId,
-        startTime: Date.now()
+        startTime: Date.now(),
       });
 
       // Set up game event handlers
       this.setupGameEventHandlers(gameId, gameInstance);
 
       logger.info(`Loaded game: ${gameId}`);
-      
+
       // Emit game loaded event
       this.emit('gameLoaded', { gameId, instance: gameInstance });
 
@@ -201,11 +200,11 @@ class GameSystem {
   setupGameEventHandlers(gameId, gameInstance) {
     // Handle game completion
     if (typeof gameInstance.on === 'function') {
-      gameInstance.on('gameComplete', (data) => {
+      gameInstance.on('gameComplete', data => {
         this.emit('gameComplete', { gameId, ...data });
       });
 
-      gameInstance.on('gameError', (error) => {
+      gameInstance.on('gameError', error => {
         logger.error(`Game ${gameId} error:`, error);
         this.emit('gameError', { gameId, error });
       });
@@ -235,10 +234,9 @@ class GameSystem {
       this.activeGames.delete(gameId);
 
       logger.info(`Destroyed game: ${gameId}`);
-      
+
       // Emit game destroyed event
       this.emit('gameDestroyed', { gameId });
-      
     } catch (error) {
       logger.error(`Failed to destroy game ${gameId}:`, error);
       throw error;
@@ -259,17 +257,15 @@ class GameSystem {
     }
 
     if (filters.difficulty) {
-      games = games.filter(game => 
-        game.difficulty.includes(filters.difficulty)
-      );
+      games = games.filter(game => game.difficulty.includes(filters.difficulty));
     }
 
     if (filters.features) {
-      const requiredFeatures = Array.isArray(filters.features) 
-        ? filters.features 
+      const requiredFeatures = Array.isArray(filters.features)
+        ? filters.features
         : [filters.features];
-      
-      games = games.filter(game => 
+
+      games = games.filter(game =>
         requiredFeatures.every(feature => game.features.includes(feature))
       );
     }
@@ -306,7 +302,7 @@ class GameSystem {
   /**
    * Event system for cross-game communication
    */
-  
+
   /**
    * Add event listener
    * @param {string} event - Event name
@@ -398,7 +394,7 @@ class GameSystem {
       registeredGames: this.registry.size,
       activeGames: this.activeGames.size,
       initialized: this.initialized,
-      gamesList: Array.from(this.registry.keys())
+      gamesList: Array.from(this.registry.keys()),
     };
   }
 }

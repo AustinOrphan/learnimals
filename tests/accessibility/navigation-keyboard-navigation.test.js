@@ -1,6 +1,6 @@
 /**
  * Navigation System Keyboard Navigation Tests
- * 
+ *
  * Tests keyboard accessibility for the main navigation system including:
  * - Mobile menu keyboard navigation
  * - Skip links integration
@@ -20,58 +20,60 @@ const mockNavigationComponent = {
   mobileMenuButton: null,
   navMenu: null,
   menuOpen: false,
-  
+
   init() {
     this.mobileMenuButton = document.getElementById('mobile-menu');
     this.navMenu = document.getElementById('nav-menu');
-    
+
     if (this.mobileMenuButton && this.navMenu) {
       this.mobileMenuButton.setAttribute('aria-expanded', 'false');
       this.mobileMenuButton.setAttribute('aria-controls', 'nav-menu');
       this.addEventListeners();
     }
   },
-  
+
   addEventListeners() {
     this.mobileMenuButton.addEventListener('click', () => this.toggleMenu());
-    
-    document.addEventListener('click', (e) => {
-      if (this.menuOpen && 
-          !this.navMenu.contains(e.target) && 
-          !this.mobileMenuButton.contains(e.target)) {
+
+    document.addEventListener('click', e => {
+      if (
+        this.menuOpen &&
+        !this.navMenu.contains(e.target) &&
+        !this.mobileMenuButton.contains(e.target)
+      ) {
         this.closeMenu();
       }
     });
-    
-    document.addEventListener('keydown', (e) => {
+
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && this.menuOpen) {
         this.closeMenu();
       }
     });
-    
+
     const menuLinks = this.navMenu.querySelectorAll('a');
     menuLinks.forEach(link => {
-      link.addEventListener('keydown', (e) => {
+      link.addEventListener('keydown', e => {
         if ((e.key === 'Enter' || e.key === ' ') && window.innerWidth <= 768) {
           setTimeout(() => this.closeMenu(), 100);
         }
       });
     });
   },
-  
+
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
     this.navMenu.classList.toggle('active');
     this.mobileMenuButton.classList.toggle('active');
     this.mobileMenuButton.setAttribute('aria-expanded', this.menuOpen ? 'true' : 'false');
   },
-  
+
   closeMenu() {
     this.menuOpen = false;
     this.navMenu.classList.remove('active');
     this.mobileMenuButton.classList.remove('active');
     this.mobileMenuButton.setAttribute('aria-expanded', 'false');
-  }
+  },
 };
 
 // Mock logger
@@ -95,10 +97,10 @@ vi.mock('../../src/utils/logger.js', () => ({
     debug: vi.fn(),
     game: vi.fn(),
     user: vi.fn(),
-    perf: vi.fn()
+    perf: vi.fn(),
   },
   Logger: vi.fn(),
-  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 }
+  LOG_LEVELS: { ERROR: 0, WARN: 1, INFO: 2, DEBUG: 3 },
 }));
 
 describe('Navigation System Keyboard Navigation Tests', () => {
@@ -112,18 +114,18 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     document.body.appendChild(testContainer);
 
     // Mock focus methods
-    Element.prototype.focus = vi.fn(function() {
+    Element.prototype.focus = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: this,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
     });
 
-    Element.prototype.blur = vi.fn(function() {
+    Element.prototype.blur = vi.fn(function () {
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
-        configurable: true
+        configurable: true,
       });
       this.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     });
@@ -132,7 +134,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 1024
+      value: 1024,
     });
 
     navigationComponent = Object.create(mockNavigationComponent);
@@ -180,18 +182,28 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should have proper tab order through navigation elements', () => {
       const focusableElements = accessibilityTester.getFocusableElements(testContainer);
-      
+
       const expectedOrder = [
-        'skip-link', 'skip-link', 'mobile-menu', 'nav-home', 'nav-subjects', 
-        'nav-math', 'nav-science', 'nav-reading', 'nav-art', 'nav-games', 
-        'nav-progress', 'nav-about'
+        'skip-link',
+        'skip-link',
+        'mobile-menu',
+        'nav-home',
+        'nav-subjects',
+        'nav-math',
+        'nav-science',
+        'nav-reading',
+        'nav-art',
+        'nav-games',
+        'nav-progress',
+        'nav-about',
       ];
 
       focusableElements.forEach((element, index) => {
         const expectedClass = expectedOrder[index];
-        const hasExpectedClass = element.classList.contains(expectedClass) || 
-                                element.id === expectedClass ||
-                                element.className.includes(expectedClass);
+        const hasExpectedClass =
+          element.classList.contains(expectedClass) ||
+          element.id === expectedClass ||
+          element.className.includes(expectedClass);
         expect(hasExpectedClass).toBe(true);
       });
     });
@@ -199,17 +211,17 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     it('should handle skip links with proper focus management', () => {
       const skipToMain = testContainer.querySelector('a[href="#main-content"]');
       const skipToNav = testContainer.querySelector('a[href="#main-navigation"]');
-      
+
       // Test skip to navigation
       skipToNav.focus();
       expect(document.activeElement).toBe(skipToNav);
-      
+
       const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true });
       clickEvent.preventDefault = vi.fn();
       skipToNav.dispatchEvent(clickEvent);
 
       expect(clickEvent.preventDefault).toHaveBeenCalled();
-      
+
       // Should focus the navigation landmark
       const navigation = testContainer.querySelector('#main-navigation');
       expect(navigation.focus).toHaveBeenCalled();
@@ -224,9 +236,9 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       homeLink.focus();
       expect(document.activeElement).toBe(homeLink);
 
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
       });
       homeLink.dispatchEvent(tabEvent);
 
@@ -239,7 +251,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     beforeEach(() => {
       // Set mobile viewport
       Object.defineProperty(window, 'innerWidth', {
-        value: 600
+        value: 600,
       });
 
       testContainer.innerHTML = `
@@ -263,16 +275,16 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should toggle mobile menu with Enter and Space keys', () => {
       const mobileMenuButton = testContainer.querySelector('#mobile-menu');
-      
+
       expect(navigationComponent.menuOpen).toBe(false);
       expect(mobileMenuButton.getAttribute('aria-expanded')).toBe('false');
 
       // Test Enter key
       mobileMenuButton.focus();
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
-        bubbles: true, 
-        cancelable: true 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        bubbles: true,
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       mobileMenuButton.dispatchEvent(enterEvent);
@@ -284,10 +296,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       expect(mobileMenuButton.getAttribute('aria-expanded')).toBe('true');
 
       // Test Space key
-      const spaceEvent = new KeyboardEvent('keydown', { 
-        key: ' ', 
-        bubbles: true, 
-        cancelable: true 
+      const spaceEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        bubbles: true,
+        cancelable: true,
       });
       spaceEvent.preventDefault = vi.fn();
       mobileMenuButton.dispatchEvent(spaceEvent);
@@ -301,15 +313,15 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should close mobile menu with Escape key', () => {
       const mobileMenuButton = testContainer.querySelector('#mobile-menu');
-      
+
       // Open menu first
       navigationComponent.toggleMenu();
       expect(navigationComponent.menuOpen).toBe(true);
 
       // Test Escape key
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
       });
       document.dispatchEvent(escapeEvent);
 
@@ -323,11 +335,11 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       expect(navigationComponent.menuOpen).toBe(true);
 
       const homeLink = testContainer.querySelector('#nav-home');
-      
+
       // Test Enter key on menu link
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
-        bubbles: true 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        bubbles: true,
       });
       homeLink.dispatchEvent(enterEvent);
 
@@ -340,19 +352,19 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     it('should manage focus properly when mobile menu opens/closes', () => {
       const mobileMenuButton = testContainer.querySelector('#mobile-menu');
       const navMenu = testContainer.querySelector('#nav-menu');
-      
+
       mobileMenuButton.focus();
-      
+
       // Open menu
       navigationComponent.toggleMenu();
-      
+
       // First menu item should receive focus
       const firstMenuItem = navMenu.querySelector('a');
       expect(firstMenuItem.focus).toHaveBeenCalled();
-      
+
       // Close menu
       navigationComponent.closeMenu();
-      
+
       // Focus should return to mobile menu button
       expect(mobileMenuButton.focus).toHaveBeenCalled();
     });
@@ -392,55 +404,55 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       // Set up dropdown behavior
       const dropdownTriggers = testContainer.querySelectorAll('[aria-haspopup="true"]');
       dropdownTriggers.forEach(trigger => {
-        const menuId = trigger.getAttribute('aria-controls') || 
-                      trigger.id.replace('-trigger', '-menu');
+        const menuId =
+          trigger.getAttribute('aria-controls') || trigger.id.replace('-trigger', '-menu');
         const menu = document.getElementById(menuId);
-        
+
         if (menu) {
-          trigger.addEventListener('keydown', (e) => {
+          trigger.addEventListener('keydown', e => {
             switch (e.key) {
-            case 'Enter':
-            case ' ':
-              e.preventDefault();
-              toggleDropdown(trigger, menu);
-              break;
-            case 'ArrowDown':
-              e.preventDefault();
-              openDropdown(trigger, menu);
-              focusFirstMenuItem(menu);
-              break;
-            case 'Escape':
-              closeDropdown(trigger, menu);
-              break;
+              case 'Enter':
+              case ' ':
+                e.preventDefault();
+                toggleDropdown(trigger, menu);
+                break;
+              case 'ArrowDown':
+                e.preventDefault();
+                openDropdown(trigger, menu);
+                focusFirstMenuItem(menu);
+                break;
+              case 'Escape':
+                closeDropdown(trigger, menu);
+                break;
             }
           });
 
           // Add menu item navigation
           const menuItems = menu.querySelectorAll('a');
           menuItems.forEach((item, index) => {
-            item.addEventListener('keydown', (e) => {
+            item.addEventListener('keydown', e => {
               switch (e.key) {
-              case 'ArrowDown':
-                e.preventDefault();
-                focusMenuItem(menuItems, index + 1);
-                break;
-              case 'ArrowUp':
-                e.preventDefault();
-                focusMenuItem(menuItems, index - 1);
-                break;
-              case 'Home':
-                e.preventDefault();
-                focusMenuItem(menuItems, 0);
-                break;
-              case 'End':
-                e.preventDefault();
-                focusMenuItem(menuItems, menuItems.length - 1);
-                break;
-              case 'Escape':
-                e.preventDefault();
-                closeDropdown(trigger, menu);
-                trigger.focus();
-                break;
+                case 'ArrowDown':
+                  e.preventDefault();
+                  focusMenuItem(menuItems, index + 1);
+                  break;
+                case 'ArrowUp':
+                  e.preventDefault();
+                  focusMenuItem(menuItems, index - 1);
+                  break;
+                case 'Home':
+                  e.preventDefault();
+                  focusMenuItem(menuItems, 0);
+                  break;
+                case 'End':
+                  e.preventDefault();
+                  focusMenuItem(menuItems, menuItems.length - 1);
+                  break;
+                case 'Escape':
+                  e.preventDefault();
+                  closeDropdown(trigger, menu);
+                  trigger.focus();
+                  break;
               }
             });
           });
@@ -487,10 +499,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       expect(subjectsMenu.hidden).toBe(true);
 
       // Test Enter key
-      const enterEvent = new KeyboardEvent('keydown', { 
-        key: 'Enter', 
-        bubbles: true, 
-        cancelable: true 
+      const enterEvent = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        bubbles: true,
+        cancelable: true,
       });
       enterEvent.preventDefault = vi.fn();
       subjectsTrigger.dispatchEvent(enterEvent);
@@ -507,10 +519,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       subjectsTrigger.focus();
 
       // Open dropdown with Arrow Down
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       subjectsTrigger.dispatchEvent(arrowDownEvent);
@@ -536,10 +548,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       mathLink.focus();
 
       // Test Arrow Down
-      const arrowDownEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowDown', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowDownEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
       });
       arrowDownEvent.preventDefault = vi.fn();
       mathLink.dispatchEvent(arrowDownEvent);
@@ -549,10 +561,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
       // Test Arrow Up
       scienceLink.focus();
-      const arrowUpEvent = new KeyboardEvent('keydown', { 
-        key: 'ArrowUp', 
-        bubbles: true, 
-        cancelable: true 
+      const arrowUpEvent = new KeyboardEvent('keydown', {
+        key: 'ArrowUp',
+        bubbles: true,
+        cancelable: true,
       });
       arrowUpEvent.preventDefault = vi.fn();
       scienceLink.dispatchEvent(arrowUpEvent);
@@ -571,10 +583,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       mathLink.focus();
 
       // Test End key
-      const endEvent = new KeyboardEvent('keydown', { 
-        key: 'End', 
-        bubbles: true, 
-        cancelable: true 
+      const endEvent = new KeyboardEvent('keydown', {
+        key: 'End',
+        bubbles: true,
+        cancelable: true,
       });
       endEvent.preventDefault = vi.fn();
       mathLink.dispatchEvent(endEvent);
@@ -583,10 +595,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       expect(codingLink.focus).toHaveBeenCalled();
 
       // Test Home key
-      const homeEvent = new KeyboardEvent('keydown', { 
-        key: 'Home', 
-        bubbles: true, 
-        cancelable: true 
+      const homeEvent = new KeyboardEvent('keydown', {
+        key: 'Home',
+        bubbles: true,
+        cancelable: true,
       });
       homeEvent.preventDefault = vi.fn();
       codingLink.dispatchEvent(homeEvent);
@@ -606,10 +618,10 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       mathLink.focus();
 
       // Test Escape key
-      const escapeEvent = new KeyboardEvent('keydown', { 
-        key: 'Escape', 
-        bubbles: true, 
-        cancelable: true 
+      const escapeEvent = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
       });
       escapeEvent.preventDefault = vi.fn();
       mathLink.dispatchEvent(escapeEvent);
@@ -649,7 +661,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should indicate current page properly', () => {
       const currentPage = testContainer.querySelector('#breadcrumb-current');
-      
+
       expect(currentPage.getAttribute('aria-current')).toBe('page');
       expect(currentPage.tagName.toLowerCase()).not.toBe('a'); // Should not be a link
     });
@@ -662,9 +674,9 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       expect(document.activeElement).toBe(homeLink);
 
       // Test tab navigation
-      const tabEvent = new KeyboardEvent('keydown', { 
-        key: 'Tab', 
-        bubbles: true 
+      const tabEvent = new KeyboardEvent('keydown', {
+        key: 'Tab',
+        bubbles: true,
       });
       homeLink.dispatchEvent(tabEvent);
 
@@ -694,7 +706,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should announce current page in navigation', () => {
       const currentPageLink = testContainer.querySelector('[aria-current="page"]');
-      
+
       expect(currentPageLink.getAttribute('aria-current')).toBe('page');
       expect(currentPageLink.textContent).toBe('Home');
     });
@@ -704,27 +716,27 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       const mobileMenuButton = testContainer.querySelector('#mobile-menu');
 
       // Mock announcement function
-      const announceNavState = (message) => {
+      const announceNavState = message => {
         announcements.textContent = message;
       };
 
       // Test opening menu
       navigationComponent.toggleMenu();
       announceNavState('Navigation menu opened');
-      
+
       expect(announcements.textContent).toBe('Navigation menu opened');
       expect(announcements.getAttribute('aria-live')).toBe('polite');
 
       // Test closing menu
       navigationComponent.closeMenu();
       announceNavState('Navigation menu closed');
-      
+
       expect(announcements.textContent).toBe('Navigation menu closed');
     });
 
     it('should announce navigation changes for screen readers', () => {
       const announceSpy = vi.spyOn(accessibilityService, 'announce');
-      
+
       // Simulate navigation change
       const homeLink = testContainer.querySelector('#nav-home');
       homeLink.click();
@@ -751,7 +763,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should handle focus when navigation items are dynamically added', () => {
       const navMenu = testContainer.querySelector('#nav-menu');
-      
+
       // Add new navigation item
       const newItem = document.createElement('li');
       newItem.innerHTML = '<a href="/blog" id="nav-blog">Blog</a>';
@@ -759,7 +771,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
       const focusableElements = accessibilityTester.getFocusableElements(navMenu);
       expect(focusableElements.length).toBe(4);
-      
+
       const blogLink = testContainer.querySelector('#nav-blog');
       expect(accessibilityTester.isKeyboardAccessible(blogLink)).toBe(true);
     });
@@ -784,7 +796,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should handle navigation when no items are focusable', () => {
       const navMenu = testContainer.querySelector('#nav-menu');
-      
+
       // Remove all links
       navMenu.innerHTML = '<li>Static text only</li>';
 
@@ -815,7 +827,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     it('should adapt keyboard navigation for different screen sizes', () => {
       // Desktop view
       Object.defineProperty(window, 'innerWidth', { value: 1200 });
-      
+
       testContainer.innerHTML = `
         <nav id="responsive-nav">
           <ul class="desktop-menu">
@@ -835,7 +847,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
       // Mobile view
       Object.defineProperty(window, 'innerWidth', { value: 600 });
-      
+
       // Update visibility
       testContainer.querySelector('.desktop-menu').hidden = true;
       testContainer.querySelector('#mobile-toggle').hidden = false;
@@ -929,7 +941,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       `;
 
       const menuItems = testContainer.querySelectorAll('[role="menuitem"]');
-      
+
       menuItems.forEach(item => {
         expect(item.getAttribute('role')).toBe('menuitem');
         expect(accessibilityTester.isKeyboardAccessible(item)).toBe(true);

@@ -21,18 +21,18 @@ export class AchievementSystem {
    */
   async initialize() {
     await dbService.initialize();
-    
+
     // Subscribe to progress events
-    this.progressUnsubscribe = progressService.subscribe((event) => {
+    this.progressUnsubscribe = progressService.subscribe(event => {
       this._handleProgressEvent(event);
     });
-    
+
     // Load default achievements
     this._loadDefaultAchievements();
-    
+
     // Load user achievements into cache
     await this._loadUserAchievements();
-    
+
     logger.info('AchievementSystem initialized');
   }
 
@@ -53,8 +53,8 @@ export class AchievementSystem {
         rarity: 'common',
         criteria: {
           type: 'activity_count',
-          threshold: 1
-        }
+          threshold: 1,
+        },
       },
       {
         id: 'first_perfect_score',
@@ -66,8 +66,8 @@ export class AchievementSystem {
         rarity: 'uncommon',
         criteria: {
           type: 'perfect_score',
-          threshold: 1
-        }
+          threshold: 1,
+        },
       },
 
       // Subject-Specific Achievements
@@ -83,8 +83,8 @@ export class AchievementSystem {
         criteria: {
           type: 'subject_activities',
           subject: 'math',
-          threshold: 5
-        }
+          threshold: 5,
+        },
       },
       {
         id: 'science_beginner',
@@ -98,8 +98,8 @@ export class AchievementSystem {
         criteria: {
           type: 'subject_activities',
           subject: 'science',
-          threshold: 5
-        }
+          threshold: 5,
+        },
       },
       {
         id: 'reading_beginner',
@@ -113,8 +113,8 @@ export class AchievementSystem {
         criteria: {
           type: 'subject_activities',
           subject: 'reading',
-          threshold: 5
-        }
+          threshold: 5,
+        },
       },
       {
         id: 'art_beginner',
@@ -128,8 +128,8 @@ export class AchievementSystem {
         criteria: {
           type: 'subject_activities',
           subject: 'art',
-          threshold: 5
-        }
+          threshold: 5,
+        },
       },
 
       // Streak Achievements
@@ -143,8 +143,8 @@ export class AchievementSystem {
         rarity: 'uncommon',
         criteria: {
           type: 'streak',
-          threshold: 3
-        }
+          threshold: 3,
+        },
       },
       {
         id: 'streak_7',
@@ -156,8 +156,8 @@ export class AchievementSystem {
         rarity: 'rare',
         criteria: {
           type: 'streak',
-          threshold: 7
-        }
+          threshold: 7,
+        },
       },
       {
         id: 'streak_30',
@@ -169,8 +169,8 @@ export class AchievementSystem {
         rarity: 'legendary',
         criteria: {
           type: 'streak',
-          threshold: 30
-        }
+          threshold: 30,
+        },
       },
 
       // Performance Achievements
@@ -185,8 +185,8 @@ export class AchievementSystem {
         criteria: {
           type: 'average_score',
           threshold: 90,
-          minimum_activities: 10
-        }
+          minimum_activities: 10,
+        },
       },
       {
         id: 'speed_learner',
@@ -199,8 +199,8 @@ export class AchievementSystem {
         criteria: {
           type: 'fast_completion',
           threshold: 10,
-          max_time: 300000 // 5 minutes in milliseconds
-        }
+          max_time: 300000, // 5 minutes in milliseconds
+        },
       },
 
       // Special Achievements
@@ -216,8 +216,8 @@ export class AchievementSystem {
           type: 'time_of_day',
           start_hour: 6,
           end_hour: 9,
-          threshold: 5
-        }
+          threshold: 5,
+        },
       },
       {
         id: 'night_owl',
@@ -231,8 +231,8 @@ export class AchievementSystem {
           type: 'time_of_day',
           start_hour: 18,
           end_hour: 21,
-          threshold: 5
-        }
+          threshold: 5,
+        },
       },
 
       // Mastery Achievements
@@ -249,8 +249,8 @@ export class AchievementSystem {
           type: 'subject_mastery',
           subject: 'math',
           activities: 50,
-          average_score: 80
-        }
+          average_score: 80,
+        },
       },
       {
         id: 'all_rounder',
@@ -263,9 +263,9 @@ export class AchievementSystem {
         criteria: {
           type: 'all_subjects',
           subjects: ['math', 'science', 'reading', 'art'],
-          min_per_subject: 3
-        }
-      }
+          min_per_subject: 3,
+        },
+      },
     ];
 
     achievements.forEach(achievement => {
@@ -282,14 +282,14 @@ export class AchievementSystem {
   async _loadUserAchievements() {
     try {
       const allAchievements = await dbService.getAll(STORES.ACHIEVEMENTS);
-      
+
       allAchievements.forEach(achievement => {
         if (!this.unlockedAchievements.has(achievement.userId)) {
           this.unlockedAchievements.set(achievement.userId, new Set());
         }
         this.unlockedAchievements.get(achievement.userId).add(achievement.type);
       });
-      
+
       logger.debug(`Loaded ${allAchievements.length} user achievements into cache`);
     } catch (error) {
       logger.error('Failed to load user achievements:', error);
@@ -302,15 +302,15 @@ export class AchievementSystem {
    */
   async _handleProgressEvent(event) {
     if (!event.userId) return;
-    
+
     try {
       switch (event.type) {
-      case 'activity:completed':
-        await this._checkActivityAchievements(event.userId, event);
-        break;
-      case 'session:ended':
-        await this._checkSessionAchievements(event.userId, event);
-        break;
+        case 'activity:completed':
+          await this._checkActivityAchievements(event.userId, event);
+          break;
+        case 'session:ended':
+          await this._checkSessionAchievements(event.userId, event);
+          break;
       }
     } catch (error) {
       logger.error('Error handling progress event for achievements:', error);
@@ -323,19 +323,15 @@ export class AchievementSystem {
    */
   async _checkActivityAchievements(userId, event) {
     const userProgress = await progressService.getUserProgress(userId);
-    
+
     // Check all achievement definitions
     for (const [achievementId, definition] of this.achievementDefinitions) {
       if (await this._hasAchievement(userId, achievementId)) {
         continue; // Already unlocked
       }
-      
-      const isUnlocked = await this._evaluateAchievementCriteria(
-        definition, 
-        userProgress, 
-        event
-      );
-      
+
+      const isUnlocked = await this._evaluateAchievementCriteria(definition, userProgress, event);
+
       if (isUnlocked) {
         await this._unlockAchievement(userId, achievementId);
       }
@@ -358,62 +354,70 @@ export class AchievementSystem {
    */
   async _evaluateAchievementCriteria(definition, userProgress, _event) {
     const { criteria } = definition;
-    
+
     switch (criteria.type) {
-    case 'activity_count':
-      return userProgress.totalActivities >= criteria.threshold;
-        
-    case 'perfect_score': {
-      // Check if any completed activity has perfect score
-      const allProgress = await dbService.queryByIndex(STORES.PROGRESS, 'userId', userProgress.userId);
-      return allProgress.some(p => p.status === 'completed' && p.score >= 100);
-    }
-        
-    case 'subject_activities': {
-      const subjectProgress = userProgress.subjects[criteria.subject];
-      return subjectProgress && subjectProgress.completed >= criteria.threshold;
-    }
-        
-    case 'streak':
-      return userProgress.overall.streak >= criteria.threshold;
-        
-    case 'average_score':
-      return userProgress.completedActivities >= criteria.minimum_activities &&
-               userProgress.overall.averageScore >= criteria.threshold;
-               
-    case 'fast_completion': {
-      const fastActivities = await this._countFastCompletions(
-        userProgress.userId, 
-        criteria.max_time
-      );
-      return fastActivities >= criteria.threshold;
-    }
-        
-    case 'time_of_day': {
-      const timeActivities = await this._countTimeOfDayActivities(
-        userProgress.userId,
-        criteria.start_hour,
-        criteria.end_hour
-      );
-      return timeActivities >= criteria.threshold;
-    }
-        
-    case 'subject_mastery': {
-      const masterySubject = userProgress.subjects[criteria.subject];
-      return masterySubject && 
-               masterySubject.completed >= criteria.activities &&
-               masterySubject.averageScore >= criteria.average_score;
-    }
-               
-    case 'all_subjects':
-      return criteria.subjects.every(subject => {
-        const subjectData = userProgress.subjects[subject];
-        return subjectData && subjectData.completed >= criteria.min_per_subject;
-      });
-        
-    default:
-      logger.warn(`Unknown achievement criteria type: ${criteria.type}`);
-      return false;
+      case 'activity_count':
+        return userProgress.totalActivities >= criteria.threshold;
+
+      case 'perfect_score': {
+        // Check if any completed activity has perfect score
+        const allProgress = await dbService.queryByIndex(
+          STORES.PROGRESS,
+          'userId',
+          userProgress.userId
+        );
+        return allProgress.some(p => p.status === 'completed' && p.score >= 100);
+      }
+
+      case 'subject_activities': {
+        const subjectProgress = userProgress.subjects[criteria.subject];
+        return subjectProgress && subjectProgress.completed >= criteria.threshold;
+      }
+
+      case 'streak':
+        return userProgress.overall.streak >= criteria.threshold;
+
+      case 'average_score':
+        return (
+          userProgress.completedActivities >= criteria.minimum_activities &&
+          userProgress.overall.averageScore >= criteria.threshold
+        );
+
+      case 'fast_completion': {
+        const fastActivities = await this._countFastCompletions(
+          userProgress.userId,
+          criteria.max_time
+        );
+        return fastActivities >= criteria.threshold;
+      }
+
+      case 'time_of_day': {
+        const timeActivities = await this._countTimeOfDayActivities(
+          userProgress.userId,
+          criteria.start_hour,
+          criteria.end_hour
+        );
+        return timeActivities >= criteria.threshold;
+      }
+
+      case 'subject_mastery': {
+        const masterySubject = userProgress.subjects[criteria.subject];
+        return (
+          masterySubject &&
+          masterySubject.completed >= criteria.activities &&
+          masterySubject.averageScore >= criteria.average_score
+        );
+      }
+
+      case 'all_subjects':
+        return criteria.subjects.every(subject => {
+          const subjectData = userProgress.subjects[subject];
+          return subjectData && subjectData.completed >= criteria.min_per_subject;
+        });
+
+      default:
+        logger.warn(`Unknown achievement criteria type: ${criteria.type}`);
+        return false;
     }
   }
 
@@ -423,10 +427,8 @@ export class AchievementSystem {
    */
   async _countFastCompletions(userId, maxTime) {
     const allProgress = await dbService.queryByIndex(STORES.PROGRESS, 'userId', userId);
-    return allProgress.filter(p => 
-      p.status === 'completed' && 
-      p.timeSpent && 
-      p.timeSpent <= maxTime
+    return allProgress.filter(
+      p => p.status === 'completed' && p.timeSpent && p.timeSpent <= maxTime
     ).length;
   }
 
@@ -438,7 +440,7 @@ export class AchievementSystem {
     const allProgress = await dbService.queryByIndex(STORES.PROGRESS, 'userId', userId);
     return allProgress.filter(p => {
       if (p.status !== 'completed' || !p.timestamp) return false;
-      
+
       const completionHour = new Date(p.timestamp).getHours();
       return completionHour >= startHour && completionHour <= endHour;
     }).length;
@@ -467,28 +469,28 @@ export class AchievementSystem {
       rarity: definition.rarity,
       unlockedAt: new Date(),
       metadata: {
-        definition: definition.id
-      }
+        definition: definition.id,
+      },
     };
 
     await dbService.add(STORES.ACHIEVEMENTS, achievement);
-    
+
     // Update cache
     if (!this.unlockedAchievements.has(userId)) {
       this.unlockedAchievements.set(userId, new Set());
     }
     this.unlockedAchievements.get(userId).add(achievementId);
-    
+
     logger.info(`Achievement unlocked: ${definition.title} for user ${userId}`);
-    
+
     // Notify subscribers
     this._notifySubscribers({
       type: 'achievement:unlocked',
       userId,
       achievement,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     // Show notification to user
     this._showAchievementNotification(achievement);
   }
@@ -509,16 +511,16 @@ export class AchievementSystem {
       actions: [
         {
           label: 'View All',
-          action: () => this._openAchievementsPage()
-        }
-      ]
+          action: () => this._openAchievementsPage(),
+        },
+      ],
     };
-    
+
     // Emit notification event
     this._notifySubscribers({
       type: 'notification:show',
       notification,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
@@ -540,12 +542,12 @@ export class AchievementSystem {
    */
   async getUserAchievements(userId) {
     const achievements = await dbService.queryByIndex(STORES.ACHIEVEMENTS, 'userId', userId);
-    
+
     return achievements
       .sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt))
       .map(achievement => ({
         ...achievement,
-        isRecent: Date.now() - new Date(achievement.unlockedAt).getTime() < 24 * 60 * 60 * 1000
+        isRecent: Date.now() - new Date(achievement.unlockedAt).getTime() < 24 * 60 * 60 * 1000,
       }));
   }
 
@@ -557,43 +559,45 @@ export class AchievementSystem {
   async getAchievementProgress(userId) {
     const userAchievements = await this.getUserAchievements(userId);
     const userProgress = await progressService.getUserProgress(userId);
-    
+
     const progressByType = {};
     const availableAchievements = [];
-    
+
     // Check progress for each achievement definition
     for (const [achievementId, definition] of this.achievementDefinitions) {
       const isUnlocked = await this._hasAchievement(userId, achievementId);
-      
+
       if (!isUnlocked) {
         const progress = await this._calculateAchievementProgress(definition, userProgress);
         availableAchievements.push({
           ...definition,
           progress,
-          isUnlocked: false
+          isUnlocked: false,
         });
       }
-      
+
       // Group by type
       if (!progressByType[definition.type]) {
         progressByType[definition.type] = {
           total: 0,
           unlocked: 0,
-          points: 0
+          points: 0,
         };
       }
-      
+
       progressByType[definition.type].total++;
       if (isUnlocked) {
         progressByType[definition.type].unlocked++;
         progressByType[definition.type].points += definition.points;
       }
     }
-    
+
     const totalPoints = userAchievements.reduce((sum, a) => sum + a.points, 0);
-    const totalPossiblePoints = Array.from(this.achievementDefinitions.values())
-      .reduce((sum, def) => sum + def.points, 0);
-    
+    const totalPossiblePoints = Array.from(this.achievementDefinitions.values()).reduce(
+      (sum, def) => sum + def.points,
+      0
+    );
+
     return {
       userId,
       totalAchievements: userAchievements.length,
@@ -606,7 +610,7 @@ export class AchievementSystem {
       availableAchievements: availableAchievements
         .filter(a => a.progress.percentage > 0)
         .sort((a, b) => b.progress.percentage - a.progress.percentage)
-        .slice(0, 5) // Show top 5 in-progress achievements
+        .slice(0, 5), // Show top 5 in-progress achievements
     };
   }
 
@@ -619,42 +623,42 @@ export class AchievementSystem {
     let current = 0;
     let total = criteria.threshold || 1;
     let percentage = 0;
-    
+
     switch (criteria.type) {
-    case 'activity_count':
-      current = userProgress.totalActivities;
-      total = criteria.threshold;
-      break;
-        
-    case 'subject_activities': {
-      const subjectProgress = userProgress.subjects[criteria.subject];
-      current = subjectProgress ? subjectProgress.completed : 0;
-      total = criteria.threshold;
-      break;
-    }
-        
-    case 'streak':
-      current = userProgress.overall.streak;
-      total = criteria.threshold;
-      break;
-        
-    case 'average_score':
-      if (userProgress.completedActivities >= criteria.minimum_activities) {
-        current = Math.min(userProgress.overall.averageScore, criteria.threshold);
+      case 'activity_count':
+        current = userProgress.totalActivities;
         total = criteria.threshold;
+        break;
+
+      case 'subject_activities': {
+        const subjectProgress = userProgress.subjects[criteria.subject];
+        current = subjectProgress ? subjectProgress.completed : 0;
+        total = criteria.threshold;
+        break;
       }
-      break;
-        
+
+      case 'streak':
+        current = userProgress.overall.streak;
+        total = criteria.threshold;
+        break;
+
+      case 'average_score':
+        if (userProgress.completedActivities >= criteria.minimum_activities) {
+          current = Math.min(userProgress.overall.averageScore, criteria.threshold);
+          total = criteria.threshold;
+        }
+        break;
+
       // Add more progress calculations as needed
     }
-    
+
     percentage = total > 0 ? Math.min((current / total) * 100, 100) : 0;
-    
+
     return {
       current,
       total,
       percentage: Math.round(percentage),
-      isComplete: percentage >= 100
+      isComplete: percentage >= 100,
     };
   }
 
@@ -665,26 +669,24 @@ export class AchievementSystem {
    */
   async getLeaderboard(options = {}) {
     const { type = 'points', limit = 10, timeframe = 'all' } = options;
-    
+
     const allAchievements = await dbService.getAll(STORES.ACHIEVEMENTS);
-    
+
     // Filter by timeframe if specified
     let filteredAchievements = allAchievements;
     if (timeframe !== 'all') {
       const cutoffDate = new Date();
       switch (timeframe) {
-      case 'week':
-        cutoffDate.setDate(cutoffDate.getDate() - 7);
-        break;
-      case 'month':
-        cutoffDate.setMonth(cutoffDate.getMonth() - 1);
-        break;
+        case 'week':
+          cutoffDate.setDate(cutoffDate.getDate() - 7);
+          break;
+        case 'month':
+          cutoffDate.setMonth(cutoffDate.getMonth() - 1);
+          break;
       }
-      filteredAchievements = allAchievements.filter(
-        a => new Date(a.unlockedAt) >= cutoffDate
-      );
+      filteredAchievements = allAchievements.filter(a => new Date(a.unlockedAt) >= cutoffDate);
     }
-    
+
     // Group by user and calculate totals
     const userTotals = {};
     filteredAchievements.forEach(achievement => {
@@ -693,19 +695,22 @@ export class AchievementSystem {
           userId: achievement.userId,
           points: 0,
           achievements: 0,
-          latestAchievement: null
+          latestAchievement: null,
         };
       }
-      
+
       userTotals[achievement.userId].points += achievement.points;
       userTotals[achievement.userId].achievements++;
-      
-      if (!userTotals[achievement.userId].latestAchievement || 
-          new Date(achievement.unlockedAt) > new Date(userTotals[achievement.userId].latestAchievement)) {
+
+      if (
+        !userTotals[achievement.userId].latestAchievement ||
+        new Date(achievement.unlockedAt) >
+          new Date(userTotals[achievement.userId].latestAchievement)
+      ) {
         userTotals[achievement.userId].latestAchievement = achievement.unlockedAt;
       }
     });
-    
+
     // Sort and limit results
     const sortKey = type === 'points' ? 'points' : 'achievements';
     return Object.values(userTotals)
@@ -713,7 +718,7 @@ export class AchievementSystem {
       .slice(0, limit)
       .map((user, index) => ({
         ...user,
-        rank: index + 1
+        rank: index + 1,
       }));
   }
 
@@ -725,15 +730,15 @@ export class AchievementSystem {
     if (!definition.id || !definition.title || !definition.criteria) {
       throw new Error('Achievement definition must have id, title, and criteria');
     }
-    
+
     this.achievementDefinitions.set(definition.id, {
       type: 'custom',
       points: 50,
       rarity: 'common',
       icon: '🏅',
-      ...definition
+      ...definition,
     });
-    
+
     logger.info(`Added custom achievement: ${definition.title}`);
   }
 
@@ -778,12 +783,12 @@ export class AchievementSystem {
   async exportUserAchievements(userId) {
     const achievements = await this.getUserAchievements(userId);
     const progress = await this.getAchievementProgress(userId);
-    
+
     return {
       userId,
       exportedAt: new Date(),
       achievements,
-      progress
+      progress,
     };
   }
 

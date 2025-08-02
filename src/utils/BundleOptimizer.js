@@ -13,31 +13,31 @@ export class BundleOptimizer {
       enableModulePrefetch: true,
       enableModulePreload: true,
       enableModuleBundle: true,
-      
+
       // CSS optimization
       enableCriticalCSS: true,
       enableCSSPreload: true,
       criticalCSSThreshold: 1000, // ms
-      
+
       // JavaScript optimization
       enableJSCodeSplitting: true,
       enableTreeShaking: true,
       enableMinification: true,
-      
+
       // Loading strategy
       loadingStrategy: 'eager', // 'eager', 'lazy', 'auto'
       priorityHints: true,
-      
+
       // Performance budgets
       maxBundleSize: 250 * 1024, // 250KB
       maxInitialLoad: 100 * 1024, // 100KB
       warningThreshold: 200 * 1024, // 200KB
-      
+
       // Caching
       enableServiceWorker: true,
       cacheStrategy: 'networkFirst', // 'cacheFirst', 'networkFirst', 'staleWhileRevalidate'
-      
-      ...options
+
+      ...options,
     };
 
     this.loadedModules = new Set();
@@ -46,7 +46,7 @@ export class BundleOptimizer {
     this.bundleCache = new Map();
     this.loadingPromises = new Map();
     this.performanceMetrics = new Map();
-    
+
     // Feature detection
     this.features = {
       modulePreload: this.supportsModulePreload(),
@@ -54,7 +54,7 @@ export class BundleOptimizer {
       intersectionObserver: 'IntersectionObserver' in window,
       serviceWorker: 'serviceWorker' in navigator,
       webp: this.supportsWebP(),
-      brotli: this.supportsBrotli()
+      brotli: this.supportsBrotli(),
     };
   }
 
@@ -86,7 +86,6 @@ export class BundleOptimizer {
       this.monitorBundlePerformance();
 
       logger.info('✅ Bundle optimizer initialized');
-
     } catch (error) {
       logger.error('❌ Failed to initialize bundle optimizer:', error);
       throw error;
@@ -97,52 +96,61 @@ export class BundleOptimizer {
    * Analyze current bundles
    */
   async analyzeBundles() {
-    const startTime = performance.now();
-    
-    // Analyze loaded resources
-    const resources = performance.getEntriesByType('resource');
-    const bundles = resources.filter(resource => 
-      resource.name.endsWith('.js') || resource.name.endsWith('.css')
-    );
+    const startTime = window.performance.now();
 
-    let totalSize = 0;
-    let criticalSize = 0;
+    try {
+      // Analyze loaded resources
+      const resources = window.performance.getEntriesByType('resource');
+      const bundles = resources.filter(
+        resource => resource.name.endsWith('.js') || resource.name.endsWith('.css')
+      );
 
-    bundles.forEach(bundle => {
-      const size = bundle.transferSize || bundle.encodedBodySize || 0;
-      totalSize += size;
+      let totalSize = 0;
+      let criticalSize = 0;
 
-      // Mark as critical if loaded early
-      if (bundle.startTime < this.options.criticalCSSThreshold) {
-        criticalSize += size;
-        this.criticalResources.add(bundle.name);
+      bundles.forEach(bundle => {
+        const size = bundle.transferSize || bundle.encodedBodySize || 0;
+        totalSize += size;
+
+        // Mark as critical if loaded early
+        if (bundle.startTime < this.options.criticalCSSThreshold) {
+          criticalSize += size;
+          this.criticalResources.add(bundle.name);
+        }
+
+        this.performanceMetrics.set(bundle.name, {
+          size,
+          loadTime: bundle.duration,
+          type: bundle.name.endsWith('.js') ? 'javascript' : 'css',
+          critical: bundle.startTime < this.options.criticalCSSThreshold,
+        });
+      });
+
+      // Check against performance budget
+      if (totalSize > this.options.maxBundleSize) {
+        logger.warn(
+          `Bundle size (${(totalSize / 1024).toFixed(2)}KB) exceeds budget (${(this.options.maxBundleSize / 1024).toFixed(2)}KB)`
+        );
+        this.emit('budgetExceeded', { totalSize, budget: this.options.maxBundleSize });
       }
 
-      this.performanceMetrics.set(bundle.name, {
-        size,
-        loadTime: bundle.duration,
-        type: bundle.name.endsWith('.js') ? 'javascript' : 'css',
-        critical: bundle.startTime < this.options.criticalCSSThreshold
+      if (criticalSize > this.options.maxInitialLoad) {
+        logger.warn(
+          `Critical resource size (${(criticalSize / 1024).toFixed(2)}KB) exceeds initial load budget`
+        );
+        this.emit('criticalBudgetExceeded', { criticalSize, budget: this.options.maxInitialLoad });
+      }
+
+      const analysisTime = window.performance.now() - startTime;
+      logger.debug(`Bundle analysis completed in ${analysisTime.toFixed(2)}ms`, {
+        totalBundles: bundles.length,
+        totalSize: `${(totalSize / 1024).toFixed(2)}KB`,
+        criticalSize: `${(criticalSize / 1024).toFixed(2)}KB`,
       });
-    });
-
-    // Check against performance budget
-    if (totalSize > this.options.maxBundleSize) {
-      logger.warn(`Bundle size (${(totalSize / 1024).toFixed(2)}KB) exceeds budget (${(this.options.maxBundleSize / 1024).toFixed(2)}KB)`);
-      this.emit('budgetExceeded', { totalSize, budget: this.options.maxBundleSize });
+    } catch (error) {
+      logger.error('Bundle analysis failed:', error);
+      throw error;
     }
-
-    if (criticalSize > this.options.maxInitialLoad) {
-      logger.warn(`Critical resource size (${(criticalSize / 1024).toFixed(2)}KB) exceeds initial load budget`);
-      this.emit('criticalBudgetExceeded', { criticalSize, budget: this.options.maxInitialLoad });
-    }
-
-    const analysisTime = performance.now() - startTime;
-    logger.debug(`Bundle analysis completed in ${analysisTime.toFixed(2)}ms`, {
-      totalBundles: bundles.length,
-      totalSize: `${(totalSize / 1024).toFixed(2)}KB`,
-      criticalSize: `${(criticalSize / 1024).toFixed(2)}KB`
-    });
   }
 
   /**
@@ -151,12 +159,12 @@ export class BundleOptimizer {
   setupCriticalResourceLoading() {
     // Identify and preload critical resources
     this.preloadCriticalResources();
-    
+
     // Extract and inline critical CSS
     if (this.options.enableCriticalCSS) {
       this.extractCriticalCSS();
     }
-    
+
     // Defer non-critical resources
     this.deferNonCriticalResources();
   }
@@ -169,10 +177,10 @@ export class BundleOptimizer {
       // Core CSS
       '/src/styles/base/styles.css',
       '/src/styles/base/responsive.css',
-      
+
       // Core JavaScript
       '/src/components/BaseComponent.js',
-      '/src/utils/logger.js'
+      '/src/utils/logger.js',
     ];
 
     criticalResources.forEach(resource => {
@@ -189,11 +197,11 @@ export class BundleOptimizer {
     const link = document.createElement('link');
     link.rel = href.endsWith('.js') ? 'modulepreload' : 'preload';
     link.href = href;
-    
+
     if (priority && this.options.priorityHints) {
       link.fetchPriority = priority;
     }
-    
+
     if (href.endsWith('.css')) {
       link.as = 'style';
     } else if (href.endsWith('.js')) {
@@ -219,10 +227,10 @@ export class BundleOptimizer {
   extractCriticalCSS() {
     // This would typically be done at build time
     // Here we'll implement runtime critical CSS extraction for above-the-fold content
-    
+
     const criticalElements = this.getAboveTheFoldElements();
     const criticalStyles = this.extractStylesForElements(criticalElements);
-    
+
     if (criticalStyles.length > 0) {
       this.inlineCriticalStyles(criticalStyles);
     }
@@ -256,7 +264,7 @@ export class BundleOptimizer {
     sheets.forEach(sheet => {
       try {
         const rules = Array.from(sheet.cssRules || sheet.rules || []);
-        
+
         rules.forEach(rule => {
           // eslint-disable-next-line no-undef
           if (rule.type === CSSRule.STYLE_RULE) {
@@ -286,12 +294,12 @@ export class BundleOptimizer {
    */
   inlineCriticalStyles(styles) {
     const criticalCSS = styles.join('\n');
-    
+
     // Create style element for critical CSS
     const styleElement = document.createElement('style');
     styleElement.textContent = criticalCSS;
     styleElement.setAttribute('data-critical', 'true');
-    
+
     // Insert before first stylesheet
     const firstStylesheet = document.querySelector('link[rel="stylesheet"]');
     if (firstStylesheet) {
@@ -331,10 +339,14 @@ export class BundleOptimizer {
     // Use media attribute trick to defer loading
     const originalMedia = link.media || 'all';
     link.media = 'print';
-    
-    link.addEventListener('load', () => {
-      link.media = originalMedia;
-    }, { once: true });
+
+    link.addEventListener(
+      'load',
+      () => {
+        link.media = originalMedia;
+      },
+      { once: true }
+    );
 
     // Fallback timeout
     setTimeout(() => {
@@ -372,17 +384,20 @@ export class BundleOptimizer {
    */
   setupLinkPrefetching() {
     // eslint-disable-next-line no-undef
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const link = entry.target;
-          this.prefetchLink(link);
-          observer.unobserve(link);
-        }
-      });
-    }, {
-      rootMargin: '200px'
-    });
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const link = entry.target;
+            this.prefetchLink(link);
+            observer.unobserve(link);
+          }
+        });
+      },
+      {
+        rootMargin: '200px',
+      }
+    );
 
     // Observe all internal links
     const links = document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="../"]');
@@ -402,7 +417,7 @@ export class BundleOptimizer {
     const prefetchLink = document.createElement('link');
     prefetchLink.rel = 'prefetch';
     prefetchLink.href = href;
-    
+
     document.head.appendChild(prefetchLink);
     this.prefetchedModules.add(href);
 
@@ -439,10 +454,10 @@ export class BundleOptimizer {
       '/src/components/ui/Modal.js',
       '/src/components/ui/Toast.js',
       '/src/features/games/bubble-pop/BubblePopGame.js',
-      
+
       // Utility modules
       '/src/utils/AnimationManager.js',
-      '/src/utils/EventDelegation.js'
+      '/src/utils/EventDelegation.js',
     ];
 
     idleResources.forEach(resource => {
@@ -458,10 +473,10 @@ export class BundleOptimizer {
   setupCodeSplitting() {
     // Create dynamic import wrapper
     this.createDynamicImportWrapper();
-    
+
     // Set up route-based splitting
     this.setupRouteSplitting();
-    
+
     // Set up component-based splitting
     this.setupComponentSplitting();
   }
@@ -471,11 +486,7 @@ export class BundleOptimizer {
    */
   createDynamicImportWrapper() {
     window.lazyImport = async (modulePath, options = {}) => {
-      const {
-        timeout = 10000,
-        fallback = null,
-        cache = true
-      } = options;
+      const { timeout = 10000, fallback = null, cache = true } = options;
 
       // Check cache first
       if (cache && this.bundleCache.has(modulePath)) {
@@ -488,40 +499,42 @@ export class BundleOptimizer {
       }
 
       const startTime = performance.now();
-      
+
       const loadPromise = Promise.race([
         this.importWithRetry(modulePath),
-        this.createTimeoutPromise(timeout)
-      ]).then(module => {
-        const loadTime = performance.now() - startTime;
-        
-        // Cache successful import
-        if (cache) {
-          this.bundleCache.set(modulePath, module);
-        }
-        
-        // Track performance
-        this.performanceMetrics.set(modulePath, {
-          loadTime,
-          type: 'dynamic-import',
-          cached: false
-        });
+        this.createTimeoutPromise(timeout),
+      ])
+        .then(module => {
+          const loadTime = performance.now() - startTime;
 
-        logger.debug(`Dynamic import completed: ${modulePath} (${loadTime.toFixed(2)}ms)`);
-        return module;
-        
-      }).catch(error => {
-        logger.error(`Failed to import module: ${modulePath}`, error);
-        
-        if (fallback) {
-          logger.debug(`Using fallback for: ${modulePath}`);
-          return fallback;
-        }
-        
-        throw error;
-      }).finally(() => {
-        this.loadingPromises.delete(modulePath);
-      });
+          // Cache successful import
+          if (cache) {
+            this.bundleCache.set(modulePath, module);
+          }
+
+          // Track performance
+          this.performanceMetrics.set(modulePath, {
+            loadTime,
+            type: 'dynamic-import',
+            cached: false,
+          });
+
+          logger.debug(`Dynamic import completed: ${modulePath} (${loadTime.toFixed(2)}ms)`);
+          return module;
+        })
+        .catch(error => {
+          logger.error(`Failed to import module: ${modulePath}`, error);
+
+          if (fallback) {
+            logger.debug(`Using fallback for: ${modulePath}`);
+            return fallback;
+          }
+
+          throw error;
+        })
+        .finally(() => {
+          this.loadingPromises.delete(modulePath);
+        });
 
       this.loadingPromises.set(modulePath, loadPromise);
       return loadPromise;
@@ -533,13 +546,13 @@ export class BundleOptimizer {
    */
   async importWithRetry(modulePath, maxRetries = 3) {
     let lastError;
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         return await import(modulePath);
       } catch (error) {
         lastError = error;
-        
+
         if (attempt < maxRetries) {
           const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
           logger.debug(`Import attempt ${attempt} failed, retrying in ${delay}ms:`, modulePath);
@@ -547,7 +560,7 @@ export class BundleOptimizer {
         }
       }
     }
-    
+
     throw lastError;
   }
 
@@ -568,16 +581,17 @@ export class BundleOptimizer {
   setupRouteSplitting() {
     // This would integrate with a router
     // For now, set up basic page-based splitting
-    
+
     const routeMap = {
       // eslint-disable-next-line no-undef
       '/games/bubble-pop': () => lazyImport('/src/features/games/bubble-pop/BubblePopGame.js'),
       // eslint-disable-next-line no-undef
-      '/games/word-scramble': () => lazyImport('/src/features/games/word-scramble/WordScrambleGame.js'),
+      '/games/word-scramble': () =>
+        lazyImport('/src/features/games/word-scramble/WordScrambleGame.js'),
       // eslint-disable-next-line no-undef
       '/profile': () => lazyImport('/src/features/user/Profile.js'),
       // eslint-disable-next-line no-undef
-      '/settings': () => lazyImport('/src/features/user/Settings.js')
+      '/settings': () => lazyImport('/src/features/user/Settings.js'),
     };
 
     // Pre-split routes based on current path
@@ -603,9 +617,13 @@ export class BundleOptimizer {
       const href = link.getAttribute('href');
       if (routeMap[href]) {
         // Prefetch on hover
-        link.addEventListener('mouseenter', () => {
-          routeMap[href]();
-        }, { once: true });
+        link.addEventListener(
+          'mouseenter',
+          () => {
+            routeMap[href]();
+          },
+          { once: true }
+        );
       }
     });
   }
@@ -629,10 +647,10 @@ export class BundleOptimizer {
         // eslint-disable-next-line no-undef
         const module = await lazyImport(path);
         const ComponentClass = module.default || module[name];
-        
+
         const component = new ComponentClass(options);
         await component.render(container);
-        
+
         return component;
       } catch (error) {
         logger.error(`Failed to load lazy component ${name}:`, error);
@@ -652,7 +670,7 @@ export class BundleOptimizer {
 
     try {
       const registration = await navigator.serviceWorker.register('/serviceWorker.js');
-      
+
       registration.addEventListener('updatefound', () => {
         logger.info('Service Worker update found');
         this.emit('serviceWorkerUpdate', { registration });
@@ -660,7 +678,6 @@ export class BundleOptimizer {
 
       logger.info('Service Worker registered successfully');
       this.emit('serviceWorkerRegistered', { registration });
-
     } catch (error) {
       logger.error('Service Worker registration failed:', error);
       this.emit('serviceWorkerError', { error });
@@ -673,7 +690,7 @@ export class BundleOptimizer {
   monitorBundlePerformance() {
     // Monitor resource loading
     // eslint-disable-next-line no-undef
-    const observer = new PerformanceObserver((list) => {
+    const observer = new PerformanceObserver(list => {
       list.getEntries().forEach(entry => {
         if (entry.name.endsWith('.js') || entry.name.endsWith('.css')) {
           this.trackResourcePerformance(entry);
@@ -695,7 +712,7 @@ export class BundleOptimizer {
   trackResourcePerformance(entry) {
     const size = entry.transferSize || entry.encodedBodySize || 0;
     const loadTime = entry.duration;
-    
+
     // Check against performance budgets
     if (size > this.options.warningThreshold) {
       logger.warn(`Large resource detected: ${entry.name} (${(size / 1024).toFixed(2)}KB)`);
@@ -713,7 +730,7 @@ export class BundleOptimizer {
       size,
       loadTime,
       type: entry.name.endsWith('.js') ? 'javascript' : 'css',
-      timestamp: entry.startTime
+      timestamp: entry.startTime,
     });
   }
 
@@ -723,7 +740,7 @@ export class BundleOptimizer {
   monitorPerformanceFallback() {
     // Use MutationObserver to watch for new script/link elements
     // eslint-disable-next-line no-undef
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
         mutation.addedNodes.forEach(node => {
           if (node.nodeName === 'SCRIPT' || node.nodeName === 'LINK') {
@@ -741,15 +758,15 @@ export class BundleOptimizer {
    */
   trackElementLoad(element) {
     const startTime = performance.now();
-    
+
     element.addEventListener('load', () => {
       const loadTime = performance.now() - startTime;
       const url = element.src || element.href;
-      
+
       this.performanceMetrics.set(url, {
         loadTime,
         type: element.nodeName.toLowerCase(),
-        timestamp: startTime
+        timestamp: startTime,
       });
     });
 
@@ -780,12 +797,12 @@ export class BundleOptimizer {
       if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'test') {
         return false; // Default to false in test environment
       }
-      
+
       const canvas = document.createElement('canvas');
       if (!canvas || typeof canvas.toDataURL !== 'function') {
         return false;
       }
-      
+
       canvas.width = 1;
       canvas.height = 1;
       const dataUrl = canvas.toDataURL('image/webp');
@@ -823,7 +840,7 @@ export class BundleOptimizer {
   getMetrics() {
     const metrics = Array.from(this.performanceMetrics.entries()).map(([url, data]) => ({
       url,
-      ...data
+      ...data,
     }));
 
     return {
@@ -832,7 +849,7 @@ export class BundleOptimizer {
       averageLoadTime: metrics.reduce((sum, m) => sum + m.loadTime, 0) / metrics.length,
       bundles: metrics,
       cacheHitRate: this.bundleCache.size / Math.max(this.loadedModules.size, 1),
-      features: this.features
+      features: this.features,
     };
   }
 
@@ -868,7 +885,7 @@ export class BundleOptimizer {
       prefetchedModules: this.prefetchedModules.size,
       cachedModules: this.bundleCache.size,
       activeLoading: this.loadingPromises.size,
-      criticalResources: this.criticalResources.size
+      criticalResources: this.criticalResources.size,
     };
   }
 
@@ -895,7 +912,7 @@ export class BundleOptimizer {
     this.performanceMetrics.set(bundleName, {
       ...(this.performanceMetrics.get(bundleName) || {}),
       size,
-      timestamp: performance.now()
+      timestamp: performance.now(),
     });
   }
 
@@ -905,12 +922,12 @@ export class BundleOptimizer {
   calculateSplittingEffectiveness(splittingMetrics) {
     const { originalBundleSize, splitBundles, cacheableSize } = splittingMetrics;
     const totalSplitSize = splitBundles.reduce((sum, bundle) => sum + bundle.size, 0);
-    
+
     return {
       sizeReduction: ((originalBundleSize - totalSplitSize) / originalBundleSize) * 100,
       cacheability: (cacheableSize / totalSplitSize) * 100,
       loadTimeImprovement: this.estimateLoadTimeImprovement(splitBundles),
-      bundleCount: splitBundles.length
+      bundleCount: splitBundles.length,
     };
   }
 
@@ -919,13 +936,14 @@ export class BundleOptimizer {
    */
   estimateLoadTimeImprovement(splitBundles) {
     // Simplified estimation - parallel loading reduces total time
-    const parallelLoadTime = Math.max(...splitBundles.map(bundle => 
-      this.estimateLoadTime(bundle.size)
-    ));
-    const sequentialLoadTime = splitBundles.reduce((sum, bundle) => 
-      sum + this.estimateLoadTime(bundle.size), 0
+    const parallelLoadTime = Math.max(
+      ...splitBundles.map(bundle => this.estimateLoadTime(bundle.size))
     );
-    
+    const sequentialLoadTime = splitBundles.reduce(
+      (sum, bundle) => sum + this.estimateLoadTime(bundle.size),
+      0
+    );
+
     return ((sequentialLoadTime - parallelLoadTime) / sequentialLoadTime) * 100;
   }
 
@@ -944,7 +962,7 @@ export class BundleOptimizer {
     const visited = new Set();
     const recursionStack = new Set();
 
-    const hasCycle = (node) => {
+    const hasCycle = node => {
       if (recursionStack.has(node)) return true;
       if (visited.has(node)) return false;
 
@@ -970,10 +988,10 @@ export class BundleOptimizer {
     // Group modules by frequency and size
     const highFrequency = modules.filter(m => m.frequency > 0.5);
     const lowFrequency = modules.filter(m => m.frequency <= 0.5);
-    
+
     return {
       vendor: highFrequency.filter(m => m.size < 100000), // < 100KB high frequency
-      lazy: lowFrequency.concat(highFrequency.filter(m => m.size >= 100000))
+      lazy: lowFrequency.concat(highFrequency.filter(m => m.size >= 100000)),
     };
   }
 
@@ -988,7 +1006,7 @@ export class BundleOptimizer {
     return {
       chunkName: chunkNameMatch ? chunkNameMatch[1] : null,
       prefetch: prefetchMatch ? prefetchMatch[1] === 'true' : false,
-      preload: preloadMatch ? preloadMatch[1] === 'true' : false
+      preload: preloadMatch ? preloadMatch[1] === 'true' : false,
     };
   }
 
@@ -1010,7 +1028,7 @@ export class BundleOptimizer {
     const chunkMap = {
       'critical-chunk': '/chunks/critical.js',
       'secondary-chunk': '/chunks/secondary.js',
-      'optional-chunk': '/chunks/optional.js'
+      'optional-chunk': '/chunks/optional.js',
     };
     return chunkMap[chunkName];
   }
@@ -1020,9 +1038,11 @@ export class BundleOptimizer {
    */
   shouldSplitResource(resourceUrl) {
     // Split JavaScript files by default
-    return resourceUrl.endsWith('.js') && 
-           !resourceUrl.includes('critical') &&
-           !resourceUrl.includes('inline');
+    return (
+      resourceUrl.endsWith('.js') &&
+      !resourceUrl.includes('critical') &&
+      !resourceUrl.includes('inline')
+    );
   }
 
   /**
@@ -1030,19 +1050,19 @@ export class BundleOptimizer {
    */
   applyLoadingStrategy(resourceUrl) {
     const strategy = this.options.loadingStrategy;
-    
+
     switch (strategy) {
-    case 'eager':
-      this.preloadResource(resourceUrl);
-      break;
-    case 'lazy':
-      // Don't preload, load on demand
-      break;
-    case 'auto':
-      if (this.criticalResources.has(resourceUrl)) {
+      case 'eager':
         this.preloadResource(resourceUrl);
-      }
-      break;
+        break;
+      case 'lazy':
+        // Don't preload, load on demand
+        break;
+      case 'auto':
+        if (this.criticalResources.has(resourceUrl)) {
+          this.preloadResource(resourceUrl);
+        }
+        break;
     }
   }
 
@@ -1052,10 +1072,10 @@ export class BundleOptimizer {
   destroy() {
     // Clear all caches
     this.clearCache();
-    
+
     // Clear performance metrics
     this.performanceMetrics.clear();
-    
+
     // Remove global functions
     if (window.lazyImport) {
       delete window.lazyImport;

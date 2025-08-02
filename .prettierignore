@@ -33,7 +33,7 @@ Thumbs.db
 *.temp
 
 # Documentation
-*.md
+# *.md files are now formatted by Prettier
 
 # Git files
 .git/
