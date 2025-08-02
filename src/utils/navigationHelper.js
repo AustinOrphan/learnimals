@@ -7,15 +7,15 @@ if (typeof window !== 'undefined' && !window.logger) {
   window.logger = window.createLogger
     ? window.createLogger('NavigationHelper')
     : {
-        debug: (...args) => {
-          if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-            console.log('[NavigationHelper DEBUG]', ...args);
-          }
-        },
-        error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
-        warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
-        info: (...args) => console.info('[NavigationHelper INFO]', ...args),
-      };
+      debug: (...args) => {
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+          console.log('[NavigationHelper DEBUG]', ...args);
+        }
+      },
+      error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
+      warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
+      info: (...args) => console.info('[NavigationHelper INFO]', ...args),
+    };
 }
 
 class NavigationHelper {

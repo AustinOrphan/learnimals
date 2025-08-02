@@ -390,26 +390,26 @@ export default class PerformanceMonitor extends BaseComponent {
     const thresholds = this.thresholds;
 
     switch (metric) {
-      case 'fps':
-        if (value >= thresholds.excellent.fps) return 100;
-        if (value >= thresholds.good.fps) return 80;
-        if (value >= thresholds.fair.fps) return 60;
-        return 40;
+    case 'fps':
+      if (value >= thresholds.excellent.fps) return 100;
+      if (value >= thresholds.good.fps) return 80;
+      if (value >= thresholds.fair.fps) return 60;
+      return 40;
 
-      case 'renderTime':
-        if (value <= thresholds.excellent.renderTime) return 100;
-        if (value <= thresholds.good.renderTime) return 80;
-        if (value <= thresholds.fair.renderTime) return 60;
-        return 40;
+    case 'renderTime':
+      if (value <= thresholds.excellent.renderTime) return 100;
+      if (value <= thresholds.good.renderTime) return 80;
+      if (value <= thresholds.fair.renderTime) return 60;
+      return 40;
 
-      case 'memory':
-        if (value <= thresholds.excellent.memory) return 100;
-        if (value <= thresholds.good.memory) return 80;
-        if (value <= thresholds.fair.memory) return 60;
-        return 40;
+    case 'memory':
+      if (value <= thresholds.excellent.memory) return 100;
+      if (value <= thresholds.good.memory) return 80;
+      if (value <= thresholds.fair.memory) return 60;
+      return 40;
 
-      default:
-        return 100;
+    default:
+      return 100;
     }
   }
 

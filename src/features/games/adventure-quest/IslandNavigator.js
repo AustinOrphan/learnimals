@@ -48,7 +48,7 @@ export default class IslandNavigator {
   initializeIslandData() {
     return {
       starting_dock: {
-        name: "Sky's Observatory",
+        name: 'Sky\'s Observatory',
         type: 'hub',
         position: { x: 400, y: 300 },
         description:
@@ -227,25 +227,25 @@ export default class IslandNavigator {
     if (!condition) return true;
 
     switch (condition.type) {
-      case 'story_progress':
-        const completedChapters = this.game.storyProgression.getCompletedChapters();
-        return completedChapters.includes(condition.value);
+    case 'story_progress':
+      const completedChapters = this.game.storyProgression.getCompletedChapters();
+      return completedChapters.includes(condition.value);
 
-      case 'challenges_completed':
-        const challengeProgress = this.game.challengeManager.getProgress();
-        const subjectChallenges = this.game.discoveryTracker.discoveries.filter(
-          d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
-        );
-        return subjectChallenges.length >= condition.value;
+    case 'challenges_completed':
+      const challengeProgress = this.game.challengeManager.getProgress();
+      const subjectChallenges = this.game.discoveryTracker.discoveries.filter(
+        d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
+      );
+      return subjectChallenges.length >= condition.value;
 
-      case 'discoveries':
-        return this.game.gameState.totalDiscoveries >= condition.value;
+    case 'discoveries':
+      return this.game.gameState.totalDiscoveries >= condition.value;
 
-      case 'score':
-        return this.game.gameState.score >= condition.value;
+    case 'score':
+      return this.game.gameState.score >= condition.value;
 
-      default:
-        return false;
+    default:
+      return false;
     }
   }
 

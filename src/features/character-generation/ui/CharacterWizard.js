@@ -88,8 +88,8 @@ export default class CharacterWizard extends BaseComponent {
             </div>
             <div class="progress-steps">
               ${this.steps
-                .map(
-                  step => `
+    .map(
+      step => `
                 <div class="progress-step ${step.id <= this.currentStep ? 'active' : ''} ${step.id === this.currentStep ? 'current' : ''}" 
                      data-step="${step.id}">
                   <div class="step-number">${step.id}</div>
@@ -99,8 +99,8 @@ export default class CharacterWizard extends BaseComponent {
                   </div>
                 </div>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </div>
           </div>
 
@@ -182,20 +182,20 @@ export default class CharacterWizard extends BaseComponent {
    */
   renderStep(step) {
     switch (step.name) {
-      case 'basics':
-        return this.renderBasicsStep();
-      case 'appearance':
-        return this.renderAppearanceStep();
-      case 'personality':
-        return this.renderPersonalityStep();
-      case 'education':
-        return this.renderEducationStep();
-      case 'interactions':
-        return this.renderInteractionsStep();
-      case 'review':
-        return this.renderReviewStep();
-      default:
-        return '<div>Step not implemented</div>';
+    case 'basics':
+      return this.renderBasicsStep();
+    case 'appearance':
+      return this.renderAppearanceStep();
+    case 'personality':
+      return this.renderPersonalityStep();
+    case 'education':
+      return this.renderEducationStep();
+    case 'interactions':
+      return this.renderInteractionsStep();
+    case 'review':
+      return this.renderReviewStep();
+    default:
+      return '<div>Step not implemented</div>';
     }
   }
 
@@ -231,14 +231,14 @@ export default class CharacterWizard extends BaseComponent {
           <label for="character-subject" class="form-label">Subject Area *</label>
           <select id="character-subject" class="form-select" required>
             ${subjects
-              .map(
-                subject => `
+    .map(
+      subject => `
               <option value="${subject}" ${this.characterData.subject === subject ? 'selected' : ''}>
                 ${subject.charAt(0).toUpperCase() + subject.slice(1)}
               </option>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </select>
           <div class="form-help">What subject will your character help teach?</div>
         </div>
@@ -277,16 +277,16 @@ export default class CharacterWizard extends BaseComponent {
               <label class="form-label">Base Shape</label>
               <div class="shape-selector">
                 ${['circle', 'oval', 'square', 'rectangle', 'triangle', 'hexagon']
-                  .map(
-                    shape => `
+    .map(
+      shape => `
                   <button type="button" class="shape-option ${(this.characterData.appearance?.baseShape || 'circle') === shape ? 'selected' : ''}" 
                           data-shape="${shape}" title="${shape}">
                     <div class="shape-preview shape-${shape}"></div>
                     <span>${shape}</span>
                   </button>
                 `
-                  )
-                  .join('')}
+    )
+    .join('')}
               </div>
             </div>
 
@@ -294,15 +294,15 @@ export default class CharacterWizard extends BaseComponent {
               <label class="form-label">Size</label>
               <div class="size-selector">
                 ${['small', 'medium', 'large']
-                  .map(
-                    size => `
+    .map(
+      size => `
                   <button type="button" class="size-option ${(this.characterData.appearance?.size || 'medium') === size ? 'selected' : ''}" 
                           data-size="${size}">
                     ${size.charAt(0).toUpperCase() + size.slice(1)}
                   </button>
                 `
-                  )
-                  .join('')}
+    )
+    .join('')}
               </div>
             </div>
           </div>
@@ -311,8 +311,8 @@ export default class CharacterWizard extends BaseComponent {
             <h4>Colors</h4>
             <div class="color-palettes">
               ${colorPalettes
-                .map(
-                  (palette, index) => `
+    .map(
+      (palette, index) => `
                 <button type="button" class="color-palette ${index === 0 ? 'selected' : ''}" 
                         data-palette='${JSON.stringify(palette)}'>
                   <div class="palette-colors">
@@ -323,8 +323,8 @@ export default class CharacterWizard extends BaseComponent {
                   <span class="palette-name">${palette.name}</span>
                 </button>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </div>
 
             <div class="custom-colors">
@@ -416,30 +416,30 @@ export default class CharacterWizard extends BaseComponent {
             <p class="form-help">Choose up to 3 traits that define your character:</p>
             <div class="trait-combinations">
               ${traitCombinations
-                .slice(0, 5)
-                .map(
-                  (combo, index) => `
+    .slice(0, 5)
+    .map(
+      (combo, index) => `
                 <button type="button" class="trait-combo ${index === 0 ? 'selected' : ''}" 
                         data-traits='${JSON.stringify(combo)}'>
                   ${combo.map(trait => `<span class="trait-tag">${trait}</span>`).join('')}
                 </button>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </div>
           </div>
 
           <div class="trait-selector">
             <div class="available-traits">
               ${allTraits
-                .map(
-                  trait => `
+    .map(
+      trait => `
                 <button type="button" class="trait-option" data-trait="${trait}">
                   ${trait}
                 </button>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </div>
             <div class="selected-traits">
               <div class="selected-traits-label">Selected Traits:</div>
@@ -455,12 +455,12 @@ export default class CharacterWizard extends BaseComponent {
           <select id="primary-trait" class="form-select">
             <option value="">Select primary trait...</option>
             ${allTraits
-              .map(
-                trait => `
+    .map(
+      trait => `
               <option value="${trait}">${trait}</option>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </select>
           <div class="form-help">The main personality characteristic</div>
         </div>
@@ -507,14 +507,14 @@ export default class CharacterWizard extends BaseComponent {
           <label class="form-label">Specialties</label>
           <div class="specialties-selector">
             ${specialties
-              .map(
-                specialty => `
+    .map(
+      specialty => `
               <button type="button" class="specialty-option" data-specialty="${specialty}">
                 ${specialty}
               </button>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
           <div class="selected-specialties">
             <div class="selected-specialties-label">Selected Specialties:</div>
@@ -777,24 +777,24 @@ export default class CharacterWizard extends BaseComponent {
 
     // Step-specific listeners
     switch (this.currentStep) {
-      case 1: // Basics
-        this.attachBasicsListeners(currentStepElement);
-        break;
-      case 2: // Appearance
-        this.attachAppearanceListeners(currentStepElement);
-        break;
-      case 3: // Personality
-        this.attachPersonalityListeners(currentStepElement);
-        break;
-      case 4: // Education
-        this.attachEducationListeners(currentStepElement);
-        break;
-      case 5: // Interactions
-        this.attachInteractionsListeners(currentStepElement);
-        break;
-      case 6: // Review
-        this.attachReviewListeners(currentStepElement);
-        break;
+    case 1: // Basics
+      this.attachBasicsListeners(currentStepElement);
+      break;
+    case 2: // Appearance
+      this.attachAppearanceListeners(currentStepElement);
+      break;
+    case 3: // Personality
+      this.attachPersonalityListeners(currentStepElement);
+      break;
+    case 4: // Education
+      this.attachEducationListeners(currentStepElement);
+      break;
+    case 5: // Interactions
+      this.attachInteractionsListeners(currentStepElement);
+      break;
+    case 6: // Review
+      this.attachReviewListeners(currentStepElement);
+      break;
     }
   }
 
@@ -970,76 +970,76 @@ export default class CharacterWizard extends BaseComponent {
 
     // Update character data based on input
     switch (id) {
-      case 'character-name':
-        this.characterData.name = value;
-        break;
-      case 'character-subject':
-        this.characterData.subject = value;
-        break;
-      case 'primary-color':
-        this.characterData.appearance.primaryColor = value;
-        break;
-      case 'secondary-color':
-        this.characterData.appearance.secondaryColor = value;
-        break;
-      case 'accent-color':
-        this.characterData.appearance.accentColor = value;
-        break;
-      case 'eye-shape':
-        this.characterData.appearance.eyes = {
-          ...this.characterData.appearance.eyes,
-          shape: value,
-        };
-        break;
-      case 'mouth-shape':
-        this.characterData.appearance.mouth = {
-          ...this.characterData.appearance.mouth,
-          shape: value,
-        };
-        break;
-      case 'primary-trait':
-        this.characterData.personality.primaryTrait = value;
-        break;
-      case 'voice-type':
-        this.characterData.personality.voiceType = value;
-        break;
-      case 'catchphrases':
-        this.characterData.personality.catchphrases = value
-          .split('\n')
-          .filter(phrase => phrase.trim());
-        break;
-      case 'difficulty-level':
-        this.characterData.education.difficultyLevel = value;
-        break;
-      case 'min-age':
-        this.characterData.education.ageRange = {
-          ...this.characterData.education.ageRange,
-          min: parseInt(value),
-        };
-        break;
-      case 'max-age':
-        this.characterData.education.ageRange = {
-          ...this.characterData.education.ageRange,
-          max: parseInt(value),
-        };
-        break;
-      case 'teaching-style':
-        this.characterData.education.teachingStyle = value;
-        break;
-      case 'greetings':
-        this.characterData.interactions.greetings = value.split('\n').filter(msg => msg.trim());
-        break;
-      case 'encouragements':
-        this.characterData.interactions.encouragements = value
-          .split('\n')
-          .filter(msg => msg.trim());
-        break;
-      case 'celebrations':
-        this.characterData.interactions.celebrations = value.split('\n').filter(msg => msg.trim());
-        break;
-      case 'hints':
-        this.characterData.interactions.hints = value.split('\n').filter(msg => msg.trim());
-        break;
+    case 'character-name':
+      this.characterData.name = value;
+      break;
+    case 'character-subject':
+      this.characterData.subject = value;
+      break;
+    case 'primary-color':
+      this.characterData.appearance.primaryColor = value;
+      break;
+    case 'secondary-color':
+      this.characterData.appearance.secondaryColor = value;
+      break;
+    case 'accent-color':
+      this.characterData.appearance.accentColor = value;
+      break;
+    case 'eye-shape':
+      this.characterData.appearance.eyes = {
+        ...this.characterData.appearance.eyes,
+        shape: value,
+      };
+      break;
+    case 'mouth-shape':
+      this.characterData.appearance.mouth = {
+        ...this.characterData.appearance.mouth,
+        shape: value,
+      };
+      break;
+    case 'primary-trait':
+      this.characterData.personality.primaryTrait = value;
+      break;
+    case 'voice-type':
+      this.characterData.personality.voiceType = value;
+      break;
+    case 'catchphrases':
+      this.characterData.personality.catchphrases = value
+        .split('\n')
+        .filter(phrase => phrase.trim());
+      break;
+    case 'difficulty-level':
+      this.characterData.education.difficultyLevel = value;
+      break;
+    case 'min-age':
+      this.characterData.education.ageRange = {
+        ...this.characterData.education.ageRange,
+        min: parseInt(value),
+      };
+      break;
+    case 'max-age':
+      this.characterData.education.ageRange = {
+        ...this.characterData.education.ageRange,
+        max: parseInt(value),
+      };
+      break;
+    case 'teaching-style':
+      this.characterData.education.teachingStyle = value;
+      break;
+    case 'greetings':
+      this.characterData.interactions.greetings = value.split('\n').filter(msg => msg.trim());
+      break;
+    case 'encouragements':
+      this.characterData.interactions.encouragements = value
+        .split('\n')
+        .filter(msg => msg.trim());
+      break;
+    case 'celebrations':
+      this.characterData.interactions.celebrations = value.split('\n').filter(msg => msg.trim());
+      break;
+    case 'hints':
+      this.characterData.interactions.hints = value.split('\n').filter(msg => msg.trim());
+      break;
     }
 
     // Validate current step
@@ -1055,20 +1055,20 @@ export default class CharacterWizard extends BaseComponent {
     this.validationErrors = {};
 
     switch (this.currentStep) {
-      case 1:
-        return this.validateBasics();
-      case 2:
-        return this.validateAppearance();
-      case 3:
-        return this.validatePersonality();
-      case 4:
-        return this.validateEducation();
-      case 5:
-        return this.validateInteractions();
-      case 6:
-        return this.validateReview();
-      default:
-        return true;
+    case 1:
+      return this.validateBasics();
+    case 2:
+      return this.validateAppearance();
+    case 3:
+      return this.validatePersonality();
+    case 4:
+      return this.validateEducation();
+    case 5:
+      return this.validateInteractions();
+    case 6:
+      return this.validateReview();
+    default:
+      return true;
     }
   }
 
@@ -1164,7 +1164,7 @@ export default class CharacterWizard extends BaseComponent {
     if (!this.characterData.interactions.greetings)
       this.characterData.interactions.greetings = ['Hello! Ready to learn together?'];
     if (!this.characterData.interactions.encouragements)
-      this.characterData.interactions.encouragements = ["You're doing great! Keep it up!"];
+      this.characterData.interactions.encouragements = ['You\'re doing great! Keep it up!'];
     if (!this.characterData.interactions.celebrations)
       this.characterData.interactions.celebrations = ['Fantastic! You did it!'];
     if (!this.characterData.interactions.hints) this.characterData.interactions.hints = [];
@@ -1291,8 +1291,8 @@ export default class CharacterWizard extends BaseComponent {
           <div class="validation-icon">⚠️</div>
           <div class="validation-messages">
             ${Object.values(this.validationErrors)
-              .map(error => `<div class="error-message">${error}</div>`)
-              .join('')}
+    .map(error => `<div class="error-message">${error}</div>`)
+    .join('')}
           </div>
         </div>
       `;
@@ -1464,13 +1464,13 @@ export default class CharacterWizard extends BaseComponent {
       primaryTraitSelect.innerHTML = `
         <option value="">Select primary trait...</option>
         ${
-          this.characterData.personality.traits
-            ?.map(
-              trait =>
-                `<option value="${trait}" ${this.characterData.personality.primaryTrait === trait ? 'selected' : ''}>${trait}</option>`
-            )
-            .join('') || ''
-        }
+  this.characterData.personality.traits
+    ?.map(
+      trait =>
+        `<option value="${trait}" ${this.characterData.personality.primaryTrait === trait ? 'selected' : ''}>${trait}</option>`
+    )
+    .join('') || ''
+}
       `;
     }
   }
@@ -1533,19 +1533,19 @@ export default class CharacterWizard extends BaseComponent {
     const subjectMessages = {
       math: {
         greetings: [
-          "Let's solve some fun equations!",
+          'Let\'s solve some fun equations!',
           'Ready for number adventures?',
           'Math magic time!',
         ],
         encouragements: [
-          "You're calculating perfectly!",
+          'You\'re calculating perfectly!',
           'Great problem solving!',
           'Mathematical genius!',
         ],
         celebrations: ['Number wizard!', 'Math master!', 'Equation expert!'],
       },
       science: {
-        greetings: ['Time for discovery!', "Let's experiment!", 'Science adventure awaits!'],
+        greetings: ['Time for discovery!', 'Let\'s experiment!', 'Science adventure awaits!'],
         encouragements: ['Excellent hypothesis!', 'Great observation!', 'Scientific thinking!'],
         celebrations: ['Scientific genius!', 'Discovery master!', 'Experiment expert!'],
       },
@@ -1553,7 +1553,7 @@ export default class CharacterWizard extends BaseComponent {
     };
 
     const messages = subjectMessages[this.characterData.subject] || {
-      greetings: ['Hello! Ready to learn?', "Let's explore together!", 'Learning time!'],
+      greetings: ['Hello! Ready to learn?', 'Let\'s explore together!', 'Learning time!'],
       encouragements: ['Great work!', 'Keep it up!', 'Excellent effort!'],
       celebrations: ['Fantastic!', 'Amazing work!', 'You did it!'],
     };
@@ -1606,8 +1606,8 @@ export default class CharacterWizard extends BaseComponent {
         <p>Choose a template to get started quickly:</p>
         <div class="template-options">
           ${subjects
-            .map(
-              subject => `
+    .map(
+      subject => `
             <label class="template-option">
               <input type="radio" name="template" value="${subject}">
               <div class="template-card">
@@ -1616,8 +1616,8 @@ export default class CharacterWizard extends BaseComponent {
               </div>
             </label>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
       </div>
     `;
@@ -1637,8 +1637,8 @@ export default class CharacterWizard extends BaseComponent {
         <div class="error-content">
           <div class="error-message">${message}</div>
           ${
-            details.length > 0
-              ? `
+  details.length > 0
+    ? `
             <div class="error-details">
               <h4>Details:</h4>
               <ul>
@@ -1646,8 +1646,8 @@ export default class CharacterWizard extends BaseComponent {
               </ul>
             </div>
           `
-              : ''
-          }
+    : ''
+}
         </div>
       `,
       confirmButtonText: 'OK',
@@ -1717,37 +1717,37 @@ export default class CharacterWizard extends BaseComponent {
     if (!characterSVG) return;
 
     switch (action) {
-      case 'rotate':
-        // Apply rotation animation
-        characterSVG.style.transition = 'transform 0.5s ease';
-        characterSVG.style.transform = 'rotate(360deg)';
-        setTimeout(() => {
-          characterSVG.style.transform = 'rotate(0deg)';
-        }, 500);
-        break;
+    case 'rotate':
+      // Apply rotation animation
+      characterSVG.style.transition = 'transform 0.5s ease';
+      characterSVG.style.transform = 'rotate(360deg)';
+      setTimeout(() => {
+        characterSVG.style.transform = 'rotate(0deg)';
+      }, 500);
+      break;
 
-      case 'zoom':
-        // Apply zoom animation
-        characterSVG.style.transition = 'transform 0.3s ease';
-        characterSVG.style.transform = 'scale(1.2)';
+    case 'zoom':
+      // Apply zoom animation
+      characterSVG.style.transition = 'transform 0.3s ease';
+      characterSVG.style.transform = 'scale(1.2)';
+      setTimeout(() => {
+        characterSVG.style.transform = 'scale(1)';
+      }, 300);
+      break;
+
+    case 'animate':
+      // Trigger character animation if supported
+      if (this.previewRenderer && typeof this.previewRenderer.animateCharacter === 'function') {
+        this.previewRenderer.animateCharacter(characterSVG);
+      } else {
+        // Fallback bounce animation
+        characterSVG.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        characterSVG.style.transform = 'translateY(-20px)';
         setTimeout(() => {
-          characterSVG.style.transform = 'scale(1)';
+          characterSVG.style.transform = 'translateY(0)';
         }, 300);
-        break;
-
-      case 'animate':
-        // Trigger character animation if supported
-        if (this.previewRenderer && typeof this.previewRenderer.animateCharacter === 'function') {
-          this.previewRenderer.animateCharacter(characterSVG);
-        } else {
-          // Fallback bounce animation
-          characterSVG.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-          characterSVG.style.transform = 'translateY(-20px)';
-          setTimeout(() => {
-            characterSVG.style.transform = 'translateY(0)';
-          }, 300);
-        }
-        break;
+      }
+      break;
     }
   }
 

@@ -167,7 +167,7 @@ export default class HabitatBuilder {
       ],
       compatibleSpecies: ['seaweed', 'sea_turtle', 'shark', 'bacteria'],
       educationalNotes: [
-        "Oceans cover 71% of Earth's surface",
+        'Oceans cover 71% of Earth\'s surface',
         'Marine ecosystems produce most of our oxygen',
         'Ocean currents distribute heat around the planet',
       ],

@@ -193,48 +193,48 @@ export class AccessibleComponent extends BaseComponent {
    */
   handleGenericKeys(e) {
     switch (e.key) {
-      case 'Enter':
-      case ' ': // Space
-        if (this.isActivatable()) {
-          e.preventDefault();
-          this.activate();
-        }
-        break;
+    case 'Enter':
+    case ' ': // Space
+      if (this.isActivatable()) {
+        e.preventDefault();
+        this.activate();
+      }
+      break;
 
-      case 'Escape':
-        if (this.isCloseable()) {
-          e.preventDefault();
-          this.close();
-        }
-        break;
+    case 'Escape':
+      if (this.isCloseable()) {
+        e.preventDefault();
+        this.close();
+      }
+      break;
 
-      case 'Tab':
-        this.handleTabNavigation(e);
-        break;
+    case 'Tab':
+      this.handleTabNavigation(e);
+      break;
 
-      case 'ArrowUp':
-      case 'ArrowDown':
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        if (this.hasDirectionalNavigation()) {
-          e.preventDefault();
-          this.handleArrowNavigation(e.key);
-        }
-        break;
+    case 'ArrowUp':
+    case 'ArrowDown':
+    case 'ArrowLeft':
+    case 'ArrowRight':
+      if (this.hasDirectionalNavigation()) {
+        e.preventDefault();
+        this.handleArrowNavigation(e.key);
+      }
+      break;
 
-      case 'Home':
-        if (this.hasListNavigation()) {
-          e.preventDefault();
-          this.navigateToFirst();
-        }
-        break;
+    case 'Home':
+      if (this.hasListNavigation()) {
+        e.preventDefault();
+        this.navigateToFirst();
+      }
+      break;
 
-      case 'End':
-        if (this.hasListNavigation()) {
-          e.preventDefault();
-          this.navigateToLast();
-        }
-        break;
+    case 'End':
+      if (this.hasListNavigation()) {
+        e.preventDefault();
+        this.navigateToLast();
+      }
+      break;
     }
   }
 
@@ -264,14 +264,14 @@ export class AccessibleComponent extends BaseComponent {
     let nextIndex;
 
     switch (key) {
-      case 'ArrowUp':
-      case 'ArrowLeft':
-        nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-        break;
-      case 'ArrowDown':
-      case 'ArrowRight':
-        nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-        break;
+    case 'ArrowUp':
+    case 'ArrowLeft':
+      nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+      break;
+    case 'ArrowDown':
+    case 'ArrowRight':
+      nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+      break;
     }
 
     if (nextIndex !== undefined) {

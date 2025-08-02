@@ -305,12 +305,12 @@ export class AchievementSystem {
 
     try {
       switch (event.type) {
-        case 'activity:completed':
-          await this._checkActivityAchievements(event.userId, event);
-          break;
-        case 'session:ended':
-          await this._checkSessionAchievements(event.userId, event);
-          break;
+      case 'activity:completed':
+        await this._checkActivityAchievements(event.userId, event);
+        break;
+      case 'session:ended':
+        await this._checkSessionAchievements(event.userId, event);
+        break;
       }
     } catch (error) {
       logger.error('Error handling progress event for achievements:', error);
@@ -356,68 +356,68 @@ export class AchievementSystem {
     const { criteria } = definition;
 
     switch (criteria.type) {
-      case 'activity_count':
-        return userProgress.totalActivities >= criteria.threshold;
+    case 'activity_count':
+      return userProgress.totalActivities >= criteria.threshold;
 
-      case 'perfect_score': {
-        // Check if any completed activity has perfect score
-        const allProgress = await dbService.queryByIndex(
-          STORES.PROGRESS,
-          'userId',
-          userProgress.userId
-        );
-        return allProgress.some(p => p.status === 'completed' && p.score >= 100);
-      }
+    case 'perfect_score': {
+      // Check if any completed activity has perfect score
+      const allProgress = await dbService.queryByIndex(
+        STORES.PROGRESS,
+        'userId',
+        userProgress.userId
+      );
+      return allProgress.some(p => p.status === 'completed' && p.score >= 100);
+    }
 
-      case 'subject_activities': {
-        const subjectProgress = userProgress.subjects[criteria.subject];
-        return subjectProgress && subjectProgress.completed >= criteria.threshold;
-      }
+    case 'subject_activities': {
+      const subjectProgress = userProgress.subjects[criteria.subject];
+      return subjectProgress && subjectProgress.completed >= criteria.threshold;
+    }
 
-      case 'streak':
-        return userProgress.overall.streak >= criteria.threshold;
+    case 'streak':
+      return userProgress.overall.streak >= criteria.threshold;
 
-      case 'average_score':
-        return (
-          userProgress.completedActivities >= criteria.minimum_activities &&
+    case 'average_score':
+      return (
+        userProgress.completedActivities >= criteria.minimum_activities &&
           userProgress.overall.averageScore >= criteria.threshold
-        );
+      );
 
-      case 'fast_completion': {
-        const fastActivities = await this._countFastCompletions(
-          userProgress.userId,
-          criteria.max_time
-        );
-        return fastActivities >= criteria.threshold;
-      }
+    case 'fast_completion': {
+      const fastActivities = await this._countFastCompletions(
+        userProgress.userId,
+        criteria.max_time
+      );
+      return fastActivities >= criteria.threshold;
+    }
 
-      case 'time_of_day': {
-        const timeActivities = await this._countTimeOfDayActivities(
-          userProgress.userId,
-          criteria.start_hour,
-          criteria.end_hour
-        );
-        return timeActivities >= criteria.threshold;
-      }
+    case 'time_of_day': {
+      const timeActivities = await this._countTimeOfDayActivities(
+        userProgress.userId,
+        criteria.start_hour,
+        criteria.end_hour
+      );
+      return timeActivities >= criteria.threshold;
+    }
 
-      case 'subject_mastery': {
-        const masterySubject = userProgress.subjects[criteria.subject];
-        return (
-          masterySubject &&
+    case 'subject_mastery': {
+      const masterySubject = userProgress.subjects[criteria.subject];
+      return (
+        masterySubject &&
           masterySubject.completed >= criteria.activities &&
           masterySubject.averageScore >= criteria.average_score
-        );
-      }
+      );
+    }
 
-      case 'all_subjects':
-        return criteria.subjects.every(subject => {
-          const subjectData = userProgress.subjects[subject];
-          return subjectData && subjectData.completed >= criteria.min_per_subject;
-        });
+    case 'all_subjects':
+      return criteria.subjects.every(subject => {
+        const subjectData = userProgress.subjects[subject];
+        return subjectData && subjectData.completed >= criteria.min_per_subject;
+      });
 
-      default:
-        logger.warn(`Unknown achievement criteria type: ${criteria.type}`);
-        return false;
+    default:
+      logger.warn(`Unknown achievement criteria type: ${criteria.type}`);
+      return false;
     }
   }
 
@@ -625,29 +625,29 @@ export class AchievementSystem {
     let percentage = 0;
 
     switch (criteria.type) {
-      case 'activity_count':
-        current = userProgress.totalActivities;
-        total = criteria.threshold;
-        break;
+    case 'activity_count':
+      current = userProgress.totalActivities;
+      total = criteria.threshold;
+      break;
 
-      case 'subject_activities': {
-        const subjectProgress = userProgress.subjects[criteria.subject];
-        current = subjectProgress ? subjectProgress.completed : 0;
+    case 'subject_activities': {
+      const subjectProgress = userProgress.subjects[criteria.subject];
+      current = subjectProgress ? subjectProgress.completed : 0;
+      total = criteria.threshold;
+      break;
+    }
+
+    case 'streak':
+      current = userProgress.overall.streak;
+      total = criteria.threshold;
+      break;
+
+    case 'average_score':
+      if (userProgress.completedActivities >= criteria.minimum_activities) {
+        current = Math.min(userProgress.overall.averageScore, criteria.threshold);
         total = criteria.threshold;
-        break;
       }
-
-      case 'streak':
-        current = userProgress.overall.streak;
-        total = criteria.threshold;
-        break;
-
-      case 'average_score':
-        if (userProgress.completedActivities >= criteria.minimum_activities) {
-          current = Math.min(userProgress.overall.averageScore, criteria.threshold);
-          total = criteria.threshold;
-        }
-        break;
+      break;
 
       // Add more progress calculations as needed
     }
@@ -677,12 +677,12 @@ export class AchievementSystem {
     if (timeframe !== 'all') {
       const cutoffDate = new Date();
       switch (timeframe) {
-        case 'week':
-          cutoffDate.setDate(cutoffDate.getDate() - 7);
-          break;
-        case 'month':
-          cutoffDate.setMonth(cutoffDate.getMonth() - 1);
-          break;
+      case 'week':
+        cutoffDate.setDate(cutoffDate.getDate() - 7);
+        break;
+      case 'month':
+        cutoffDate.setMonth(cutoffDate.getMonth() - 1);
+        break;
       }
       filteredAchievements = allAchievements.filter(a => new Date(a.unlockedAt) >= cutoffDate);
     }

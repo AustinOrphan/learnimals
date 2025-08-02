@@ -403,15 +403,15 @@ class ProgressReports extends BaseComponent {
           <h4>Daily Activity</h4>
           <div class="daily-chart">
             ${report.daily
-              .map(
-                day => `
+    .map(
+      day => `
               <div class="daily-bar" title="${day.dayName}: ${day.xp} XP, ${day.activities} activities">
                 <div class="bar-fill" style="height: ${(day.xp / 50) * 100}%"></div>
                 <span class="bar-label">${day.dayName}</span>
               </div>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
 
@@ -420,8 +420,8 @@ class ProgressReports extends BaseComponent {
           <h4>Subject Progress</h4>
           <div class="subject-list">
             ${report.subjects
-              .map(
-                subject => `
+    .map(
+      subject => `
               <div class="subject-item">
                 <div class="subject-name">${subject.displayName}</div>
                 <div class="subject-stats">
@@ -431,8 +431,8 @@ class ProgressReports extends BaseComponent {
                 </div>
               </div>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
 
@@ -441,8 +441,8 @@ class ProgressReports extends BaseComponent {
           <h4>This Week's Insights</h4>
           <div class="insights-list">
             ${report.insights
-              .map(
-                insight => `
+    .map(
+      insight => `
               <div class="insight-item ${insight.type}">
                 <div class="insight-icon">${insight.icon}</div>
                 <div class="insight-content">
@@ -451,8 +451,8 @@ class ProgressReports extends BaseComponent {
                 </div>
               </div>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
       </div>
@@ -472,8 +472,8 @@ class ProgressReports extends BaseComponent {
         <!-- Subject Grid -->
         <div class="subjects-analysis">
           ${report.subjects
-            .map(
-              subject => `
+    .map(
+      subject => `
             <div class="subject-analysis-card">
               <div class="subject-header">
                 <h4>${subject.displayName}</h4>
@@ -496,8 +496,8 @@ class ProgressReports extends BaseComponent {
               </div>
 
               ${
-                subject.recommendations.length > 0
-                  ? `
+  subject.recommendations.length > 0
+    ? `
                 <div class="subject-recommendations">
                   <h5>Recommendations</h5>
                   <ul>
@@ -505,12 +505,12 @@ class ProgressReports extends BaseComponent {
                   </ul>
                 </div>
               `
-                  : ''
-              }
+    : ''
+}
             </div>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
 
         <!-- Overall Analysis -->
@@ -560,18 +560,18 @@ class ProgressReports extends BaseComponent {
     const contentContainer = modalElement.querySelector('#report-content');
 
     switch (reportType) {
-      case 'weekly':
-        contentContainer.innerHTML = this.generateWeeklyReportHTML();
-        break;
-      case 'monthly':
-        contentContainer.innerHTML = this.generateMonthlyReportHTML();
-        break;
-      case 'subject':
-        contentContainer.innerHTML = this.generateSubjectReportHTML();
-        break;
-      case 'comparison':
-        contentContainer.innerHTML = this.generateComparisonReportHTML();
-        break;
+    case 'weekly':
+      contentContainer.innerHTML = this.generateWeeklyReportHTML();
+      break;
+    case 'monthly':
+      contentContainer.innerHTML = this.generateMonthlyReportHTML();
+      break;
+    case 'subject':
+      contentContainer.innerHTML = this.generateSubjectReportHTML();
+      break;
+    case 'comparison':
+      contentContainer.innerHTML = this.generateComparisonReportHTML();
+      break;
     }
 
     this.currentReport = reportType;

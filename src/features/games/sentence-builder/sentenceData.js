@@ -302,14 +302,14 @@ export const sentenceDatabase = {
  */
 export function getSentencesForDifficulty(difficulty) {
   switch (difficulty) {
-    case 'easy':
-      return [...sentenceDatabase.easy];
-    case 'medium':
-      return [...sentenceDatabase.easy, ...sentenceDatabase.medium];
-    case 'hard':
-      return [...sentenceDatabase.easy, ...sentenceDatabase.medium, ...sentenceDatabase.hard];
-    default:
-      return [...sentenceDatabase.easy];
+  case 'easy':
+    return [...sentenceDatabase.easy];
+  case 'medium':
+    return [...sentenceDatabase.easy, ...sentenceDatabase.medium];
+  case 'hard':
+    return [...sentenceDatabase.easy, ...sentenceDatabase.medium, ...sentenceDatabase.hard];
+  default:
+    return [...sentenceDatabase.easy];
   }
 }
 

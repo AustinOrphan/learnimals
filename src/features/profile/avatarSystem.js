@@ -453,55 +453,55 @@ export class AvatarRenderer {
     const ctx = this.ctx;
 
     switch (baseId) {
-      case 'lion':
-        // Draw mane
-        ctx.strokeStyle = '#D2691E';
-        ctx.lineWidth = 20;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius + 10, 0, Math.PI * 2);
-        ctx.stroke();
-        break;
+    case 'lion':
+      // Draw mane
+      ctx.strokeStyle = '#D2691E';
+      ctx.lineWidth = 20;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius + 10, 0, Math.PI * 2);
+      ctx.stroke();
+      break;
 
-      case 'bunny':
-        // Draw long ears
-        ctx.beginPath();
-        ctx.ellipse(
-          centerX - radius * 0.5,
-          centerY - radius,
-          radius * 0.2,
-          radius * 0.6,
-          0,
-          0,
-          Math.PI * 2
-        );
-        ctx.ellipse(
-          centerX + radius * 0.5,
-          centerY - radius,
-          radius * 0.2,
-          radius * 0.6,
-          0,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-        break;
+    case 'bunny':
+      // Draw long ears
+      ctx.beginPath();
+      ctx.ellipse(
+        centerX - radius * 0.5,
+        centerY - radius,
+        radius * 0.2,
+        radius * 0.6,
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.ellipse(
+        centerX + radius * 0.5,
+        centerY - radius,
+        radius * 0.2,
+        radius * 0.6,
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+      break;
 
-      case 'cat':
-        // Draw triangular ears
-        ctx.beginPath();
-        ctx.moveTo(centerX - radius * 0.8, centerY - radius * 0.6);
-        ctx.lineTo(centerX - radius * 0.5, centerY - radius);
-        ctx.lineTo(centerX - radius * 0.2, centerY - radius * 0.6);
-        ctx.closePath();
-        ctx.fill();
+    case 'cat':
+      // Draw triangular ears
+      ctx.beginPath();
+      ctx.moveTo(centerX - radius * 0.8, centerY - radius * 0.6);
+      ctx.lineTo(centerX - radius * 0.5, centerY - radius);
+      ctx.lineTo(centerX - radius * 0.2, centerY - radius * 0.6);
+      ctx.closePath();
+      ctx.fill();
 
-        ctx.beginPath();
-        ctx.moveTo(centerX + radius * 0.8, centerY - radius * 0.6);
-        ctx.lineTo(centerX + radius * 0.5, centerY - radius);
-        ctx.lineTo(centerX + radius * 0.2, centerY - radius * 0.6);
-        ctx.closePath();
-        ctx.fill();
-        break;
+      ctx.beginPath();
+      ctx.moveTo(centerX + radius * 0.8, centerY - radius * 0.6);
+      ctx.lineTo(centerX + radius * 0.5, centerY - radius);
+      ctx.lineTo(centerX + radius * 0.2, centerY - radius * 0.6);
+      ctx.closePath();
+      ctx.fill();
+      break;
     }
   }
 
@@ -556,16 +556,16 @@ export class AvatarRenderer {
     let y = size / 2;
 
     switch (accessory.category) {
-      case 'head':
-        y = size * 0.2;
-        break;
-      case 'body':
-        y = size * 0.7;
-        break;
-      case 'effect':
-        // Draw around avatar
-        ctx.globalAlpha = 0.7;
-        break;
+    case 'head':
+      y = size * 0.2;
+      break;
+    case 'body':
+      y = size * 0.7;
+      break;
+    case 'effect':
+      // Draw around avatar
+      ctx.globalAlpha = 0.7;
+      break;
     }
 
     ctx.fillText(accessory.icon, x, y);

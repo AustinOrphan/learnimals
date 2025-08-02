@@ -360,18 +360,18 @@ class Modal extends BaseComponent {
       element:
         this.eventListeners && this.eventListeners.entries
           ? Array.from(this.eventListeners.entries()).map(([key, handlers]) => ({
-              key,
-              eventName: key.split('-')[0],
-              selector: key.split('-')[1] || 'root',
-              count: handlers ? handlers.length : 0,
-            }))
+            key,
+            eventName: key.split('-')[0],
+            selector: key.split('-')[1] || 'root',
+            count: handlers ? handlers.length : 0,
+          }))
           : [],
       document:
         this.documentListeners && this.documentListeners.entries
           ? Array.from(this.documentListeners.entries()).map(([event, handlers]) => ({
-              event,
-              count: handlers ? handlers.length : 0,
-            }))
+            event,
+            count: handlers ? handlers.length : 0,
+          }))
           : [],
     };
   }

@@ -411,19 +411,19 @@ describe('Navigation System Keyboard Navigation Tests', () => {
         if (menu) {
           trigger.addEventListener('keydown', e => {
             switch (e.key) {
-              case 'Enter':
-              case ' ':
-                e.preventDefault();
-                toggleDropdown(trigger, menu);
-                break;
-              case 'ArrowDown':
-                e.preventDefault();
-                openDropdown(trigger, menu);
-                focusFirstMenuItem(menu);
-                break;
-              case 'Escape':
-                closeDropdown(trigger, menu);
-                break;
+            case 'Enter':
+            case ' ':
+              e.preventDefault();
+              toggleDropdown(trigger, menu);
+              break;
+            case 'ArrowDown':
+              e.preventDefault();
+              openDropdown(trigger, menu);
+              focusFirstMenuItem(menu);
+              break;
+            case 'Escape':
+              closeDropdown(trigger, menu);
+              break;
             }
           });
 
@@ -432,27 +432,27 @@ describe('Navigation System Keyboard Navigation Tests', () => {
           menuItems.forEach((item, index) => {
             item.addEventListener('keydown', e => {
               switch (e.key) {
-                case 'ArrowDown':
-                  e.preventDefault();
-                  focusMenuItem(menuItems, index + 1);
-                  break;
-                case 'ArrowUp':
-                  e.preventDefault();
-                  focusMenuItem(menuItems, index - 1);
-                  break;
-                case 'Home':
-                  e.preventDefault();
-                  focusMenuItem(menuItems, 0);
-                  break;
-                case 'End':
-                  e.preventDefault();
-                  focusMenuItem(menuItems, menuItems.length - 1);
-                  break;
-                case 'Escape':
-                  e.preventDefault();
-                  closeDropdown(trigger, menu);
-                  trigger.focus();
-                  break;
+              case 'ArrowDown':
+                e.preventDefault();
+                focusMenuItem(menuItems, index + 1);
+                break;
+              case 'ArrowUp':
+                e.preventDefault();
+                focusMenuItem(menuItems, index - 1);
+                break;
+              case 'Home':
+                e.preventDefault();
+                focusMenuItem(menuItems, 0);
+                break;
+              case 'End':
+                e.preventDefault();
+                focusMenuItem(menuItems, menuItems.length - 1);
+                break;
+              case 'Escape':
+                e.preventDefault();
+                closeDropdown(trigger, menu);
+                trigger.focus();
+                break;
               }
             });
           });

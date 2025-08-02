@@ -163,7 +163,7 @@ export default class SpeciesManager {
       description: 'Ancient mariners that maintain healthy seagrass beds',
       facts: [
         'Sea turtles can hold their breath for up to 5 hours',
-        "They navigate using Earth's magnetic field",
+        'They navigate using Earth\'s magnetic field',
         'Females return to the same beach where they were born to lay eggs',
       ],
       sprite: {
@@ -218,7 +218,7 @@ export default class SpeciesManager {
       description: 'Pack hunters that maintain healthy prey populations',
       facts: [
         'Wolves can smell prey from 1.5 miles away',
-        "A wolf pack's territory can be up to 1000 square miles",
+        'A wolf pack\'s territory can be up to 1000 square miles',
         'Wolves communicate through howls that can be heard 6 miles away',
       ],
       sprite: {

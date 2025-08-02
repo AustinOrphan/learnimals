@@ -492,32 +492,32 @@ class ProgressCharts extends BaseComponent {
         let newData;
 
         switch (chartType) {
-          case 'overview':
-            newData = this.prepareOverviewData();
-            chart.data.labels = newData.labels;
-            chart.data.datasets[0].data = newData.values;
-            break;
+        case 'overview':
+          newData = this.prepareOverviewData();
+          chart.data.labels = newData.labels;
+          chart.data.datasets[0].data = newData.values;
+          break;
 
-          case 'subjects':
-            newData = this.prepareSubjectsData();
-            chart.data.labels = newData.labels;
-            chart.data.datasets[0].data = newData.levels;
-            chart.data.datasets[1].data = newData.xp;
-            break;
+        case 'subjects':
+          newData = this.prepareSubjectsData();
+          chart.data.labels = newData.labels;
+          chart.data.datasets[0].data = newData.levels;
+          chart.data.datasets[1].data = newData.xp;
+          break;
 
-          case 'weekly':
-            newData = this.prepareWeeklyData();
-            chart.data.labels = newData.labels;
-            chart.data.datasets[0].data = newData.xp;
-            chart.data.datasets[1].data = newData.activities;
-            break;
+        case 'weekly':
+          newData = this.prepareWeeklyData();
+          chart.data.labels = newData.labels;
+          chart.data.datasets[0].data = newData.xp;
+          chart.data.datasets[1].data = newData.activities;
+          break;
 
-          case 'comparison':
-            newData = this.prepareComparisonData();
-            chart.data.labels = newData.labels;
-            chart.data.datasets[0].data = newData.userScores;
-            chart.data.datasets[1].data = newData.averageScores;
-            break;
+        case 'comparison':
+          newData = this.prepareComparisonData();
+          chart.data.labels = newData.labels;
+          chart.data.datasets[0].data = newData.userScores;
+          chart.data.datasets[1].data = newData.averageScores;
+          break;
         }
 
         chart.update();

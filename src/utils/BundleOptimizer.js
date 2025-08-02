@@ -1052,17 +1052,17 @@ export class BundleOptimizer {
     const strategy = this.options.loadingStrategy;
 
     switch (strategy) {
-      case 'eager':
+    case 'eager':
+      this.preloadResource(resourceUrl);
+      break;
+    case 'lazy':
+      // Don't preload, load on demand
+      break;
+    case 'auto':
+      if (this.criticalResources.has(resourceUrl)) {
         this.preloadResource(resourceUrl);
-        break;
-      case 'lazy':
-        // Don't preload, load on demand
-        break;
-      case 'auto':
-        if (this.criticalResources.has(resourceUrl)) {
-          this.preloadResource(resourceUrl);
-        }
-        break;
+      }
+      break;
     }
   }
 

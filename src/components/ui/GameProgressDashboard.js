@@ -54,15 +54,15 @@ class GameProgressDashboard {
     content.className = 'dashboard-content';
 
     switch (this.currentView) {
-      case 'overview':
-        content.appendChild(this.renderOverview());
-        break;
-      case 'achievements':
-        content.appendChild(this.renderAchievements());
-        break;
-      case 'detailed-stats':
-        content.appendChild(this.renderDetailedStats());
-        break;
+    case 'overview':
+      content.appendChild(this.renderOverview());
+      break;
+    case 'achievements':
+      content.appendChild(this.renderAchievements());
+      break;
+    case 'detailed-stats':
+      content.appendChild(this.renderDetailedStats());
+      break;
     }
 
     this.container.appendChild(content);
@@ -311,8 +311,8 @@ class GameProgressDashboard {
         <div class="achievement-name">${achievement.name}</div>
         <div class="achievement-description">${achievement.description}</div>
         ${
-          achievement.progress !== undefined
-            ? `
+  achievement.progress !== undefined
+    ? `
           <div class="achievement-progress">
             <div class="progress-bar">
               <div class="progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
@@ -320,17 +320,17 @@ class GameProgressDashboard {
             <span class="progress-text">${achievement.progress}/${achievement.target}</span>
           </div>
         `
-            : ''
-        }
+    : ''
+}
         ${
-          achievement.unlocked
-            ? `
+  achievement.unlocked
+    ? `
           <div class="achievement-unlocked-date">
             Unlocked ${this.formatDate(achievement.unlockedAt)}
           </div>
         `
-            : ''
-        }
+    : ''
+}
       `;
 
       container.appendChild(card);
@@ -493,12 +493,12 @@ class GameProgressDashboard {
       <h3>${title}</h3>
       <div class="bar-chart">
         ${games
-          .map(gameId => {
-            const value = this.progressTracker.gameAnalytics[gameId]?.[metric] || 0;
-            const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
-            const gameInfo = this.getGameInfo(gameId);
+    .map(gameId => {
+      const value = this.progressTracker.gameAnalytics[gameId]?.[metric] || 0;
+      const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+      const gameInfo = this.getGameInfo(gameId);
 
-            return `
+      return `
             <div class="bar-row">
               <span class="bar-label">${gameInfo.icon} ${gameInfo.shortName}</span>
               <div class="bar-container">
@@ -507,8 +507,8 @@ class GameProgressDashboard {
               <span class="bar-value">${formatter(value)}</span>
             </div>
           `;
-          })
-          .join('')}
+    })
+    .join('')}
       </div>
     `;
 
@@ -545,16 +545,16 @@ class GameProgressDashboard {
     return `
       <div class="session-list">
         ${recent
-          .map(
-            session => `
+    .map(
+      session => `
           <div class="session-item">
             <span class="session-date">${this.formatDate(session.timestamp)}</span>
             <span class="session-score">Score: ${session.score}</span>
             <span class="session-accuracy">${Math.round(session.accuracy)}%</span>
           </div>
         `
-          )
-          .join('')}
+    )
+    .join('')}
       </div>
     `;
   }

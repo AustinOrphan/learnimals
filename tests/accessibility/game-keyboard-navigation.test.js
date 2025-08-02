@@ -111,26 +111,26 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
         let moved = false;
 
         switch (e.key.toLowerCase()) {
-          case 'w':
-          case 'arrowup':
-            gameState.player.y = Math.max(0, gameState.player.y - moveDistance);
-            moved = true;
-            break;
-          case 'a':
-          case 'arrowleft':
-            gameState.player.x = Math.max(0, gameState.player.x - moveDistance);
-            moved = true;
-            break;
-          case 's':
-          case 'arrowdown':
-            gameState.player.y = Math.min(400, gameState.player.y + moveDistance);
-            moved = true;
-            break;
-          case 'd':
-          case 'arrowright':
-            gameState.player.x = Math.min(400, gameState.player.x + moveDistance);
-            moved = true;
-            break;
+        case 'w':
+        case 'arrowup':
+          gameState.player.y = Math.max(0, gameState.player.y - moveDistance);
+          moved = true;
+          break;
+        case 'a':
+        case 'arrowleft':
+          gameState.player.x = Math.max(0, gameState.player.x - moveDistance);
+          moved = true;
+          break;
+        case 's':
+        case 'arrowdown':
+          gameState.player.y = Math.min(400, gameState.player.y + moveDistance);
+          moved = true;
+          break;
+        case 'd':
+        case 'arrowright':
+          gameState.player.x = Math.min(400, gameState.player.x + moveDistance);
+          moved = true;
+          break;
         }
 
         if (moved) {
@@ -503,45 +503,45 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
       // Set up state control handler
       gameContainer.addEventListener('keydown', e => {
         switch (e.key.toLowerCase()) {
-          case 'escape':
-          case 'p':
-            e.preventDefault();
-            gameState.paused = !gameState.paused;
-            togglePauseMenu(gameState.paused);
-            announceGameState();
-            gameState.actions.push(gameState.paused ? 'game paused' : 'game resumed');
-            break;
+        case 'escape':
+        case 'p':
+          e.preventDefault();
+          gameState.paused = !gameState.paused;
+          togglePauseMenu(gameState.paused);
+          announceGameState();
+          gameState.actions.push(gameState.paused ? 'game paused' : 'game resumed');
+          break;
 
-          case 'r':
-            if (gameState.paused) {
-              e.preventDefault();
-              gameState.paused = false;
-              togglePauseMenu(false);
-              announceGameState();
-              gameState.actions.push('game resumed via hotkey');
-            }
-            break;
-
-          case 'n':
+        case 'r':
+          if (gameState.paused) {
             e.preventDefault();
-            gameState.score = 0;
             gameState.paused = false;
-            gameState.gameOver = false;
             togglePauseMenu(false);
             announceGameState();
-            gameState.actions.push('game restarted via hotkey');
-            break;
+            gameState.actions.push('game resumed via hotkey');
+          }
+          break;
 
-          case 'q':
-            if (gameState.paused) {
-              e.preventDefault();
-              gameState.gameOver = true;
-              gameState.paused = false;
-              togglePauseMenu(false);
-              announceGameState();
-              gameState.actions.push('game quit via hotkey');
-            }
-            break;
+        case 'n':
+          e.preventDefault();
+          gameState.score = 0;
+          gameState.paused = false;
+          gameState.gameOver = false;
+          togglePauseMenu(false);
+          announceGameState();
+          gameState.actions.push('game restarted via hotkey');
+          break;
+
+        case 'q':
+          if (gameState.paused) {
+            e.preventDefault();
+            gameState.gameOver = true;
+            gameState.paused = false;
+            togglePauseMenu(false);
+            announceGameState();
+            gameState.actions.push('game quit via hotkey');
+          }
+          break;
         }
       });
 
@@ -774,40 +774,40 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
         const helpElement = gameContainer.querySelector('#context-help');
 
         switch (gameMode) {
-          case 'explore':
-            if (e.key === 'e') {
-              e.preventDefault();
-              gameState.actions.push('examined object');
-              helpElement.textContent = 'You examined the mysterious object.';
-            } else if (e.key === 'i') {
-              e.preventDefault();
-              gameMode = 'inventory';
-              helpElement.textContent =
+        case 'explore':
+          if (e.key === 'e') {
+            e.preventDefault();
+            gameState.actions.push('examined object');
+            helpElement.textContent = 'You examined the mysterious object.';
+          } else if (e.key === 'i') {
+            e.preventDefault();
+            gameMode = 'inventory';
+            helpElement.textContent =
                 'Inventory mode. Press Tab to navigate items, Escape to close.';
-              gameState.actions.push('opened inventory');
-            }
-            break;
+            gameState.actions.push('opened inventory');
+          }
+          break;
 
-          case 'combat':
-            if (e.key === 'a') {
-              e.preventDefault();
-              gameState.actions.push('attacked enemy');
-              helpElement.textContent = 'You attacked the enemy!';
-            } else if (e.key === 'd') {
-              e.preventDefault();
-              gameState.actions.push('defended');
-              helpElement.textContent = 'You raised your shield!';
-            }
-            break;
+        case 'combat':
+          if (e.key === 'a') {
+            e.preventDefault();
+            gameState.actions.push('attacked enemy');
+            helpElement.textContent = 'You attacked the enemy!';
+          } else if (e.key === 'd') {
+            e.preventDefault();
+            gameState.actions.push('defended');
+            helpElement.textContent = 'You raised your shield!';
+          }
+          break;
 
-          case 'inventory':
-            if (e.key === 'Escape') {
-              e.preventDefault();
-              gameMode = 'explore';
-              helpElement.textContent = 'Returned to exploration mode.';
-              gameState.actions.push('closed inventory');
-            }
-            break;
+        case 'inventory':
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            gameMode = 'explore';
+            helpElement.textContent = 'Returned to exploration mode.';
+            gameState.actions.push('closed inventory');
+          }
+          break;
         }
       });
 

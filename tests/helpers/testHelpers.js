@@ -656,10 +656,10 @@ export const SecurityHelpers = {
 
   // SQL injection testing
   createSQLInjectionPayloads: () => [
-    "'; DROP TABLE users; --",
-    "1' OR '1'='1",
-    "'; UNION SELECT * FROM sensitive_data; --",
-    "1'; UPDATE users SET password='hacked' WHERE id=1; --",
+    '\'; DROP TABLE users; --',
+    '1\' OR \'1\'=\'1',
+    '\'; UNION SELECT * FROM sensitive_data; --',
+    '1\'; UPDATE users SET password=\'hacked\' WHERE id=1; --',
   ],
 
   // Test input sanitization

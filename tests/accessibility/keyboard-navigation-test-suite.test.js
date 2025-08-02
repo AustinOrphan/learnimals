@@ -526,10 +526,10 @@ describe('Keyboard Navigation Test Suite - Integration Tests', () => {
         <div class="performance-test">
           <div class="large-list" role="listbox" aria-label="Large item list">
             ${Array.from(
-              { length: 1000 },
-              (_, i) =>
-                `<div role="option" tabindex="${i === 0 ? '0' : '-1'}" id="item-${i}">Item ${i + 1}</div>`
-            ).join('')}
+    { length: 1000 },
+    (_, i) =>
+      `<div role="option" tabindex="${i === 0 ? '0' : '-1'}" id="item-${i}">Item ${i + 1}</div>`
+  ).join('')}
           </div>
         </div>
       `;
@@ -542,24 +542,24 @@ describe('Keyboard Navigation Test Suite - Integration Tests', () => {
         item.addEventListener('keydown', e => {
           let nextIndex;
           switch (e.key) {
-            case 'ArrowDown':
-              e.preventDefault();
-              nextIndex = Math.min(index + 1, items.length - 1);
-              break;
-            case 'ArrowUp':
-              e.preventDefault();
-              nextIndex = Math.max(index - 1, 0);
-              break;
-            case 'Home':
-              e.preventDefault();
-              nextIndex = 0;
-              break;
-            case 'End':
-              e.preventDefault();
-              nextIndex = items.length - 1;
-              break;
-            default:
-              return;
+          case 'ArrowDown':
+            e.preventDefault();
+            nextIndex = Math.min(index + 1, items.length - 1);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            nextIndex = Math.max(index - 1, 0);
+            break;
+          case 'Home':
+            e.preventDefault();
+            nextIndex = 0;
+            break;
+          case 'End':
+            e.preventDefault();
+            nextIndex = items.length - 1;
+            break;
+          default:
+            return;
           }
 
           // Update roving tabindex
@@ -684,32 +684,32 @@ describe('Keyboard Navigation Test Suite - Integration Tests', () => {
     if (gameContainer) {
       gameContainer.addEventListener('keydown', e => {
         switch (e.key.toLowerCase()) {
-          case 'w':
-          case 'arrowup':
-          case 'a':
-          case 'arrowleft':
-          case 's':
-          case 'arrowdown':
-          case 'd':
-          case 'arrowright':
-            e.preventDefault();
-            // Mock player movement
-            break;
-          case ' ':
-            e.preventDefault();
-            // Mock interaction
-            break;
-          case 'escape':
-          case 'p':
-            e.preventDefault();
-            // Mock pause
-            const modal = testContainer.querySelector('#game-modal');
-            if (modal) {
-              modal.setAttribute('aria-hidden', 'false');
-              const resumeBtn = testContainer.querySelector('#resume-game');
-              if (resumeBtn) resumeBtn.focus();
-            }
-            break;
+        case 'w':
+        case 'arrowup':
+        case 'a':
+        case 'arrowleft':
+        case 's':
+        case 'arrowdown':
+        case 'd':
+        case 'arrowright':
+          e.preventDefault();
+          // Mock player movement
+          break;
+        case ' ':
+          e.preventDefault();
+          // Mock interaction
+          break;
+        case 'escape':
+        case 'p':
+          e.preventDefault();
+          // Mock pause
+          const modal = testContainer.querySelector('#game-modal');
+          if (modal) {
+            modal.setAttribute('aria-hidden', 'false');
+            const resumeBtn = testContainer.querySelector('#resume-game');
+            if (resumeBtn) resumeBtn.focus();
+          }
+          break;
         }
       });
     }
@@ -746,24 +746,24 @@ describe('Keyboard Navigation Test Suite - Integration Tests', () => {
       tab.addEventListener('keydown', e => {
         let nextIndex;
         switch (e.key) {
-          case 'ArrowRight':
-            e.preventDefault();
-            nextIndex = (index + 1) % tabs.length;
-            break;
-          case 'ArrowLeft':
-            e.preventDefault();
-            nextIndex = index > 0 ? index - 1 : tabs.length - 1;
-            break;
-          case 'Home':
-            e.preventDefault();
-            nextIndex = 0;
-            break;
-          case 'End':
-            e.preventDefault();
-            nextIndex = tabs.length - 1;
-            break;
-          default:
-            return;
+        case 'ArrowRight':
+          e.preventDefault();
+          nextIndex = (index + 1) % tabs.length;
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          nextIndex = index > 0 ? index - 1 : tabs.length - 1;
+          break;
+        case 'Home':
+          e.preventDefault();
+          nextIndex = 0;
+          break;
+        case 'End':
+          e.preventDefault();
+          nextIndex = tabs.length - 1;
+          break;
+        default:
+          return;
         }
 
         // Update tab selection

@@ -159,14 +159,14 @@ export class MobileOptimizationService {
    */
   handleLowPerformance(type, value) {
     switch (type) {
-      case 'fps':
-        // Reduce animation complexity
-        this.reduceAnimationComplexity();
-        break;
-      case 'memory':
-        // Trigger garbage collection hints
-        this.optimizeMemoryUsage();
-        break;
+    case 'fps':
+      // Reduce animation complexity
+      this.reduceAnimationComplexity();
+      break;
+    case 'memory':
+      // Trigger garbage collection hints
+      this.optimizeMemoryUsage();
+      break;
     }
 
     // Emit performance warning event

@@ -550,10 +550,10 @@ class UserProgress {
         mathAccuracy:
           this.userData.progress.math.questionsAnswered > 0
             ? Math.round(
-                (this.userData.progress.math.correctAnswers /
+              (this.userData.progress.math.correctAnswers /
                   this.userData.progress.math.questionsAnswered) *
                   100
-              )
+            )
             : 0,
         storiesRead: this.userData.progress.reading.storiesRead,
         wordsLearned: this.userData.progress.reading.wordsLearned,

@@ -68,7 +68,7 @@ export default class EcosystemGame {
 
     // Show welcome message
     this.showMessage(
-      "Welcome to Sky's Ecosystem Explorer! Drag species to build your ecosystem.",
+      'Welcome to Sky\'s Ecosystem Explorer! Drag species to build your ecosystem.',
       3000
     );
   }

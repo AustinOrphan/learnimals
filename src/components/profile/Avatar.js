@@ -117,18 +117,18 @@ class Avatar {
 
     this.avatarConfig.accessories.forEach(accessoryId => {
       switch (accessoryId) {
-        case 'sparkles':
-          this.addSparkleEffect(effectsContainer);
-          break;
-        case 'wings':
-          this.addWingEffect(effectsContainer);
-          break;
-        case 'aura':
-          this.addAuraEffect(effectsContainer);
-          break;
-        case 'stars':
-          this.addStarEffect(effectsContainer);
-          break;
+      case 'sparkles':
+        this.addSparkleEffect(effectsContainer);
+        break;
+      case 'wings':
+        this.addWingEffect(effectsContainer);
+        break;
+      case 'aura':
+        this.addAuraEffect(effectsContainer);
+        break;
+      case 'stars':
+        this.addStarEffect(effectsContainer);
+        break;
       }
     });
   }

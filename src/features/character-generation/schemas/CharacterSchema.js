@@ -415,7 +415,7 @@ export const DefaultCharacterTemplate = {
   },
   interactions: {
     greetings: ['Hello! Ready to learn together?'],
-    encouragements: ["You're doing great! Keep it up!"],
+    encouragements: ['You\'re doing great! Keep it up!'],
     celebrations: ['Fantastic work! Well done!'],
     hints: [],
   },
@@ -466,7 +466,7 @@ export const SubjectTemplates = {
     },
     interactions: {
       greetings: [
-        "Hi! Let's explore the wonderful world of numbers!",
+        'Hi! Let\'s explore the wonderful world of numbers!',
         'Ready to solve some fun math puzzles?',
       ],
     },
@@ -556,7 +556,7 @@ export const SubjectTemplates = {
       teachingStyle: 'auditory',
     },
     interactions: {
-      greetings: ["Let's make beautiful music together!", 'Ready to explore the world of sound?'],
+      greetings: ['Let\'s make beautiful music together!', 'Ready to explore the world of sound?'],
     },
   },
 

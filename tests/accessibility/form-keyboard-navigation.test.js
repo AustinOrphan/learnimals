@@ -269,20 +269,20 @@ describe('Form Keyboard Navigation Tests', () => {
         radio.addEventListener('keydown', e => {
           let nextIndex;
           switch (e.key) {
-            case 'ArrowDown':
-            case 'ArrowRight':
-              e.preventDefault();
-              nextIndex = (index + 1) % radioButtons.length;
-              radioButtons[nextIndex].focus();
-              radioButtons[nextIndex].checked = true;
-              break;
-            case 'ArrowUp':
-            case 'ArrowLeft':
-              e.preventDefault();
-              nextIndex = index > 0 ? index - 1 : radioButtons.length - 1;
-              radioButtons[nextIndex].focus();
-              radioButtons[nextIndex].checked = true;
-              break;
+          case 'ArrowDown':
+          case 'ArrowRight':
+            e.preventDefault();
+            nextIndex = (index + 1) % radioButtons.length;
+            radioButtons[nextIndex].focus();
+            radioButtons[nextIndex].checked = true;
+            break;
+          case 'ArrowUp':
+          case 'ArrowLeft':
+            e.preventDefault();
+            nextIndex = index > 0 ? index - 1 : radioButtons.length - 1;
+            radioButtons[nextIndex].focus();
+            radioButtons[nextIndex].checked = true;
+            break;
           }
         });
       });
@@ -424,26 +424,26 @@ describe('Form Keyboard Navigation Tests', () => {
       countrySelect.addEventListener('keydown', e => {
         const options = countrySelect.options;
         switch (e.key) {
-          case 'ArrowDown':
-            e.preventDefault();
-            selectedIndex = Math.min(selectedIndex + 1, options.length - 1);
-            countrySelect.selectedIndex = selectedIndex;
-            break;
-          case 'ArrowUp':
-            e.preventDefault();
-            selectedIndex = Math.max(selectedIndex - 1, 0);
-            countrySelect.selectedIndex = selectedIndex;
-            break;
-          case 'Home':
-            e.preventDefault();
-            selectedIndex = 0;
-            countrySelect.selectedIndex = selectedIndex;
-            break;
-          case 'End':
-            e.preventDefault();
-            selectedIndex = options.length - 1;
-            countrySelect.selectedIndex = selectedIndex;
-            break;
+        case 'ArrowDown':
+          e.preventDefault();
+          selectedIndex = Math.min(selectedIndex + 1, options.length - 1);
+          countrySelect.selectedIndex = selectedIndex;
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          selectedIndex = Math.max(selectedIndex - 1, 0);
+          countrySelect.selectedIndex = selectedIndex;
+          break;
+        case 'Home':
+          e.preventDefault();
+          selectedIndex = 0;
+          countrySelect.selectedIndex = selectedIndex;
+          break;
+        case 'End':
+          e.preventDefault();
+          selectedIndex = options.length - 1;
+          countrySelect.selectedIndex = selectedIndex;
+          break;
         }
       });
 
@@ -784,37 +784,37 @@ describe('Form Keyboard Navigation Tests', () => {
         cell.addEventListener('keydown', e => {
           let nextIndex;
           switch (e.key) {
-            case 'ArrowRight':
-              e.preventDefault();
-              nextIndex = (index + 1) % calendarCells.length;
-              focusCalendarCell(calendarCells, nextIndex);
-              break;
-            case 'ArrowLeft':
-              e.preventDefault();
-              nextIndex = index > 0 ? index - 1 : calendarCells.length - 1;
-              focusCalendarCell(calendarCells, nextIndex);
-              break;
-            case 'ArrowDown':
-              e.preventDefault();
-              nextIndex = (index + 7) % calendarCells.length;
-              focusCalendarCell(calendarCells, nextIndex);
-              break;
-            case 'ArrowUp':
-              e.preventDefault();
-              nextIndex = index >= 7 ? index - 7 : calendarCells.length + index - 7;
-              focusCalendarCell(calendarCells, nextIndex);
-              break;
-            case 'Enter':
-            case ' ':
-              e.preventDefault();
-              selectDate(cell, dateInput, calendar, dateTrigger);
-              break;
-            case 'Escape':
-              e.preventDefault();
-              calendar.hidden = true;
-              dateTrigger.setAttribute('aria-expanded', 'false');
-              dateTrigger.focus();
-              break;
+          case 'ArrowRight':
+            e.preventDefault();
+            nextIndex = (index + 1) % calendarCells.length;
+            focusCalendarCell(calendarCells, nextIndex);
+            break;
+          case 'ArrowLeft':
+            e.preventDefault();
+            nextIndex = index > 0 ? index - 1 : calendarCells.length - 1;
+            focusCalendarCell(calendarCells, nextIndex);
+            break;
+          case 'ArrowDown':
+            e.preventDefault();
+            nextIndex = (index + 7) % calendarCells.length;
+            focusCalendarCell(calendarCells, nextIndex);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            nextIndex = index >= 7 ? index - 7 : calendarCells.length + index - 7;
+            focusCalendarCell(calendarCells, nextIndex);
+            break;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            selectDate(cell, dateInput, calendar, dateTrigger);
+            break;
+          case 'Escape':
+            e.preventDefault();
+            calendar.hidden = true;
+            dateTrigger.setAttribute('aria-expanded', 'false');
+            dateTrigger.focus();
+            break;
           }
         });
       });

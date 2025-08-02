@@ -166,16 +166,16 @@ export default class EcosystemSafariGame {
     const y = event.clientY - rect.top;
 
     switch (event.type) {
-      case 'pointerdown':
-        this.handlePointerDown(x, y, event);
-        break;
-      case 'pointermove':
-        this.handlePointerMove(x, y, event);
-        break;
-      case 'pointerup':
-      case 'pointercancel':
-        this.handlePointerUp(x, y, event);
-        break;
+    case 'pointerdown':
+      this.handlePointerDown(x, y, event);
+      break;
+    case 'pointermove':
+      this.handlePointerMove(x, y, event);
+      break;
+    case 'pointerup':
+    case 'pointercancel':
+      this.handlePointerUp(x, y, event);
+      break;
     }
   }
 
@@ -346,7 +346,7 @@ export default class EcosystemSafariGame {
 
     // Integration point with existing Modal system
     if (window.Modal) {
-      window.Modal.show("Sky's Science Safari", message);
+      window.Modal.show('Sky\'s Science Safari', message);
     }
   }
 

@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/prettierrc",
   "semi": true,
   "singleQuote": true,
   "tabWidth": 2,
@@ -9,24 +10,53 @@
   "arrowParens": "avoid",
   "printWidth": 100,
   "endOfLine": "lf",
+  "quoteProps": "as-needed",
+  "jsxSingleQuote": false,
+  "proseWrap": "preserve",
+  "htmlWhitespaceSensitivity": "css",
+  "embeddedLanguageFormatting": "auto",
   "overrides": [
     {
       "files": ["*.html"],
       "options": {
         "printWidth": 120,
-        "htmlWhitespaceSensitivity": "css"
+        "htmlWhitespaceSensitivity": "css",
+        "bracketSameLine": false
       }
     },
     {
-      "files": ["*.css"],
+      "files": ["*.css", "*.scss"],
       "options": {
-        "printWidth": 120
+        "printWidth": 120,
+        "singleQuote": false
       }
     },
     {
-      "files": ["*.json"],
+      "files": ["*.json", ".*rc"],
       "options": {
-        "printWidth": 80
+        "printWidth": 80,
+        "trailingComma": "none"
+      }
+    },
+    {
+      "files": ["*.md"],
+      "options": {
+        "printWidth": 80,
+        "proseWrap": "always",
+        "embeddedLanguageFormatting": "off"
+      }
+    },
+    {
+      "files": [".prettierrc", ".eslintrc", ".markdownlintrc"],
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": ["*.yml", "*.yaml"],
+      "options": {
+        "printWidth": 80,
+        "proseWrap": "preserve"
       }
     }
   ]

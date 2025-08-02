@@ -139,7 +139,7 @@ export class ProgressService {
     // Validate data
     const errors = VALIDATION_SCHEMAS.PROGRESS
       ? // eslint-disable-next-line no-undef
-        require('../database/schema.js').validateData(progressData, VALIDATION_SCHEMAS.PROGRESS)
+      require('../database/schema.js').validateData(progressData, VALIDATION_SCHEMAS.PROGRESS)
       : [];
 
     if (errors.length > 0) {
@@ -544,20 +544,20 @@ export class ProgressService {
       let key;
 
       switch (groupBy) {
-        case 'day':
-          key = date.toISOString().split('T')[0];
-          break;
-        case 'week': {
-          const weekStart = new Date(date);
-          weekStart.setDate(date.getDate() - date.getDay());
-          key = weekStart.toISOString().split('T')[0];
-          break;
-        }
-        case 'month':
-          key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-          break;
-        default:
-          key = date.toISOString().split('T')[0];
+      case 'day':
+        key = date.toISOString().split('T')[0];
+        break;
+      case 'week': {
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - date.getDay());
+        key = weekStart.toISOString().split('T')[0];
+        break;
+      }
+      case 'month':
+        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        break;
+      default:
+        key = date.toISOString().split('T')[0];
       }
 
       if (!groups[key]) {

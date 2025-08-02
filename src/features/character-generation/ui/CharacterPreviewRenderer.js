@@ -197,63 +197,63 @@ export default class CharacterPreviewRenderer {
     let shapeElement;
 
     switch (shape) {
-      case 'circle':
-        shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        shapeElement.setAttribute('cx', centerX);
-        shapeElement.setAttribute('cy', centerY);
-        shapeElement.setAttribute('r', size / 2);
-        break;
+    case 'circle':
+      shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      shapeElement.setAttribute('cx', centerX);
+      shapeElement.setAttribute('cy', centerY);
+      shapeElement.setAttribute('r', size / 2);
+      break;
 
-      case 'oval':
-        shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-        shapeElement.setAttribute('cx', centerX);
-        shapeElement.setAttribute('cy', centerY);
-        shapeElement.setAttribute('rx', size / 2);
-        shapeElement.setAttribute('ry', size / 2.5);
-        break;
+    case 'oval':
+      shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      shapeElement.setAttribute('cx', centerX);
+      shapeElement.setAttribute('cy', centerY);
+      shapeElement.setAttribute('rx', size / 2);
+      shapeElement.setAttribute('ry', size / 2.5);
+      break;
 
-      case 'square':
-      case 'rectangle':
-        shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        const rectWidth = shape === 'square' ? size : size * 1.2;
-        const rectHeight = shape === 'square' ? size : size * 0.8;
-        shapeElement.setAttribute('x', centerX - rectWidth / 2);
-        shapeElement.setAttribute('y', centerY - rectHeight / 2);
-        shapeElement.setAttribute('width', rectWidth);
-        shapeElement.setAttribute('height', rectHeight);
-        shapeElement.setAttribute('rx', size * 0.1);
-        break;
+    case 'square':
+    case 'rectangle':
+      shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      const rectWidth = shape === 'square' ? size : size * 1.2;
+      const rectHeight = shape === 'square' ? size : size * 0.8;
+      shapeElement.setAttribute('x', centerX - rectWidth / 2);
+      shapeElement.setAttribute('y', centerY - rectHeight / 2);
+      shapeElement.setAttribute('width', rectWidth);
+      shapeElement.setAttribute('height', rectHeight);
+      shapeElement.setAttribute('rx', size * 0.1);
+      break;
 
-      case 'triangle':
-        shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        const points = [
-          [centerX, centerY - size / 2],
-          [centerX - size / 2, centerY + size / 2],
-          [centerX + size / 2, centerY + size / 2],
-        ]
-          .map(p => p.join(','))
-          .join(' ');
-        shapeElement.setAttribute('points', points);
-        break;
+    case 'triangle':
+      shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      const points = [
+        [centerX, centerY - size / 2],
+        [centerX - size / 2, centerY + size / 2],
+        [centerX + size / 2, centerY + size / 2],
+      ]
+        .map(p => p.join(','))
+        .join(' ');
+      shapeElement.setAttribute('points', points);
+      break;
 
-      case 'hexagon':
-        shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        const hexSize = size / 2;
-        const hexPoints = [];
-        for (let i = 0; i < 6; i++) {
-          const angle = ((i * 60 - 90) * Math.PI) / 180;
-          const x = centerX + hexSize * Math.cos(angle);
-          const y = centerY + hexSize * Math.sin(angle);
-          hexPoints.push([x, y].join(','));
-        }
-        shapeElement.setAttribute('points', hexPoints.join(' '));
-        break;
+    case 'hexagon':
+      shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      const hexSize = size / 2;
+      const hexPoints = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = ((i * 60 - 90) * Math.PI) / 180;
+        const x = centerX + hexSize * Math.cos(angle);
+        const y = centerY + hexSize * Math.sin(angle);
+        hexPoints.push([x, y].join(','));
+      }
+      shapeElement.setAttribute('points', hexPoints.join(' '));
+      break;
 
-      default:
-        shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        shapeElement.setAttribute('cx', centerX);
-        shapeElement.setAttribute('cy', centerY);
-        shapeElement.setAttribute('r', size / 2);
+    default:
+      shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      shapeElement.setAttribute('cx', centerX);
+      shapeElement.setAttribute('cy', centerY);
+      shapeElement.setAttribute('r', size / 2);
     }
 
     shapeElement.setAttribute('fill', `url(#character-gradient-${this.generateId()})`);
@@ -303,43 +303,43 @@ export default class CharacterPreviewRenderer {
     let eyeElement;
 
     switch (shape) {
-      case 'circle':
-        eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        eyeElement.setAttribute('cx', x);
-        eyeElement.setAttribute('cy', y);
-        eyeElement.setAttribute('r', size);
-        break;
+    case 'circle':
+      eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      eyeElement.setAttribute('cx', x);
+      eyeElement.setAttribute('cy', y);
+      eyeElement.setAttribute('r', size);
+      break;
 
-      case 'oval':
-        eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-        eyeElement.setAttribute('cx', x);
-        eyeElement.setAttribute('cy', y);
-        eyeElement.setAttribute('rx', size);
-        eyeElement.setAttribute('ry', size * 0.8);
-        break;
+    case 'oval':
+      eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      eyeElement.setAttribute('cx', x);
+      eyeElement.setAttribute('cy', y);
+      eyeElement.setAttribute('rx', size);
+      eyeElement.setAttribute('ry', size * 0.8);
+      break;
 
-      case 'almond':
-        eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-        eyeElement.setAttribute('cx', x);
-        eyeElement.setAttribute('cy', y);
-        eyeElement.setAttribute('rx', size * 1.2);
-        eyeElement.setAttribute('ry', size * 0.6);
-        break;
+    case 'almond':
+      eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      eyeElement.setAttribute('cx', x);
+      eyeElement.setAttribute('cy', y);
+      eyeElement.setAttribute('rx', size * 1.2);
+      eyeElement.setAttribute('ry', size * 0.6);
+      break;
 
-      case 'square':
-        eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        eyeElement.setAttribute('x', x - size);
-        eyeElement.setAttribute('y', y - size);
-        eyeElement.setAttribute('width', size * 2);
-        eyeElement.setAttribute('height', size * 2);
-        eyeElement.setAttribute('rx', size * 0.2);
-        break;
+    case 'square':
+      eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      eyeElement.setAttribute('x', x - size);
+      eyeElement.setAttribute('y', y - size);
+      eyeElement.setAttribute('width', size * 2);
+      eyeElement.setAttribute('height', size * 2);
+      eyeElement.setAttribute('rx', size * 0.2);
+      break;
 
-      default:
-        eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        eyeElement.setAttribute('cx', x);
-        eyeElement.setAttribute('cy', y);
-        eyeElement.setAttribute('r', size);
+    default:
+      eyeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      eyeElement.setAttribute('cx', x);
+      eyeElement.setAttribute('cy', y);
+      eyeElement.setAttribute('r', size);
     }
 
     eyeElement.setAttribute('fill', color);
@@ -355,68 +355,68 @@ export default class CharacterPreviewRenderer {
     let mouthElement;
 
     switch (shape) {
-      case 'smile':
-        mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        mouthElement.setAttribute(
-          'd',
-          `M ${x - width / 2} ${y} Q ${x} ${y + width / 3} ${x + width / 2} ${y}`
-        );
-        mouthElement.setAttribute('stroke', '#333333');
-        mouthElement.setAttribute('stroke-width', '3');
-        mouthElement.setAttribute('fill', 'none');
-        mouthElement.setAttribute('stroke-linecap', 'round');
-        break;
+    case 'smile':
+      mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      mouthElement.setAttribute(
+        'd',
+        `M ${x - width / 2} ${y} Q ${x} ${y + width / 3} ${x + width / 2} ${y}`
+      );
+      mouthElement.setAttribute('stroke', '#333333');
+      mouthElement.setAttribute('stroke-width', '3');
+      mouthElement.setAttribute('fill', 'none');
+      mouthElement.setAttribute('stroke-linecap', 'round');
+      break;
 
-      case 'neutral':
-        mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        mouthElement.setAttribute('x1', x - width / 2);
-        mouthElement.setAttribute('y1', y);
-        mouthElement.setAttribute('x2', x + width / 2);
-        mouthElement.setAttribute('y2', y);
-        mouthElement.setAttribute('stroke', '#333333');
-        mouthElement.setAttribute('stroke-width', '3');
-        mouthElement.setAttribute('stroke-linecap', 'round');
-        break;
+    case 'neutral':
+      mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      mouthElement.setAttribute('x1', x - width / 2);
+      mouthElement.setAttribute('y1', y);
+      mouthElement.setAttribute('x2', x + width / 2);
+      mouthElement.setAttribute('y2', y);
+      mouthElement.setAttribute('stroke', '#333333');
+      mouthElement.setAttribute('stroke-width', '3');
+      mouthElement.setAttribute('stroke-linecap', 'round');
+      break;
 
-      case 'open':
-        mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-        mouthElement.setAttribute('cx', x);
-        mouthElement.setAttribute('cy', y);
-        mouthElement.setAttribute('rx', width / 3);
-        mouthElement.setAttribute('ry', width / 4);
-        mouthElement.setAttribute('fill', '#333333');
-        break;
+    case 'open':
+      mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      mouthElement.setAttribute('cx', x);
+      mouthElement.setAttribute('cy', y);
+      mouthElement.setAttribute('rx', width / 3);
+      mouthElement.setAttribute('ry', width / 4);
+      mouthElement.setAttribute('fill', '#333333');
+      break;
 
-      case 'small':
-        mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        mouthElement.setAttribute('cx', x);
-        mouthElement.setAttribute('cy', y);
-        mouthElement.setAttribute('r', width / 6);
-        mouthElement.setAttribute('fill', '#333333');
-        break;
+    case 'small':
+      mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      mouthElement.setAttribute('cx', x);
+      mouthElement.setAttribute('cy', y);
+      mouthElement.setAttribute('r', width / 6);
+      mouthElement.setAttribute('fill', '#333333');
+      break;
 
-      case 'wide':
-        mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        mouthElement.setAttribute(
-          'd',
-          `M ${x - width / 2} ${y} Q ${x} ${y + width / 4} ${x + width / 2} ${y}`
-        );
-        mouthElement.setAttribute('stroke', '#333333');
-        mouthElement.setAttribute('stroke-width', '4');
-        mouthElement.setAttribute('fill', 'none');
-        mouthElement.setAttribute('stroke-linecap', 'round');
-        break;
+    case 'wide':
+      mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      mouthElement.setAttribute(
+        'd',
+        `M ${x - width / 2} ${y} Q ${x} ${y + width / 4} ${x + width / 2} ${y}`
+      );
+      mouthElement.setAttribute('stroke', '#333333');
+      mouthElement.setAttribute('stroke-width', '4');
+      mouthElement.setAttribute('fill', 'none');
+      mouthElement.setAttribute('stroke-linecap', 'round');
+      break;
 
-      default:
-        mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        mouthElement.setAttribute(
-          'd',
-          `M ${x - width / 2} ${y} Q ${x} ${y + width / 3} ${x + width / 2} ${y}`
-        );
-        mouthElement.setAttribute('stroke', '#333333');
-        mouthElement.setAttribute('stroke-width', '3');
-        mouthElement.setAttribute('fill', 'none');
-        mouthElement.setAttribute('stroke-linecap', 'round');
+    default:
+      mouthElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      mouthElement.setAttribute(
+        'd',
+        `M ${x - width / 2} ${y} Q ${x} ${y + width / 3} ${x + width / 2} ${y}`
+      );
+      mouthElement.setAttribute('stroke', '#333333');
+      mouthElement.setAttribute('stroke-width', '3');
+      mouthElement.setAttribute('fill', 'none');
+      mouthElement.setAttribute('stroke-linecap', 'round');
     }
 
     mouthElement.classList.add('character-mouth');
@@ -436,82 +436,82 @@ export default class CharacterPreviewRenderer {
     let accessoryElement;
 
     switch (type) {
-      case 'hat':
-        accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        accessoryElement.setAttribute('x', x - width * 0.25);
-        accessoryElement.setAttribute('y', y - height * 0.15);
-        accessoryElement.setAttribute('width', width * 0.5);
-        accessoryElement.setAttribute('height', height * 0.1);
-        accessoryElement.setAttribute('rx', width * 0.02);
-        accessoryElement.setAttribute('fill', color || '#8B4513');
-        break;
+    case 'hat':
+      accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      accessoryElement.setAttribute('x', x - width * 0.25);
+      accessoryElement.setAttribute('y', y - height * 0.15);
+      accessoryElement.setAttribute('width', width * 0.5);
+      accessoryElement.setAttribute('height', height * 0.1);
+      accessoryElement.setAttribute('rx', width * 0.02);
+      accessoryElement.setAttribute('fill', color || '#8B4513');
+      break;
 
-      case 'glasses':
-        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    case 'glasses':
+      const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
-        // Left lens
-        const leftLens = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        leftLens.setAttribute('cx', x - width * 0.08);
-        leftLens.setAttribute('cy', y);
-        leftLens.setAttribute('r', width * 0.06);
-        leftLens.setAttribute('fill', 'none');
-        leftLens.setAttribute('stroke', color || '#333333');
-        leftLens.setAttribute('stroke-width', '2');
-        group.appendChild(leftLens);
+      // Left lens
+      const leftLens = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      leftLens.setAttribute('cx', x - width * 0.08);
+      leftLens.setAttribute('cy', y);
+      leftLens.setAttribute('r', width * 0.06);
+      leftLens.setAttribute('fill', 'none');
+      leftLens.setAttribute('stroke', color || '#333333');
+      leftLens.setAttribute('stroke-width', '2');
+      group.appendChild(leftLens);
 
-        // Right lens
-        const rightLens = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        rightLens.setAttribute('cx', x + width * 0.08);
-        rightLens.setAttribute('cy', y);
-        rightLens.setAttribute('r', width * 0.06);
-        rightLens.setAttribute('fill', 'none');
-        rightLens.setAttribute('stroke', color || '#333333');
-        rightLens.setAttribute('stroke-width', '2');
-        group.appendChild(rightLens);
+      // Right lens
+      const rightLens = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      rightLens.setAttribute('cx', x + width * 0.08);
+      rightLens.setAttribute('cy', y);
+      rightLens.setAttribute('r', width * 0.06);
+      rightLens.setAttribute('fill', 'none');
+      rightLens.setAttribute('stroke', color || '#333333');
+      rightLens.setAttribute('stroke-width', '2');
+      group.appendChild(rightLens);
 
-        // Bridge
-        const bridge = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        bridge.setAttribute('x1', x - width * 0.02);
-        bridge.setAttribute('y1', y);
-        bridge.setAttribute('x2', x + width * 0.02);
-        bridge.setAttribute('y2', y);
-        bridge.setAttribute('stroke', color || '#333333');
-        bridge.setAttribute('stroke-width', '2');
-        group.appendChild(bridge);
+      // Bridge
+      const bridge = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      bridge.setAttribute('x1', x - width * 0.02);
+      bridge.setAttribute('y1', y);
+      bridge.setAttribute('x2', x + width * 0.02);
+      bridge.setAttribute('y2', y);
+      bridge.setAttribute('stroke', color || '#333333');
+      bridge.setAttribute('stroke-width', '2');
+      group.appendChild(bridge);
 
-        accessoryElement = group;
-        break;
+      accessoryElement = group;
+      break;
 
-      case 'bow':
-        accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        const bowPoints = [
-          [x - width * 0.05, y],
-          [x - width * 0.02, y - height * 0.03],
-          [x, y],
-          [x + width * 0.02, y - height * 0.03],
-          [x + width * 0.05, y],
-          [x + width * 0.02, y + height * 0.03],
-          [x, y],
-          [x - width * 0.02, y + height * 0.03],
-        ]
-          .map(p => p.join(','))
-          .join(' ');
-        accessoryElement.setAttribute('points', bowPoints);
-        accessoryElement.setAttribute('fill', color || '#FF69B4');
-        break;
+    case 'bow':
+      accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      const bowPoints = [
+        [x - width * 0.05, y],
+        [x - width * 0.02, y - height * 0.03],
+        [x, y],
+        [x + width * 0.02, y - height * 0.03],
+        [x + width * 0.05, y],
+        [x + width * 0.02, y + height * 0.03],
+        [x, y],
+        [x - width * 0.02, y + height * 0.03],
+      ]
+        .map(p => p.join(','))
+        .join(' ');
+      accessoryElement.setAttribute('points', bowPoints);
+      accessoryElement.setAttribute('fill', color || '#FF69B4');
+      break;
 
-      case 'badge':
-        accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        accessoryElement.setAttribute('cx', x);
-        accessoryElement.setAttribute('cy', y);
-        accessoryElement.setAttribute('r', width * 0.04);
-        accessoryElement.setAttribute('fill', color || '#FFD700');
-        accessoryElement.setAttribute('stroke', '#FFA500');
-        accessoryElement.setAttribute('stroke-width', '1');
-        break;
+    case 'badge':
+      accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      accessoryElement.setAttribute('cx', x);
+      accessoryElement.setAttribute('cy', y);
+      accessoryElement.setAttribute('r', width * 0.04);
+      accessoryElement.setAttribute('fill', color || '#FFD700');
+      accessoryElement.setAttribute('stroke', '#FFA500');
+      accessoryElement.setAttribute('stroke-width', '1');
+      break;
 
-      default:
-        return null;
+    default:
+      return null;
     }
 
     if (accessoryElement) {
@@ -571,24 +571,24 @@ export default class CharacterPreviewRenderer {
       <div class="character-name">${this.character.name || 'Unnamed Character'}</div>
       <div class="character-subject">${this.character.subject || 'General'}</div>
       ${
-        traits.length > 0
-          ? `
+  traits.length > 0
+    ? `
         <div class="character-traits">
           ${traits.map(trait => `<span class="trait-tag">${trait}</span>`).join('')}
         </div>
       `
-          : ''
-      }
+    : ''
+}
       ${
-        specialties.length > 0
-          ? `
+  specialties.length > 0
+    ? `
         <div class="character-specialties">
           <div class="specialties-label">Specialties:</div>
           <div class="specialties-list">${specialties.slice(0, 3).join(', ')}</div>
         </div>
       `
-          : ''
-      }
+    : ''
+}
     `;
 
     return info;
@@ -825,100 +825,100 @@ export default class CharacterPreviewRenderer {
     const pattern = elements.patterns[0];
 
     switch (pattern) {
-      case 'grid':
-        // Math grid pattern
-        for (let x = 0; x < width; x += 20) {
-          for (let y = 0; y < height; y += 20) {
-            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            dot.setAttribute('cx', x);
-            dot.setAttribute('cy', y);
-            dot.setAttribute('r', '1');
-            dot.setAttribute('fill', '#333');
-            group.appendChild(dot);
-          }
+    case 'grid':
+      // Math grid pattern
+      for (let x = 0; x < width; x += 20) {
+        for (let y = 0; y < height; y += 20) {
+          const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('cx', x);
+          dot.setAttribute('cy', y);
+          dot.setAttribute('r', '1');
+          dot.setAttribute('fill', '#333');
+          group.appendChild(dot);
         }
-        break;
+      }
+      break;
 
-      case 'atom':
-        // Science atom pattern
-        const centerX = width / 2;
-        const centerY = height / 2;
+    case 'atom':
+      // Science atom pattern
+      const centerX = width / 2;
+      const centerY = height / 2;
 
-        // Nucleus
-        const nucleus = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        nucleus.setAttribute('cx', centerX);
-        nucleus.setAttribute('cy', centerY);
-        nucleus.setAttribute('r', '3');
-        nucleus.setAttribute('fill', '#333');
-        group.appendChild(nucleus);
+      // Nucleus
+      const nucleus = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      nucleus.setAttribute('cx', centerX);
+      nucleus.setAttribute('cy', centerY);
+      nucleus.setAttribute('r', '3');
+      nucleus.setAttribute('fill', '#333');
+      group.appendChild(nucleus);
 
-        // Electron orbits
-        for (let i = 0; i < 3; i++) {
-          const orbit = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-          orbit.setAttribute('cx', centerX);
-          orbit.setAttribute('cy', centerY);
-          orbit.setAttribute('rx', 20 + i * 15);
-          orbit.setAttribute('ry', 10 + i * 8);
-          orbit.setAttribute('fill', 'none');
-          orbit.setAttribute('stroke', '#333');
-          orbit.setAttribute('stroke-width', '0.5');
-          orbit.setAttribute('transform', `rotate(${i * 60} ${centerX} ${centerY})`);
-          group.appendChild(orbit);
-        }
-        break;
+      // Electron orbits
+      for (let i = 0; i < 3; i++) {
+        const orbit = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        orbit.setAttribute('cx', centerX);
+        orbit.setAttribute('cy', centerY);
+        orbit.setAttribute('rx', 20 + i * 15);
+        orbit.setAttribute('ry', 10 + i * 8);
+        orbit.setAttribute('fill', 'none');
+        orbit.setAttribute('stroke', '#333');
+        orbit.setAttribute('stroke-width', '0.5');
+        orbit.setAttribute('transform', `rotate(${i * 60} ${centerX} ${centerY})`);
+        group.appendChild(orbit);
+      }
+      break;
 
-      case 'letters':
-        // Reading letters pattern
-        const letters = ['A', 'B', 'C', 'D', 'E'];
-        letters.forEach((letter, index) => {
-          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          text.setAttribute('x', 20 + index * 25);
-          text.setAttribute('y', height - 20);
-          text.setAttribute('font-size', '12');
-          text.setAttribute('fill', '#333');
-          text.textContent = letter;
-          group.appendChild(text);
-        });
-        break;
+    case 'letters':
+      // Reading letters pattern
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      letters.forEach((letter, index) => {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', 20 + index * 25);
+        text.setAttribute('y', height - 20);
+        text.setAttribute('font-size', '12');
+        text.setAttribute('fill', '#333');
+        text.textContent = letter;
+        group.appendChild(text);
+      });
+      break;
 
-      case 'rainbow':
-        // Art rainbow pattern
-        const colors = [
-          '#FF0000',
-          '#FF7F00',
-          '#FFFF00',
-          '#00FF00',
-          '#0000FF',
-          '#4B0082',
-          '#9400D3',
-        ];
-        colors.forEach((color, index) => {
-          const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          const radius = 30 + index * 3;
-          arc.setAttribute(
-            'd',
-            `M ${width / 2 - radius} ${height / 2} A ${radius} ${radius} 0 0 1 ${width / 2 + radius} ${height / 2}`
-          );
-          arc.setAttribute('stroke', color);
-          arc.setAttribute('stroke-width', '2');
-          arc.setAttribute('fill', 'none');
-          group.appendChild(arc);
-        });
-        break;
+    case 'rainbow':
+      // Art rainbow pattern
+      const colors = [
+        '#FF0000',
+        '#FF7F00',
+        '#FFFF00',
+        '#00FF00',
+        '#0000FF',
+        '#4B0082',
+        '#9400D3',
+      ];
+      colors.forEach((color, index) => {
+        const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const radius = 30 + index * 3;
+        arc.setAttribute(
+          'd',
+          `M ${width / 2 - radius} ${height / 2} A ${radius} ${radius} 0 0 1 ${width / 2 + radius} ${height / 2}`
+        );
+        arc.setAttribute('stroke', color);
+        arc.setAttribute('stroke-width', '2');
+        arc.setAttribute('fill', 'none');
+        group.appendChild(arc);
+      });
+      break;
 
-      case 'binary':
-        // Coding binary pattern
-        const binary = ['1', '0', '1', '1', '0', '1', '0', '0'];
-        binary.forEach((bit, index) => {
-          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          text.setAttribute('x', 10 + (index % 4) * 20);
-          text.setAttribute('y', 20 + Math.floor(index / 4) * 15);
-          text.setAttribute('font-size', '8');
-          text.setAttribute('fill', '#333');
-          text.textContent = bit;
-          group.appendChild(text);
-        });
-        break;
+    case 'binary':
+      // Coding binary pattern
+      const binary = ['1', '0', '1', '1', '0', '1', '0', '0'];
+      binary.forEach((bit, index) => {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', 10 + (index % 4) * 20);
+        text.setAttribute('y', 20 + Math.floor(index / 4) * 15);
+        text.setAttribute('font-size', '8');
+        text.setAttribute('fill', '#333');
+        text.textContent = bit;
+        group.appendChild(text);
+      });
+      break;
     }
 
     return group;
@@ -971,62 +971,62 @@ export default class CharacterPreviewRenderer {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
     switch (tool) {
-      case 'calculator':
-        const calc = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        calc.setAttribute('x', x - size / 2);
-        calc.setAttribute('y', y - size / 2);
-        calc.setAttribute('width', size);
-        calc.setAttribute('height', size * 1.2);
-        calc.setAttribute('fill', '#333');
-        calc.setAttribute('rx', '1');
-        group.appendChild(calc);
-        break;
+    case 'calculator':
+      const calc = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      calc.setAttribute('x', x - size / 2);
+      calc.setAttribute('y', y - size / 2);
+      calc.setAttribute('width', size);
+      calc.setAttribute('height', size * 1.2);
+      calc.setAttribute('fill', '#333');
+      calc.setAttribute('rx', '1');
+      group.appendChild(calc);
+      break;
 
-      case 'microscope':
-        const scope = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        scope.setAttribute(
-          'd',
-          `M ${x - size / 2} ${y + size / 2} L ${x} ${y - size / 2} L ${x + size / 2} ${y + size / 2}`
-        );
-        scope.setAttribute('stroke', '#333');
-        scope.setAttribute('stroke-width', '2');
-        scope.setAttribute('fill', 'none');
-        group.appendChild(scope);
-        break;
+    case 'microscope':
+      const scope = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      scope.setAttribute(
+        'd',
+        `M ${x - size / 2} ${y + size / 2} L ${x} ${y - size / 2} L ${x + size / 2} ${y + size / 2}`
+      );
+      scope.setAttribute('stroke', '#333');
+      scope.setAttribute('stroke-width', '2');
+      scope.setAttribute('fill', 'none');
+      group.appendChild(scope);
+      break;
 
-      case 'book':
-        const book = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        book.setAttribute('x', x - size / 2);
-        book.setAttribute('y', y - size / 3);
-        book.setAttribute('width', size);
-        book.setAttribute('height', size * 0.8);
-        book.setAttribute('fill', '#8B4513');
-        book.setAttribute('rx', '1');
-        group.appendChild(book);
-        break;
+    case 'book':
+      const book = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      book.setAttribute('x', x - size / 2);
+      book.setAttribute('y', y - size / 3);
+      book.setAttribute('width', size);
+      book.setAttribute('height', size * 0.8);
+      book.setAttribute('fill', '#8B4513');
+      book.setAttribute('rx', '1');
+      group.appendChild(book);
+      break;
 
-      case 'brush':
-        const brush = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        brush.setAttribute('x1', x - size / 2);
-        brush.setAttribute('y1', y + size / 2);
-        brush.setAttribute('x2', x + size / 2);
-        brush.setAttribute('y2', y - size / 2);
-        brush.setAttribute('stroke', '#8B4513');
-        brush.setAttribute('stroke-width', '2');
-        brush.setAttribute('stroke-linecap', 'round');
-        group.appendChild(brush);
-        break;
+    case 'brush':
+      const brush = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      brush.setAttribute('x1', x - size / 2);
+      brush.setAttribute('y1', y + size / 2);
+      brush.setAttribute('x2', x + size / 2);
+      brush.setAttribute('y2', y - size / 2);
+      brush.setAttribute('stroke', '#8B4513');
+      brush.setAttribute('stroke-width', '2');
+      brush.setAttribute('stroke-linecap', 'round');
+      group.appendChild(brush);
+      break;
 
-      case 'laptop':
-        const laptop = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        laptop.setAttribute('x', x - size / 2);
-        laptop.setAttribute('y', y - size / 3);
-        laptop.setAttribute('width', size);
-        laptop.setAttribute('height', size * 0.6);
-        laptop.setAttribute('fill', '#666');
-        laptop.setAttribute('rx', '1');
-        group.appendChild(laptop);
-        break;
+    case 'laptop':
+      const laptop = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      laptop.setAttribute('x', x - size / 2);
+      laptop.setAttribute('y', y - size / 3);
+      laptop.setAttribute('width', size);
+      laptop.setAttribute('height', size * 0.6);
+      laptop.setAttribute('fill', '#666');
+      laptop.setAttribute('rx', '1');
+      group.appendChild(laptop);
+      break;
     }
 
     return group;

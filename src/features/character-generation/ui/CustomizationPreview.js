@@ -107,16 +107,16 @@ export default class CustomizationPreview extends BaseComponent {
       <div class="preview-controls">
         <div class="preview-modes">
           ${Object.entries(this.modes)
-            .map(
-              ([id, label]) => `
+    .map(
+      ([id, label]) => `
             <button class="mode-btn ${this.currentMode === id ? 'active' : ''}" 
                     data-mode="${id}">
               ${this.getModeIcon(id)}
               <span>${label}</span>
             </button>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
 
         <div class="preview-settings">
@@ -315,18 +315,18 @@ export default class CustomizationPreview extends BaseComponent {
     if (!this.character) return;
 
     switch (this.currentMode) {
-      case 'single':
-        this.updateSinglePreview();
-        break;
-      case 'comparison':
-        this.updateComparisonPreview();
-        break;
-      case 'gallery':
-        this.updateGalleryPreview();
-        break;
-      case 'animation':
-        this.updateAnimationPreview();
-        break;
+    case 'single':
+      this.updateSinglePreview();
+      break;
+    case 'comparison':
+      this.updateComparisonPreview();
+      break;
+    case 'gallery':
+      this.updateGalleryPreview();
+      break;
+    case 'animation':
+      this.updateAnimationPreview();
+      break;
     }
 
     // Update customization info

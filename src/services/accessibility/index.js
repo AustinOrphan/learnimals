@@ -310,44 +310,44 @@ function displayAuditResults(report) {
       </div>
       
       ${
-        report.violations.length > 0
-          ? `
+  report.violations.length > 0
+    ? `
         <div class="results-section">
           <h3>Issues Found</h3>
           <ul class="issues-list">
             ${report.violations
-              .map(
-                violation => `
+    .map(
+      violation => `
               <li class="issue-item violation">
                 <strong>${violation.test}:</strong> ${violation.error}
               </li>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </ul>
         </div>
       `
-          : ''
-      }
+    : ''
+}
       
       ${
-        report.warnings.length > 0
-          ? `
+  report.warnings.length > 0
+    ? `
         <div class="results-section">
           <h3>Warnings</h3>
           <ul class="issues-list">
             ${report.warnings
-              .map(
-                warning => `
+    .map(
+      warning => `
               <li class="issue-item warning">${warning}</li>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </ul>
         </div>
       `
-          : ''
-      }
+    : ''
+}
       
       <div class="results-actions">
         <button class="btn btn-secondary" id="export-results">Export Report</button>

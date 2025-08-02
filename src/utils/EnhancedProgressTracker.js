@@ -231,43 +231,43 @@ class EnhancedProgressTracker {
     });
 
     switch (gameType) {
-      case 'word-scramble':
-        analytics.totalWords += sessionData.wordsCompleted || 0;
-        analytics.hintsUsed += sessionData.hintsUsed || 0;
-        analytics.averageTime = this.calculateAverageTime(analytics.sessions);
-        break;
+    case 'word-scramble':
+      analytics.totalWords += sessionData.wordsCompleted || 0;
+      analytics.hintsUsed += sessionData.hintsUsed || 0;
+      analytics.averageTime = this.calculateAverageTime(analytics.sessions);
+      break;
 
-      case 'number-line-jump':
-        analytics.totalEquations += sessionData.equationsCompleted || 0;
-        analytics.levelsReached = Math.max(analytics.levelsReached || 0, sessionData.level || 0);
-        analytics.averageAccuracy = this.calculateAverageAccuracy(analytics.sessions);
-        break;
+    case 'number-line-jump':
+      analytics.totalEquations += sessionData.equationsCompleted || 0;
+      analytics.levelsReached = Math.max(analytics.levelsReached || 0, sessionData.level || 0);
+      analytics.averageAccuracy = this.calculateAverageAccuracy(analytics.sessions);
+      break;
 
-      case 'element-match':
-        if (sessionData.elementsLearned) {
-          sessionData.elementsLearned.forEach(element => {
-            analytics.elementsLearned.add(element);
-          });
-        }
-        analytics.totalMatches += sessionData.matchesCompleted || 0;
-        analytics.perfectRounds += sessionData.perfectRounds || 0;
-        break;
+    case 'element-match':
+      if (sessionData.elementsLearned) {
+        sessionData.elementsLearned.forEach(element => {
+          analytics.elementsLearned.add(element);
+        });
+      }
+      analytics.totalMatches += sessionData.matchesCompleted || 0;
+      analytics.perfectRounds += sessionData.perfectRounds || 0;
+      break;
 
-      case 'sentence-builder':
-        analytics.sentencesBuilt += sessionData.sentencesCompleted || 0;
-        analytics.hintsUsed += sessionData.hintsUsed || 0;
-        analytics.grammarAccuracy = this.calculateAverageAccuracy(analytics.sessions);
-        break;
+    case 'sentence-builder':
+      analytics.sentencesBuilt += sessionData.sentencesCompleted || 0;
+      analytics.hintsUsed += sessionData.hintsUsed || 0;
+      analytics.grammarAccuracy = this.calculateAverageAccuracy(analytics.sessions);
+      break;
 
-      case 'color-palette':
-        analytics.colorsCreated += sessionData.colorsCreated || 0;
-        analytics.palettesBuilt += sessionData.palettesCreated || 0;
-        if (sessionData.theoryLearned) {
-          sessionData.theoryLearned.forEach(concept => {
-            analytics.theoryMastered.add(concept);
-          });
-        }
-        break;
+    case 'color-palette':
+      analytics.colorsCreated += sessionData.colorsCreated || 0;
+      analytics.palettesBuilt += sessionData.palettesCreated || 0;
+      if (sessionData.theoryLearned) {
+        sessionData.theoryLearned.forEach(concept => {
+          analytics.theoryMastered.add(concept);
+        });
+      }
+      break;
     }
 
     // Keep only last 50 sessions per game
@@ -310,43 +310,43 @@ class EnhancedProgressTracker {
     let achieved = false;
 
     switch (criteria.type) {
-      case 'count':
-        currentValue = this.getCountForEvent(criteria.event, gameType, criteria.condition);
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'count':
+      currentValue = this.getCountForEvent(criteria.event, gameType, criteria.condition);
+      achieved = currentValue >= criteria.target;
+      break;
 
-      case 'time':
-        currentValue = sessionData.time || 0;
-        achieved =
+    case 'time':
+      currentValue = sessionData.time || 0;
+      achieved =
           criteria.comparison === 'less_than'
             ? currentValue < criteria.target
             : currentValue >= criteria.target;
-        break;
+      break;
 
-      case 'perfect':
-        achieved = this.checkPerfectCondition(criteria.condition, sessionData);
-        currentValue = achieved ? 1 : 0;
-        break;
+    case 'perfect':
+      achieved = this.checkPerfectCondition(criteria.condition, sessionData);
+      currentValue = achieved ? 1 : 0;
+      break;
 
-      case 'streak':
-        currentValue = this.getStreakForEvent(criteria.event, gameType, criteria.condition);
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'streak':
+      currentValue = this.getStreakForEvent(criteria.event, gameType, criteria.condition);
+      achieved = currentValue >= criteria.target;
+      break;
 
-      case 'level':
-        currentValue = sessionData.level || 0;
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'level':
+      currentValue = sessionData.level || 0;
+      achieved = currentValue >= criteria.target;
+      break;
 
-      case 'difficulty_completion':
-        currentValue = this.getDifficultyCompletion(gameType);
-        achieved = criteria.target.every(diff => currentValue.includes(diff));
-        break;
+    case 'difficulty_completion':
+      currentValue = this.getDifficultyCompletion(gameType);
+      achieved = criteria.target.every(diff => currentValue.includes(diff));
+      break;
 
-      case 'unique_count':
-        currentValue = this.getUniqueCountForEvent(criteria.event, gameType);
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'unique_count':
+      currentValue = this.getUniqueCountForEvent(criteria.event, gameType);
+      achieved = currentValue >= criteria.target;
+      break;
     }
 
     // Update progress
@@ -370,32 +370,32 @@ class EnhancedProgressTracker {
     let achieved = false;
 
     switch (criteria.type) {
-      case 'games_played':
-        currentValue = Array.from(this.crossGameProgress.gamesPlayed);
-        achieved = criteria.target.every(game => currentValue.includes(game));
-        break;
+    case 'games_played':
+      currentValue = Array.from(this.crossGameProgress.gamesPlayed);
+      achieved = criteria.target.every(game => currentValue.includes(game));
+      break;
 
-      case 'achievements_earned':
-        currentValue = Array.from(this.achievementProgress.values()).filter(p => p.unlocked).length;
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'achievements_earned':
+      currentValue = Array.from(this.achievementProgress.values()).filter(p => p.unlocked).length;
+      achieved = currentValue >= criteria.target;
+      break;
 
-      case 'total_challenges':
-        currentValue = this.crossGameProgress.totalChallenges;
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'total_challenges':
+      currentValue = this.crossGameProgress.totalChallenges;
+      achieved = currentValue >= criteria.target;
+      break;
 
-      case 'overall_accuracy':
-        currentValue = this.crossGameProgress.overallAccuracy;
-        achieved =
+    case 'overall_accuracy':
+      currentValue = this.crossGameProgress.overallAccuracy;
+      achieved =
           currentValue >= criteria.target &&
           this.getTotalSessions() >= (criteria.minimum_attempts || 10);
-        break;
+      break;
 
-      case 'consecutive_days':
-        currentValue = this.crossGameProgress.dailyStreak;
-        achieved = currentValue >= criteria.target;
-        break;
+    case 'consecutive_days':
+      currentValue = this.crossGameProgress.dailyStreak;
+      achieved = currentValue >= criteria.target;
+      break;
     }
 
     progress.progress = currentValue;
@@ -472,20 +472,20 @@ class EnhancedProgressTracker {
     if (!analytics) return 0;
 
     switch (event) {
-      case 'word-completed':
-        return analytics.totalWords || 0;
-      case 'equation-completed':
-        return analytics.totalEquations || 0;
-      case 'element-matched':
-        return analytics.totalMatches || 0;
-      case 'sentence-completed':
-        return analytics.sentencesBuilt || 0;
-      case 'color-mixed':
-        return analytics.colorsCreated || 0;
-      case 'palette-created':
-        return analytics.palettesBuilt || 0;
-      default:
-        return 0;
+    case 'word-completed':
+      return analytics.totalWords || 0;
+    case 'equation-completed':
+      return analytics.totalEquations || 0;
+    case 'element-matched':
+      return analytics.totalMatches || 0;
+    case 'sentence-completed':
+      return analytics.sentencesBuilt || 0;
+    case 'color-mixed':
+      return analytics.colorsCreated || 0;
+    case 'palette-created':
+      return analytics.palettesBuilt || 0;
+    default:
+      return 0;
     }
   }
 
@@ -500,10 +500,10 @@ class EnhancedProgressTracker {
     if (!analytics) return 0;
 
     switch (event) {
-      case 'element-learned':
-        return analytics.elementsLearned?.size || 0;
-      default:
-        return 0;
+    case 'element-learned':
+      return analytics.elementsLearned?.size || 0;
+    default:
+      return 0;
     }
   }
 
@@ -539,18 +539,18 @@ class EnhancedProgressTracker {
    */
   checkPerfectCondition(condition, sessionData) {
     switch (condition) {
-      case 'no-hints':
-        return (sessionData.hintsUsed || 0) === 0;
-      case 'no-mistakes':
-        return (sessionData.mistakes || 0) === 0;
-      case 'perfect-accuracy':
-        return (sessionData.accuracy || 0) === 100;
-      case 'perfect-grammar':
-        return (sessionData.grammarErrors || 0) === 0;
-      case 'perfect':
-        return (sessionData.accuracy || 0) >= 95;
-      default:
-        return false;
+    case 'no-hints':
+      return (sessionData.hintsUsed || 0) === 0;
+    case 'no-mistakes':
+      return (sessionData.mistakes || 0) === 0;
+    case 'perfect-accuracy':
+      return (sessionData.accuracy || 0) === 100;
+    case 'perfect-grammar':
+      return (sessionData.grammarErrors || 0) === 0;
+    case 'perfect':
+      return (sessionData.accuracy || 0) >= 95;
+    default:
+      return false;
     }
   }
 
@@ -617,33 +617,33 @@ class EnhancedProgressTracker {
       const analytics = this.gameAnalytics[gameType];
 
       switch (gameType) {
-        case 'number-line-jump':
-          userProgress.updateMathProgress({
-            questionsAnswered: analytics.totalEquations || 0,
-            correctAnswers: Math.round(
-              ((analytics.totalEquations || 0) * (analytics.averageAccuracy || 0)) / 100
-            ),
-          });
-          break;
+      case 'number-line-jump':
+        userProgress.updateMathProgress({
+          questionsAnswered: analytics.totalEquations || 0,
+          correctAnswers: Math.round(
+            ((analytics.totalEquations || 0) * (analytics.averageAccuracy || 0)) / 100
+          ),
+        });
+        break;
 
-        case 'word-scramble':
-        case 'sentence-builder':
-          userProgress.updateReadingProgress({
-            wordsLearned: analytics.totalWords || analytics.sentencesBuilt || 0,
-          });
-          break;
+      case 'word-scramble':
+      case 'sentence-builder':
+        userProgress.updateReadingProgress({
+          wordsLearned: analytics.totalWords || analytics.sentencesBuilt || 0,
+        });
+        break;
 
-        case 'element-match':
-          userProgress.updateScienceProgress({
-            factsLearned: analytics.elementsLearned?.size || 0,
-          });
-          break;
+      case 'element-match':
+        userProgress.updateScienceProgress({
+          factsLearned: analytics.elementsLearned?.size || 0,
+        });
+        break;
 
-        case 'color-palette':
-          userProgress.updateArtProgress({
-            techniqueLearned: analytics.theoryMastered?.size || 0,
-          });
-          break;
+      case 'color-palette':
+        userProgress.updateArtProgress({
+          techniqueLearned: analytics.theoryMastered?.size || 0,
+        });
+        break;
       }
     });
   }

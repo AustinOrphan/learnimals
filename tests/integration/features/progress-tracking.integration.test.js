@@ -284,21 +284,21 @@ describe('Progress Tracking System Integration', () => {
             let requirementMet = false;
 
             switch (achievement.requirement.type) {
-              case 'games_completed':
-                requirementMet = progressData.totalGamesPlayed >= achievement.requirement.value;
-                break;
-              case 'level':
-                requirementMet = progressData.overallLevel >= achievement.requirement.value;
-                break;
-              case 'streak':
-                requirementMet = progressData.currentStreak >= achievement.requirement.value;
-                break;
-              case 'subjects_played':
-                requirementMet = progressData.subjectsPlayed >= achievement.requirement.value;
-                break;
-              case 'single_score':
-                requirementMet = progressData.lastGameScore >= achievement.requirement.value;
-                break;
+            case 'games_completed':
+              requirementMet = progressData.totalGamesPlayed >= achievement.requirement.value;
+              break;
+            case 'level':
+              requirementMet = progressData.overallLevel >= achievement.requirement.value;
+              break;
+            case 'streak':
+              requirementMet = progressData.currentStreak >= achievement.requirement.value;
+              break;
+            case 'subjects_played':
+              requirementMet = progressData.subjectsPlayed >= achievement.requirement.value;
+              break;
+            case 'single_score':
+              requirementMet = progressData.lastGameScore >= achievement.requirement.value;
+              break;
             }
 
             if (requirementMet) {
@@ -521,7 +521,7 @@ describe('Progress Tracking System Integration', () => {
           if (report.achievements.completionPercentage > 75) {
             insights.push({
               type: 'positive',
-              message: "You've unlocked most achievements!",
+              message: 'You\'ve unlocked most achievements!',
             });
           }
 

@@ -327,23 +327,23 @@ export default class ExportImportDialog extends BaseComponent {
       this.switchTab(tab);
     } else {
       switch (id) {
-        case 'close-dialog':
-        case 'cancel-dialog':
-        case 'dialog-backdrop':
-          this.close();
-          break;
-        case 'perform-export':
-          this.performExport();
-          break;
-        case 'preview-export':
-          this.previewExport();
-          break;
-        case 'perform-import':
-          this.performImport();
-          break;
-        case 'validate-import-data':
-          this.validateImportData();
-          break;
+      case 'close-dialog':
+      case 'cancel-dialog':
+      case 'dialog-backdrop':
+        this.close();
+        break;
+      case 'perform-export':
+        this.performExport();
+        break;
+      case 'preview-export':
+        this.previewExport();
+        break;
+      case 'perform-import':
+        this.performImport();
+        break;
+      case 'validate-import-data':
+        this.validateImportData();
+        break;
       }
     }
   }
@@ -488,53 +488,53 @@ export default class ExportImportDialog extends BaseComponent {
       let filename;
 
       switch (exportType) {
-        case 'customization':
-          // Export current customization
-          exportData = this.exporter.exportCustomization(
-            this.getCurrentCustomization(),
-            this.getCurrentCharacter(),
-            metadata
-          );
-          filename = this.exporter.createExportFilename('customization', metadata);
-          break;
+      case 'customization':
+        // Export current customization
+        exportData = this.exporter.exportCustomization(
+          this.getCurrentCustomization(),
+          this.getCurrentCharacter(),
+          metadata
+        );
+        filename = this.exporter.createExportFilename('customization', metadata);
+        break;
 
-        case 'collection':
-          // Export customization collection
-          const customizations = Array.from(this.customizations.entries()).map(
-            ([id, customization]) => ({
-              id,
-              customization,
-              character: this.getCharacterForCustomization(id),
-              metadata: {},
-            })
-          );
-          exportData = this.exporter.exportCustomizations(customizations, metadata);
-          filename = this.exporter.createExportFilename('collection', metadata);
-          break;
+      case 'collection':
+        // Export customization collection
+        const customizations = Array.from(this.customizations.entries()).map(
+          ([id, customization]) => ({
+            id,
+            customization,
+            character: this.getCharacterForCustomization(id),
+            metadata: {},
+          })
+        );
+        exportData = this.exporter.exportCustomizations(customizations, metadata);
+        filename = this.exporter.createExportFilename('collection', metadata);
+        break;
 
-        case 'presets':
-          // Export presets
-          exportData = this.exporter.exportPresets(this.presets, metadata);
-          filename = this.exporter.createExportFilename('presets', metadata);
-          break;
+      case 'presets':
+        // Export presets
+        exportData = this.exporter.exportPresets(this.presets, metadata);
+        filename = this.exporter.createExportFilename('presets', metadata);
+        break;
 
-        case 'session':
-          // Export session
-          exportData = this.exporter.exportStudioSession(
-            {
-              characters: this.characters,
-              customizations: this.customizations,
-              presets: this.presets,
-              settings: this.getSessionSettings(),
-              history: this.getSessionHistory(),
-            },
-            metadata
-          );
-          filename = this.exporter.createExportFilename('session', metadata);
-          break;
+      case 'session':
+        // Export session
+        exportData = this.exporter.exportStudioSession(
+          {
+            characters: this.characters,
+            customizations: this.customizations,
+            presets: this.presets,
+            settings: this.getSessionSettings(),
+            history: this.getSessionHistory(),
+          },
+          metadata
+        );
+        filename = this.exporter.createExportFilename('session', metadata);
+        break;
 
-        default:
-          throw new Error(`Unknown export type: ${exportType}`);
+      default:
+        throw new Error(`Unknown export type: ${exportType}`);
       }
 
       // Download the file
@@ -580,38 +580,38 @@ export default class ExportImportDialog extends BaseComponent {
       let previewData = {};
 
       switch (exportType) {
-        case 'customization':
-          previewData = {
-            type: 'customization',
-            customization: this.getCurrentCustomization(),
-            metadata: { preview: true },
-          };
-          break;
-        case 'collection':
-          previewData = {
-            type: 'customization_collection',
-            count: this.customizations.size,
-            metadata: { preview: true },
-          };
-          break;
-        case 'presets':
-          previewData = {
-            type: 'preset_collection',
-            count: this.presets.size,
-            metadata: { preview: true },
-          };
-          break;
-        case 'session':
-          previewData = {
-            type: 'studio_session',
-            summary: {
-              characters: this.characters.length,
-              customizations: this.customizations.size,
-              presets: this.presets.size,
-            },
-            metadata: { preview: true },
-          };
-          break;
+      case 'customization':
+        previewData = {
+          type: 'customization',
+          customization: this.getCurrentCustomization(),
+          metadata: { preview: true },
+        };
+        break;
+      case 'collection':
+        previewData = {
+          type: 'customization_collection',
+          count: this.customizations.size,
+          metadata: { preview: true },
+        };
+        break;
+      case 'presets':
+        previewData = {
+          type: 'preset_collection',
+          count: this.presets.size,
+          metadata: { preview: true },
+        };
+        break;
+      case 'session':
+        previewData = {
+          type: 'studio_session',
+          summary: {
+            characters: this.characters.length,
+            customizations: this.customizations.size,
+            presets: this.presets.size,
+          },
+          metadata: { preview: true },
+        };
+        break;
       }
 
       // Show preview

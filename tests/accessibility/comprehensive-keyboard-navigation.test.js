@@ -1034,26 +1034,26 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const movementHandler = e => {
         const moveDistance = 10;
         switch (e.key.toLowerCase()) {
-          case 'w':
-          case 'arrowup':
-            playerPosition.y -= moveDistance;
-            e.preventDefault();
-            break;
-          case 'a':
-          case 'arrowleft':
-            playerPosition.x -= moveDistance;
-            e.preventDefault();
-            break;
-          case 's':
-          case 'arrowdown':
-            playerPosition.y += moveDistance;
-            e.preventDefault();
-            break;
-          case 'd':
-          case 'arrowright':
-            playerPosition.x += moveDistance;
-            e.preventDefault();
-            break;
+        case 'w':
+        case 'arrowup':
+          playerPosition.y -= moveDistance;
+          e.preventDefault();
+          break;
+        case 'a':
+        case 'arrowleft':
+          playerPosition.x -= moveDistance;
+          e.preventDefault();
+          break;
+        case 's':
+        case 'arrowdown':
+          playerPosition.y += moveDistance;
+          e.preventDefault();
+          break;
+        case 'd':
+        case 'arrowright':
+          playerPosition.x += moveDistance;
+          e.preventDefault();
+          break;
         }
         player.style.left = `${playerPosition.x}px`;
         player.style.top = `${playerPosition.y}px`;

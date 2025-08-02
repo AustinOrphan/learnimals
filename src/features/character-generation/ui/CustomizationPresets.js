@@ -367,15 +367,15 @@ export default class CustomizationPresets extends BaseComponent {
           <span class="category-label">All Presets</span>
         </button>
         ${Array.from(this.categories.entries())
-          .map(
-            ([id, category]) => `
+    .map(
+      ([id, category]) => `
           <button class="category-tab" data-category="${id}">
             <span class="category-icon">${category.icon}</span>
             <span class="category-label">${category.name}</span>
           </button>
         `
-          )
-          .join('')}
+    )
+    .join('')}
       </div>
     `;
   }
@@ -481,8 +481,8 @@ export default class CustomizationPresets extends BaseComponent {
             Preview
           </button>
           ${
-            !preset.builtIn
-              ? `
+  !preset.builtIn
+    ? `
             <button class="btn-small btn-edit" data-action="edit" data-preset-id="${preset.id}">
               <span>✏️</span>
               Edit
@@ -492,8 +492,8 @@ export default class CustomizationPresets extends BaseComponent {
               Delete
             </button>
           `
-              : ''
-          }
+    : ''
+}
         </div>
       </div>
     `;
@@ -661,18 +661,18 @@ export default class CustomizationPresets extends BaseComponent {
    */
   handleAction(action, presetId, target) {
     switch (action) {
-      case 'apply':
-        this.applyPreset(presetId);
-        break;
-      case 'preview':
-        this.previewPreset(presetId);
-        break;
-      case 'edit':
-        this.editPreset(presetId);
-        break;
-      case 'delete':
-        this.deletePreset(presetId);
-        break;
+    case 'apply':
+      this.applyPreset(presetId);
+      break;
+    case 'preview':
+      this.previewPreset(presetId);
+      break;
+    case 'edit':
+      this.editPreset(presetId);
+      break;
+    case 'delete':
+      this.deletePreset(presetId);
+      break;
     }
   }
 

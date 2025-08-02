@@ -411,10 +411,10 @@ describe('Core Web Vitals Performance Tests', () => {
     const initialMemory = await page.evaluate(() => {
       return performance.memory
         ? {
-            used: performance.memory.usedJSHeapSize,
-            total: performance.memory.totalJSHeapSize,
-            limit: performance.memory.jsHeapSizeLimit,
-          }
+          used: performance.memory.usedJSHeapSize,
+          total: performance.memory.totalJSHeapSize,
+          limit: performance.memory.jsHeapSizeLimit,
+        }
         : null;
     });
 
@@ -444,10 +444,10 @@ describe('Core Web Vitals Performance Tests', () => {
     const finalMemory = await page.evaluate(() => {
       return performance.memory
         ? {
-            used: performance.memory.usedJSHeapSize,
-            total: performance.memory.totalJSHeapSize,
-            limit: performance.memory.jsHeapSizeLimit,
-          }
+          used: performance.memory.usedJSHeapSize,
+          total: performance.memory.totalJSHeapSize,
+          limit: performance.memory.jsHeapSizeLimit,
+        }
         : null;
     });
 

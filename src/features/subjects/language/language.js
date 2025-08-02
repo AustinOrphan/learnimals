@@ -83,14 +83,14 @@ class LanguageSubject {
 
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-      case 'vocabulary builder':
-        this.startFirstFeature();
-        break;
-      case 'pronunciation practice':
-        this.startSecondFeature();
-        break;
-      default:
-        this.showComingSoon(feature);
+    case 'vocabulary builder':
+      this.startFirstFeature();
+      break;
+    case 'pronunciation practice':
+      this.startSecondFeature();
+      break;
+    default:
+      this.showComingSoon(feature);
     }
   }
 
@@ -115,7 +115,7 @@ class LanguageSubject {
     const defaultMessages = [
       `Hi! I'm ${this.character.name} the ${this.character.type}!`,
       `Ready to learn some amazing ${this.subjectName.toLowerCase()}?`,
-      "Let's explore and have fun together!",
+      'Let\'s explore and have fun together!',
       'Click on any activity to get started!',
     ];
 

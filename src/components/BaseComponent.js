@@ -152,10 +152,10 @@ class BaseComponent {
 
     const wrappedHandler = selector
       ? e => {
-          if (e.target.matches(selector)) {
-            handler.call(this, e);
-          }
+        if (e.target.matches(selector)) {
+          handler.call(this, e);
         }
+      }
       : handler.bind(this);
 
     // Store reference to original handler for removal

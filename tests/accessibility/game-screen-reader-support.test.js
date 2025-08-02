@@ -425,7 +425,7 @@ describe('Game Screen Reader Support Tests', () => {
       expect(urgentAlerts.textContent).toBe('10 seconds remaining!');
 
       // Test countdown sequence
-      const countdownSequence = ['3', '2', '1', "Time's up!"];
+      const countdownSequence = ['3', '2', '1', 'Time\'s up!'];
       countdownSequence.forEach(announcement => {
         countdownAnnouncements.textContent = announcement;
         expect(countdownAnnouncements.textContent).toBe(announcement);
@@ -549,7 +549,7 @@ describe('Game Screen Reader Support Tests', () => {
 
       // Test tutorial announcements
       tutorialAnnouncements.textContent =
-        "Welcome to the Fraction Pizza Game! Your goal is to divide pizzas into equal parts. Let's start with halves.";
+        'Welcome to the Fraction Pizza Game! Your goal is to divide pizzas into equal parts. Let\'s start with halves.';
       expect(tutorialAnnouncements.textContent).toContain('Welcome to the Fraction Pizza Game');
       expect(tutorialAnnouncements.getAttribute('aria-live')).toBe('polite');
 
@@ -561,7 +561,7 @@ describe('Game Screen Reader Support Tests', () => {
 
       // Test mistake feedback
       mistakeFeedback.textContent =
-        "That's not quite right. Remember, for halves, you need 2 equal pieces. Try again!";
+        'That\'s not quite right. Remember, for halves, you need 2 equal pieces. Try again!';
       expect(mistakeFeedback.textContent).toContain('not quite right');
       expect(mistakeFeedback.getAttribute('aria-live')).toBe('assertive');
     });
@@ -590,25 +590,25 @@ describe('Game Screen Reader Support Tests', () => {
 
       // Test skill progress updates
       skillProgress.textContent =
-        "Skill Progress: 7 out of 10 problems correct. You're doing great!";
+        'Skill Progress: 7 out of 10 problems correct. You\'re doing great!';
       expect(skillProgress.textContent).toContain('7 out of 10 problems correct');
 
       // Test mastery announcements
       masteryAnnouncements.textContent =
-        "Skill Mastered! You've successfully completed Beginner Addition. Ready for the next challenge?";
+        'Skill Mastered! You\'ve successfully completed Beginner Addition. Ready for the next challenge?';
       expect(masteryAnnouncements.textContent).toContain('Skill Mastered!');
       expect(masteryAnnouncements.getAttribute('aria-live')).toBe('assertive');
 
       // Test next skill preview
       nextSkillPreview.textContent =
-        "Next up: Double-Digit Addition. You'll learn to add numbers like 25 + 17.";
+        'Next up: Double-Digit Addition. You\'ll learn to add numbers like 25 + 17.';
       expect(nextSkillPreview.textContent).toContain('Next up: Double-Digit Addition');
 
       // Test encouragement messages
       const encouragementMessages_array = [
-        "Great job! You're getting better at this.",
+        'Great job! You\'re getting better at this.',
         'Keep it up! Practice makes perfect.',
-        "You're on fire! Three correct answers in a row!",
+        'You\'re on fire! Three correct answers in a row!',
       ];
 
       encouragementMessages_array.forEach(message => {
@@ -663,8 +663,8 @@ describe('Game Screen Reader Support Tests', () => {
 
       // Test turn announcements
       turnAnnouncements.textContent =
-        "It's now Mike's turn. Sarah, please wait for your next turn.";
-      expect(turnAnnouncements.textContent).toContain("It's now Mike's turn");
+        'It\'s now Mike\'s turn. Sarah, please wait for your next turn.';
+      expect(turnAnnouncements.textContent).toContain('It\'s now Mike\'s turn');
       expect(turnAnnouncements.getAttribute('aria-live')).toBe('assertive');
 
       // Test player action feed

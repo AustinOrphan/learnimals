@@ -212,24 +212,24 @@ class PlaceValueManipulative {
     return `
       <div class="breakdown-visual">
         ${Object.entries(breakdown)
-          .map(([place, count]) => {
-            if (count === 0) return '';
-            return `
+    .map(([place, count]) => {
+      if (count === 0) return '';
+      return `
             <div class="breakdown-section">
               <div class="breakdown-label">${place}: ${count}</div>
               <div class="breakdown-blocks">
                 ${Array(count)
-                  .fill()
-                  .map(
-                    () => `<div class="breakdown-block block-${this.getBlockColor(place)}"></div>`
-                  )
-                  .join('')}
+    .fill()
+    .map(
+      () => `<div class="breakdown-block block-${this.getBlockColor(place)}"></div>`
+    )
+    .join('')}
               </div>
               <div class="breakdown-value">${count} × ${this.getPlaceValue(place)} = ${count * this.getPlaceValue(place)}</div>
             </div>
           `;
-          })
-          .join('')}
+    })
+    .join('')}
       </div>
     `;
   }

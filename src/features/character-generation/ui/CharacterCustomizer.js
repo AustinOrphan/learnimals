@@ -243,16 +243,16 @@ export default class CharacterCustomizer extends BaseComponent {
           <div class="customization-panel">
             <div class="category-tabs">
               ${this.categories
-                .map(
-                  category => `
+    .map(
+      category => `
                 <button class="category-tab ${category.id === 'themes' ? 'active' : ''}" 
                         data-category="${category.id}">
                   <span class="tab-icon">${category.icon}</span>
                   <span class="tab-label">${category.label}</span>
                 </button>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </div>
 
             <div class="category-content">
@@ -338,8 +338,8 @@ export default class CharacterCustomizer extends BaseComponent {
         
         <div class="theme-grid">
           ${Object.entries(this.themes)
-            .map(
-              ([id, theme]) => `
+    .map(
+      ([id, theme]) => `
             <div class="theme-option ${this.currentCustomization.theme === id ? 'selected' : ''}" 
                  data-theme="${id}">
               <div class="theme-preview" style="background: ${theme.preview}"></div>
@@ -354,8 +354,8 @@ export default class CharacterCustomizer extends BaseComponent {
               </div>
             </div>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
       </div>
     `;
@@ -372,8 +372,8 @@ export default class CharacterCustomizer extends BaseComponent {
         
         <div class="color-schemes">
           ${Object.entries(this.colorSchemes)
-            .map(
-              ([id, scheme]) => `
+    .map(
+      ([id, scheme]) => `
             <div class="color-scheme ${this.currentCustomization.colorScheme === id ? 'selected' : ''}" 
                  data-scheme="${id}">
               <div class="color-preview">
@@ -384,8 +384,8 @@ export default class CharacterCustomizer extends BaseComponent {
               <h5 class="scheme-name">${scheme.name}</h5>
             </div>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
 
         <div class="custom-colors">
@@ -421,8 +421,8 @@ export default class CharacterCustomizer extends BaseComponent {
         
         <div class="effects-list">
           ${Object.entries(this.effects)
-            .map(
-              ([id, effect]) => `
+    .map(
+      ([id, effect]) => `
             <div class="effect-option">
               <label class="effect-label">
                 <input type="checkbox" class="effect-checkbox" 
@@ -435,8 +435,8 @@ export default class CharacterCustomizer extends BaseComponent {
               </div>
             </div>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
 
         <div class="effect-intensity">
@@ -473,8 +473,8 @@ export default class CharacterCustomizer extends BaseComponent {
           <h5>Animation Presets</h5>
           <div class="preset-grid">
             ${Object.entries(this.animationPresets)
-              .map(
-                ([id, preset]) => `
+    .map(
+      ([id, preset]) => `
               <div class="animation-preset ${this.currentCustomization.animations === preset ? 'selected' : ''}" 
                    data-preset="${id}">
                 <h6 class="preset-name">${preset.name}</h6>
@@ -485,8 +485,8 @@ export default class CharacterCustomizer extends BaseComponent {
                 </div>
               </div>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
 

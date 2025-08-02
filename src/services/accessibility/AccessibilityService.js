@@ -260,22 +260,22 @@ export class AccessibilityService {
   handleKeydown(e) {
     // Global keyboard shortcuts for accessibility
     switch (e.key) {
-      case 'Escape':
-        this.handleEscapeKey(e);
-        break;
-      case 'F6':
-        this.handleF6Navigation(e);
-        break;
-      case 'Home':
-        if (e.ctrlKey) {
-          this.navigateToTop(e);
-        }
-        break;
-      case 'End':
-        if (e.ctrlKey) {
-          this.navigateToBottom(e);
-        }
-        break;
+    case 'Escape':
+      this.handleEscapeKey(e);
+      break;
+    case 'F6':
+      this.handleF6Navigation(e);
+      break;
+    case 'Home':
+      if (e.ctrlKey) {
+        this.navigateToTop(e);
+      }
+      break;
+    case 'End':
+      if (e.ctrlKey) {
+        this.navigateToBottom(e);
+      }
+      break;
     }
   }
 
@@ -577,10 +577,10 @@ export class AccessibilityService {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : null;
   }
 
@@ -740,22 +740,22 @@ class KeyboardNavigationManager {
     let newIndex = currentIndex;
 
     switch (e.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        newIndex = (currentIndex + 1) % items.length;
-        break;
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        newIndex = (currentIndex - 1 + items.length) % items.length;
-        break;
-      case 'Home':
-        newIndex = 0;
-        break;
-      case 'End':
-        newIndex = items.length - 1;
-        break;
-      default:
-        return; // Don't prevent default for other keys
+    case 'ArrowRight':
+    case 'ArrowDown':
+      newIndex = (currentIndex + 1) % items.length;
+      break;
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      newIndex = (currentIndex - 1 + items.length) % items.length;
+      break;
+    case 'Home':
+      newIndex = 0;
+      break;
+    case 'End':
+      newIndex = items.length - 1;
+      break;
+    default:
+      return; // Don't prevent default for other keys
     }
 
     e.preventDefault();
@@ -954,24 +954,24 @@ class AccessibleForm {
     // Type-specific validation
     if (value) {
       switch (input.type) {
-        case 'email':
-          if (!this.isValidEmail(value)) {
-            this.addFieldError(input, 'Please enter a valid email address');
-            return false;
-          }
-          break;
-        case 'url':
-          if (!this.isValidUrl(value)) {
-            this.addFieldError(input, 'Please enter a valid URL');
-            return false;
-          }
-          break;
-        case 'tel':
-          if (!this.isValidPhone(value)) {
-            this.addFieldError(input, 'Please enter a valid phone number');
-            return false;
-          }
-          break;
+      case 'email':
+        if (!this.isValidEmail(value)) {
+          this.addFieldError(input, 'Please enter a valid email address');
+          return false;
+        }
+        break;
+      case 'url':
+        if (!this.isValidUrl(value)) {
+          this.addFieldError(input, 'Please enter a valid URL');
+          return false;
+        }
+        break;
+      case 'tel':
+        if (!this.isValidPhone(value)) {
+          this.addFieldError(input, 'Please enter a valid phone number');
+          return false;
+        }
+        break;
       }
 
       // Pattern validation

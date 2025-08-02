@@ -32,27 +32,27 @@ export default class StoryProgression {
   initializeStoryData() {
     return {
       introduction: {
-        title: "Welcome to Sky's Scientific Expedition",
+        title: 'Welcome to Sky\'s Scientific Expedition',
         character: 'Sky the Parrot',
         dialogues: [
           {
             speaker: 'Sky',
-            text: "Hello there, young explorer! I'm Sky the Parrot, and I need your help with an incredible scientific mission!",
+            text: 'Hello there, young explorer! I\'m Sky the Parrot, and I need your help with an incredible scientific mission!',
             emotion: 'excited',
             choices: null,
           },
           {
             speaker: 'Sky',
-            text: "I've discovered mysterious islands scattered across the Science Ocean, each one containing unique scientific phenomena waiting to be studied!",
+            text: 'I\'ve discovered mysterious islands scattered across the Science Ocean, each one containing unique scientific phenomena waiting to be studied!',
             emotion: 'curious',
             choices: null,
           },
           {
             speaker: 'Sky',
-            text: "But I can't explore them all by myself. Will you join me on this grand scientific adventure?",
+            text: 'But I can\'t explore them all by myself. Will you join me on this grand scientific adventure?',
             emotion: 'hopeful',
             choices: [
-              { text: "Yes, let's explore!", action: 'accept_mission' },
+              { text: 'Yes, let\'s explore!', action: 'accept_mission' },
               { text: 'Tell me more first', action: 'learn_more' },
               { text: 'What kind of science?', action: 'explain_science' },
             ],
@@ -66,7 +66,7 @@ export default class StoryProgression {
         dialogues: [
           {
             speaker: 'Sky',
-            text: "Look! We've reached Physics Island! Can you see how the waves move in perfect patterns?",
+            text: 'Look! We\'ve reached Physics Island! Can you see how the waves move in perfect patterns?',
             emotion: 'amazed',
             choices: null,
           },
@@ -78,10 +78,10 @@ export default class StoryProgression {
           },
           {
             speaker: 'Sky',
-            text: "Are you ready for your first physics challenge? We'll start with something fun - understanding gravity and motion!",
+            text: 'Are you ready for your first physics challenge? We\'ll start with something fun - understanding gravity and motion!',
             emotion: 'encouraging',
             choices: [
-              { text: "I'm ready!", action: 'start_physics_challenge' },
+              { text: 'I\'m ready!', action: 'start_physics_challenge' },
               { text: 'What will we learn?', action: 'explain_physics' },
               { text: 'Can we explore first?', action: 'explore_island' },
             ],
@@ -101,7 +101,7 @@ export default class StoryProgression {
           },
           {
             speaker: 'Sky',
-            text: "Here we'll mix, react, and discover how different substances interact with each other. Science is like cooking, but much more colorful!",
+            text: 'Here we\'ll mix, react, and discover how different substances interact with each other. Science is like cooking, but much more colorful!',
             emotion: 'playful',
             choices: null,
           },
@@ -110,7 +110,7 @@ export default class StoryProgression {
             text: 'Should we start with a safe, colorful reaction to see how atoms and molecules behave?',
             emotion: 'excited',
             choices: [
-              { text: "Let's mix things!", action: 'start_chemistry_challenge' },
+              { text: 'Let\'s mix things!', action: 'start_chemistry_challenge' },
               { text: 'Is it safe?', action: 'explain_safety' },
               { text: 'What are molecules?', action: 'explain_molecules' },
             ],
@@ -139,8 +139,8 @@ export default class StoryProgression {
             text: 'Would you like to start by observing how different organisms adapt to their environment?',
             emotion: 'scientific',
             choices: [
-              { text: "Yes, let's observe!", action: 'start_biology_challenge' },
-              { text: "What's an ecosystem?", action: 'explain_ecosystem' },
+              { text: 'Yes, let\'s observe!', action: 'start_biology_challenge' },
+              { text: 'What\'s an ecosystem?', action: 'explain_ecosystem' },
               { text: 'Can we help the animals?', action: 'help_animals' },
             ],
           },
@@ -210,46 +210,46 @@ export default class StoryProgression {
     console.log(`Story choice selected: ${action}`);
 
     switch (action) {
-      case 'accept_mission':
-        this.game.loadScene('navigation', { showIntro: true });
-        break;
+    case 'accept_mission':
+      this.game.loadScene('navigation', { showIntro: true });
+      break;
 
-      case 'learn_more':
-        this.showMoreInfo();
-        break;
+    case 'learn_more':
+      this.showMoreInfo();
+      break;
 
-      case 'explain_science':
-        this.explainScience();
-        break;
+    case 'explain_science':
+      this.explainScience();
+      break;
 
-      case 'start_physics_challenge':
-        this.game.loadScene('challenge', {
-          type: 'physics',
-          challenge: 'gravity_basics',
-        });
-        break;
+    case 'start_physics_challenge':
+      this.game.loadScene('challenge', {
+        type: 'physics',
+        challenge: 'gravity_basics',
+      });
+      break;
 
-      case 'start_chemistry_challenge':
-        this.game.loadScene('challenge', {
-          type: 'chemistry',
-          challenge: 'color_reactions',
-        });
-        break;
+    case 'start_chemistry_challenge':
+      this.game.loadScene('challenge', {
+        type: 'chemistry',
+        challenge: 'color_reactions',
+      });
+      break;
 
-      case 'start_biology_challenge':
-        this.game.loadScene('challenge', {
-          type: 'biology',
-          challenge: 'ecosystem_observation',
-        });
-        break;
+    case 'start_biology_challenge':
+      this.game.loadScene('challenge', {
+        type: 'biology',
+        challenge: 'ecosystem_observation',
+      });
+      break;
 
-      case 'explore_island':
-        this.game.loadScene('discovery', { mode: 'exploration' });
-        break;
+    case 'explore_island':
+      this.game.loadScene('discovery', { mode: 'exploration' });
+      break;
 
-      default:
-        console.warn(`Unknown story action: ${action}`);
-        this.nextDialogue();
+    default:
+      console.warn(`Unknown story action: ${action}`);
+      this.nextDialogue();
     }
   }
 
@@ -277,7 +277,7 @@ export default class StoryProgression {
     // Create temporary info dialogue
     this.currentDialogue = {
       speaker: 'Sky',
-      text: "We'll visit different scientific islands, conduct experiments, make discoveries, and learn how the natural world works. Each island teaches different scientific concepts through hands-on activities!",
+      text: 'We\'ll visit different scientific islands, conduct experiments, make discoveries, and learn how the natural world works. Each island teaches different scientific concepts through hands-on activities!',
       emotion: 'informative',
       choices: [
         { text: 'Sounds amazing!', action: 'accept_mission' },
@@ -293,10 +293,10 @@ export default class StoryProgression {
   explainScience() {
     this.currentDialogue = {
       speaker: 'Sky',
-      text: "We'll explore Physics (how things move), Chemistry (how substances react), Biology (living things), and Earth Science (our planet's systems). Each type of science has its own island with unique experiments!",
+      text: 'We\'ll explore Physics (how things move), Chemistry (how substances react), Biology (living things), and Earth Science (our planet\'s systems). Each type of science has its own island with unique experiments!',
       emotion: 'educational',
       choices: [
-        { text: "Let's start exploring!", action: 'accept_mission' },
+        { text: 'Let\'s start exploring!', action: 'accept_mission' },
         { text: 'Which should we visit first?', action: 'choose_first_island' },
       ],
     };
@@ -348,32 +348,32 @@ export default class StoryProgression {
     if (!this.isDialogueActive) return;
 
     switch (event.code) {
-      case 'Space':
-      case 'Enter':
-        if (this.currentDialogue.choices) {
-          // Select first choice with Space/Enter
-          if (this.currentDialogue.choices.length > 0) {
-            this.handleChoice(this.currentDialogue.choices[0].action);
-          }
+    case 'Space':
+    case 'Enter':
+      if (this.currentDialogue.choices) {
+        // Select first choice with Space/Enter
+        if (this.currentDialogue.choices.length > 0) {
+          this.handleChoice(this.currentDialogue.choices[0].action);
+        }
+      } else {
+        if (this.textRevealProgress >= this.currentDialogue.text.length) {
+          this.nextDialogue();
         } else {
-          if (this.textRevealProgress >= this.currentDialogue.text.length) {
-            this.nextDialogue();
-          } else {
-            this.textRevealProgress = this.currentDialogue.text.length;
-          }
+          this.textRevealProgress = this.currentDialogue.text.length;
         }
-        break;
+      }
+      break;
 
-      case 'Digit1':
-      case 'Digit2':
-      case 'Digit3':
-        if (this.currentDialogue.choices) {
-          const choiceIndex = parseInt(event.code.slice(-1)) - 1;
-          if (choiceIndex < this.currentDialogue.choices.length) {
-            this.handleChoice(this.currentDialogue.choices[choiceIndex].action);
-          }
+    case 'Digit1':
+    case 'Digit2':
+    case 'Digit3':
+      if (this.currentDialogue.choices) {
+        const choiceIndex = parseInt(event.code.slice(-1)) - 1;
+        if (choiceIndex < this.currentDialogue.choices.length) {
+          this.handleChoice(this.currentDialogue.choices[choiceIndex].action);
         }
-        break;
+      }
+      break;
     }
   }
 

@@ -12,6 +12,10 @@
     "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'",
     "prose:check": "vale '**/*.md'",
     "prose:readme": "vale README.md CLAUDE.md",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:src": "prettier --write 'src/**/*.{js,html,css}'",
+    "format:docs": "prettier --write '**/*.md'",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:components": "vitest run tests/components",
@@ -39,7 +43,10 @@
     "serve": "python -m http.server 3000 -d src/pages",
     "build": "echo 'Static site - no build required'",
     "prepare": "husky",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "setup:hooks": "node scripts/setupGitHooks.js",
+    "check:duplicates": "node scripts/checkDuplicates.js",
+    "check:duplicates:fix": "node scripts/checkDuplicates.js --fix"
   },
   "keywords": [
     "education",

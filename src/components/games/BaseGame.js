@@ -1722,7 +1722,7 @@ export default class BaseGame {
 
     const _reactions = {
       success: {
-        bella: ['Great reading! 📚', 'Perfect sentence! ✨', "You're a reading star! 🌟"],
+        bella: ['Great reading! 📚', 'Perfect sentence! ✨', 'You\'re a reading star! 🌟'],
         max: ['Math magic! 🎩', 'Numbers are your friend! 🔢', 'Calculating success! 📊'],
         zara: ['Science rocks! 🧪', 'Discovery achieved! 🔬', 'Lab experiment success! ⚗️'],
         aria: [
@@ -1734,14 +1734,14 @@ export default class BaseGame {
       },
       error: {
         bella: [
-          "Let's try again! 📖",
+          'Let\'s try again! 📖',
           'Reading takes practice! 💪',
           'Every mistake teaches us! 🌱',
         ],
         max: [
           'Math puzzles need patience! 🧩',
           'Numbers can be tricky! 🤔',
-          "Let's solve this together! 🤝",
+          'Let\'s solve this together! 🤝',
         ],
         zara: [
           'Science is about testing! 🧬',
@@ -1760,7 +1760,7 @@ export default class BaseGame {
         ],
       },
       hint: {
-        bella: ["Here's a reading tip! 💡", 'Grammar clue coming up! 🔤', 'Word wisdom ahead! 📝'],
+        bella: ['Here\'s a reading tip! 💡', 'Grammar clue coming up! 🔤', 'Word wisdom ahead! 📝'],
         max: ['Math hint incoming! 🎯', 'Number strategy here! 📐', 'Calculation clue! 🧮'],
         zara: ['Science hint available! 🔬', 'Research reminder! 📊', 'Discovery direction! 🧭'],
         aria: ['Art inspiration here! ✨', 'Creative guidance! 🎨', 'Artistic advice! 🖼️'],

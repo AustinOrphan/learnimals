@@ -231,7 +231,7 @@ export default class DiscoveryJournal {
       },
       {
         id: 'decomposer_power',
-        title: "Nature's Recyclers",
+        title: 'Nature\'s Recyclers',
         category: 'ecology',
         trigger: 'add_bacteria',
         content:
@@ -276,7 +276,7 @@ export default class DiscoveryJournal {
         content:
           'Some species have much bigger impacts than their numbers suggest. Removing wolves from Yellowstone caused deer to overgraze, which affected rivers and bird populations!',
         funFact:
-          "Wolves changed the shape of rivers by changing deer behavior - that's ecosystem engineering!",
+          'Wolves changed the shape of rivers by changing deer behavior - that\'s ecosystem engineering!',
         connections: [
           'Some species are more important than others',
           'Removing key species can collapse ecosystems',
@@ -356,26 +356,26 @@ export default class DiscoveryJournal {
   evaluateTriggerCondition(item, context) {
     // Simple trigger conditions - could be expanded
     switch (item.trigger || item.unlockTrigger) {
-      case 'first_predator_prey':
-        return context.hasPreyRelationship === true;
+    case 'first_predator_prey':
+      return context.hasPreyRelationship === true;
 
-      case 'species_diversity_5':
-        return context.speciesCount >= 5;
+    case 'species_diversity_5':
+      return context.speciesCount >= 5;
 
-      case 'first_mutualism':
-        return context.hasMutualism === true;
+    case 'first_mutualism':
+      return context.hasMutualism === true;
 
-      case 'population_crash':
-        return context.populationCrashed === true;
+    case 'population_crash':
+      return context.populationCrashed === true;
 
-      case 'environmental_challenge':
-        return context.challengeActive === true;
+    case 'environmental_challenge':
+      return context.challengeActive === true;
 
-      case 'pollution_challenge':
-        return context.pollutionLevel > 0.3;
+    case 'pollution_challenge':
+      return context.pollutionLevel > 0.3;
 
-      default:
-        return true; // Simple triggers without conditions
+    default:
+      return true; // Simple triggers without conditions
     }
   }
 
@@ -526,7 +526,7 @@ export default class DiscoveryJournal {
       hints.push({
         type: 'achievement',
         title: 'Biodiversity Milestone!',
-        message: "You've created a diverse ecosystem! More species usually means more stability.",
+        message: 'You\'ve created a diverse ecosystem! More species usually means more stability.',
         educationalNote:
           'Real ecosystems with higher biodiversity are more resilient to changes and disruptions.',
       });

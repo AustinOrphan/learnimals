@@ -207,18 +207,18 @@ export class CharacterStorage {
       if (options.sortBy) {
         characters.sort((a, b) => {
           switch (options.sortBy) {
-            case 'name':
-              return a.name.localeCompare(b.name);
-            case 'created':
-              return new Date(b.metadata?.created || 0) - new Date(a.metadata?.created || 0);
-            case 'modified':
-              return new Date(b.metadata?.modified || 0) - new Date(a.metadata?.modified || 0);
-            case 'popularity':
-              return (b.metadata?.popularity || 0) - (a.metadata?.popularity || 0);
-            case 'subject':
-              return a.subject.localeCompare(b.subject);
-            default:
-              return 0;
+          case 'name':
+            return a.name.localeCompare(b.name);
+          case 'created':
+            return new Date(b.metadata?.created || 0) - new Date(a.metadata?.created || 0);
+          case 'modified':
+            return new Date(b.metadata?.modified || 0) - new Date(a.metadata?.modified || 0);
+          case 'popularity':
+            return (b.metadata?.popularity || 0) - (a.metadata?.popularity || 0);
+          case 'subject':
+            return a.subject.localeCompare(b.subject);
+          default:
+            return 0;
           }
         });
       }

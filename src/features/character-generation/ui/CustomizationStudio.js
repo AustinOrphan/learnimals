@@ -152,15 +152,15 @@ export default class CustomizationStudio extends BaseComponent {
           
           <div class="studio-modes">
             ${Object.entries(this.modes)
-              .map(
-                ([id, name]) => `
+    .map(
+      ([id, name]) => `
               <button class="mode-btn ${this.currentMode === id ? 'active' : ''}" 
                       data-mode="${id}">
                 ${name}
               </button>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
 
           <div class="header-actions">
@@ -231,8 +231,8 @@ export default class CustomizationStudio extends BaseComponent {
                 <h4>Built-in Presets</h4>
                 <div class="preset-list" id="builtin-presets">
                   ${Object.entries(this.presetLibrary)
-                    .map(
-                      ([id, preset]) => `
+    .map(
+      ([id, preset]) => `
                     <div class="preset-item" data-preset="${id}" draggable="true">
                       <div class="preset-preview">
                         <div class="preset-icon">${this.getPresetIcon(preset.customization.theme)}</div>
@@ -248,8 +248,8 @@ export default class CustomizationStudio extends BaseComponent {
                       </div>
                     </div>
                   `
-                    )
-                    .join('')}
+    )
+    .join('')}
                 </div>
               </div>
 
@@ -394,16 +394,16 @@ export default class CustomizationStudio extends BaseComponent {
    */
   renderWorkspaceForMode(mode) {
     switch (mode) {
-      case 'single':
-        return this.renderSingleCharacterWorkspace();
-      case 'batch':
-        return this.renderBatchCustomizationWorkspace();
-      case 'comparison':
-        return this.renderComparisonWorkspace();
-      case 'gallery':
-        return this.renderGalleryWorkspace();
-      default:
-        return this.renderSingleCharacterWorkspace();
+    case 'single':
+      return this.renderSingleCharacterWorkspace();
+    case 'batch':
+      return this.renderBatchCustomizationWorkspace();
+    case 'comparison':
+      return this.renderComparisonWorkspace();
+    case 'gallery':
+      return this.renderGalleryWorkspace();
+    default:
+      return this.renderSingleCharacterWorkspace();
     }
   }
 
@@ -638,18 +638,18 @@ export default class CustomizationStudio extends BaseComponent {
    */
   updateWorkspacePreview() {
     switch (this.currentMode) {
-      case 'single':
-        this.updateSinglePreview();
-        break;
-      case 'batch':
-        this.updateBatchPreview();
-        break;
-      case 'comparison':
-        this.updateComparisonPreview();
-        break;
-      case 'gallery':
-        this.updateGalleryPreview();
-        break;
+    case 'single':
+      this.updateSinglePreview();
+      break;
+    case 'batch':
+      this.updateBatchPreview();
+      break;
+    case 'comparison':
+      this.updateComparisonPreview();
+      break;
+    case 'gallery':
+      this.updateGalleryPreview();
+      break;
     }
   }
 
@@ -928,18 +928,18 @@ export default class CustomizationStudio extends BaseComponent {
     if (!character) return;
 
     switch (slotType) {
-      case 'character':
-        this.selectedCharacters = [character];
-        break;
-      case 'characters':
-        if (!this.selectedCharacters.find(c => c.id === characterId)) {
-          this.selectedCharacters.push(character);
-        }
-        break;
-      case 'character-a':
-      case 'character-b':
-        this.handleComparisonCharacterDrop(character, slotType);
-        break;
+    case 'character':
+      this.selectedCharacters = [character];
+      break;
+    case 'characters':
+      if (!this.selectedCharacters.find(c => c.id === characterId)) {
+        this.selectedCharacters.push(character);
+      }
+      break;
+    case 'character-a':
+    case 'character-b':
+      this.handleComparisonCharacterDrop(character, slotType);
+      break;
     }
 
     this.updateWorkspaceContent();
@@ -955,16 +955,16 @@ export default class CustomizationStudio extends BaseComponent {
     if (!preset) return;
 
     switch (slotType) {
-      case 'preset':
-        this.applyPresetToSelected(preset);
-        break;
-      case 'presets':
-        this.activePresets.push(preset);
-        break;
-      case 'preset-a':
-      case 'preset-b':
-        this.handleComparisonPresetDrop(preset, slotType);
-        break;
+    case 'preset':
+      this.applyPresetToSelected(preset);
+      break;
+    case 'presets':
+      this.activePresets.push(preset);
+      break;
+    case 'preset-a':
+    case 'preset-b':
+      this.handleComparisonPresetDrop(preset, slotType);
+      break;
     }
 
     this.updateWorkspaceContent();
@@ -1014,18 +1014,18 @@ export default class CustomizationStudio extends BaseComponent {
    */
   handleQuickAction(action) {
     switch (action) {
-      case 'randomize':
-        this.randomizeSelectedCharacters();
-        break;
-      case 'reset':
-        this.resetSelectedCharacters();
-        break;
-      case 'duplicate':
-        this.duplicateSelectedCharacters();
-        break;
-      case 'variations':
-        this.createCharacterVariations();
-        break;
+    case 'randomize':
+      this.randomizeSelectedCharacters();
+      break;
+    case 'reset':
+      this.resetSelectedCharacters();
+      break;
+    case 'duplicate':
+      this.duplicateSelectedCharacters();
+      break;
+    case 'variations':
+      this.createCharacterVariations();
+      break;
     }
   }
 
@@ -1034,15 +1034,15 @@ export default class CustomizationStudio extends BaseComponent {
    */
   handleBatchOperation(operation) {
     switch (operation) {
-      case 'apply-theme':
-        this.applyThemeToAll();
-        break;
-      case 'apply-colors':
-        this.applyColorsToAll();
-        break;
-      case 'sync-animations':
-        this.syncAnimationsToAll();
-        break;
+    case 'apply-theme':
+      this.applyThemeToAll();
+      break;
+    case 'apply-colors':
+      this.applyColorsToAll();
+      break;
+    case 'sync-animations':
+      this.syncAnimationsToAll();
+      break;
     }
   }
 

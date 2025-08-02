@@ -343,16 +343,16 @@ const mockModal = createMockModule({
       if (!this.isOpen) return;
 
       switch (e.key) {
-        case 'Escape':
-          if (this.options.closeOnEscape) {
-            e.preventDefault();
-            this.close();
-          }
-          break;
+      case 'Escape':
+        if (this.options.closeOnEscape) {
+          e.preventDefault();
+          this.close();
+        }
+        break;
 
-        case 'Tab':
-          this.handleTabNavigation(e);
-          break;
+      case 'Tab':
+        this.handleTabNavigation(e);
+        break;
       }
     }
 

@@ -16,14 +16,32 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 
 ### Available npm Scripts
 
+#### Code Quality & Formatting
 - `npm run lint` - Run ESLint on the src/ directory
 - `npm run lint:fix` - Run ESLint with auto-fix enabled
-- `npm run generate-subjects` - Generate new subject pages programmatically
-- `npm run list-templates` - List all available subject templates
+- `npm run lint:md` - Run markdownlint on all markdown files
+- `npm run lint:md:fix` - Run markdownlint with auto-fix
+- `npm run prose:check` - Run Vale prose linting on all markdown files
+- `npm run prose:readme` - Run Vale on README.md and CLAUDE.md
+- `npm run format` - Run Prettier on all files
+- `npm run format:check` - Check formatting with Prettier
+- `npm run format:src` - Format source files (JS, HTML, CSS)
+- `npm run format:docs` - Format markdown files
+
+#### Testing
 - `npm test` - Run all tests with Vitest
 - `npm run test:unit` - Run unit tests
 - `npm run test:components` - Run component tests
 - `npm run test:integration` - Run integration tests
+
+#### Development Tools
+- `npm run generate-subjects` - Generate new subject pages programmatically
+- `npm run list-templates` - List all available subject templates
+- `npm run prepare` - Set up Husky pre-commit hooks
+- `npm run pre-commit` - Run lint-staged (called by Husky)
+- `npm run setup:hooks` - Verify and configure Git hooks
+- `npm run check:duplicates` - Check for duplicate files (iCloud conflicts)
+- `npm run check:duplicates:fix` - Automatically remove identical duplicates
 
 ### Subject Generation System
 
@@ -210,7 +228,137 @@ Additionally, perform manual testing by:
 2. Testing responsive design on mobile devices
 3. Verifying theme switching functionality
 4. Testing offline capabilities (PWA features)
-5. Running `npm run lint` to check code quality
+5. Running code quality checks (see Code Quality Automation section below)
+
+## Code Quality Automation
+
+The project uses multiple automated tools to maintain code quality and consistency. These tools run automatically on pre-commit hooks and can be run manually.
+
+### Pre-commit Hooks (Husky + lint-staged)
+
+Automatically runs on `git commit`:
+- **JavaScript files**: ESLint → Vitest related tests
+- **HTML/CSS files**: Prettier formatting
+- **Markdown files**: markdownlint → Prettier
+
+### ESLint (JavaScript Linting)
+
+**Configuration**: `eslint.config.mjs` (flat config format)
+
+**Key Rules**:
+- 2-space indentation
+- Single quotes for strings
+- Semicolons required
+- Prefer `const` for non-reassigned variables
+- Unused variables allowed with underscore prefix
+- Console statements allowed for development
+
+**Browser Globals Configured**:
+- Standard browser APIs (window, document, localStorage, etc.)
+- Observer APIs (ResizeObserver, IntersectionObserver, etc.)
+- Web APIs (fetch, FormData, URLSearchParams, etc.)
+- Media APIs (Audio, MediaRecorder, etc.)
+
+**Run manually**:
+```bash
+npm run lint        # Check for issues
+npm run lint:fix    # Auto-fix issues
+```
+
+### Prettier (Code Formatting)
+
+**Configuration**: `.prettierrc.json`
+
+**Base Settings**:
+- Print width: 100 characters
+- Tab width: 2 spaces
+- Single quotes
+- Trailing comma: ES5
+- Arrow parens: avoid when possible
+
+**File-specific Overrides**:
+- **HTML**: 120 character width
+- **CSS/SCSS**: 120 character width, double quotes
+- **JSON/.*rc**: 80 character width, no trailing comma
+- **Markdown**: 80 character width, prose wrap always
+- **YAML**: 80 character width
+
+**Run manually**:
+```bash
+npm run format         # Format all files
+npm run format:check   # Check formatting
+npm run format:src     # Format source files only
+npm run format:docs    # Format markdown only
+```
+
+### Markdownlint (Markdown Linting)
+
+**Configuration**: `.markdownlint.json`
+
+**Key Rules**:
+- Line length: 120 characters (100 for headings)
+- Headers: ATX style (`#`), incrementing levels
+- Lists: Consistent markers, proper indentation
+- No trailing spaces or multiple blank lines
+- Proper link and image syntax
+
+**Disabled Rules**:
+- MD013 for code blocks and tables (line length)
+- MD024 with sibling-only checking (duplicate headers)
+- MD033 for specific HTML elements
+- MD041 (first line heading) for flexibility
+
+**Run manually**:
+```bash
+npm run lint:md       # Check markdown files
+npm run lint:md:fix   # Auto-fix issues
+```
+
+### Vale (Prose Linting)
+
+**Configuration**: `.vale.ini` and `.vale/` directory
+
+**Features**:
+- Custom vocabulary for project-specific terms
+- Microsoft and Google style guides (with customizations)
+- Different rules for different documentation types
+- Severity levels: error, warning, suggestion
+
+**Custom Vocabulary** (`.vale/styles/config/vocabularies/Learnimals/`):
+- Technical terms (npm, ESLint, Vitest, etc.)
+- Project components (SubjectTemplateLoader, etc.)
+- Common abbreviations
+
+**Run manually**:
+```bash
+npm run prose:check    # Check all markdown
+npm run prose:readme   # Check README and CLAUDE.md
+vale sync              # Download/update style packages
+```
+
+### Integration with VS Code
+
+Recommended extensions for automatic linting:
+- ESLint (`dbaeumer.vscode-eslint`)
+- Prettier (`esbenp.prettier-vscode`)
+- markdownlint (`DavidAnson.vscode-markdownlint`)
+- Vale (`ChrisChinchilla.vale-vscode`)
+
+### Best Practices
+
+1. **Before committing**: Pre-commit hooks run automatically
+2. **After major changes**: Run all checks manually
+   ```bash
+   npm run lint && npm run lint:md && npm run format:check
+   ```
+3. **For documentation**: Run Vale after writing
+   ```bash
+   npm run prose:check
+   ```
+4. **Fix all issues**: Run auto-fixers in order
+   ```bash
+   npm run lint:fix && npm run lint:md:fix && npm run format
+   ```
 
 ## CI/CD & Security
 

@@ -157,8 +157,8 @@ describe('Navigation and Routing Integration', () => {
             </div>
             <ul class="navbar__menu">
               ${this.navItems
-                .map(
-                  item => `
+    .map(
+      item => `
                 <li class="navbar__item ${this.currentPage === item.path ? 'active' : ''}">
                   <a href="${item.path}" data-route="${item.path}" class="navbar__link">
                     <i class="icon icon-${item.icon}"></i>
@@ -166,8 +166,8 @@ describe('Navigation and Routing Integration', () => {
                   </a>
                 </li>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </ul>
             <button class="navbar__toggle" aria-label="Toggle menu">
               <span></span><span></span><span></span>

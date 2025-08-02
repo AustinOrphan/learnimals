@@ -156,26 +156,26 @@ export function validateData(data, schema) {
 
     // Type validation
     switch (rules.type) {
-      case 'string':
-        if (typeof value !== 'string') {
-          errors.push(`Field '${field}' must be a string`);
-        }
-        break;
-      case 'number':
-        if (typeof value !== 'number' || isNaN(value)) {
-          errors.push(`Field '${field}' must be a number`);
-        }
-        break;
-      case 'date':
-        if (!(value instanceof Date) && !Date.parse(value)) {
-          errors.push(`Field '${field}' must be a valid date`);
-        }
-        break;
-      case 'object':
-        if (typeof value !== 'object' || Array.isArray(value)) {
-          errors.push(`Field '${field}' must be an object`);
-        }
-        break;
+    case 'string':
+      if (typeof value !== 'string') {
+        errors.push(`Field '${field}' must be a string`);
+      }
+      break;
+    case 'number':
+      if (typeof value !== 'number' || isNaN(value)) {
+        errors.push(`Field '${field}' must be a number`);
+      }
+      break;
+    case 'date':
+      if (!(value instanceof Date) && !Date.parse(value)) {
+        errors.push(`Field '${field}' must be a valid date`);
+      }
+      break;
+    case 'object':
+      if (typeof value !== 'object' || Array.isArray(value)) {
+        errors.push(`Field '${field}' must be an object`);
+      }
+      break;
     }
   });
 

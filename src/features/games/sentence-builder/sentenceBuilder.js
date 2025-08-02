@@ -211,7 +211,7 @@ class SentenceBuilderGame extends BaseGame {
     this.currentSentenceIndex = 0;
     this.loadCurrentSentence();
     this.updateProgress();
-    this.updateBellaSpeech("Ready to build some sentences? Let's start!");
+    this.updateBellaSpeech('Ready to build some sentences? Let\'s start!');
   }
 
   /**
@@ -584,7 +584,7 @@ class SentenceBuilderGame extends BaseGame {
       validation.feedback,
       'Try rearranging the words. Remember to start with a capital letter!'
     );
-    this.updateBellaSpeech("🤔 Not quite right. Let's try again!");
+    this.updateBellaSpeech('🤔 Not quite right. Let\'s try again!');
 
     // Play error sound
     this.playSound(200, 300, 'sawtooth');
@@ -625,7 +625,7 @@ class SentenceBuilderGame extends BaseGame {
     this.sentenceArea.forEach(word => this.addWordToBank(word));
     this.sentenceArea = [];
     this.renderSentenceArea();
-    this.updateBellaSpeech("Let's start fresh! Drag words to build your sentence.");
+    this.updateBellaSpeech('Let\'s start fresh! Drag words to build your sentence.');
   }
 
   /**

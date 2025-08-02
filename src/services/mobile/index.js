@@ -359,21 +359,21 @@ function startPerformanceMonitoring() {
  */
 function handlePerformanceEntry(entry) {
   switch (entry.entryType) {
-    case 'navigation':
-      handleNavigationTiming(entry);
-      break;
-    case 'resource':
-      handleResourceTiming(entry);
-      break;
-    case 'paint':
-      handlePaintTiming(entry);
-      break;
-    case 'layout-shift':
-      handleLayoutShift(entry);
-      break;
-    case 'largest-contentful-paint':
-      handleLargestContentfulPaint(entry);
-      break;
+  case 'navigation':
+    handleNavigationTiming(entry);
+    break;
+  case 'resource':
+    handleResourceTiming(entry);
+    break;
+  case 'paint':
+    handlePaintTiming(entry);
+    break;
+  case 'layout-shift':
+    handleLayoutShift(entry);
+    break;
+  case 'largest-contentful-paint':
+    handleLargestContentfulPaint(entry);
+    break;
   }
 }
 

@@ -471,21 +471,21 @@ export default class GameDiscovery {
 
   updateFilter(filterId, value) {
     switch (filterId) {
-      case 'subject':
-        this.filters.subject = value;
-        break;
-      case 'age':
-        this.filters.ageRange = value;
-        break;
-      case 'playtime':
-        this.filters.playTime = value;
-        break;
-      case 'gametype':
-        this.filters.gameType = value;
-        break;
-      case 'level':
-        this.filters.competencyLevel = value;
-        break;
+    case 'subject':
+      this.filters.subject = value;
+      break;
+    case 'age':
+      this.filters.ageRange = value;
+      break;
+    case 'playtime':
+      this.filters.playTime = value;
+      break;
+    case 'gametype':
+      this.filters.gameType = value;
+      break;
+    case 'level':
+      this.filters.competencyLevel = value;
+      break;
     }
     this.updateResults();
   }
@@ -662,14 +662,14 @@ export default class GameDiscovery {
 
   getPlayTimeRange() {
     switch (this.filters.playTime) {
-      case 'short':
-        return { max: 8 };
-      case 'medium':
-        return { min: 8, max: 12 };
-      case 'long':
-        return { min: 12 };
-      default:
-        return { min: 5, max: 15 };
+    case 'short':
+      return { max: 8 };
+    case 'medium':
+      return { min: 8, max: 12 };
+    case 'long':
+      return { min: 12 };
+    default:
+      return { min: 5, max: 15 };
     }
   }
 }

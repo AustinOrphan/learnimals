@@ -35,11 +35,11 @@ export default class PizzaMakerGame {
     this.customers = [
       { emoji: '👧', name: 'Sarah', greeting: 'Hi! Can I have' },
       { emoji: '👦', name: 'Tommy', greeting: 'Hey! I want' },
-      { emoji: '👨', name: 'Mr. Jones', greeting: "Good day! I'd like" },
+      { emoji: '👨', name: 'Mr. Jones', greeting: 'Good day! I\'d like' },
       { emoji: '👩', name: 'Mrs. Smith', greeting: 'Hello! Please make me' },
       { emoji: '🧑', name: 'Alex', greeting: 'Yo! Give me' },
       { emoji: '👴', name: 'Grandpa Joe', greeting: 'Hello there! May I have' },
-      { emoji: '👵', name: 'Grandma Sue', greeting: "Hi sweetie! I'd love" },
+      { emoji: '👵', name: 'Grandma Sue', greeting: 'Hi sweetie! I\'d love' },
       { emoji: '👶', name: 'Baby Max', greeting: 'Goo goo! Want' },
     ];
 
@@ -656,48 +656,48 @@ export default class PizzaMakerGame {
       gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
 
       switch (type) {
-        case 'pickup':
-          oscillator.frequency.value = 600;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-          break;
-        case 'drop':
-          oscillator.frequency.value = 800;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-          break;
-        case 'success':
-          // Happy arpeggio
-          oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
-          oscillator.frequency.setValueAtTime(659, this.audioContext.currentTime + 0.1);
-          oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
-          break;
-        case 'star':
-          oscillator.frequency.value = 1047; // High C
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
-          break;
-        case 'levelComplete':
-          // Victory fanfare
-          oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
-          oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
-          oscillator.frequency.setValueAtTime(1047, this.audioContext.currentTime + 0.4);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.6);
-          break;
-        case 'gameOver':
-          // Sad sound
-          oscillator.frequency.value = 200;
-          oscillator.frequency.exponentialRampToValueAtTime(
-            100,
-            this.audioContext.currentTime + 0.5
-          );
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
-          break;
-        case 'trash':
-          oscillator.frequency.value = 150;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-          break;
-        default:
-          oscillator.frequency.value = 440;
-          gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+      case 'pickup':
+        oscillator.frequency.value = 600;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+        break;
+      case 'drop':
+        oscillator.frequency.value = 800;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+        break;
+      case 'success':
+        // Happy arpeggio
+        oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659, this.audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+        break;
+      case 'star':
+        oscillator.frequency.value = 1047; // High C
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+        break;
+      case 'levelComplete':
+        // Victory fanfare
+        oscillator.frequency.setValueAtTime(523, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.2);
+        oscillator.frequency.setValueAtTime(1047, this.audioContext.currentTime + 0.4);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.6);
+        break;
+      case 'gameOver':
+        // Sad sound
+        oscillator.frequency.value = 200;
+        oscillator.frequency.exponentialRampToValueAtTime(
+          100,
+          this.audioContext.currentTime + 0.5
+        );
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+        break;
+      case 'trash':
+        oscillator.frequency.value = 150;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+        break;
+      default:
+        oscillator.frequency.value = 440;
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
       }
 
       oscillator.start(this.audioContext.currentTime);

@@ -68,14 +68,14 @@ class NumberLineJumpGame extends BaseGame {
    */
   getMaxNumberForDifficulty() {
     switch (this.difficulty) {
-      case 'easy':
-        return 20;
-      case 'medium':
-        return 50;
-      case 'hard':
-        return 100;
-      default:
-        return 20;
+    case 'easy':
+      return 20;
+    case 'medium':
+      return 50;
+    case 'hard':
+      return 100;
+    default:
+      return 20;
     }
   }
 
@@ -84,14 +84,14 @@ class NumberLineJumpGame extends BaseGame {
    */
   getJumpsForDifficulty() {
     switch (this.difficulty) {
-      case 'easy':
-        return [1, 2, 5];
-      case 'medium':
-        return [1, 2, 5, 10];
-      case 'hard':
-        return [1, 2, 5, 10, 25];
-      default:
-        return [1, 2, 5];
+    case 'easy':
+      return [1, 2, 5];
+    case 'medium':
+      return [1, 2, 5, 10];
+    case 'hard':
+      return [1, 2, 5, 10, 25];
+    default:
+      return [1, 2, 5];
     }
   }
 
@@ -248,21 +248,21 @@ class NumberLineJumpGame extends BaseGame {
     // Generate target number based on difficulty
     let minTarget, maxTarget;
     switch (this.difficulty) {
-      case 'easy':
-        minTarget = 3;
-        maxTarget = 15;
-        break;
-      case 'medium':
-        minTarget = 5;
-        maxTarget = 35;
-        break;
-      case 'hard':
-        minTarget = 10;
-        maxTarget = 75;
-        break;
-      default:
-        minTarget = 3;
-        maxTarget = 15;
+    case 'easy':
+      minTarget = 3;
+      maxTarget = 15;
+      break;
+    case 'medium':
+      minTarget = 5;
+      maxTarget = 35;
+      break;
+    case 'hard':
+      minTarget = 10;
+      maxTarget = 75;
+      break;
+    default:
+      minTarget = 3;
+      maxTarget = 15;
     }
 
     this.targetNumber = Math.floor(Math.random() * (maxTarget - minTarget + 1)) + minTarget;
@@ -665,25 +665,25 @@ class NumberLineJumpGame extends BaseGame {
    */
   handleButtonClick(button) {
     switch (button.type) {
-      case 'jump':
-        // Select jump amount
-        this.buttons.forEach(btn => {
-          if (btn.type === 'jump') {
-            btn.selected = btn === button;
-          }
-        });
-        this.selectedJump = button.value;
-        break;
+    case 'jump':
+      // Select jump amount
+      this.buttons.forEach(btn => {
+        if (btn.type === 'jump') {
+          btn.selected = btn === button;
+        }
+      });
+      this.selectedJump = button.value;
+      break;
 
-      case 'direction':
-        // Make jump in selected direction
-        this.makeJump(this.selectedJump, button.value);
-        break;
+    case 'direction':
+      // Make jump in selected direction
+      this.makeJump(this.selectedJump, button.value);
+      break;
 
-      case 'undo':
-        // Undo last jump
-        this.undoLastJump();
-        break;
+    case 'undo':
+      // Undo last jump
+      this.undoLastJump();
+      break;
     }
   }
 

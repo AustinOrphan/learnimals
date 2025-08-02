@@ -203,21 +203,21 @@ class ColorPaletteGame extends BaseGame {
     }
 
     switch (this.currentChallenge.type) {
-      case 'color-mixing':
-        this.addColorToMixing(color);
-        break;
-      case 'color-sorting':
-        this.addColorToSort(color);
-        break;
-      case 'color-wheel':
-        this.addColorToWheel(color);
-        break;
-      case 'palette-creation':
-        this.addColorToPalette(color);
-        break;
-      case 'color-matching':
-        this.addColorToMatch(color);
-        break;
+    case 'color-mixing':
+      this.addColorToMixing(color);
+      break;
+    case 'color-sorting':
+      this.addColorToSort(color);
+      break;
+    case 'color-wheel':
+      this.addColorToWheel(color);
+      break;
+    case 'palette-creation':
+      this.addColorToPalette(color);
+      break;
+    case 'color-matching':
+      this.addColorToMatch(color);
+      break;
     }
 
     // Provide audio feedback
@@ -382,10 +382,10 @@ class ColorPaletteGame extends BaseGame {
    */
   checkChallengeObjective(_resultColorId) {
     switch (this.currentChallenge.type) {
-      case 'color-mixing':
-        return this.currentChallenge.correctAnswer === _resultColorId;
-      default:
-        return false;
+    case 'color-mixing':
+      return this.currentChallenge.correctAnswer === _resultColorId;
+    default:
+      return false;
     }
   }
 
@@ -950,18 +950,18 @@ class ColorPaletteGame extends BaseGame {
 
     // Render based on challenge type
     switch (this.currentChallenge?.type) {
-      case 'color-wheel':
-        this.renderColorWheel();
-        break;
-      case 'color-sorting':
-        this.renderSortingAreas();
-        break;
-      case 'palette-creation':
-        this.renderPaletteCreation();
-        break;
-      case 'color-matching':
-        this.renderMatchingArea();
-        break;
+    case 'color-wheel':
+      this.renderColorWheel();
+      break;
+    case 'color-sorting':
+      this.renderSortingAreas();
+      break;
+    case 'palette-creation':
+      this.renderPaletteCreation();
+      break;
+    case 'color-matching':
+      this.renderMatchingArea();
+      break;
     }
   }
 

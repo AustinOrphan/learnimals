@@ -497,21 +497,21 @@ export class CharacterFactory {
   generateRandomInteractions(character) {
     const subjectPhrases = {
       math: {
-        greetings: ["Let's solve some equations!", 'Ready for number fun?', 'Math magic time!'],
+        greetings: ['Let\'s solve some equations!', 'Ready for number fun?', 'Math magic time!'],
         encouragements: [
-          "You're calculating perfectly!",
+          'You\'re calculating perfectly!',
           'Great problem solving!',
           'Mathematical genius!',
         ],
       },
       science: {
-        greetings: ['Time for discovery!', "Let's experiment!", 'Science adventure awaits!'],
+        greetings: ['Time for discovery!', 'Let\'s experiment!', 'Science adventure awaits!'],
         encouragements: ['Excellent hypothesis!', 'Great observation!', 'Scientific thinking!'],
       },
     };
 
     const phrases = subjectPhrases[character.subject] || {
-      greetings: ['Hello! Ready to learn?', "Let's explore together!", 'Learning time!'],
+      greetings: ['Hello! Ready to learn?', 'Let\'s explore together!', 'Learning time!'],
       encouragements: ['Great work!', 'Keep it up!', 'Excellent effort!'],
     };
 

@@ -153,8 +153,8 @@ export default class CharacterEditor extends BaseComponent {
           <div class="editor-panel">
             <div class="editor-tabs">
               ${this.tabs
-                .map(
-                  tab => `
+    .map(
+      tab => `
                 <button class="editor-tab ${tab.id === this.currentTab ? 'active' : ''}" 
                         data-tab="${tab.id}"
                         title="${tab.label}">
@@ -162,22 +162,22 @@ export default class CharacterEditor extends BaseComponent {
                   <span class="tab-label">${tab.label}</span>
                 </button>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </div>
 
             <div class="editor-content">
               <div class="tab-panels">
                 ${this.tabs
-                  .map(
-                    tab => `
+    .map(
+      tab => `
                   <div class="tab-panel ${tab.id === this.currentTab ? 'active' : ''}" 
                        data-panel="${tab.id}">
                     ${this.renderTabContent(tab.id)}
                   </div>
                 `
-                  )
-                  .join('')}
+    )
+    .join('')}
               </div>
             </div>
 
@@ -262,20 +262,20 @@ export default class CharacterEditor extends BaseComponent {
    */
   renderTabContent(tabId) {
     switch (tabId) {
-      case 'appearance':
-        return this.renderAppearanceTab();
-      case 'personality':
-        return this.renderPersonalityTab();
-      case 'education':
-        return this.renderEducationTab();
-      case 'interactions':
-        return this.renderInteractionsTab();
-      case 'animations':
-        return this.renderAnimationsTab();
-      case 'metadata':
-        return this.renderMetadataTab();
-      default:
-        return '<div>Tab content not implemented</div>';
+    case 'appearance':
+      return this.renderAppearanceTab();
+    case 'personality':
+      return this.renderPersonalityTab();
+    case 'education':
+      return this.renderEducationTab();
+    case 'interactions':
+      return this.renderInteractionsTab();
+    case 'animations':
+      return this.renderAnimationsTab();
+    case 'metadata':
+      return this.renderMetadataTab();
+    default:
+      return '<div>Tab content not implemented</div>';
     }
   }
 
@@ -291,16 +291,16 @@ export default class CharacterEditor extends BaseComponent {
           <label class="form-label">Base Shape</label>
           <div class="shape-selector">
             ${['circle', 'oval', 'square', 'triangle', 'hexagon']
-              .map(
-                shape => `
+    .map(
+      shape => `
               <button class="shape-option" data-shape="${shape}" title="${shape}">
                 <svg width="40" height="40" viewBox="0 0 40 40">
                   ${this.renderShapePreview(shape)}
                 </svg>
               </button>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
 
@@ -350,15 +350,15 @@ export default class CharacterEditor extends BaseComponent {
           <label class="form-label">Accessories</label>
           <div class="accessory-options">
             ${['glasses', 'hat', 'bowtie', 'headband', 'crown']
-              .map(
-                accessory => `
+    .map(
+      accessory => `
               <label class="checkbox-label">
                 <input type="checkbox" value="${accessory}" class="accessory-checkbox">
                 ${accessory.charAt(0).toUpperCase() + accessory.slice(1)}
               </label>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
       </div>
@@ -389,15 +389,15 @@ export default class CharacterEditor extends BaseComponent {
           <label class="form-label">Character Traits</label>
           <div class="traits-selector">
             ${['helpful', 'curious', 'brave', 'funny', 'patient', 'clever', 'kind', 'adventurous']
-              .map(
-                trait => `
+    .map(
+      trait => `
               <label class="trait-option">
                 <input type="checkbox" value="${trait}" class="trait-checkbox">
                 <span class="trait-label">${trait}</span>
               </label>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
 
@@ -587,8 +587,8 @@ export default class CharacterEditor extends BaseComponent {
           <label class="form-label">Expression Animations</label>
           <div class="expression-animations">
             ${['happy', 'excited', 'thinking', 'surprised']
-              .map(
-                expression => `
+    .map(
+      expression => `
               <div class="form-group">
                 <label for="${expression}-animation">${expression.charAt(0).toUpperCase() + expression.slice(1)}</label>
                 <select id="${expression}-animation" class="form-select">
@@ -598,8 +598,8 @@ export default class CharacterEditor extends BaseComponent {
                 </select>
               </div>
             `
-              )
-              .join('')}
+    )
+    .join('')}
           </div>
         </div>
 
@@ -1953,7 +1953,7 @@ ${originalJSON}
       'You have unsaved changes. Do you want to save them before continuing?',
       [
         { text: 'Save', value: 'save', className: 'btn-primary' },
-        { text: "Don't Save", value: 'discard', className: 'btn-secondary' },
+        { text: 'Don\'t Save', value: 'discard', className: 'btn-secondary' },
         { text: 'Cancel', value: 'cancel', className: 'btn-tertiary' },
       ]
     ).then(result => {

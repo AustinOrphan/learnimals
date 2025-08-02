@@ -308,22 +308,22 @@ export default class EcosystemEngine {
         if (!partnerSpecies) continue;
 
         switch (relationship.type) {
-          case 'mutualism':
-            // Both species benefit
-            species.healthFactor = Math.min(1.2, species.healthFactor + 0.1);
-            partnerSpecies.healthFactor = Math.min(1.2, partnerSpecies.healthFactor + 0.1);
-            break;
+        case 'mutualism':
+          // Both species benefit
+          species.healthFactor = Math.min(1.2, species.healthFactor + 0.1);
+          partnerSpecies.healthFactor = Math.min(1.2, partnerSpecies.healthFactor + 0.1);
+          break;
 
-          case 'commensalism':
-            // One benefits, other neutral
-            species.healthFactor = Math.min(1.2, species.healthFactor + 0.05);
-            break;
+        case 'commensalism':
+          // One benefits, other neutral
+          species.healthFactor = Math.min(1.2, species.healthFactor + 0.05);
+          break;
 
-          case 'parasitism':
-            // One benefits, other harmed
-            species.healthFactor = Math.min(1.2, species.healthFactor + 0.05);
-            partnerSpecies.healthFactor = Math.max(0.5, partnerSpecies.healthFactor - 0.1);
-            break;
+        case 'parasitism':
+          // One benefits, other harmed
+          species.healthFactor = Math.min(1.2, species.healthFactor + 0.05);
+          partnerSpecies.healthFactor = Math.max(0.5, partnerSpecies.healthFactor - 0.1);
+          break;
         }
       }
     }
@@ -480,36 +480,36 @@ export default class EcosystemEngine {
    */
   applyChallenge(challenge) {
     switch (challenge.type) {
-      case 'drought':
-        this.ecosystemData.humidity = Math.max(10, this.ecosystemData.humidity - 30);
-        this.climateFactor = 0.7;
-        break;
+    case 'drought':
+      this.ecosystemData.humidity = Math.max(10, this.ecosystemData.humidity - 30);
+      this.climateFactor = 0.7;
+      break;
 
-      case 'flood':
-        this.ecosystemData.humidity = 100;
-        this.climateFactor = 0.8;
-        break;
+    case 'flood':
+      this.ecosystemData.humidity = 100;
+      this.climateFactor = 0.8;
+      break;
 
-      case 'pollution':
-        this.pollutionLevel = Math.min(1.0, this.pollutionLevel + 0.3);
-        break;
+    case 'pollution':
+      this.pollutionLevel = Math.min(1.0, this.pollutionLevel + 0.3);
+      break;
 
-      case 'climate_change':
-        this.ecosystemData.temperature += challenge.temperatureChange || 2;
-        this.climateFactor = 0.9;
-        break;
+    case 'climate_change':
+      this.ecosystemData.temperature += challenge.temperatureChange || 2;
+      this.climateFactor = 0.9;
+      break;
 
-      case 'disease':
-        // Affect specific species or all species
-        const targetSpecies = challenge.targetSpecies || Array.from(this.populations.keys());
-        for (const speciesId of targetSpecies) {
-          const population = this.populations.get(speciesId);
-          if (population) {
-            population.currentPopulation *= 0.7; // 30% mortality
-            population.healthFactor = 0.5;
-          }
+    case 'disease':
+      // Affect specific species or all species
+      const targetSpecies = challenge.targetSpecies || Array.from(this.populations.keys());
+      for (const speciesId of targetSpecies) {
+        const population = this.populations.get(speciesId);
+        if (population) {
+          population.currentPopulation *= 0.7; // 30% mortality
+          population.healthFactor = 0.5;
         }
-        break;
+      }
+      break;
     }
   }
 

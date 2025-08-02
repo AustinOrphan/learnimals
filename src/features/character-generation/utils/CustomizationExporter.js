@@ -118,11 +118,11 @@ export default class CustomizationExporter {
           : [],
         customizations: sessionData.customizations
           ? Object.fromEntries(
-              Array.from(sessionData.customizations.entries()).map(([id, customization]) => [
-                id,
-                this.sanitizeCustomization(customization),
-              ])
-            )
+            Array.from(sessionData.customizations.entries()).map(([id, customization]) => [
+              id,
+              this.sanitizeCustomization(customization),
+            ])
+          )
           : {},
         presets: sessionData.presets ? Object.fromEntries(sessionData.presets) : {},
         settings: sessionData.settings || {},
@@ -166,30 +166,30 @@ export default class CustomizationExporter {
       };
 
       switch (importData.type) {
-        case 'customization':
-          results.imported.push(await this.importSingleCustomization(importData, options));
-          break;
+      case 'customization':
+        results.imported.push(await this.importSingleCustomization(importData, options));
+        break;
 
-        case 'customization_collection':
-          for (const item of importData.customizations) {
-            try {
-              results.imported.push(await this.importSingleCustomization(item, options));
-            } catch (error) {
-              results.errors.push(`Failed to import customization: ${error.message}`);
-            }
+      case 'customization_collection':
+        for (const item of importData.customizations) {
+          try {
+            results.imported.push(await this.importSingleCustomization(item, options));
+          } catch (error) {
+            results.errors.push(`Failed to import customization: ${error.message}`);
           }
-          break;
+        }
+        break;
 
-        case 'preset_collection':
-          results.imported.push(await this.importPresetCollection(importData, options));
-          break;
+      case 'preset_collection':
+        results.imported.push(await this.importPresetCollection(importData, options));
+        break;
 
-        case 'studio_session':
-          results.imported.push(await this.importStudioSession(importData, options));
-          break;
+      case 'studio_session':
+        results.imported.push(await this.importStudioSession(importData, options));
+        break;
 
-        default:
-          throw new Error(`Unsupported import type: ${importData.type}`);
+      default:
+        throw new Error(`Unsupported import type: ${importData.type}`);
       }
 
       // Emit import event
@@ -465,29 +465,29 @@ export default class CustomizationExporter {
 
     // Type-specific validation
     switch (data.type) {
-      case 'customization':
-        if (!data.customization) {
-          errors.push('Missing customization data');
-        }
-        break;
+    case 'customization':
+      if (!data.customization) {
+        errors.push('Missing customization data');
+      }
+      break;
 
-      case 'customization_collection':
-        if (!Array.isArray(data.customizations)) {
-          errors.push('Customizations must be an array');
-        }
-        break;
+    case 'customization_collection':
+      if (!Array.isArray(data.customizations)) {
+        errors.push('Customizations must be an array');
+      }
+      break;
 
-      case 'preset_collection':
-        if (!data.presets || typeof data.presets !== 'object') {
-          errors.push('Presets must be an object');
-        }
-        break;
+    case 'preset_collection':
+      if (!data.presets || typeof data.presets !== 'object') {
+        errors.push('Presets must be an object');
+      }
+      break;
 
-      case 'studio_session':
-        if (!data.session || typeof data.session !== 'object') {
-          errors.push('Session data must be an object');
-        }
-        break;
+    case 'studio_session':
+      if (!data.session || typeof data.session !== 'object') {
+        errors.push('Session data must be an object');
+      }
+      break;
     }
 
     return {
@@ -531,16 +531,16 @@ export default class CustomizationExporter {
     let content, mimeType;
 
     switch (format) {
-      case 'json':
-        content = JSON.stringify(data, null, 2);
-        mimeType = 'application/json';
-        break;
-      case 'learnimals':
-        content = this.settings.compressData ? this.compressData(data) : JSON.stringify(data);
-        mimeType = 'application/octet-stream';
-        break;
-      default:
-        throw new Error(`Unsupported export format: ${format}`);
+    case 'json':
+      content = JSON.stringify(data, null, 2);
+      mimeType = 'application/json';
+      break;
+    case 'learnimals':
+      content = this.settings.compressData ? this.compressData(data) : JSON.stringify(data);
+      mimeType = 'application/octet-stream';
+      break;
+    default:
+      throw new Error(`Unsupported export format: ${format}`);
     }
 
     const blob = new Blob([content], { type: mimeType });

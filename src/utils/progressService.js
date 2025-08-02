@@ -479,65 +479,65 @@ class ProgressService {
       let success = false;
 
       switch (subjectId) {
-        case 'math':
-          updateData = {
-            lessonCompleted: true,
-            score: progressData.score,
-            timeSpent: progressData.timeSpent,
-            correctAnswers: progressData.correctAnswers || 1,
-            questionsAnswered: progressData.questionsAnswered || 1,
-            ...progressData,
-          };
-          success = this.userProgress.updateMathProgress(updateData);
-          break;
-        case 'reading':
-          updateData = {
-            storyRead: true,
-            comprehensionScore: progressData.score || 0,
-            timeSpent: progressData.timeSpent,
-            bookData: progressData.bookData || { title: progressData.activityId },
-            ...progressData,
-          };
-          success = this.userProgress.updateReadingProgress(updateData);
-          break;
-        case 'science':
-          updateData = {
-            experimentCompleted: true,
-            score: progressData.score || 0,
-            timeSpent: progressData.timeSpent,
-            experimentData: progressData.experimentData || { name: progressData.activityId },
-            ...progressData,
-          };
-          success = this.userProgress.updateScienceProgress(updateData);
-          break;
-        case 'art':
-          updateData = {
-            projectCompleted: true,
-            rating: progressData.score || 0,
-            timeSpent: progressData.timeSpent,
-            projectData: progressData.projectData || { name: progressData.activityId },
-            ...progressData,
-          };
-          success = this.userProgress.updateArtProgress(updateData);
-          break;
-        case 'coding':
-          updateData = {
-            challengeCompleted: true,
-            score: progressData.score || 0,
-            timeSpent: progressData.timeSpent,
-            challengeData: progressData.challengeData || { name: progressData.activityId },
-            ...progressData,
-          };
-          // Fallback to generic activity completed if coding-specific method doesn't exist
-          if (typeof this.userProgress.updateCodingProgress === 'function') {
-            success = this.userProgress.updateCodingProgress(updateData);
-          } else {
-            success = this.userProgress.updateProgress(subjectId, updateData);
-          }
-          break;
-        default:
-          console.warn(`Unknown subject: ${subjectId}`);
-          success = false;
+      case 'math':
+        updateData = {
+          lessonCompleted: true,
+          score: progressData.score,
+          timeSpent: progressData.timeSpent,
+          correctAnswers: progressData.correctAnswers || 1,
+          questionsAnswered: progressData.questionsAnswered || 1,
+          ...progressData,
+        };
+        success = this.userProgress.updateMathProgress(updateData);
+        break;
+      case 'reading':
+        updateData = {
+          storyRead: true,
+          comprehensionScore: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          bookData: progressData.bookData || { title: progressData.activityId },
+          ...progressData,
+        };
+        success = this.userProgress.updateReadingProgress(updateData);
+        break;
+      case 'science':
+        updateData = {
+          experimentCompleted: true,
+          score: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          experimentData: progressData.experimentData || { name: progressData.activityId },
+          ...progressData,
+        };
+        success = this.userProgress.updateScienceProgress(updateData);
+        break;
+      case 'art':
+        updateData = {
+          projectCompleted: true,
+          rating: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          projectData: progressData.projectData || { name: progressData.activityId },
+          ...progressData,
+        };
+        success = this.userProgress.updateArtProgress(updateData);
+        break;
+      case 'coding':
+        updateData = {
+          challengeCompleted: true,
+          score: progressData.score || 0,
+          timeSpent: progressData.timeSpent,
+          challengeData: progressData.challengeData || { name: progressData.activityId },
+          ...progressData,
+        };
+        // Fallback to generic activity completed if coding-specific method doesn't exist
+        if (typeof this.userProgress.updateCodingProgress === 'function') {
+          success = this.userProgress.updateCodingProgress(updateData);
+        } else {
+          success = this.userProgress.updateProgress(subjectId, updateData);
+        }
+        break;
+      default:
+        console.warn(`Unknown subject: ${subjectId}`);
+        success = false;
       }
 
       // Clear cached progress for this subject

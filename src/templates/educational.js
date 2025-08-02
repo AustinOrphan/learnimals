@@ -375,7 +375,7 @@ export class EducationalTemplate {
       this.sessionData.correctAnswers++;
       this.showAdaptiveFeedback('Great job! Keep it up!', 'success');
     } else {
-      this.showAdaptiveFeedback("Try again! You're learning!", 'warning');
+      this.showAdaptiveFeedback('Try again! You\'re learning!', 'warning');
     }
 
     // Immediate progress update for responsiveness
@@ -493,15 +493,15 @@ export class EducationalTemplate {
         <h4>${q.question}</h4>
         <div class="assessment-options">
           ${q.options
-            .map(
-              (option, _optIndex) => `
+    .map(
+      (option, _optIndex) => `
             <label class="assessment-option">
               <input type="radio" name="question-${index}" value="${option}">
               <span>${option}</span>
             </label>
           `
-            )
-            .join('')}
+    )
+    .join('')}
         </div>
       </div>
     `
@@ -771,22 +771,22 @@ export class EducationalTemplate {
   handleKeyboard(event) {
     if (event.ctrlKey || event.metaKey) {
       switch (event.key) {
-        case 't':
-          event.preventDefault();
-          this.toggleSidebar();
-          break;
-        case 'h':
-          event.preventDefault();
-          this.showHint();
-          break;
-        case 's':
-          event.preventDefault();
-          this.saveSession();
-          break;
-        case 'a':
-          event.preventDefault();
-          this.showAssessment();
-          break;
+      case 't':
+        event.preventDefault();
+        this.toggleSidebar();
+        break;
+      case 'h':
+        event.preventDefault();
+        this.showHint();
+        break;
+      case 's':
+        event.preventDefault();
+        this.saveSession();
+        break;
+      case 'a':
+        event.preventDefault();
+        this.showAssessment();
+        break;
       }
     }
   }
