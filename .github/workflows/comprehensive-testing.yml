@@ -40,7 +40,7 @@ jobs:
         run: npm run lint:fix
         
       - name: Upload lint results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: lint-results
@@ -83,7 +83,7 @@ jobs:
           npm run test:unit -- --coverage --reporter=json --outputFile=coverage-${{ matrix.test-group }}.json
         
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: unit-test-results-${{ matrix.test-group }}
@@ -144,7 +144,7 @@ jobs:
           CI: true
           
       - name: Upload integration test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: integration-test-results
@@ -190,7 +190,7 @@ jobs:
           CI: true
           
       - name: Upload E2E test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: e2e-results-${{ matrix.browser }}-${{ matrix.test-suite }}
@@ -237,7 +237,7 @@ jobs:
           uploadArtifacts: true
           
       - name: Upload performance results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: performance-results
@@ -286,7 +286,7 @@ jobs:
         continue-on-error: true
         
       - name: Upload security results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: security-results
@@ -404,7 +404,7 @@ jobs:
           CI: true
           
       - name: Upload visual diff artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: visual-regression-results
@@ -450,7 +450,7 @@ jobs:
         continue-on-error: true
         
       - name: Upload accessibility results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: accessibility-results
@@ -480,7 +480,7 @@ jobs:
           node scripts/generate-test-report.js all-test-results/ > test-report.html
           
       - name: Upload test report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: comprehensive-test-report
           path: |
