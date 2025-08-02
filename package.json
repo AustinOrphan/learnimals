@@ -41,18 +41,24 @@
     "prepare": "husky",
     "pre-commit": "lint-staged"
   },
-  "keywords": ["education", "children", "games", "learning"],
+  "keywords": [
+    "education",
+    "children",
+    "games",
+    "learning"
+  ],
   "private": true,
   "devDependencies": {
-    "eslint": "^8.57.0",
     "@eslint/js": "^8.57.0",
-    "vitest": "^1.6.0",
-    "@vitest/ui": "^1.6.0",
-    "jsdom": "^24.1.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.0",
     "@vitest/coverage-v8": "^1.6.0",
-    "prettier": "^3.0.0"
+    "@vitest/ui": "^1.6.0",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "jsdom": "^24.1.0",
+    "lint-staged": "^15.2.0",
+    "markdownlint-cli2": "^0.18.1",
+    "prettier": "^3.0.0",
+    "vitest": "^1.6.0"
   },
   "lint-staged": {
     "src/**/*.js": [
