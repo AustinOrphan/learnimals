@@ -8,6 +8,10 @@
     "list-templates": "node scripts/generateSubjects.js --list-templates",
     "lint": "eslint src/ scripts/ tests/",
     "lint:fix": "eslint src/ scripts/ tests/ --fix",
+    "lint:md": "markdownlint-cli2 '**/*.md'",
+    "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'",
+    "prose:check": "vale '**/*.md'",
+    "prose:readme": "vale README.md CLAUDE.md",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:components": "vitest run tests/components",
@@ -25,6 +29,10 @@
     "test:coverage:unit": "vitest run tests/unit --coverage",
     "test:coverage:integration": "vitest run tests/integration --coverage",
     "test:coverage:all": "vitest run --coverage --reporter=json --outputFile=coverage-report.json",
+    "coverage:report": "./scripts/coverage-report.sh",
+    "coverage:open": "open coverage/index.html || xdg-open coverage/index.html || start coverage/index.html",
+    "test:shard": "SHARD_COUNT=${SHARD_COUNT:-4} SHARD_INDEX=${SHARD_INDEX:-0} node scripts/test-sharding.js --pattern | xargs vitest run",
+    "test:shard:report": "node scripts/test-sharding.js --report",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run test:performance && npm run test:security",
     "test:ci": "npm run lint && npm run test:all && npm run test:coverage:all",
     "generate-test-report": "node scripts/generate-test-report.js",
@@ -33,18 +41,24 @@
     "prepare": "husky",
     "pre-commit": "lint-staged"
   },
-  "keywords": ["education", "children", "games", "learning"],
+  "keywords": [
+    "education",
+    "children",
+    "games",
+    "learning"
+  ],
   "private": true,
   "devDependencies": {
-    "eslint": "^8.57.0",
     "@eslint/js": "^8.57.0",
-    "vitest": "^1.6.0",
-    "@vitest/ui": "^1.6.0",
-    "jsdom": "^24.1.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.0",
     "@vitest/coverage-v8": "^1.6.0",
-    "prettier": "^3.0.0"
+    "@vitest/ui": "^1.6.0",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "jsdom": "^24.1.0",
+    "lint-staged": "^15.2.0",
+    "markdownlint-cli2": "^0.18.1",
+    "prettier": "^3.0.0",
+    "vitest": "^1.6.0"
   },
   "lint-staged": {
     "src/**/*.js": [
@@ -53,6 +67,10 @@
     ],
     "src/**/*.{html,css}": [
       "prettier --write --ignore-unknown"
+    ],
+    "*.md": [
+      "markdownlint-cli2 --fix",
+      "prettier --write"
     ]
   }
 }

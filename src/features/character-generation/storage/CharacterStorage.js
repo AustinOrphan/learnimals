@@ -1,7 +1,7 @@
 /**
  * Character Storage System
  * Manages persistence and retrieval of generated characters
- * 
+ *
  * Part of Phase D: Character Generator Core
  */
 
@@ -13,7 +13,7 @@ export class CharacterStorage {
     this.storageKey = 'learnimals_characters';
     this.metaStorageKey = 'learnimals_character_meta';
     this.validator = new CharacterValidator();
-    
+
     // Initialize storage if needed
     this.initializeStorage();
   }
@@ -29,7 +29,7 @@ export class CharacterStorage {
           characters: {},
           collections: {},
           version: '1.0.0',
-          lastModified: new Date().toISOString()
+          lastModified: new Date().toISOString(),
         };
         localStorage.setItem(this.storageKey, JSON.stringify(initialData));
       }
@@ -44,8 +44,8 @@ export class CharacterStorage {
           settings: {
             autoSave: true,
             compressionEnabled: false,
-            maxCharacters: 100
-          }
+            maxCharacters: 100,
+          },
         };
         localStorage.setItem(this.metaStorageKey, JSON.stringify(initialMeta));
       }
@@ -69,18 +69,18 @@ export class CharacterStorage {
           success: false,
           error: 'Validation failed',
           details: validation.errors,
-          warnings: validation.warnings
+          warnings: validation.warnings,
         };
       }
 
       // Sanitize character data
       const sanitizedCharacter = CharacterValidator.sanitize(character);
-      
+
       // Set metadata
       const now = new Date().toISOString();
       sanitizedCharacter.metadata = {
         ...sanitizedCharacter.metadata,
-        modified: now
+        modified: now,
       };
 
       if (!sanitizedCharacter.metadata.created) {
@@ -89,14 +89,14 @@ export class CharacterStorage {
 
       // Get current storage data
       const storageData = this.getStorageData();
-      
+
       // Check storage limits
       const limitCheck = this.checkStorageLimits(storageData);
       if (!limitCheck.canSave) {
         return {
           success: false,
           error: limitCheck.reason,
-          details: limitCheck.details
+          details: limitCheck.details,
         };
       }
 
@@ -112,7 +112,7 @@ export class CharacterStorage {
           return {
             success: false,
             error: 'Character ID already exists',
-            details: ['A different character with this ID already exists']
+            details: ['A different character with this ID already exists'],
           };
         }
       }
@@ -129,15 +129,14 @@ export class CharacterStorage {
         success: true,
         characterId: sanitizedCharacter.id,
         character: sanitizedCharacter,
-        warnings: validation.warnings
+        warnings: validation.warnings,
       };
-
     } catch (error) {
       console.error('Failed to save character:', error);
       return {
         success: false,
         error: 'Save operation failed',
-        details: [error.message]
+        details: [error.message],
       };
     }
   }
@@ -151,7 +150,7 @@ export class CharacterStorage {
     try {
       const storageData = this.getStorageData();
       const character = storageData.characters[characterId];
-      
+
       if (!character) {
         return null;
       }
@@ -189,17 +188,18 @@ export class CharacterStorage {
       }
 
       if (options.tags && options.tags.length > 0) {
-        characters = characters.filter(char => 
+        characters = characters.filter(char =>
           options.tags.every(tag => char.metadata?.tags?.includes(tag))
         );
       }
 
       if (options.search) {
         const searchLower = options.search.toLowerCase();
-        characters = characters.filter(char =>
-          char.name.toLowerCase().includes(searchLower) ||
-          char.subject.toLowerCase().includes(searchLower) ||
-          char.personality?.primaryTrait?.toLowerCase().includes(searchLower)
+        characters = characters.filter(
+          char =>
+            char.name.toLowerCase().includes(searchLower) ||
+            char.subject.toLowerCase().includes(searchLower) ||
+            char.personality?.primaryTrait?.toLowerCase().includes(searchLower)
         );
       }
 
@@ -207,18 +207,18 @@ export class CharacterStorage {
       if (options.sortBy) {
         characters.sort((a, b) => {
           switch (options.sortBy) {
-          case 'name':
-            return a.name.localeCompare(b.name);
-          case 'created':
-            return new Date(b.metadata?.created || 0) - new Date(a.metadata?.created || 0);
-          case 'modified':
-            return new Date(b.metadata?.modified || 0) - new Date(a.metadata?.modified || 0);
-          case 'popularity':
-            return (b.metadata?.popularity || 0) - (a.metadata?.popularity || 0);
-          case 'subject':
-            return a.subject.localeCompare(b.subject);
-          default:
-            return 0;
+            case 'name':
+              return a.name.localeCompare(b.name);
+            case 'created':
+              return new Date(b.metadata?.created || 0) - new Date(a.metadata?.created || 0);
+            case 'modified':
+              return new Date(b.metadata?.modified || 0) - new Date(a.metadata?.modified || 0);
+            case 'popularity':
+              return (b.metadata?.popularity || 0) - (a.metadata?.popularity || 0);
+            case 'subject':
+              return a.subject.localeCompare(b.subject);
+            default:
+              return 0;
           }
         });
       }
@@ -245,7 +245,7 @@ export class CharacterStorage {
   deleteCharacter(characterId) {
     try {
       const storageData = this.getStorageData();
-      
+
       if (!storageData.characters[characterId]) {
         return false;
       }
@@ -302,8 +302,8 @@ export class CharacterStorage {
           created: new Date().toISOString(),
           modified: new Date().toISOString(),
           creator: 'user',
-          ...metadata
-        }
+          ...metadata,
+        },
       };
 
       storageData.collections[collectionId] = collection;
@@ -347,8 +347,8 @@ export class CharacterStorage {
         characterCount: Object.keys(charactersToExport).length,
         metadata: {
           source: 'Learnimals Character Generator',
-          format: 'json'
-        }
+          format: 'json',
+        },
       };
     } catch (error) {
       console.error('Failed to export characters:', error);
@@ -372,7 +372,7 @@ export class CharacterStorage {
         success: true,
         imported: 0,
         skipped: 0,
-        errors: []
+        errors: [],
       };
 
       for (const [characterId, character] of Object.entries(exportData.characters)) {
@@ -403,7 +403,7 @@ export class CharacterStorage {
     try {
       const storageData = this.getStorageData();
       const meta = this.getMetadata();
-      
+
       const characters = Object.values(storageData.characters);
       const subjectCounts = {};
       const creatorCounts = {};
@@ -421,7 +421,7 @@ export class CharacterStorage {
         subjectDistribution: subjectCounts,
         creatorDistribution: creatorCounts,
         lastModified: storageData.lastModified,
-        settings: meta.settings
+        settings: meta.settings,
       };
     } catch (error) {
       console.error('Failed to get storage stats:', error);
@@ -484,34 +484,34 @@ export class CharacterStorage {
   updateMetadata() {
     const meta = this.getMetadata();
     const storageData = this.getStorageData();
-    
+
     meta.totalCharacters = Object.keys(storageData.characters).length;
     meta.totalCollections = Object.keys(storageData.collections).length;
     meta.storageSize = this.calculateStorageSize();
-    
+
     localStorage.setItem(this.metaStorageKey, JSON.stringify(meta));
   }
 
   checkStorageLimits(storageData) {
     const meta = this.getMetadata();
     const currentCount = Object.keys(storageData.characters).length;
-    
+
     if (currentCount >= meta.settings.maxCharacters) {
       return {
         canSave: false,
         reason: 'Storage limit reached',
-        details: [`Maximum ${meta.settings.maxCharacters} characters allowed`]
+        details: [`Maximum ${meta.settings.maxCharacters} characters allowed`],
       };
     }
 
     const storageSize = this.calculateStorageSize();
     const maxSize = 10 * 1024 * 1024; // 10MB limit
-    
+
     if (storageSize > maxSize) {
       return {
         canSave: false,
         reason: 'Storage size limit reached',
-        details: ['Storage size exceeds 10MB limit']
+        details: ['Storage size exceeds 10MB limit'],
       };
     }
 
@@ -523,7 +523,7 @@ export class CharacterStorage {
     const subject = character.subject.toLowerCase();
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 4);
-    
+
     return `${baseName}-${subject}-${timestamp}-${random}`;
   }
 
@@ -531,7 +531,7 @@ export class CharacterStorage {
     const baseName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 4);
-    
+
     return `collection-${baseName}-${timestamp}-${random}`;
   }
 

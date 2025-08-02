@@ -21,29 +21,29 @@
   --art-secondary: #f0932b;
   --coding-primary: #6c5ce7;
   --coding-secondary: #a29bfe;
-  
+
   /* Feedback type colors */
   --success-color: #28a745;
   --error-color: #dc3545;
   --info-color: #17a2b8;
   --warning-color: #ffc107;
   --purple-color: #6f42c1;
-  
+
   /* Animation durations */
   --feedback-transition-fast: 0.2s;
   --feedback-transition-normal: 0.3s;
   --feedback-transition-slow: 0.5s;
-  
+
   /* Z-index layers */
   --feedback-overlay-z: 1000;
   --feedback-toast-z: 500;
   --feedback-progress-z: 100;
-  
+
   /* Border radius */
   --feedback-border-radius-small: 6px;
   --feedback-border-radius-medium: 12px;
   --feedback-border-radius-large: 20px;
-  
+
   /* Shadow levels */
   --feedback-shadow-small: 0 2px 8px rgba(0, 0, 0, 0.1);
   --feedback-shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -108,7 +108,7 @@
   .feedback-no-print {
     display: none !important;
   }
-  
+
   .feedback-print-only {
     display: block !important;
   }

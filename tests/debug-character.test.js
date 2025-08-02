@@ -23,13 +23,13 @@ describe('Debug Character Generation', () => {
       console.log('Attempting to import character generation system...');
       const characterSystem = await import('../src/features/character-generation/index.js');
       console.log('Import successful, available exports:', Object.keys(characterSystem));
-      
+
       CharacterGenerationAPI = characterSystem.CharacterGenerationAPI;
       CharacterUtils = characterSystem.CharacterUtils;
-      
+
       console.log('CharacterGenerationAPI available:', !!CharacterGenerationAPI);
       console.log('CharacterUtils available:', !!CharacterUtils);
-      
+
       if (CharacterUtils) {
         const subjects = CharacterUtils.getAvailableSubjects();
         console.log('Available subjects:', subjects);
@@ -47,26 +47,26 @@ describe('Debug Character Generation', () => {
 
   it('should create a basic character', async () => {
     console.log('Testing basic character creation...');
-    
+
     try {
       const result = await CharacterGenerationAPI.createCharacter({
         name: 'Debug Test Character',
         subject: 'math',
-        autoSave: false
+        autoSave: false,
       });
-      
+
       console.log('Character creation result:', {
         success: result.success,
         error: result.error,
         details: result.details,
-        hasCharacter: !!result.character
+        hasCharacter: !!result.character,
       });
-      
+
       if (result.character) {
         console.log('Created character:', {
           id: result.character.id,
           name: result.character.name,
-          subject: result.character.subject
+          subject: result.character.subject,
         });
       }
 
@@ -80,17 +80,17 @@ describe('Debug Character Generation', () => {
 
   it('should generate random character', async () => {
     console.log('Testing random character generation...');
-    
+
     try {
       const result = await CharacterGenerationAPI.generateRandomCharacter('math', {
-        autoSave: false
+        autoSave: false,
       });
-      
+
       console.log('Random generation result:', {
         success: result.success,
         error: result.error,
         details: result.details,
-        hasCharacter: !!result.character
+        hasCharacter: !!result.character,
       });
 
       if (!result.success) {

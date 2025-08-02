@@ -11,21 +11,23 @@ class LanguageSubject {
     this.character = {
       name: 'Polyglot',
       type: 'Parrot',
-      role: 'Language Teacher'
+      role: 'Language Teacher',
     };
     this.features = [
       'Vocabulary Builder',
       'Pronunciation Practice',
       'Language Games',
-      'Cultural Stories'
+      'Cultural Stories',
     ];
-        
+
     this.init();
   }
 
   init() {
-    console.log(`🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`);
-        
+    console.log(
+      `🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`
+    );
+
     // Set up event listeners when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setupEventListeners());
@@ -43,7 +45,7 @@ class LanguageSubject {
 
   setupFeatureCards() {
     const featureCards = document.querySelectorAll('.feature-card');
-        
+
     featureCards.forEach((card, index) => {
       const feature = this.features[index];
       if (feature) {
@@ -59,7 +61,7 @@ class LanguageSubject {
       characterImage.addEventListener('click', () => {
         this.showCharacterMessage();
       });
-            
+
       // Add hover effect
       characterImage.style.cursor = 'pointer';
       characterImage.title = `Click to interact with ${this.character.name}!`;
@@ -68,27 +70,27 @@ class LanguageSubject {
 
   setupThemeIntegration() {
     // Listen for theme changes and update character accordingly
-    document.addEventListener('themeChanged', (event) => {
+    document.addEventListener('themeChanged', event => {
       this.onThemeChange(event.detail.theme);
     });
   }
 
   handleFeatureClick(feature) {
     console.log(`🎯 User clicked on: ${feature}`);
-        
+
     // Show character encouragement
     this.showCharacterMessage(`Great choice! Let's explore ${feature} together!`);
-        
+
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'vocabulary builder':
-      this.startFirstFeature();
-      break;
-    case 'pronunciation practice':
-      this.startSecondFeature();
-      break;
-    default:
-      this.showComingSoon(feature);
+      case 'vocabulary builder':
+        this.startFirstFeature();
+        break;
+      case 'pronunciation practice':
+        this.startSecondFeature();
+        break;
+      default:
+        this.showComingSoon(feature);
     }
   }
 
@@ -113,12 +115,13 @@ class LanguageSubject {
     const defaultMessages = [
       `Hi! I'm ${this.character.name} the ${this.character.type}!`,
       `Ready to learn some amazing ${this.subjectName.toLowerCase()}?`,
-      'Let\'s explore and have fun together!',
-      'Click on any activity to get started!'
+      "Let's explore and have fun together!",
+      'Click on any activity to get started!',
     ];
-        
-    const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
-        
+
+    const displayMessage =
+      message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
+
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
   }
@@ -136,7 +139,7 @@ class LanguageSubject {
       confirmButtonText: 'Got it!',
       showClose: true,
       size: 'medium',
-      onConfirm: () => modal.hide()
+      onConfirm: () => modal.hide(),
     });
     modal.show();
   }
@@ -154,7 +157,7 @@ class LanguageSubject {
       subject: this.subjectName,
       completedFeatures: [],
       totalFeatures: this.features.length,
-      level: 1
+      level: 1,
     };
   }
 

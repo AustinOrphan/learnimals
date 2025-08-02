@@ -11,21 +11,21 @@ class StreakTracker extends BaseComponent {
       showStats: true,
       showMotivation: true,
       daysToShow: 30,
-      
+
       // Streak configuration
       streakGoal: 7,
       maxStreakDisplay: 100,
-      
+
       // Visual options
       emojis: {
         fire: '🔥',
         calendar: '📅',
         target: '🎯',
         trophy: '🏆',
-        celebration: '🎉'
+        celebration: '🎉',
       },
-      
-      ...options
+
+      ...options,
     });
 
     this.progressData = options.progressData || {};
@@ -52,7 +52,7 @@ class StreakTracker extends BaseComponent {
     this.currentStreak = this.progressData.streakDays || 0;
     this.longestStreak = this.progressData.longestStreak || this.currentStreak;
     this.lastActiveDate = this.progressData.lastActiveDate;
-    
+
     // Load activity history (in a full implementation, this would come from detailed logs)
     this.loadActivityHistory();
   }
@@ -61,17 +61,17 @@ class StreakTracker extends BaseComponent {
     // Generate sample activity history for the last 30 days
     // In a real implementation, this would come from stored activity logs
     const today = new Date();
-    
+
     for (let i = 0; i < this.options.daysToShow; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       const dateKey = this.formatDateKey(date);
-      
+
       // Simulate activity data based on current streak
       let hasActivity = false;
       let activityCount = 0;
       let timeSpent = 0;
-      
+
       if (i < this.currentStreak) {
         hasActivity = true;
         activityCount = Math.floor(Math.random() * 5) + 1;
@@ -82,22 +82,23 @@ class StreakTracker extends BaseComponent {
         activityCount = Math.floor(Math.random() * 3) + 1;
         timeSpent = Math.floor(Math.random() * 45) + 10;
       }
-      
+
       this.activityCalendar.set(dateKey, {
         date: new Date(date),
         hasActivity,
         activityCount,
         timeSpent,
-        dateKey
+        dateKey,
       });
     }
   }
 
   generateActivityCalendar() {
     // Sort calendar entries by date
-    const sortedEntries = Array.from(this.activityCalendar.values())
-      .sort((a, b) => a.date - b.date);
-    
+    const sortedEntries = Array.from(this.activityCalendar.values()).sort(
+      (a, b) => a.date - b.date
+    );
+
     this.activityCalendar.clear();
     sortedEntries.forEach(entry => {
       this.activityCalendar.set(entry.dateKey, entry);
@@ -118,7 +119,7 @@ class StreakTracker extends BaseComponent {
     const streakPercentage = Math.min((this.currentStreak / this.options.streakGoal) * 100, 100);
     const isOnStreak = this.currentStreak > 0;
     const nearGoal = this.currentStreak >= this.options.streakGoal * 0.8;
-    
+
     return `
       <div class="streak-stats">
         <!-- Current Streak Display -->
@@ -174,9 +175,10 @@ class StreakTracker extends BaseComponent {
   }
 
   generateCalendarHTML() {
-    const calendarEntries = Array.from(this.activityCalendar.values())
-      .slice(-this.options.daysToShow);
-    
+    const calendarEntries = Array.from(this.activityCalendar.values()).slice(
+      -this.options.daysToShow
+    );
+
     return `
       <div class="activity-calendar">
         <h4>Activity Calendar</h4>
@@ -209,7 +211,7 @@ class StreakTracker extends BaseComponent {
     const activityLevel = this.getActivityLevel(entry);
     const isToday = this.isToday(entry.date);
     const dayOfMonth = entry.date.getDate();
-    
+
     return `
       <div class="calendar-day ${activityLevel} ${isToday ? 'today' : ''}" 
            data-date="${entry.dateKey}"
@@ -223,49 +225,56 @@ class StreakTracker extends BaseComponent {
   generateMotivationHTML() {
     const motivationMessage = this.getMotivationMessage();
     const nextMilestone = this.getNextMilestone();
-    
+
     return `
       <div class="streak-motivation">
         <div class="motivation-message">
           <div class="motivation-icon">${motivationMessage.icon}</div>
           <div class="motivation-content">
             <p class="motivation-text">${motivationMessage.text}</p>
-            ${nextMilestone ? `
+            ${
+              nextMilestone
+                ? `
               <p class="next-milestone">
                 ${nextMilestone.daysToGo} more day${nextMilestone.daysToGo !== 1 ? 's' : ''} to reach ${nextMilestone.name}!
               </p>
-            ` : ''}
+            `
+                : ''
+            }
           </div>
         </div>
         
-        ${this.currentStreak > 0 ? `
+        ${
+          this.currentStreak > 0
+            ? `
           <div class="streak-actions">
             <button class="btn btn--primary btn--sm" id="continue-streak">
               Keep the streak going! ${this.options.emojis.fire}
             </button>
           </div>
-        ` : `
+        `
+            : `
           <div class="streak-actions">
             <button class="btn btn--primary btn--sm" id="start-streak">
               Start your learning streak today!
             </button>
           </div>
-        `}
+        `
+        }
       </div>
     `;
   }
 
   getActivityLevel(entry) {
     if (!entry.hasActivity) return 'no-activity';
-    
+
     if (entry.timeSpent >= 45) return 'high-activity';
     if (entry.timeSpent >= 20) return 'moderate-activity';
     return 'light-activity';
   }
 
   getActiveDaysCount() {
-    return Array.from(this.activityCalendar.values())
-      .filter(entry => entry.hasActivity).length;
+    return Array.from(this.activityCalendar.values()).filter(entry => entry.hasActivity).length;
   }
 
   getConsistencyPercentage() {
@@ -278,49 +287,49 @@ class StreakTracker extends BaseComponent {
     if (this.currentStreak === 0) {
       return {
         icon: '💪',
-        text: 'Ready to start a new learning streak? Every expert was once a beginner!'
+        text: 'Ready to start a new learning streak? Every expert was once a beginner!',
       };
     }
-    
+
     if (this.currentStreak === 1) {
       return {
         icon: '🌱',
-        text: 'Great start! One day down, keep building that learning habit!'
+        text: 'Great start! One day down, keep building that learning habit!',
       };
     }
-    
+
     if (this.currentStreak < 7) {
       return {
         icon: '🔥',
-        text: `${this.currentStreak} days strong! You're building an amazing habit!`
+        text: `${this.currentStreak} days strong! You're building an amazing habit!`,
       };
     }
-    
+
     if (this.currentStreak < 30) {
       return {
         icon: '⭐',
-        text: `Incredible! ${this.currentStreak} days of consistent learning. You're on fire!`
+        text: `Incredible! ${this.currentStreak} days of consistent learning. You're on fire!`,
       };
     }
-    
+
     return {
       icon: '🏆',
-      text: `Outstanding! ${this.currentStreak} days streak - you're a true learning champion!`
+      text: `Outstanding! ${this.currentStreak} days streak - you're a true learning champion!`,
     };
   }
 
   getNextMilestone() {
     const milestones = [3, 7, 14, 30, 50, 100];
-    
+
     for (const milestone of milestones) {
       if (this.currentStreak < milestone) {
         return {
           name: `${milestone}-day streak`,
-          daysToGo: milestone - this.currentStreak
+          daysToGo: milestone - this.currentStreak,
         };
       }
     }
-    
+
     return null; // Already past all milestones
   }
 
@@ -328,7 +337,7 @@ class StreakTracker extends BaseComponent {
     if (!entry.hasActivity) {
       return `${this.formatDate(entry.date)} - No activity`;
     }
-    
+
     return `${this.formatDate(entry.date)} - ${entry.activityCount} activities, ${entry.timeSpent} minutes`;
   }
 
@@ -336,11 +345,11 @@ class StreakTracker extends BaseComponent {
     // Calendar day hover effects
     const calendarDays = this.element.querySelectorAll('.calendar-day');
     calendarDays.forEach(day => {
-      day.addEventListener('mouseenter', (e) => {
+      day.addEventListener('mouseenter', e => {
         const dateKey = e.target.getAttribute('data-date');
         this.showDayDetails(dateKey);
       });
-      
+
       day.addEventListener('mouseleave', () => {
         this.hideDayDetails();
       });
@@ -377,12 +386,16 @@ class StreakTracker extends BaseComponent {
     tooltip.innerHTML = `
       <div class="tooltip-content">
         <h5>${this.formatDate(entry.date)}</h5>
-        ${entry.hasActivity ? `
+        ${
+          entry.hasActivity
+            ? `
           <p>${entry.activityCount} activities completed</p>
           <p>${entry.timeSpent} minutes spent learning</p>
-        ` : `
+        `
+            : `
           <p>No learning activity</p>
-        `}
+        `
+        }
       </div>
     `;
 
@@ -411,7 +424,7 @@ class StreakTracker extends BaseComponent {
     this.progressData = newProgressData;
     this.loadStreakData();
     this.generateActivityCalendar();
-    
+
     // Re-render if component is already rendered
     if (this.element) {
       const container = this.element.parentNode;
@@ -423,22 +436,22 @@ class StreakTracker extends BaseComponent {
   recordActivity(timeSpent = 15, activityCount = 1) {
     const today = new Date();
     const todayKey = this.formatDateKey(today);
-    
+
     // Update today's activity
     const todayEntry = this.activityCalendar.get(todayKey) || {
       date: today,
       hasActivity: false,
       activityCount: 0,
       timeSpent: 0,
-      dateKey: todayKey
+      dateKey: todayKey,
     };
-    
+
     todayEntry.hasActivity = true;
     todayEntry.activityCount += activityCount;
     todayEntry.timeSpent += timeSpent;
-    
+
     this.activityCalendar.set(todayKey, todayEntry);
-    
+
     // Update streak
     this.updateStreak();
   }
@@ -447,13 +460,13 @@ class StreakTracker extends BaseComponent {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     const todayKey = this.formatDateKey(today);
     const yesterdayKey = this.formatDateKey(yesterday);
-    
+
     const todayActivity = this.activityCalendar.get(todayKey);
     const yesterdayActivity = this.activityCalendar.get(yesterdayKey);
-    
+
     if (todayActivity?.hasActivity) {
       if (yesterdayActivity?.hasActivity || this.currentStreak === 0) {
         this.currentStreak++;
@@ -464,11 +477,12 @@ class StreakTracker extends BaseComponent {
     } else {
       // If no activity today and it's past a reasonable time, reset streak
       const currentHour = new Date().getHours();
-      if (currentHour >= 22) { // After 10 PM
+      if (currentHour >= 22) {
+        // After 10 PM
         this.currentStreak = 0;
       }
     }
-    
+
     this.lastActiveDate = today.toISOString();
   }
 
@@ -478,10 +492,10 @@ class StreakTracker extends BaseComponent {
   }
 
   formatDate(date) {
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
-      weekday: 'short'
+      weekday: 'short',
     });
   }
 
@@ -503,10 +517,13 @@ class StreakTracker extends BaseComponent {
       </div>
       <div class="streak-mini-calendar">
         ${Array.from(this.activityCalendar.values())
-    .slice(-7)
-    .map(entry => `
+          .slice(-7)
+          .map(
+            entry => `
             <div class="mini-day ${this.getActivityLevel(entry)}"></div>
-          `).join('')}
+          `
+          )
+          .join('')}
       </div>
     `;
   }

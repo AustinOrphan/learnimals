@@ -10,12 +10,13 @@ import Card from '../components/ui/Card.js';
  */
 export function generateEducatorsHTML() {
   const subjects = config.subjects;
-  
-  return Object.keys(subjects).map(subjectKey => {
-    const subject = subjects[subjectKey];
-    const character = subject.character;
-    
-    return `
+
+  return Object.keys(subjects)
+    .map(subjectKey => {
+      const subject = subjects[subjectKey];
+      const character = subject.character;
+
+      return `
       <div class="team-member">
         <img
           src="${character.image}"
@@ -25,7 +26,8 @@ export function generateEducatorsHTML() {
         <p>${character.role}</p>
       </div>
     `;
-  }).join('');
+    })
+    .join('');
 }
 
 /**
@@ -34,17 +36,17 @@ export function generateEducatorsHTML() {
  */
 export function generateEducatorsCardData() {
   const subjects = config.subjects;
-  
+
   return Object.keys(subjects).map(subjectKey => {
     const subject = subjects[subjectKey];
     const character = subject.character;
-    
+
     return {
       title: `${character.name} the ${character.type}`,
       content: `<p>${character.role}</p>`,
       imageUrl: character.image,
       imageAlt: `${character.name} the ${character.type}`,
-      theme: 'educator'
+      theme: 'educator',
     };
   });
 }
@@ -60,7 +62,7 @@ export function loadEducators(containerId = 'team-grid', useCards = false) {
     console.warn(`Container with ID "${containerId}" not found`);
     return;
   }
-  
+
   if (useCards && typeof Card !== 'undefined') {
     // Use Card.js components
     const educatorData = generateEducatorsCardData();
@@ -81,7 +83,7 @@ export function loadEducators(containerId = 'team-grid', useCards = false) {
 export function getSubjects() {
   return Object.keys(config.subjects).map(key => ({
     key,
-    ...config.subjects[key]
+    ...config.subjects[key],
   }));
 }
 
@@ -99,5 +101,5 @@ export default {
   generateEducatorsCardData,
   loadEducators,
   getSubjects,
-  getSubject
+  getSubject,
 };

@@ -1,7 +1,7 @@
 // Basic particle confetti on hover for gamification
 const cards = document.querySelectorAll('.feature-card');
 
-cards.forEach((card) => {
+cards.forEach(card => {
   card.addEventListener('mouseenter', () => {
     createConfetti(card);
   });

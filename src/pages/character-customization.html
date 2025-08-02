@@ -1,279 +1,280 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Your Character - Learnimals</title>
-    
+
     <!-- Base Styles -->
-    <link rel="stylesheet" href="/src/styles/base/styles.css">
-    <link rel="stylesheet" href="/src/styles/components/components.css">
-    <link rel="stylesheet" href="/src/styles/components/base-component.css">
-    <link rel="stylesheet" href="/src/styles/components/CharacterRenderer.css">
-    <link rel="stylesheet" href="/src/styles/components/CharacterCustomizationWizard.css">
-    
+    <link rel="stylesheet" href="/src/styles/base/styles.css" />
+    <link rel="stylesheet" href="/src/styles/components/components.css" />
+    <link rel="stylesheet" href="/src/styles/components/base-component.css" />
+    <link rel="stylesheet" href="/src/styles/components/CharacterRenderer.css" />
+    <link rel="stylesheet" href="/src/styles/components/CharacterCustomizationWizard.css" />
+
     <!-- Page Styles -->
     <style>
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 2rem 1rem;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .page-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 2rem;
+      }
+
+      .page-header h1 {
+        font-size: 3rem;
+        margin: 0 0 0.5rem 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .page-header p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+        margin: 0;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        color: white;
+        font-size: 1.25rem;
+      }
+
+      .loading-overlay.hidden {
+        display: none;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 1rem;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .navigation-bar {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+      }
+
+      .nav-link {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+        font-weight: 500;
+      }
+
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .nav-link.active {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .error-container {
+        background: #ffebee;
+        border: 1px solid #ffcdd2;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        color: #c62828;
+        margin: 2rem 0;
+      }
+
+      .error-container h2 {
+        margin: 0 0 1rem 0;
+        color: #c62828;
+      }
+
+      @media (max-width: 768px) {
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 2rem 1rem;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          padding: 1rem 0.5rem;
         }
-        
-        .page-header {
-            text-align: center;
-            color: white;
-            margin-bottom: 2rem;
-        }
-        
+
         .page-header h1 {
-            font-size: 3rem;
-            margin: 0 0 0.5rem 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+          font-size: 2rem;
         }
-        
-        .page-header p {
-            font-size: 1.25rem;
-            opacity: 0.9;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            color: white;
-            font-size: 1.25rem;
-        }
-        
-        .loading-overlay.hidden {
-            display: none;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 1rem;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
+
         .navigation-bar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
+          flex-direction: column;
+          gap: 0.5rem;
         }
-        
-        .nav-link {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background 0.3s ease;
-            font-weight: 500;
-        }
-        
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .error-container {
-            background: #ffebee;
-            border: 1px solid #ffcdd2;
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            color: #c62828;
-            margin: 2rem 0;
-        }
-        
-        .error-container h2 {
-            margin: 0 0 1rem 0;
-            color: #c62828;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem 0.5rem;
-            }
-            
-            .page-header h1 {
-                font-size: 2rem;
-            }
-            
-            .navigation-bar {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loading-overlay">
-        <div class="loading-spinner"></div>
-        <div>Loading Character Customization...</div>
+      <div class="loading-spinner"></div>
+      <div>Loading Character Customization...</div>
     </div>
 
     <div class="container">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1>🎨 Create Your Character</h1>
-            <p>Design your perfect learning companion with our character customization wizard</p>
-        </div>
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>🎨 Create Your Character</h1>
+        <p>Design your perfect learning companion with our character customization wizard</p>
+      </div>
 
-        <!-- Navigation -->
-        <div class="navigation-bar">
-            <a href="/src/pages/index.html" class="nav-link">🏠 Home</a>
-            <a href="/src/features/subjects/shared/reading-enhanced.html" class="nav-link">📚 Reading</a>
-            <a href="/src/pages/character-customization.html" class="nav-link active">🎨 Create Character</a>
-            <a href="/test-character-system.html" class="nav-link">🧪 Test System</a>
-        </div>
+      <!-- Navigation -->
+      <div class="navigation-bar">
+        <a href="/src/pages/index.html" class="nav-link">🏠 Home</a>
+        <a href="/src/features/subjects/shared/reading-enhanced.html" class="nav-link">📚 Reading</a>
+        <a href="/src/pages/character-customization.html" class="nav-link active">🎨 Create Character</a>
+        <a href="/test-character-system.html" class="nav-link">🧪 Test System</a>
+      </div>
 
-        <!-- Character Customization Wizard Container -->
-        <div id="character-wizard-container">
-            <!-- Wizard will be rendered here -->
-        </div>
+      <!-- Character Customization Wizard Container -->
+      <div id="character-wizard-container">
+        <!-- Wizard will be rendered here -->
+      </div>
     </div>
 
     <!-- Scripts -->
     <script type="module">
-        import CharacterWizard from '/src/features/character-generation/ui/CharacterWizard.js';
-        import { createCharacter } from '/src/data/characterSchema.js';
+      import CharacterCustomizationWizard from '/src/components/ui/CharacterCustomizationWizard.js';
+      import { createCharacter } from '/src/data/characterSchema.js';
 
-        class CharacterCustomizationPage {
-            constructor() {
-                this.wizard = null;
-                this.loadingOverlay = document.getElementById('loading-overlay');
-                this.container = document.getElementById('character-wizard-container');
+      class CharacterCustomizationPage {
+        constructor() {
+          this.wizard = null;
+          this.loadingOverlay = document.getElementById('loading-overlay');
+          this.container = document.getElementById('character-wizard-container');
+        }
+
+        async initialize() {
+          try {
+            this.showLoading('Initializing character system...');
+
+            // Create new character with defaults
+            const newCharacter = createCharacter({
+              name: 'My Character',
+              species: {
+                primary: 'cat',
+                category: 'mammal',
+              },
+            });
+
+            this.showLoading('Loading customization wizard...');
+
+            // Create wizard instance
+            this.wizard = new CharacterCustomizationWizard({
+              characterData: newCharacter,
+              onSave: this.handleCharacterSaved.bind(this),
+              onError: this.handleError.bind(this),
+            });
+
+            // Render wizard
+            await this.wizard.render(this.container);
+
+            // Set up event listeners
+            this.setupEventListeners();
+
+            this.hideLoading();
+
+            console.log('✅ Character customization page loaded successfully');
+          } catch (error) {
+            console.error('❌ Failed to initialize character customization:', error);
+            this.showError(error.message);
+          }
+        }
+
+        setupEventListeners() {
+          // Listen for character save events
+          this.wizard.on('character:saved', data => {
+            this.handleCharacterSaved(data);
+          });
+
+          // Listen for wizard step changes
+          this.wizard.on('step:changed', data => {
+            console.log(`Wizard step changed to: ${data.step}`);
+          });
+
+          // Listen for character updates
+          this.wizard.on('character:updated', data => {
+            console.log('Character updated:', data);
+          });
+
+          // Handle browser back/forward
+          window.addEventListener('beforeunload', e => {
+            if (this.wizard && this.wizard.isDirty) {
+              e.preventDefault();
+              e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+              return e.returnValue;
             }
+          });
+        }
 
-            async initialize() {
-                try {
-                    this.showLoading('Initializing character system...');
-                    
-                    // Create new character with defaults
-                    const newCharacter = createCharacter({
-                        name: 'My Character',
-                        species: {
-                            primary: 'cat',
-                            category: 'mammal'
-                        }
-                    });
+        handleCharacterSaved(data) {
+          console.log('Character saved:', data);
 
-                    this.showLoading('Loading customization wizard...');
+          // Show success message
+          this.showSuccessMessage(`Character "${data.character.name}" saved successfully!`);
 
-                    // Create wizard instance
-                    this.wizard = new CharacterWizard({
-                        characterData: newCharacter,
-                        onSave: this.handleCharacterSaved.bind(this),
-                        onError: this.handleError.bind(this)
-                    });
-
-                    // Render wizard
-                    await this.wizard.render(this.container);
-
-                    // Set up event listeners
-                    this.setupEventListeners();
-
-                    this.hideLoading();
-                    
-                    console.log('✅ Character customization page loaded successfully');
-
-                } catch (error) {
-                    console.error('❌ Failed to initialize character customization:', error);
-                    this.showError(error.message);
-                }
+          // Optionally redirect to character gallery or demo page
+          setTimeout(() => {
+            const userChoice = confirm('Would you like to test your character on the reading page?');
+            if (userChoice) {
+              window.location.href = '/src/features/subjects/shared/reading-enhanced.html';
             }
+          }, 2000);
+        }
 
-            setupEventListeners() {
-                // Listen for character save events
-                this.wizard.on('character:saved', (data) => {
-                    this.handleCharacterSaved(data);
-                });
+        handleError(error) {
+          console.error('Character customization error:', error);
+          this.showError(error.message || 'An error occurred while customizing your character.');
+        }
 
-                // Listen for wizard step changes
-                this.wizard.on('step:changed', (data) => {
-                    console.log(`Wizard step changed to: ${data.step}`);
-                });
+        showLoading(message = 'Loading...') {
+          const loadingText = this.loadingOverlay.querySelector('div:last-child');
+          loadingText.textContent = message;
+          this.loadingOverlay.classList.remove('hidden');
+        }
 
-                // Listen for character updates
-                this.wizard.on('character:updated', (data) => {
-                    console.log('Character updated:', data);
-                });
+        hideLoading() {
+          this.loadingOverlay.classList.add('hidden');
+        }
 
-                // Handle browser back/forward
-                window.addEventListener('beforeunload', (e) => {
-                    if (this.wizard && this.wizard.isDirty) {
-                        e.preventDefault();
-                        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
-                        return e.returnValue;
-                    }
-                });
-            }
-
-            handleCharacterSaved(data) {
-                console.log('Character saved:', data);
-                
-                // Show success message
-                this.showSuccessMessage(`Character "${data.character.name}" saved successfully!`);
-                
-                // Optionally redirect to character gallery or demo page
-                setTimeout(() => {
-                    const userChoice = confirm('Would you like to test your character on the reading page?');
-                    if (userChoice) {
-                        window.location.href = '/src/features/subjects/shared/reading-enhanced.html';
-                    }
-                }, 2000);
-            }
-
-            handleError(error) {
-                console.error('Character customization error:', error);
-                this.showError(error.message || 'An error occurred while customizing your character.');
-            }
-
-            showLoading(message = 'Loading...') {
-                const loadingText = this.loadingOverlay.querySelector('div:last-child');
-                loadingText.textContent = message;
-                this.loadingOverlay.classList.remove('hidden');
-            }
-
-            hideLoading() {
-                this.loadingOverlay.classList.add('hidden');
-            }
-
-            showError(message) {
-                this.hideLoading();
-                this.container.innerHTML = `
+        showError(message) {
+          this.hideLoading();
+          this.container.innerHTML = `
                     <div class="error-container">
                         <h2>⚠️ Character Customization Error</h2>
                         <p>${message}</p>
@@ -300,12 +301,12 @@
                         </p>
                     </div>
                 `;
-            }
+        }
 
-            showSuccessMessage(message) {
-                // Create success toast
-                const toast = document.createElement('div');
-                toast.style.cssText = `
+        showSuccessMessage(message) {
+          // Create success toast
+          const toast = document.createElement('div');
+          toast.style.cssText = `
                     position: fixed;
                     top: 20px;
                     right: 20px;
@@ -317,40 +318,40 @@
                     z-index: 10000;
                     animation: slideIn 0.3s ease-out;
                 `;
-                
-                toast.innerHTML = `
+
+          toast.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="font-size: 1.25rem;">✅</span>
                         <span>${message}</span>
                     </div>
                 `;
-                
-                document.body.appendChild(toast);
-                
-                // Remove after 5 seconds
-                setTimeout(() => {
-                    toast.style.animation = 'slideOut 0.3s ease-in forwards';
-                    setTimeout(() => toast.remove(), 300);
-                }, 5000);
-            }
+
+          document.body.appendChild(toast);
+
+          // Remove after 5 seconds
+          setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease-in forwards';
+            setTimeout(() => toast.remove(), 300);
+          }, 5000);
         }
+      }
 
-        // Initialize the page
-        const page = new CharacterCustomizationPage();
-        
-        // Start initialization when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => page.initialize());
-        } else {
-            page.initialize();
-        }
+      // Initialize the page
+      const page = new CharacterCustomizationPage();
 
-        // Make page instance available globally for debugging
-        window.characterCustomizationPage = page;
+      // Start initialization when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => page.initialize());
+      } else {
+        page.initialize();
+      }
 
-        // Add CSS animations
-        const style = document.createElement('style');
-        style.textContent = `
+      // Make page instance available globally for debugging
+      window.characterCustomizationPage = page;
+
+      // Add CSS animations
+      const style = document.createElement('style');
+      style.textContent = `
             @keyframes slideIn {
                 from {
                     transform: translateX(100%);
@@ -373,7 +374,7 @@
                 }
             }
         `;
-        document.head.appendChild(style);
+      document.head.appendChild(style);
     </script>
-</body>
+  </body>
 </html>

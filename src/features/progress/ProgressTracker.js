@@ -7,11 +7,11 @@ export default class ProgressTracker {
   constructor() {
     this.progress = {};
   }
-  
+
   track(_data) {
     // Placeholder method
   }
-  
+
   getProgress() {
     return this.progress;
   }

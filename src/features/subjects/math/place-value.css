@@ -21,8 +21,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Place Value Manipulative Styles */
@@ -547,25 +551,25 @@
   .place-value-chart {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .pv-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .pv-result {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .number-value {
     font-size: 1.5rem;
   }
-  
+
   .blocks-container {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .pv-message {
     position: static;
     margin-bottom: 1rem;
@@ -576,15 +580,15 @@
   .place-value-chart {
     grid-template-columns: 1fr;
   }
-  
+
   .blocks-container {
     grid-template-columns: 1fr;
   }
-  
+
   .practice-buttons {
     grid-template-columns: 1fr;
   }
-  
+
   .place-value-manipulative {
     padding: 0.5rem;
   }

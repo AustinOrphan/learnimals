@@ -15,7 +15,7 @@ export const sentenceDatabase = {
       category: 'animals',
       hint: 'What is the cat doing?',
       explanation: 'A simple sentence with a subject (cat) and verb (sits).',
-      image: '🐱'
+      image: '🐱',
     },
     {
       id: 'easy-2',
@@ -24,7 +24,7 @@ export const sentenceDatabase = {
       category: 'animals',
       hint: 'How do dogs move?',
       explanation: 'Dogs are the subject, run is the action, fast describes how.',
-      image: '🐕'
+      image: '🐕',
     },
     {
       id: 'easy-3',
@@ -33,7 +33,7 @@ export const sentenceDatabase = {
       category: 'animals',
       hint: 'What special ability do birds have?',
       explanation: 'This sentence shows what birds are able to do.',
-      image: '🐦'
+      image: '🐦',
     },
     {
       id: 'easy-4',
@@ -42,7 +42,7 @@ export const sentenceDatabase = {
       category: 'school',
       hint: 'What do you enjoy reading?',
       explanation: 'This expresses a personal preference.',
-      image: '📚'
+      image: '📚',
     },
     {
       id: 'easy-5',
@@ -51,7 +51,7 @@ export const sentenceDatabase = {
       category: 'nature',
       hint: 'What does the sun do during the day?',
       explanation: 'The sun is the subject that performs the action of shining.',
-      image: '☀️'
+      image: '☀️',
     },
     {
       id: 'easy-6',
@@ -60,8 +60,8 @@ export const sentenceDatabase = {
       category: 'animals',
       hint: 'How do fish move in water?',
       explanation: 'Fish swim, and they do it well.',
-      image: '🐟'
-    }
+      image: '🐟',
+    },
   ],
 
   medium: [
@@ -72,7 +72,7 @@ export const sentenceDatabase = {
       category: 'animals',
       hint: 'What color is the bird, and where does it fly?',
       explanation: 'Adjective (red) describes the bird, adverb (high) describes how it flies.',
-      image: '🐦'
+      image: '🐦',
     },
     {
       id: 'medium-2',
@@ -81,7 +81,7 @@ export const sentenceDatabase = {
       category: 'family',
       hint: 'Where do children have fun?',
       explanation: 'The prepositional phrase "in the park" tells us where.',
-      image: '🏞️'
+      image: '🏞️',
     },
     {
       id: 'medium-3',
@@ -90,7 +90,7 @@ export const sentenceDatabase = {
       category: 'family',
       hint: 'Who makes tasty food?',
       explanation: 'Possessive (my) shows ownership, adjective (delicious) describes dinner.',
-      image: '🍽️'
+      image: '🍽️',
     },
     {
       id: 'medium-4',
@@ -99,7 +99,7 @@ export const sentenceDatabase = {
       category: 'nature',
       hint: 'How does the ocean move?',
       explanation: 'The ocean is blue and it waves in a gentle way.',
-      image: '🌊'
+      image: '🌊',
     },
     {
       id: 'medium-5',
@@ -108,7 +108,7 @@ export const sentenceDatabase = {
       category: 'school',
       hint: 'What do students do with books every day?',
       explanation: 'Students is the subject, daily tells us when they read.',
-      image: '📖'
+      image: '📖',
     },
     {
       id: 'medium-6',
@@ -117,66 +117,182 @@ export const sentenceDatabase = {
       category: 'emotions',
       hint: 'How do joyful kids express themselves?',
       explanation: 'Happy describes the children, loudly describes how they laugh.',
-      image: '😊'
-    }
+      image: '😊',
+    },
   ],
 
   hard: [
     {
       id: 'hard-1',
-      words: ['The', 'beautiful', 'butterfly', 'landed', 'gently', 'on', 'the', 'colorful', 'flower'],
-      correctOrder: ['The', 'beautiful', 'butterfly', 'landed', 'gently', 'on', 'the', 'colorful', 'flower'],
+      words: [
+        'The',
+        'beautiful',
+        'butterfly',
+        'landed',
+        'gently',
+        'on',
+        'the',
+        'colorful',
+        'flower',
+      ],
+      correctOrder: [
+        'The',
+        'beautiful',
+        'butterfly',
+        'landed',
+        'gently',
+        'on',
+        'the',
+        'colorful',
+        'flower',
+      ],
       category: 'nature',
       hint: 'Where did the pretty insect rest softly?',
-      explanation: 'Multiple adjectives (beautiful, colorful) and an adverb (gently) with a prepositional phrase.',
-      image: '🦋'
+      explanation:
+        'Multiple adjectives (beautiful, colorful) and an adverb (gently) with a prepositional phrase.',
+      image: '🦋',
     },
     {
       id: 'hard-2',
-      words: ['The', 'curious', 'young', 'scientist', 'carefully', 'examined', 'the', 'mysterious', 'specimen'],
-      correctOrder: ['The', 'curious', 'young', 'scientist', 'carefully', 'examined', 'the', 'mysterious', 'specimen'],
+      words: [
+        'The',
+        'curious',
+        'young',
+        'scientist',
+        'carefully',
+        'examined',
+        'the',
+        'mysterious',
+        'specimen',
+      ],
+      correctOrder: [
+        'The',
+        'curious',
+        'young',
+        'scientist',
+        'carefully',
+        'examined',
+        'the',
+        'mysterious',
+        'specimen',
+      ],
       category: 'science',
       hint: 'How did the researcher study the unknown sample?',
       explanation: 'Complex sentence with multiple adjectives and an adverb describing the action.',
-      image: '🔬'
+      image: '🔬',
     },
     {
       id: 'hard-3',
-      words: ['During', 'the', 'storm', 'the', 'brave', 'firefighters', 'rescued', 'families', 'safely'],
-      correctOrder: ['During', 'the', 'storm', 'the', 'brave', 'firefighters', 'rescued', 'families', 'safely'],
+      words: [
+        'During',
+        'the',
+        'storm',
+        'the',
+        'brave',
+        'firefighters',
+        'rescued',
+        'families',
+        'safely',
+      ],
+      correctOrder: [
+        'During',
+        'the',
+        'storm',
+        'the',
+        'brave',
+        'firefighters',
+        'rescued',
+        'families',
+        'safely',
+      ],
       category: 'community',
       hint: 'When did the heroes help people?',
-      explanation: 'Prepositional phrase at the beginning sets the time, adverb at the end describes how.',
-      image: '🚒'
+      explanation:
+        'Prepositional phrase at the beginning sets the time, adverb at the end describes how.',
+      image: '🚒',
     },
     {
       id: 'hard-4',
       words: ['The', 'ancient', 'oak', 'tree', 'has', 'stood', 'majestically', 'for', 'centuries'],
-      correctOrder: ['The', 'ancient', 'oak', 'tree', 'has', 'stood', 'majestically', 'for', 'centuries'],
+      correctOrder: [
+        'The',
+        'ancient',
+        'oak',
+        'tree',
+        'has',
+        'stood',
+        'majestically',
+        'for',
+        'centuries',
+      ],
       category: 'nature',
       hint: 'How long has the old tree been standing proudly?',
       explanation: 'Present perfect tense with adverb and prepositional phrase showing duration.',
-      image: '🌳'
+      image: '🌳',
     },
     {
       id: 'hard-5',
-      words: ['After', 'studying', 'hard', 'the', 'determined', 'student', 'passed', 'the', 'difficult', 'exam'],
-      correctOrder: ['After', 'studying', 'hard', 'the', 'determined', 'student', 'passed', 'the', 'difficult', 'exam'],
+      words: [
+        'After',
+        'studying',
+        'hard',
+        'the',
+        'determined',
+        'student',
+        'passed',
+        'the',
+        'difficult',
+        'exam',
+      ],
+      correctOrder: [
+        'After',
+        'studying',
+        'hard',
+        'the',
+        'determined',
+        'student',
+        'passed',
+        'the',
+        'difficult',
+        'exam',
+      ],
       category: 'school',
       hint: 'What happened when the student worked really hard?',
       explanation: 'Complex sentence starting with a dependent clause about cause and effect.',
-      image: '📝'
+      image: '📝',
     },
     {
       id: 'hard-6',
-      words: ['The', 'talented', 'orchestra', 'performed', 'beautifully', 'while', 'the', 'audience', 'listened', 'quietly'],
-      correctOrder: ['The', 'talented', 'orchestra', 'performed', 'beautifully', 'while', 'the', 'audience', 'listened', 'quietly'],
+      words: [
+        'The',
+        'talented',
+        'orchestra',
+        'performed',
+        'beautifully',
+        'while',
+        'the',
+        'audience',
+        'listened',
+        'quietly',
+      ],
+      correctOrder: [
+        'The',
+        'talented',
+        'orchestra',
+        'performed',
+        'beautifully',
+        'while',
+        'the',
+        'audience',
+        'listened',
+        'quietly',
+      ],
       category: 'arts',
       hint: 'What did the musicians and listeners do at the same time?',
       explanation: 'Compound sentence with two independent clauses connected by "while".',
-      image: '🎵'
-    }
-  ]
+      image: '🎵',
+    },
+  ],
 };
 
 /**
@@ -186,14 +302,14 @@ export const sentenceDatabase = {
  */
 export function getSentencesForDifficulty(difficulty) {
   switch (difficulty) {
-  case 'easy':
-    return [...sentenceDatabase.easy];
-  case 'medium':
-    return [...sentenceDatabase.easy, ...sentenceDatabase.medium];
-  case 'hard':
-    return [...sentenceDatabase.easy, ...sentenceDatabase.medium, ...sentenceDatabase.hard];
-  default:
-    return [...sentenceDatabase.easy];
+    case 'easy':
+      return [...sentenceDatabase.easy];
+    case 'medium':
+      return [...sentenceDatabase.easy, ...sentenceDatabase.medium];
+    case 'hard':
+      return [...sentenceDatabase.easy, ...sentenceDatabase.medium, ...sentenceDatabase.hard];
+    default:
+      return [...sentenceDatabase.easy];
   }
 }
 
@@ -218,7 +334,7 @@ export function getSentenceById(id) {
   const allSentences = [
     ...sentenceDatabase.easy,
     ...sentenceDatabase.medium,
-    ...sentenceDatabase.hard
+    ...sentenceDatabase.hard,
   ];
   return allSentences.find(sentence => sentence.id === id) || null;
 }
@@ -242,11 +358,11 @@ export function getSentencesByCategory(category, difficulty = 'easy') {
  */
 export function validateSentenceOrder(userOrder, correctOrder) {
   const isCorrect = JSON.stringify(userOrder) === JSON.stringify(correctOrder);
-  
+
   const result = {
     isCorrect,
     score: 0,
-    feedback: ''
+    feedback: '',
   };
 
   if (isCorrect) {
@@ -290,7 +406,7 @@ export const grammarCategories = {
   verbs: ['sits', 'run', 'fly', 'like', 'shines', 'swim', 'play', 'cooks'],
   adjectives: ['red', 'blue', 'beautiful', 'happy', 'delicious', 'ancient'],
   adverbs: ['fast', 'well', 'high', 'gently', 'carefully', 'quietly'],
-  prepositions: ['in', 'on', 'at', 'during', 'after', 'while']
+  prepositions: ['in', 'on', 'at', 'during', 'after', 'while'],
 };
 
 /**

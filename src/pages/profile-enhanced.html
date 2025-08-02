@@ -1,551 +1,556 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enhanced Profile - Learnimals</title>
-  
-  <!-- Core Styles -->
-  <link rel="stylesheet" href="../styles/base/reset.css">
-  <link rel="stylesheet" href="../styles/base/variables.css">
-  <link rel="stylesheet" href="../styles/base/typography.css">
-  <link rel="stylesheet" href="../styles/base/utilities.css">
-  
-  <!-- Component Styles -->
-  <link rel="stylesheet" href="../styles/components/navbar.css">
-  <link rel="stylesheet" href="../styles/components/card.css">
-  <link rel="stylesheet" href="../styles/components/modal.css">
-  <link rel="stylesheet" href="../styles/components/avatar.css">
-  <link rel="stylesheet" href="../styles/components/profileEnhanced.css">
-  <link rel="stylesheet" href="../styles/components/badges.css">
-  
-  <!-- Theme Styles -->
-  <link rel="stylesheet" href="../styles/themes/theme.css">
-</head>
-<body>
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="navbar-container">
-      <a href="index.html" class="navbar-brand">
-        <img src="../../public/images/logo.png" alt="Learnimals Logo">
-        Learnimals
-      </a>
-      <div class="navbar-links">
-        <a href="index.html">Home</a>
-        <a href="subjects.html">Subjects</a>
-        <a href="games.html">Games</a>
-        <a href="progress-dashboard.html">Progress</a>
-        <a href="profile-enhanced.html" class="active">Profile</a>
-      </div>
-    </div>
-  </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Profile - Learnimals</title>
 
-  <!-- Profile Header -->
-  <section class="profile-header">
-    <div class="profile-hero">
-      <div class="profile-avatar-section">
-        <div id="main-avatar"></div>
-        <button class="btn-edit-avatar">
-          <span class="edit-icon">✏️</span>
-          Customize Avatar
-        </button>
-      </div>
-      
-      <div class="profile-info">
-        <div class="profile-title-section">
-          <h1 class="profile-name">Loading...</h1>
-          <div class="profile-title">Learner</div>
-          <div class="profile-member-since">Member since <span id="member-date">--</span></div>
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="../styles/base/reset.css" />
+    <link rel="stylesheet" href="../styles/base/variables.css" />
+    <link rel="stylesheet" href="../styles/base/typography.css" />
+    <link rel="stylesheet" href="../styles/base/utilities.css" />
+
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="../styles/components/navbar.css" />
+    <link rel="stylesheet" href="../styles/components/card.css" />
+    <link rel="stylesheet" href="../styles/components/modal.css" />
+    <link rel="stylesheet" href="../styles/components/avatar.css" />
+    <link rel="stylesheet" href="../styles/components/profileEnhanced.css" />
+    <link rel="stylesheet" href="../styles/components/badges.css" />
+
+    <!-- Theme Styles -->
+    <link rel="stylesheet" href="../styles/themes/theme.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="navbar-container">
+        <a href="index.html" class="navbar-brand">
+          <img src="../../public/images/logo.png" alt="Learnimals Logo" />
+          Learnimals
+        </a>
+        <div class="navbar-links">
+          <a href="index.html">Home</a>
+          <a href="subjects.html">Subjects</a>
+          <a href="games.html">Games</a>
+          <a href="progress-dashboard.html">Progress</a>
+          <a href="profile-enhanced.html" class="active">Profile</a>
         </div>
-        
-        <div class="profile-level-section">
-          <div class="level-display">
-            <div class="level-number">1</div>
-            <div class="level-label">Level</div>
+      </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <section class="profile-header">
+      <div class="profile-hero">
+        <div class="profile-avatar-section">
+          <div id="main-avatar"></div>
+          <button class="btn-edit-avatar">
+            <span class="edit-icon">✏️</span>
+            Customize Avatar
+          </button>
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-title-section">
+            <h1 class="profile-name">Loading...</h1>
+            <div class="profile-title">Learner</div>
+            <div class="profile-member-since">Member since <span id="member-date">--</span></div>
           </div>
-          <div class="xp-progress">
-            <div class="xp-bar">
-              <div class="xp-fill" style="width: 0%"></div>
+
+          <div class="profile-level-section">
+            <div class="level-display">
+              <div class="level-number">1</div>
+              <div class="level-label">Level</div>
             </div>
-            <div class="xp-text">
-              <span class="current-xp">0</span> / <span class="next-level-xp">100</span> XP
+            <div class="xp-progress">
+              <div class="xp-bar">
+                <div class="xp-fill" style="width: 0%"></div>
+              </div>
+              <div class="xp-text"><span class="current-xp">0</span> / <span class="next-level-xp">100</span> XP</div>
+            </div>
+          </div>
+
+          <div class="profile-quick-stats">
+            <div class="quick-stat">
+              <div class="stat-value" id="total-score">0</div>
+              <div class="stat-label">Total Score</div>
+            </div>
+            <div class="quick-stat">
+              <div class="stat-value" id="games-played">0</div>
+              <div class="stat-label">Games Played</div>
+            </div>
+            <div class="quick-stat">
+              <div class="stat-value" id="achievements-earned">0</div>
+              <div class="stat-label">Achievements</div>
+            </div>
+            <div class="quick-stat">
+              <div class="stat-value" id="streak-days">0</div>
+              <div class="stat-label">Day Streak</div>
             </div>
           </div>
         </div>
-        
-        <div class="profile-quick-stats">
-          <div class="quick-stat">
-            <div class="stat-value" id="total-score">0</div>
-            <div class="stat-label">Total Score</div>
-          </div>
-          <div class="quick-stat">
-            <div class="stat-value" id="games-played">0</div>
-            <div class="stat-label">Games Played</div>
-          </div>
-          <div class="quick-stat">
-            <div class="stat-value" id="achievements-earned">0</div>
-            <div class="stat-label">Achievements</div>
-          </div>
-          <div class="quick-stat">
-            <div class="stat-value" id="streak-days">0</div>
-            <div class="stat-label">Day Streak</div>
-          </div>
+      </div>
+    </section>
+
+    <!-- Profile Navigation -->
+    <section class="profile-navigation">
+      <div class="container">
+        <div class="profile-tabs">
+          <button class="profile-tab active" data-tab="overview">
+            <span class="tab-icon">📊</span>
+            Overview
+          </button>
+          <button class="profile-tab" data-tab="achievements">
+            <span class="tab-icon">🏆</span>
+            Achievements
+          </button>
+          <button class="profile-tab" data-tab="statistics">
+            <span class="tab-icon">📈</span>
+            Statistics
+          </button>
+          <button class="profile-tab" data-tab="settings">
+            <span class="tab-icon">⚙️</span>
+            Settings
+          </button>
+          <button class="profile-tab" data-tab="friends">
+            <span class="tab-icon">👥</span>
+            Friends
+          </button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Profile Navigation -->
-  <section class="profile-navigation">
-    <div class="container">
-      <div class="profile-tabs">
-        <button class="profile-tab active" data-tab="overview">
-          <span class="tab-icon">📊</span>
-          Overview
-        </button>
-        <button class="profile-tab" data-tab="achievements">
-          <span class="tab-icon">🏆</span>
-          Achievements
-        </button>
-        <button class="profile-tab" data-tab="statistics">
-          <span class="tab-icon">📈</span>
-          Statistics
-        </button>
-        <button class="profile-tab" data-tab="settings">
-          <span class="tab-icon">⚙️</span>
-          Settings
-        </button>
-        <button class="profile-tab" data-tab="friends">
-          <span class="tab-icon">👥</span>
-          Friends
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Profile Content -->
-  <main class="profile-content">
-    <div class="container">
-      <!-- Overview Tab -->
-      <div id="tab-overview" class="tab-content active">
-        <div class="overview-grid">
-          <!-- Recent Activity -->
-          <div class="overview-section">
-            <h3>Recent Activity</h3>
-            <div id="recent-activity" class="activity-list">
-              <div class="activity-item">
-                <div class="activity-icon">🎮</div>
-                <div class="activity-details">
-                  <div class="activity-title">No recent activity</div>
-                  <div class="activity-time">Start playing to see your progress!</div>
+    <!-- Profile Content -->
+    <main class="profile-content">
+      <div class="container">
+        <!-- Overview Tab -->
+        <div id="tab-overview" class="tab-content active">
+          <div class="overview-grid">
+            <!-- Recent Activity -->
+            <div class="overview-section">
+              <h3>Recent Activity</h3>
+              <div id="recent-activity" class="activity-list">
+                <div class="activity-item">
+                  <div class="activity-icon">🎮</div>
+                  <div class="activity-details">
+                    <div class="activity-title">No recent activity</div>
+                    <div class="activity-time">Start playing to see your progress!</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Achievement Showcase -->
-          <div class="overview-section">
-            <h3>Latest Achievements</h3>
-            <div id="latest-achievements" class="achievement-showcase">
-              <div class="no-achievements">
-                <div class="empty-state-icon">🏆</div>
-                <p>No achievements yet</p>
-                <small>Play games to unlock achievements!</small>
+            <!-- Achievement Showcase -->
+            <div class="overview-section">
+              <h3>Latest Achievements</h3>
+              <div id="latest-achievements" class="achievement-showcase">
+                <div class="no-achievements">
+                  <div class="empty-state-icon">🏆</div>
+                  <p>No achievements yet</p>
+                  <small>Play games to unlock achievements!</small>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Progress Overview -->
-          <div class="overview-section">
-            <h3>Learning Progress</h3>
-            <div id="progress-overview" class="progress-cards">
-              <!-- Progress cards will be populated by JavaScript -->
+            <!-- Progress Overview -->
+            <div class="overview-section">
+              <h3>Learning Progress</h3>
+              <div id="progress-overview" class="progress-cards">
+                <!-- Progress cards will be populated by JavaScript -->
+              </div>
             </div>
-          </div>
 
-          <!-- Next Goals -->
-          <div class="overview-section">
-            <h3>Next Goals</h3>
-            <div id="next-goals" class="goals-list">
-              <div class="goal-item">
-                <div class="goal-icon">🎯</div>
-                <div class="goal-content">
-                  <div class="goal-title">Reach Level 5</div>
-                  <div class="goal-progress">
-                    <div class="goal-bar">
-                      <div class="goal-fill" style="width: 20%"></div>
+            <!-- Next Goals -->
+            <div class="overview-section">
+              <h3>Next Goals</h3>
+              <div id="next-goals" class="goals-list">
+                <div class="goal-item">
+                  <div class="goal-icon">🎯</div>
+                  <div class="goal-content">
+                    <div class="goal-title">Reach Level 5</div>
+                    <div class="goal-progress">
+                      <div class="goal-bar">
+                        <div class="goal-fill" style="width: 20%"></div>
+                      </div>
+                      <span class="goal-text">80 XP to go</span>
                     </div>
-                    <span class="goal-text">80 XP to go</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Achievements Tab -->
-      <div id="tab-achievements" class="tab-content">
-        <div class="achievements-header">
-          <div class="achievements-stats">
-            <div class="achievement-stat">
-              <div class="stat-number" id="achievements-unlocked">0</div>
-              <div class="stat-description">Unlocked</div>
-            </div>
-            <div class="achievement-stat">
-              <div class="stat-number" id="achievements-total">0</div>
-              <div class="stat-description">Total</div>
-            </div>
-            <div class="achievement-stat">
-              <div class="stat-number" id="achievement-points">0</div>
-              <div class="stat-description">Points</div>
-            </div>
-          </div>
-          
-          <div class="achievements-filters">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="unlocked">Unlocked</button>
-            <button class="filter-btn" data-filter="locked">Locked</button>
-            <button class="filter-btn" data-filter="rare">Rare+</button>
-          </div>
-        </div>
-        
-        <div id="achievements-grid" class="achievements-grid">
-          <!-- Achievement badges will be populated by JavaScript -->
-        </div>
-      </div>
-
-      <!-- Statistics Tab -->
-      <div id="tab-statistics" class="tab-content">
-        <div class="statistics-sections">
-          <div class="stats-section">
-            <h3>Overall Statistics</h3>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-icon">⏱️</div>
-                <div class="stat-info">
-                  <div class="stat-value" id="total-time">0m</div>
-                  <div class="stat-label">Total Play Time</div>
-                </div>
+        <!-- Achievements Tab -->
+        <div id="tab-achievements" class="tab-content">
+          <div class="achievements-header">
+            <div class="achievements-stats">
+              <div class="achievement-stat">
+                <div class="stat-number" id="achievements-unlocked">0</div>
+                <div class="stat-description">Unlocked</div>
               </div>
-              <div class="stat-card">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-info">
-                  <div class="stat-value" id="overall-accuracy">0%</div>
-                  <div class="stat-label">Overall Accuracy</div>
-                </div>
+              <div class="achievement-stat">
+                <div class="stat-number" id="achievements-total">0</div>
+                <div class="stat-description">Total</div>
               </div>
-              <div class="stat-card">
-                <div class="stat-icon">🔥</div>
-                <div class="stat-info">
-                  <div class="stat-value" id="longest-streak">0</div>
-                  <div class="stat-label">Longest Streak</div>
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-icon">📚</div>
-                <div class="stat-info">
-                  <div class="stat-value" id="subjects-explored">0</div>
-                  <div class="stat-label">Subjects Explored</div>
-                </div>
+              <div class="achievement-stat">
+                <div class="stat-number" id="achievement-points">0</div>
+                <div class="stat-description">Points</div>
               </div>
             </div>
+
+            <div class="achievements-filters">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="unlocked">Unlocked</button>
+              <button class="filter-btn" data-filter="locked">Locked</button>
+              <button class="filter-btn" data-filter="rare">Rare+</button>
+            </div>
           </div>
 
-          <div class="stats-section">
-            <h3>Game Performance</h3>
-            <div id="game-stats" class="game-stats-grid">
-              <!-- Game statistics will be populated by JavaScript -->
+          <div id="achievements-grid" class="achievements-grid">
+            <!-- Achievement badges will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Statistics Tab -->
+        <div id="tab-statistics" class="tab-content">
+          <div class="statistics-sections">
+            <div class="stats-section">
+              <h3>Overall Statistics</h3>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-icon">⏱️</div>
+                  <div class="stat-info">
+                    <div class="stat-value" id="total-time">0m</div>
+                    <div class="stat-label">Total Play Time</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">🎯</div>
+                  <div class="stat-info">
+                    <div class="stat-value" id="overall-accuracy">0%</div>
+                    <div class="stat-label">Overall Accuracy</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">🔥</div>
+                  <div class="stat-info">
+                    <div class="stat-value" id="longest-streak">0</div>
+                    <div class="stat-label">Longest Streak</div>
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-icon">📚</div>
+                  <div class="stat-info">
+                    <div class="stat-value" id="subjects-explored">0</div>
+                    <div class="stat-label">Subjects Explored</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-section">
+              <h3>Game Performance</h3>
+              <div id="game-stats" class="game-stats-grid">
+                <!-- Game statistics will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="tab-settings" class="tab-content">
+          <div class="settings-sections">
+            <div class="settings-section">
+              <h3>Profile Settings</h3>
+              <div class="setting-group">
+                <label for="profile-name">Display Name</label>
+                <input type="text" id="profile-name" class="setting-input" placeholder="Enter your name" />
+              </div>
+              <div class="setting-group">
+                <label for="profile-bio">Bio</label>
+                <textarea
+                  id="profile-bio"
+                  class="setting-input"
+                  placeholder="Tell us about yourself"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="setting-group">
+                <label for="favorite-subject">Favorite Subject</label>
+                <select id="favorite-subject" class="setting-input">
+                  <option value="">Select a subject</option>
+                  <option value="math">Math</option>
+                  <option value="science">Science</option>
+                  <option value="reading">Reading</option>
+                  <option value="art">Art</option>
+                  <option value="coding">Coding</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Preferences</h3>
+              <div class="setting-group">
+                <label class="setting-checkbox">
+                  <input type="checkbox" id="sound-enabled" />
+                  <span class="checkmark"></span>
+                  Enable Sound Effects
+                </label>
+              </div>
+              <div class="setting-group">
+                <label class="setting-checkbox">
+                  <input type="checkbox" id="hints-enabled" />
+                  <span class="checkmark"></span>
+                  Show Hints in Games
+                </label>
+              </div>
+              <div class="setting-group">
+                <label class="setting-checkbox">
+                  <input type="checkbox" id="animations-enabled" />
+                  <span class="checkmark"></span>
+                  Enable Animations
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Privacy</h3>
+              <div class="setting-group">
+                <label class="setting-checkbox">
+                  <input type="checkbox" id="show-profile" />
+                  <span class="checkmark"></span>
+                  Show Profile to Friends
+                </label>
+              </div>
+              <div class="setting-group">
+                <label class="setting-checkbox">
+                  <input type="checkbox" id="show-achievements" />
+                  <span class="checkmark"></span>
+                  Show Achievements
+                </label>
+              </div>
+              <div class="setting-group">
+                <label class="setting-checkbox">
+                  <input type="checkbox" id="allow-friend-requests" />
+                  <span class="checkmark"></span>
+                  Allow Friend Requests
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <h3>Data</h3>
+              <div class="setting-group">
+                <button class="btn btn-secondary" id="export-profile">Export Profile Data</button>
+                <small>Download your profile and progress data</small>
+              </div>
+              <div class="setting-group">
+                <button class="btn btn-secondary" id="import-profile">Import Profile Data</button>
+                <small>Restore from a backup file</small>
+              </div>
+              <div class="setting-group danger-zone">
+                <button class="btn btn-danger" id="reset-progress">Reset All Progress</button>
+                <small>⚠️ This cannot be undone</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Friends Tab -->
+        <div id="tab-friends" class="tab-content">
+          <div class="friends-header">
+            <div class="friend-code-section">
+              <h3>Your Friend Code</h3>
+              <div class="friend-code-display">
+                <code id="my-friend-code">ABCD-1234</code>
+                <button class="btn-copy" id="copy-friend-code">📋</button>
+              </div>
+              <small>Share this code with friends to connect</small>
+            </div>
+
+            <div class="add-friend-section">
+              <h3>Add Friend</h3>
+              <div class="add-friend-form">
+                <input type="text" id="friend-code-input" placeholder="Enter friend code" maxlength="9" />
+                <button class="btn btn-primary" id="add-friend-btn">Add Friend</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="friends-list-section">
+            <h3>Friends (<span id="friends-count">0</span>)</h3>
+            <div id="friends-list" class="friends-list">
+              <div class="no-friends">
+                <div class="empty-state-icon">👥</div>
+                <p>No friends yet</p>
+                <small>Add friends to compare progress and achievements!</small>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </main>
 
-      <!-- Settings Tab -->
-      <div id="tab-settings" class="tab-content">
-        <div class="settings-sections">
-          <div class="settings-section">
-            <h3>Profile Settings</h3>
-            <div class="setting-group">
-              <label for="profile-name">Display Name</label>
-              <input type="text" id="profile-name" class="setting-input" placeholder="Enter your name">
-            </div>
-            <div class="setting-group">
-              <label for="profile-bio">Bio</label>
-              <textarea id="profile-bio" class="setting-input" placeholder="Tell us about yourself" rows="3"></textarea>
-            </div>
-            <div class="setting-group">
-              <label for="favorite-subject">Favorite Subject</label>
-              <select id="favorite-subject" class="setting-input">
-                <option value="">Select a subject</option>
-                <option value="math">Math</option>
-                <option value="science">Science</option>
-                <option value="reading">Reading</option>
-                <option value="art">Art</option>
-                <option value="coding">Coding</option>
-              </select>
-            </div>
-          </div>
+    <!-- Scripts -->
+    <script type="module">
+      import Avatar from '../components/profile/Avatar.js';
+      import AvatarBuilder from '../components/profile/AvatarBuilder.js';
+      import Modal from '../components/ui/Modal.js';
+      import profileManager from '../utils/profileManager.js';
+      import { getProgressTracker } from '../utils/progressIntegration.js';
+      import { getBadgeByAchievementId, createBadgeElement } from '../utils/badgeDefinitions.js';
 
-          <div class="settings-section">
-            <h3>Preferences</h3>
-            <div class="setting-group">
-              <label class="setting-checkbox">
-                <input type="checkbox" id="sound-enabled">
-                <span class="checkmark"></span>
-                Enable Sound Effects
-              </label>
-            </div>
-            <div class="setting-group">
-              <label class="setting-checkbox">
-                <input type="checkbox" id="hints-enabled">
-                <span class="checkmark"></span>
-                Show Hints in Games
-              </label>
-            </div>
-            <div class="setting-group">
-              <label class="setting-checkbox">
-                <input type="checkbox" id="animations-enabled">
-                <span class="checkmark"></span>
-                Enable Animations
-              </label>
-            </div>
-          </div>
+      class EnhancedProfilePage {
+        constructor() {
+          this.profileManager = profileManager;
+          this.progressTracker = getProgressTracker();
+          this.currentProfile = null;
+          this.mainAvatar = null;
+          this.currentTab = 'overview';
 
-          <div class="settings-section">
-            <h3>Privacy</h3>
-            <div class="setting-group">
-              <label class="setting-checkbox">
-                <input type="checkbox" id="show-profile">
-                <span class="checkmark"></span>
-                Show Profile to Friends
-              </label>
-            </div>
-            <div class="setting-group">
-              <label class="setting-checkbox">
-                <input type="checkbox" id="show-achievements">
-                <span class="checkmark"></span>
-                Show Achievements
-              </label>
-            </div>
-            <div class="setting-group">
-              <label class="setting-checkbox">
-                <input type="checkbox" id="allow-friend-requests">
-                <span class="checkmark"></span>
-                Allow Friend Requests
-              </label>
-            </div>
-          </div>
-
-          <div class="settings-section">
-            <h3>Data</h3>
-            <div class="setting-group">
-              <button class="btn btn-secondary" id="export-profile">Export Profile Data</button>
-              <small>Download your profile and progress data</small>
-            </div>
-            <div class="setting-group">
-              <button class="btn btn-secondary" id="import-profile">Import Profile Data</button>
-              <small>Restore from a backup file</small>
-            </div>
-            <div class="setting-group danger-zone">
-              <button class="btn btn-danger" id="reset-progress">Reset All Progress</button>
-              <small>⚠️ This cannot be undone</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Friends Tab -->
-      <div id="tab-friends" class="tab-content">
-        <div class="friends-header">
-          <div class="friend-code-section">
-            <h3>Your Friend Code</h3>
-            <div class="friend-code-display">
-              <code id="my-friend-code">ABCD-1234</code>
-              <button class="btn-copy" id="copy-friend-code">📋</button>
-            </div>
-            <small>Share this code with friends to connect</small>
-          </div>
-          
-          <div class="add-friend-section">
-            <h3>Add Friend</h3>
-            <div class="add-friend-form">
-              <input type="text" id="friend-code-input" placeholder="Enter friend code" maxlength="9">
-              <button class="btn btn-primary" id="add-friend-btn">Add Friend</button>
-            </div>
-          </div>
-        </div>
-        
-        <div class="friends-list-section">
-          <h3>Friends (<span id="friends-count">0</span>)</h3>
-          <div id="friends-list" class="friends-list">
-            <div class="no-friends">
-              <div class="empty-state-icon">👥</div>
-              <p>No friends yet</p>
-              <small>Add friends to compare progress and achievements!</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Scripts -->
-  <script type="module">
-    import Avatar from '../components/profile/Avatar.js';
-    import AvatarBuilder from '../components/profile/AvatarBuilder.js';
-    import Modal from '../components/ui/Modal.js';
-    import profileManager from '../utils/profileManager.js';
-    import { getProgressTracker } from '../utils/progressIntegration.js';
-    import { getBadgeByAchievementId, createBadgeElement } from '../utils/badgeDefinitions.js';
-
-    class EnhancedProfilePage {
-      constructor() {
-        this.profileManager = profileManager;
-        this.progressTracker = getProgressTracker();
-        this.currentProfile = null;
-        this.mainAvatar = null;
-        this.currentTab = 'overview';
-        
-        this.init();
-      }
-      
-      init() {
-        this.loadProfile();
-        this.setupEventListeners();
-        this.setupAvatar();
-      }
-      
-      loadProfile() {
-        this.currentProfile = this.profileManager.getActiveProfile();
-        if (!this.currentProfile) {
-          // Redirect to profile creation or login
-          window.location.href = 'profile.html';
-          return;
+          this.init();
         }
-        
-        this.updateProfileDisplay();
-        this.loadTabContent(this.currentTab);
-      }
-      
-      setupEventListeners() {
-        // Tab switching
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-          tab.addEventListener('click', () => {
-            const tabId = tab.dataset.tab;
-            this.switchTab(tabId);
+
+        init() {
+          this.loadProfile();
+          this.setupEventListeners();
+          this.setupAvatar();
+        }
+
+        loadProfile() {
+          this.currentProfile = this.profileManager.getActiveProfile();
+          if (!this.currentProfile) {
+            // Redirect to profile creation or login
+            window.location.href = 'profile.html';
+            return;
+          }
+
+          this.updateProfileDisplay();
+          this.loadTabContent(this.currentTab);
+        }
+
+        setupEventListeners() {
+          // Tab switching
+          document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+              const tabId = tab.dataset.tab;
+              this.switchTab(tabId);
+            });
           });
-        });
-        
-        // Avatar editing
-        document.querySelector('.btn-edit-avatar').addEventListener('click', () => {
-          this.openAvatarBuilder();
-        });
-        
-        // Settings
-        this.setupSettingsEventListeners();
-        
-        // Friends
-        this.setupFriendsEventListeners();
-      }
-      
-      setupAvatar() {
-        this.mainAvatar = new Avatar('main-avatar', {
-          size: 150,
-          showName: false,
-          showLevel: false
-        });
-        
-        this.mainAvatar.updateFromProfile(this.currentProfile);
-      }
-      
-      updateProfileDisplay() {
-        // Update header info
-        document.querySelector('.profile-name').textContent = this.currentProfile.name;
-        document.querySelector('.profile-title').textContent = this.currentProfile.selectedTitle || 'Learner';
-        document.getElementById('member-date').textContent = new Date(this.currentProfile.createdAt).toLocaleDateString();
-        
-        // Update level and XP
-        const levelDisplay = document.querySelector('.level-number');
-        levelDisplay.textContent = this.currentProfile.level;
-        
-        const currentXP = this.currentProfile.xp;
-        const nextLevelXP = this.calculateXPForNextLevel(this.currentProfile.level);
-        const currentLevelXP = this.calculateXPForLevel(this.currentProfile.level);
-        const xpIntoLevel = currentXP - currentLevelXP;
-        const xpForLevel = nextLevelXP - currentLevelXP;
-        const progress = (xpIntoLevel / xpForLevel) * 100;
-        
-        document.querySelector('.xp-fill').style.width = `${progress}%`;
-        document.querySelector('.current-xp').textContent = xpIntoLevel;
-        document.querySelector('.next-level-xp').textContent = xpForLevel;
-        
-        // Update quick stats
-        const progressSummary = this.progressTracker.getProgressSummary();
-        document.getElementById('total-score').textContent = progressSummary.crossGame.totalScore.toLocaleString();
-        document.getElementById('games-played').textContent = progressSummary.crossGame.gamesPlayed.length;
-        document.getElementById('achievements-earned').textContent = progressSummary.achievements.unlocked;
-        document.getElementById('streak-days').textContent = this.currentProfile.streakDays;
-      }
-      
-      switchTab(tabId) {
-        this.currentTab = tabId;
-        
-        // Update tab buttons
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-          tab.classList.toggle('active', tab.dataset.tab === tabId);
-        });
-        
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-          content.classList.toggle('active', content.id === `tab-${tabId}`);
-        });
-        
-        // Load content if needed
-        this.loadTabContent(tabId);
-      }
-      
-      loadTabContent(tabId) {
-        switch (tabId) {
-          case 'overview':
-            this.loadOverviewContent();
-            break;
-          case 'achievements':
-            this.loadAchievementsContent();
-            break;
-          case 'statistics':
-            this.loadStatisticsContent();
-            break;
-          case 'settings':
-            this.loadSettingsContent();
-            break;
-          case 'friends':
-            this.loadFriendsContent();
-            break;
+
+          // Avatar editing
+          document.querySelector('.btn-edit-avatar').addEventListener('click', () => {
+            this.openAvatarBuilder();
+          });
+
+          // Settings
+          this.setupSettingsEventListeners();
+
+          // Friends
+          this.setupFriendsEventListeners();
         }
-      }
-      
-      loadOverviewContent() {
-        // Load recent activity
-        this.loadRecentActivity();
-        
-        // Load latest achievements
-        this.loadLatestAchievements();
-        
-        // Load progress overview
-        this.loadProgressOverview();
-        
-        // Load next goals
-        this.loadNextGoals();
-      }
-      
-      loadRecentActivity() {
-        const container = document.getElementById('recent-activity');
-        const progressSummary = this.progressTracker.getProgressSummary();
-        const recentActivity = progressSummary.recentActivity || [];
-        
-        if (recentActivity.length === 0) {
-          container.innerHTML = `
+
+        setupAvatar() {
+          this.mainAvatar = new Avatar('main-avatar', {
+            size: 150,
+            showName: false,
+            showLevel: false,
+          });
+
+          this.mainAvatar.updateFromProfile(this.currentProfile);
+        }
+
+        updateProfileDisplay() {
+          // Update header info
+          document.querySelector('.profile-name').textContent = this.currentProfile.name;
+          document.querySelector('.profile-title').textContent = this.currentProfile.selectedTitle || 'Learner';
+          document.getElementById('member-date').textContent = new Date(
+            this.currentProfile.createdAt
+          ).toLocaleDateString();
+
+          // Update level and XP
+          const levelDisplay = document.querySelector('.level-number');
+          levelDisplay.textContent = this.currentProfile.level;
+
+          const currentXP = this.currentProfile.xp;
+          const nextLevelXP = this.calculateXPForNextLevel(this.currentProfile.level);
+          const currentLevelXP = this.calculateXPForLevel(this.currentProfile.level);
+          const xpIntoLevel = currentXP - currentLevelXP;
+          const xpForLevel = nextLevelXP - currentLevelXP;
+          const progress = (xpIntoLevel / xpForLevel) * 100;
+
+          document.querySelector('.xp-fill').style.width = `${progress}%`;
+          document.querySelector('.current-xp').textContent = xpIntoLevel;
+          document.querySelector('.next-level-xp').textContent = xpForLevel;
+
+          // Update quick stats
+          const progressSummary = this.progressTracker.getProgressSummary();
+          document.getElementById('total-score').textContent = progressSummary.crossGame.totalScore.toLocaleString();
+          document.getElementById('games-played').textContent = progressSummary.crossGame.gamesPlayed.length;
+          document.getElementById('achievements-earned').textContent = progressSummary.achievements.unlocked;
+          document.getElementById('streak-days').textContent = this.currentProfile.streakDays;
+        }
+
+        switchTab(tabId) {
+          this.currentTab = tabId;
+
+          // Update tab buttons
+          document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.tab === tabId);
+          });
+
+          // Update tab content
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.toggle('active', content.id === `tab-${tabId}`);
+          });
+
+          // Load content if needed
+          this.loadTabContent(tabId);
+        }
+
+        loadTabContent(tabId) {
+          switch (tabId) {
+            case 'overview':
+              this.loadOverviewContent();
+              break;
+            case 'achievements':
+              this.loadAchievementsContent();
+              break;
+            case 'statistics':
+              this.loadStatisticsContent();
+              break;
+            case 'settings':
+              this.loadSettingsContent();
+              break;
+            case 'friends':
+              this.loadFriendsContent();
+              break;
+          }
+        }
+
+        loadOverviewContent() {
+          // Load recent activity
+          this.loadRecentActivity();
+
+          // Load latest achievements
+          this.loadLatestAchievements();
+
+          // Load progress overview
+          this.loadProgressOverview();
+
+          // Load next goals
+          this.loadNextGoals();
+        }
+
+        loadRecentActivity() {
+          const container = document.getElementById('recent-activity');
+          const progressSummary = this.progressTracker.getProgressSummary();
+          const recentActivity = progressSummary.recentActivity || [];
+
+          if (recentActivity.length === 0) {
+            container.innerHTML = `
             <div class="activity-item">
               <div class="activity-icon">🎮</div>
               <div class="activity-details">
@@ -554,10 +559,13 @@
               </div>
             </div>
           `;
-          return;
-        }
-        
-        container.innerHTML = recentActivity.slice(0, 5).map(activity => `
+            return;
+          }
+
+          container.innerHTML = recentActivity
+            .slice(0, 5)
+            .map(
+              activity => `
           <div class="activity-item">
             <div class="activity-icon">${this.getActivityIcon(activity.gameType)}</div>
             <div class="activity-details">
@@ -565,200 +573,211 @@
               <div class="activity-time">${this.formatTimeAgo(activity.timestamp)}</div>
             </div>
           </div>
-        `).join('');
-      }
-      
-      loadLatestAchievements() {
-        const container = document.getElementById('latest-achievements');
-        const progressSummary = this.progressTracker.getProgressSummary();
-        const recentAchievements = progressSummary.achievements.recent || [];
-        
-        if (recentAchievements.length === 0) {
-          container.innerHTML = `
+        `
+            )
+            .join('');
+        }
+
+        loadLatestAchievements() {
+          const container = document.getElementById('latest-achievements');
+          const progressSummary = this.progressTracker.getProgressSummary();
+          const recentAchievements = progressSummary.achievements.recent || [];
+
+          if (recentAchievements.length === 0) {
+            container.innerHTML = `
             <div class="no-achievements">
               <div class="empty-state-icon">🏆</div>
               <p>No achievements yet</p>
               <small>Play games to unlock achievements!</small>
             </div>
           `;
-          return;
-        }
-        
-        container.innerHTML = recentAchievements.slice(0, 3).map(achievement => `
+            return;
+          }
+
+          container.innerHTML = recentAchievements
+            .slice(0, 3)
+            .map(
+              achievement => `
           <div class="achievement-preview">
             <div class="achievement-icon">${achievement.icon}</div>
             <div class="achievement-name">${achievement.name}</div>
             <div class="achievement-date">${this.formatTimeAgo(achievement.dateUnlocked)}</div>
           </div>
-        `).join('');
-      }
-      
-      // Additional methods for other content loading...
-      // (Implementation continues with other tab content loaders)
-      
-      openAvatarBuilder() {
-        AvatarBuilder.showModal(this.currentProfile, (avatarConfig) => {
-          // Update profile with new avatar
-          this.profileManager.updateProfile(this.currentProfile.id, { avatar: avatarConfig });
-          this.currentProfile.avatar = avatarConfig;
-          
-          // Update display
-          this.mainAvatar.updateFromProfile(this.currentProfile);
-        });
-      }
-      
-      // Helper methods
-      calculateXPForLevel(level) {
-        return level > 1 ? 100 * Math.pow(level - 1, 2) : 0;
-      }
-      
-      calculateXPForNextLevel(level) {
-        return 100 * Math.pow(level, 2);
-      }
-      
-      getActivityIcon(gameType) {
-        const icons = {
-          'word-scramble': '📝',
-          'number-line-jump': '🦘',
-          'element-match': '🧪',
-          'sentence-builder': '✍️',
-          'color-palette': '🎨'
-        };
-        return icons[gameType] || '🎮';
-      }
-      
-      formatTimeAgo(timestamp) {
-        const seconds = Math.floor((Date.now() - new Date(timestamp)) / 1000);
-        
-        if (seconds < 60) return 'Just now';
-        if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
-        if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
-        
-        return new Date(timestamp).toLocaleDateString();
-      }
-      
-      setupSettingsEventListeners() {
-        // Profile settings
-        document.getElementById('profile-name').addEventListener('input', (e) => {
-          this.updateProfileSetting('name', e.target.value);
-        });
-        
-        document.getElementById('profile-bio').addEventListener('input', (e) => {
-          this.updateProfileSetting('bio', e.target.value);
-        });
-        
-        document.getElementById('favorite-subject').addEventListener('change', (e) => {
-          this.updateProfileSetting('favoriteSubject', e.target.value);
-        });
-        
-        // Preferences
-        document.getElementById('sound-enabled').addEventListener('change', (e) => {
-          this.updatePreference('soundEnabled', e.target.checked);
-        });
-        
-        document.getElementById('hints-enabled').addEventListener('change', (e) => {
-          this.updatePreference('hintsEnabled', e.target.checked);
-        });
-        
-        document.getElementById('animations-enabled').addEventListener('change', (e) => {
-          this.updatePreference('animationsEnabled', e.target.checked);
-        });
-        
-        // Privacy settings
-        document.getElementById('show-profile').addEventListener('change', (e) => {
-          this.updatePrivacySetting('showProfile', e.target.checked);
-        });
-        
-        document.getElementById('show-achievements').addEventListener('change', (e) => {
-          this.updatePrivacySetting('showAchievements', e.target.checked);
-        });
-        
-        document.getElementById('allow-friend-requests').addEventListener('change', (e) => {
-          this.updatePrivacySetting('allowFriendRequests', e.target.checked);
-        });
-        
-        // Data actions
-        document.getElementById('export-profile').addEventListener('click', () => {
-          this.exportProfile();
-        });
-        
-        document.getElementById('import-profile').addEventListener('click', () => {
-          this.importProfile();
-        });
-        
-        document.getElementById('reset-progress').addEventListener('click', () => {
-          this.resetProgress();
-        });
-      }
-      
-      setupFriendsEventListeners() {
-        // Copy friend code
-        document.getElementById('copy-friend-code').addEventListener('click', () => {
-          const friendCode = this.currentProfile.friendCode;
-          navigator.clipboard.writeText(friendCode).then(() => {
-            this.showToast('Friend code copied to clipboard!');
+        `
+            )
+            .join('');
+        }
+
+        // Additional methods for other content loading...
+        // (Implementation continues with other tab content loaders)
+
+        openAvatarBuilder() {
+          AvatarBuilder.showModal(this.currentProfile, avatarConfig => {
+            // Update profile with new avatar
+            this.profileManager.updateProfile(this.currentProfile.id, { avatar: avatarConfig });
+            this.currentProfile.avatar = avatarConfig;
+
+            // Update display
+            this.mainAvatar.updateFromProfile(this.currentProfile);
           });
-        });
-        
-        // Add friend
-        document.getElementById('add-friend-btn').addEventListener('click', () => {
-          const friendCode = document.getElementById('friend-code-input').value.trim().toUpperCase();
-          this.addFriend(friendCode);
-        });
-        
-        // Enter key in friend code input
-        document.getElementById('friend-code-input').addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            const friendCode = e.target.value.trim().toUpperCase();
+        }
+
+        // Helper methods
+        calculateXPForLevel(level) {
+          return level > 1 ? 100 * Math.pow(level - 1, 2) : 0;
+        }
+
+        calculateXPForNextLevel(level) {
+          return 100 * Math.pow(level, 2);
+        }
+
+        getActivityIcon(gameType) {
+          const icons = {
+            'word-scramble': '📝',
+            'number-line-jump': '🦘',
+            'element-match': '🧪',
+            'sentence-builder': '✍️',
+            'color-palette': '🎨',
+          };
+          return icons[gameType] || '🎮';
+        }
+
+        formatTimeAgo(timestamp) {
+          const seconds = Math.floor((Date.now() - new Date(timestamp)) / 1000);
+
+          if (seconds < 60) return 'Just now';
+          if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+          if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+          if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+
+          return new Date(timestamp).toLocaleDateString();
+        }
+
+        setupSettingsEventListeners() {
+          // Profile settings
+          document.getElementById('profile-name').addEventListener('input', e => {
+            this.updateProfileSetting('name', e.target.value);
+          });
+
+          document.getElementById('profile-bio').addEventListener('input', e => {
+            this.updateProfileSetting('bio', e.target.value);
+          });
+
+          document.getElementById('favorite-subject').addEventListener('change', e => {
+            this.updateProfileSetting('favoriteSubject', e.target.value);
+          });
+
+          // Preferences
+          document.getElementById('sound-enabled').addEventListener('change', e => {
+            this.updatePreference('soundEnabled', e.target.checked);
+          });
+
+          document.getElementById('hints-enabled').addEventListener('change', e => {
+            this.updatePreference('hintsEnabled', e.target.checked);
+          });
+
+          document.getElementById('animations-enabled').addEventListener('change', e => {
+            this.updatePreference('animationsEnabled', e.target.checked);
+          });
+
+          // Privacy settings
+          document.getElementById('show-profile').addEventListener('change', e => {
+            this.updatePrivacySetting('showProfile', e.target.checked);
+          });
+
+          document.getElementById('show-achievements').addEventListener('change', e => {
+            this.updatePrivacySetting('showAchievements', e.target.checked);
+          });
+
+          document.getElementById('allow-friend-requests').addEventListener('change', e => {
+            this.updatePrivacySetting('allowFriendRequests', e.target.checked);
+          });
+
+          // Data actions
+          document.getElementById('export-profile').addEventListener('click', () => {
+            this.exportProfile();
+          });
+
+          document.getElementById('import-profile').addEventListener('click', () => {
+            this.importProfile();
+          });
+
+          document.getElementById('reset-progress').addEventListener('click', () => {
+            this.resetProgress();
+          });
+        }
+
+        setupFriendsEventListeners() {
+          // Copy friend code
+          document.getElementById('copy-friend-code').addEventListener('click', () => {
+            const friendCode = this.currentProfile.friendCode;
+            navigator.clipboard.writeText(friendCode).then(() => {
+              this.showToast('Friend code copied to clipboard!');
+            });
+          });
+
+          // Add friend
+          document.getElementById('add-friend-btn').addEventListener('click', () => {
+            const friendCode = document.getElementById('friend-code-input').value.trim().toUpperCase();
             this.addFriend(friendCode);
-          }
-        });
-      }
-      
-      loadProgressOverview() {
-        const container = document.getElementById('progress-overview');
-        const progressSummary = this.progressTracker.getProgressSummary();
-        
-        const subjects = ['math', 'science', 'reading', 'art', 'coding'];
-        container.innerHTML = subjects.map(subject => {
-          const subjectData = progressSummary.subjects[subject] || { gamesPlayed: 0, totalScore: 0, accuracy: 0 };
-          const icon = this.getSubjectIcon(subject);
-          
-          return `
+          });
+
+          // Enter key in friend code input
+          document.getElementById('friend-code-input').addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+              const friendCode = e.target.value.trim().toUpperCase();
+              this.addFriend(friendCode);
+            }
+          });
+        }
+
+        loadProgressOverview() {
+          const container = document.getElementById('progress-overview');
+          const progressSummary = this.progressTracker.getProgressSummary();
+
+          const subjects = ['math', 'science', 'reading', 'art', 'coding'];
+          container.innerHTML = subjects
+            .map(subject => {
+              const subjectData = progressSummary.subjects[subject] || { gamesPlayed: 0, totalScore: 0, accuracy: 0 };
+              const icon = this.getSubjectIcon(subject);
+
+              return `
             <div class="progress-card">
               <div class="progress-card-icon">${icon}</div>
               <div class="progress-card-title">${subject.charAt(0).toUpperCase() + subject.slice(1)}</div>
               <div class="progress-card-value">${subjectData.gamesPlayed}</div>
             </div>
           `;
-        }).join('');
-      }
-      
-      loadNextGoals() {
-        const container = document.getElementById('next-goals');
-        const currentLevel = this.currentProfile.level;
-        const currentXP = this.currentProfile.xp;
-        const nextLevelXP = this.calculateXPForNextLevel(currentLevel);
-        
-        const goals = [
-          {
-            icon: '🎯',
-            title: `Reach Level ${currentLevel + 1}`,
-            current: currentXP - this.calculateXPForLevel(currentLevel),
-            target: nextLevelXP - this.calculateXPForLevel(currentLevel),
-            text: `${nextLevelXP - currentXP} XP to go`
-          },
-          {
-            icon: '🏆',
-            title: 'Unlock 5 Achievements',
-            current: this.progressTracker.getProgressSummary().achievements.unlocked,
-            target: Math.ceil((this.progressTracker.getProgressSummary().achievements.unlocked + 5) / 5) * 5,
-            text: `${Math.ceil((this.progressTracker.getProgressSummary().achievements.unlocked + 5) / 5) * 5 - this.progressTracker.getProgressSummary().achievements.unlocked} to go`
-          }
-        ];
-        
-        container.innerHTML = goals.map(goal => `
+            })
+            .join('');
+        }
+
+        loadNextGoals() {
+          const container = document.getElementById('next-goals');
+          const currentLevel = this.currentProfile.level;
+          const currentXP = this.currentProfile.xp;
+          const nextLevelXP = this.calculateXPForNextLevel(currentLevel);
+
+          const goals = [
+            {
+              icon: '🎯',
+              title: `Reach Level ${currentLevel + 1}`,
+              current: currentXP - this.calculateXPForLevel(currentLevel),
+              target: nextLevelXP - this.calculateXPForLevel(currentLevel),
+              text: `${nextLevelXP - currentXP} XP to go`,
+            },
+            {
+              icon: '🏆',
+              title: 'Unlock 5 Achievements',
+              current: this.progressTracker.getProgressSummary().achievements.unlocked,
+              target: Math.ceil((this.progressTracker.getProgressSummary().achievements.unlocked + 5) / 5) * 5,
+              text: `${Math.ceil((this.progressTracker.getProgressSummary().achievements.unlocked + 5) / 5) * 5 - this.progressTracker.getProgressSummary().achievements.unlocked} to go`,
+            },
+          ];
+
+          container.innerHTML = goals
+            .map(
+              goal => `
           <div class="goal-item">
             <div class="goal-icon">${goal.icon}</div>
             <div class="goal-content">
@@ -771,75 +790,80 @@
               </div>
             </div>
           </div>
-        `).join('');
-      }
-      
-      loadAchievementsContent() {
-        const progressSummary = this.progressTracker.getProgressSummary();
-        
-        // Update stats
-        document.getElementById('achievements-unlocked').textContent = progressSummary.achievements.unlocked;
-        document.getElementById('achievements-total').textContent = progressSummary.achievements.total;
-        document.getElementById('achievement-points').textContent = progressSummary.achievements.points;
-        
-        // Setup filters
-        this.setupAchievementFilters();
-        
-        // Load achievements grid
-        this.loadAchievementsGrid('all');
-      }
-      
-      loadStatisticsContent() {
-        const progressSummary = this.progressTracker.getProgressSummary();
-        
-        // Update overall stats
-        document.getElementById('total-time').textContent = this.formatTime(progressSummary.crossGame.totalTime || 0);
-        document.getElementById('overall-accuracy').textContent = `${Math.round(progressSummary.crossGame.overallAccuracy || 0)}%`;
-        document.getElementById('longest-streak').textContent = progressSummary.crossGame.longestStreak || 0;
-        document.getElementById('subjects-explored').textContent = progressSummary.crossGame.gamesPlayed.length;
-        
-        // Load game statistics
-        this.loadGameStatistics();
-      }
-      
-      loadSettingsContent() {
-        // Load current settings
-        const profile = this.currentProfile;
-        
-        document.getElementById('profile-name').value = profile.name || '';
-        document.getElementById('profile-bio').value = profile.bio || '';
-        document.getElementById('favorite-subject').value = profile.favoriteSubject || '';
-        
-        // Load preferences
-        document.getElementById('sound-enabled').checked = profile.preferences?.soundEnabled !== false;
-        document.getElementById('hints-enabled').checked = profile.preferences?.hintsEnabled !== false;
-        document.getElementById('animations-enabled').checked = profile.preferences?.animationsEnabled !== false;
-        
-        // Load privacy settings
-        document.getElementById('show-profile').checked = profile.privacy?.showProfile !== false;
-        document.getElementById('show-achievements').checked = profile.privacy?.showAchievements !== false;
-        document.getElementById('allow-friend-requests').checked = profile.privacy?.allowFriendRequests !== false;
-      }
-      
-      loadFriendsContent() {
-        // Update friend code
-        document.getElementById('my-friend-code').textContent = this.currentProfile.friendCode;
-        
-        // Load friends list
-        const friends = this.currentProfile.friends || [];
-        document.getElementById('friends-count').textContent = friends.length;
-        
-        const friendsList = document.getElementById('friends-list');
-        if (friends.length === 0) {
-          friendsList.innerHTML = `
+        `
+            )
+            .join('');
+        }
+
+        loadAchievementsContent() {
+          const progressSummary = this.progressTracker.getProgressSummary();
+
+          // Update stats
+          document.getElementById('achievements-unlocked').textContent = progressSummary.achievements.unlocked;
+          document.getElementById('achievements-total').textContent = progressSummary.achievements.total;
+          document.getElementById('achievement-points').textContent = progressSummary.achievements.points;
+
+          // Setup filters
+          this.setupAchievementFilters();
+
+          // Load achievements grid
+          this.loadAchievementsGrid('all');
+        }
+
+        loadStatisticsContent() {
+          const progressSummary = this.progressTracker.getProgressSummary();
+
+          // Update overall stats
+          document.getElementById('total-time').textContent = this.formatTime(progressSummary.crossGame.totalTime || 0);
+          document.getElementById('overall-accuracy').textContent =
+            `${Math.round(progressSummary.crossGame.overallAccuracy || 0)}%`;
+          document.getElementById('longest-streak').textContent = progressSummary.crossGame.longestStreak || 0;
+          document.getElementById('subjects-explored').textContent = progressSummary.crossGame.gamesPlayed.length;
+
+          // Load game statistics
+          this.loadGameStatistics();
+        }
+
+        loadSettingsContent() {
+          // Load current settings
+          const profile = this.currentProfile;
+
+          document.getElementById('profile-name').value = profile.name || '';
+          document.getElementById('profile-bio').value = profile.bio || '';
+          document.getElementById('favorite-subject').value = profile.favoriteSubject || '';
+
+          // Load preferences
+          document.getElementById('sound-enabled').checked = profile.preferences?.soundEnabled !== false;
+          document.getElementById('hints-enabled').checked = profile.preferences?.hintsEnabled !== false;
+          document.getElementById('animations-enabled').checked = profile.preferences?.animationsEnabled !== false;
+
+          // Load privacy settings
+          document.getElementById('show-profile').checked = profile.privacy?.showProfile !== false;
+          document.getElementById('show-achievements').checked = profile.privacy?.showAchievements !== false;
+          document.getElementById('allow-friend-requests').checked = profile.privacy?.allowFriendRequests !== false;
+        }
+
+        loadFriendsContent() {
+          // Update friend code
+          document.getElementById('my-friend-code').textContent = this.currentProfile.friendCode;
+
+          // Load friends list
+          const friends = this.currentProfile.friends || [];
+          document.getElementById('friends-count').textContent = friends.length;
+
+          const friendsList = document.getElementById('friends-list');
+          if (friends.length === 0) {
+            friendsList.innerHTML = `
             <div class="no-friends">
               <div class="empty-state-icon">👥</div>
               <p>No friends yet</p>
               <small>Add friends to compare progress and achievements!</small>
             </div>
           `;
-        } else {
-          friendsList.innerHTML = friends.map(friend => `
+          } else {
+            friendsList.innerHTML = friends
+              .map(
+                friend => `
             <div class="friend-card">
               <div class="friend-avatar" style="background-color: ${this.getRandomColor()}"></div>
               <div class="friend-info">
@@ -847,94 +871,95 @@
                 <div class="friend-level">Level ${friend.level || 1}</div>
               </div>
             </div>
-          `).join('');
+          `
+              )
+              .join('');
+          }
         }
-      }
-      
-      // Additional helper methods
-      getSubjectIcon(subject) {
-        const icons = {
-          math: '🔢',
-          science: '🧪',
-          reading: '📚',
-          art: '🎨',
-          coding: '💻'
-        };
-        return icons[subject] || '📚';
-      }
-      
-      formatTime(seconds) {
-        if (seconds < 60) return `${seconds}s`;
-        if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        return `${hours}h ${minutes}m`;
-      }
-      
-      getRandomColor() {
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#FFB74D'];
-        return colors[Math.floor(Math.random() * colors.length)];
-      }
-      
-      setupAchievementFilters() {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            this.loadAchievementsGrid(btn.dataset.filter);
+
+        // Additional helper methods
+        getSubjectIcon(subject) {
+          const icons = {
+            math: '🔢',
+            science: '🧪',
+            reading: '📚',
+            art: '🎨',
+            coding: '💻',
+          };
+          return icons[subject] || '📚';
+        }
+
+        formatTime(seconds) {
+          if (seconds < 60) return `${seconds}s`;
+          if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+          const hours = Math.floor(seconds / 3600);
+          const minutes = Math.floor((seconds % 3600) / 60);
+          return `${hours}h ${minutes}m`;
+        }
+
+        getRandomColor() {
+          const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#FFB74D'];
+          return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        setupAchievementFilters() {
+          document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+              this.loadAchievementsGrid(btn.dataset.filter);
+            });
           });
-        });
-      }
-      
-      loadAchievementsGrid(filter) {
-        const grid = document.getElementById('achievements-grid');
-        const progressSummary = this.progressTracker.getProgressSummary();
-        const allAchievements = progressSummary.achievements.list || [];
-        
-        let filteredAchievements = allAchievements;
-        
-        switch (filter) {
-          case 'unlocked':
-            filteredAchievements = allAchievements.filter(a => a.unlocked);
-            break;
-          case 'locked':
-            filteredAchievements = allAchievements.filter(a => !a.unlocked);
-            break;
-          case 'rare':
-            filteredAchievements = allAchievements.filter(a => ['rare', 'epic', 'legendary'].includes(a.rarity));
-            break;
         }
-        
-        if (filteredAchievements.length === 0) {
-          grid.innerHTML = `
+
+        loadAchievementsGrid(filter) {
+          const grid = document.getElementById('achievements-grid');
+          const progressSummary = this.progressTracker.getProgressSummary();
+          const allAchievements = progressSummary.achievements.list || [];
+
+          let filteredAchievements = allAchievements;
+
+          switch (filter) {
+            case 'unlocked':
+              filteredAchievements = allAchievements.filter(a => a.unlocked);
+              break;
+            case 'locked':
+              filteredAchievements = allAchievements.filter(a => !a.unlocked);
+              break;
+            case 'rare':
+              filteredAchievements = allAchievements.filter(a => ['rare', 'epic', 'legendary'].includes(a.rarity));
+              break;
+          }
+
+          if (filteredAchievements.length === 0) {
+            grid.innerHTML = `
             <div class="no-achievements">
               <div class="empty-state-icon">🏆</div>
               <p>No achievements found</p>
               <small>Try a different filter or play more games!</small>
             </div>
           `;
-          return;
+            return;
+          }
+
+          grid.innerHTML = filteredAchievements.map(achievement => createBadgeElement(achievement)).join('');
         }
-        
-        grid.innerHTML = filteredAchievements.map(achievement => 
-          createBadgeElement(achievement)
-        ).join('');
-      }
-      
-      loadGameStatistics() {
-        const container = document.getElementById('game-stats');
-        const progressSummary = this.progressTracker.getProgressSummary();
-        
-        const gameTypes = ['word-scramble', 'number-line-jump', 'element-match', 'sentence-builder', 'color-palette'];
-        container.innerHTML = gameTypes.map(gameType => {
-          const gameData = progressSummary.games[gameType] || { 
-            gamesPlayed: 0, 
-            totalScore: 0, 
-            bestScore: 0, 
-            averageAccuracy: 0 
-          };
-          
-          return `
+
+        loadGameStatistics() {
+          const container = document.getElementById('game-stats');
+          const progressSummary = this.progressTracker.getProgressSummary();
+
+          const gameTypes = ['word-scramble', 'number-line-jump', 'element-match', 'sentence-builder', 'color-palette'];
+          container.innerHTML = gameTypes
+            .map(gameType => {
+              const gameData = progressSummary.games[gameType] || {
+                gamesPlayed: 0,
+                totalScore: 0,
+                bestScore: 0,
+                averageAccuracy: 0,
+              };
+
+              return `
             <div class="stat-card">
               <div class="stat-icon">${this.getActivityIcon(gameType)}</div>
               <div class="stat-info">
@@ -943,145 +968,146 @@
               </div>
             </div>
           `;
-        }).join('');
-      }
-      
-      getGameDisplayName(gameType) {
-        const names = {
-          'word-scramble': 'Word Scramble',
-          'number-line-jump': 'Number Jump',
-          'element-match': 'Element Match',
-          'sentence-builder': 'Sentence Builder',
-          'color-palette': 'Color Palette'
-        };
-        return names[gameType] || gameType;
-      }
-      
-      updateProfileSetting(key, value) {
-        this.profileManager.updateProfile(this.currentProfile.id, { [key]: value });
-        this.currentProfile[key] = value;
-        
-        if (key === 'name') {
-          document.querySelector('.profile-name').textContent = value;
+            })
+            .join('');
         }
-      }
-      
-      updatePreference(key, value) {
-        const preferences = { ...this.currentProfile.preferences, [key]: value };
-        this.profileManager.updateProfile(this.currentProfile.id, { preferences });
-        this.currentProfile.preferences = preferences;
-      }
-      
-      updatePrivacySetting(key, value) {
-        const privacy = { ...this.currentProfile.privacy, [key]: value };
-        this.profileManager.updateProfile(this.currentProfile.id, { privacy });
-        this.currentProfile.privacy = privacy;
-      }
-      
-      exportProfile() {
-        const profileData = {
-          profile: this.currentProfile,
-          progress: this.progressTracker.exportData()
-        };
-        
-        const blob = new Blob([JSON.stringify(profileData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `learnimals-profile-${this.currentProfile.name}-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        
-        this.showToast('Profile exported successfully!');
-      }
-      
-      importProfile() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              try {
-                const data = JSON.parse(e.target.result);
-                this.profileManager.importProfile(data);
-                this.loadProfile();
-                this.showToast('Profile imported successfully!');
-              } catch (error) {
-                this.showToast('Error importing profile. Please check the file format.');
-              }
-            };
-            reader.readAsText(file);
+
+        getGameDisplayName(gameType) {
+          const names = {
+            'word-scramble': 'Word Scramble',
+            'number-line-jump': 'Number Jump',
+            'element-match': 'Element Match',
+            'sentence-builder': 'Sentence Builder',
+            'color-palette': 'Color Palette',
+          };
+          return names[gameType] || gameType;
+        }
+
+        updateProfileSetting(key, value) {
+          this.profileManager.updateProfile(this.currentProfile.id, { [key]: value });
+          this.currentProfile[key] = value;
+
+          if (key === 'name') {
+            document.querySelector('.profile-name').textContent = value;
           }
-        };
-        input.click();
-      }
-      
-      resetProgress() {
-        Modal.show({
-          title: 'Reset All Progress',
-          content: `
+        }
+
+        updatePreference(key, value) {
+          const preferences = { ...this.currentProfile.preferences, [key]: value };
+          this.profileManager.updateProfile(this.currentProfile.id, { preferences });
+          this.currentProfile.preferences = preferences;
+        }
+
+        updatePrivacySetting(key, value) {
+          const privacy = { ...this.currentProfile.privacy, [key]: value };
+          this.profileManager.updateProfile(this.currentProfile.id, { privacy });
+          this.currentProfile.privacy = privacy;
+        }
+
+        exportProfile() {
+          const profileData = {
+            profile: this.currentProfile,
+            progress: this.progressTracker.exportData(),
+          };
+
+          const blob = new Blob([JSON.stringify(profileData, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `learnimals-profile-${this.currentProfile.name}-${new Date().toISOString().split('T')[0]}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+
+          this.showToast('Profile exported successfully!');
+        }
+
+        importProfile() {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = '.json';
+          input.onchange = e => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = e => {
+                try {
+                  const data = JSON.parse(e.target.result);
+                  this.profileManager.importProfile(data);
+                  this.loadProfile();
+                  this.showToast('Profile imported successfully!');
+                } catch (error) {
+                  this.showToast('Error importing profile. Please check the file format.');
+                }
+              };
+              reader.readAsText(file);
+            }
+          };
+          input.click();
+        }
+
+        resetProgress() {
+          Modal.show({
+            title: 'Reset All Progress',
+            content: `
             <p>⚠️ This will permanently delete all your progress, achievements, and game data.</p>
             <p><strong>This action cannot be undone!</strong></p>
             <p>Are you sure you want to continue?</p>
           `,
-          buttons: [
-            { text: 'Cancel', secondary: true },
-            { 
-              text: 'Reset Everything', 
-              primary: true, 
-              onClick: () => {
-                this.progressTracker.resetAllProgress();
-                this.profileManager.resetProfile(this.currentProfile.id);
-                this.loadProfile();
-                this.showToast('All progress has been reset.');
-              }
-            }
-          ]
-        });
-      }
-      
-      addFriend(friendCode) {
-        if (!friendCode || friendCode.length !== 9) {
-          this.showToast('Please enter a valid friend code (ABCD-1234 format)');
-          return;
+            buttons: [
+              { text: 'Cancel', secondary: true },
+              {
+                text: 'Reset Everything',
+                primary: true,
+                onClick: () => {
+                  this.progressTracker.resetAllProgress();
+                  this.profileManager.resetProfile(this.currentProfile.id);
+                  this.loadProfile();
+                  this.showToast('All progress has been reset.');
+                },
+              },
+            ],
+          });
         }
-        
-        if (friendCode === this.currentProfile.friendCode) {
-          this.showToast('You cannot add yourself as a friend!');
-          return;
+
+        addFriend(friendCode) {
+          if (!friendCode || friendCode.length !== 9) {
+            this.showToast('Please enter a valid friend code (ABCD-1234 format)');
+            return;
+          }
+
+          if (friendCode === this.currentProfile.friendCode) {
+            this.showToast('You cannot add yourself as a friend!');
+            return;
+          }
+
+          // Simulate friend lookup (in real app, this would be an API call)
+          const mockFriend = {
+            friendCode,
+            name: `Friend_${friendCode.slice(-4)}`,
+            level: Math.floor(Math.random() * 20) + 1,
+            addedDate: new Date().toISOString(),
+          };
+
+          const friends = this.currentProfile.friends || [];
+          if (friends.some(f => f.friendCode === friendCode)) {
+            this.showToast('This friend is already in your list!');
+            return;
+          }
+
+          friends.push(mockFriend);
+          this.profileManager.updateProfile(this.currentProfile.id, { friends });
+          this.currentProfile.friends = friends;
+
+          document.getElementById('friend-code-input').value = '';
+          this.loadFriendsContent();
+          this.showToast(`Added ${mockFriend.name} as a friend!`);
         }
-        
-        // Simulate friend lookup (in real app, this would be an API call)
-        const mockFriend = {
-          friendCode,
-          name: `Friend_${friendCode.slice(-4)}`,
-          level: Math.floor(Math.random() * 20) + 1,
-          addedDate: new Date().toISOString()
-        };
-        
-        const friends = this.currentProfile.friends || [];
-        if (friends.some(f => f.friendCode === friendCode)) {
-          this.showToast('This friend is already in your list!');
-          return;
-        }
-        
-        friends.push(mockFriend);
-        this.profileManager.updateProfile(this.currentProfile.id, { friends });
-        this.currentProfile.friends = friends;
-        
-        document.getElementById('friend-code-input').value = '';
-        this.loadFriendsContent();
-        this.showToast(`Added ${mockFriend.name} as a friend!`);
-      }
-      
-      showToast(message) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        toast.style.cssText = `
+
+        showToast(message) {
+          const toast = document.createElement('div');
+          toast.className = 'toast';
+          toast.textContent = message;
+          toast.style.cssText = `
           position: fixed;
           top: 20px;
           right: 20px;
@@ -1093,18 +1119,18 @@
           opacity: 0;
           transition: opacity 0.3s ease;
         `;
-        
-        document.body.appendChild(toast);
-        setTimeout(() => toast.style.opacity = '1', 100);
-        setTimeout(() => {
-          toast.style.opacity = '0';
-          setTimeout(() => toast.remove(), 300);
-        }, 3000);
-      }
-    }
 
-    // Initialize the profile page
-    window.enhancedProfilePage = new EnhancedProfilePage();
-  </script>
-</body>
+          document.body.appendChild(toast);
+          setTimeout(() => (toast.style.opacity = '1'), 100);
+          setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+          }, 3000);
+        }
+      }
+
+      // Initialize the profile page
+      window.enhancedProfilePage = new EnhancedProfilePage();
+    </script>
+  </body>
 </html>

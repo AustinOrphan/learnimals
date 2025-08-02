@@ -1,6 +1,6 @@
 /**
  * Achievement System
- * 
+ *
  * Manages achievements, unlocking, and tracking for the Learnimals application
  */
 
@@ -12,11 +12,11 @@ export default class AchievementSystem {
     this.userAchievements = new Set();
     this.listeners = new Set();
     this.storageKey = options.storageKey || 'learnimals_achievements';
-    
+
     this.initializeDefaultAchievements();
     this.loadUserAchievements();
   }
-  
+
   /**
    * Initialize default achievements
    */
@@ -29,7 +29,7 @@ export default class AchievementSystem {
         category: 'general',
         requirements: { gamesCompleted: 1 },
         points: 10,
-        rarity: 'common'
+        rarity: 'common',
       },
       {
         id: 'math_beginner',
@@ -38,7 +38,7 @@ export default class AchievementSystem {
         category: 'math',
         requirements: { subject: 'math', gamesCompleted: 5 },
         points: 25,
-        rarity: 'common'
+        rarity: 'common',
       },
       {
         id: 'perfect_score',
@@ -47,7 +47,7 @@ export default class AchievementSystem {
         category: 'performance',
         requirements: { perfectScore: true },
         points: 50,
-        rarity: 'uncommon'
+        rarity: 'uncommon',
       },
       {
         id: 'speed_demon',
@@ -56,7 +56,7 @@ export default class AchievementSystem {
         category: 'performance',
         requirements: { maxTime: 30 },
         points: 75,
-        rarity: 'rare'
+        rarity: 'rare',
       },
       {
         id: 'streak_master',
@@ -65,15 +65,15 @@ export default class AchievementSystem {
         category: 'consistency',
         requirements: { streak: 7 },
         points: 100,
-        rarity: 'epic'
-      }
+        rarity: 'epic',
+      },
     ];
-    
+
     defaultAchievements.forEach(achievement => {
       this.achievements.set(achievement.id, achievement);
     });
   }
-  
+
   /**
    * Load user achievements from storage
    */
@@ -88,7 +88,7 @@ export default class AchievementSystem {
       logger.error('Failed to load user achievements:', error);
     }
   }
-  
+
   /**
    * Save user achievements to storage
    */
@@ -100,7 +100,7 @@ export default class AchievementSystem {
       logger.error('Failed to save user achievements:', error);
     }
   }
-  
+
   /**
    * Check if user has unlocked an achievement
    * @param {string} achievementId - Achievement ID
@@ -109,7 +109,7 @@ export default class AchievementSystem {
   hasAchievement(achievementId) {
     return this.userAchievements.has(achievementId);
   }
-  
+
   /**
    * Unlock an achievement
    * @param {string} achievementId - Achievement ID
@@ -119,27 +119,27 @@ export default class AchievementSystem {
     if (this.hasAchievement(achievementId)) {
       return null; // Already unlocked
     }
-    
+
     const achievement = this.achievements.get(achievementId);
     if (!achievement) {
       logger.warn(`Achievement not found: ${achievementId}`);
       return null;
     }
-    
+
     this.userAchievements.add(achievementId);
     this.saveUserAchievements();
-    
+
     const unlockedAchievement = {
       ...achievement,
-      unlockedAt: new Date().toISOString()
+      unlockedAt: new Date().toISOString(),
     };
-    
+
     this.notifyListeners('achievement_unlocked', unlockedAchievement);
     logger.info(`Achievement unlocked: ${achievement.name}`);
-    
+
     return unlockedAchievement;
   }
-  
+
   /**
    * Check achievements against game data
    * @param {Object} gameData - Game completion data
@@ -147,10 +147,10 @@ export default class AchievementSystem {
    */
   check(gameData) {
     const newlyUnlocked = [];
-    
+
     this.achievements.forEach((achievement, id) => {
       if (this.hasAchievement(id)) return;
-      
+
       if (this.meetsRequirements(achievement, gameData)) {
         const unlocked = this.unlock(id);
         if (unlocked) {
@@ -158,10 +158,10 @@ export default class AchievementSystem {
         }
       }
     });
-    
+
     return newlyUnlocked;
   }
-  
+
   /**
    * Check if requirements are met
    * @param {Object} achievement - Achievement data
@@ -170,35 +170,35 @@ export default class AchievementSystem {
    */
   meetsRequirements(achievement, gameData) {
     const { requirements } = achievement;
-    
+
     // Check subject requirement
     if (requirements.subject && gameData.subject !== requirements.subject) {
       return false;
     }
-    
+
     // Check games completed
     if (requirements.gamesCompleted && gameData.gamesCompleted < requirements.gamesCompleted) {
       return false;
     }
-    
+
     // Check perfect score
     if (requirements.perfectScore && !gameData.perfectScore) {
       return false;
     }
-    
+
     // Check max time
     if (requirements.maxTime && gameData.completionTime > requirements.maxTime) {
       return false;
     }
-    
+
     // Check streak
     if (requirements.streak && gameData.currentStreak < requirements.streak) {
       return false;
     }
-    
+
     return true;
   }
-  
+
   /**
    * Get all achievements
    * @returns {Array} All achievements with unlock status
@@ -207,10 +207,10 @@ export default class AchievementSystem {
     return Array.from(this.achievements.entries()).map(([id, achievement]) => ({
       ...achievement,
       isUnlocked: this.hasAchievement(id),
-      unlockedAt: this.hasAchievement(id) ? new Date().toISOString() : null
+      unlockedAt: this.hasAchievement(id) ? new Date().toISOString() : null,
     }));
   }
-  
+
   /**
    * Get unlocked achievements
    * @returns {Array} Unlocked achievements
@@ -218,7 +218,7 @@ export default class AchievementSystem {
   getUnlockedAchievements() {
     return this.getAchievements().filter(achievement => achievement.isUnlocked);
   }
-  
+
   /**
    * Get achievements by category
    * @param {string} category - Category name
@@ -227,7 +227,7 @@ export default class AchievementSystem {
   getAchievementsByCategory(category) {
     return this.getAchievements().filter(achievement => achievement.category === category);
   }
-  
+
   /**
    * Get total points earned
    * @returns {number} Total points
@@ -237,7 +237,7 @@ export default class AchievementSystem {
       return total + (achievement.points || 0);
     }, 0);
   }
-  
+
   /**
    * Add achievement listener
    * @param {Function} listener - Event listener
@@ -245,7 +245,7 @@ export default class AchievementSystem {
   addListener(listener) {
     this.listeners.add(listener);
   }
-  
+
   /**
    * Remove achievement listener
    * @param {Function} listener - Event listener
@@ -253,7 +253,7 @@ export default class AchievementSystem {
   removeListener(listener) {
     this.listeners.delete(listener);
   }
-  
+
   /**
    * Notify all listeners
    * @param {string} event - Event type
@@ -268,7 +268,7 @@ export default class AchievementSystem {
       }
     });
   }
-  
+
   /**
    * Reset all achievements (for testing)
    */
@@ -277,7 +277,7 @@ export default class AchievementSystem {
     this.saveUserAchievements();
     this.notifyListeners('achievements_reset', {});
   }
-  
+
   /**
    * Destroy achievement system
    */

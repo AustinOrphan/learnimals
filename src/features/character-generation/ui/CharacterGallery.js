@@ -1,14 +1,14 @@
 /**
  * CharacterGallery - Interactive gallery displaying all default characters
- * 
+ *
  * Features:
  * - Grid view with filtering, search, and sorting
- * - Character interactions (greet, celebrate, encourage) 
+ * - Character interactions (greet, celebrate, encourage)
  * - Real-time speech with character voice settings
  * - Character spotlight with detailed information
  * - Performance monitoring for rendering speeds
  * - Mobile responsive design
- * 
+ *
  * Part of Phase C: Character Demo & Showcase (Issue #253)
  */
 
@@ -20,11 +20,11 @@ class CharacterGallery extends BaseComponent {
       tagName: 'div',
       className: 'character-gallery',
       attributes: {
-        'role': 'region',
+        role: 'region',
         'aria-label': 'Character Gallery',
-        'data-component': 'character-gallery'
+        'data-component': 'character-gallery',
       },
-      ...options
+      ...options,
     });
 
     // Configuration
@@ -35,13 +35,13 @@ class CharacterGallery extends BaseComponent {
     this.searchTerm = '';
     this.currentSpotlight = null;
     this.gridLayout = options.gridLayout || 'cards'; // 'cards' | 'list' | 'compact'
-    
+
     // Performance monitoring
     this.performanceMetrics = {
       renderStartTime: 0,
       renderEndTime: 0,
       frameCount: 0,
-      memoryUsage: 0
+      memoryUsage: 0,
     };
 
     // Speech synthesis
@@ -56,12 +56,12 @@ class CharacterGallery extends BaseComponent {
       characterClick: this.handleCharacterClick.bind(this),
       characterInteraction: this.handleCharacterInteraction.bind(this),
       keyboardNavigation: this.handleKeyboardNavigation.bind(this),
-      resize: this.handleResize.bind(this)
+      resize: this.handleResize.bind(this),
     };
-    
+
     this.onCharacterSelect = options.onCharacterSelect || null;
     this.onCharacterInteraction = options.onCharacterInteraction || null;
-    
+
     // Memory management
     this.autoplayInterval = null;
     this.boundKeydownHandler = null;
@@ -74,7 +74,7 @@ class CharacterGallery extends BaseComponent {
    */
   init() {
     this.loadVoices();
-    
+
     // Set up resize observer for responsive behavior
     if (window.ResizeObserver) {
       this.resizeObserver = new ResizeObserver(this.boundHandlers.resize);
@@ -232,76 +232,76 @@ class CharacterGallery extends BaseComponent {
    */
   attachEventListeners() {
     super.attachEventListeners();
-    
+
     if (!this.element) return;
-    
+
     // Search functionality
     const searchInput = this.element.querySelector('.search-input');
     const searchClear = this.element.querySelector('.search-clear');
-    
+
     if (searchInput) {
       searchInput.addEventListener('input', this.boundHandlers.search);
       searchInput.addEventListener('keydown', this.boundHandlers.keyboardNavigation);
     }
-    
+
     if (searchClear) {
       searchClear.addEventListener('click', () => {
         searchInput.value = '';
         this.handleSearch();
       });
     }
-    
+
     // Filter and sort controls
     const filterSelect = this.element.querySelector('.filter-select');
     const sortSelect = this.element.querySelector('.sort-select');
-    
+
     if (filterSelect) {
       filterSelect.addEventListener('change', this.boundHandlers.filter);
     }
-    
+
     if (sortSelect) {
       sortSelect.addEventListener('change', this.boundHandlers.sort);
     }
-    
+
     // Layout controls
     const layoutButtons = this.element.querySelectorAll('.layout-btn');
     layoutButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const layout = e.currentTarget.dataset.layout;
         this.setGridLayout(layout);
       });
     });
-    
+
     // Character grid interactions
     const charactersGrid = this.element.querySelector('.characters-grid');
     if (charactersGrid) {
       charactersGrid.addEventListener('click', this.boundHandlers.characterClick);
       charactersGrid.addEventListener('keydown', this.boundHandlers.keyboardNavigation);
     }
-    
+
     // Spotlight controls
     const spotlightClose = this.element.querySelector('.spotlight-close');
     const spotlightBackdrop = this.element.querySelector('.spotlight-backdrop');
-    
+
     if (spotlightClose) {
       spotlightClose.addEventListener('click', () => this.closeSpotlight());
     }
-    
+
     if (spotlightBackdrop) {
       spotlightBackdrop.addEventListener('click', () => this.closeSpotlight());
     }
-    
+
     // Interaction buttons in spotlight
     const interactionButtons = this.element.querySelectorAll('.interaction-btn');
     interactionButtons.forEach(btn => {
       btn.addEventListener('click', this.boundHandlers.characterInteraction);
     });
-    
+
     // Set up resize observer
     if (this.resizeObserver && this.element) {
       this.resizeObserver.observe(this.element);
     }
-    
+
     // Initial render of characters
     this.renderCharacters();
   }
@@ -312,15 +312,15 @@ class CharacterGallery extends BaseComponent {
   handleSearch(_event) {
     const searchInput = this.element.querySelector('.search-input');
     const searchClear = this.element.querySelector('.search-clear');
-    
+
     if (searchInput) {
       this.searchTerm = searchInput.value.toLowerCase().trim();
-      
+
       // Show/hide clear button
       if (searchClear) {
         searchClear.style.display = this.searchTerm ? 'block' : 'none';
       }
-      
+
       this.filterAndRenderCharacters();
     }
   }
@@ -347,7 +347,7 @@ class CharacterGallery extends BaseComponent {
   handleCharacterClick(event) {
     const characterCard = event.target.closest('.character-card');
     if (!characterCard) return;
-    
+
     const characterId = characterCard.dataset.characterId;
     if (characterId) {
       const character = this.characters.find(c => c.id === characterId);
@@ -363,7 +363,7 @@ class CharacterGallery extends BaseComponent {
   handleCharacterInteraction(event) {
     const button = event.target.closest('.interaction-btn');
     if (!button) return;
-    
+
     const interaction = button.dataset.interaction;
     if (this.currentSpotlight && interaction) {
       this.performCharacterInteraction(this.currentSpotlight, interaction);
@@ -377,7 +377,7 @@ class CharacterGallery extends BaseComponent {
     if (event.key === 'Escape' && this.currentSpotlight) {
       this.closeSpotlight();
     }
-    
+
     // Grid navigation with arrow keys
     if (event.target.closest('.characters-grid')) {
       this.handleGridKeyboardNavigation(event);
@@ -390,34 +390,34 @@ class CharacterGallery extends BaseComponent {
   handleGridKeyboardNavigation(event) {
     const cards = Array.from(this.element.querySelectorAll('.character-card'));
     const currentIndex = cards.findIndex(card => card === document.activeElement);
-    
+
     let nextIndex = currentIndex;
     const columns = this.getGridColumns();
-    
+
     switch (event.key) {
-    case 'ArrowRight':
-      nextIndex = Math.min(currentIndex + 1, cards.length - 1);
-      break;
-    case 'ArrowLeft':
-      nextIndex = Math.max(currentIndex - 1, 0);
-      break;
-    case 'ArrowDown':
-      nextIndex = Math.min(currentIndex + columns, cards.length - 1);
-      break;
-    case 'ArrowUp':
-      nextIndex = Math.max(currentIndex - columns, 0);
-      break;
-    case 'Enter':
-    case ' ':
-      if (currentIndex >= 0) {
-        cards[currentIndex].click();
-        event.preventDefault();
-      }
-      return;
-    default:
-      return;
+      case 'ArrowRight':
+        nextIndex = Math.min(currentIndex + 1, cards.length - 1);
+        break;
+      case 'ArrowLeft':
+        nextIndex = Math.max(currentIndex - 1, 0);
+        break;
+      case 'ArrowDown':
+        nextIndex = Math.min(currentIndex + columns, cards.length - 1);
+        break;
+      case 'ArrowUp':
+        nextIndex = Math.max(currentIndex - columns, 0);
+        break;
+      case 'Enter':
+      case ' ':
+        if (currentIndex >= 0) {
+          cards[currentIndex].click();
+          event.preventDefault();
+        }
+        return;
+      default:
+        return;
     }
-    
+
     if (nextIndex !== currentIndex && cards[nextIndex]) {
       cards[nextIndex].focus();
       event.preventDefault();
@@ -441,42 +441,43 @@ class CharacterGallery extends BaseComponent {
    */
   filterAndRenderCharacters() {
     this.performanceMetrics.renderStartTime = performance.now();
-    
+
     // Filter by subject
     let filtered = this.characters;
     if (this.currentFilter !== 'all') {
-      filtered = filtered.filter(character => 
-        character.subject.toLowerCase() === this.currentFilter.toLowerCase()
+      filtered = filtered.filter(
+        character => character.subject.toLowerCase() === this.currentFilter.toLowerCase()
       );
     }
-    
+
     // Filter by search term
     if (this.searchTerm) {
-      filtered = filtered.filter(character =>
-        character.name.toLowerCase().includes(this.searchTerm) ||
-        character.subject.toLowerCase().includes(this.searchTerm) ||
-        character.description.toLowerCase().includes(this.searchTerm) ||
-        character.personality.toLowerCase().includes(this.searchTerm)
+      filtered = filtered.filter(
+        character =>
+          character.name.toLowerCase().includes(this.searchTerm) ||
+          character.subject.toLowerCase().includes(this.searchTerm) ||
+          character.description.toLowerCase().includes(this.searchTerm) ||
+          character.personality.toLowerCase().includes(this.searchTerm)
       );
     }
-    
+
     // Sort characters
     filtered.sort((a, b) => {
       switch (this.currentSort) {
-      case 'name':
-        return a.name.localeCompare(b.name);
-        
-      case 'subject':
-        return a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name);
-        
-      case 'popularity':
-        return (b.popularity || 0) - (a.popularity || 0);
-        
-      default:
-        return a.name.localeCompare(b.name);
+        case 'name':
+          return a.name.localeCompare(b.name);
+
+        case 'subject':
+          return a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name);
+
+        case 'popularity':
+          return (b.popularity || 0) - (a.popularity || 0);
+
+        default:
+          return a.name.localeCompare(b.name);
       }
     });
-    
+
     this.filteredCharacters = filtered;
     this.renderCharacters();
   }
@@ -487,10 +488,10 @@ class CharacterGallery extends BaseComponent {
   renderCharacters() {
     const grid = this.element.querySelector('.characters-grid');
     if (!grid) return;
-    
+
     // Clear existing content
     grid.innerHTML = '';
-    
+
     if (this.filteredCharacters.length === 0) {
       grid.innerHTML = `
         <div class="no-characters">
@@ -502,20 +503,20 @@ class CharacterGallery extends BaseComponent {
       this.updatePerformanceMetrics();
       return;
     }
-    
+
     // Render character cards
     const fragment = document.createDocumentFragment();
-    
+
     this.filteredCharacters.forEach((character, index) => {
       const card = this.createCharacterCard(character, index);
       fragment.appendChild(card);
     });
-    
+
     grid.appendChild(fragment);
-    
+
     // Update grid layout class
     grid.className = `characters-grid layout-${this.gridLayout}`;
-    
+
     this.updatePerformanceMetrics();
     this.updateCharacterCount();
   }
@@ -530,7 +531,7 @@ class CharacterGallery extends BaseComponent {
     card.setAttribute('tabindex', '0');
     card.setAttribute('role', 'gridcell');
     card.setAttribute('aria-label', `${character.name}, ${character.subject} character`);
-    
+
     card.innerHTML = `
       <div class="card-header">
         <div class="character-avatar">
@@ -547,9 +548,13 @@ class CharacterGallery extends BaseComponent {
         
         <div class="character-traits">
           <span class="trait-tag">${character.personality}</span>
-          ${character.specialties ? character.specialties.map(specialty => 
-    `<span class="specialty-tag">${specialty}</span>`
-  ).join('') : ''}
+          ${
+            character.specialties
+              ? character.specialties
+                  .map(specialty => `<span class="specialty-tag">${specialty}</span>`)
+                  .join('')
+              : ''
+          }
         </div>
       </div>
       
@@ -573,17 +578,17 @@ class CharacterGallery extends BaseComponent {
         </div>
       </div>
     `;
-    
+
     // Add quick interaction listeners
     const quickButtons = card.querySelectorAll('.quick-btn');
     quickButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         e.stopPropagation();
         const interaction = btn.dataset.interaction;
         this.performCharacterInteraction(character, interaction);
       });
     });
-    
+
     return card;
   }
 
@@ -594,11 +599,11 @@ class CharacterGallery extends BaseComponent {
     const dimensions = {
       small: { width: 60, height: 60 },
       medium: { width: 120, height: 120 },
-      large: { width: 200, height: 200 }
+      large: { width: 200, height: 200 },
     };
-    
+
     const { width, height } = dimensions[size];
-    
+
     // Placeholder SVG - in real implementation this would use CharacterRenderer
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 100 100" class="character-svg">
@@ -617,9 +622,9 @@ class CharacterGallery extends BaseComponent {
   openSpotlight(character) {
     this.currentSpotlight = character;
     const spotlight = this.element.querySelector('.character-spotlight');
-    
+
     if (!spotlight) return;
-    
+
     // Update spotlight content
     const title = spotlight.querySelector('#spotlight-title');
     const name = spotlight.querySelector('.character-name');
@@ -629,7 +634,7 @@ class CharacterGallery extends BaseComponent {
     const subjectStat = spotlight.querySelector('.character-subject-stat');
     const personality = spotlight.querySelector('.character-personality');
     const voice = spotlight.querySelector('.character-voice');
-    
+
     if (title) title.textContent = `${character.name} - Character Details`;
     if (name) name.textContent = character.name;
     if (subject) subject.textContent = character.subject;
@@ -637,20 +642,20 @@ class CharacterGallery extends BaseComponent {
     if (subjectStat) subjectStat.textContent = character.subject;
     if (personality) personality.textContent = character.personality;
     if (voice) voice.textContent = character.voiceType || 'Default';
-    
+
     if (preview) {
       preview.innerHTML = this.renderCharacterSVG(character, 'large');
     }
-    
+
     // Show spotlight
     spotlight.style.display = 'block';
-    
+
     // Focus management
     setTimeout(() => {
       const closeButton = spotlight.querySelector('.spotlight-close');
       if (closeButton) closeButton.focus();
     }, 100);
-    
+
     // Emit event
     this.emit('character:spotlight:opened', { character });
   }
@@ -663,16 +668,16 @@ class CharacterGallery extends BaseComponent {
     if (spotlight) {
       spotlight.style.display = 'none';
     }
-    
+
     this.currentSpotlight = null;
-    
+
     // Return focus to grid
     const grid = this.element.querySelector('.characters-grid');
     if (grid) {
       const firstCard = grid.querySelector('.character-card');
       if (firstCard) firstCard.focus();
     }
-    
+
     // Emit event
     this.emit('character:spotlight:closed');
   }
@@ -685,35 +690,35 @@ class CharacterGallery extends BaseComponent {
       greet: [
         `Hi there! I'm ${character.name}, ready to help with ${character.subject}!`,
         `Hello! Let's explore ${character.subject} together!`,
-        `Hey! I'm excited to learn ${character.subject} with you!`
+        `Hey! I'm excited to learn ${character.subject} with you!`,
       ],
       celebrate: [
-        'Fantastic work! You\'re doing amazing!',
-        'Woohoo! That\'s excellent progress!',
-        'Amazing! Keep up the great work!'
+        "Fantastic work! You're doing amazing!",
+        "Woohoo! That's excellent progress!",
+        'Amazing! Keep up the great work!',
       ],
       encourage: [
-        'You\'ve got this! Don\'t give up!',
-        'Believe in yourself! You\'re capable of great things!',
-        'Every challenge is a chance to grow stronger!'
-      ]
+        "You've got this! Don't give up!",
+        "Believe in yourself! You're capable of great things!",
+        'Every challenge is a chance to grow stronger!',
+      ],
     };
-    
+
     const messageList = messages[interaction] || messages.greet;
     const message = messageList[Math.floor(Math.random() * messageList.length)];
-    
+
     // Visual feedback
     this.animateCharacterInteraction(character, interaction);
-    
+
     // Speech synthesis
     this.speakMessage(message, character.voiceType);
-    
+
     // Emit event
-    this.emit('character:interaction', { 
-      character, 
-      interaction, 
+    this.emit('character:interaction', {
+      character,
+      interaction,
       message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -724,16 +729,16 @@ class CharacterGallery extends BaseComponent {
     // Find character elements to animate
     const cardElement = this.element.querySelector(`[data-character-id="${character.id}"]`);
     const spotlightElement = this.element.querySelector('.character-preview');
-    
+
     const elements = [cardElement, spotlightElement].filter(Boolean);
-    
+
     elements.forEach(element => {
       // Remove existing animation classes
       element.classList.remove('animate-greet', 'animate-celebrate', 'animate-encourage');
-      
+
       // Add interaction-specific animation
       element.classList.add(`animate-${interaction}`);
-      
+
       // Remove animation class after animation completes
       setTimeout(() => {
         element.classList.remove(`animate-${interaction}`);
@@ -746,21 +751,21 @@ class CharacterGallery extends BaseComponent {
    */
   speakMessage(message, voiceType = 'default') {
     if (!this.speechSynthesis) return;
-    
+
     // Cancel any ongoing speech
     this.speechSynthesis.cancel();
-    
+
     const utterance = new SpeechSynthesisUtterance(message);
-    
+
     // Configure voice based on character
     if (this.currentVoice) {
       utterance.voice = this.currentVoice;
     }
-    
+
     utterance.rate = 0.9;
     utterance.pitch = voiceType === 'child' ? 1.2 : 1.0;
     utterance.volume = 0.8;
-    
+
     this.speechSynthesis.speak(utterance);
   }
 
@@ -769,17 +774,19 @@ class CharacterGallery extends BaseComponent {
    */
   loadVoices() {
     if (!this.speechSynthesis) return;
-    
+
     const voices = this.speechSynthesis.getVoices();
-    
+
     // Prefer child-friendly or female voices
-    this.currentVoice = voices.find(voice => 
-      voice.name.toLowerCase().includes('child') ||
-      voice.name.toLowerCase().includes('female') ||
-      voice.name.toLowerCase().includes('karen') ||
-      voice.name.toLowerCase().includes('samantha')
-    ) || voices[0];
-    
+    this.currentVoice =
+      voices.find(
+        voice =>
+          voice.name.toLowerCase().includes('child') ||
+          voice.name.toLowerCase().includes('female') ||
+          voice.name.toLowerCase().includes('karen') ||
+          voice.name.toLowerCase().includes('samantha')
+      ) || voices[0];
+
     // Reload voices when they become available
     if (voices.length === 0) {
       this.speechSynthesis.addEventListener('voiceschanged', () => {
@@ -793,21 +800,21 @@ class CharacterGallery extends BaseComponent {
    */
   setGridLayout(layout) {
     if (!['cards', 'list', 'compact'].includes(layout)) return;
-    
+
     this.gridLayout = layout;
-    
+
     // Update layout buttons
     const layoutButtons = this.element.querySelectorAll('.layout-btn');
     layoutButtons.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.layout === layout);
     });
-    
+
     // Update grid class
     const grid = this.element.querySelector('.characters-grid');
     if (grid) {
       grid.className = `characters-grid layout-${layout}`;
     }
-    
+
     // Emit event
     this.emit('layout:changed', { layout });
   }
@@ -818,13 +825,13 @@ class CharacterGallery extends BaseComponent {
   getGridColumns() {
     const grid = this.element.querySelector('.characters-grid');
     if (!grid) return 1;
-    
+
     const firstCard = grid.querySelector('.character-card');
     if (!firstCard) return 1;
-    
+
     const gridRect = grid.getBoundingClientRect();
     const cardRect = firstCard.getBoundingClientRect();
-    
+
     return Math.floor(gridRect.width / cardRect.width) || 1;
   }
 
@@ -834,9 +841,9 @@ class CharacterGallery extends BaseComponent {
   updateGridLayout() {
     const grid = this.element.querySelector('.characters-grid');
     if (!grid) return;
-    
+
     const containerWidth = grid.getBoundingClientRect().width;
-    
+
     // Adjust grid based on container width
     if (containerWidth < 600) {
       grid.style.setProperty('--grid-columns', '1');
@@ -854,27 +861,27 @@ class CharacterGallery extends BaseComponent {
    */
   startPerformanceMonitoring() {
     this.performanceMetrics.renderStartTime = performance.now();
-    
+
     // Monitor memory usage if available
     if ('memory' in performance) {
       this.updateMemoryUsage();
       setInterval(() => this.updateMemoryUsage(), 5000);
     }
-    
+
     // Event delegation for all click events
     this.handleDelegatedClick = this.handleDelegatedClick.bind(this);
     this.element.addEventListener('click', this.handleDelegatedClick);
-    
-    // Event delegation for input events  
+
+    // Event delegation for input events
     this.handleDelegatedInput = this.handleDelegatedInput.bind(this);
     this.element.addEventListener('input', this.handleDelegatedInput);
-    
+
     // Event delegation for change events
     this.handleDelegatedChange = this.handleDelegatedChange.bind(this);
     this.element.addEventListener('change', this.handleDelegatedChange);
-    
+
     // Keyboard navigation - store bound handler for cleanup
-    this.boundKeydownHandler = (e) => {
+    this.boundKeydownHandler = e => {
       if (e.key === 'Escape') {
         this.selectedCharacter = null;
         document.querySelectorAll('.character-card').forEach(card => {
@@ -890,8 +897,9 @@ class CharacterGallery extends BaseComponent {
    */
   updatePerformanceMetrics() {
     this.performanceMetrics.renderEndTime = performance.now();
-    const renderTime = this.performanceMetrics.renderEndTime - this.performanceMetrics.renderStartTime;
-    
+    const renderTime =
+      this.performanceMetrics.renderEndTime - this.performanceMetrics.renderStartTime;
+
     const renderTimeDisplay = this.element.querySelector('.render-time');
     if (renderTimeDisplay) {
       renderTimeDisplay.textContent = `${Math.round(renderTime)}ms`;
@@ -915,7 +923,7 @@ class CharacterGallery extends BaseComponent {
     if ('memory' in performance) {
       const memoryInfo = performance.memory;
       const usedMB = Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024);
-      
+
       // Safety check: ensure element exists before querying
       if (this.element) {
         const memoryDisplay = this.element.querySelector('.memory-usage');
@@ -923,11 +931,11 @@ class CharacterGallery extends BaseComponent {
           memoryDisplay.textContent = `${usedMB}MB`;
         }
       }
-      
+
       this.performanceMetrics.memoryUsage = usedMB;
     }
   }
-  
+
   /**
    * Start autoplay animations for characters
    */
@@ -936,22 +944,23 @@ class CharacterGallery extends BaseComponent {
     if (this.autoplayInterval) {
       clearInterval(this.autoplayInterval);
     }
-    
+
     this.autoplayInterval = setInterval(() => {
-      const visibleCards = Array.from(document.querySelectorAll('.character-card'))
-        .filter(card => this.isElementVisible(card));
-      
+      const visibleCards = Array.from(document.querySelectorAll('.character-card')).filter(card =>
+        this.isElementVisible(card)
+      );
+
       if (visibleCards.length > 0) {
         const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
         const characterId = randomCard.dataset.characterId;
-        
+
         if (characterId) {
           const animations = ['happy', 'thinking', 'waving'];
           const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
-          
+
           // Add animation class for visual feedback
           randomCard.classList.add(`animate-${randomAnimation}`);
-          
+
           // Reset animation after delay
           setTimeout(() => {
             randomCard.classList.remove(`animate-${randomAnimation}`);
@@ -960,7 +969,7 @@ class CharacterGallery extends BaseComponent {
       }
     }, 5000);
   }
-  
+
   /**
    * Check if element is visible in viewport
    */
@@ -983,7 +992,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#8B4513',
         voiceType: 'female',
         specialties: ['Stories', 'Vocabulary', 'Comprehension'],
-        popularity: 95
+        popularity: 95,
       },
       {
         id: 'leo-math',
@@ -994,7 +1003,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#FFA500',
         voiceType: 'male',
         specialties: ['Numbers', 'Problem Solving', 'Patterns'],
-        popularity: 92
+        popularity: 92,
       },
       {
         id: 'sage-science',
@@ -1005,7 +1014,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#4A90E2',
         voiceType: 'male',
         specialties: ['Experiments', 'Discovery', 'Nature'],
-        popularity: 88
+        popularity: 88,
       },
       {
         id: 'aria-art',
@@ -1016,7 +1025,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#E91E63',
         voiceType: 'female',
         specialties: ['Drawing', 'Colors', 'Creativity'],
-        popularity: 85
+        popularity: 85,
       },
       {
         id: 'bit-coding',
@@ -1027,7 +1036,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#9C27B0',
         voiceType: 'male',
         specialties: ['Programming', 'Logic', 'Problem Solving'],
-        popularity: 90
+        popularity: 90,
       },
       {
         id: 'harmony-music',
@@ -1038,7 +1047,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#FF5722',
         voiceType: 'female',
         specialties: ['Rhythm', 'Melody', 'Instruments'],
-        popularity: 82
+        popularity: 82,
       },
       {
         id: 'terra-geography',
@@ -1049,7 +1058,7 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#4CAF50',
         voiceType: 'female',
         specialties: ['Maps', 'Countries', 'Cultures'],
-        popularity: 78
+        popularity: 78,
       },
       {
         id: 'ziggy-general',
@@ -1060,8 +1069,8 @@ class CharacterGallery extends BaseComponent {
         primaryColor: '#607D8B',
         voiceType: 'child',
         specialties: ['General Help', 'Motivation', 'Fun'],
-        popularity: 75
-      }
+        popularity: 75,
+      },
     ];
   }
 
@@ -1132,29 +1141,29 @@ class CharacterGallery extends BaseComponent {
     if (this.speechSynthesis) {
       this.speechSynthesis.cancel();
     }
-    
+
     // Clean up resize observer
     if (this.resizeObserver && this.element) {
       this.resizeObserver.unobserve(this.element);
     }
-    
+
     // Clear timeouts
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
     }
-    
+
     // Clean up document event listener
     if (this.boundKeydownHandler) {
       document.removeEventListener('keydown', this.boundKeydownHandler);
       this.boundKeydownHandler = null;
     }
-    
+
     // Clean up autoplay interval
     if (this.autoplayInterval) {
       clearInterval(this.autoplayInterval);
       this.autoplayInterval = null;
     }
-    
+
     super.destroy();
   }
 }

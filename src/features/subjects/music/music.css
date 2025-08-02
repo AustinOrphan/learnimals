@@ -2,117 +2,117 @@
 
 /* Hero section specific to music */
 .hero {
-    background: linear-gradient(135deg, #9b59b620, #9b59b610);
-    border-bottom: 3px solid #9b59b6;
+  background: linear-gradient(135deg, #9b59b620, #9b59b610);
+  border-bottom: 3px solid #9b59b6;
 }
 
 .hero h1 {
-    color: var(--text-heading);
+  color: var(--text-heading);
 }
 
 .hero-image img {
-    max-width: 200px;
-    height: auto;
-    border-radius: 50%;
-    border: 4px solid #9b59b6;
-    box-shadow: 0 4px 12px #9b59b640;
+  max-width: 200px;
+  height: auto;
+  border-radius: 50%;
+  border: 4px solid #9b59b6;
+  box-shadow: 0 4px 12px #9b59b640;
 }
 
 /* Feature cards for music */
 .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
 }
 
 .feature-card {
-    background-color: var(--bg-card);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px var(--shadow-color);
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .feature-card:hover {
-    border-color: #9b59b6;
-    transform: translateY(-5px);
-    box-shadow: 0 4px 16px #9b59b630;
+  border-color: #9b59b6;
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px #9b59b630;
 }
 
 .feature-card h3 {
-    color: var(--text-heading);
-    margin-bottom: 10px;
-    font-size: 1.2rem;
+  color: var(--text-heading);
+  margin-bottom: 10px;
+  font-size: 1.2rem;
 }
 
 .feature-card p {
-    color: var(--text-primary);
-    margin-bottom: 15px;
-    line-height: 1.5;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  line-height: 1.5;
 }
 
 .feature-card button {
-    background-color: #9b59b6;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+  background-color: #9b59b6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
 
 .feature-card button:hover {
-    background-color: #9b59b6dd;
-    transform: scale(1.05);
+  background-color: #9b59b6dd;
+  transform: scale(1.05);
 }
 
 /* Subject-specific color variables */
 :root {
-    --music-primary: #9b59b6;
-    --music-secondary: #9b59b680;
-    --music-light: #9b59b620;
+  --music-primary: #9b59b6;
+  --music-secondary: #9b59b680;
+  --music-light: #9b59b620;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .features-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .hero-image img {
-        max-width: 150px;
-    }
-    
-    .feature-card {
-        padding: 15px;
-    }
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .hero-image img {
+    max-width: 150px;
+  }
+
+  .feature-card {
+    padding: 15px;
+  }
 }
 
 /* Loading states */
 .loading-placeholder {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-secondary);
-    font-style: italic;
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-style: italic;
 }
 
 /* Accessibility enhancements */
 .feature-card:focus-within {
-    outline: 2px solid #9b59b6;
-    outline-offset: 2px;
+  outline: 2px solid #9b59b6;
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .feature-card {
-        transition: none;
-    }
-    
-    .feature-card:hover {
-        transform: none;
-    }
+  .feature-card {
+    transition: none;
+  }
+
+  .feature-card:hover {
+    transform: none;
+  }
 }

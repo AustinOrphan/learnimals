@@ -1,7 +1,7 @@
 /**
  * Export Import Dialog
  * User interface for exporting and importing customizations
- * 
+ *
  * Part of Phase G: Character Customization Studio
  */
 
@@ -16,17 +16,17 @@ export default class ExportImportDialog extends BaseComponent {
       tagName: 'div',
       className: 'export-import-dialog',
       attributes: {
-        'role': 'dialog',
-        'aria-label': 'Export Import Dialog'
+        role: 'dialog',
+        'aria-label': 'Export Import Dialog',
       },
-      ...options
+      ...options,
     });
 
     // Dialog state
     this.isVisible = false;
     this.currentTab = 'export';
     this.exporter = new CustomizationExporter();
-    
+
     // Data to export/import
     this.customizations = options.customizations || new Map();
     this.presets = options.presets || new Map();
@@ -39,7 +39,7 @@ export default class ExportImportDialog extends BaseComponent {
       includeCharacterData: true,
       includePresets: true,
       includeMetadata: true,
-      compressData: false
+      compressData: false,
     };
 
     // Import settings
@@ -47,7 +47,7 @@ export default class ExportImportDialog extends BaseComponent {
       validateOnImport: true,
       saveToStorage: true,
       generateNewIds: false,
-      overwriteExisting: false
+      overwriteExisting: false,
     };
 
     // Callbacks
@@ -327,23 +327,23 @@ export default class ExportImportDialog extends BaseComponent {
       this.switchTab(tab);
     } else {
       switch (id) {
-      case 'close-dialog':
-      case 'cancel-dialog':
-      case 'dialog-backdrop':
-        this.close();
-        break;
-      case 'perform-export':
-        this.performExport();
-        break;
-      case 'preview-export':
-        this.previewExport();
-        break;
-      case 'perform-import':
-        this.performImport();
-        break;
-      case 'validate-import-data':
-        this.validateImportData();
-        break;
+        case 'close-dialog':
+        case 'cancel-dialog':
+        case 'dialog-backdrop':
+          this.close();
+          break;
+        case 'perform-export':
+          this.performExport();
+          break;
+        case 'preview-export':
+          this.previewExport();
+          break;
+        case 'perform-import':
+          this.performImport();
+          break;
+        case 'validate-import-data':
+          this.validateImportData();
+          break;
       }
     }
   }
@@ -353,10 +353,14 @@ export default class ExportImportDialog extends BaseComponent {
    */
   handleChange(event) {
     const target = event.target;
-    
+
     if (target.type === 'file' && target.id === 'import-file') {
       this.handleFileSelect(target.files[0]);
-    } else if (target.type === 'checkbox' || target.type === 'radio' || target.tagName === 'SELECT') {
+    } else if (
+      target.type === 'checkbox' ||
+      target.type === 'radio' ||
+      target.tagName === 'SELECT'
+    ) {
       this.updateSettings();
     }
   }
@@ -366,7 +370,7 @@ export default class ExportImportDialog extends BaseComponent {
    */
   handleInput(event) {
     const target = event.target;
-    
+
     if (target.id === 'import-data') {
       this.updateImportButtons();
     }
@@ -377,12 +381,12 @@ export default class ExportImportDialog extends BaseComponent {
    */
   switchTab(tab) {
     this.currentTab = tab;
-    
+
     // Update tab buttons
     this.element.querySelectorAll('.tab-button').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tab);
     });
-    
+
     // Update tab content
     this.element.querySelectorAll('.tab-content').forEach(content => {
       content.classList.toggle('active', content.id === `${tab}-tab`);
@@ -395,21 +399,29 @@ export default class ExportImportDialog extends BaseComponent {
   updateSettings() {
     // Export settings
     this.exportSettings.format = this.element.querySelector('#export-format')?.value || 'json';
-    this.exportSettings.includeCharacterData = this.element.querySelector('#include-character-data')?.checked || false;
-    this.exportSettings.includePresets = this.element.querySelector('#include-presets')?.checked || false;
-    this.exportSettings.includeMetadata = this.element.querySelector('#include-metadata')?.checked || false;
-    this.exportSettings.compressData = this.element.querySelector('#compress-data')?.checked || false;
+    this.exportSettings.includeCharacterData =
+      this.element.querySelector('#include-character-data')?.checked || false;
+    this.exportSettings.includePresets =
+      this.element.querySelector('#include-presets')?.checked || false;
+    this.exportSettings.includeMetadata =
+      this.element.querySelector('#include-metadata')?.checked || false;
+    this.exportSettings.compressData =
+      this.element.querySelector('#compress-data')?.checked || false;
 
     // Import settings
-    this.importSettings.validateOnImport = this.element.querySelector('#validate-import')?.checked || false;
-    this.importSettings.saveToStorage = this.element.querySelector('#save-to-storage')?.checked || false;
-    this.importSettings.generateNewIds = this.element.querySelector('#generate-new-ids')?.checked || false;
-    this.importSettings.overwriteExisting = this.element.querySelector('#overwrite-existing')?.checked || false;
+    this.importSettings.validateOnImport =
+      this.element.querySelector('#validate-import')?.checked || false;
+    this.importSettings.saveToStorage =
+      this.element.querySelector('#save-to-storage')?.checked || false;
+    this.importSettings.generateNewIds =
+      this.element.querySelector('#generate-new-ids')?.checked || false;
+    this.importSettings.overwriteExisting =
+      this.element.querySelector('#overwrite-existing')?.checked || false;
 
     // Update exporter settings
     this.exporter.settings = {
       ...this.exporter.settings,
-      ...this.exportSettings
+      ...this.exportSettings,
     };
   }
 
@@ -421,13 +433,13 @@ export default class ExportImportDialog extends BaseComponent {
 
     try {
       const data = await this.exporter.readImportFile(file);
-      
+
       // Display in textarea
       const textarea = this.element.querySelector('#import-data');
       if (textarea) {
         textarea.value = JSON.stringify(data, null, 2);
       }
-      
+
       this.updateImportButtons();
     } catch (error) {
       this.showImportError(`Failed to read file: ${error.message}`);
@@ -440,10 +452,10 @@ export default class ExportImportDialog extends BaseComponent {
   updateImportButtons() {
     const importData = this.element.querySelector('#import-data')?.value;
     const hasData = importData && importData.trim().length > 0;
-    
+
     const importButton = this.element.querySelector('#perform-import');
     const validateButton = this.element.querySelector('#validate-import-data');
-    
+
     if (importButton) importButton.disabled = !hasData;
     if (validateButton) validateButton.disabled = !hasData;
   }
@@ -464,56 +476,65 @@ export default class ExportImportDialog extends BaseComponent {
       const metadata = {
         name: this.element.querySelector('#export-name')?.value || 'Export',
         description: this.element.querySelector('#export-description')?.value || '',
-        tags: this.element.querySelector('#export-tags')?.value.split(',').map(t => t.trim()).filter(t => t),
-        author: this.element.querySelector('#export-author')?.value || 'Anonymous'
+        tags: this.element
+          .querySelector('#export-tags')
+          ?.value.split(',')
+          .map(t => t.trim())
+          .filter(t => t),
+        author: this.element.querySelector('#export-author')?.value || 'Anonymous',
       };
 
       let exportData;
       let filename;
 
       switch (exportType) {
-      case 'customization':
-        // Export current customization
-        exportData = this.exporter.exportCustomization(
-          this.getCurrentCustomization(),
-          this.getCurrentCharacter(),
-          metadata
-        );
-        filename = this.exporter.createExportFilename('customization', metadata);
-        break;
+        case 'customization':
+          // Export current customization
+          exportData = this.exporter.exportCustomization(
+            this.getCurrentCustomization(),
+            this.getCurrentCharacter(),
+            metadata
+          );
+          filename = this.exporter.createExportFilename('customization', metadata);
+          break;
 
-      case 'collection':
-        // Export customization collection
-        const customizations = Array.from(this.customizations.entries()).map(([id, customization]) => ({
-          id,
-          customization,
-          character: this.getCharacterForCustomization(id),
-          metadata: {}
-        }));
-        exportData = this.exporter.exportCustomizations(customizations, metadata);
-        filename = this.exporter.createExportFilename('collection', metadata);
-        break;
+        case 'collection':
+          // Export customization collection
+          const customizations = Array.from(this.customizations.entries()).map(
+            ([id, customization]) => ({
+              id,
+              customization,
+              character: this.getCharacterForCustomization(id),
+              metadata: {},
+            })
+          );
+          exportData = this.exporter.exportCustomizations(customizations, metadata);
+          filename = this.exporter.createExportFilename('collection', metadata);
+          break;
 
-      case 'presets':
-        // Export presets
-        exportData = this.exporter.exportPresets(this.presets, metadata);
-        filename = this.exporter.createExportFilename('presets', metadata);
-        break;
+        case 'presets':
+          // Export presets
+          exportData = this.exporter.exportPresets(this.presets, metadata);
+          filename = this.exporter.createExportFilename('presets', metadata);
+          break;
 
-      case 'session':
-        // Export session
-        exportData = this.exporter.exportStudioSession({
-          characters: this.characters,
-          customizations: this.customizations,
-          presets: this.presets,
-          settings: this.getSessionSettings(),
-          history: this.getSessionHistory()
-        }, metadata);
-        filename = this.exporter.createExportFilename('session', metadata);
-        break;
+        case 'session':
+          // Export session
+          exportData = this.exporter.exportStudioSession(
+            {
+              characters: this.characters,
+              customizations: this.customizations,
+              presets: this.presets,
+              settings: this.getSessionSettings(),
+              history: this.getSessionHistory(),
+            },
+            metadata
+          );
+          filename = this.exporter.createExportFilename('session', metadata);
+          break;
 
-      default:
-        throw new Error(`Unknown export type: ${exportType}`);
+        default:
+          throw new Error(`Unknown export type: ${exportType}`);
       }
 
       // Download the file
@@ -524,7 +545,7 @@ export default class ExportImportDialog extends BaseComponent {
         type: exportType,
         format: this.exportSettings.format,
         filename: `${filename}.${this.exportSettings.format}`,
-        metadata
+        metadata,
       });
 
       // Call callback
@@ -532,12 +553,11 @@ export default class ExportImportDialog extends BaseComponent {
         type: exportType,
         data: exportData,
         filename,
-        metadata
+        metadata,
       });
 
       // Show success message
       this.showExportSuccess(`Successfully exported ${exportType}`);
-
     } catch (error) {
       console.error('Export failed:', error);
       this.showExportError(error.message);
@@ -558,51 +578,50 @@ export default class ExportImportDialog extends BaseComponent {
 
       // Generate preview data (limited)
       let previewData = {};
-      
+
       switch (exportType) {
-      case 'customization':
-        previewData = {
-          type: 'customization',
-          customization: this.getCurrentCustomization(),
-          metadata: { preview: true }
-        };
-        break;
-      case 'collection':
-        previewData = {
-          type: 'customization_collection',
-          count: this.customizations.size,
-          metadata: { preview: true }
-        };
-        break;
-      case 'presets':
-        previewData = {
-          type: 'preset_collection',
-          count: this.presets.size,
-          metadata: { preview: true }
-        };
-        break;
-      case 'session':
-        previewData = {
-          type: 'studio_session',
-          summary: {
-            characters: this.characters.length,
-            customizations: this.customizations.size,
-            presets: this.presets.size
-          },
-          metadata: { preview: true }
-        };
-        break;
+        case 'customization':
+          previewData = {
+            type: 'customization',
+            customization: this.getCurrentCustomization(),
+            metadata: { preview: true },
+          };
+          break;
+        case 'collection':
+          previewData = {
+            type: 'customization_collection',
+            count: this.customizations.size,
+            metadata: { preview: true },
+          };
+          break;
+        case 'presets':
+          previewData = {
+            type: 'preset_collection',
+            count: this.presets.size,
+            metadata: { preview: true },
+          };
+          break;
+        case 'session':
+          previewData = {
+            type: 'studio_session',
+            summary: {
+              characters: this.characters.length,
+              customizations: this.customizations.size,
+              presets: this.presets.size,
+            },
+            metadata: { preview: true },
+          };
+          break;
       }
 
       // Show preview
       const previewContainer = this.element.querySelector('#export-preview');
       const previewContent = this.element.querySelector('#preview-content');
-      
+
       if (previewContainer && previewContent) {
         previewContent.textContent = JSON.stringify(previewData, null, 2);
         previewContainer.style.display = 'block';
       }
-
     } catch (error) {
       this.showExportError(`Preview failed: ${error.message}`);
     }
@@ -639,16 +658,15 @@ export default class ExportImportDialog extends BaseComponent {
       characterEvents.emit('dataImported', {
         type: data.type,
         results,
-        metadata: data.metadata
+        metadata: data.metadata,
       });
 
       // Call callback
       this.onImport({
         type: data.type,
         data,
-        results
+        results,
       });
-
     } catch (error) {
       console.error('Import failed:', error);
       this.showImportError(error.message);
@@ -675,13 +693,12 @@ export default class ExportImportDialog extends BaseComponent {
 
       // Validate
       const validation = this.exporter.validateImportData(data);
-      
+
       if (validation.valid) {
         this.showImportSuccess('Data is valid and ready to import');
       } else {
         this.showImportError(`Validation failed:\n${validation.errors.join('\n')}`);
       }
-
     } catch (error) {
       this.showImportError(`Validation failed: ${error.message}`);
     }
@@ -695,7 +712,7 @@ export default class ExportImportDialog extends BaseComponent {
     const indicator = document.createElement('div');
     indicator.className = 'success-message';
     indicator.textContent = message;
-    
+
     const actionsContainer = this.element.querySelector('.export-actions');
     if (actionsContainer) {
       actionsContainer.appendChild(indicator);
@@ -710,7 +727,7 @@ export default class ExportImportDialog extends BaseComponent {
     const indicator = document.createElement('div');
     indicator.className = 'error-message';
     indicator.textContent = message;
-    
+
     const actionsContainer = this.element.querySelector('.export-actions');
     if (actionsContainer) {
       actionsContainer.appendChild(indicator);
@@ -725,7 +742,7 @@ export default class ExportImportDialog extends BaseComponent {
     const indicator = document.createElement('div');
     indicator.className = 'success-message';
     indicator.textContent = message;
-    
+
     const actionsContainer = this.element.querySelector('.import-actions');
     if (actionsContainer) {
       actionsContainer.appendChild(indicator);
@@ -740,7 +757,7 @@ export default class ExportImportDialog extends BaseComponent {
     const indicator = document.createElement('div');
     indicator.className = 'error-message';
     indicator.textContent = message;
-    
+
     const actionsContainer = this.element.querySelector('.import-actions');
     if (actionsContainer) {
       actionsContainer.appendChild(indicator);
@@ -754,21 +771,21 @@ export default class ExportImportDialog extends BaseComponent {
   showImportResults(results) {
     const resultsContainer = this.element.querySelector('#import-results');
     const resultsContent = this.element.querySelector('#results-content');
-    
+
     if (!resultsContainer || !resultsContent) return;
 
     let html = '';
-    
+
     if (results.success) {
       html += '<div class="result-success">✅ Import successful!</div>';
       html += `<div class="result-summary">Imported ${results.imported.length} items</div>`;
-      
+
       if (results.warnings.length > 0) {
         html += `<div class="result-warnings">⚠️ Warnings: ${results.warnings.join(', ')}</div>`;
       }
     } else {
       html += `<div class="result-error">❌ Import failed: ${results.error}</div>`;
-      
+
       if (results.errors.length > 0) {
         html += `<div class="result-errors">Errors: ${results.errors.join(', ')}</div>`;
       }
@@ -823,7 +840,7 @@ export default class ExportImportDialog extends BaseComponent {
     this.isVisible = true;
     this.element.classList.add('visible');
     document.body.style.overflow = 'hidden';
-    
+
     // Focus first interactive element
     const firstInput = this.element.querySelector('input, button, select, textarea');
     if (firstInput) {

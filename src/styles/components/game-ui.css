@@ -141,7 +141,7 @@
 }
 
 .progress-percentage {
-  color: var(--accent-primary, #4CAF50);
+  color: var(--accent-primary, #4caf50);
   font-weight: bold;
 }
 
@@ -156,7 +156,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-primary, #4CAF50), var(--accent-secondary, #66BB6A));
+  background: linear-gradient(90deg, var(--accent-primary, #4caf50), var(--accent-secondary, #66bb6a));
   border-radius: 10px;
   transition: width 0.3s ease;
   position: relative;
@@ -214,7 +214,7 @@
 }
 
 .btn-primary {
-  background: var(--accent-primary, #4CAF50);
+  background: var(--accent-primary, #4caf50);
   color: white;
 }
 
@@ -243,7 +243,7 @@
 
 .btn-outline:hover:not(:disabled) {
   background: var(--bg-secondary, #f8f9fa);
-  border-color: var(--accent-primary, #4CAF50);
+  border-color: var(--accent-primary, #4caf50);
 }
 
 .btn-icon {
@@ -311,8 +311,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Game Modals */
@@ -413,7 +417,7 @@
   margin-bottom: 10px;
 }
 
-.setting-group input[type="range"],
+.setting-group input[type='range'],
 .setting-group select {
   width: 100%;
   padding: 10px;
@@ -423,7 +427,7 @@
   background: var(--bg-input, #ffffff);
 }
 
-.setting-group input[type="range"] {
+.setting-group input[type='range'] {
   padding: 5px;
 }
 
@@ -460,7 +464,7 @@
 }
 
 .footer-links a:hover {
-  color: var(--accent-primary, #4CAF50);
+  color: var(--accent-primary, #4caf50);
 }
 
 /* Error Messages */
@@ -494,42 +498,42 @@
   .game-layout {
     padding: 10px;
   }
-  
+
   .game-header {
     padding: 15px;
   }
-  
+
   .game-title h1 {
     font-size: 1.5rem;
   }
-  
+
   .game-stats-header {
     flex-wrap: wrap;
     gap: 15px;
   }
-  
+
   .stat-value {
     font-size: 1.2rem;
   }
-  
+
   .game-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .control-group {
     width: 100%;
     justify-content: center;
   }
-  
+
   .game-container {
     padding: 20px;
   }
-  
+
   .overlay-content {
     padding: 30px 20px;
   }
-  
+
   .modal-content {
     max-width: 95%;
   }
@@ -540,10 +544,10 @@
   .game-overlay {
     background: rgba(0, 0, 0, 0.8);
   }
-  
+
   .loading-spinner {
     border-color: var(--bg-secondary, #333);
-    border-top-color: var(--accent-primary, #4CAF50);
+    border-top-color: var(--accent-primary, #4caf50);
   }
 }
 
@@ -554,7 +558,7 @@
   #navbar-placeholder {
     display: none;
   }
-  
+
   .game-container {
     box-shadow: none;
     border: 1px solid #ddd;

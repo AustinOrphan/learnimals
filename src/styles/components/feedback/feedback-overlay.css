@@ -20,7 +20,7 @@
   font-family: var(--font-family);
 }
 
-.feedback-overlay[aria-hidden="false"] {
+.feedback-overlay[aria-hidden='false'] {
   opacity: 1;
   visibility: visible;
 }
@@ -206,9 +206,18 @@
 }
 
 @keyframes feedbackIconPulse {
-  0% { transform: scale(0.5); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .feedback-icon {
@@ -281,10 +290,19 @@
 }
 
 @keyframes achievementBadgeSpin {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(5deg) scale(1.05); }
-  50% { transform: rotate(0deg) scale(1.1); }
-  75% { transform: rotate(-5deg) scale(1.05); }
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(5deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(-5deg) scale(1.05);
+  }
 }
 
 .achievement-sparkles {
@@ -316,8 +334,15 @@
 }
 
 @keyframes sparkleFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
-  50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 1;
+  }
 }
 
 /* Character-specific styling */
@@ -360,23 +385,53 @@
 }
 
 @keyframes successBounce {
-  0% { transform: scale(0.3) translateY(50px); }
-  50% { transform: scale(1.05) translateY(-10px); }
-  100% { transform: scale(1) translateY(0); }
+  0% {
+    transform: scale(0.3) translateY(50px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-10px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
 }
 
 @keyframes errorShake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }
 
 @keyframes achievementCelebrate {
-  0% { transform: scale(0.1) rotate(-180deg); }
-  25% { transform: scale(1.1) rotate(-90deg); }
-  50% { transform: scale(0.95) rotate(0deg); }
-  75% { transform: scale(1.05) rotate(10deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(0.1) rotate(-180deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(-90deg);
+  }
+  50% {
+    transform: scale(0.95) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.05) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* Character animation classes */
@@ -393,20 +448,39 @@
 }
 
 @keyframes characterCelebrate {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.1) rotate(5deg); }
-  50% { transform: scale(1.15) rotate(0deg); }
-  75% { transform: scale(1.1) rotate(-5deg); }
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(-5deg);
+  }
 }
 
 @keyframes characterEncourage {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 @keyframes characterThink {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 /* Reduced motion support */
@@ -419,11 +493,11 @@
     animation: none !important;
     transition: opacity 0.2s ease !important;
   }
-  
+
   .feedback-overlay-icon {
     animation: none !important;
   }
-  
+
   .achievement-sparkles::before,
   .achievement-sparkles::after {
     animation: none !important;
@@ -438,21 +512,21 @@
     padding: 1.5rem;
     margin: 1rem;
   }
-  
+
   .character-avatar {
     width: 60px;
     height: 60px;
   }
-  
+
   .feedback-overlay-message {
     font-size: 1.1rem;
   }
-  
+
   .speech-bubble-content {
     font-size: 0.85rem;
     max-width: 180px;
   }
-  
+
   .feedback-overlay-close {
     width: 32px;
     height: 32px;
@@ -467,11 +541,11 @@
     height: 44px;
     font-size: 1.2rem;
   }
-  
+
   .character-avatar:hover {
     transform: none;
   }
-  
+
   .feedback-overlay-close:hover {
     transform: none;
   }
@@ -483,11 +557,11 @@
     border-width: 4px;
     box-shadow: 0 0 0 2px var(--text-primary);
   }
-  
+
   .character-avatar {
     border-width: 3px;
   }
-  
+
   .speech-bubble-content {
     border-width: 3px;
   }

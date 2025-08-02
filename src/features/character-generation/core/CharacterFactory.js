@@ -1,11 +1,15 @@
 /**
  * Character Factory
  * Central factory for creating, validating, and managing characters
- * 
+ *
  * Part of Phase D: Character Generator Core
  */
 
-import { CharacterSchema, DefaultCharacterTemplate, SubjectTemplates } from '../schemas/CharacterSchema.js';
+import {
+  CharacterSchema,
+  DefaultCharacterTemplate,
+  SubjectTemplates,
+} from '../schemas/CharacterSchema.js';
 import { CharacterValidator } from '../validation/CharacterValidator.js';
 import { CharacterStorage } from '../storage/CharacterStorage.js';
 
@@ -15,13 +19,13 @@ export class CharacterFactory {
     this.storage = new CharacterStorage();
     this.defaultTemplate = DefaultCharacterTemplate;
     this.subjectTemplates = SubjectTemplates;
-    
+
     // Character generation rules and algorithms
     this.generationRules = {
       colorPalettes: this.initializeColorPalettes(),
       nameGenerators: this.initializeNameGenerators(),
       personalityTraitCombinations: this.initializePersonalityTraits(),
-      educationSpecialties: this.initializeEducationSpecialties()
+      educationSpecialties: this.initializeEducationSpecialties(),
     };
   }
 
@@ -33,7 +37,7 @@ export class CharacterFactory {
   async createCharacter(options = {}) {
     try {
       const character = this.buildCharacterFromOptions(options);
-      
+
       // Validate the created character
       const validation = this.validator.validate(character);
       if (!validation.isValid) {
@@ -41,7 +45,7 @@ export class CharacterFactory {
           success: false,
           error: 'Generated character failed validation',
           details: validation.errors,
-          warnings: validation.warnings
+          warnings: validation.warnings,
         };
       }
 
@@ -51,27 +55,26 @@ export class CharacterFactory {
         if (!saveResult.success) {
           return saveResult;
         }
-        
+
         return {
           success: true,
           character: saveResult.character,
           characterId: saveResult.characterId,
-          warnings: validation.warnings.concat(saveResult.warnings || [])
+          warnings: validation.warnings.concat(saveResult.warnings || []),
         };
       }
 
       return {
         success: true,
         character,
-        warnings: validation.warnings
+        warnings: validation.warnings,
       };
-
     } catch (error) {
       console.error('Character creation failed:', error);
       return {
         success: false,
         error: 'Character creation failed',
-        details: [error.message]
+        details: [error.message],
       };
     }
   }
@@ -86,7 +89,7 @@ export class CharacterFactory {
     const options = {
       subject,
       randomGeneration: true,
-      ...constraints
+      ...constraints,
     };
 
     // Apply subject-specific template
@@ -105,10 +108,10 @@ export class CharacterFactory {
    */
   async createFromTemplate(templateName, overrides = {}) {
     const template = this.subjectTemplates[templateName] || this.defaultTemplate;
-    
+
     const options = {
       template: template,
-      ...overrides
+      ...overrides,
     };
 
     // If templateName is a valid subject template, ensure subject is set
@@ -132,13 +135,13 @@ export class CharacterFactory {
         return {
           success: false,
           error: 'Original character not found',
-          details: [`Character with ID ${characterId} does not exist`]
+          details: [`Character with ID ${characterId} does not exist`],
         };
       }
 
       // Create a deep copy
       const duplicatedCharacter = JSON.parse(JSON.stringify(originalCharacter));
-      
+
       // Apply modifications
       Object.keys(modifications).forEach(key => {
         if (key === 'metadata') {
@@ -148,13 +151,13 @@ export class CharacterFactory {
             ...modifications.metadata,
             created: new Date().toISOString(),
             modified: new Date().toISOString(),
-            version: '1.0.0'
+            version: '1.0.0',
           };
         } else if (typeof modifications[key] === 'object' && !Array.isArray(modifications[key])) {
           // Deep merge objects
           duplicatedCharacter[key] = {
             ...duplicatedCharacter[key],
-            ...modifications[key]
+            ...modifications[key],
           };
         } else {
           duplicatedCharacter[key] = modifications[key];
@@ -163,7 +166,7 @@ export class CharacterFactory {
 
       // Generate new ID
       duplicatedCharacter.id = this.generateUniqueId(duplicatedCharacter);
-      
+
       // Update name if not explicitly changed
       if (!modifications.name) {
         duplicatedCharacter.name = `${duplicatedCharacter.name} Copy`;
@@ -171,15 +174,14 @@ export class CharacterFactory {
 
       return this.createCharacter({
         ...duplicatedCharacter,
-        autoSave: true
+        autoSave: true,
       });
-
     } catch (error) {
       console.error('Character duplication failed:', error);
       return {
         success: false,
         error: 'Character duplication failed',
-        details: [error.message]
+        details: [error.message],
       };
     }
   }
@@ -217,15 +219,19 @@ export class CharacterFactory {
     const allSubjects = Object.keys(this.subjectTemplates);
     allSubjects.forEach(subject => {
       const count = subjectCounts[subject] || 0;
-      if (count < 2) { // Suggest if less than 2 characters exist
+      if (count < 2) {
+        // Suggest if less than 2 characters exist
         suggestions.push({
           type: 'subject_gap',
           priority: count === 0 ? 'high' : 'medium',
           suggestion: {
             subject,
-            reason: count === 0 ? 'No characters for this subject' : 'Only one character for this subject',
-            template: this.subjectTemplates[subject]
-          }
+            reason:
+              count === 0
+                ? 'No characters for this subject'
+                : 'Only one character for this subject',
+            template: this.subjectTemplates[subject],
+          },
         });
       }
     });
@@ -241,8 +247,8 @@ export class CharacterFactory {
         priority: 'medium',
         suggestion: {
           personality: { traits, primaryTrait: traits[0] },
-          reason: 'Explore new personality combination'
-        }
+          reason: 'Explore new personality combination',
+        },
       });
     });
 
@@ -259,17 +265,20 @@ export class CharacterFactory {
           appearance: {
             primaryColor: palette.primary,
             secondaryColor: palette.secondary,
-            accentColor: palette.accent
+            accentColor: palette.accent,
           },
-          reason: 'Try a new color scheme'
-        }
+          reason: 'Try a new color scheme',
+        },
       });
     });
 
     // Apply user preferences to filter suggestions
     if (preferences.favoriteSubjects) {
       suggestions.forEach(suggestion => {
-        if (suggestion.suggestion.subject && preferences.favoriteSubjects.includes(suggestion.suggestion.subject)) {
+        if (
+          suggestion.suggestion.subject &&
+          preferences.favoriteSubjects.includes(suggestion.suggestion.subject)
+        ) {
           suggestion.priority = 'high';
         }
       });
@@ -291,12 +300,12 @@ export class CharacterFactory {
     const preview = this.buildCharacterFromOptions({
       ...partialCharacter,
       autoSave: false,
-      preview: true
+      preview: true,
     });
 
     return {
       character: preview,
-      validation: this.validator.validate(preview)
+      validation: this.validator.validate(preview),
     };
   }
 
@@ -319,8 +328,17 @@ export class CharacterFactory {
 
     // Apply specific overrides
     Object.keys(options).forEach(key => {
-      if (key !== 'template' && key !== 'randomGeneration' && key !== 'autoSave' && key !== 'preview') {
-        if (typeof options[key] === 'object' && !Array.isArray(options[key]) && options[key] !== null) {
+      if (
+        key !== 'template' &&
+        key !== 'randomGeneration' &&
+        key !== 'autoSave' &&
+        key !== 'preview'
+      ) {
+        if (
+          typeof options[key] === 'object' &&
+          !Array.isArray(options[key]) &&
+          options[key] !== null
+        ) {
           character[key] = this.mergeDeep(character[key] || {}, options[key]);
         } else {
           character[key] = options[key];
@@ -429,18 +447,19 @@ export class CharacterFactory {
     const subject = character.subject || 'general';
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 4);
-    
+
     return `${baseName}-${subject}-${timestamp}-${random}`;
   }
 
   generateRandomName(subject) {
-    const names = this.generationRules.nameGenerators[subject] || this.generationRules.nameGenerators.general;
+    const names =
+      this.generationRules.nameGenerators[subject] || this.generationRules.nameGenerators.general;
     return names[Math.floor(Math.random() * names.length)];
   }
 
   getRandomColorPalette(subject) {
-    const palettes = this.generationRules.colorPalettes.filter(p => 
-      !p.subjects || p.subjects.includes(subject)
+    const palettes = this.generationRules.colorPalettes.filter(
+      p => !p.subjects || p.subjects.includes(subject)
     );
     return palettes[Math.floor(Math.random() * palettes.length)];
   }
@@ -460,7 +479,7 @@ export class CharacterFactory {
   generateRandomAccessories(subject) {
     const accessories = [];
     const accessoryTypes = ['glasses', 'hat', 'badge', 'bow'];
-    
+
     // 30% chance of having accessories
     if (Math.random() < 0.3) {
       const accessoryType = accessoryTypes[Math.floor(Math.random() * accessoryTypes.length)];
@@ -468,7 +487,7 @@ export class CharacterFactory {
         type: accessoryType,
         style: 'default',
         color: '#333333',
-        position: { x: 0, y: accessoryType === 'hat' ? 0.4 : 0.1 }
+        position: { x: 0, y: accessoryType === 'hat' ? 0.4 : 0.1 },
       });
     }
 
@@ -478,31 +497,35 @@ export class CharacterFactory {
   generateRandomInteractions(character) {
     const subjectPhrases = {
       math: {
-        greetings: ['Let\'s solve some equations!', 'Ready for number fun?', 'Math magic time!'],
-        encouragements: ['You\'re calculating perfectly!', 'Great problem solving!', 'Mathematical genius!']
+        greetings: ["Let's solve some equations!", 'Ready for number fun?', 'Math magic time!'],
+        encouragements: [
+          "You're calculating perfectly!",
+          'Great problem solving!',
+          'Mathematical genius!',
+        ],
       },
       science: {
-        greetings: ['Time for discovery!', 'Let\'s experiment!', 'Science adventure awaits!'],
-        encouragements: ['Excellent hypothesis!', 'Great observation!', 'Scientific thinking!']
-      }
+        greetings: ['Time for discovery!', "Let's experiment!", 'Science adventure awaits!'],
+        encouragements: ['Excellent hypothesis!', 'Great observation!', 'Scientific thinking!'],
+      },
     };
 
     const phrases = subjectPhrases[character.subject] || {
-      greetings: ['Hello! Ready to learn?', 'Let\'s explore together!', 'Learning time!'],
-      encouragements: ['Great work!', 'Keep it up!', 'Excellent effort!']
+      greetings: ['Hello! Ready to learn?', "Let's explore together!", 'Learning time!'],
+      encouragements: ['Great work!', 'Keep it up!', 'Excellent effort!'],
     };
 
     return {
       greetings: phrases.greetings,
       encouragements: phrases.encouragements,
       celebrations: ['Fantastic!', 'Amazing work!', 'You did it!'],
-      hints: []
+      hints: [],
     };
   }
 
   mergeDeep(target, source) {
     const result = { ...target };
-    
+
     Object.keys(source).forEach(key => {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
         result[key] = this.mergeDeep(result[key] || {}, source[key]);
@@ -510,7 +533,7 @@ export class CharacterFactory {
         result[key] = source[key];
       }
     });
-    
+
     return result;
   }
 
@@ -518,18 +541,90 @@ export class CharacterFactory {
 
   initializeColorPalettes() {
     return [
-      { name: 'Ocean Blue', primary: '#4A90E2', secondary: '#FFFFFF', accent: '#FFD700', subjects: ['science', 'physics'] },
-      { name: 'Warm Orange', primary: '#FFA500', secondary: '#FFFFFF', accent: '#FF6347', subjects: ['math', 'cooking'] },
-      { name: 'Forest Green', primary: '#228B22', secondary: '#FFFFFF', accent: '#FFFF00', subjects: ['science', 'geography', 'environment'] },
-      { name: 'Royal Purple', primary: '#9370DB', secondary: '#FFFFFF', accent: '#FFD700', subjects: ['coding', 'music'] },
-      { name: 'Rose Pink', primary: '#FF69B4', secondary: '#FFFFFF', accent: '#FFB6C1', subjects: ['art', 'music'] },
-      { name: 'Sunset Red', primary: '#FF4500', secondary: '#FFFFFF', accent: '#FFFF00', subjects: ['art', 'language'] },
-      { name: 'Sky Blue', primary: '#87CEEB', secondary: '#FFFFFF', accent: '#FFA500', subjects: ['physics'] },
-      { name: 'Earth Brown', primary: '#8B4513', secondary: '#FFFFFF', accent: '#FFD700', subjects: ['reading', 'history'] },
-      { name: 'Emerald Green', primary: '#50C878', secondary: '#FFFFFF', accent: '#FFC0CB', subjects: ['environment', 'geography'] },
-      { name: 'Golden Yellow', primary: '#FFD700', secondary: '#FFFFFF', accent: '#FF6347', subjects: ['cooking', 'history'] },
-      { name: 'Deep Blue', primary: '#4682B4', secondary: '#FFFFFF', accent: '#FFE4B5', subjects: ['physics', 'language'] },
-      { name: 'Coral', primary: '#FF7F50', secondary: '#FFFFFF', accent: '#40E0D0', subjects: ['language', 'music'] }
+      {
+        name: 'Ocean Blue',
+        primary: '#4A90E2',
+        secondary: '#FFFFFF',
+        accent: '#FFD700',
+        subjects: ['science', 'physics'],
+      },
+      {
+        name: 'Warm Orange',
+        primary: '#FFA500',
+        secondary: '#FFFFFF',
+        accent: '#FF6347',
+        subjects: ['math', 'cooking'],
+      },
+      {
+        name: 'Forest Green',
+        primary: '#228B22',
+        secondary: '#FFFFFF',
+        accent: '#FFFF00',
+        subjects: ['science', 'geography', 'environment'],
+      },
+      {
+        name: 'Royal Purple',
+        primary: '#9370DB',
+        secondary: '#FFFFFF',
+        accent: '#FFD700',
+        subjects: ['coding', 'music'],
+      },
+      {
+        name: 'Rose Pink',
+        primary: '#FF69B4',
+        secondary: '#FFFFFF',
+        accent: '#FFB6C1',
+        subjects: ['art', 'music'],
+      },
+      {
+        name: 'Sunset Red',
+        primary: '#FF4500',
+        secondary: '#FFFFFF',
+        accent: '#FFFF00',
+        subjects: ['art', 'language'],
+      },
+      {
+        name: 'Sky Blue',
+        primary: '#87CEEB',
+        secondary: '#FFFFFF',
+        accent: '#FFA500',
+        subjects: ['physics'],
+      },
+      {
+        name: 'Earth Brown',
+        primary: '#8B4513',
+        secondary: '#FFFFFF',
+        accent: '#FFD700',
+        subjects: ['reading', 'history'],
+      },
+      {
+        name: 'Emerald Green',
+        primary: '#50C878',
+        secondary: '#FFFFFF',
+        accent: '#FFC0CB',
+        subjects: ['environment', 'geography'],
+      },
+      {
+        name: 'Golden Yellow',
+        primary: '#FFD700',
+        secondary: '#FFFFFF',
+        accent: '#FF6347',
+        subjects: ['cooking', 'history'],
+      },
+      {
+        name: 'Deep Blue',
+        primary: '#4682B4',
+        secondary: '#FFFFFF',
+        accent: '#FFE4B5',
+        subjects: ['physics', 'language'],
+      },
+      {
+        name: 'Coral',
+        primary: '#FF7F50',
+        secondary: '#FFFFFF',
+        accent: '#40E0D0',
+        subjects: ['language', 'music'],
+      },
     ];
   }
 
@@ -542,12 +637,21 @@ export class CharacterFactory {
       coding: ['Pixel', 'Binary', 'Code', 'Logic', 'Debug', 'Syntax', 'Array', 'Loop'],
       music: ['Melody', 'Harmony', 'Rhythm', 'Beat', 'Tempo', 'Note', 'Chord', 'Symphony'],
       geography: ['Atlas', 'Globe', 'Compass', 'Explorer', 'Terrain', 'Summit', 'River', 'Valley'],
-      history: ['Chronicle', 'Legacy', 'Ancient', 'Heritage', 'Timeline', 'Era', 'Dynasty', 'Archive'],
+      history: [
+        'Chronicle',
+        'Legacy',
+        'Ancient',
+        'Heritage',
+        'Timeline',
+        'Era',
+        'Dynasty',
+        'Archive',
+      ],
       language: ['Lingua', 'Verb', 'Prose', 'Dialect', 'Lexicon', 'Grammar', 'Syntax', 'Phrase'],
       physics: ['Quantum', 'Newton', 'Force', 'Energy', 'Motion', 'Wave', 'Particle', 'Vector'],
       cooking: ['Chef', 'Spice', 'Savor', 'Recipe', 'Flavor', 'Baker', 'Gourmet', 'Feast'],
       environment: ['Eco', 'Terra', 'Flora', 'Fauna', 'Gaia', 'Nature', 'Verde', 'Bloom'],
-      general: ['Buddy', 'Sage', 'Spark', 'Zen', 'Quest', 'Nova', 'Echo', 'Dash']
+      general: ['Buddy', 'Sage', 'Spark', 'Zen', 'Quest', 'Nova', 'Echo', 'Dash'],
     };
   }
 
@@ -562,24 +666,102 @@ export class CharacterFactory {
       ['adventurous', 'enthusiastic'],
       ['calm', 'helpful'],
       ['cheerful', 'optimistic'],
-      ['thoughtful', 'caring']
+      ['thoughtful', 'caring'],
     ];
   }
 
   initializeEducationSpecialties() {
     return {
-      math: ['Numbers', 'Algebra', 'Geometry', 'Statistics', 'Problem Solving', 'Patterns', 'Fractions'],
-      science: ['Experiments', 'Discovery', 'Nature', 'Physics', 'Chemistry', 'Biology', 'Astronomy'],
-      reading: ['Stories', 'Vocabulary', 'Comprehension', 'Phonics', 'Writing', 'Grammar', 'Literature'],
+      math: [
+        'Numbers',
+        'Algebra',
+        'Geometry',
+        'Statistics',
+        'Problem Solving',
+        'Patterns',
+        'Fractions',
+      ],
+      science: [
+        'Experiments',
+        'Discovery',
+        'Nature',
+        'Physics',
+        'Chemistry',
+        'Biology',
+        'Astronomy',
+      ],
+      reading: [
+        'Stories',
+        'Vocabulary',
+        'Comprehension',
+        'Phonics',
+        'Writing',
+        'Grammar',
+        'Literature',
+      ],
       art: ['Drawing', 'Painting', 'Colors', 'Creativity', 'Design', 'Sculpture', 'Crafts'],
-      coding: ['Programming', 'Logic', 'Algorithms', 'Debugging', 'Web Development', 'Problem Solving'],
-      music: ['Rhythm', 'Melody', 'Harmony', 'Instruments', 'Music Theory', 'Composition', 'Singing'],
-      geography: ['Maps', 'Countries', 'Cultures', 'Landforms', 'Climate', 'Population', 'Resources'],
-      history: ['Ancient Civilizations', 'Timeline', 'Historical Events', 'Famous People', 'Cultural Heritage', 'World History'],
-      language: ['Vocabulary', 'Grammar', 'Communication', 'Writing', 'Reading', 'Speaking', 'Language Structure'],
+      coding: [
+        'Programming',
+        'Logic',
+        'Algorithms',
+        'Debugging',
+        'Web Development',
+        'Problem Solving',
+      ],
+      music: [
+        'Rhythm',
+        'Melody',
+        'Harmony',
+        'Instruments',
+        'Music Theory',
+        'Composition',
+        'Singing',
+      ],
+      geography: [
+        'Maps',
+        'Countries',
+        'Cultures',
+        'Landforms',
+        'Climate',
+        'Population',
+        'Resources',
+      ],
+      history: [
+        'Ancient Civilizations',
+        'Timeline',
+        'Historical Events',
+        'Famous People',
+        'Cultural Heritage',
+        'World History',
+      ],
+      language: [
+        'Vocabulary',
+        'Grammar',
+        'Communication',
+        'Writing',
+        'Reading',
+        'Speaking',
+        'Language Structure',
+      ],
       physics: ['Forces', 'Motion', 'Energy', 'Waves', 'Electricity', 'Magnetism', 'Matter'],
-      cooking: ['Recipes', 'Nutrition', 'Kitchen Safety', 'Food Preparation', 'Healthy Eating', 'Measurements', 'Techniques'],
-      environment: ['Conservation', 'Ecosystems', 'Sustainability', 'Climate', 'Wildlife', 'Recycling', 'Natural Resources']
+      cooking: [
+        'Recipes',
+        'Nutrition',
+        'Kitchen Safety',
+        'Food Preparation',
+        'Healthy Eating',
+        'Measurements',
+        'Techniques',
+      ],
+      environment: [
+        'Conservation',
+        'Ecosystems',
+        'Sustainability',
+        'Climate',
+        'Wildlife',
+        'Recycling',
+        'Natural Resources',
+      ],
     };
   }
 }

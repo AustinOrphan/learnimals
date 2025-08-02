@@ -1,6 +1,6 @@
 /**
  * Character Integration Utilities
- * 
+ *
  * Bridge between existing config-based characters and the new character generation system.
  * Provides conversion, compatibility, and enhancement functions.
  */
@@ -20,7 +20,7 @@ export function configToCharacterSchema(subjectKey) {
   }
 
   const configChar = subjectConfig.character;
-  
+
   // Create base character using template if available
   let character;
   try {
@@ -31,22 +31,27 @@ export function configToCharacterSchema(subjectKey) {
       name: configChar.name,
       species: {
         primary: configChar.species || configChar.type.toLowerCase(),
-        category: getSpeciesCategory(configChar.species || configChar.type.toLowerCase())
-      }
+        category: getSpeciesCategory(configChar.species || configChar.type.toLowerCase()),
+      },
     });
   }
 
   // Override with config-specific data
   character.name = configChar.name;
   character.species.primary = configChar.species || configChar.type.toLowerCase();
-  
+
   // Map personality if available in config
   if (configChar.personality) {
-    character.personality.traits = { ...character.personality.traits, ...configChar.personality.traits };
-    character.personality.learningStyle = configChar.personality.learningStyle || character.personality.learningStyle;
-    character.personality.teachingApproach = configChar.personality.teachingApproach || character.personality.teachingApproach;
+    character.personality.traits = {
+      ...character.personality.traits,
+      ...configChar.personality.traits,
+    };
+    character.personality.learningStyle =
+      configChar.personality.learningStyle || character.personality.learningStyle;
+    character.personality.teachingApproach =
+      configChar.personality.teachingApproach || character.personality.teachingApproach;
     character.personality.favoriteSubject = subjectKey;
-    
+
     // Add config-specific personality data
     if (configChar.personality.catchphrase) {
       character.personality.catchphrase = configChar.personality.catchphrase;
@@ -67,7 +72,7 @@ export function configToCharacterSchema(subjectKey) {
     subjectKey: subjectKey,
     role: configChar.role,
     originalImage: configChar.image,
-    isDefault: true
+    isDefault: true,
   };
 
   return character;
@@ -79,7 +84,7 @@ export function configToCharacterSchema(subjectKey) {
  */
 export function getAllDefaultCharacters() {
   const characters = [];
-  
+
   Object.keys(config.subjects).forEach(subjectKey => {
     try {
       const character = configToCharacterSchema(subjectKey);
@@ -126,7 +131,7 @@ export function enhanceCharacterWithConfig(character, subjectKey) {
       ...enhanced.personality,
       favoriteSubject: subjectKey,
       teachingStyle: configChar.personality.teachingApproach,
-      catchphrase: configChar.personality.catchphrase
+      catchphrase: configChar.personality.catchphrase,
     };
 
     // Blend personality traits (75% character, 25% config)
@@ -134,8 +139,7 @@ export function enhanceCharacterWithConfig(character, subjectKey) {
       Object.keys(configChar.personality.traits).forEach(trait => {
         if (enhanced.personality.traits[trait] !== undefined) {
           enhanced.personality.traits[trait] = Math.round(
-            enhanced.personality.traits[trait] * 0.75 + 
-            configChar.personality.traits[trait] * 0.25
+            enhanced.personality.traits[trait] * 0.75 + configChar.personality.traits[trait] * 0.25
           );
         }
       });
@@ -168,72 +172,84 @@ export function enhanceCharacterWithConfig(character, subjectKey) {
 export function generateCharacterMessage(character, context = 'greeting') {
   const personality = character.personality;
   const name = character.name;
-  
+
   const messages = {
     greeting: {
       high_enthusiasm: [
         `Hi there! I'm ${name} and I'm SO excited to learn with you today!`,
         `${name} here! Ready for an amazing adventure?`,
-        `Wow! ${name} can't wait to explore together!`
+        `Wow! ${name} can't wait to explore together!`,
       ],
       medium_enthusiasm: [
         `Hello! I'm ${name}, your learning companion.`,
         `Hi! ${name} here, ready to help you learn.`,
-        `Welcome! I'm ${name} and I'm here to guide you.`
+        `Welcome! I'm ${name} and I'm here to guide you.`,
       ],
       low_enthusiasm: [
         `Hello. I'm ${name}. Let's begin our lesson.`,
         `I'm ${name}. We can start whenever you're ready.`,
-        `${name} here. What would you like to work on?`
-      ]
+        `${name} here. What would you like to work on?`,
+      ],
     },
     encouragement: {
       high_patience: [
         `Don't worry, ${name} believes in you! Let's try again.`,
         `That's okay! ${name} knows you can do this.`,
-        `No problem! ${name} is here to help you learn.`
+        `No problem! ${name} is here to help you learn.`,
       ],
       medium_patience: [
         `Let's take another approach. ${name} will help!`,
         `That's alright! ${name} has some tips for you.`,
-        `${name} thinks you're doing great! Let's keep trying.`
+        `${name} thinks you're doing great! Let's keep trying.`,
       ],
       low_patience: [
-        'Let\'s focus and try again.',
+        "Let's focus and try again.",
         `${name} knows you can get this right.`,
-        'One more time - you\'ve got this!'
-      ]
+        "One more time - you've got this!",
+      ],
     },
     celebration: {
       high_playfulness: [
         `YES! ${name} is doing a happy dance! You did it!`,
         `WOO-HOO! ${name} is so proud of you!`,
-        `AMAZING! ${name} wants to celebrate with you!`
+        `AMAZING! ${name} wants to celebrate with you!`,
       ],
       medium_playfulness: [
         `Great job! ${name} is really proud of you!`,
         `Well done! ${name} thinks you're awesome!`,
-        `Excellent work! ${name} is impressed!`
+        `Excellent work! ${name} is impressed!`,
       ],
       low_playfulness: [
         `Well done. ${name} is pleased with your progress.`,
         `Good work. ${name} approves.`,
-        `Correct. ${name} is satisfied with your answer.`
-      ]
-    }
+        `Correct. ${name} is satisfied with your answer.`,
+      ],
+    },
   };
 
   // Determine personality level for message selection
   let level = 'medium';
   if (context === 'greeting') {
-    level = personality.traits.enthusiasm > 80 ? 'high_enthusiasm' : 
-      personality.traits.enthusiasm < 50 ? 'low_enthusiasm' : 'medium_enthusiasm';
+    level =
+      personality.traits.enthusiasm > 80
+        ? 'high_enthusiasm'
+        : personality.traits.enthusiasm < 50
+          ? 'low_enthusiasm'
+          : 'medium_enthusiasm';
   } else if (context === 'encouragement') {
-    level = personality.traits.patience > 80 ? 'high_patience' : 
-      personality.traits.patience < 50 ? 'low_patience' : 'medium_patience';
+    level =
+      personality.traits.patience > 80
+        ? 'high_patience'
+        : personality.traits.patience < 50
+          ? 'low_patience'
+          : 'medium_patience';
   } else if (context === 'celebration') {
-    level = personality.traits.playfulness > 80 ? 'high_playfulness' : 
-      personality.traits.playfulness < 50 ? 'low_playfulness' : 'medium_playfulness';
+    level =
+      personality.traits.playfulness > 80
+        ? 'high_playfulness'
+        : personality.traits.playfulness < 50
+          ? 'low_playfulness'
+          : 'medium_playfulness';
   }
 
   const messagePool = messages[context]?.[level] || messages.greeting.medium_enthusiasm;
@@ -259,21 +275,21 @@ function getSpeciesCategory(species) {
     dog: 'mammal',
     panda: 'mammal',
     lion: 'mammal',
-    
+
     // Birds
     parrot: 'bird',
     songbird: 'bird',
     eagle: 'bird',
-    
+
     // Aquatic
     shark: 'aquatic',
     fish: 'aquatic',
     dolphin: 'aquatic',
-    
+
     // Mythical
     dragon: 'mythical',
     unicorn: 'mythical',
-    phoenix: 'mythical'
+    phoenix: 'mythical',
   };
 
   return categories[species.toLowerCase()] || 'mammal';
@@ -287,22 +303,22 @@ function getSpeciesCategory(species) {
  */
 export function getCharacterAnimationState(character, context) {
   const personality = character.personality;
-  
+
   switch (context) {
-  case 'correct_answer':
-    return personality.traits.playfulness > 70 ? 'celebrating' : 'happy';
-    
-  case 'wrong_answer':
-    return personality.traits.empathy > 80 ? 'encouraging' : 'thinking';
-    
-  case 'waiting':
-    return personality.traits.patience > 80 ? 'calm' : 'idle';
-    
-  case 'teaching':
-    return personality.traits.enthusiasm > 80 ? 'excited' : 'focused';
-    
-  default:
-    return 'idle';
+    case 'correct_answer':
+      return personality.traits.playfulness > 70 ? 'celebrating' : 'happy';
+
+    case 'wrong_answer':
+      return personality.traits.empathy > 80 ? 'encouraging' : 'thinking';
+
+    case 'waiting':
+      return personality.traits.patience > 80 ? 'calm' : 'idle';
+
+    case 'teaching':
+      return personality.traits.enthusiasm > 80 ? 'excited' : 'focused';
+
+    default:
+      return 'idle';
   }
 }
 
@@ -313,12 +329,12 @@ export function getCharacterAnimationState(character, context) {
  */
 export function getCharacterVoiceParams(character) {
   const personality = character.personality;
-  
+
   return {
-    pitch: personality.voice?.pitch || (personality.traits.enthusiasm / 100 + 0.5),
+    pitch: personality.voice?.pitch || personality.traits.enthusiasm / 100 + 0.5,
     speed: personality.voice?.speed || (personality.traits.playfulness > 70 ? 1.1 : 0.9),
     volume: personality.traits.confidence / 100,
-    accent: personality.voice?.accent || 'friendly'
+    accent: personality.voice?.accent || 'friendly',
   };
 }
 
@@ -334,18 +350,18 @@ export function characterCanUseFeature(character, feature) {
     greet: true,
     encourage: true,
     celebrate: true,
-    
+
     // Subject-specific features
     teach_math: character.personality?.favoriteSubject === 'math',
     do_science: character.personality?.favoriteSubject === 'science',
     read_stories: character.personality?.favoriteSubject === 'reading',
     create_art: character.personality?.favoriteSubject === 'art',
     write_code: character.personality?.favoriteSubject === 'coding',
-    
+
     // Personality-based features
     tell_jokes: character.personality?.traits?.playfulness > 70,
     give_detailed_help: character.personality?.traits?.patience > 80,
-    show_enthusiasm: character.personality?.traits?.enthusiasm > 70
+    show_enthusiasm: character.personality?.traits?.enthusiasm > 70,
   };
 
   return features[feature] || false;
@@ -359,5 +375,5 @@ export default {
   generateCharacterMessage,
   getCharacterAnimationState,
   getCharacterVoiceParams,
-  characterCanUseFeature
+  characterCanUseFeature,
 };

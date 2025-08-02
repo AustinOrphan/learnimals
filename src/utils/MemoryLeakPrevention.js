@@ -1,9 +1,9 @@
 /**
  * Memory Leak Prevention Utilities
- * 
+ *
  * Provides centralized utilities for preventing memory leaks in JavaScript applications.
  * Includes timer management, event listener cleanup, resource disposal, and reference clearing.
- * 
+ *
  * Features:
  * - Timer and interval management with automatic cleanup
  * - Event listener removal utilities
@@ -32,7 +32,7 @@ export default class MemoryLeakPrevention {
       this.timers.delete(timerId);
       callback();
     }, delay);
-    
+
     this.timers.add(timerId);
     return timerId;
   }
@@ -86,7 +86,7 @@ export default class MemoryLeakPrevention {
    */
   addEventListener(element, event, handler, options = {}) {
     element.addEventListener(event, handler, options);
-    
+
     const key = `${element.tagName || 'window'}-${event}`;
     if (!this.eventListeners.has(key)) {
       this.eventListeners.set(key, []);
@@ -102,7 +102,7 @@ export default class MemoryLeakPrevention {
    */
   removeEventListener(element, event, handler) {
     element.removeEventListener(event, handler);
-    
+
     const key = `${element.tagName || 'window'}-${event}`;
     const listeners = this.eventListeners.get(key);
     if (listeners) {
@@ -187,7 +187,7 @@ export default class MemoryLeakPrevention {
    */
   clearObjectReferences(obj, exemptions = []) {
     const exempt = new Set(exemptions);
-    
+
     Object.keys(obj).forEach(key => {
       if (!exempt.has(key) && Object.prototype.hasOwnProperty.call(obj, key)) {
         if (obj[key] && typeof obj[key] === 'object') {
@@ -212,7 +212,7 @@ export default class MemoryLeakPrevention {
    */
   cleanDOMElement(element) {
     if (!element || !element.parentNode) return null;
-    
+
     const newElement = element.cloneNode(true);
     element.parentNode.replaceChild(newElement, element);
     return newElement;
@@ -237,16 +237,16 @@ export default class MemoryLeakPrevention {
   destroy() {
     // Execute custom cleanup callbacks first
     this.executeCleanupCallbacks();
-    
+
     // Clear all timers and intervals
     this.clearAllTimers();
-    
+
     // Remove all event listeners
     this.removeAllEventListeners();
-    
+
     // Close all audio contexts
     this.closeAllAudioContexts();
-    
+
     console.log('MemoryLeakPrevention: All resources cleaned up');
   }
 
@@ -258,9 +258,12 @@ export default class MemoryLeakPrevention {
     return {
       timers: this.timers.size,
       intervals: this.intervals.size,
-      eventListeners: Array.from(this.eventListeners.values()).reduce((acc, listeners) => acc + listeners.length, 0),
+      eventListeners: Array.from(this.eventListeners.values()).reduce(
+        (acc, listeners) => acc + listeners.length,
+        0
+      ),
       audioContexts: this.audioContexts.size,
-      cleanupCallbacks: this.cleanupCallbacks.size
+      cleanupCallbacks: this.cleanupCallbacks.size,
     };
   }
 }
@@ -296,7 +299,7 @@ export function withMemoryManagement(BaseClass) {
         this.memoryManager.destroy();
         this.memoryManager = null;
       }
-      
+
       if (super.destroy) {
         super.destroy();
       }

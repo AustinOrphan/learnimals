@@ -19,12 +19,12 @@
   padding: 1rem;
 }
 
-.game-modal[aria-hidden="false"] {
+.game-modal[aria-hidden='false'] {
   opacity: 1;
   visibility: visible;
 }
 
-.game-modal[aria-hidden="true"] {
+.game-modal[aria-hidden='true'] {
   opacity: 0;
   visibility: hidden;
 }
@@ -43,7 +43,7 @@
   position: relative;
 }
 
-.game-modal[aria-hidden="false"] .modal-content {
+.game-modal[aria-hidden='false'] .modal-content {
   transform: scale(1) translateY(0);
 }
 
@@ -162,9 +162,7 @@
 .achievement-section {
   margin: 1.5rem 0;
   padding: 1rem;
-  background: linear-gradient(135deg, 
-    var(--accent-primary, #007bff) 0%, 
-    var(--accent-secondary, #6f42c1) 100%);
+  background: linear-gradient(135deg, var(--accent-primary, #007bff) 0%, var(--accent-secondary, #6f42c1) 100%);
   border-radius: 12px;
   color: white;
   text-align: center;
@@ -267,7 +265,7 @@
 }
 
 .controls-list li::before {
-  content: "🎮";
+  content: '🎮';
   font-size: 1.2rem;
   flex-shrink: 0;
 }
@@ -279,29 +277,29 @@
     margin: 0.5rem;
     max-height: 90vh;
   }
-  
+
   .modal-content h2 {
     font-size: 1.5rem;
   }
-  
+
   .modal-actions {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .modal-actions .btn {
     min-width: auto;
     width: 100%;
   }
-  
+
   .final-score {
     padding: 1rem;
   }
-  
+
   .final-score p {
     font-size: 1.1rem;
   }
-  
+
   .final-score span {
     font-size: 1.3rem;
   }
@@ -311,20 +309,20 @@
   .game-modal {
     padding: 0.5rem;
   }
-  
+
   .modal-content {
     padding: 1rem;
     border-radius: 12px;
   }
-  
+
   .modal-content h2 {
     font-size: 1.25rem;
   }
-  
+
   .instructions-list li {
     padding-left: 2rem;
   }
-  
+
   .instructions-list li::before {
     width: 1.5rem;
     height: 1.5rem;
@@ -337,11 +335,11 @@
   .game-modal {
     background: rgba(0, 0, 0, 0.8);
   }
-  
+
   .modal-content {
     border: 2px solid var(--text-primary, #333);
   }
-  
+
   .modal-actions .btn {
     border-width: 2px;
     font-weight: 700;
@@ -354,11 +352,11 @@
   .modal-content {
     transition: none;
   }
-  
-  .game-modal[aria-hidden="false"] .modal-content {
+
+  .game-modal[aria-hidden='false'] .modal-content {
     transform: none;
   }
-  
+
   .modal-actions .btn:hover {
     transform: none;
   }
@@ -369,16 +367,16 @@
   .game-modal {
     background: rgba(0, 0, 0, 0.8);
   }
-  
+
   .modal-content {
     background: var(--bg-card, #2a2a2a);
     color: var(--text-primary, #fff);
   }
-  
+
   .modal-close {
     color: var(--text-secondary, #aaa);
   }
-  
+
   .modal-close:hover {
     background: var(--bg-secondary, #3a3a3a);
     color: var(--text-primary, #fff);
@@ -386,7 +384,7 @@
 }
 
 /* Focus Management */
-.game-modal[aria-hidden="false"] {
+.game-modal[aria-hidden='false'] {
   overflow: hidden;
 }
 
@@ -406,7 +404,7 @@
   }
 }
 
-.game-modal[aria-hidden="false"] .modal-content {
+.game-modal[aria-hidden='false'] .modal-content {
   animation: modalSlideIn 0.3s ease-out;
 }
 

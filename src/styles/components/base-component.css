@@ -7,30 +7,30 @@
   --component-padding-md: 1rem;
   --component-padding-lg: 1.5rem;
   --component-padding-xl: 2rem;
-  
+
   /* Component margins */
   --component-margin-sm: 0.5rem;
   --component-margin-md: 1rem;
   --component-margin-lg: 1.5rem;
   --component-margin-xl: 2rem;
-  
+
   /* Component borders */
   --component-border-width: 1px;
   --component-border-radius-sm: 0.25rem;
   --component-border-radius-md: 0.5rem;
   --component-border-radius-lg: 0.75rem;
   --component-border-radius-xl: 1rem;
-  
+
   /* Component shadows */
   --component-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --component-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --component-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --component-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Component focus styles */
   --component-focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.1);
   --component-focus-border: var(--accent-primary);
-  
+
   /* Component transitions */
   --component-transition-fast: 150ms ease-in-out;
   --component-transition-normal: 250ms ease-in-out;
@@ -72,12 +72,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: loading-shimmer 1.5s infinite;
 }
 
@@ -412,7 +407,7 @@
   .component {
     break-inside: avoid;
   }
-  
+
   .component-button {
     border: 1px solid #000;
     background: transparent !important;

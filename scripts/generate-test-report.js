@@ -2,7 +2,7 @@
 
 /**
  * Comprehensive Test Report Generator
- * 
+ *
  * Generates a comprehensive HTML report from all test results
  * including unit, integration, e2e, performance, security, and coverage data
  */
@@ -21,7 +21,7 @@ class TestReportGenerator {
       security: [],
       coverage: null,
       accessibility: [],
-      visual: []
+      visual: [],
     };
   }
 
@@ -38,7 +38,7 @@ class TestReportGenerator {
     }
 
     const artifacts = fs.readdirSync(this.artifactsDir);
-    
+
     artifacts.forEach(artifactDir => {
       const artifactPath = path.join(this.artifactsDir, artifactDir);
       if (!fs.statSync(artifactPath).isDirectory()) return;
@@ -53,10 +53,10 @@ class TestReportGenerator {
 
   processArtifactDirectory(artifactPath, artifactName) {
     const files = fs.readdirSync(artifactPath);
-    
+
     files.forEach(file => {
       const filePath = path.join(artifactPath, file);
-      
+
       if (file.endsWith('.json')) {
         try {
           const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -92,7 +92,7 @@ class TestReportGenerator {
   generateHTML() {
     const timestamp = new Date().toISOString();
     const summary = this.generateSummary();
-    
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,8 +143,14 @@ class TestReportGenerator {
     const unitFailed = this.results.unit.reduce((sum, r) => sum + (r.numFailedTests || 0), 0);
     const unitTotal = unitPassed + unitFailed;
 
-    const integrationPassed = this.results.integration.reduce((sum, r) => sum + (r.numPassedTests || 0), 0);
-    const integrationFailed = this.results.integration.reduce((sum, r) => sum + (r.numFailedTests || 0), 0);
+    const integrationPassed = this.results.integration.reduce(
+      (sum, r) => sum + (r.numPassedTests || 0),
+      0
+    );
+    const integrationFailed = this.results.integration.reduce(
+      (sum, r) => sum + (r.numFailedTests || 0),
+      0
+    );
     const integrationTotal = integrationPassed + integrationFailed;
 
     const e2ePassed = this.results.e2e.reduce((sum, r) => sum + (r.numPassedTests || 0), 0);
@@ -158,7 +164,7 @@ class TestReportGenerator {
     const coverage = this.results.coverage?.total?.lines?.pct || 0;
     const coverageThreshold = 80;
 
-    const overallStatus = (totalFailed === 0 && coverage >= coverageThreshold) ? 'PASSED' : 'FAILED';
+    const overallStatus = totalFailed === 0 && coverage >= coverageThreshold ? 'PASSED' : 'FAILED';
 
     return {
       totalTests,
@@ -170,9 +176,13 @@ class TestReportGenerator {
       overallStatus,
       byType: {
         unit: { total: unitTotal, passed: unitPassed, failed: unitFailed },
-        integration: { total: integrationTotal, passed: integrationPassed, failed: integrationFailed },
-        e2e: { total: e2eTotal, passed: e2ePassed, failed: e2eFailed }
-      }
+        integration: {
+          total: integrationTotal,
+          passed: integrationPassed,
+          failed: integrationFailed,
+        },
+        e2e: { total: e2eTotal, passed: e2ePassed, failed: e2eFailed },
+      },
     };
   }
 
@@ -208,7 +218,9 @@ class TestReportGenerator {
       <div class="test-type-breakdown">
         <h3>Test Type Breakdown</h3>
         <div class="breakdown-grid">
-          ${Object.entries(summary.byType).map(([type, data]) => `
+          ${Object.entries(summary.byType)
+            .map(
+              ([type, data]) => `
             <div class="breakdown-item">
               <h4>${type.charAt(0).toUpperCase() + type.slice(1)} Tests</h4>
               <div class="breakdown-bar">
@@ -216,7 +228,9 @@ class TestReportGenerator {
               </div>
               <div class="breakdown-numbers">${data.passed}/${data.total} passed</div>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
       </div>
     </section>`;
@@ -228,7 +242,7 @@ class TestReportGenerator {
     }
 
     const coverage = this.results.coverage.total;
-    
+
     return `
     <section class="coverage-section">
       <h2>📈 Code Coverage</h2>
@@ -313,7 +327,7 @@ class TestReportGenerator {
 
   generateTestResultCard(result) {
     const status = (result.numFailedTests || 0) > 0 ? 'failed' : 'passed';
-    
+
     return `
     <div class="test-result-card ${status}">
       <h4>${result.source || 'Test Suite'}</h4>
@@ -323,12 +337,16 @@ class TestReportGenerator {
         <span>⏭️ ${result.numPendingTests || 0}</span>
         <span>⏱️ ${result.testExecTime || 0}ms</span>
       </div>
-      ${result.failureMessages && result.failureMessages.length > 0 ? `
+      ${
+        result.failureMessages && result.failureMessages.length > 0
+          ? `
         <details class="failure-details">
           <summary>View Failures (${result.failureMessages.length})</summary>
           <pre>${result.failureMessages.join('\n\n')}</pre>
         </details>
-      ` : ''}
+      `
+          : ''
+      }
     </div>`;
   }
 
@@ -343,7 +361,7 @@ class TestReportGenerator {
 
     // Calculate actual performance metrics from test data
     const performanceMetrics = this.calculatePerformanceMetrics();
-    
+
     return `
     <section class="performance-section">
       <h2>⚡ Performance Tests</h2>
@@ -394,17 +412,20 @@ class TestReportGenerator {
         loadTimeStatus = result.loadTime < 2 ? 'passed' : 'failed';
         loadTimeMessage = result.loadTime < 2 ? 'Under 2s budget' : 'Exceeds 2s budget';
       }
-      
+
       if (result.bundleSize) {
         bundleSize = `${result.bundleSize}KB`;
         bundleSizeStatus = result.bundleSize < 250 ? 'passed' : 'failed';
         bundleSizeMessage = result.bundleSize < 250 ? 'Under 250KB budget' : 'Exceeds 250KB budget';
       }
-      
+
       if (result.coreWebVitals) {
         coreWebVitals = result.coreWebVitals.overall || 'Unknown';
         coreWebVitalsStatus = result.coreWebVitals.overall === 'Good' ? 'passed' : 'failed';
-        coreWebVitalsMessage = result.coreWebVitals.overall === 'Good' ? 'All metrics passed' : 'Some metrics need improvement';
+        coreWebVitalsMessage =
+          result.coreWebVitals.overall === 'Good'
+            ? 'All metrics passed'
+            : 'Some metrics need improvement';
       }
     });
 
@@ -417,7 +438,7 @@ class TestReportGenerator {
       bundleSizeMessage,
       coreWebVitals,
       coreWebVitalsStatus,
-      coreWebVitalsMessage
+      coreWebVitalsMessage,
     };
   }
 
@@ -431,7 +452,7 @@ class TestReportGenerator {
     }
 
     const securityMetrics = this.calculateSecurityMetrics();
-    
+
     return `
     <section class="security-section">
       <h2>🔒 Security Tests</h2>
@@ -462,7 +483,7 @@ class TestReportGenerator {
     const metrics = {
       xss: { status: 'failed', message: 'No test data' },
       sanitization: { status: 'failed', message: 'No test data' },
-      csrf: { status: 'failed', message: 'No test data' }
+      csrf: { status: 'failed', message: 'No test data' },
     };
 
     // Process security test results
@@ -471,21 +492,24 @@ class TestReportGenerator {
         const passed = result.xssTests.passed || 0;
         const failed = result.xssTests.failed || 0;
         metrics.xss.status = failed === 0 ? 'passed' : 'failed';
-        metrics.xss.message = failed === 0 ? `All ${passed} tests passed` : `${failed} tests failed`;
+        metrics.xss.message =
+          failed === 0 ? `All ${passed} tests passed` : `${failed} tests failed`;
       }
-      
+
       if (result.sanitizationTests) {
         const passed = result.sanitizationTests.passed || 0;
         const failed = result.sanitizationTests.failed || 0;
         metrics.sanitization.status = failed === 0 ? 'passed' : 'failed';
-        metrics.sanitization.message = failed === 0 ? `All ${passed} inputs sanitized` : `${failed} sanitization failures`;
+        metrics.sanitization.message =
+          failed === 0 ? `All ${passed} inputs sanitized` : `${failed} sanitization failures`;
       }
-      
+
       if (result.csrfTests) {
         const passed = result.csrfTests.passed || 0;
         const failed = result.csrfTests.failed || 0;
         metrics.csrf.status = failed === 0 ? 'passed' : 'failed';
-        metrics.csrf.message = failed === 0 ? `All ${passed} tokens validated` : `${failed} token validation failures`;
+        metrics.csrf.message =
+          failed === 0 ? `All ${passed} tokens validated` : `${failed} token validation failures`;
       }
     });
 
@@ -502,7 +526,7 @@ class TestReportGenerator {
     }
 
     const a11yMetrics = this.calculateAccessibilityMetrics();
-    
+
     return `
     <section class="accessibility-section">
       <h2>♿ Accessibility Tests</h2>
@@ -532,7 +556,7 @@ class TestReportGenerator {
     const metrics = {
       wcag: { level: 'Unknown', details: 'No test data available' },
       keyboard: { status: 'failed', message: 'No test data' },
-      contrast: { status: 'failed', message: 'No test data' }
+      contrast: { status: 'failed', message: 'No test data' },
     };
 
     // Process accessibility test results
@@ -540,21 +564,24 @@ class TestReportGenerator {
       if (result.wcagCompliance) {
         metrics.wcag.level = result.wcagCompliance.level || 'Unknown';
         const violations = result.wcagCompliance.violations || 0;
-        metrics.wcag.details = violations === 0 ? 'Fully compliant' : `${violations} violations found`;
+        metrics.wcag.details =
+          violations === 0 ? 'Fully compliant' : `${violations} violations found`;
       }
-      
+
       if (result.keyboardNavigation) {
         const passed = result.keyboardNavigation.passed || 0;
         const failed = result.keyboardNavigation.failed || 0;
         metrics.keyboard.status = failed === 0 ? 'passed' : 'failed';
-        metrics.keyboard.message = failed === 0 ? 'Fully accessible' : `${failed} navigation issues`;
+        metrics.keyboard.message =
+          failed === 0 ? 'Fully accessible' : `${failed} navigation issues`;
       }
-      
+
       if (result.colorContrast) {
         const minRatio = result.colorContrast.minimumRatio || 0;
         const violations = result.colorContrast.violations || 0;
         metrics.contrast.status = violations === 0 ? 'passed' : 'failed';
-        metrics.contrast.message = violations === 0 ? `${minRatio}:1 minimum met` : `${violations} contrast violations`;
+        metrics.contrast.message =
+          violations === 0 ? `${minRatio}:1 minimum met` : `${violations} contrast violations`;
       }
     });
 
@@ -571,7 +598,7 @@ class TestReportGenerator {
     }
 
     const visualMetrics = this.calculateVisualMetrics();
-    
+
     return `
     <section class="visual-section">
       <h2>👁️ Visual Regression Tests</h2>
@@ -593,29 +620,29 @@ class TestReportGenerator {
     let screenshotsCompared = 0;
     let visualDifferences = 0;
     let threshold = null;
-    
+
     // Process visual regression test results
     this.results.visual.forEach(result => {
       if (result.screenshotsCompared) {
         screenshotsCompared += result.screenshotsCompared;
       }
-      
+
       if (result.visualDifferences !== undefined) {
         visualDifferences += result.visualDifferences;
       }
-      
+
       if (result.threshold) {
         threshold = result.threshold;
       }
     });
 
     const differencesStatus = visualDifferences === 0 ? 'passed' : 'failed';
-    
+
     return {
       screenshotsCompared,
       visualDifferences,
       differencesStatus,
-      threshold
+      threshold,
     };
   }
 
@@ -972,14 +999,15 @@ class TestReportGenerator {
 // CLI execution
 if (require.main === module) {
   const artifactsDir = process.argv[2];
-  
+
   if (!artifactsDir) {
     console.error('Usage: node generate-test-report.js <artifacts-directory>');
     process.exit(1);
   }
-  
+
   const generator = new TestReportGenerator(artifactsDir);
-  generator.generateReport()
+  generator
+    .generateReport()
     .then(html => {
       console.log(html);
     })

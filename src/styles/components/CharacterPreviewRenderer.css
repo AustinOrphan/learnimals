@@ -5,7 +5,8 @@
 
 /* Character Animation Keyframes */
 @keyframes character-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -14,7 +15,8 @@
 }
 
 @keyframes character-breathe {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -23,7 +25,9 @@
 }
 
 @keyframes character-blink {
-  0%, 90%, 100% {
+  0%,
+  90%,
+  100% {
     transform: scaleY(1);
   }
   95% {
@@ -32,7 +36,8 @@
 }
 
 @keyframes sparkle-twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0;
     transform: scale(0);
   }
@@ -43,7 +48,8 @@
 }
 
 @keyframes character-bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -52,7 +58,8 @@
 }
 
 @keyframes character-wiggle {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(0deg);
   }
   25% {
@@ -64,7 +71,8 @@
 }
 
 @keyframes character-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -83,41 +91,41 @@
 }
 
 /* Theme-specific enhancements */
-.character-preview[data-theme="playful"] svg {
+.character-preview[data-theme='playful'] svg {
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
-.character-preview[data-theme="educational"] svg {
+.character-preview[data-theme='educational'] svg {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
-.character-preview[data-theme="professional"] svg {
+.character-preview[data-theme='professional'] svg {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
-.character-preview[data-theme="artistic"] svg {
+.character-preview[data-theme='artistic'] svg {
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) brightness(1.1);
 }
 
 /* Subject-specific styling */
-.character-preview[data-subject="math"] {
-  --accent-color: #4A90E2;
+.character-preview[data-subject='math'] {
+  --accent-color: #4a90e2;
 }
 
-.character-preview[data-subject="science"] {
-  --accent-color: #2ECC71;
+.character-preview[data-subject='science'] {
+  --accent-color: #2ecc71;
 }
 
-.character-preview[data-subject="reading"] {
-  --accent-color: #E74C3C;
+.character-preview[data-subject='reading'] {
+  --accent-color: #e74c3c;
 }
 
-.character-preview[data-subject="art"] {
-  --accent-color: #9B59B6;
+.character-preview[data-subject='art'] {
+  --accent-color: #9b59b6;
 }
 
-.character-preview[data-subject="coding"] {
-  --accent-color: #F39C12;
+.character-preview[data-subject='coding'] {
+  --accent-color: #f39c12;
 }
 
 /* Interactive states */
@@ -134,15 +142,15 @@
 }
 
 /* Expression-specific effects */
-.character-preview[data-expression="excited"] svg {
+.character-preview[data-expression='excited'] svg {
   animation: character-wiggle 0.5s ease-in-out;
 }
 
-.character-preview[data-expression="thinking"] .character-eye {
+.character-preview[data-expression='thinking'] .character-eye {
   animation: character-blink 3s infinite;
 }
 
-.character-preview[data-expression="happy"] svg:hover {
+.character-preview[data-expression='happy'] svg:hover {
   animation: character-bounce 0.8s ease;
 }
 
@@ -204,7 +212,7 @@
   .character-preview .sparkle-effects circle {
     animation: none !important;
   }
-  
+
   .character-preview svg:hover {
     transform: none;
   }
@@ -212,7 +220,7 @@
 
 /* Focus states for accessibility */
 .character-preview.interactive svg:focus {
-  outline: 2px solid var(--accent-color, #4A90E2);
+  outline: 2px solid var(--accent-color, #4a90e2);
   outline-offset: 4px;
   border-radius: 8px;
 }
@@ -237,7 +245,7 @@
   .character-preview svg {
     filter: contrast(1.5);
   }
-  
+
   .subject-background {
     opacity: 0.2;
   }
@@ -249,7 +257,7 @@
     min-width: 160px;
     min-height: 160px;
   }
-  
+
   .character-preview svg:hover {
     transform: scale(1.02);
   }
@@ -261,7 +269,7 @@
     filter: none;
     animation: none;
   }
-  
+
   .sparkle-effects {
     display: none;
   }

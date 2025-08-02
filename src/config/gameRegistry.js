@@ -16,24 +16,24 @@ export const gameRegistry = [
     gameClass: 'WordScrambleGame',
     scriptPath: '/src/features/games/word-scramble/wordScramble.js',
     styleSheet: '/src/features/games/word-scramble/wordScramble.css',
-    
+
     // Subject and character information
     subject: 'reading',
     character: 'Ruby',
     characterType: 'Rabbit',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration - Using minimal template for focused word puzzle gameplay
     template: 'minimal',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'word-puzzle',
@@ -45,17 +45,17 @@ export const gameRegistry = [
       lastUpdated: '2024-01-15',
       version: '1.2.0',
       tags: ['educational', 'vocabulary', 'spelling', 'puzzle'],
-      competencyLevel: 'beginner-intermediate'
+      competencyLevel: 'beginner-intermediate',
     },
-    
+
     // Game-specific options
     options: {
       timeLimit: 60,
       maxRounds: 5,
       enableHints: true,
-      enableDragDrop: true
+      enableDragDrop: true,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="word-scramble-container">
@@ -71,9 +71,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies (loaded before game script)
-    dependencies: []
+    dependencies: [],
   },
 
   // Bubble Pop Game - Now fully migrated to BaseGame
@@ -84,46 +84,51 @@ export const gameRegistry = [
     gameClass: 'BubblePopGame',
     scriptPath: '/src/features/games/bubble-pop/bubblepop.js',
     styleSheet: '/src/features/games/bubble-pop/bubblepop.css',
-    
+
     // Subject and character information
     subject: 'math',
     character: 'Mango',
     characterType: 'Shark',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features (fully featured after BaseGame migration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration - Using fullscreen template for immersive action-puzzle experience
     template: 'fullscreen', // Immersive canvas-based bubble popping with auto-hide UI
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'action-puzzle',
       estimatedPlayTime: 10, // minutes
       ageRange: '5-10',
-      learningObjectives: ['arithmetic', 'number recognition', 'problem-solving', 'hand-eye coordination'],
+      learningObjectives: [
+        'arithmetic',
+        'number recognition',
+        'problem-solving',
+        'hand-eye coordination',
+      ],
       accessibility: ['keyboard-navigation', 'high-contrast'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '2.0.0',
       tags: ['educational', 'math', 'action', 'bubbles', 'arithmetic'],
-      competencyLevel: 'beginner'
+      competencyLevel: 'beginner',
     },
-    
+
     // Game-specific options
     options: {
       canvasWidth: 800,
       canvasHeight: 600,
       bubbleSpeed: 2,
-      spawnRate: 3000
+      spawnRate: 3000,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="bubble-pop-container">
@@ -132,11 +137,9 @@ export const gameRegistry = [
         </canvas>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: [
-      '/src/features/games/bubble-pop/Bubble.js'
-    ]
+    dependencies: ['/src/features/games/bubble-pop/Bubble.js'],
   },
 
   // Pizza Maker Game - Now fully extends BaseGame for DOM-based gameplay
@@ -147,24 +150,24 @@ export const gameRegistry = [
     gameClass: 'PizzaMakerGame',
     scriptPath: '/src/features/games/pizza-maker/PizzaMakerGame.js',
     styleSheet: '/src/features/games/pizza-maker/pizzaMaker.css',
-    
+
     // Subject and character information
     subject: 'general',
     character: 'Chef Mario',
     characterType: 'Chef',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features (fully featured after BaseGame migration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration - Using mobile template for touch-friendly simulation game
     template: 'mobile', // Touch-optimized for younger ages with haptic feedback
     showControls: true, // BaseGame provides enhanced controls
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'simulation',
@@ -176,17 +179,17 @@ export const gameRegistry = [
       lastUpdated: '2024-07-14',
       version: '2.0.0',
       tags: ['simulation', 'cooking', 'memory', 'following-directions', 'fun'],
-      competencyLevel: 'beginner'
+      competencyLevel: 'beginner',
     },
-    
+
     // Game-specific options
     options: {
       ordersPerLevel: 3,
       timeLimit: 30,
       enableSound: true,
-      enableHapticFeedback: true
+      enableHapticFeedback: true,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="pizza-maker-container">
@@ -216,61 +219,64 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: [
-      '/src/utils/AnimationManager.js'
-    ]
+    dependencies: ['/src/utils/AnimationManager.js'],
   },
 
   // Element Match Game - Already fully extends BaseGame for canvas-based gameplay
   {
     id: 'element-match',
     name: 'Element Match Lab',
-    description: 'Match chemical elements with their properties in Sage\'s laboratory!',
+    description: "Match chemical elements with their properties in Sage's laboratory!",
     gameClass: 'ElementMatchGame',
     scriptPath: '/src/features/games/element-match/elementMatch.js',
     styleSheet: '/src/features/games/element-match/elementMatch.css',
-    
+
     // Subject and character information
     subject: 'science',
     character: 'Sage',
     characterType: 'Owl',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features (fully featured with BaseGame integration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration
     template: 'game',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'matching-puzzle',
       estimatedPlayTime: 12, // minutes
       ageRange: '8-14',
-      learningObjectives: ['chemistry basics', 'element properties', 'scientific reasoning', 'pattern recognition'],
+      learningObjectives: [
+        'chemistry basics',
+        'element properties',
+        'scientific reasoning',
+        'pattern recognition',
+      ],
       accessibility: ['keyboard-navigation', 'color-blind-friendly'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.5.0',
       tags: ['educational', 'science', 'chemistry', 'elements', 'matching'],
-      competencyLevel: 'intermediate'
+      competencyLevel: 'intermediate',
     },
-    
+
     // Game-specific options
     options: {
       elementsPerRound: 4,
       maxRounds: 5,
       enableHints: true,
-      showPeriodicTable: true
+      showPeriodicTable: true,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="element-match-container">
@@ -289,9 +295,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: []
+    dependencies: [],
   },
 
   // Memory Card Game - Pattern matching and memory training
@@ -302,49 +308,54 @@ export const gameRegistry = [
     gameClass: 'MemoryCardGame',
     scriptPath: '/src/features/games/memory-cards/memoryCards.js',
     styleSheet: '/src/features/games/memory-cards/memoryCards.css',
-    
+
     // Subject and character information
     subject: 'general',
     character: 'Mnemonica',
     characterType: 'Elephant',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes'],
-    
+
     // Template configuration - Using mobile template for touch-friendly card flipping
     template: 'mobile',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'memory-puzzle',
       estimatedPlayTime: 6, // minutes
       ageRange: '4-12',
-      learningObjectives: ['visual memory', 'concentration', 'pattern recognition', 'cognitive skills'],
+      learningObjectives: [
+        'visual memory',
+        'concentration',
+        'pattern recognition',
+        'cognitive skills',
+      ],
       accessibility: ['keyboard-navigation', 'large-cards', 'high-contrast'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.3.0',
       tags: ['memory', 'cognitive', 'matching', 'concentration', 'cards'],
-      competencyLevel: 'beginner'
+      competencyLevel: 'beginner',
     },
-    
+
     // Game-specific options
     options: {
       gridSizes: {
         easy: { rows: 3, cols: 4 },
         medium: { rows: 4, cols: 5 },
-        hard: { rows: 5, cols: 6 }
+        hard: { rows: 5, cols: 6 },
       },
       flipAnimationDuration: 600,
-      matchDisplayTime: 1000
+      matchDisplayTime: 1000,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="memory-cards-container">
@@ -356,9 +367,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: []
+    dependencies: [],
   },
 
   // Number Bonds Game - Math relationships
@@ -369,49 +380,54 @@ export const gameRegistry = [
     gameClass: 'NumberBondsGame',
     scriptPath: '/src/features/games/number-bonds/numberBonds.js',
     styleSheet: '/src/features/games/number-bonds/numberBonds.css',
-    
+
     // Subject and character information
     subject: 'math',
     character: 'Newton',
     characterType: 'Penguin',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration
     template: 'game',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'math-puzzle',
       estimatedPlayTime: 8, // minutes
       ageRange: '5-9',
-      learningObjectives: ['number relationships', 'addition bonds', 'subtraction bonds', 'mental math'],
+      learningObjectives: [
+        'number relationships',
+        'addition bonds',
+        'subtraction bonds',
+        'mental math',
+      ],
       accessibility: ['keyboard-navigation', 'visual-aids', 'audio-feedback'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.4.0',
       tags: ['educational', 'math', 'number-bonds', 'addition', 'subtraction'],
-      competencyLevel: 'beginner'
+      competencyLevel: 'beginner',
     },
-    
+
     // Game-specific options
     options: {
       targetNumbers: {
         easy: [5, 10],
         medium: [10, 20],
-        hard: [20, 50]
+        hard: [20, 50],
       },
       visualMode: true,
-      enableAnimations: true
+      enableAnimations: true,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="number-bonds-container">
@@ -434,9 +450,9 @@ export const gameRegistry = [
         <div class="number-picker" id="number-picker"></div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: []
+    dependencies: [],
   },
 
   // Pattern Blocks Game - Geometry and spatial reasoning
@@ -447,46 +463,51 @@ export const gameRegistry = [
     gameClass: 'PatternBlocksGame',
     scriptPath: '/src/features/games/pattern-blocks/patternBlocks.js',
     styleSheet: '/src/features/games/pattern-blocks/patternBlocks.css',
-    
+
     // Subject and character information
     subject: 'math',
     character: 'Pythagoras',
     characterType: 'Snake',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes'],
-    
+
     // Template configuration - Using fullscreen template for creative pattern design
     template: 'fullscreen',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'creative-puzzle',
       estimatedPlayTime: 15, // minutes
       ageRange: '6-12',
-      learningObjectives: ['geometric shapes', 'spatial reasoning', 'pattern recognition', 'creativity'],
+      learningObjectives: [
+        'geometric shapes',
+        'spatial reasoning',
+        'pattern recognition',
+        'creativity',
+      ],
       accessibility: ['drag-and-drop', 'keyboard-navigation', 'color-coding'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.3.0',
       tags: ['educational', 'math', 'geometry', 'patterns', 'shapes', 'creative'],
-      competencyLevel: 'beginner-intermediate'
+      competencyLevel: 'beginner-intermediate',
     },
-    
+
     // Game-specific options
     options: {
       enableFreePlay: true,
       enablePatternMode: true,
       enableSymmetryCheck: true,
-      availableShapes: ['triangle', 'square', 'hexagon', 'rhombus', 'trapezoid']
+      availableShapes: ['triangle', 'square', 'hexagon', 'rhombus', 'trapezoid'],
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="pattern-blocks-container">
@@ -508,9 +529,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: []
+    dependencies: [],
   },
 
   // Story Builder Game - Creative writing and reading
@@ -521,46 +542,51 @@ export const gameRegistry = [
     gameClass: 'StoryBuilderGame',
     scriptPath: '/src/features/games/story-builder/storyBuilder.js',
     styleSheet: '/src/features/games/story-builder/storyBuilder.css',
-    
+
     // Subject and character information
     subject: 'reading',
     character: 'Storyteller',
     characterType: 'Fox',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration
     template: 'game',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'creative-writing',
       estimatedPlayTime: 12, // minutes
       ageRange: '6-12',
-      learningObjectives: ['creative writing', 'story structure', 'vocabulary expansion', 'reading comprehension'],
+      learningObjectives: [
+        'creative writing',
+        'story structure',
+        'vocabulary expansion',
+        'reading comprehension',
+      ],
       accessibility: ['text-to-speech', 'keyboard-navigation', 'large-text'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.4.0',
       tags: ['educational', 'reading', 'writing', 'creativity', 'stories', 'vocabulary'],
-      competencyLevel: 'beginner-intermediate'
+      competencyLevel: 'beginner-intermediate',
     },
-    
+
     // Game-specific options
     options: {
       storyTemplates: ['adventure', 'mystery', 'fantasy', 'science'],
       enableIllustrations: true,
       enableNarration: true,
-      maxStoryLength: 10
+      maxStoryLength: 10,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="story-builder-container">
@@ -593,9 +619,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: []
+    dependencies: [],
   },
 
   // Number Line Jump Game - Already fully extends BaseGame for canvas-based gameplay
@@ -606,46 +632,51 @@ export const gameRegistry = [
     gameClass: 'NumberLineJumpGame',
     scriptPath: '/src/features/games/number-line-jump/numberLineJump.js',
     styleSheet: '/src/features/games/number-line-jump/numberLineJump.css',
-    
+
     // Subject and character information
     subject: 'math',
     character: 'Leo',
     characterType: 'Lion',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features (fully featured with BaseGame integration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration - Using minimal template for focused math visualization
     template: 'minimal',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'math-visualization',
       estimatedPlayTime: 10, // minutes
       ageRange: '5-10',
-      learningObjectives: ['number line concepts', 'addition visualization', 'subtraction visualization', 'counting'],
+      learningObjectives: [
+        'number line concepts',
+        'addition visualization',
+        'subtraction visualization',
+        'counting',
+      ],
       accessibility: ['keyboard-navigation', 'visual-aids', 'audio-instructions'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.5.0',
       tags: ['educational', 'math', 'number-line', 'addition', 'subtraction', 'visualization'],
-      competencyLevel: 'beginner'
+      competencyLevel: 'beginner',
     },
-    
+
     // Game-specific options
     options: {
       maxNumber: 20,
       maxJumps: 10,
       enableUndo: true,
-      visualizeJumps: true
+      visualizeJumps: true,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="number-line-jump-container">
@@ -664,9 +695,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: []
+    dependencies: [],
   },
 
   // Color Palette Game - Already fully extends BaseGame for canvas-based gameplay
@@ -677,24 +708,24 @@ export const gameRegistry = [
     gameClass: 'ColorPaletteGame',
     scriptPath: '/src/features/games/color-palette/colorPalette.js',
     styleSheet: '/src/features/games/color-palette/colorPalette.css',
-    
+
     // Subject and character information
     subject: 'art',
     character: 'Aria',
     characterType: 'Owl',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features (fully featured with BaseGame integration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration - Using fullscreen template for immersive art creation
     template: 'fullscreen',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'creative-art',
@@ -706,17 +737,17 @@ export const gameRegistry = [
       lastUpdated: '2024-07-14',
       version: '1.4.0',
       tags: ['educational', 'art', 'color-theory', 'creativity', 'design', 'palette'],
-      competencyLevel: 'beginner-intermediate'
+      competencyLevel: 'beginner-intermediate',
     },
-    
+
     // Game-specific options
     options: {
       maxChallenges: 5,
       enableColorMixing: true,
       showColorWheel: true,
-      enableHints: true
+      enableHints: true,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="color-palette-container">
@@ -735,11 +766,9 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: [
-      '/src/features/games/color-palette/colorData.js'
-    ]
+    dependencies: ['/src/features/games/color-palette/colorData.js'],
   },
 
   // Sentence Builder Game - Already fully extends BaseGame for DOM-based gameplay
@@ -750,46 +779,51 @@ export const gameRegistry = [
     gameClass: 'SentenceBuilderGame',
     scriptPath: '/src/features/games/sentence-builder/sentenceBuilder.js',
     styleSheet: '/src/features/games/sentence-builder/sentenceBuilder.css',
-    
+
     // Subject and character information
     subject: 'reading',
     character: 'Bella',
     characterType: 'Bunny',
-    
+
     // Supported difficulty levels
     difficulty: ['easy', 'medium', 'hard'],
-    
+
     // Game features (fully featured with BaseGame integration)
     features: ['analytics', 'progress', 'mobile', 'themes', 'audio'],
-    
+
     // Template configuration
     template: 'game',
     showControls: true,
     showProgress: true,
     showStats: true,
-    
+
     // Enhanced metadata fields
     metadata: {
       gameType: 'grammar-puzzle',
       estimatedPlayTime: 8, // minutes
       ageRange: '6-11',
-      learningObjectives: ['sentence structure', 'grammar rules', 'parts of speech', 'reading comprehension'],
+      learningObjectives: [
+        'sentence structure',
+        'grammar rules',
+        'parts of speech',
+        'reading comprehension',
+      ],
       accessibility: ['drag-and-drop', 'keyboard-navigation', 'text-to-speech', 'grammar-hints'],
       platforms: ['desktop', 'mobile', 'tablet'],
       lastUpdated: '2024-07-14',
       version: '1.4.0',
       tags: ['educational', 'reading', 'grammar', 'sentences', 'language-arts'],
-      competencyLevel: 'beginner-intermediate'
+      competencyLevel: 'beginner-intermediate',
     },
-    
+
     // Game-specific options
     options: {
       maxSentences: 5,
       enableDragDrop: true,
       showGrammarHints: true,
-      enableAutoCheck: false
+      enableAutoCheck: false,
     },
-    
+
     // Content for template rendering
     templateContent: `
       <div class="sentence-builder-container">
@@ -811,12 +845,10 @@ export const gameRegistry = [
         </div>
       </div>
     `,
-    
+
     // Dependencies
-    dependencies: [
-      '/src/features/games/sentence-builder/sentenceData.js'
-    ]
-  }
+    dependencies: ['/src/features/games/sentence-builder/sentenceData.js'],
+  },
 ];
 
 /**
@@ -855,9 +887,7 @@ export class GameRegistryUtil {
    * @returns {Array} Games supporting the specified difficulty
    */
   static getGamesByDifficulty(difficulty) {
-    return gameRegistry.filter(game => 
-      game.difficulty && game.difficulty.includes(difficulty)
-    );
+    return gameRegistry.filter(game => game.difficulty && game.difficulty.includes(difficulty));
   }
 
   /**
@@ -866,8 +896,8 @@ export class GameRegistryUtil {
    * @returns {Array} Games featuring the specified character
    */
   static getGamesByCharacter(character) {
-    return gameRegistry.filter(game => 
-      game.character && game.character.toLowerCase() === character.toLowerCase()
+    return gameRegistry.filter(
+      game => game.character && game.character.toLowerCase() === character.toLowerCase()
     );
   }
 
@@ -878,11 +908,9 @@ export class GameRegistryUtil {
    */
   static getGamesByFeatures(features) {
     const requiredFeatures = Array.isArray(features) ? features : [features];
-    
-    return gameRegistry.filter(game =>
-      game.features && requiredFeatures.every(feature => 
-        game.features.includes(feature)
-      )
+
+    return gameRegistry.filter(
+      game => game.features && requiredFeatures.every(feature => game.features.includes(feature))
     );
   }
 
@@ -900,57 +928,54 @@ export class GameRegistryUtil {
    */
   static getGamesAdvanced(criteria = {}) {
     let filteredGames = [...gameRegistry];
-    
+
     if (criteria.subject) {
-      filteredGames = filteredGames.filter(game => 
-        game.subject === criteria.subject
-      );
+      filteredGames = filteredGames.filter(game => game.subject === criteria.subject);
     }
-    
+
     if (criteria.difficulty) {
-      filteredGames = filteredGames.filter(game => 
-        game.difficulty && game.difficulty.includes(criteria.difficulty)
+      filteredGames = filteredGames.filter(
+        game => game.difficulty && game.difficulty.includes(criteria.difficulty)
       );
     }
-    
+
     if (criteria.features) {
-      const requiredFeatures = Array.isArray(criteria.features) ? criteria.features : [criteria.features];
-      filteredGames = filteredGames.filter(game =>
-        game.features && requiredFeatures.every(feature => 
-          game.features.includes(feature)
-        )
+      const requiredFeatures = Array.isArray(criteria.features)
+        ? criteria.features
+        : [criteria.features];
+      filteredGames = filteredGames.filter(
+        game => game.features && requiredFeatures.every(feature => game.features.includes(feature))
       );
     }
-    
+
     if (criteria.template) {
-      filteredGames = filteredGames.filter(game => 
-        game.template === criteria.template
-      );
+      filteredGames = filteredGames.filter(game => game.template === criteria.template);
     }
-    
+
     if (criteria.character) {
-      filteredGames = filteredGames.filter(game => 
-        game.character && game.character.toLowerCase() === criteria.character.toLowerCase()
+      filteredGames = filteredGames.filter(
+        game => game.character && game.character.toLowerCase() === criteria.character.toLowerCase()
       );
     }
-    
+
     if (criteria.search) {
       const searchTerm = criteria.search.toLowerCase();
-      filteredGames = filteredGames.filter(game =>
-        game.name.toLowerCase().includes(searchTerm) ||
-        game.description.toLowerCase().includes(searchTerm) ||
-        game.subject.toLowerCase().includes(searchTerm) ||
-        (game.character && game.character.toLowerCase().includes(searchTerm))
+      filteredGames = filteredGames.filter(
+        game =>
+          game.name.toLowerCase().includes(searchTerm) ||
+          game.description.toLowerCase().includes(searchTerm) ||
+          game.subject.toLowerCase().includes(searchTerm) ||
+          (game.character && game.character.toLowerCase().includes(searchTerm))
       );
     }
-    
+
     if (criteria.baseGameOnly) {
       const baseGameFeatures = ['analytics', 'progress', 'mobile', 'themes'];
       filteredGames = filteredGames.filter(game =>
         baseGameFeatures.every(feature => game.features.includes(feature))
       );
     }
-    
+
     return filteredGames;
   }
 
@@ -969,9 +994,8 @@ export class GameRegistryUtil {
    * @returns {Array} Games of the specified type
    */
   static getGamesByType(gameType) {
-    return gameRegistry.filter(game => 
-      game.gameType === gameType || 
-      (game.options && game.options.gameType === gameType)
+    return gameRegistry.filter(
+      game => game.gameType === gameType || (game.options && game.options.gameType === gameType)
     );
   }
 
@@ -982,20 +1006,20 @@ export class GameRegistryUtil {
    */
   static getGamesByPlatform(platforms) {
     const requiredPlatforms = Array.isArray(platforms) ? platforms : [platforms];
-    
+
     return gameRegistry.filter(game => {
       if (!game.features) return false;
-      
+
       return requiredPlatforms.every(platform => {
         switch (platform) {
-        case 'mobile':
-          return game.features.includes('mobile');
-        case 'desktop':
-          return true; // All games support desktop
-        case 'tablet':
-          return game.features.includes('mobile') || game.features.includes('responsive');
-        default:
-          return false;
+          case 'mobile':
+            return game.features.includes('mobile');
+          case 'desktop':
+            return true; // All games support desktop
+          case 'tablet':
+            return game.features.includes('mobile') || game.features.includes('responsive');
+          default:
+            return false;
         }
       });
     });
@@ -1009,19 +1033,19 @@ export class GameRegistryUtil {
   static getGamesByOptions(optionCriteria) {
     return gameRegistry.filter(game => {
       if (!game.options) return false;
-      
+
       return Object.keys(optionCriteria).every(key => {
         const expectedValue = optionCriteria[key];
         const actualValue = game.options[key];
-        
+
         if (typeof expectedValue === 'boolean') {
           return actualValue === expectedValue;
         }
-        
+
         if (Array.isArray(expectedValue)) {
           return expectedValue.includes(actualValue);
         }
-        
+
         return actualValue === expectedValue;
       });
     });
@@ -1036,45 +1060,45 @@ export class GameRegistryUtil {
    */
   static sortGames(games, sortBy = 'name', order = 'asc') {
     const sortedGames = [...games];
-    
+
     sortedGames.sort((a, b) => {
       let aValue, bValue;
-      
+
       switch (sortBy) {
-      case 'name':
-        aValue = a.name.toLowerCase();
-        bValue = b.name.toLowerCase();
-        break;
-      case 'subject':
-        aValue = a.subject.toLowerCase();
-        bValue = b.subject.toLowerCase();
-        break;
-      case 'character':
-        aValue = (a.character || '').toLowerCase();
-        bValue = (b.character || '').toLowerCase();
-        break;
-      case 'features':
-        aValue = a.features ? a.features.length : 0;
-        bValue = b.features ? b.features.length : 0;
-        break;
-      case 'difficulty': {
-        const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
-        aValue = a.difficulty ? Math.min(...a.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
-        bValue = b.difficulty ? Math.min(...b.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
-        break;
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'subject':
+          aValue = a.subject.toLowerCase();
+          bValue = b.subject.toLowerCase();
+          break;
+        case 'character':
+          aValue = (a.character || '').toLowerCase();
+          bValue = (b.character || '').toLowerCase();
+          break;
+        case 'features':
+          aValue = a.features ? a.features.length : 0;
+          bValue = b.features ? b.features.length : 0;
+          break;
+        case 'difficulty': {
+          const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+          aValue = a.difficulty ? Math.min(...a.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
+          bValue = b.difficulty ? Math.min(...b.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
+          break;
+        }
+        default:
+          aValue = a[sortBy] || '';
+          bValue = b[sortBy] || '';
       }
-      default:
-        aValue = a[sortBy] || '';
-        bValue = b[sortBy] || '';
-      }
-      
+
       if (order === 'desc') {
         return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
       }
-      
+
       return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
     });
-    
+
     return sortedGames;
   }
 
@@ -1085,54 +1109,54 @@ export class GameRegistryUtil {
    */
   static getGamesGrouped(groupBy) {
     const grouped = {};
-    
+
     gameRegistry.forEach(game => {
       let groupKey;
-      
+
       switch (groupBy) {
-      case 'subject':
-        groupKey = game.subject;
-        break;
-      case 'character':
-        groupKey = game.character || 'Unknown';
-        break;
-      case 'template':
-        groupKey = game.template || 'default';
-        break;
-      case 'difficulty':
-        // Group by primary difficulty (first in array)
-        groupKey = game.difficulty ? game.difficulty[0] : 'Unknown';
-        break;
-      case 'metadata.gameType':
-        groupKey = game.metadata?.gameType || 'Unknown';
-        break;
-      case 'metadata.competencyLevel':
-        groupKey = game.metadata?.competencyLevel || 'Unknown';
-        break;
-      case 'metadata.ageRange':
-        groupKey = game.metadata?.ageRange || 'Unknown';
-        break;
-      default:
-        // Handle nested properties with dot notation
-        if (groupBy.includes('.')) {
-          const keys = groupBy.split('.');
-          let value = game;
-          for (const key of keys) {
-            value = value?.[key];
+        case 'subject':
+          groupKey = game.subject;
+          break;
+        case 'character':
+          groupKey = game.character || 'Unknown';
+          break;
+        case 'template':
+          groupKey = game.template || 'default';
+          break;
+        case 'difficulty':
+          // Group by primary difficulty (first in array)
+          groupKey = game.difficulty ? game.difficulty[0] : 'Unknown';
+          break;
+        case 'metadata.gameType':
+          groupKey = game.metadata?.gameType || 'Unknown';
+          break;
+        case 'metadata.competencyLevel':
+          groupKey = game.metadata?.competencyLevel || 'Unknown';
+          break;
+        case 'metadata.ageRange':
+          groupKey = game.metadata?.ageRange || 'Unknown';
+          break;
+        default:
+          // Handle nested properties with dot notation
+          if (groupBy.includes('.')) {
+            const keys = groupBy.split('.');
+            let value = game;
+            for (const key of keys) {
+              value = value?.[key];
+            }
+            groupKey = value || 'Unknown';
+          } else {
+            groupKey = game[groupBy] || 'Unknown';
           }
-          groupKey = value || 'Unknown';
-        } else {
-          groupKey = game[groupBy] || 'Unknown';
-        }
       }
-      
+
       if (!grouped[groupKey]) {
         grouped[groupKey] = [];
       }
-      
+
       grouped[groupKey].push(game);
     });
-    
+
     return grouped;
   }
 
@@ -1145,16 +1169,16 @@ export class GameRegistryUtil {
   static getSimilarGames(gameId, limit = 5) {
     const referenceGame = this.getGameById(gameId);
     if (!referenceGame) return [];
-    
+
     const similarGames = gameRegistry
       .filter(game => game.id !== gameId)
       .map(game => ({
         ...game,
-        similarity: this.calculateSimilarity(referenceGame, game)
+        similarity: this.calculateSimilarity(referenceGame, game),
       }))
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit);
-    
+
     return similarGames.map(({ similarity: _similarity, ...game }) => game);
   }
 
@@ -1167,19 +1191,19 @@ export class GameRegistryUtil {
   static calculateSimilarity(game1, game2) {
     let score = 0;
     let maxScore = 0;
-    
+
     // Subject similarity (high weight)
     maxScore += 3;
     if (game1.subject === game2.subject) score += 3;
-    
+
     // Character similarity (medium weight)
     maxScore += 2;
     if (game1.character === game2.character) score += 2;
-    
+
     // Template similarity (low weight)
     maxScore += 1;
     if (game1.template === game2.template) score += 1;
-    
+
     // Feature similarity (medium weight)
     maxScore += 2;
     if (game1.features && game2.features) {
@@ -1187,14 +1211,14 @@ export class GameRegistryUtil {
       const totalFeatures = new Set([...game1.features, ...game2.features]).size;
       score += (commonFeatures.length / totalFeatures) * 2;
     }
-    
+
     // Difficulty similarity (low weight)
     maxScore += 1;
     if (game1.difficulty && game2.difficulty) {
       const commonDifficulties = game1.difficulty.filter(d => game2.difficulty.includes(d));
       if (commonDifficulties.length > 0) score += 1;
     }
-    
+
     return maxScore > 0 ? score / maxScore : 0;
   }
 
@@ -1206,37 +1230,37 @@ export class GameRegistryUtil {
   static getGamesByMetadata(metadataCriteria) {
     return gameRegistry.filter(game => {
       if (!game.metadata) return false;
-      
+
       return Object.keys(metadataCriteria).every(key => {
         const expectedValue = metadataCriteria[key];
         const actualValue = game.metadata[key];
-        
+
         if (key === 'tags' && Array.isArray(expectedValue)) {
-          return expectedValue.some(tag => 
-            game.metadata.tags && game.metadata.tags.includes(tag)
-          );
+          return expectedValue.some(tag => game.metadata.tags && game.metadata.tags.includes(tag));
         }
-        
+
         if (key === 'learningObjectives' && Array.isArray(expectedValue)) {
-          return expectedValue.some(objective => 
-            game.metadata.learningObjectives && game.metadata.learningObjectives.includes(objective)
+          return expectedValue.some(
+            objective =>
+              game.metadata.learningObjectives &&
+              game.metadata.learningObjectives.includes(objective)
           );
         }
-        
+
         if (key === 'platforms' && Array.isArray(expectedValue)) {
-          return expectedValue.some(platform => 
-            game.metadata.platforms && game.metadata.platforms.includes(platform)
+          return expectedValue.some(
+            platform => game.metadata.platforms && game.metadata.platforms.includes(platform)
           );
         }
-        
+
         if (key === 'ageRange') {
           return this.isAgeRangeMatch(actualValue, expectedValue);
         }
-        
+
         if (key === 'estimatedPlayTime') {
           return this.isPlayTimeMatch(actualValue, expectedValue);
         }
-        
+
         return actualValue === expectedValue;
       });
     });
@@ -1250,15 +1274,15 @@ export class GameRegistryUtil {
    */
   static isAgeRangeMatch(gameAgeRange, targetAgeRange) {
     if (!gameAgeRange || !targetAgeRange) return false;
-    
-    const parseRange = (range) => {
+
+    const parseRange = range => {
       const [min, max] = range.split('-').map(Number);
       return { min, max: max || min };
     };
-    
+
     const gameRange = parseRange(gameAgeRange);
     const targetRange = parseRange(targetAgeRange);
-    
+
     return gameRange.min <= targetRange.max && gameRange.max >= targetRange.min;
   }
 
@@ -1270,31 +1294,31 @@ export class GameRegistryUtil {
    */
   static isPlayTimeMatch(gamePlayTime, criteria) {
     if (!gamePlayTime) return false;
-    
+
     if (typeof criteria === 'number') {
       return gamePlayTime === criteria;
     }
-    
+
     if (typeof criteria === 'object') {
       const { min, max, exact } = criteria;
-      
+
       if (exact !== undefined) {
         return gamePlayTime === exact;
       }
-      
+
       if (min !== undefined && max !== undefined) {
         return gamePlayTime >= min && gamePlayTime <= max;
       }
-      
+
       if (min !== undefined) {
         return gamePlayTime >= min;
       }
-      
+
       if (max !== undefined) {
         return gamePlayTime <= max;
       }
     }
-    
+
     return false;
   }
 
@@ -1305,11 +1329,11 @@ export class GameRegistryUtil {
    */
   static getGamesByLearningObjectives(objectives) {
     const targetObjectives = Array.isArray(objectives) ? objectives : [objectives];
-    
+
     return gameRegistry.filter(game => {
       if (!game.metadata || !game.metadata.learningObjectives) return false;
-      
-      return targetObjectives.some(objective => 
+
+      return targetObjectives.some(objective =>
         game.metadata.learningObjectives.includes(objective)
       );
     });
@@ -1322,13 +1346,11 @@ export class GameRegistryUtil {
    */
   static getGamesByTags(tags) {
     const targetTags = Array.isArray(tags) ? tags : [tags];
-    
+
     return gameRegistry.filter(game => {
       if (!game.metadata || !game.metadata.tags) return false;
-      
-      return targetTags.some(tag => 
-        game.metadata.tags.includes(tag)
-      );
+
+      return targetTags.some(tag => game.metadata.tags.includes(tag));
     });
   }
 
@@ -1340,7 +1362,7 @@ export class GameRegistryUtil {
   static getGamesByAgeRange(ageRange) {
     return gameRegistry.filter(game => {
       if (!game.metadata || !game.metadata.ageRange) return false;
-      
+
       return this.isAgeRangeMatch(game.metadata.ageRange, ageRange);
     });
   }
@@ -1353,7 +1375,7 @@ export class GameRegistryUtil {
   static getGamesByPlayTime(playTimeCriteria) {
     return gameRegistry.filter(game => {
       if (!game.metadata || !game.metadata.estimatedPlayTime) return false;
-      
+
       return this.isPlayTimeMatch(game.metadata.estimatedPlayTime, playTimeCriteria);
     });
   }
@@ -1365,14 +1387,15 @@ export class GameRegistryUtil {
    * @returns {Array} Recommended games
    */
   static getRecommendations(preferences, limit = 10) {
-    const recommendations = gameRegistry.map(game => ({
-      ...game,
-      score: this.calculateRecommendationScore(game, preferences)
-    }))
+    const recommendations = gameRegistry
+      .map(game => ({
+        ...game,
+        score: this.calculateRecommendationScore(game, preferences),
+      }))
       .filter(game => game.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
-    
+
     return recommendations.map(({ score: _score, ...game }) => game);
   }
 
@@ -1384,54 +1407,58 @@ export class GameRegistryUtil {
    */
   static calculateRecommendationScore(game, preferences) {
     let score = 0;
-    
+
     // Subject preference (high weight)
     if (preferences.subjects && preferences.subjects.includes(game.subject)) {
       score += 5;
     }
-    
+
     // Difficulty preference (medium weight)
-    if (preferences.difficulty && game.difficulty && game.difficulty.includes(preferences.difficulty)) {
+    if (
+      preferences.difficulty &&
+      game.difficulty &&
+      game.difficulty.includes(preferences.difficulty)
+    ) {
       score += 3;
     }
-    
+
     // Age range preference (high weight)
     if (preferences.ageRange && game.metadata && game.metadata.ageRange) {
       if (this.isAgeRangeMatch(game.metadata.ageRange, preferences.ageRange)) {
         score += 4;
       }
     }
-    
+
     // Play time preference (medium weight)
     if (preferences.playTime && game.metadata && game.metadata.estimatedPlayTime) {
       if (this.isPlayTimeMatch(game.metadata.estimatedPlayTime, preferences.playTime)) {
         score += 3;
       }
     }
-    
+
     // Learning objectives preference (medium weight)
     if (preferences.learningObjectives && game.metadata && game.metadata.learningObjectives) {
-      const matchingObjectives = preferences.learningObjectives.filter(obj => 
+      const matchingObjectives = preferences.learningObjectives.filter(obj =>
         game.metadata.learningObjectives.includes(obj)
       );
       score += matchingObjectives.length * 2;
     }
-    
+
     // Platform preference (low weight)
     if (preferences.platform && game.metadata && game.metadata.platforms) {
       if (game.metadata.platforms.includes(preferences.platform)) {
         score += 1;
       }
     }
-    
+
     // Feature preference (low weight)
     if (preferences.features && game.features) {
-      const matchingFeatures = preferences.features.filter(feature => 
+      const matchingFeatures = preferences.features.filter(feature =>
         game.features.includes(feature)
       );
       score += matchingFeatures.length * 0.5;
     }
-    
+
     return score;
   }
 
@@ -1442,11 +1469,11 @@ export class GameRegistryUtil {
    */
   static getUniqueMetadataValues(field) {
     const values = new Set();
-    
+
     gameRegistry.forEach(game => {
       if (game.metadata && game.metadata[field]) {
         const fieldValue = game.metadata[field];
-        
+
         if (Array.isArray(fieldValue)) {
           fieldValue.forEach(value => values.add(value));
         } else {
@@ -1454,7 +1481,7 @@ export class GameRegistryUtil {
         }
       }
     });
-    
+
     return Array.from(values).sort();
   }
 
@@ -1464,12 +1491,12 @@ export class GameRegistryUtil {
    */
   static getTemplateStats() {
     const templateStats = {};
-    
+
     gameRegistry.forEach(game => {
       const template = game.template || 'default';
       templateStats[template] = (templateStats[template] || 0) + 1;
     });
-    
+
     return templateStats;
   }
 
@@ -1480,26 +1507,34 @@ export class GameRegistryUtil {
    */
   static exportRegistry(format = 'json') {
     switch (format) {
-    case 'json':
-      return JSON.stringify(gameRegistry, null, 2);
-      
-    case 'csv': {
-      const headers = ['id', 'name', 'subject', 'character', 'difficulty', 'features', 'template'];
-      const rows = gameRegistry.map(game => [
-        game.id,
-        game.name,
-        game.subject,
-        game.character,
-        game.difficulty ? game.difficulty.join(';') : '',
-        game.features ? game.features.join(';') : '',
-        game.template
-      ]);
-        
-      return [headers, ...rows].map(row => row.join(',')).join('\n');
-    }
-      
-    default:
-      throw new Error(`Unsupported export format: ${format}`);
+      case 'json':
+        return JSON.stringify(gameRegistry, null, 2);
+
+      case 'csv': {
+        const headers = [
+          'id',
+          'name',
+          'subject',
+          'character',
+          'difficulty',
+          'features',
+          'template',
+        ];
+        const rows = gameRegistry.map(game => [
+          game.id,
+          game.name,
+          game.subject,
+          game.character,
+          game.difficulty ? game.difficulty.join(';') : '',
+          game.features ? game.features.join(';') : '',
+          game.template,
+        ]);
+
+        return [headers, ...rows].map(row => row.join(',')).join('\n');
+      }
+
+      default:
+        throw new Error(`Unsupported export format: ${format}`);
     }
   }
 
@@ -1510,12 +1545,13 @@ export class GameRegistryUtil {
    */
   static searchGames(query) {
     const searchTerm = query.toLowerCase();
-    
-    return gameRegistry.filter(game =>
-      game.name.toLowerCase().includes(searchTerm) ||
-      game.description.toLowerCase().includes(searchTerm) ||
-      game.subject.toLowerCase().includes(searchTerm) ||
-      (game.character && game.character.toLowerCase().includes(searchTerm))
+
+    return gameRegistry.filter(
+      game =>
+        game.name.toLowerCase().includes(searchTerm) ||
+        game.description.toLowerCase().includes(searchTerm) ||
+        game.subject.toLowerCase().includes(searchTerm) ||
+        (game.character && game.character.toLowerCase().includes(searchTerm))
     );
   }
 
@@ -1526,9 +1562,9 @@ export class GameRegistryUtil {
   static getGamesNeedingConversion() {
     // Games that don't have full feature support yet
     const fullFeatures = ['analytics', 'progress', 'mobile', 'themes'];
-    
-    return gameRegistry.filter(game =>
-      !fullFeatures.every(feature => game.features.includes(feature))
+
+    return gameRegistry.filter(
+      game => !fullFeatures.every(feature => game.features.includes(feature))
     );
   }
 
@@ -1546,9 +1582,7 @@ export class GameRegistryUtil {
    * @returns {Array} Array of unique characters
    */
   static getCharacters() {
-    const characters = gameRegistry
-      .map(game => game.character)
-      .filter(character => character);
+    const characters = gameRegistry.map(game => game.character).filter(character => character);
     return [...new Set(characters)].sort();
   }
 
@@ -1557,8 +1591,7 @@ export class GameRegistryUtil {
    * @returns {Array} Array of unique difficulty levels
    */
   static getDifficulties() {
-    const difficulties = gameRegistry
-      .flatMap(game => game.difficulty || []);
+    const difficulties = gameRegistry.flatMap(game => game.difficulty || []);
     return [...new Set(difficulties)].sort();
   }
 
@@ -1570,7 +1603,7 @@ export class GameRegistryUtil {
   static validateGameConfig(gameConfig) {
     const errors = [];
     const warnings = [];
-    
+
     // Required fields
     const required = ['id', 'name', 'gameClass', 'scriptPath'];
     for (const field of required) {
@@ -1587,15 +1620,15 @@ export class GameRegistryUtil {
     // Subject validation
     const validSubjects = ['math', 'science', 'reading', 'art', 'coding', 'general'];
     if (gameConfig.subject && !validSubjects.includes(gameConfig.subject)) {
-      errors.push(`Invalid subject: ${gameConfig.subject}. Must be one of: ${validSubjects.join(', ')}`);
+      errors.push(
+        `Invalid subject: ${gameConfig.subject}. Must be one of: ${validSubjects.join(', ')}`
+      );
     }
 
     // Difficulty validation
     const validDifficulties = ['easy', 'medium', 'hard'];
     if (gameConfig.difficulty) {
-      const invalidDiffs = gameConfig.difficulty.filter(diff => 
-        !validDifficulties.includes(diff)
-      );
+      const invalidDiffs = gameConfig.difficulty.filter(diff => !validDifficulties.includes(diff));
       if (invalidDiffs.length > 0) {
         errors.push(`Invalid difficulty levels: ${invalidDiffs.join(', ')}`);
       }
@@ -1604,28 +1637,33 @@ export class GameRegistryUtil {
     // Template validation
     const validTemplates = ['game', 'minimal', 'fullscreen', 'mobile', 'educational', 'none'];
     if (gameConfig.template && !validTemplates.includes(gameConfig.template)) {
-      errors.push(`Invalid template: ${gameConfig.template}. Must be one of: ${validTemplates.join(', ')}`);
+      errors.push(
+        `Invalid template: ${gameConfig.template}. Must be one of: ${validTemplates.join(', ')}`
+      );
     }
-    
+
     // Educational template specific validation
     if (gameConfig.template === 'educational') {
       const educationalValidation = this.validateEducationalMetadata(gameConfig.metadata || {});
       errors.push(...educationalValidation.errors);
       warnings.push(...educationalValidation.warnings);
-      
+
       // Additional educational template requirements
-      if (!gameConfig.metadata?.learningObjectives || gameConfig.metadata.learningObjectives.length === 0) {
+      if (
+        !gameConfig.metadata?.learningObjectives ||
+        gameConfig.metadata.learningObjectives.length === 0
+      ) {
         errors.push('Educational template requires learningObjectives in metadata');
       }
-      
+
       if (!gameConfig.metadata?.ageRange) {
         errors.push('Educational template requires ageRange in metadata');
       }
-      
+
       if (!gameConfig.metadata?.assessmentType) {
         errors.push('Educational template requires assessmentType in metadata');
       }
-      
+
       // COPPA compliance check
       const coppaCheck = this.checkCOPPACompliance(gameConfig.metadata || {});
       if (coppaCheck.issues.length > 0) {
@@ -1638,8 +1676,10 @@ export class GameRegistryUtil {
       isValid: errors.length === 0,
       errors,
       warnings,
-      coppaCompliant: gameConfig.template === 'educational' ? 
-        this.checkCOPPACompliance(gameConfig.metadata || {}).issues.length === 0 : true
+      coppaCompliant:
+        gameConfig.template === 'educational'
+          ? this.checkCOPPACompliance(gameConfig.metadata || {}).issues.length === 0
+          : true,
     };
   }
 
@@ -1654,7 +1694,7 @@ export class GameRegistryUtil {
       difficulties: {},
       features: {},
       characters: {},
-      needingConversion: 0
+      needingConversion: 0,
     };
 
     // Count by categories
@@ -1703,15 +1743,17 @@ export class GameRegistryUtil {
   static getEducationalGames() {
     return gameRegistry.filter(game => {
       // Check if game has educational metadata
-      const hasEducationalMetadata = game.metadata?.learningObjectives || 
-                                     game.metadata?.tags?.includes('educational') ||
-                                     game.template === 'educational';
-      
+      const hasEducationalMetadata =
+        game.metadata?.learningObjectives ||
+        game.metadata?.tags?.includes('educational') ||
+        game.template === 'educational';
+
       // Check if game is text-heavy or requires assessment
-      const isEducationalContent = game.metadata?.gameType?.includes('quiz') ||
-                                   game.metadata?.gameType?.includes('puzzle') ||
-                                   game.features?.includes('analytics');
-      
+      const isEducationalContent =
+        game.metadata?.gameType?.includes('quiz') ||
+        game.metadata?.gameType?.includes('puzzle') ||
+        game.features?.includes('analytics');
+
       return hasEducationalMetadata || isEducationalContent;
     });
   }
@@ -1724,7 +1766,7 @@ export class GameRegistryUtil {
   static getGamesByStandard(standard) {
     return gameRegistry.filter(game => {
       const standards = game.metadata?.learningStandards || game.standards || [];
-      return standards.some(gameStandard => 
+      return standards.some(gameStandard =>
         gameStandard.toLowerCase().includes(standard.toLowerCase())
       );
     });
@@ -1737,13 +1779,11 @@ export class GameRegistryUtil {
    */
   static getGamesByLearningObjectives(objectives) {
     const targetObjectives = Array.isArray(objectives) ? objectives : [objectives];
-    
+
     return gameRegistry.filter(game => {
       const gameObjectives = game.metadata?.learningObjectives || [];
       return targetObjectives.some(target =>
-        gameObjectives.some(objective =>
-          objective.toLowerCase().includes(target.toLowerCase())
-        )
+        gameObjectives.some(objective => objective.toLowerCase().includes(target.toLowerCase()))
       );
     });
   }
@@ -1757,7 +1797,7 @@ export class GameRegistryUtil {
     return gameRegistry.filter(game => {
       const gameAgeRange = game.metadata?.ageRange;
       if (!gameAgeRange) return false;
-      
+
       // Simple age range matching (could be enhanced with proper parsing)
       return gameAgeRange === ageRange || gameAgeRange.includes(ageRange);
     });
@@ -1769,10 +1809,12 @@ export class GameRegistryUtil {
    */
   static getAssessmentGames() {
     return gameRegistry.filter(game => {
-      return game.features?.includes('analytics') ||
-             game.metadata?.gameType?.includes('quiz') ||
-             game.template === 'educational' ||
-             game.metadata?.tags?.includes('assessment');
+      return (
+        game.features?.includes('analytics') ||
+        game.metadata?.gameType?.includes('quiz') ||
+        game.template === 'educational' ||
+        game.metadata?.tags?.includes('assessment')
+      );
     });
   }
 
@@ -1787,23 +1829,21 @@ export class GameRegistryUtil {
    */
   static generateLessonPlan(criteria) {
     const { subject, ageRange, objectives, duration = 30 } = criteria;
-    
+
     // Filter games based on criteria
     let recommendedGames = gameRegistry.filter(game => {
       let matches = true;
-      
+
       if (subject && game.subject !== subject) matches = false;
       if (ageRange && game.metadata?.ageRange !== ageRange) matches = false;
       if (objectives && objectives.length > 0) {
         const gameObjectives = game.metadata?.learningObjectives || [];
         const hasMatchingObjective = objectives.some(objective =>
-          gameObjectives.some(gameObj =>
-            gameObj.toLowerCase().includes(objective.toLowerCase())
-          )
+          gameObjectives.some(gameObj => gameObj.toLowerCase().includes(objective.toLowerCase()))
         );
         if (!hasMatchingObjective) matches = false;
       }
-      
+
       return matches;
     });
 
@@ -1811,20 +1851,20 @@ export class GameRegistryUtil {
     recommendedGames = recommendedGames
       .map(game => ({
         ...game,
-        educationalScore: this.calculateEducationalScore(game)
+        educationalScore: this.calculateEducationalScore(game),
       }))
       .sort((a, b) => b.educationalScore - a.educationalScore);
 
     // Create lesson structure
     const lessonStructure = {
       warmUp: recommendedGames.filter(g => g.metadata?.estimatedPlayTime <= 5).slice(0, 1),
-      mainActivity: recommendedGames.filter(g => 
-        g.metadata?.estimatedPlayTime > 5 && g.metadata?.estimatedPlayTime <= 20
-      ).slice(0, 2),
-      assessment: recommendedGames.filter(g => 
-        g.features?.includes('analytics') || g.template === 'educational'
-      ).slice(0, 1),
-      extension: recommendedGames.filter(g => g.difficulty?.includes('hard')).slice(0, 1)
+      mainActivity: recommendedGames
+        .filter(g => g.metadata?.estimatedPlayTime > 5 && g.metadata?.estimatedPlayTime <= 20)
+        .slice(0, 2),
+      assessment: recommendedGames
+        .filter(g => g.features?.includes('analytics') || g.template === 'educational')
+        .slice(0, 1),
+      extension: recommendedGames.filter(g => g.difficulty?.includes('hard')).slice(0, 1),
     };
 
     return {
@@ -1832,7 +1872,7 @@ export class GameRegistryUtil {
       recommendedGames: recommendedGames.slice(0, 10),
       lessonStructure,
       totalEstimatedTime: this.calculateLessonTime(lessonStructure),
-      learningPath: this.generateLearningPath(recommendedGames.slice(0, 5))
+      learningPath: this.generateLearningPath(recommendedGames.slice(0, 5)),
     };
   }
 
@@ -1843,26 +1883,26 @@ export class GameRegistryUtil {
    */
   static calculateEducationalScore(game) {
     let score = 0;
-    
+
     // Base score for having educational metadata
     if (game.metadata?.learningObjectives?.length > 0) score += 20;
     if (game.metadata?.tags?.includes('educational')) score += 15;
     if (game.template === 'educational') score += 25;
-    
+
     // Analytics and progress tracking
     if (game.features?.includes('analytics')) score += 15;
     if (game.features?.includes('progress')) score += 10;
-    
+
     // Age appropriateness
     if (game.metadata?.ageRange) score += 10;
-    
+
     // Assessment capabilities
     if (game.metadata?.gameType?.includes('quiz')) score += 15;
     if (game.metadata?.gameType?.includes('assessment')) score += 20;
-    
+
     // Accessibility features
     if (game.metadata?.accessibility?.length > 0) score += 5;
-    
+
     return Math.min(score, 100);
   }
 
@@ -1873,7 +1913,7 @@ export class GameRegistryUtil {
    */
   static calculateLessonTime(lessonStructure) {
     let totalTime = 0;
-    
+
     Object.values(lessonStructure).forEach(activities => {
       if (Array.isArray(activities)) {
         activities.forEach(activity => {
@@ -1881,7 +1921,7 @@ export class GameRegistryUtil {
         });
       }
     });
-    
+
     return totalTime;
   }
 
@@ -1899,7 +1939,7 @@ export class GameRegistryUtil {
       difficulty: game.difficulty?.[0] || 'medium',
       estimatedTime: game.metadata?.estimatedPlayTime || 10,
       prerequisites: index > 0 ? [games[index - 1].name] : [],
-      nextSteps: index < games.length - 1 ? [games[index + 1].name] : ['Complete assessment']
+      nextSteps: index < games.length - 1 ? [games[index + 1].name] : ['Complete assessment'],
     }));
   }
 
@@ -1910,12 +1950,12 @@ export class GameRegistryUtil {
    */
   static getCurriculumAlignment(subject) {
     const subjectGames = this.getGamesBySubject(subject);
-    
+
     // Collect all learning objectives
     const allObjectives = new Set();
     const ageRanges = new Set();
     const gameTypes = new Set();
-    
+
     subjectGames.forEach(game => {
       if (game.metadata?.learningObjectives) {
         game.metadata.learningObjectives.forEach(obj => allObjectives.add(obj));
@@ -1931,11 +1971,11 @@ export class GameRegistryUtil {
       ageRanges: Array.from(ageRanges),
       gameTypes: Array.from(gameTypes),
       educationalGames: subjectGames.filter(g => g.template === 'educational').length,
-      assessmentCapable: subjectGames.filter(g => 
-        g.features?.includes('analytics') || g.template === 'educational'
+      assessmentCapable: subjectGames.filter(
+        g => g.features?.includes('analytics') || g.template === 'educational'
       ).length,
       gaps: this.identifyCurriculumGaps(subjectGames),
-      recommendations: this.generateCurriculumRecommendations(subjectGames)
+      recommendations: this.generateCurriculumRecommendations(subjectGames),
     };
   }
 
@@ -1946,7 +1986,7 @@ export class GameRegistryUtil {
    */
   static identifyCurriculumGaps(games) {
     const gaps = [];
-    
+
     // Check for missing difficulty levels
     const difficulties = new Set();
     games.forEach(game => {
@@ -1954,30 +1994,30 @@ export class GameRegistryUtil {
         game.difficulty.forEach(diff => difficulties.add(diff));
       }
     });
-    
+
     ['easy', 'medium', 'hard'].forEach(level => {
       if (!difficulties.has(level)) {
         gaps.push({
           type: 'difficulty',
           missing: level,
-          recommendation: `Add more ${level} difficulty games`
+          recommendation: `Add more ${level} difficulty games`,
         });
       }
     });
-    
+
     // Check for assessment gaps
-    const hasAssessment = games.some(game => 
-      game.features?.includes('analytics') || game.template === 'educational'
+    const hasAssessment = games.some(
+      game => game.features?.includes('analytics') || game.template === 'educational'
     );
-    
+
     if (!hasAssessment) {
       gaps.push({
         type: 'assessment',
         missing: 'assessment tools',
-        recommendation: 'Add games with educational template or analytics features'
+        recommendation: 'Add games with educational template or analytics features',
       });
     }
-    
+
     return gaps;
   }
 
@@ -1998,28 +2038,35 @@ export class GameRegistryUtil {
       // TODO: Import from educationalMetadataSchema.js when module loading is resolved
       const errors = [];
       const warnings = [];
-      
+
       // Check required educational fields
-      if (!metadata.learningObjectives || !Array.isArray(metadata.learningObjectives) || metadata.learningObjectives.length === 0) {
+      if (
+        !metadata.learningObjectives ||
+        !Array.isArray(metadata.learningObjectives) ||
+        metadata.learningObjectives.length === 0
+      ) {
         errors.push('learningObjectives is required and must be a non-empty array');
       }
-      
+
       if (!metadata.ageRange || typeof metadata.ageRange !== 'string') {
         errors.push('ageRange is required and must be a string (e.g., "6-8")');
       } else if (!/^\d+-\d+$/.test(metadata.ageRange)) {
         errors.push('ageRange must be in format "min-max" (e.g., "6-8")');
       }
-      
-      if (!metadata.assessmentType || !['formative', 'summative', 'diagnostic', 'practice'].includes(metadata.assessmentType)) {
+
+      if (
+        !metadata.assessmentType ||
+        !['formative', 'summative', 'diagnostic', 'practice'].includes(metadata.assessmentType)
+      ) {
         errors.push('assessmentType must be one of: formative, summative, diagnostic, practice');
       }
-      
+
       if (!metadata.estimatedPlayTime || typeof metadata.estimatedPlayTime !== 'number') {
         errors.push('estimatedPlayTime is required and must be a number (minutes)');
       } else if (metadata.estimatedPlayTime < 1 || metadata.estimatedPlayTime > 60) {
         warnings.push('estimatedPlayTime should be between 1-60 minutes for optimal engagement');
       }
-      
+
       // Check data collection (COPPA relevant)
       if (!metadata.dataCollection) {
         warnings.push('dataCollection object is recommended for COPPA compliance');
@@ -2034,12 +2081,12 @@ export class GameRegistryUtil {
           errors.push('dataCollection.purpose is required');
         }
       }
-      
+
       return { errors, warnings };
     } catch (error) {
-      return { 
-        errors: [`Validation error: ${error.message}`], 
-        warnings: [] 
+      return {
+        errors: [`Validation error: ${error.message}`],
+        warnings: [],
       };
     }
   }
@@ -2053,66 +2100,72 @@ export class GameRegistryUtil {
     const compliance = {
       requiresParentalConsent: false,
       issues: [],
-      recommendations: []
+      recommendations: [],
     };
-    
+
     // Check age range for under-13 users
     if (metadata.ageRange) {
       const [minAge] = metadata.ageRange.split('-').map(Number);
       if (minAge < 13) {
         compliance.requiresParentalConsent = true;
-        
+
         if (metadata.dataCollection?.collectsPersonalInfo) {
           compliance.issues.push('Collects personal info from children under 13');
           compliance.recommendations.push('Implement verifiable parental consent mechanism');
           compliance.recommendations.push('Add clear privacy policy for parents');
         }
-        
-        if (metadata.dataCollection?.retention && metadata.dataCollection.retention !== 'session_only') {
+
+        if (
+          metadata.dataCollection?.retention &&
+          metadata.dataCollection.retention !== 'session_only'
+        ) {
           compliance.issues.push('Data retention beyond session for under-13 users');
-          compliance.recommendations.push('Limit data retention to session only or implement data deletion');
+          compliance.recommendations.push(
+            'Limit data retention to session only or implement data deletion'
+          );
         }
       }
     }
-    
+
     // Check for marketing data use
     if (metadata.dataCollection?.purpose?.includes('marketing')) {
       compliance.issues.push('Data used for marketing purposes');
       compliance.recommendations.push('Remove marketing data collection for COPPA compliance');
     }
-    
+
     // Check for advertising
     if (metadata.dataCollection?.dataTypes?.includes('advertising_id')) {
       compliance.issues.push('Collects advertising identifiers');
       compliance.recommendations.push('Remove advertising tracking for children under 13');
     }
-    
+
     return compliance;
   }
 
   static generateCurriculumRecommendations(games) {
     const recommendations = [];
-    
+
     // Educational template usage
     const educationalGames = games.filter(g => g.template === 'educational');
     if (educationalGames.length < games.length * 0.3) {
       recommendations.push({
         priority: 'high',
         category: 'template',
-        suggestion: 'Consider converting more games to use the educational template for better learning tracking'
+        suggestion:
+          'Consider converting more games to use the educational template for better learning tracking',
       });
     }
-    
+
     // Analytics coverage
     const analyticsGames = games.filter(g => g.features?.includes('analytics'));
     if (analyticsGames.length < games.length * 0.5) {
       recommendations.push({
         priority: 'medium',
         category: 'analytics',
-        suggestion: 'Add analytics features to more games for better progress tracking'
+        suggestion: 'Add analytics features to more games for better progress tracking',
       });
     }
-    
+
     return recommendations;
   }
 }

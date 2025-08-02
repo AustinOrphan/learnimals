@@ -200,7 +200,8 @@
 
 /* Animations */
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -225,21 +226,21 @@
     flex-wrap: wrap;
     gap: var(--spacing-medium);
   }
-  
+
   .progress-stats .stat {
     flex: 0 0 calc(33.333% - var(--spacing-medium));
   }
-  
+
   .game-achievement-unlock {
     left: 20px;
     right: 20px;
     transform: translateY(100px);
   }
-  
+
   .game-achievement-unlock.show {
     transform: translateY(0);
   }
-  
+
   .session-stats {
     grid-template-columns: 1fr;
   }

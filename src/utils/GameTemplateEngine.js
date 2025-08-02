@@ -9,7 +9,7 @@ export class GameTemplateEngine {
     this.templates = new Map();
     this.templateCache = new Map();
     this.defaultTemplate = 'game';
-    
+
     // Initialize with built-in templates
     this.initializeBuiltInTemplates();
   }
@@ -22,21 +22,21 @@ export class GameTemplateEngine {
     this.templates.set('game', {
       path: '/src/templates/game.html',
       type: 'file',
-      cached: false
+      cached: false,
     });
 
     // Minimal template for simple games
     this.templates.set('minimal', {
       content: this.getMinimalTemplate(),
       type: 'inline',
-      cached: true
+      cached: true,
     });
 
     // Full-screen template for immersive games
     this.templates.set('fullscreen', {
       content: this.getFullscreenTemplate(),
       type: 'inline',
-      cached: true
+      cached: true,
     });
   }
 
@@ -57,7 +57,7 @@ export class GameTemplateEngine {
     this.templates.set(name, {
       ...templateDef,
       type: templateDef.path ? 'file' : 'inline',
-      cached: false
+      cached: false,
     });
 
     logger.debug(`Registered template: ${name}`);
@@ -70,7 +70,7 @@ export class GameTemplateEngine {
    */
   async getTemplate(templateName) {
     const templateDef = this.templates.get(templateName);
-    
+
     if (!templateDef) {
       logger.warn(`Template not found: ${templateName}, using default`);
       return this.getTemplate(this.defaultTemplate);
@@ -98,19 +98,19 @@ export class GameTemplateEngine {
 
       // Cache the content
       this.templateCache.set(templateName, content);
-      
+
       // Mark as cached
       templateDef.cached = true;
 
       return content;
     } catch (error) {
       logger.error(`Error loading template ${templateName}:`, error);
-      
+
       // Fallback to minimal template
       if (templateName !== 'minimal') {
         return this.getTemplate('minimal');
       }
-      
+
       throw error;
     }
   }
@@ -125,29 +125,28 @@ export class GameTemplateEngine {
     try {
       // Get template content
       const templateContent = await this.getTemplate(gameConfig.template || this.defaultTemplate);
-      
+
       // Build template variables
       const templateVars = this.buildTemplateVars(gameConfig, containerId);
-      
+
       // Process template with variables
       const renderedContent = this.processTemplate(templateContent, templateVars);
-      
+
       // If we're updating an existing container, inject the content
       if (containerId && containerId !== 'body') {
         const container = document.getElementById(containerId);
         if (container) {
           container.innerHTML = renderedContent;
-          
+
           // Process any scripts in the rendered content
           this.processScripts(container);
         } else {
           logger.warn(`Container not found: ${containerId}`);
         }
       }
-      
+
       logger.debug(`Rendered game page for: ${gameConfig.id}`);
       return renderedContent;
-      
     } catch (error) {
       logger.error(`Failed to render game page for ${gameConfig.id}:`, error);
       throw error;
@@ -166,37 +165,37 @@ export class GameTemplateEngine {
       gameId: gameConfig.id,
       gameName: gameConfig.name || 'Untitled Game',
       gameDescription: gameConfig.description || 'An educational game',
-      
+
       // Character and subject info
       characterName: gameConfig.character || 'Learnimals Friend',
       characterType: gameConfig.characterType || 'Animal',
       subjectName: gameConfig.subject || 'General',
-      
+
       // File paths
       gameScriptPath: gameConfig.scriptPath,
       gameStyleSheet: gameConfig.styleSheet || this.getDefaultStyleSheet(gameConfig),
-      
+
       // Game content and options
       gameContent: gameConfig.templateContent || this.getDefaultGameContent(),
       gameOptions: JSON.stringify(gameConfig.options || {}),
-      
+
       // UI configuration
       timeLimit: gameConfig.timeLimit || '60s',
       progressText: gameConfig.progressText || 'Progress',
       showControls: gameConfig.showControls !== false,
       showProgress: gameConfig.showProgress !== false,
       showStats: gameConfig.showStats !== false,
-      
+
       // Container
       containerId: containerId,
-      
+
       // Theme and styling
       themeClass: gameConfig.themeClass || '',
       customStyles: gameConfig.customStyles || '',
-      
+
       // Features
       features: gameConfig.features || [],
-      featureFlags: this.buildFeatureFlags(gameConfig.features || [])
+      featureFlags: this.buildFeatureFlags(gameConfig.features || []),
     };
   }
 
@@ -235,15 +234,15 @@ export class GameTemplateEngine {
    */
   processConditionals(template, variables) {
     const conditionalRegex = /{{#if\s+(\w+)}}([\s\S]*?){{\/if}}/g;
-    
+
     return template.replace(conditionalRegex, (match, condition, content) => {
       const value = variables[condition];
-      
+
       // Evaluate condition
       if (this.isTruthy(value)) {
         return content;
       }
-      
+
       return '';
     });
   }
@@ -256,33 +255,35 @@ export class GameTemplateEngine {
    */
   processLoops(template, variables) {
     const loopRegex = /{{#each\s+(\w+)}}([\s\S]*?){{\/each}}/g;
-    
+
     return template.replace(loopRegex, (match, arrayName, content) => {
       const array = variables[arrayName];
-      
+
       if (!Array.isArray(array)) {
         return '';
       }
-      
-      return array.map((item, index) => {
-        let itemContent = content;
-        
-        // Replace {{this}} with current item
-        if (typeof item === 'string' || typeof item === 'number') {
-          itemContent = itemContent.replace(/{{this}}/g, this.escapeHtml(String(item)));
-        } else if (typeof item === 'object') {
-          // Replace object properties
-          for (const [key, value] of Object.entries(item)) {
-            const regex = new RegExp(`{{${key}}}`, 'g');
-            itemContent = itemContent.replace(regex, this.escapeHtml(String(value)));
+
+      return array
+        .map((item, index) => {
+          let itemContent = content;
+
+          // Replace {{this}} with current item
+          if (typeof item === 'string' || typeof item === 'number') {
+            itemContent = itemContent.replace(/{{this}}/g, this.escapeHtml(String(item)));
+          } else if (typeof item === 'object') {
+            // Replace object properties
+            for (const [key, value] of Object.entries(item)) {
+              const regex = new RegExp(`{{${key}}}`, 'g');
+              itemContent = itemContent.replace(regex, this.escapeHtml(String(value)));
+            }
           }
-        }
-        
-        // Replace {{@index}} with current index
-        itemContent = itemContent.replace(/{{@index}}/g, String(index));
-        
-        return itemContent;
-      }).join('');
+
+          // Replace {{@index}} with current index
+          itemContent = itemContent.replace(/{{@index}}/g, String(index));
+
+          return itemContent;
+        })
+        .join('');
     });
   }
 
@@ -292,18 +293,18 @@ export class GameTemplateEngine {
    */
   processScripts(container) {
     const scripts = container.querySelectorAll('script');
-    
+
     scripts.forEach(oldScript => {
       const newScript = document.createElement('script');
-      
+
       // Copy attributes
       Array.from(oldScript.attributes).forEach(attr => {
         newScript.setAttribute(attr.name, attr.value);
       });
-      
+
       // Copy content
       newScript.textContent = oldScript.textContent;
-      
+
       // Replace old script with new one to execute it
       oldScript.parentNode.replaceChild(newScript, oldScript);
     });
@@ -317,11 +318,11 @@ export class GameTemplateEngine {
   buildFeatureFlags(features) {
     const flags = {};
     const knownFeatures = ['analytics', 'progress', 'mobile', 'themes', 'audio', 'multiplayer'];
-    
+
     knownFeatures.forEach(feature => {
       flags[feature] = features.includes(feature);
     });
-    
+
     return flags;
   }
 
@@ -441,14 +442,14 @@ export class GameTemplateEngine {
    */
   clearCache() {
     this.templateCache.clear();
-    
+
     // Reset cached flags
     for (const templateDef of this.templates.values()) {
       if (templateDef.type === 'file') {
         templateDef.cached = false;
       }
     }
-    
+
     logger.debug('Template cache cleared');
   }
 
@@ -461,7 +462,7 @@ export class GameTemplateEngine {
       registeredTemplates: this.templates.size,
       cachedTemplates: this.templateCache.size,
       defaultTemplate: this.defaultTemplate,
-      templateNames: Array.from(this.templates.keys())
+      templateNames: Array.from(this.templates.keys()),
     };
   }
 

@@ -10,16 +10,16 @@ class ProgressReports extends BaseComponent {
     super('progress-reports', {
       // Report types
       reportTypes: ['weekly', 'monthly', 'subject', 'comparison'],
-      
+
       // Report configuration
       includeCharts: true,
       includeRecommendations: true,
       includeGoals: true,
-      
+
       // Export options
       exportFormats: ['pdf', 'json', 'csv'],
-      
-      ...options
+
+      ...options,
     });
 
     this.progressData = options.progressData || {};
@@ -45,7 +45,7 @@ class ProgressReports extends BaseComponent {
       weekly: await this.generateWeeklyReport(),
       monthly: await this.generateMonthlyReport(),
       subject: await this.generateSubjectReport(),
-      comparison: await this.generateComparisonReport()
+      comparison: await this.generateComparisonReport(),
     };
   }
 
@@ -58,20 +58,20 @@ class ProgressReports extends BaseComponent {
     const weeklyStats = {
       period: {
         start: weekStart.toISOString().split('T')[0],
-        end: now.toISOString().split('T')[0]
+        end: now.toISOString().split('T')[0],
       },
       summary: {
         totalXP: this.calculateWeeklyXP(),
         activitiesCompleted: this.calculateWeeklyActivities(),
         timeSpent: this.calculateWeeklyTime(),
         streakDays: Math.min(this.progressData.streakDays || 0, 7),
-        subjectsStudied: this.getActiveSubjectsThisWeek()
+        subjectsStudied: this.getActiveSubjectsThisWeek(),
       },
       daily: this.generateDailyBreakdown(),
       subjects: this.generateWeeklySubjectBreakdown(),
       achievements: this.getWeeklyAchievements(),
       goals: this.getWeeklyGoalProgress(),
-      insights: this.generateWeeklyInsights()
+      insights: this.generateWeeklyInsights(),
     };
 
     return weeklyStats;
@@ -85,20 +85,20 @@ class ProgressReports extends BaseComponent {
       period: {
         start: monthStart.toISOString().split('T')[0],
         end: now.toISOString().split('T')[0],
-        month: now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        month: now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
       },
       summary: {
         totalXP: this.progressData.totalXP || 0,
         activitiesCompleted: this.getTotalActivities(),
         timeSpent: this.progressData.totalTimeSpent || 0,
         longestStreak: this.progressData.longestStreak || 0,
-        averageDaily: this.calculateAverageDailyStats()
+        averageDaily: this.calculateAverageDailyStats(),
       },
       weekly: this.generateWeeklyTrends(),
       subjects: this.generateMonthlySubjectAnalysis(),
       achievements: this.getMonthlyAchievements(),
       goals: this.getMonthlyGoalSummary(),
-      insights: this.generateMonthlyInsights()
+      insights: this.generateMonthlyInsights(),
     };
 
     return monthlyStats;
@@ -106,7 +106,7 @@ class ProgressReports extends BaseComponent {
 
   async generateSubjectReport() {
     const subjects = this.progressData.subjects || {};
-    
+
     const subjectReport = Object.entries(subjects).map(([subject, data]) => ({
       name: subject,
       displayName: this.capitalizeFirst(subject),
@@ -118,7 +118,7 @@ class ProgressReports extends BaseComponent {
       lastActivity: data.lastActivity,
       progress: this.calculateSubjectProgress(data),
       strengths: this.identifySubjectStrengths(subject, data),
-      recommendations: this.generateSubjectRecommendations(subject, data)
+      recommendations: this.generateSubjectRecommendations(subject, data),
     }));
 
     return {
@@ -126,28 +126,28 @@ class ProgressReports extends BaseComponent {
       overall: {
         favoriteSubject: this.getFavoriteSubject(subjectReport),
         mostImproved: this.getMostImprovedSubject(subjectReport),
-        needsAttention: this.getSubjectsNeedingAttention(subjectReport)
+        needsAttention: this.getSubjectsNeedingAttention(subjectReport),
       },
-      insights: this.generateSubjectInsights(subjectReport)
+      insights: this.generateSubjectInsights(subjectReport),
     };
   }
 
   async generateComparisonReport() {
     // This would typically compare with other users or historical data
     // For now, we'll create simulated comparison data
-    
+
     const userStats = {
       overallLevel: this.progressData.overallLevel || 1,
       totalXP: this.progressData.totalXP || 0,
       activitiesCompleted: this.getTotalActivities(),
-      streakDays: this.progressData.streakDays || 0
+      streakDays: this.progressData.streakDays || 0,
     };
 
     const averageStats = {
       overallLevel: 3,
       totalXP: 500,
       activitiesCompleted: 25,
-      streakDays: 5
+      streakDays: 5,
     };
 
     return {
@@ -156,10 +156,13 @@ class ProgressReports extends BaseComponent {
       comparison: {
         levelRank: this.calculatePercentile(userStats.overallLevel, averageStats.overallLevel),
         xpRank: this.calculatePercentile(userStats.totalXP, averageStats.totalXP),
-        activityRank: this.calculatePercentile(userStats.activitiesCompleted, averageStats.activitiesCompleted),
-        streakRank: this.calculatePercentile(userStats.streakDays, averageStats.streakDays)
+        activityRank: this.calculatePercentile(
+          userStats.activitiesCompleted,
+          averageStats.activitiesCompleted
+        ),
+        streakRank: this.calculatePercentile(userStats.streakDays, averageStats.streakDays),
       },
-      insights: this.generateComparisonInsights(userStats, averageStats)
+      insights: this.generateComparisonInsights(userStats, averageStats),
     };
   }
 
@@ -186,33 +189,33 @@ class ProgressReports extends BaseComponent {
   generateDailyBreakdown() {
     const daily = [];
     const now = new Date();
-    
+
     for (let i = 6; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(now.getDate() - i);
-      
+
       daily.push({
         date: date.toISOString().split('T')[0],
         dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
         xp: Math.floor(Math.random() * 50) + 10,
         activities: Math.floor(Math.random() * 3) + 1,
         timeSpent: Math.floor(Math.random() * 45) + 15,
-        hasActivity: Math.random() > 0.2
+        hasActivity: Math.random() > 0.2,
       });
     }
-    
+
     return daily;
   }
 
   generateWeeklySubjectBreakdown() {
     const subjects = this.progressData.subjects || {};
-    
+
     return Object.entries(subjects).map(([subject, data]) => ({
       name: subject,
       displayName: this.capitalizeFirst(subject),
       xpEarned: Math.floor((data.xp || 0) * 0.3),
       activitiesCompleted: Math.floor((data.activitiesCompleted || 0) * 0.4),
-      timeSpent: Math.floor((data.timeSpent || 0) * 0.25)
+      timeSpent: Math.floor((data.timeSpent || 0) * 0.25),
     }));
   }
 
@@ -223,60 +226,62 @@ class ProgressReports extends BaseComponent {
         name: 'Consistent Learner',
         description: 'Completed activities for 5 days this week',
         icon: '🔥',
-        unlockedThisWeek: true
-      }
+        unlockedThisWeek: true,
+      },
     ];
   }
 
   generateWeeklyInsights() {
     const insights = [];
     const weeklyActivities = this.calculateWeeklyActivities();
-    
+
     if (weeklyActivities >= 10) {
       insights.push({
         type: 'positive',
         icon: '🎉',
         title: 'Great Week!',
-        message: `You completed ${weeklyActivities} activities this week. Keep up the excellent work!`
+        message: `You completed ${weeklyActivities} activities this week. Keep up the excellent work!`,
       });
     } else if (weeklyActivities < 5) {
       insights.push({
         type: 'suggestion',
         icon: '💡',
         title: 'Room for Growth',
-        message: 'Try to complete at least one activity per day to build a strong learning habit.'
+        message: 'Try to complete at least one activity per day to build a strong learning habit.',
       });
     }
-    
+
     if (this.progressData.streakDays >= 7) {
       insights.push({
         type: 'achievement',
         icon: '🏆',
         title: 'Streak Champion!',
-        message: `Amazing! You've maintained a ${this.progressData.streakDays}-day learning streak.`
+        message: `Amazing! You've maintained a ${this.progressData.streakDays}-day learning streak.`,
       });
     }
-    
+
     return insights;
   }
 
   getTotalActivities() {
-    return Object.values(this.progressData.subjects || {})
-      .reduce((sum, subject) => sum + (subject.activitiesCompleted || 0), 0);
+    return Object.values(this.progressData.subjects || {}).reduce(
+      (sum, subject) => sum + (subject.activitiesCompleted || 0),
+      0
+    );
   }
 
   calculateAverageDailyStats() {
     const daysThisMonth = new Date().getDate();
-    
+
     return {
       xp: Math.round((this.progressData.totalXP || 0) / daysThisMonth),
       activities: Math.round(this.getTotalActivities() / daysThisMonth),
-      timeSpent: Math.round((this.progressData.totalTimeSpent || 0) / daysThisMonth)
+      timeSpent: Math.round((this.progressData.totalTimeSpent || 0) / daysThisMonth),
     };
   }
 
   getFavoriteSubject(subjectReport) {
-    return subjectReport.reduce((favorite, subject) => 
+    return subjectReport.reduce((favorite, subject) =>
       subject.timeSpent > (favorite?.timeSpent || 0) ? subject : favorite
     );
   }
@@ -284,7 +289,7 @@ class ProgressReports extends BaseComponent {
   getMostImprovedSubject(subjectReport) {
     // This would require historical data to calculate improvement
     // For now, return the subject with highest level
-    return subjectReport.reduce((improved, subject) => 
+    return subjectReport.reduce((improved, subject) =>
       subject.level > (improved?.level || 0) ? subject : improved
     );
   }
@@ -300,7 +305,7 @@ class ProgressReports extends BaseComponent {
       content: this.generateReportsModalHTML(),
       size: 'large',
       showConfirmButton: false,
-      showCancelButton: false
+      showCancelButton: false,
     });
 
     const modalInstance = modal.create();
@@ -351,7 +356,7 @@ class ProgressReports extends BaseComponent {
 
   generateWeeklyReportHTML() {
     const report = this.reportData.weekly;
-    
+
     return `
       <div class="weekly-report">
         <div class="report-header">
@@ -397,12 +402,16 @@ class ProgressReports extends BaseComponent {
         <div class="daily-breakdown">
           <h4>Daily Activity</h4>
           <div class="daily-chart">
-            ${report.daily.map(day => `
+            ${report.daily
+              .map(
+                day => `
               <div class="daily-bar" title="${day.dayName}: ${day.xp} XP, ${day.activities} activities">
                 <div class="bar-fill" style="height: ${(day.xp / 50) * 100}%"></div>
                 <span class="bar-label">${day.dayName}</span>
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
 
@@ -410,7 +419,9 @@ class ProgressReports extends BaseComponent {
         <div class="subject-breakdown">
           <h4>Subject Progress</h4>
           <div class="subject-list">
-            ${report.subjects.map(subject => `
+            ${report.subjects
+              .map(
+                subject => `
               <div class="subject-item">
                 <div class="subject-name">${subject.displayName}</div>
                 <div class="subject-stats">
@@ -419,7 +430,9 @@ class ProgressReports extends BaseComponent {
                   <span>${subject.timeSpent}m</span>
                 </div>
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
 
@@ -427,7 +440,9 @@ class ProgressReports extends BaseComponent {
         <div class="report-insights">
           <h4>This Week's Insights</h4>
           <div class="insights-list">
-            ${report.insights.map(insight => `
+            ${report.insights
+              .map(
+                insight => `
               <div class="insight-item ${insight.type}">
                 <div class="insight-icon">${insight.icon}</div>
                 <div class="insight-content">
@@ -435,7 +450,9 @@ class ProgressReports extends BaseComponent {
                   <p>${insight.message}</p>
                 </div>
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
       </div>
@@ -444,7 +461,7 @@ class ProgressReports extends BaseComponent {
 
   generateSubjectReportHTML() {
     const report = this.reportData.subject;
-    
+
     return `
       <div class="subject-report">
         <div class="report-header">
@@ -454,7 +471,9 @@ class ProgressReports extends BaseComponent {
 
         <!-- Subject Grid -->
         <div class="subjects-analysis">
-          ${report.subjects.map(subject => `
+          ${report.subjects
+            .map(
+              subject => `
             <div class="subject-analysis-card">
               <div class="subject-header">
                 <h4>${subject.displayName}</h4>
@@ -476,16 +495,22 @@ class ProgressReports extends BaseComponent {
                 </div>
               </div>
 
-              ${subject.recommendations.length > 0 ? `
+              ${
+                subject.recommendations.length > 0
+                  ? `
                 <div class="subject-recommendations">
                   <h5>Recommendations</h5>
                   <ul>
                     ${subject.recommendations.map(rec => `<li>${rec}</li>`).join('')}
                   </ul>
                 </div>
-              ` : ''}
+              `
+                  : ''
+              }
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
 
         <!-- Overall Analysis -->
@@ -508,10 +533,10 @@ class ProgressReports extends BaseComponent {
     // Tab switching
     const reportTabs = modalElement.querySelectorAll('.report-tab');
     reportTabs.forEach(tab => {
-      tab.addEventListener('click', (e) => {
+      tab.addEventListener('click', e => {
         const reportType = e.target.getAttribute('data-report');
         this.switchReport(reportType, modalElement);
-        
+
         // Update active tab
         reportTabs.forEach(t => t.classList.remove('active'));
         e.target.classList.add('active');
@@ -533,29 +558,29 @@ class ProgressReports extends BaseComponent {
 
   switchReport(reportType, modalElement) {
     const contentContainer = modalElement.querySelector('#report-content');
-    
+
     switch (reportType) {
-    case 'weekly':
-      contentContainer.innerHTML = this.generateWeeklyReportHTML();
-      break;
-    case 'monthly':
-      contentContainer.innerHTML = this.generateMonthlyReportHTML();
-      break;
-    case 'subject':
-      contentContainer.innerHTML = this.generateSubjectReportHTML();
-      break;
-    case 'comparison':
-      contentContainer.innerHTML = this.generateComparisonReportHTML();
-      break;
+      case 'weekly':
+        contentContainer.innerHTML = this.generateWeeklyReportHTML();
+        break;
+      case 'monthly':
+        contentContainer.innerHTML = this.generateMonthlyReportHTML();
+        break;
+      case 'subject':
+        contentContainer.innerHTML = this.generateSubjectReportHTML();
+        break;
+      case 'comparison':
+        contentContainer.innerHTML = this.generateComparisonReportHTML();
+        break;
     }
-    
+
     this.currentReport = reportType;
   }
 
   exportCurrentReport() {
     const reportData = this.reportData[this.currentReport || 'weekly'];
     const jsonData = JSON.stringify(reportData, null, 2);
-    
+
     // Create download
     const blob = new Blob([jsonData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -574,7 +599,10 @@ class ProgressReports extends BaseComponent {
 
   // Utility methods
   formatDateRange(startDate, endDate) {
-    const start = new Date(startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const start = new Date(startDate).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
     const end = new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     return `${start} - ${end}`;
   }
@@ -617,7 +645,7 @@ class ProgressReports extends BaseComponent {
     return {
       currentLevel: data.level || 1,
       nextLevel: (data.level || 1) + 1,
-      progressToNext: ((data.xp || 0) % 100) / 100 * 100
+      progressToNext: (((data.xp || 0) % 100) / 100) * 100,
     };
   }
 
@@ -644,8 +672,8 @@ class ProgressReports extends BaseComponent {
   }
 
   getSubjectsNeedingAttention(subjectReport) {
-    return subjectReport.filter(subject => 
-      subject.timeSpent < 30 || subject.activitiesCompleted < 5
+    return subjectReport.filter(
+      subject => subject.timeSpent < 30 || subject.activitiesCompleted < 5
     );
   }
 

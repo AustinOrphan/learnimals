@@ -1,178 +1,143 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-            name="description"
-            content="About Learnimals - Fun educational games with animal friends for children"
-        />
-        <title>About Us - Learnimals</title>
-        <link rel="stylesheet" href="../styles/base/styles.css" />
-        <link rel="stylesheet" href="../styles/components/navbar.css" />
-        <link rel="stylesheet" href="../styles/components/components.css" />
-        <link rel="stylesheet" href="../styles/components/themeSwitcher.css" />
-        <link rel="stylesheet" href="../styles/components/about.css" />
-        <script
-            defer
-            src="../components/layout/mobileMenuHandler.js"
-            type="module"
-        ></script>
-    </head>
-    <body>
-        <div id="navbar-placeholder"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="About Learnimals - Fun educational games with animal friends for children" />
+    <title>About Us - Learnimals</title>
+    <link rel="stylesheet" href="../styles/base/styles.css" />
+    <link rel="stylesheet" href="../styles/components/navbar.css" />
+    <link rel="stylesheet" href="../styles/components/components.css" />
+    <link rel="stylesheet" href="../styles/components/themeSwitcher.css" />
+    <link rel="stylesheet" href="../styles/components/about.css" />
+    <script defer src="../components/layout/mobileMenuHandler.js" type="module"></script>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
 
-        <main>
-            <section class="hero">
-                <h2>About Learnimals</h2>
+    <main>
+      <section class="hero">
+        <h2>About Learnimals</h2>
+        <p>Get to know our story, mission, and the team behind the animal friends</p>
+      </section>
+
+      <div class="about-container">
+        <section class="about-section">
+          <h3>Our Mission</h3>
+          <div class="mission-statement">
+            <p>
+              At Learnimals, we believe that learning should be a joyful adventure. Our mission is to create a fun,
+              engaging, and safe digital environment where children can explore educational concepts through colorful
+              animal friends who make learning exciting and accessible.
+            </p>
+          </div>
+          <p>
+            We combine playful design with educational principles to create games and activities that help children
+            develop critical skills in math, science, reading, and art—all while having fun with their animal
+            companions.
+          </p>
+        </section>
+
+        <section class="about-section">
+          <h3>Meet Our Animal Educators</h3>
+          <div class="team-grid" id="educators-container">
+            <!-- Animal educators will be dynamically loaded here -->
+            <div class="loading-placeholder">Loading our amazing animal educators...</div>
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h3>Our Story</h3>
+          <div class="timeline">
+            <div class="timeline-item left">
+              <div class="timeline-content">
+                <h4>2023</h4>
                 <p>
-                    Get to know our story, mission, and the team behind the
-                    animal friends
+                  The idea for Learnimals was born when a group of educators wanted to create more engaging online
+                  learning resources for children.
                 </p>
-            </section>
-
-            <div class="about-container">
-                <section class="about-section">
-                    <h3>Our Mission</h3>
-                    <div class="mission-statement">
-                        <p>
-                            At Learnimals, we believe that learning should be a
-                            joyful adventure. Our mission is to create a fun,
-                            engaging, and safe digital environment where
-                            children can explore educational concepts through
-                            colorful animal friends who make learning exciting
-                            and accessible.
-                        </p>
-                    </div>
-                    <p>
-                        We combine playful design with educational principles to
-                        create games and activities that help children develop
-                        critical skills in math, science, reading, and art—all
-                        while having fun with their animal companions.
-                    </p>
-                </section>
-
-                <section class="about-section">
-                    <h3>Meet Our Animal Educators</h3>
-                    <div class="team-grid" id="educators-container">
-                        <!-- Animal educators will be dynamically loaded here -->
-                        <div class="loading-placeholder">Loading our amazing animal educators...</div>
-                    </div>
-                </section>
-
-                <section class="about-section">
-                    <h3>Our Story</h3>
-                    <div class="timeline">
-                        <div class="timeline-item left">
-                            <div class="timeline-content">
-                                <h4>2023</h4>
-                                <p>
-                                    The idea for Learnimals was born when a
-                                    group of educators wanted to create more
-                                    engaging online learning resources for
-                                    children.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item right">
-                            <div class="timeline-content">
-                                <h4>2024</h4>
-                                <p>
-                                    Our team of designers, developers, and
-                                    educational experts came together to create
-                                    the first version of Learnimals.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item left">
-                            <div class="timeline-content">
-                                <h4>2025</h4>
-                                <p>
-                                    Learnimals launched with our four core
-                                    subjects and animal educators, reaching
-                                    thousands of children worldwide.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="timeline-item right">
-                            <div class="timeline-content">
-                                <h4>Future</h4>
-                                <p>
-                                    We continue to grow and develop new games,
-                                    activities, and educational resources to
-                                    make learning even more fun!
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="about-section">
-                    <h3>Educational Philosophy</h3>
-                    <p>
-                        Learnimals is built on these core educational
-                        principles:
-                    </p>
-                    <ul>
-                        <li>
-                            <strong>Learning through play</strong> - Children
-                            learn best when they're having fun
-                        </li>
-                        <li>
-                            <strong>Positive reinforcement</strong> -
-                            Encouragement and rewards boost confidence and
-                            motivation
-                        </li>
-                        <li>
-                            <strong>Age-appropriate content</strong> - All
-                            activities are designed for the developmental needs
-                            of young learners
-                        </li>
-                        <li>
-                            <strong>Multisensory learning</strong> - Engaging
-                            multiple senses helps children better understand and
-                            remember concepts
-                        </li>
-                        <li>
-                            <strong>Inclusive design</strong> - Our games are
-                            made to be accessible for children of all abilities
-                        </li>
-                    </ul>
-                </section>
+              </div>
             </div>
-        </main>
 
-        <footer>
-            <p>&copy; 2025 Learnimals. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="about.html">About Us</a>
-                <a href="contact.html">Contact</a>
-                <a href="#">Privacy Policy</a>
-                <a href="profile.html">My Profile</a>
+            <div class="timeline-item right">
+              <div class="timeline-content">
+                <h4>2024</h4>
+                <p>
+                  Our team of designers, developers, and educational experts came together to create the first version
+                  of Learnimals.
+                </p>
+              </div>
             </div>
-        </footer>
 
-        <!-- JS -->
-        <script defer type="module" src="../themeInitializer.js"></script>
-        <script type="module" src="../utils/themeManager.js"></script>
-        <script
-            type="module"
-            src="../components/layout/themeSwitcher.js"
-        ></script>
-        <script defer src="../components/layout/navbarLoader.js"></script>
-        <script defer src="../components/component-loader.js"></script>
-        
-        <!-- Dynamic educators loading -->
-        <script type="module">
-            import { loadEducators } from '../utils/subjectEducators.js';
-            
-            document.addEventListener('DOMContentLoaded', () => {
-                // Load the animal educators dynamically
-                loadEducators('educators-container');
-            });
-        </script>
-    </body>
+            <div class="timeline-item left">
+              <div class="timeline-content">
+                <h4>2025</h4>
+                <p>
+                  Learnimals launched with our four core subjects and animal educators, reaching thousands of children
+                  worldwide.
+                </p>
+              </div>
+            </div>
+
+            <div class="timeline-item right">
+              <div class="timeline-content">
+                <h4>Future</h4>
+                <p>
+                  We continue to grow and develop new games, activities, and educational resources to make learning even
+                  more fun!
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h3>Educational Philosophy</h3>
+          <p>Learnimals is built on these core educational principles:</p>
+          <ul>
+            <li><strong>Learning through play</strong> - Children learn best when they're having fun</li>
+            <li><strong>Positive reinforcement</strong> - Encouragement and rewards boost confidence and motivation</li>
+            <li>
+              <strong>Age-appropriate content</strong> - All activities are designed for the developmental needs of
+              young learners
+            </li>
+            <li>
+              <strong>Multisensory learning</strong> - Engaging multiple senses helps children better understand and
+              remember concepts
+            </li>
+            <li>
+              <strong>Inclusive design</strong> - Our games are made to be accessible for children of all abilities
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Learnimals. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="profile.html">My Profile</a>
+      </div>
+    </footer>
+
+    <!-- JS -->
+    <script defer type="module" src="../themeInitializer.js"></script>
+    <script type="module" src="../utils/themeManager.js"></script>
+    <script type="module" src="../components/layout/themeSwitcher.js"></script>
+    <script defer src="../components/layout/navbarLoader.js"></script>
+    <script defer src="../components/component-loader.js"></script>
+
+    <!-- Dynamic educators loading -->
+    <script type="module">
+      import { loadEducators } from '../utils/subjectEducators.js';
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Load the animal educators dynamically
+        loadEducators('educators-container');
+      });
+    </script>
+  </body>
 </html>

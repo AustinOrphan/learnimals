@@ -25,58 +25,46 @@ export function setSemanticVariables(mode) {
     '--text-secondary': 'var(--text-color-secondary)',
     '--text-on-accent': mode === 'dark' ? 'var(--color-black)' : 'var(--color-white)',
     '--text-heading': 'var(--accent-color-opp)',
-    
+
     // Background colors
     '--bg-body': 'var(--background-color)',
-    '--bg-card': mode === 'dark' 
-      ? 'rgba(255, 255, 255, 0.05)' 
-      : 'rgba(255, 255, 255, 0.8)',
-    '--bg-card-alt': mode === 'dark' 
-      ? 'rgba(0, 0, 0, 0.2)' 
-      : 'rgba(0, 0, 0, 0.05)',
-    '--bg-highlight': mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.1)'
-      : 'rgba(0, 0, 0, 0.05)',
-    
+    '--bg-card': mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
+    '--bg-card-alt': mode === 'dark' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.05)',
+    '--bg-highlight': mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+
     // Accent colors
     '--accent-primary': 'var(--primary-color)',
     '--accent-secondary': 'var(--secondary-color)',
     '--accent-tertiary': 'var(--accent-color)',
-    '--accent-color-alpha-30': mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.3)'
-      : 'rgba(0, 0, 0, 0.3)',
-    
+    '--accent-color-alpha-30': mode === 'dark' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)',
+
     // Status colors
     '--success-color': mode === 'dark' ? '#4ade80' : '#22c55e',
     '--error-color': mode === 'dark' ? '#f87171' : '#ef4444',
     '--text-danger': mode === 'dark' ? '#f87171' : '#dc2626',
-    
+
     // Interactive states
-    '--accent-primary-hover': mode === 'dark'
-      ? 'color-mix(in srgb, var(--primary-color) 80%, white)'
-      : 'color-mix(in srgb, var(--primary-color) 80%, black)',
-    '--accent-secondary-hover': mode === 'dark'
-      ? 'color-mix(in srgb, var(--secondary-color) 80%, white)'
-      : 'color-mix(in srgb, var(--secondary-color) 80%, black)',
-    
+    '--accent-primary-hover':
+      mode === 'dark'
+        ? 'color-mix(in srgb, var(--primary-color) 80%, white)'
+        : 'color-mix(in srgb, var(--primary-color) 80%, black)',
+    '--accent-secondary-hover':
+      mode === 'dark'
+        ? 'color-mix(in srgb, var(--secondary-color) 80%, white)'
+        : 'color-mix(in srgb, var(--secondary-color) 80%, black)',
+
     // Border colors
-    '--border-color': mode === 'dark' 
-      ? 'rgba(255, 255, 255, 0.1)' 
-      : 'rgba(0, 0, 0, 0.1)',
+    '--border-color': mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
     '--border-color-accent': 'var(--accent-color)',
-    
+
     // Shadow
-    '--shadow-color': mode === 'dark' 
-      ? 'rgba(0, 0, 0, 0.4)' 
-      : 'rgba(0, 0, 0, 0.1)',
-    '--shadow-color-strong': mode === 'dark'
-      ? 'rgba(0, 0, 0, 0.7)'
-      : 'rgba(0, 0, 0, 0.2)',
-      
+    '--shadow-color': mode === 'dark' ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.1)',
+    '--shadow-color-strong': mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.2)',
+
     // Focus
-    '--focus-ring-color': 'var(--accent-primary)'
+    '--focus-ring-color': 'var(--accent-primary)',
   };
-  
+
   // Apply semantic variables
   applyColors(semanticVars);
 }

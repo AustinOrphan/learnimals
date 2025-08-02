@@ -1,6 +1,6 @@
 /**
  * Character Storage Service
- * 
+ *
  * Handles persistent storage and retrieval of character data using IndexedDB.
  * Provides caching, validation, and migration capabilities.
  */
@@ -14,16 +14,16 @@ export class CharacterStorage {
     this.db = null;
     this.cache = new Map();
     this.isInitialized = false;
-    
+
     // Store names
     this.stores = {
       CHARACTERS: 'characters',
       USER_CHARACTERS: 'user_characters',
       SHARED_CHARACTERS: 'shared_characters',
-      METADATA: 'storage_metadata'
+      METADATA: 'storage_metadata',
     };
   }
-  
+
   /**
    * Initialize the IndexedDB connection and create object stores
    * @returns {Promise<boolean>} Success status
@@ -32,7 +32,7 @@ export class CharacterStorage {
     if (this.isInitialized) {
       return true;
     }
-    
+
     try {
       this.db = await this.openDatabase();
       this.isInitialized = true;
@@ -40,13 +40,13 @@ export class CharacterStorage {
       return true;
     } catch (error) {
       console.error('Failed to initialize character storage:', error);
-      
+
       // Fallback to localStorage if IndexedDB fails
       this.initializeLocalStorageFallback();
       return false;
     }
   }
-  
+
   /**
    * Open IndexedDB connection and set up object stores
    * @returns {Promise<IDBDatabase>} Database connection
@@ -54,51 +54,55 @@ export class CharacterStorage {
   openDatabase() {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, this.version);
-      
+
       request.onerror = () => {
         reject(new Error('Failed to open IndexedDB: ' + request.error));
       };
-      
+
       request.onsuccess = () => {
         resolve(request.result);
       };
-      
-      request.onupgradeneeded = (event) => {
+
+      request.onupgradeneeded = event => {
         const db = event.target.result;
-        
+
         // Characters store - for all character data
         if (!db.objectStoreNames.contains(this.stores.CHARACTERS)) {
-          const charactersStore = db.createObjectStore(this.stores.CHARACTERS, { 
-            keyPath: 'id' 
+          const charactersStore = db.createObjectStore(this.stores.CHARACTERS, {
+            keyPath: 'id',
           });
-          
+
           // Indexes for efficient querying
           charactersStore.createIndex('owner', 'owner', { unique: false });
           charactersStore.createIndex('created', 'created', { unique: false });
           charactersStore.createIndex('lastModified', 'lastModified', { unique: false });
           charactersStore.createIndex('isCustom', 'isCustom', { unique: false });
           charactersStore.createIndex('species', 'species.primary', { unique: false });
-          charactersStore.createIndex('favoriteSubject', 'personality.favoriteSubject', { unique: false });
+          charactersStore.createIndex('favoriteSubject', 'personality.favoriteSubject', {
+            unique: false,
+          });
         }
-        
+
         // User characters mapping
         if (!db.objectStoreNames.contains(this.stores.USER_CHARACTERS)) {
           const userCharactersStore = db.createObjectStore(this.stores.USER_CHARACTERS, {
-            keyPath: 'userId'
+            keyPath: 'userId',
           });
-          userCharactersStore.createIndex('activeCharacter', 'activeCharacterId', { unique: false });
+          userCharactersStore.createIndex('activeCharacter', 'activeCharacterId', {
+            unique: false,
+          });
         }
-        
+
         // Shared characters for social features
         if (!db.objectStoreNames.contains(this.stores.SHARED_CHARACTERS)) {
           const sharedStore = db.createObjectStore(this.stores.SHARED_CHARACTERS, {
-            keyPath: 'shareId'
+            keyPath: 'shareId',
           });
           sharedStore.createIndex('characterId', 'characterId', { unique: false });
           sharedStore.createIndex('created', 'created', { unique: false });
           sharedStore.createIndex('isPublic', 'isPublic', { unique: false });
         }
-        
+
         // Metadata store for storage information
         if (!db.objectStoreNames.contains(this.stores.METADATA)) {
           db.createObjectStore(this.stores.METADATA, { keyPath: 'key' });
@@ -106,7 +110,7 @@ export class CharacterStorage {
       };
     });
   }
-  
+
   /**
    * Save a character to storage
    * @param {Object} character - Character data to save
@@ -117,21 +121,21 @@ export class CharacterStorage {
     if (!this.isInitialized) {
       await this.init();
     }
-    
+
     // Validate character data
     const validationResult = this.validateCharacter(character);
     if (!validationResult.isValid) {
       throw new Error('Invalid character data: ' + validationResult.errors.join(', '));
     }
-    
+
     // Prepare character for storage
     const characterToSave = {
       ...character,
       owner: ownerId,
       lastModified: new Date(),
-      size: this.calculateDataSize(character)
+      size: this.calculateDataSize(character),
     };
-    
+
     try {
       if (this.db) {
         // Save to IndexedDB
@@ -140,19 +144,18 @@ export class CharacterStorage {
         // Fallback to localStorage
         await this.saveToLocalStorage(characterToSave);
       }
-      
+
       // Update cache
       this.cache.set(character.id, characterToSave);
-      
+
       console.log(`Character ${character.id} saved successfully`);
       return character.id;
-      
     } catch (error) {
       console.error('Failed to save character:', error);
       throw new Error('Failed to save character: ' + error.message);
     }
   }
-  
+
   /**
    * Load a character from storage
    * @param {string} characterId - ID of character to load
@@ -162,37 +165,36 @@ export class CharacterStorage {
     if (!this.isInitialized) {
       await this.init();
     }
-    
+
     // Check cache first
     if (this.cache.has(characterId)) {
       return this.cache.get(characterId);
     }
-    
+
     try {
       let character = null;
-      
+
       if (this.db) {
         character = await this.loadFromIndexedDB(characterId);
       } else {
         character = await this.loadFromLocalStorage(characterId);
       }
-      
+
       if (character) {
         // Migrate character data if needed
         character = this.migrateCharacterData(character);
-        
+
         // Cache the character
         this.cache.set(characterId, character);
       }
-      
+
       return character;
-      
     } catch (error) {
       console.error('Failed to load character:', error);
       return null;
     }
   }
-  
+
   /**
    * Get all characters for a user
    * @param {string} [ownerId] - Owner ID to filter by
@@ -202,27 +204,26 @@ export class CharacterStorage {
     if (!this.isInitialized) {
       await this.init();
     }
-    
+
     try {
       let characters = [];
-      
+
       if (this.db) {
         characters = await this.getUserCharactersFromIndexedDB(ownerId);
       } else {
         characters = await this.getUserCharactersFromLocalStorage(ownerId);
       }
-      
+
       // Sort by last modified (most recent first)
       characters.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
-      
+
       return characters;
-      
     } catch (error) {
       console.error('Failed to get user characters:', error);
       return [];
     }
   }
-  
+
   /**
    * Delete a character from storage
    * @param {string} characterId - ID of character to delete
@@ -232,26 +233,25 @@ export class CharacterStorage {
     if (!this.isInitialized) {
       await this.init();
     }
-    
+
     try {
       if (this.db) {
         await this.deleteFromIndexedDB(characterId);
       } else {
         await this.deleteFromLocalStorage(characterId);
       }
-      
+
       // Remove from cache
       this.cache.delete(characterId);
-      
+
       console.log(`Character ${characterId} deleted successfully`);
       return true;
-      
     } catch (error) {
       console.error('Failed to delete character:', error);
       return false;
     }
   }
-  
+
   /**
    * IndexedDB save operation
    * @param {Object} character - Character to save
@@ -262,12 +262,12 @@ export class CharacterStorage {
       const transaction = this.db.transaction([this.stores.CHARACTERS], 'readwrite');
       const store = transaction.objectStore(this.stores.CHARACTERS);
       const request = store.put(character);
-      
+
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   /**
    * IndexedDB load operation
    * @param {string} characterId - Character ID to load
@@ -278,12 +278,12 @@ export class CharacterStorage {
       const transaction = this.db.transaction([this.stores.CHARACTERS], 'readonly');
       const store = transaction.objectStore(this.stores.CHARACTERS);
       const request = store.get(characterId);
-      
+
       request.onsuccess = () => resolve(request.result || null);
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   /**
    * Get user characters from IndexedDB
    * @param {string} ownerId - Owner ID
@@ -295,12 +295,12 @@ export class CharacterStorage {
       const store = transaction.objectStore(this.stores.CHARACTERS);
       const index = store.index('owner');
       const request = index.getAll(ownerId);
-      
+
       request.onsuccess = () => resolve(request.result || []);
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   /**
    * Delete from IndexedDB
    * @param {string} characterId - Character ID to delete
@@ -311,12 +311,12 @@ export class CharacterStorage {
       const transaction = this.db.transaction([this.stores.CHARACTERS], 'readwrite');
       const store = transaction.objectStore(this.stores.CHARACTERS);
       const request = store.delete(characterId);
-      
+
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
   }
-  
+
   /**
    * Initialize localStorage fallback
    */
@@ -325,7 +325,7 @@ export class CharacterStorage {
     this.isInitialized = true;
     console.warn('Using localStorage fallback for character storage');
   }
-  
+
   /**
    * Save to localStorage
    * @param {Object} character - Character to save
@@ -340,7 +340,7 @@ export class CharacterStorage {
       throw new Error('localStorage save failed: ' + error.message);
     }
   }
-  
+
   /**
    * Load from localStorage
    * @param {string} characterId - Character ID to load
@@ -355,7 +355,7 @@ export class CharacterStorage {
       return null;
     }
   }
-  
+
   /**
    * Get user characters from localStorage
    * @param {string} ownerId - Owner ID
@@ -370,7 +370,7 @@ export class CharacterStorage {
       return [];
     }
   }
-  
+
   /**
    * Delete from localStorage
    * @param {string} characterId - Character ID to delete
@@ -385,7 +385,7 @@ export class CharacterStorage {
       throw new Error('localStorage delete failed: ' + error.message);
     }
   }
-  
+
   /**
    * Validate character data against schema
    * @param {Object} character - Character to validate
@@ -393,14 +393,14 @@ export class CharacterStorage {
    */
   validateCharacter(character) {
     const errors = [];
-    
+
     // Check required fields
     CharacterValidation.required.forEach(field => {
       if (!this.getNestedValue(character, field)) {
         errors.push(`Missing required field: ${field}`);
       }
     });
-    
+
     // Check data types
     Object.entries(CharacterValidation.types).forEach(([field, expectedType]) => {
       const value = this.getNestedValue(character, field);
@@ -408,7 +408,7 @@ export class CharacterStorage {
         errors.push(`Invalid type for ${field}: expected ${expectedType}`);
       }
     });
-    
+
     // Check enum values
     Object.entries(CharacterValidation.enums).forEach(([field, validValues]) => {
       const value = this.getNestedValue(character, field);
@@ -416,7 +416,7 @@ export class CharacterStorage {
         errors.push(`Invalid value for ${field}: ${value}`);
       }
     });
-    
+
     // Check numeric ranges
     Object.entries(CharacterValidation.ranges).forEach(([field, [min, max]]) => {
       const value = this.getNestedValue(character, field);
@@ -424,13 +424,13 @@ export class CharacterStorage {
         errors.push(`Value out of range for ${field}: ${value} (expected ${min}-${max})`);
       }
     });
-    
+
     return {
       isValid: errors.length === 0,
-      errors: errors
+      errors: errors,
     };
   }
-  
+
   /**
    * Get nested object value using dot notation
    * @param {Object} obj - Object to search
@@ -440,7 +440,7 @@ export class CharacterStorage {
   getNestedValue(obj, path) {
     return path.split('.').reduce((current, key) => current?.[key], obj);
   }
-  
+
   /**
    * Migrate character data to current version
    * @param {Object} character - Character to migrate
@@ -453,10 +453,10 @@ export class CharacterStorage {
       character.version = 1;
       character.lastModified = new Date();
     }
-    
+
     return character;
   }
-  
+
   /**
    * Calculate approximate data size
    * @param {Object} data - Data to measure
@@ -465,7 +465,7 @@ export class CharacterStorage {
   calculateDataSize(data) {
     return new Blob([JSON.stringify(data)]).size;
   }
-  
+
   /**
    * Get storage statistics
    * @returns {Promise<Object>} Storage statistics
@@ -474,24 +474,24 @@ export class CharacterStorage {
     if (!this.isInitialized) {
       await this.init();
     }
-    
+
     try {
       const characters = await this.getUserCharacters();
       const totalSize = characters.reduce((sum, char) => sum + (char.size || 0), 0);
-      
+
       return {
         characterCount: characters.length,
         totalSize: totalSize,
         averageSize: characters.length > 0 ? totalSize / characters.length : 0,
         cacheSize: this.cache.size,
-        storageType: this.db ? 'IndexedDB' : 'localStorage'
+        storageType: this.db ? 'IndexedDB' : 'localStorage',
       };
     } catch (error) {
       console.error('Failed to get storage stats:', error);
       return null;
     }
   }
-  
+
   /**
    * Clear all character data (use with caution!)
    * @returns {Promise<boolean>} Success status
@@ -509,7 +509,7 @@ export class CharacterStorage {
       } else {
         localStorage.removeItem(this.storageKey);
       }
-      
+
       this.cache.clear();
       console.log('All character data cleared');
       return true;
