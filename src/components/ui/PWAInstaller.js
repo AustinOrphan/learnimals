@@ -14,7 +14,7 @@ class PWAInstaller {
 
   setupInstallationPrompt() {
     // Listen for the beforeinstallprompt event
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener('beforeinstallprompt', e => {
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
       this.deferredPrompt = e;
@@ -37,13 +37,13 @@ class PWAInstaller {
   setupMobileOptimizations() {
     // Add viewport height fix for mobile browsers
     this.addViewportHeightFix();
-        
+
     // Add touch feedback for better UX
     this.addTouchFeedback();
-        
+
     // Add orientation change handling
     this.addOrientationHandling();
-        
+
     // Add mobile keyboard optimizations
     this.addMobileKeyboardOptimizations();
   }
@@ -58,7 +58,7 @@ class PWAInstaller {
                 <span class="install-icon">📱</span>
                 <span class="install-text">Install App</span>
             `;
-            
+
       // Add styles - match theme button height
       installButton.style.cssText = `
                 position: fixed;
@@ -158,7 +158,7 @@ class PWAInstaller {
                 <span class="toast-message">Welcome to Learnimals! App installed successfully.</span>
             </div>
         `;
-        
+
     welcomeToast.style.cssText = `
             position: fixed;
             top: 20px;
@@ -176,7 +176,7 @@ class PWAInstaller {
         `;
 
     document.body.appendChild(welcomeToast);
-        
+
     // Animate in
     setTimeout(() => {
       welcomeToast.style.opacity = '1';
@@ -210,7 +210,7 @@ class PWAInstaller {
           const vibrationPattern = {
             light: [10],
             medium: [15],
-            heavy: [25]
+            heavy: [25],
           };
           window.navigator.vibrate(vibrationPattern[intensity] || vibrationPattern.light);
         }
@@ -231,7 +231,7 @@ class PWAInstaller {
       setTimeout(() => {
         // Trigger resize event for components that need it
         window.dispatchEvent(new Event('resize'));
-                
+
         // Update any game canvases
         const gameCanvases = document.querySelectorAll('#gameCanvas');
         gameCanvases.forEach(canvas => {
@@ -253,7 +253,7 @@ class PWAInstaller {
     const handleViewportChange = () => {
       const currentHeight = window.innerHeight;
       const heightDifference = initialViewportHeight - currentHeight;
-            
+
       // If viewport height reduced significantly, keyboard is probably open
       if (heightDifference > 150) {
         document.body.classList.add('keyboard-open');
@@ -285,7 +285,7 @@ class PWAInstaller {
     };
 
     window.addEventListener('resize', handleViewportChange);
-        
+
     // Reset on page load
     window.addEventListener('load', () => {
       initialViewportHeight = window.innerHeight;

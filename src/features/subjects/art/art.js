@@ -3,9 +3,9 @@ const canvas = document.getElementById('drawCanvas');
 const ctx = canvas.getContext('2d');
 let drawing = false;
 
-canvas.addEventListener('mousedown', () => drawing = true);
-canvas.addEventListener('mouseup', () => drawing = false);
-canvas.addEventListener('mouseout', () => drawing = false);
+canvas.addEventListener('mousedown', () => (drawing = true));
+canvas.addEventListener('mouseup', () => (drawing = false));
+canvas.addEventListener('mouseout', () => (drawing = false));
 canvas.addEventListener('mousemove', draw);
 
 function draw(e) {

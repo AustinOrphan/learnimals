@@ -1,220 +1,220 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="{{gameDescription}}" />
     <title>{{gameName}} - Learnimals</title>
-    
+
     <!-- Minimal styles - only essentials -->
     <link rel="stylesheet" href="/src/styles/base/reset.css" />
     <link rel="stylesheet" href="/src/styles/base/variables.css" />
     <link rel="stylesheet" href="/src/styles/base/base.css" />
     <link rel="stylesheet" href="/src/styles/components/game-ui.css" />
-    
+
     <!-- Game-specific styles -->
-    {{#if gameStyleSheet}}<link rel="stylesheet" href="{{gameStyleSheet}}" />{{/if}}
-    
+    {{#if gameStyleSheet}}
+    <link rel="stylesheet" href="{{gameStyleSheet}}" />
+    {{/if}}
+
     <!-- Custom styles -->
     {{#if customStyles}}
-    <style>{{customStyles}}</style>
+    <style>
+      {{customStyles}}
+    </style>
     {{/if}}
-    
+
     <!-- Minimal template styles -->
     <style>
-        .minimal-game-layout {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background: var(--bg-body, #f8f9fa);
-            padding: 1rem;
-        }
-        
-        .minimal-game-header {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
-        .minimal-game-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--text-primary, #333);
-            margin-bottom: 0.5rem;
-        }
-        
-        .minimal-game-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        
-        .minimal-stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .minimal-stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary, #666);
-            margin-bottom: 0.25rem;
-        }
-        
-        .minimal-stat-value {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-primary, #333);
-        }
-        
-        .minimal-game-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .minimal-game-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--bg-card, #fff);
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-        }
-        
-        .minimal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .minimal-overlay-content {
-            background: var(--bg-card, #fff);
-            padding: 2rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        
-        .minimal-loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--bg-secondary, #e9ecef);
-            border-top: 4px solid var(--primary-color, #007bff);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .minimal-error-message {
-            position: fixed;
-            top: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--error-color, #dc3545);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.25rem;
-            display: none;
-            z-index: 1001;
-        }
-        
-        @media (max-width: 768px) {
-            .minimal-game-layout {
-                padding: 0.5rem;
-            }
-            
-            .minimal-game-stats {
-                gap: 1rem;
-            }
-            
-            .minimal-game-controls {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-        }
-    </style>
-</head>
-<body class="minimal-game-page {{themeClass}}">
-    <main class="minimal-game-layout">
-        <header class="minimal-game-header">
-            <h1 class="minimal-game-title">{{gameName}}</h1>
-            
-            {{#if showStats}}
-            <div class="minimal-game-stats">
-                <div class="minimal-stat-item">
-                    <span class="minimal-stat-label">Score</span>
-                    <span class="minimal-stat-value" id="minimal-score">0</span>
-                </div>
-                <div class="minimal-stat-item">
-                    <span class="minimal-stat-label">Level</span>
-                    <span class="minimal-stat-value" id="minimal-level">1</span>
-                </div>
-                {{#if timeLimit}}
-                <div class="minimal-stat-item">
-                    <span class="minimal-stat-label">Time</span>
-                    <span class="minimal-stat-value" id="minimal-timer">{{timeLimit}}</span>
-                </div>
-                {{/if}}
-            </div>
-            {{/if}}
-        </header>
+      .minimal-game-layout {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: var(--bg-body, #f8f9fa);
+        padding: 1rem;
+      }
 
-        {{#if showControls}}
-        <div class="minimal-game-controls">
-            <button id="minimal-start" class="btn btn-primary">
-                ▶️ Start
-            </button>
-            <button id="minimal-pause" class="btn btn-secondary" style="display: none;">
-                ⏸️ Pause
-            </button>
-            <button id="minimal-restart" class="btn btn-outline">
-                🔄 Restart
-            </button>
+      .minimal-game-header {
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .minimal-game-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--text-primary, #333);
+        margin-bottom: 0.5rem;
+      }
+
+      .minimal-game-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .minimal-stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .minimal-stat-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary, #666);
+        margin-bottom: 0.25rem;
+      }
+
+      .minimal-stat-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--text-primary, #333);
+      }
+
+      .minimal-game-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .minimal-game-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--bg-card, #fff);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+      }
+
+      .minimal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .minimal-overlay-content {
+        background: var(--bg-card, #fff);
+        padding: 2rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+      }
+
+      .minimal-loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--bg-secondary, #e9ecef);
+        border-top: 4px solid var(--primary-color, #007bff);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .minimal-error-message {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--error-color, #dc3545);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.25rem;
+        display: none;
+        z-index: 1001;
+      }
+
+      @media (max-width: 768px) {
+        .minimal-game-layout {
+          padding: 0.5rem;
+        }
+
+        .minimal-game-stats {
+          gap: 1rem;
+        }
+
+        .minimal-game-controls {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="minimal-game-page {{themeClass}}">
+    <main class="minimal-game-layout">
+      <header class="minimal-game-header">
+        <h1 class="minimal-game-title">{{gameName}}</h1>
+
+        {{#if showStats}}
+        <div class="minimal-game-stats">
+          <div class="minimal-stat-item">
+            <span class="minimal-stat-label">Score</span>
+            <span class="minimal-stat-value" id="minimal-score">0</span>
+          </div>
+          <div class="minimal-stat-item">
+            <span class="minimal-stat-label">Level</span>
+            <span class="minimal-stat-value" id="minimal-level">1</span>
+          </div>
+          {{#if timeLimit}}
+          <div class="minimal-stat-item">
+            <span class="minimal-stat-label">Time</span>
+            <span class="minimal-stat-value" id="minimal-timer">{{timeLimit}}</span>
+          </div>
+          {{/if}}
         </div>
         {{/if}}
-        
-        <div class="minimal-game-container">
-            <div id="{{containerId}}" class="game-container">
-                <!-- Game-specific content will be rendered here -->
-                {{gameContent}}
-            </div>
+      </header>
+
+      {{#if showControls}}
+      <div class="minimal-game-controls">
+        <button id="minimal-start" class="btn btn-primary">▶️ Start</button>
+        <button id="minimal-pause" class="btn btn-secondary" style="display: none">⏸️ Pause</button>
+        <button id="minimal-restart" class="btn btn-outline">🔄 Restart</button>
+      </div>
+      {{/if}}
+
+      <div class="minimal-game-container">
+        <div id="{{containerId}}" class="game-container">
+          <!-- Game-specific content will be rendered here -->
+          {{gameContent}}
         </div>
+      </div>
     </main>
 
     <!-- Minimal overlays -->
-    <div id="minimal-loading-overlay" class="minimal-overlay" style="display: none;">
-        <div class="minimal-overlay-content">
-            <div class="minimal-loading-spinner"></div>
-            <h3>Loading {{gameName}}...</h3>
-        </div>
+    <div id="minimal-loading-overlay" class="minimal-overlay" style="display: none">
+      <div class="minimal-overlay-content">
+        <div class="minimal-loading-spinner"></div>
+        <h3>Loading {{gameName}}...</h3>
+      </div>
     </div>
 
-    <div id="minimal-pause-overlay" class="minimal-overlay" style="display: none;">
-        <div class="minimal-overlay-content">
-            <h3>Game Paused</h3>
-            <p>Click resume to continue.</p>
-            <button id="minimal-resume" class="btn btn-primary">
-                ▶️ Resume
-            </button>
-        </div>
+    <div id="minimal-pause-overlay" class="minimal-overlay" style="display: none">
+      <div class="minimal-overlay-content">
+        <h3>Game Paused</h3>
+        <p>Click resume to continue.</p>
+        <button id="minimal-resume" class="btn btn-primary">▶️ Resume</button>
+      </div>
     </div>
 
     <div id="minimal-error-message" class="minimal-error-message"></div>
@@ -224,160 +224,160 @@
     <script type="module" src="/src/utils/themeManager.js"></script>
     <script type="module" src="/src/utils/GameSystem.js"></script>
     <script type="module" src="{{gameScriptPath}}"></script>
-    
+
     <!-- Minimal template integration -->
     <script type="module">
-        import gameSystem from '/src/utils/GameSystem.js';
-        
-        // Game configuration
-        const gameConfig = {
-            id: '{{gameId}}',
-            name: '{{gameName}}',
-            character: '{{characterName}}',
-            features: {{{featureFlags}}}
-        };
-        
-        const gameOptions = {{{gameOptions}}};
-        
-        // Initialize game
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                if (!gameSystem.initialized) {
-                    await gameSystem.init();
-                }
-                
-                setupMinimalEventHandlers();
-                showMinimalLoading();
-                
-                const gameInstance = await gameSystem.loadGame(
-                    '{{gameId}}', 
-                    '{{containerId}}', 
-                    gameOptions
-                );
-                
-                hideMinimalLoading();
-                
-                if (gameInstance && typeof gameInstance.setupTemplateIntegration === 'function') {
-                    gameInstance.setupTemplateIntegration();
-                }
-                
-                console.log('Minimal game template loaded:', '{{gameName}}');
-                
-            } catch (error) {
-                console.error('Failed to load minimal game:', error);
-                showMinimalError('Failed to load game. Please refresh and try again.');
-            }
-        });
-        
-        // Minimal event handlers
-        function setupMinimalEventHandlers() {
-            const startBtn = document.getElementById('minimal-start');
-            const pauseBtn = document.getElementById('minimal-pause');
-            const restartBtn = document.getElementById('minimal-restart');
-            const resumeBtn = document.getElementById('minimal-resume');
-            
-            if (startBtn) {
-                startBtn.addEventListener('click', () => {
-                    gameSystem.emit('gameStart', { gameId: '{{gameId}}' });
-                    startBtn.style.display = 'none';
-                    if (pauseBtn) pauseBtn.style.display = 'inline-block';
-                });
-            }
-            
-            if (pauseBtn) {
-                pauseBtn.addEventListener('click', () => {
-                    gameSystem.emit('gamePause', { gameId: '{{gameId}}' });
-                    showMinimalPause();
-                });
-            }
-            
-            if (restartBtn) {
-                restartBtn.addEventListener('click', () => {
-                    if (confirm('Restart game?')) {
-                        gameSystem.emit('gameRestart', { gameId: '{{gameId}}' });
-                        if (startBtn) startBtn.style.display = 'inline-block';
-                        if (pauseBtn) pauseBtn.style.display = 'none';
-                    }
-                });
-            }
-            
-            if (resumeBtn) {
-                resumeBtn.addEventListener('click', () => {
-                    gameSystem.emit('gameResume', { gameId: '{{gameId}}' });
-                    hideMinimalPause();
-                });
-            }
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    const pauseOverlay = document.getElementById('minimal-pause-overlay');
-                    if (pauseOverlay && pauseOverlay.style.display === 'flex') {
-                        hideMinimalPause();
-                        gameSystem.emit('gameResume', { gameId: '{{gameId}}' });
-                    } else {
-                        gameSystem.emit('gamePause', { gameId: '{{gameId}}' });
-                        showMinimalPause();
-                    }
-                }
-            });
-        }
-        
-        // Utility functions
-        function showMinimalLoading() {
-            const overlay = document.getElementById('minimal-loading-overlay');
-            if (overlay) overlay.style.display = 'flex';
-        }
-        
-        function hideMinimalLoading() {
-            const overlay = document.getElementById('minimal-loading-overlay');
-            if (overlay) overlay.style.display = 'none';
-        }
-        
-        function showMinimalPause() {
-            const overlay = document.getElementById('minimal-pause-overlay');
-            if (overlay) overlay.style.display = 'flex';
-        }
-        
-        function hideMinimalPause() {
-            const overlay = document.getElementById('minimal-pause-overlay');
-            if (overlay) overlay.style.display = 'none';
-        }
-        
-        function showMinimalError(message) {
-            const errorDiv = document.getElementById('minimal-error-message');
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 5000);
-            }
-        }
-        
-        // Expose utilities
-        window.MinimalTemplate = {
-            showMinimalLoading,
-            hideMinimalLoading,
-            showMinimalPause,
-            hideMinimalPause,
-            showMinimalError
-        };
-        
-        // Update UI when game events occur
-        gameSystem.on('scoreUpdate', (data) => {
-            const scoreEl = document.getElementById('minimal-score');
-            if (scoreEl && data.gameId === '{{gameId}}') {
-                scoreEl.textContent = data.score;
-            }
-        });
-        
-        gameSystem.on('levelUpdate', (data) => {
-            const levelEl = document.getElementById('minimal-level');
-            if (levelEl && data.gameId === '{{gameId}}') {
-                levelEl.textContent = data.level;
-            }
-        });
+      import gameSystem from '/src/utils/GameSystem.js';
+
+      // Game configuration
+      const gameConfig = {
+          id: '{{gameId}}',
+          name: '{{gameName}}',
+          character: '{{characterName}}',
+          features: {{{featureFlags}}}
+      };
+
+      const gameOptions = {{{gameOptions}}};
+
+      // Initialize game
+      document.addEventListener('DOMContentLoaded', async () => {
+          try {
+              if (!gameSystem.initialized) {
+                  await gameSystem.init();
+              }
+
+              setupMinimalEventHandlers();
+              showMinimalLoading();
+
+              const gameInstance = await gameSystem.loadGame(
+                  '{{gameId}}',
+                  '{{containerId}}',
+                  gameOptions
+              );
+
+              hideMinimalLoading();
+
+              if (gameInstance && typeof gameInstance.setupTemplateIntegration === 'function') {
+                  gameInstance.setupTemplateIntegration();
+              }
+
+              console.log('Minimal game template loaded:', '{{gameName}}');
+
+          } catch (error) {
+              console.error('Failed to load minimal game:', error);
+              showMinimalError('Failed to load game. Please refresh and try again.');
+          }
+      });
+
+      // Minimal event handlers
+      function setupMinimalEventHandlers() {
+          const startBtn = document.getElementById('minimal-start');
+          const pauseBtn = document.getElementById('minimal-pause');
+          const restartBtn = document.getElementById('minimal-restart');
+          const resumeBtn = document.getElementById('minimal-resume');
+
+          if (startBtn) {
+              startBtn.addEventListener('click', () => {
+                  gameSystem.emit('gameStart', { gameId: '{{gameId}}' });
+                  startBtn.style.display = 'none';
+                  if (pauseBtn) pauseBtn.style.display = 'inline-block';
+              });
+          }
+
+          if (pauseBtn) {
+              pauseBtn.addEventListener('click', () => {
+                  gameSystem.emit('gamePause', { gameId: '{{gameId}}' });
+                  showMinimalPause();
+              });
+          }
+
+          if (restartBtn) {
+              restartBtn.addEventListener('click', () => {
+                  if (confirm('Restart game?')) {
+                      gameSystem.emit('gameRestart', { gameId: '{{gameId}}' });
+                      if (startBtn) startBtn.style.display = 'inline-block';
+                      if (pauseBtn) pauseBtn.style.display = 'none';
+                  }
+              });
+          }
+
+          if (resumeBtn) {
+              resumeBtn.addEventListener('click', () => {
+                  gameSystem.emit('gameResume', { gameId: '{{gameId}}' });
+                  hideMinimalPause();
+              });
+          }
+
+          // Keyboard shortcuts
+          document.addEventListener('keydown', (e) => {
+              if (e.key === 'Escape') {
+                  const pauseOverlay = document.getElementById('minimal-pause-overlay');
+                  if (pauseOverlay && pauseOverlay.style.display === 'flex') {
+                      hideMinimalPause();
+                      gameSystem.emit('gameResume', { gameId: '{{gameId}}' });
+                  } else {
+                      gameSystem.emit('gamePause', { gameId: '{{gameId}}' });
+                      showMinimalPause();
+                  }
+              }
+          });
+      }
+
+      // Utility functions
+      function showMinimalLoading() {
+          const overlay = document.getElementById('minimal-loading-overlay');
+          if (overlay) overlay.style.display = 'flex';
+      }
+
+      function hideMinimalLoading() {
+          const overlay = document.getElementById('minimal-loading-overlay');
+          if (overlay) overlay.style.display = 'none';
+      }
+
+      function showMinimalPause() {
+          const overlay = document.getElementById('minimal-pause-overlay');
+          if (overlay) overlay.style.display = 'flex';
+      }
+
+      function hideMinimalPause() {
+          const overlay = document.getElementById('minimal-pause-overlay');
+          if (overlay) overlay.style.display = 'none';
+      }
+
+      function showMinimalError(message) {
+          const errorDiv = document.getElementById('minimal-error-message');
+          if (errorDiv) {
+              errorDiv.textContent = message;
+              errorDiv.style.display = 'block';
+              setTimeout(() => {
+                  errorDiv.style.display = 'none';
+              }, 5000);
+          }
+      }
+
+      // Expose utilities
+      window.MinimalTemplate = {
+          showMinimalLoading,
+          hideMinimalLoading,
+          showMinimalPause,
+          hideMinimalPause,
+          showMinimalError
+      };
+
+      // Update UI when game events occur
+      gameSystem.on('scoreUpdate', (data) => {
+          const scoreEl = document.getElementById('minimal-score');
+          if (scoreEl && data.gameId === '{{gameId}}') {
+              scoreEl.textContent = data.score;
+          }
+      });
+
+      gameSystem.on('levelUpdate', (data) => {
+          const levelEl = document.getElementById('minimal-level');
+          if (levelEl && data.gameId === '{{gameId}}') {
+              levelEl.textContent = data.level;
+          }
+      });
     </script>
-</body>
+  </body>
 </html>

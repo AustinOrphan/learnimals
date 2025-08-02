@@ -1,7 +1,7 @@
 /**
  * Advanced Character Editor
  * Comprehensive editing interface for existing characters
- * 
+ *
  * Part of Phase F: Advanced Character Editor
  */
 
@@ -16,10 +16,10 @@ export default class CharacterEditor extends BaseComponent {
       tagName: 'div',
       className: 'character-editor',
       attributes: {
-        'role': 'application',
-        'aria-label': 'Character Editor'
+        role: 'application',
+        'aria-label': 'Character Editor',
       },
-      ...options
+      ...options,
     });
 
     // Editor state
@@ -44,7 +44,7 @@ export default class CharacterEditor extends BaseComponent {
       { id: 'education', label: 'Education', icon: '📚' },
       { id: 'interactions', label: 'Interactions', icon: '💬' },
       { id: 'animations', label: 'Animations', icon: '✨' },
-      { id: 'metadata', label: 'Advanced', icon: '⚙️' }
+      { id: 'metadata', label: 'Advanced', icon: '⚙️' },
     ];
 
     // Callbacks
@@ -67,7 +67,7 @@ export default class CharacterEditor extends BaseComponent {
       size: 'large',
       animated: true,
       interactive: true,
-      theme: 'educational'
+      theme: 'educational',
     });
 
     // Set up auto-save if enabled
@@ -152,24 +152,32 @@ export default class CharacterEditor extends BaseComponent {
           <!-- Editor Panel -->
           <div class="editor-panel">
             <div class="editor-tabs">
-              ${this.tabs.map(tab => `
+              ${this.tabs
+    .map(
+      tab => `
                 <button class="editor-tab ${tab.id === this.currentTab ? 'active' : ''}" 
                         data-tab="${tab.id}"
                         title="${tab.label}">
                   <span class="tab-icon">${tab.icon}</span>
                   <span class="tab-label">${tab.label}</span>
                 </button>
-              `).join('')}
+              `
+    )
+    .join('')}
             </div>
 
             <div class="editor-content">
               <div class="tab-panels">
-                ${this.tabs.map(tab => `
+                ${this.tabs
+    .map(
+      tab => `
                   <div class="tab-panel ${tab.id === this.currentTab ? 'active' : ''}" 
                        data-panel="${tab.id}">
                     ${this.renderTabContent(tab.id)}
                   </div>
-                `).join('')}
+                `
+    )
+    .join('')}
               </div>
             </div>
 
@@ -231,7 +239,9 @@ export default class CharacterEditor extends BaseComponent {
       return '<div class="empty-state">No characters found. Create some characters first!</div>';
     }
 
-    return this.characters.map(character => `
+    return this.characters
+      .map(
+        character => `
       <div class="character-item ${this.selectedCharacter?.id === character.id ? 'selected' : ''}" 
            data-character-id="${character.id}">
         <div class="character-avatar" style="background-color: ${character.appearance?.primaryColor || '#4A90E2'}">
@@ -242,7 +252,9 @@ export default class CharacterEditor extends BaseComponent {
           <div class="character-subject">${character.subject || 'No subject'}</div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -278,13 +290,17 @@ export default class CharacterEditor extends BaseComponent {
         <div class="form-section">
           <label class="form-label">Base Shape</label>
           <div class="shape-selector">
-            ${['circle', 'oval', 'square', 'triangle', 'hexagon'].map(shape => `
+            ${['circle', 'oval', 'square', 'triangle', 'hexagon']
+    .map(
+      shape => `
               <button class="shape-option" data-shape="${shape}" title="${shape}">
                 <svg width="40" height="40" viewBox="0 0 40 40">
                   ${this.renderShapePreview(shape)}
                 </svg>
               </button>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
         </div>
 
@@ -333,12 +349,16 @@ export default class CharacterEditor extends BaseComponent {
         <div class="form-section">
           <label class="form-label">Accessories</label>
           <div class="accessory-options">
-            ${['glasses', 'hat', 'bowtie', 'headband', 'crown'].map(accessory => `
+            ${['glasses', 'hat', 'bowtie', 'headband', 'crown']
+    .map(
+      accessory => `
               <label class="checkbox-label">
                 <input type="checkbox" value="${accessory}" class="accessory-checkbox">
                 ${accessory.charAt(0).toUpperCase() + accessory.slice(1)}
               </label>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
         </div>
       </div>
@@ -368,12 +388,16 @@ export default class CharacterEditor extends BaseComponent {
         <div class="form-section">
           <label class="form-label">Character Traits</label>
           <div class="traits-selector">
-            ${['helpful', 'curious', 'brave', 'funny', 'patient', 'clever', 'kind', 'adventurous'].map(trait => `
+            ${['helpful', 'curious', 'brave', 'funny', 'patient', 'clever', 'kind', 'adventurous']
+    .map(
+      trait => `
               <label class="trait-option">
                 <input type="checkbox" value="${trait}" class="trait-checkbox">
                 <span class="trait-label">${trait}</span>
               </label>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
         </div>
 
@@ -562,7 +586,9 @@ export default class CharacterEditor extends BaseComponent {
         <div class="form-section">
           <label class="form-label">Expression Animations</label>
           <div class="expression-animations">
-            ${['happy', 'excited', 'thinking', 'surprised'].map(expression => `
+            ${['happy', 'excited', 'thinking', 'surprised']
+    .map(
+      expression => `
               <div class="form-group">
                 <label for="${expression}-animation">${expression.charAt(0).toUpperCase() + expression.slice(1)}</label>
                 <select id="${expression}-animation" class="form-select">
@@ -571,7 +597,9 @@ export default class CharacterEditor extends BaseComponent {
                   <option value="minimal">Minimal</option>
                 </select>
               </div>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
         </div>
 
@@ -649,12 +677,14 @@ export default class CharacterEditor extends BaseComponent {
     // Header actions
     this.element.querySelector('#editor-undo')?.addEventListener('click', () => this.undo());
     this.element.querySelector('#editor-redo')?.addEventListener('click', () => this.redo());
-    this.element.querySelector('#editor-compare')?.addEventListener('click', () => this.compareWithOriginal());
+    this.element
+      .querySelector('#editor-compare')
+      ?.addEventListener('click', () => this.compareWithOriginal());
     this.element.querySelector('#editor-save')?.addEventListener('click', () => this.saveChanges());
     this.element.querySelector('#editor-close')?.addEventListener('click', () => this.close());
 
     // Character selection
-    this.element.querySelector('#character-list')?.addEventListener('click', (e) => {
+    this.element.querySelector('#character-list')?.addEventListener('click', e => {
       const item = e.target.closest('.character-item');
       if (item) {
         const characterId = item.dataset.characterId;
@@ -663,13 +693,17 @@ export default class CharacterEditor extends BaseComponent {
     });
 
     // Search
-    this.element.querySelector('#character-search')?.addEventListener('input', (e) => {
+    this.element.querySelector('#character-search')?.addEventListener('input', e => {
       this.filterCharacters(e.target.value);
     });
 
     // Import/Export
-    this.element.querySelector('#import-character')?.addEventListener('click', () => this.importCharacter());
-    this.element.querySelector('#export-character')?.addEventListener('click', () => this.exportCharacter());
+    this.element
+      .querySelector('#import-character')
+      ?.addEventListener('click', () => this.importCharacter());
+    this.element
+      .querySelector('#export-character')
+      ?.addEventListener('click', () => this.exportCharacter());
 
     // Tab switching
     this.element.querySelectorAll('.editor-tab').forEach(tab => {
@@ -679,7 +713,7 @@ export default class CharacterEditor extends BaseComponent {
     });
 
     // Auto-save toggle
-    this.element.querySelector('#auto-save')?.addEventListener('change', (e) => {
+    this.element.querySelector('#auto-save')?.addEventListener('change', e => {
       this.autoSave = e.target.checked;
       if (this.autoSave) {
         this.setupAutoSave();
@@ -689,11 +723,11 @@ export default class CharacterEditor extends BaseComponent {
     });
 
     // Preview controls
-    this.element.querySelector('#preview-theme')?.addEventListener('change', (e) => {
+    this.element.querySelector('#preview-theme')?.addEventListener('change', e => {
       this.updatePreviewTheme(e.target.value);
     });
 
-    this.element.querySelector('#preview-expression')?.addEventListener('change', (e) => {
+    this.element.querySelector('#preview-expression')?.addEventListener('change', e => {
       this.updatePreviewExpression(e.target.value);
     });
 
@@ -710,19 +744,19 @@ export default class CharacterEditor extends BaseComponent {
   attachTabListeners() {
     // Appearance tab
     this.attachAppearanceListeners();
-    
+
     // Personality tab
     this.attachPersonalityListeners();
-    
+
     // Education tab
     this.attachEducationListeners();
-    
+
     // Interactions tab
     this.attachInteractionsListeners();
-    
+
     // Animations tab
     this.attachAnimationsListeners();
-    
+
     // Metadata tab
     this.attachMetadataListeners();
   }
@@ -743,7 +777,7 @@ export default class CharacterEditor extends BaseComponent {
     // Set selected character
     this.selectedCharacter = JSON.parse(JSON.stringify(character)); // Deep clone
     this.originalCharacter = JSON.parse(JSON.stringify(character)); // Keep original for comparison
-    
+
     // Reset edit history
     this.editHistory = [JSON.parse(JSON.stringify(character))];
     this.historyIndex = 0;
@@ -754,7 +788,7 @@ export default class CharacterEditor extends BaseComponent {
     this.populateEditorFields();
     this.updatePreview();
     this.updateSaveStatus('saved');
-    
+
     // Enable/disable buttons
     this.element.querySelector('#export-character').disabled = false;
     this.element.querySelector('#editor-save').disabled = true;
@@ -903,16 +937,16 @@ export default class CharacterEditor extends BaseComponent {
       this.selectedCharacter.metadata = {
         ...this.selectedCharacter.metadata,
         lastModified: new Date().toISOString(),
-        version: (this.selectedCharacter.metadata?.version || 0) + 1
+        version: (this.selectedCharacter.metadata?.version || 0) + 1,
       };
 
       // Save to storage
       const result = await CharacterGenerationAPI.updateCharacter(this.selectedCharacter);
-      
+
       if (result.success) {
         // Update original reference
         this.originalCharacter = JSON.parse(JSON.stringify(this.selectedCharacter));
-        
+
         // Update in characters list
         const index = this.characters.findIndex(c => c.id === this.selectedCharacter.id);
         if (index >= 0) {
@@ -944,7 +978,7 @@ export default class CharacterEditor extends BaseComponent {
    */
   setupAutoSave() {
     this.clearAutoSave();
-    
+
     this.autoSaveTimer = setInterval(() => {
       if (this.hasUnsavedChanges) {
         this.saveChanges();
@@ -973,13 +1007,13 @@ export default class CharacterEditor extends BaseComponent {
       e.preventDefault();
       this.undo();
     }
-    
+
     // Ctrl/Cmd + Y or Ctrl/Cmd + Shift + Z: Redo
     if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
       e.preventDefault();
       this.redo();
     }
-    
+
     // Ctrl/Cmd + S: Save
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
       e.preventDefault();
@@ -998,7 +1032,7 @@ export default class CharacterEditor extends BaseComponent {
 
     this.clearAutoSave();
     this.onCancel();
-    
+
     // Clean up
     if (this.element) {
       this.element.remove();
@@ -1014,7 +1048,7 @@ export default class CharacterEditor extends BaseComponent {
       oval: '<ellipse cx="20" cy="20" rx="15" ry="10" fill="currentColor"/>',
       square: '<rect x="5" y="5" width="30" height="30" rx="2" fill="currentColor"/>',
       triangle: '<polygon points="20,5 35,30 5,30" fill="currentColor"/>',
-      hexagon: '<polygon points="20,5 32,12 32,28 20,35 8,28 8,12" fill="currentColor"/>'
+      hexagon: '<polygon points="20,5 32,12 32,28 20,35 8,28 8,12" fill="currentColor"/>',
     };
     return shapes[shape] || shapes.circle;
   }
@@ -1038,11 +1072,11 @@ export default class CharacterEditor extends BaseComponent {
       saved: { icon: '✓', text: 'All changes saved', class: 'saved' },
       unsaved: { icon: '●', text: 'Unsaved changes', class: 'unsaved' },
       saving: { icon: '⟳', text: 'Saving...', class: 'saving' },
-      error: { icon: '✕', text: 'Save failed', class: 'error' }
+      error: { icon: '✕', text: 'Save failed', class: 'error' },
     };
 
     const config = statusConfig[status] || statusConfig.saved;
-    
+
     statusElement.className = `status-indicator ${config.class}`;
     statusElement.querySelector('.status-icon').textContent = config.icon;
     statusElement.querySelector('.status-text').textContent = config.text;
@@ -1062,7 +1096,7 @@ export default class CharacterEditor extends BaseComponent {
    * Placeholder methods for tab-specific functionality
    * These would be implemented with actual editing logic
    */
-  
+
   attachAppearanceListeners() {
     // Shape selection
     this.element.querySelectorAll('.shape-option').forEach(option => {
@@ -1079,7 +1113,7 @@ export default class CharacterEditor extends BaseComponent {
 
     // Color pickers
     this.element.querySelectorAll('.color-picker').forEach(picker => {
-      picker.addEventListener('change', (e) => {
+      picker.addEventListener('change', e => {
         const colorType = e.target.id.replace('color-', '');
         if (this.selectedCharacter && colorType) {
           const colorKey = colorType + 'Color';
@@ -1093,7 +1127,7 @@ export default class CharacterEditor extends BaseComponent {
     // Eye shape selection
     const eyeShapeSelect = this.element.querySelector('#eye-shape');
     if (eyeShapeSelect) {
-      eyeShapeSelect.addEventListener('change', (e) => {
+      eyeShapeSelect.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.appearance.eyes.shape = e.target.value;
           this.recordChange();
@@ -1105,7 +1139,7 @@ export default class CharacterEditor extends BaseComponent {
     // Mouth shape selection
     const mouthShapeSelect = this.element.querySelector('#mouth-shape');
     if (mouthShapeSelect) {
-      mouthShapeSelect.addEventListener('change', (e) => {
+      mouthShapeSelect.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.appearance.mouth.shape = e.target.value;
           this.recordChange();
@@ -1119,7 +1153,7 @@ export default class CharacterEditor extends BaseComponent {
     // Personality type
     const personalitySelect = this.element.querySelector('#personality-type');
     if (personalitySelect) {
-      personalitySelect.addEventListener('change', (e) => {
+      personalitySelect.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.personality.type = e.target.value;
           this.recordChange();
@@ -1143,11 +1177,11 @@ export default class CharacterEditor extends BaseComponent {
     // Voice pitch slider
     const voicePitch = this.element.querySelector('#voice-pitch');
     if (voicePitch) {
-      voicePitch.addEventListener('input', (e) => {
+      voicePitch.addEventListener('input', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.personality.voice = {
             ...this.selectedCharacter.personality.voice,
-            pitch: e.target.value
+            pitch: e.target.value,
           };
           this.recordChange();
         }
@@ -1157,11 +1191,11 @@ export default class CharacterEditor extends BaseComponent {
     // Voice speed slider
     const voiceSpeed = this.element.querySelector('#voice-speed');
     if (voiceSpeed) {
-      voiceSpeed.addEventListener('input', (e) => {
+      voiceSpeed.addEventListener('input', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.personality.voice = {
             ...this.selectedCharacter.personality.voice,
-            speed: e.target.value
+            speed: e.target.value,
           };
           this.recordChange();
         }
@@ -1171,11 +1205,11 @@ export default class CharacterEditor extends BaseComponent {
     // Speech pattern
     const speechPattern = this.element.querySelector('#speech-pattern');
     if (speechPattern) {
-      speechPattern.addEventListener('change', (e) => {
+      speechPattern.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.personality.voice = {
             ...this.selectedCharacter.personality.voice,
-            pattern: e.target.value
+            pattern: e.target.value,
           };
           this.recordChange();
         }
@@ -1187,7 +1221,7 @@ export default class CharacterEditor extends BaseComponent {
     // Teaching level
     const teachingLevel = this.element.querySelector('#teaching-level');
     if (teachingLevel) {
-      teachingLevel.addEventListener('change', (e) => {
+      teachingLevel.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.educationalContent.level = e.target.value;
           this.recordChange();
@@ -1198,9 +1232,9 @@ export default class CharacterEditor extends BaseComponent {
     // Age range sliders
     const ageMin = this.element.querySelector('#age-range-min');
     const ageMax = this.element.querySelector('#age-range-max');
-    
+
     if (ageMin) {
-      ageMin.addEventListener('input', (e) => {
+      ageMin.addEventListener('input', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.educationalContent.ageRange[0] = parseInt(e.target.value);
           this.recordChange();
@@ -1209,7 +1243,7 @@ export default class CharacterEditor extends BaseComponent {
     }
 
     if (ageMax) {
-      ageMax.addEventListener('input', (e) => {
+      ageMax.addEventListener('input', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.educationalContent.ageRange[1] = parseInt(e.target.value);
           this.recordChange();
@@ -1233,7 +1267,7 @@ export default class CharacterEditor extends BaseComponent {
     // Teaching method
     const teachingMethod = this.element.querySelector('#teaching-method');
     if (teachingMethod) {
-      teachingMethod.addEventListener('change', (e) => {
+      teachingMethod.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.educationalContent.teachingMethod = e.target.value;
           this.recordChange();
@@ -1245,7 +1279,7 @@ export default class CharacterEditor extends BaseComponent {
   attachInteractionsListeners() {
     // Add message buttons
     this.element.querySelectorAll('.add-message').forEach(button => {
-      button.addEventListener('click', (e) => {
+      button.addEventListener('click', e => {
         const messageType = e.target.dataset.type;
         const input = e.target.previousElementSibling;
         if (input && input.value.trim() && this.selectedCharacter) {
@@ -1263,7 +1297,7 @@ export default class CharacterEditor extends BaseComponent {
     // Interactive checkbox
     const isInteractive = this.element.querySelector('#is-interactive');
     if (isInteractive) {
-      isInteractive.addEventListener('change', (e) => {
+      isInteractive.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.interactions.isInteractive = e.target.checked;
           this.recordChange();
@@ -1274,7 +1308,7 @@ export default class CharacterEditor extends BaseComponent {
     // Responds to clicks checkbox
     const respondsToClicks = this.element.querySelector('#responds-to-clicks');
     if (respondsToClicks) {
-      respondsToClicks.addEventListener('change', (e) => {
+      respondsToClicks.addEventListener('change', e => {
         if (this.selectedCharacter) {
           this.selectedCharacter.interactions.respondsToClicks = e.target.checked;
           this.recordChange();
@@ -1287,7 +1321,7 @@ export default class CharacterEditor extends BaseComponent {
     // Idle animation
     const idleAnimation = this.element.querySelector('#idle-animation');
     if (idleAnimation) {
-      idleAnimation.addEventListener('change', (e) => {
+      idleAnimation.addEventListener('change', e => {
         if (this.selectedCharacter) {
           if (!this.selectedCharacter.animations) {
             this.selectedCharacter.animations = {};
@@ -1301,7 +1335,7 @@ export default class CharacterEditor extends BaseComponent {
     // Click animation
     const clickAnimation = this.element.querySelector('#click-animation');
     if (clickAnimation) {
-      clickAnimation.addEventListener('change', (e) => {
+      clickAnimation.addEventListener('change', e => {
         if (this.selectedCharacter) {
           if (!this.selectedCharacter.animations) {
             this.selectedCharacter.animations = {};
@@ -1315,7 +1349,7 @@ export default class CharacterEditor extends BaseComponent {
     // Hover animation
     const hoverAnimation = this.element.querySelector('#hover-animation');
     if (hoverAnimation) {
-      hoverAnimation.addEventListener('change', (e) => {
+      hoverAnimation.addEventListener('change', e => {
         if (this.selectedCharacter) {
           if (!this.selectedCharacter.animations) {
             this.selectedCharacter.animations = {};
@@ -1329,7 +1363,7 @@ export default class CharacterEditor extends BaseComponent {
     // Enable particles checkbox
     const enableParticles = this.element.querySelector('#enable-particles');
     if (enableParticles) {
-      enableParticles.addEventListener('change', (e) => {
+      enableParticles.addEventListener('change', e => {
         if (this.selectedCharacter) {
           if (!this.selectedCharacter.animations) {
             this.selectedCharacter.animations = {};
@@ -1343,7 +1377,7 @@ export default class CharacterEditor extends BaseComponent {
     // Enable sound effects checkbox
     const enableSound = this.element.querySelector('#enable-sound-effects');
     if (enableSound) {
-      enableSound.addEventListener('change', (e) => {
+      enableSound.addEventListener('change', e => {
         if (this.selectedCharacter) {
           if (!this.selectedCharacter.animations) {
             this.selectedCharacter.animations = {};
@@ -1359,7 +1393,7 @@ export default class CharacterEditor extends BaseComponent {
     // Add tag button
     const addTagBtn = this.element.querySelector('#add-tag');
     const tagInput = this.element.querySelector('#tag-input');
-    
+
     if (addTagBtn && tagInput) {
       const addTag = () => {
         const tag = tagInput.value.trim();
@@ -1377,7 +1411,7 @@ export default class CharacterEditor extends BaseComponent {
       };
 
       addTagBtn.addEventListener('click', addTag);
-      tagInput.addEventListener('keypress', (e) => {
+      tagInput.addEventListener('keypress', e => {
         if (e.key === 'Enter') {
           e.preventDefault();
           addTag();
@@ -1444,17 +1478,17 @@ export default class CharacterEditor extends BaseComponent {
   filterCharacters(searchTerm) {
     const characterItems = this.element.querySelectorAll('.character-item');
     const lowerSearch = searchTerm.toLowerCase();
-    
+
     characterItems.forEach(item => {
       const character = this.characters.find(c => c.id === item.dataset.characterId);
       if (character) {
-        const matches = 
+        const matches =
           character.name.toLowerCase().includes(lowerSearch) ||
           character.subject.toLowerCase().includes(lowerSearch) ||
-          (character.personality?.traits || []).some(trait => 
+          (character.personality?.traits || []).some(trait =>
             trait.toLowerCase().includes(lowerSearch)
           );
-        
+
         item.style.display = matches ? 'flex' : 'none';
       }
     });
@@ -1465,31 +1499,31 @@ export default class CharacterEditor extends BaseComponent {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    
-    input.addEventListener('change', async (e) => {
+
+    input.addEventListener('change', async e => {
       const file = e.target.files[0];
       if (!file) return;
-      
+
       try {
         const text = await file.text();
         const character = JSON.parse(text);
-        
+
         // Validate imported character
         const validation = await CharacterGenerationAPI.validateCharacter(character);
         if (!validation.isValid) {
           this.showValidationErrors(validation.errors);
           return;
         }
-        
+
         // Generate new ID if importing
         character.id = CharacterUtils.generateId();
         character.metadata = {
           ...character.metadata,
           created: new Date().toISOString(),
           lastModified: new Date().toISOString(),
-          version: 1
+          version: 1,
         };
-        
+
         // Save character
         const result = await CharacterGenerationAPI.saveCharacter(character);
         if (result.success) {
@@ -1503,30 +1537,30 @@ export default class CharacterEditor extends BaseComponent {
         this.showNotification(`Import failed: ${error.message}`, 'error');
       }
     });
-    
+
     input.click();
   }
 
   exportCharacter() {
     if (!this.selectedCharacter) return;
-    
+
     try {
       // Create clean copy for export
       const exportData = JSON.parse(JSON.stringify(this.selectedCharacter));
-      
+
       // Create blob and download
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: 'application/json'
+        type: 'application/json',
       });
-      
+
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `${exportData.name.replace(/\s+/g, '-').toLowerCase()}-character.json`;
       a.click();
-      
+
       URL.revokeObjectURL(url);
-      
+
       this.showNotification('Character exported successfully!', 'success');
     } catch (error) {
       console.error('❌ Export failed:', error);
@@ -1536,12 +1570,12 @@ export default class CharacterEditor extends BaseComponent {
 
   switchTab(tabId) {
     this.currentTab = tabId;
-    
+
     // Update tab buttons
     this.element.querySelectorAll('.editor-tab').forEach(tab => {
       tab.classList.toggle('active', tab.dataset.tab === tabId);
     });
-    
+
     // Update tab panels
     this.element.querySelectorAll('.tab-panel').forEach(panel => {
       panel.classList.toggle('active', panel.id === `${tabId}-tab`);
@@ -1565,7 +1599,10 @@ export default class CharacterEditor extends BaseComponent {
     // Appearance tab
     const shapeOptions = this.element.querySelectorAll('.shape-option');
     shapeOptions.forEach(option => {
-      option.classList.toggle('selected', option.dataset.shape === this.selectedCharacter.appearance?.shape);
+      option.classList.toggle(
+        'selected',
+        option.dataset.shape === this.selectedCharacter.appearance?.shape
+      );
     });
 
     // Color pickers
@@ -1573,7 +1610,7 @@ export default class CharacterEditor extends BaseComponent {
       const primaryColor = this.element.querySelector('#color-primary');
       const secondaryColor = this.element.querySelector('#color-secondary');
       const accentColor = this.element.querySelector('#color-accent');
-      
+
       if (primaryColor) primaryColor.value = this.selectedCharacter.appearance.primaryColor;
       if (secondaryColor) secondaryColor.value = this.selectedCharacter.appearance.secondaryColor;
       if (accentColor) accentColor.value = this.selectedCharacter.appearance.accentColor;
@@ -1587,7 +1624,8 @@ export default class CharacterEditor extends BaseComponent {
 
     // Update traits
     this.element.querySelectorAll('.trait-option input').forEach(checkbox => {
-      checkbox.checked = this.selectedCharacter.personality?.traits?.includes(checkbox.value) || false;
+      checkbox.checked =
+        this.selectedCharacter.personality?.traits?.includes(checkbox.value) || false;
     });
 
     // Education fields
@@ -1619,7 +1657,9 @@ export default class CharacterEditor extends BaseComponent {
     const listContainer = this.element.querySelector('#character-list');
     if (!listContainer) return;
 
-    listContainer.innerHTML = this.characters.map(character => `
+    listContainer.innerHTML = this.characters
+      .map(
+        character => `
       <div class="character-item ${character.id === this.selectedCharacter?.id ? 'selected' : ''}" 
            data-character-id="${character.id}">
         <div class="character-avatar" style="background: ${character.appearance?.primaryColor || '#4A90E2'}">
@@ -1630,7 +1670,9 @@ export default class CharacterEditor extends BaseComponent {
           <div class="character-subject">${character.subject || 'No subject'}</div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -1639,7 +1681,10 @@ export default class CharacterEditor extends BaseComponent {
   updateShapeSelection() {
     const shapeOptions = this.element.querySelectorAll('.shape-option');
     shapeOptions.forEach(option => {
-      option.classList.toggle('selected', option.dataset.shape === this.selectedCharacter?.appearance?.shape);
+      option.classList.toggle(
+        'selected',
+        option.dataset.shape === this.selectedCharacter?.appearance?.shape
+      );
     });
   }
 
@@ -1651,15 +1696,21 @@ export default class CharacterEditor extends BaseComponent {
     if (!listContainer || !this.selectedCharacter) return;
 
     const messages = this.selectedCharacter.interactions[messageType + 'Messages'] || [];
-    
-    listContainer.innerHTML = messages.map((message, index) => `
+
+    listContainer.innerHTML =
+      messages
+        .map(
+          (message, index) => `
       <div class="message-item">
         <span class="message-text">${message}</span>
         <button class="btn-tertiary btn-small remove-message" 
                 data-type="${messageType}" 
                 data-index="${index}">✕</button>
       </div>
-    `).join('') + `
+    `
+        )
+        .join('') +
+      `
       <div class="message-input-group">
         <textarea class="message-input" placeholder="Enter ${messageType} message..."></textarea>
         <button class="btn-small add-message" data-type="${messageType}">Add</button>
@@ -1668,7 +1719,7 @@ export default class CharacterEditor extends BaseComponent {
 
     // Re-attach listeners for new remove buttons
     listContainer.querySelectorAll('.remove-message').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const type = e.target.dataset.type;
         const index = parseInt(e.target.dataset.index);
         this.selectedCharacter.interactions[type + 'Messages'].splice(index, 1);
@@ -1686,17 +1737,21 @@ export default class CharacterEditor extends BaseComponent {
     if (!tagsContainer || !this.selectedCharacter) return;
 
     const tags = this.selectedCharacter.metadata?.tags || [];
-    
-    tagsContainer.innerHTML = tags.map((tag, index) => `
+
+    tagsContainer.innerHTML = tags
+      .map(
+        (tag, index) => `
       <span class="tag-item">
         ${tag}
         <button class="btn-tertiary btn-small remove-tag" data-index="${index}">✕</button>
       </span>
-    `).join('');
+    `
+      )
+      .join('');
 
     // Attach remove listeners
     tagsContainer.querySelectorAll('.remove-tag').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const index = parseInt(e.target.dataset.index);
         this.selectedCharacter.metadata.tags.splice(index, 1);
         this.updateTagsList();
@@ -1742,14 +1797,14 @@ ${JSON.stringify(this.selectedCharacter, null, 2)}
           onClick: () => {
             navigator.clipboard.writeText(JSON.stringify(this.selectedCharacter, null, 2));
             this.showNotification('JSON copied to clipboard!', 'success');
-          }
+          },
         },
         {
           text: 'Close',
           className: 'btn-secondary',
-          onClick: (modal) => modal.close()
-        }
-      ]
+          onClick: modal => modal.close(),
+        },
+      ],
     });
 
     modal.show();
@@ -1760,7 +1815,7 @@ ${JSON.stringify(this.selectedCharacter, null, 2)}
    */
   showValidationErrors(errors) {
     const errorList = errors.map(err => `• ${err.field}: ${err.message}`).join('\n');
-    
+
     const modal = new Modal({
       title: 'Validation Errors',
       content: `
@@ -1775,9 +1830,9 @@ ${errorList}
         {
           text: 'OK',
           className: 'btn-primary',
-          onClick: (modal) => modal.close()
-        }
-      ]
+          onClick: modal => modal.close(),
+        },
+      ],
     });
 
     modal.show();
@@ -1792,7 +1847,7 @@ ${errorList}
     // Simple diff display - in production would use a proper diff library
     const currentJSON = JSON.stringify(this.selectedCharacter, null, 2);
     const originalJSON = JSON.stringify(this.originalCharacter, null, 2);
-    
+
     const modal = new Modal({
       title: 'Compare Changes',
       content: `
@@ -1815,9 +1870,9 @@ ${originalJSON}
         {
           text: 'Close',
           className: 'btn-primary',
-          onClick: (modal) => modal.close()
-        }
-      ]
+          onClick: modal => modal.close(),
+        },
+      ],
     });
 
     modal.show();
@@ -1865,16 +1920,16 @@ ${originalJSON}
 
         // Remove from local list
         this.characters = this.characters.filter(c => c.id !== this.selectedCharacter.id);
-        
+
         // Clear selection
         this.selectedCharacter = null;
         this.originalCharacter = null;
-        
+
         // Update UI
         this.updateCharacterList();
         this.element.querySelector('#editor-preview').innerHTML = '';
         this.element.querySelector('#preview-info').innerHTML = '';
-        
+
         // Clear form fields
         this.element.querySelectorAll('.tab-panel').forEach(panel => {
           panel.innerHTML = '<div class="empty-state">Select a character to edit</div>';
@@ -1899,7 +1954,7 @@ ${originalJSON}
       [
         { text: 'Save', value: 'save', className: 'btn-primary' },
         { text: 'Don\'t Save', value: 'discard', className: 'btn-secondary' },
-        { text: 'Cancel', value: 'cancel', className: 'btn-tertiary' }
+        { text: 'Cancel', value: 'cancel', className: 'btn-tertiary' },
       ]
     ).then(result => {
       if (result === 'save') {
@@ -1924,30 +1979,30 @@ ${originalJSON}
           {
             text: 'Yes',
             className: 'btn-primary',
-            onClick: (modal) => {
+            onClick: modal => {
               modal.close();
               resolve(true);
-            }
+            },
           },
           {
             text: 'No',
             className: 'btn-secondary',
-            onClick: (modal) => {
+            onClick: modal => {
               modal.close();
               resolve(false);
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
 
       // Handle custom button values
       if (buttons) {
         modal.options.buttons = buttons.map(btn => ({
           ...btn,
-          onClick: (modal) => {
+          onClick: modal => {
             modal.close();
             resolve(btn.value);
-          }
+          },
         }));
       }
 

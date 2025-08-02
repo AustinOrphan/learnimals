@@ -1,6 +1,6 @@
 /**
  * Enhanced Reading Page with Character Integration
- * 
+ *
  * This page uses the SubjectTemplateLoader to provide Ruby the Panda character
  * with full interactive capabilities and animations.
  */
@@ -344,7 +344,7 @@ const readingFeatureCards = [
         }
       </script>
     `,
-    isLinked: false
+    isLinked: false,
   },
   {
     title: 'Word Games with Ruby',
@@ -392,8 +392,8 @@ const readingFeatureCards = [
         }
       </script>
     `,
-    isLinked: false
-  }
+    isLinked: false,
+  },
 ];
 
 // Initialize the reading page with enhanced character features
@@ -405,14 +405,14 @@ async function initializeReadingPage() {
       characterOptions: {
         size: 150,
         interactive: true,
-        animated: true
-      }
+        animated: true,
+      },
     });
 
     console.log('✅ Reading page with character integration loaded successfully');
   } catch (error) {
     console.error('❌ Failed to load enhanced reading page:', error);
-    
+
     // Fallback to basic page if enhanced version fails
     console.log('🔄 Falling back to basic page functionality...');
     initializeBasicReadingPage();
@@ -439,40 +439,42 @@ window.testCharacterSystem = {
       console.log('Ruby says:', window.getCharacterMessage('greeting'));
     }
   },
-  
+
   triggerCelebration: () => {
     if (window.triggerCharacterCelebration) {
       window.triggerCharacterCelebration();
     }
   },
-  
+
   triggerEncouragement: () => {
     if (window.triggerCharacterEncouragement) {
       window.triggerCharacterEncouragement();
     }
   },
-  
+
   getCharacterData: () => {
     return window.characterData || null;
-  }
+  },
 };
 
 // Performance monitoring for testing
 const performanceMonitor = {
   pageLoadStart: performance.now(),
-  
+
   markCharacterLoaded: () => {
     const loadTime = performance.now() - performanceMonitor.pageLoadStart;
     console.log(`📊 Character system loaded in ${loadTime.toFixed(2)}ms`);
-    
+
     // Store metrics for testing
     window.characterSystemMetrics = {
       loadTime: loadTime,
       timestamp: Date.now(),
       characterRendered: !!window.characterRenderer,
-      interactionsAvailable: !!(window.triggerCharacterCelebration && window.triggerCharacterEncouragement)
+      interactionsAvailable: !!(
+        window.triggerCharacterCelebration && window.triggerCharacterEncouragement
+      ),
     };
-  }
+  },
 };
 
 // Listen for character system ready

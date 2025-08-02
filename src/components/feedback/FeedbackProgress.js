@@ -34,10 +34,15 @@ class FeedbackProgress extends BaseComponent {
       size: options.size || 'medium',
       onComplete: options.onComplete || null,
       onMilestone: options.onMilestone || null,
-      cssClasses: ['feedback-progress', `feedback-progress--${options.type || 'progress'}`, `feedback-progress--${options.character || 'max'}`, `feedback-progress--${options.size || 'medium'}`],
-      ...options
+      cssClasses: [
+        'feedback-progress',
+        `feedback-progress--${options.type || 'progress'}`,
+        `feedback-progress--${options.character || 'max'}`,
+        `feedback-progress--${options.size || 'medium'}`,
+      ],
+      ...options,
     });
-    
+
     this.previousValue = 0;
     this.animationId = null;
     this.milestones = [25, 50, 75, 100]; // Percentage milestones
@@ -48,20 +53,20 @@ class FeedbackProgress extends BaseComponent {
    * @returns {string} - Progress HTML
    */
   generateHTML() {
-    const { 
-      id, type, value, max, label, character, showValue, showCharacter 
-    } = this.options;
-    
+    const { id, type, value, max, label, character, showValue, showCharacter } = this.options;
+
     const percentage = Math.min(100, Math.max(0, (value / max) * 100));
     const characterInfo = this.getCharacterInfo(character);
-    
+
     return `
       <div id="${id}" class="component feedback-progress" 
            role="progressbar" aria-valuemin="0" aria-valuemax="${max}" 
            aria-valuenow="${value}" aria-label="${label}"
            data-progress-type="${type}" data-character="${character}">
         
-        ${showCharacter ? `
+        ${
+  showCharacter
+    ? `
           <div class="progress-character">
             <img src="${characterInfo.avatar}" alt="${characterInfo.name}" 
                  class="progress-character-avatar" loading="lazy">
@@ -70,18 +75,24 @@ class FeedbackProgress extends BaseComponent {
               <span class="celebration-text">${this.getCelebrationText(character, type)}</span>
             </div>
           </div>
-        ` : ''}
+        `
+    : ''
+}
         
         <div class="progress-content">
           <div class="progress-header">
             <span class="progress-label">${label}</span>
-            ${showValue ? `
+            ${
+  showValue
+    ? `
               <span class="progress-value">
                 <span class="progress-current">${value}</span>
                 <span class="progress-separator">/</span>
                 <span class="progress-max">${max}</span>
               </span>
-            ` : ''}
+            `
+    : ''
+}
           </div>
           
           <div class="progress-bar-container">
@@ -106,25 +117,37 @@ class FeedbackProgress extends BaseComponent {
             <div class="progress-percentage" aria-hidden="true">${Math.round(percentage)}%</div>
           </div>
           
-          ${type === 'level-up' ? `
+          ${
+  type === 'level-up'
+    ? `
             <div class="progress-level-indicator">
               <span class="level-badge">Level ${Math.floor(value / (max / 10)) + 1}</span>
             </div>
-          ` : ''}
+          `
+    : ''
+}
           
-          ${type === 'streak' ? `
+          ${
+  type === 'streak'
+    ? `
             <div class="progress-streak-indicator">
               <span class="streak-flame">🔥</span>
               <span class="streak-count">${value} day streak!</span>
             </div>
-          ` : ''}
+          `
+    : ''
+}
           
-          ${type === 'achievement' ? `
+          ${
+  type === 'achievement'
+    ? `
             <div class="progress-achievement-badge">
               <span class="achievement-icon">🏆</span>
               <span class="achievement-text">Achievement Progress</span>
             </div>
-          ` : ''}
+          `
+    : ''
+}
         </div>
       </div>
     `;
@@ -135,14 +158,18 @@ class FeedbackProgress extends BaseComponent {
    * @returns {string} - Milestone markers HTML
    */
   generateMilestoneMarkers() {
-    return this.milestones.map(milestone => `
+    return this.milestones
+      .map(
+        milestone => `
       <div class="progress-milestone" 
            style="left: ${milestone}%;" 
            data-milestone="${milestone}"
            title="${milestone}% milestone">
         <div class="milestone-marker"></div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -154,26 +181,26 @@ class FeedbackProgress extends BaseComponent {
     const characters = {
       bella: {
         name: 'Bella',
-        avatar: '/public/images/characters/bella-progress.png'
+        avatar: '/public/images/characters/bella-progress.png',
       },
       max: {
         name: 'Max',
-        avatar: '/public/images/characters/max-progress.png'
+        avatar: '/public/images/characters/max-progress.png',
       },
       zara: {
         name: 'Zara',
-        avatar: '/public/images/characters/zara-progress.png'
+        avatar: '/public/images/characters/zara-progress.png',
       },
       aria: {
         name: 'Aria',
-        avatar: '/public/images/characters/aria-progress.png'
+        avatar: '/public/images/characters/aria-progress.png',
       },
       codecat: {
         name: 'CodeCat',
-        avatar: '/public/images/characters/codecat-progress.png'
-      }
+        avatar: '/public/images/characters/codecat-progress.png',
+      },
     };
-    
+
     return characters[character] || characters.max;
   }
 
@@ -187,41 +214,41 @@ class FeedbackProgress extends BaseComponent {
     const celebrations = {
       bella: {
         'level-up': 'Reading level up!',
-        'streak': 'Reading streak!',
-        'progress': 'Great reading!',
-        'achievement': 'Reading star!',
-        'skill': 'Word power!'
+        streak: 'Reading streak!',
+        progress: 'Great reading!',
+        achievement: 'Reading star!',
+        skill: 'Word power!',
       },
       max: {
         'level-up': 'Math level up!',
-        'streak': 'Number streak!',
-        'progress': 'Math mastery!',
-        'achievement': 'Math champion!',
-        'skill': 'Number sense!'
+        streak: 'Number streak!',
+        progress: 'Math mastery!',
+        achievement: 'Math champion!',
+        skill: 'Number sense!',
       },
       zara: {
         'level-up': 'Science level up!',
-        'streak': 'Discovery streak!',
-        'progress': 'Science progress!',
-        'achievement': 'Science star!',
-        'skill': 'Research skills!'
+        streak: 'Discovery streak!',
+        progress: 'Science progress!',
+        achievement: 'Science star!',
+        skill: 'Research skills!',
       },
       aria: {
         'level-up': 'Art level up!',
-        'streak': 'Creative streak!',
-        'progress': 'Artistic growth!',
-        'achievement': 'Art master!',
-        'skill': 'Creative skills!'
+        streak: 'Creative streak!',
+        progress: 'Artistic growth!',
+        achievement: 'Art master!',
+        skill: 'Creative skills!',
       },
       codecat: {
         'level-up': 'Code level up!',
-        'streak': 'Coding streak!',
-        'progress': 'Programming up!',
-        'achievement': 'Code ninja!',
-        'skill': 'Logic skills!'
-      }
+        streak: 'Coding streak!',
+        progress: 'Programming up!',
+        achievement: 'Code ninja!',
+        skill: 'Logic skills!',
+      },
     };
-    
+
     const characterCelebrations = celebrations[character] || celebrations.max;
     return characterCelebrations[type] || characterCelebrations.progress;
   }
@@ -235,22 +262,22 @@ class FeedbackProgress extends BaseComponent {
   async updateProgress(newValue, animate = true) {
     const clampedValue = Math.min(this.options.max, Math.max(0, newValue));
     const oldValue = this.options.value;
-    
+
     // Update options
     this.options.value = clampedValue;
-    
+
     // Update ARIA attributes
     if (this.element) {
       this.element.setAttribute('aria-valuenow', clampedValue);
     }
-    
+
     if (!animate || !this.element) {
       this.setProgressDisplay(clampedValue);
       this.checkMilestones(oldValue, clampedValue);
       return;
     }
-    
-    return new Promise((resolve) => {
+
+    return new Promise(resolve => {
       this.animateProgressChange(oldValue, clampedValue, resolve);
     });
   }
@@ -264,17 +291,17 @@ class FeedbackProgress extends BaseComponent {
   animateProgressChange(from, to, onComplete) {
     const duration = 1000; // 1 second animation
     const startTime = performance.now();
-    
-    const animate = (currentTime) => {
+
+    const animate = currentTime => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
+
       // Easing function (ease-out)
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentValue = from + (to - from) * easeOut;
-      
+
       this.setProgressDisplay(currentValue);
-      
+
       if (progress < 1) {
         this.animationId = requestAnimationFrame(animate);
       } else {
@@ -284,7 +311,7 @@ class FeedbackProgress extends BaseComponent {
         onComplete();
       }
     };
-    
+
     this.animationId = requestAnimationFrame(animate);
   }
 
@@ -294,22 +321,22 @@ class FeedbackProgress extends BaseComponent {
    */
   setProgressDisplay(value) {
     if (!this.element) return;
-    
+
     const percentage = Math.min(100, Math.max(0, (value / this.options.max) * 100));
-    
+
     // Update progress bar
     const progressFill = this.element.querySelector('.progress-bar-fill');
     if (progressFill) {
       progressFill.style.width = `${percentage}%`;
       progressFill.setAttribute('data-percentage', percentage);
     }
-    
+
     // Update current value display
     const currentValueElement = this.element.querySelector('.progress-current');
     if (currentValueElement) {
       currentValueElement.textContent = Math.round(value);
     }
-    
+
     // Update percentage display
     const percentageElement = this.element.querySelector('.progress-percentage');
     if (percentageElement) {
@@ -325,11 +352,11 @@ class FeedbackProgress extends BaseComponent {
   checkMilestones(oldValue, newValue) {
     const oldPercentage = (oldValue / this.options.max) * 100;
     const newPercentage = (newValue / this.options.max) * 100;
-    
+
     for (const milestone of this.milestones) {
       if (oldPercentage < milestone && newPercentage >= milestone) {
         this.triggerMilestone(milestone);
-        
+
         if (this.options.onMilestone) {
           this.options.onMilestone(milestone, newValue);
         }
@@ -343,15 +370,15 @@ class FeedbackProgress extends BaseComponent {
    */
   triggerMilestone(milestone) {
     if (!this.element) return;
-    
+
     // Find milestone marker
     const milestoneMarker = this.element.querySelector(`[data-milestone="${milestone}"]`);
     if (milestoneMarker) {
       milestoneMarker.classList.add('milestone-achieved');
-      
+
       // Trigger sparkle effect
       this.triggerSparkleEffect();
-      
+
       // Character celebration
       if (this.options.showCharacter) {
         this.triggerCharacterCelebration();
@@ -366,11 +393,11 @@ class FeedbackProgress extends BaseComponent {
   triggerCompletionEffects(value) {
     if (value >= this.options.max) {
       this.triggerSparkleEffect();
-      
+
       if (this.options.showCharacter) {
         this.triggerCharacterCelebration();
       }
-      
+
       if (this.options.onComplete) {
         this.options.onComplete(value);
       }
@@ -383,9 +410,9 @@ class FeedbackProgress extends BaseComponent {
   triggerSparkleEffect() {
     const sparkles = this.element?.querySelector('.progress-sparkles');
     if (!sparkles) return;
-    
+
     sparkles.setAttribute('data-active', 'true');
-    
+
     // Reset after animation
     setTimeout(() => {
       sparkles.setAttribute('data-active', 'false');
@@ -398,9 +425,9 @@ class FeedbackProgress extends BaseComponent {
   triggerCharacterCelebration() {
     const celebration = this.element?.querySelector('.progress-character-celebration');
     if (!celebration) return;
-    
+
     celebration.setAttribute('data-celebration', 'active');
-    
+
     // Reset after animation
     setTimeout(() => {
       celebration.setAttribute('data-celebration', 'hidden');
@@ -419,7 +446,7 @@ class FeedbackProgress extends BaseComponent {
         milestone.classList.remove('milestone-achieved');
       });
     }
-    
+
     return this.updateProgress(0, animate);
   }
 
@@ -464,10 +491,10 @@ class FeedbackProgress extends BaseComponent {
    */
   update(newOptions) {
     const oldMax = this.options.max;
-    
+
     // Update options
     Object.assign(this.options, newOptions);
-    
+
     // Update label
     if (newOptions.label) {
       const labelElement = this.element?.querySelector('.progress-label');
@@ -475,20 +502,20 @@ class FeedbackProgress extends BaseComponent {
         labelElement.textContent = newOptions.label;
       }
     }
-    
+
     // Update max value display
     if (newOptions.max) {
       const maxElement = this.element?.querySelector('.progress-max');
       if (maxElement) {
         maxElement.textContent = newOptions.max;
       }
-      
+
       // Update ARIA
       if (this.element) {
         this.element.setAttribute('aria-valuemax', newOptions.max);
       }
     }
-    
+
     // Recalculate progress if max changed
     if (newOptions.max && newOptions.max !== oldMax) {
       this.setProgressDisplay(this.options.value);
@@ -503,7 +530,7 @@ class FeedbackProgress extends BaseComponent {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
     }
-    
+
     super.destroy();
   }
 }

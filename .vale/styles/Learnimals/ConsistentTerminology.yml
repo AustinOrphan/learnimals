@@ -1,0 +1,31 @@
+extends: substitution
+message: Use '%s' instead of '%s' for consistency.
+level: warning
+ignorecase: true
+swap:
+  # Standardize project references
+  'learnimals app': 'Learnimals application'
+  'learnimals project': 'Learnimals project'
+  'the app': 'the application'
+  
+  # Standardize technical terms
+  'front-end': 'frontend'
+  'back-end': 'backend'
+  'front end': 'frontend'
+  'back end': 'backend'
+  'e-mail': 'email'
+  'web-site': 'website'
+  'web site': 'website'
+  'plugin': 'plug-in'
+  'username': 'user name'
+  'dataset': 'data set'
+  'dropdown': 'drop-down'
+  'checkbox': 'check box'
+  
+  # Standardize file references
+  'readme': 'README'
+  'Readme': 'README'
+  'license': 'LICENSE'
+  'License': 'LICENSE'
+  'changelog': 'CHANGELOG'
+  'Changelog': 'CHANGELOG'

@@ -24,7 +24,7 @@ export {
   PlaceValueManipulative,
   FormComponent,
   NavigationComponent,
-  ThemeSwitcher
+  ThemeSwitcher,
 };
 
 // Also make them available globally for backward compatibility
@@ -37,7 +37,7 @@ if (typeof window !== 'undefined') {
     PlaceValueManipulative,
     FormComponent,
     NavigationComponent,
-    ThemeSwitcher
+    ThemeSwitcher,
   };
 }
 
@@ -49,5 +49,5 @@ export default {
   PlaceValueManipulative,
   FormComponent,
   NavigationComponent,
-  ThemeSwitcher
+  ThemeSwitcher,
 };

@@ -1,350 +1,373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feedback Components Test - Learnimals</title>
-    
+
     <!-- Base styles -->
-    <link rel="stylesheet" href="../styles/base/styles.css">
-    <link rel="stylesheet" href="../styles/components/feedback/feedback.css">
-    
+    <link rel="stylesheet" href="../styles/base/styles.css" />
+    <link rel="stylesheet" href="../styles/components/feedback/feedback.css" />
+
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 2rem;
-            background: var(--bg-primary, #f8f9fa);
-            color: var(--text-primary, #333);
-        }
-        
-        .test-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .test-section {
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: var(--bg-card, white);
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-        
-        .test-section h2 {
-            margin-top: 0;
-            color: var(--accent-primary, #007bff);
-        }
-        
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .test-button {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            background: var(--accent-primary, #007bff);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .test-button:hover {
-            background: var(--accent-secondary, #0056b3);
-            transform: translateY(-2px);
-        }
-        
-        .progress-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .character-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-        
-        .character-button {
-            padding: 0.5rem 1rem;
-            border: 2px solid;
-            border-radius: 20px;
-            background: transparent;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .character-button.bella { border-color: #ff6b6b; color: #ff6b6b; }
-        .character-button.max { border-color: #4ecdc4; color: #4ecdc4; }
-        .character-button.zara { border-color: #45b7d1; color: #45b7d1; }
-        .character-button.aria { border-color: #f9ca24; color: #f9ca24; }
-        .character-button.codecat { border-color: #6c5ce7; color: #6c5ce7; }
-        
-        .character-button:hover {
-            background: currentColor;
-            color: white;
-        }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: var(--bg-primary, #f8f9fa);
+        color: var(--text-primary, #333);
+      }
+
+      .test-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .test-section {
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: var(--bg-card, white);
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-section h2 {
+        margin-top: 0;
+        color: var(--accent-primary, #007bff);
+      }
+
+      .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .test-button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        background: var(--accent-primary, #007bff);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .test-button:hover {
+        background: var(--accent-secondary, #0056b3);
+        transform: translateY(-2px);
+      }
+
+      .progress-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .character-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .character-button {
+        padding: 0.5rem 1rem;
+        border: 2px solid;
+        border-radius: 20px;
+        background: transparent;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .character-button.bella {
+        border-color: #ff6b6b;
+        color: #ff6b6b;
+      }
+      .character-button.max {
+        border-color: #4ecdc4;
+        color: #4ecdc4;
+      }
+      .character-button.zara {
+        border-color: #45b7d1;
+        color: #45b7d1;
+      }
+      .character-button.aria {
+        border-color: #f9ca24;
+        color: #f9ca24;
+      }
+      .character-button.codecat {
+        border-color: #6c5ce7;
+        color: #6c5ce7;
+      }
+
+      .character-button:hover {
+        background: currentColor;
+        color: white;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="test-container">
-        <h1>🎨 Feedback Components Test Suite</h1>
-        <p>Interactive testing environment for visual feedback components with character integration.</p>
-        
-        <!-- Toast Testing -->
-        <div class="test-section">
-            <h2>🍞 Toast Notifications</h2>
-            <p>Test non-intrusive toast notifications with different types and characters.</p>
-            
-            <div class="character-buttons">
-                <button class="character-button bella" data-character="bella">Bella</button>
-                <button class="character-button max" data-character="max">Max</button>
-                <button class="character-button zara" data-character="zara">Zara</button>
-                <button class="character-button aria" data-character="aria">Aria</button>
-                <button class="character-button codecat" data-character="codecat">CodeCat</button>
-            </div>
-            
-            <div class="button-group">
-                <button class="test-button" onclick="testToast('success')">Success Toast</button>
-                <button class="test-button" onclick="testToast('error')">Error Toast</button>
-                <button class="test-button" onclick="testToast('hint')">Hint Toast</button>
-                <button class="test-button" onclick="testToast('progress')">Progress Toast</button>
-                <button class="test-button" onclick="testToast('achievement')">Achievement Toast</button>
-                <button class="test-button" onclick="clearToasts()">Clear All</button>
-            </div>
+      <h1>🎨 Feedback Components Test Suite</h1>
+      <p>Interactive testing environment for visual feedback components with character integration.</p>
+
+      <!-- Toast Testing -->
+      <div class="test-section">
+        <h2>🍞 Toast Notifications</h2>
+        <p>Test non-intrusive toast notifications with different types and characters.</p>
+
+        <div class="character-buttons">
+          <button class="character-button bella" data-character="bella">Bella</button>
+          <button class="character-button max" data-character="max">Max</button>
+          <button class="character-button zara" data-character="zara">Zara</button>
+          <button class="character-button aria" data-character="aria">Aria</button>
+          <button class="character-button codecat" data-character="codecat">CodeCat</button>
         </div>
-        
-        <!-- Overlay Testing -->
-        <div class="test-section">
-            <h2>🎭 Overlay Feedback</h2>
-            <p>Test modal-style feedback overlays with character interactions.</p>
-            
-            <div class="button-group">
-                <button class="test-button" onclick="testOverlay('success')">Success Overlay</button>
-                <button class="test-button" onclick="testOverlay('error')">Error Overlay</button>
-                <button class="test-button" onclick="testOverlay('achievement')">Achievement Overlay</button>
-                <button class="test-button" onclick="testOverlay('hint')">Hint Overlay</button>
-            </div>
+
+        <div class="button-group">
+          <button class="test-button" onclick="testToast('success')">Success Toast</button>
+          <button class="test-button" onclick="testToast('error')">Error Toast</button>
+          <button class="test-button" onclick="testToast('hint')">Hint Toast</button>
+          <button class="test-button" onclick="testToast('progress')">Progress Toast</button>
+          <button class="test-button" onclick="testToast('achievement')">Achievement Toast</button>
+          <button class="test-button" onclick="clearToasts()">Clear All</button>
         </div>
-        
-        <!-- Progress Testing -->
-        <div class="test-section">
-            <h2>📊 Progress Indicators</h2>
-            <p>Test visual progress indicators with character celebrations.</p>
-            
-            <div class="button-group">
-                <button class="test-button" onclick="createProgress('progress', 'Learning Progress')">Basic Progress</button>
-                <button class="test-button" onclick="createProgress('level-up', 'Level Progress')">Level Up</button>
-                <button class="test-button" onclick="createProgress('streak', 'Daily Streak')">Streak Counter</button>
-                <button class="test-button" onclick="createProgress('achievement', 'Achievement Progress')">Achievement</button>
-                <button class="test-button" onclick="animateAllProgress()">Animate All</button>
-                <button class="test-button" onclick="clearProgress()">Clear All</button>
-            </div>
-            
-            <div class="progress-container" id="progressContainer">
-                <!-- Progress components will be added here -->
-            </div>
+      </div>
+
+      <!-- Overlay Testing -->
+      <div class="test-section">
+        <h2>🎭 Overlay Feedback</h2>
+        <p>Test modal-style feedback overlays with character interactions.</p>
+
+        <div class="button-group">
+          <button class="test-button" onclick="testOverlay('success')">Success Overlay</button>
+          <button class="test-button" onclick="testOverlay('error')">Error Overlay</button>
+          <button class="test-button" onclick="testOverlay('achievement')">Achievement Overlay</button>
+          <button class="test-button" onclick="testOverlay('hint')">Hint Overlay</button>
         </div>
-        
-        <!-- Integration Testing -->
-        <div class="test-section">
-            <h2>🔗 Integration Tests</h2>
-            <p>Test complex scenarios and component interactions.</p>
-            
-            <div class="button-group">
-                <button class="test-button" onclick="testSequentialFeedback()">Sequential Feedback</button>
-                <button class="test-button" onclick="testMultiCharacterFeedback()">Multi-Character Test</button>
-                <button class="test-button" onclick="testAccessibility()">Accessibility Test</button>
-                <button class="test-button" onclick="testMobileScenario()">Mobile Scenario</button>
-            </div>
+      </div>
+
+      <!-- Progress Testing -->
+      <div class="test-section">
+        <h2>📊 Progress Indicators</h2>
+        <p>Test visual progress indicators with character celebrations.</p>
+
+        <div class="button-group">
+          <button class="test-button" onclick="createProgress('progress', 'Learning Progress')">Basic Progress</button>
+          <button class="test-button" onclick="createProgress('level-up', 'Level Progress')">Level Up</button>
+          <button class="test-button" onclick="createProgress('streak', 'Daily Streak')">Streak Counter</button>
+          <button class="test-button" onclick="createProgress('achievement', 'Achievement Progress')">
+            Achievement
+          </button>
+          <button class="test-button" onclick="animateAllProgress()">Animate All</button>
+          <button class="test-button" onclick="clearProgress()">Clear All</button>
         </div>
+
+        <div class="progress-container" id="progressContainer">
+          <!-- Progress components will be added here -->
+        </div>
+      </div>
+
+      <!-- Integration Testing -->
+      <div class="test-section">
+        <h2>🔗 Integration Tests</h2>
+        <p>Test complex scenarios and component interactions.</p>
+
+        <div class="button-group">
+          <button class="test-button" onclick="testSequentialFeedback()">Sequential Feedback</button>
+          <button class="test-button" onclick="testMultiCharacterFeedback()">Multi-Character Test</button>
+          <button class="test-button" onclick="testAccessibility()">Accessibility Test</button>
+          <button class="test-button" onclick="testMobileScenario()">Mobile Scenario</button>
+        </div>
+      </div>
     </div>
 
     <!-- Component imports -->
     <script type="module">
-        import { FeedbackOverlay, FeedbackToast, FeedbackProgress, ToastManager } from '../components/feedback/index.js';
-        
-        // Global variables for testing
-        window.FeedbackOverlay = FeedbackOverlay;
-        window.FeedbackToast = FeedbackToast;
-        window.FeedbackProgress = FeedbackProgress;
-        window.toastManager = ToastManager;
-        window.selectedCharacter = 'max';
-        window.progressComponents = new Map();
-        
-        // Character selection
-        document.querySelectorAll('.character-button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.character-button').forEach(b => b.classList.remove('selected'));
-                button.classList.add('selected');
-                window.selectedCharacter = button.dataset.character;
-                console.log('Selected character:', window.selectedCharacter);
-            });
+      import { FeedbackOverlay, FeedbackToast, FeedbackProgress, ToastManager } from '../components/feedback/index.js';
+
+      // Global variables for testing
+      window.FeedbackOverlay = FeedbackOverlay;
+      window.FeedbackToast = FeedbackToast;
+      window.FeedbackProgress = FeedbackProgress;
+      window.toastManager = ToastManager;
+      window.selectedCharacter = 'max';
+      window.progressComponents = new Map();
+
+      // Character selection
+      document.querySelectorAll('.character-button').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.character-button').forEach(b => b.classList.remove('selected'));
+          button.classList.add('selected');
+          window.selectedCharacter = button.dataset.character;
+          console.log('Selected character:', window.selectedCharacter);
         });
-        
-        // Set initial character
-        document.querySelector('.character-button.max').classList.add('selected');
+      });
+
+      // Set initial character
+      document.querySelector('.character-button.max').classList.add('selected');
     </script>
 
     <script>
-        // Test functions
-        function testToast(type) {
-            const messages = {
-                success: 'Great job! You\'re doing amazing!',
-                error: 'Oops! Let\'s try that again.',
-                hint: 'Here\'s a helpful hint to guide you.',
-                progress: 'You\'re making excellent progress!',
-                achievement: 'Congratulations! Achievement unlocked!'
-            };
-            
-            window.toastManager.show({
-                type: type,
-                message: messages[type],
-                character: window.selectedCharacter,
-                position: 'top-right'
-            });
-        }
-        
-        function clearToasts() {
-            window.toastManager.clear();
-        }
-        
-        function testOverlay(type) {
-            const messages = {
-                success: 'Fantastic work! You\'ve successfully completed this challenge!',
-                error: 'Don\'t worry! Every mistake is a learning opportunity. Let\'s try again!',
-                achievement: 'Amazing! You\'ve reached a new milestone in your learning journey!',
-                hint: 'Think about this carefully... What do you notice about the pattern?'
-            };
-            
-            const overlay = new window.FeedbackOverlay({
-                type: type,
-                message: messages[type],
-                character: window.selectedCharacter,
-                showCharacter: true,
-                duration: 5000
-            });
-            
-            overlay.show();
-        }
-        
-        function createProgress(type, label) {
-            const progressId = `progress-${Date.now()}`;
-            const progress = new window.FeedbackProgress({
-                id: progressId,
-                type: type,
-                label: label,
-                value: 0,
-                max: 100,
-                character: window.selectedCharacter,
-                showCharacter: true,
-                animated: true
-            });
-            
-            const container = document.getElementById('progressContainer');
-            progress.render(container);
-            
-            window.progressComponents.set(progressId, progress);
-            
-            // Animate to random value
-            setTimeout(() => {
-                const randomValue = Math.floor(Math.random() * 80) + 20;
-                progress.updateProgress(randomValue);
-            }, 500);
-        }
-        
-        function animateAllProgress() {
-            for (const progress of window.progressComponents.values()) {
-                const randomValue = Math.floor(Math.random() * 100);
-                progress.updateProgress(randomValue);
-            }
-        }
-        
-        function clearProgress() {
-            for (const progress of window.progressComponents.values()) {
-                progress.destroy();
-            }
-            window.progressComponents.clear();
-            document.getElementById('progressContainer').innerHTML = '';
-        }
-        
-        function testSequentialFeedback() {
-            // Show a sequence of different feedback types
-            setTimeout(() => window.toastManager.hint('Starting sequence...', { character: window.selectedCharacter }), 0);
-            setTimeout(() => window.toastManager.progress('Making progress...', { character: window.selectedCharacter }), 1000);
-            setTimeout(() => window.toastManager.success('Great work!', { character: window.selectedCharacter }), 2000);
-            setTimeout(() => window.toastManager.achievement('Sequence complete!', { character: window.selectedCharacter }), 3000);
-        }
-        
-        function testMultiCharacterFeedback() {
-            const characters = ['bella', 'max', 'zara', 'aria', 'codecat'];
-            const messages = [
-                'Reading is fun!',
-                'Math rocks!',
-                'Science is amazing!',
-                'Art is beautiful!',
-                'Coding is cool!'
-            ];
-            
-            characters.forEach((character, index) => {
-                setTimeout(() => {
-                    window.toastManager.success(messages[index], { 
-                        character: character,
-                        position: 'top-right'
-                    });
-                }, index * 800);
-            });
-        }
-        
-        function testAccessibility() {
-            // Test screen reader announcements and keyboard navigation
-            const overlay = new window.FeedbackOverlay({
-                type: 'hint',
-                message: 'This is an accessibility test. Try using Tab, Enter, and Escape keys.',
-                character: window.selectedCharacter,
-                showCharacter: true,
-                duration: 0 // Manual dismiss only
-            });
-            
-            overlay.show();
-            
-            // Focus the overlay for keyboard testing
-            setTimeout(() => {
-                if (overlay.element) {
-                    overlay.element.focus();
-                }
-            }, 100);
-        }
-        
-        function testMobileScenario() {
-            // Simulate mobile-specific feedback
-            window.toastManager.show({
-                type: 'success',
-                message: 'Swipe left or right to dismiss this toast!',
-                character: window.selectedCharacter,
-                position: 'bottom-center',
-                duration: 8000
-            });
-            
-            // Create a progress indicator for mobile
-            createProgress('streak', 'Mobile Progress');
-        }
-        
-        console.log('Feedback Components Test Suite loaded successfully!');
-        console.log('Available global objects:', {
-            FeedbackOverlay: window.FeedbackOverlay,
-            FeedbackToast: window.FeedbackToast,
-            FeedbackProgress: window.FeedbackProgress,
-            toastManager: window.toastManager
+      // Test functions
+      function testToast(type) {
+        const messages = {
+          success: "Great job! You're doing amazing!",
+          error: "Oops! Let's try that again.",
+          hint: "Here's a helpful hint to guide you.",
+          progress: "You're making excellent progress!",
+          achievement: 'Congratulations! Achievement unlocked!',
+        };
+
+        window.toastManager.show({
+          type: type,
+          message: messages[type],
+          character: window.selectedCharacter,
+          position: 'top-right',
         });
+      }
+
+      function clearToasts() {
+        window.toastManager.clear();
+      }
+
+      function testOverlay(type) {
+        const messages = {
+          success: "Fantastic work! You've successfully completed this challenge!",
+          error: "Don't worry! Every mistake is a learning opportunity. Let's try again!",
+          achievement: "Amazing! You've reached a new milestone in your learning journey!",
+          hint: 'Think about this carefully... What do you notice about the pattern?',
+        };
+
+        const overlay = new window.FeedbackOverlay({
+          type: type,
+          message: messages[type],
+          character: window.selectedCharacter,
+          showCharacter: true,
+          duration: 5000,
+        });
+
+        overlay.show();
+      }
+
+      function createProgress(type, label) {
+        const progressId = `progress-${Date.now()}`;
+        const progress = new window.FeedbackProgress({
+          id: progressId,
+          type: type,
+          label: label,
+          value: 0,
+          max: 100,
+          character: window.selectedCharacter,
+          showCharacter: true,
+          animated: true,
+        });
+
+        const container = document.getElementById('progressContainer');
+        progress.render(container);
+
+        window.progressComponents.set(progressId, progress);
+
+        // Animate to random value
+        setTimeout(() => {
+          const randomValue = Math.floor(Math.random() * 80) + 20;
+          progress.updateProgress(randomValue);
+        }, 500);
+      }
+
+      function animateAllProgress() {
+        for (const progress of window.progressComponents.values()) {
+          const randomValue = Math.floor(Math.random() * 100);
+          progress.updateProgress(randomValue);
+        }
+      }
+
+      function clearProgress() {
+        for (const progress of window.progressComponents.values()) {
+          progress.destroy();
+        }
+        window.progressComponents.clear();
+        document.getElementById('progressContainer').innerHTML = '';
+      }
+
+      function testSequentialFeedback() {
+        // Show a sequence of different feedback types
+        setTimeout(() => window.toastManager.hint('Starting sequence...', { character: window.selectedCharacter }), 0);
+        setTimeout(
+          () => window.toastManager.progress('Making progress...', { character: window.selectedCharacter }),
+          1000
+        );
+        setTimeout(() => window.toastManager.success('Great work!', { character: window.selectedCharacter }), 2000);
+        setTimeout(
+          () => window.toastManager.achievement('Sequence complete!', { character: window.selectedCharacter }),
+          3000
+        );
+      }
+
+      function testMultiCharacterFeedback() {
+        const characters = ['bella', 'max', 'zara', 'aria', 'codecat'];
+        const messages = [
+          'Reading is fun!',
+          'Math rocks!',
+          'Science is amazing!',
+          'Art is beautiful!',
+          'Coding is cool!',
+        ];
+
+        characters.forEach((character, index) => {
+          setTimeout(() => {
+            window.toastManager.success(messages[index], {
+              character: character,
+              position: 'top-right',
+            });
+          }, index * 800);
+        });
+      }
+
+      function testAccessibility() {
+        // Test screen reader announcements and keyboard navigation
+        const overlay = new window.FeedbackOverlay({
+          type: 'hint',
+          message: 'This is an accessibility test. Try using Tab, Enter, and Escape keys.',
+          character: window.selectedCharacter,
+          showCharacter: true,
+          duration: 0, // Manual dismiss only
+        });
+
+        overlay.show();
+
+        // Focus the overlay for keyboard testing
+        setTimeout(() => {
+          if (overlay.element) {
+            overlay.element.focus();
+          }
+        }, 100);
+      }
+
+      function testMobileScenario() {
+        // Simulate mobile-specific feedback
+        window.toastManager.show({
+          type: 'success',
+          message: 'Swipe left or right to dismiss this toast!',
+          character: window.selectedCharacter,
+          position: 'bottom-center',
+          duration: 8000,
+        });
+
+        // Create a progress indicator for mobile
+        createProgress('streak', 'Mobile Progress');
+      }
+
+      console.log('Feedback Components Test Suite loaded successfully!');
+      console.log('Available global objects:', {
+        FeedbackOverlay: window.FeedbackOverlay,
+        FeedbackToast: window.FeedbackToast,
+        FeedbackProgress: window.FeedbackProgress,
+        toastManager: window.toastManager,
+      });
     </script>
-</body>
+  </body>
 </html>

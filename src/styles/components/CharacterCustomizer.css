@@ -689,12 +689,15 @@
 }
 
 .background-preview.none {
-  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
-              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+  background:
+    linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
   background-size: 10px 10px;
-  background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+  background-position:
+    0 0,
+    0 5px,
+    5px -5px,
+    -5px 0px;
 }
 
 .background-preview.classroom {
@@ -962,7 +965,8 @@ button:disabled {
 
 /* Sparkle Animation */
 @keyframes sparkle-twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0;
     transform: scale(0);
   }
@@ -976,7 +980,7 @@ button:disabled {
   position: absolute;
   width: 4px;
   height: 4px;
-  background: #FFD700;
+  background: #ffd700;
   border-radius: 50%;
   animation: sparkle-twinkle 2s infinite;
   pointer-events: none;
@@ -999,7 +1003,7 @@ button:disabled {
   .preview-panel {
     width: 300px;
   }
-  
+
   .character-panel {
     width: 250px;
   }
@@ -1009,24 +1013,24 @@ button:disabled {
   .customizer-body {
     flex-direction: column;
   }
-  
+
   .character-panel {
     width: 100%;
     height: 200px;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
   }
-  
+
   .character-grid {
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   }
-  
+
   .preview-panel {
     width: 100%;
     border-left: none;
     border-top: 1px solid var(--border-color);
   }
-  
+
   .category-tabs {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -1037,24 +1041,24 @@ button:disabled {
   .customizer-header {
     padding: 1rem;
   }
-  
+
   .header-actions {
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  
+
   .category-panel {
     padding: 1rem;
   }
-  
+
   .theme-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .color-schemes {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
-  
+
   .animation-controls {
     grid-template-columns: 1fr;
   }
@@ -1073,7 +1077,7 @@ button:disabled {
   .character-customizer {
     border: 2px solid var(--text-primary);
   }
-  
+
   .theme-option,
   .color-scheme,
   .effect-option,
@@ -1082,7 +1086,7 @@ button:disabled {
   .background-item {
     border-width: 2px;
   }
-  
+
   .btn-primary,
   .btn-secondary,
   .btn-tertiary {
@@ -1100,12 +1104,12 @@ button:disabled {
     --text-secondary: #a0a0a0;
     --text-heading: #ffffff;
     --border-color: #404040;
-    --accent-primary: #4A90E2;
-    --accent-primary-hover: #357ABD;
+    --accent-primary: #4a90e2;
+    --accent-primary-hover: #357abd;
     --accent-primary-alpha: rgba(74, 144, 226, 0.2);
     --accent-primary-light: rgba(74, 144, 226, 0.5);
-    --success-color: #4CAF50;
-    --warning-color: #FF9800;
-    --error-color: #F44336;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --error-color: #f44336;
   }
 }

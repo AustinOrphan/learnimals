@@ -503,23 +503,23 @@
   .dashboard-nav {
     flex-wrap: wrap;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
-  
+
   .game-cards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .detailed-stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .bar-row {
     grid-template-columns: 80px 1fr 60px;
   }
-  
+
   .achievement-notification {
     left: 20px;
     right: 20px;

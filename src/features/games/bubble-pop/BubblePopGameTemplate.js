@@ -10,7 +10,7 @@ import logger from '../../../utils/logger.js';
 export default class BubblePopGameTemplate extends BaseGame {
   constructor(canvasId, options = {}) {
     super(canvasId, options);
-        
+
     // Bubble Pop specific properties
     this.bubbles = [];
     this.currentQuestion = {};
@@ -23,49 +23,47 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.maxStreak = 0;
     this.roundEnding = false;
     this.isTransitioning = false; // Flag for round transitions
-        
+
     // Visual effects
     this.particles = [];
     this.messageQueue = [];
     this.bubbleCache = new Map();
-        
+
     // Theme colors - will be initialized after theme is loaded
     this.themeColors = null;
-        
+
     // Difficulty settings
     this.difficultySettings = {
-      easy: { 
-        bubbleCount: 3, 
-        maxNumber: 10, 
+      easy: {
+        bubbleCount: 3,
+        maxNumber: 10,
         timeLimit: 45,
-        scoreMultiplier: 1 
+        scoreMultiplier: 1,
       },
-      medium: { 
-        bubbleCount: 4, 
-        maxNumber: 20, 
+      medium: {
+        bubbleCount: 4,
+        maxNumber: 20,
         timeLimit: 30,
-        scoreMultiplier: 1.5 
+        scoreMultiplier: 1.5,
       },
-      hard: { 
-        bubbleCount: 5, 
-        maxNumber: 50, 
+      hard: {
+        bubbleCount: 5,
+        maxNumber: 50,
         timeLimit: 20,
-        scoreMultiplier: 2 
-      }
+        scoreMultiplier: 2,
+      },
     };
-        
+
     this.settings = this.difficultySettings[this.difficulty];
   }
-    
+
   /**
-     * Get theme color from CSS variables
-     */
+   * Get theme color from CSS variables
+   */
   getThemeColor(variable) {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(variable)
-      .trim() || '#333';
+    return getComputedStyle(document.documentElement).getPropertyValue(variable).trim() || '#333';
   }
-    
+
   /**
    * Initialize theme colors from CSS variables
    */
@@ -75,10 +73,10 @@ export default class BubblePopGameTemplate extends BaseGame {
       secondary: this.getThemeColor('--accent-secondary') || '#6f42c1',
       success: this.getThemeColor('--success-color') || '#28a745',
       danger: this.getThemeColor('--danger-color') || '#dc3545',
-      warning: this.getThemeColor('--warning-color') || '#ffc107'
+      warning: this.getThemeColor('--warning-color') || '#ffc107',
     };
   }
-    
+
   /**
    * Ensure theme colors are available, initialize if needed
    */
@@ -88,10 +86,10 @@ export default class BubblePopGameTemplate extends BaseGame {
     }
     return this.themeColors;
   }
-    
+
   /**
-     * Draw a rounded rectangle (fallback for browsers without roundRect support)
-     */
+   * Draw a rounded rectangle (fallback for browsers without roundRect support)
+   */
   drawRoundedRect(x, y, width, height, radius) {
     this.ctx.beginPath();
     this.ctx.moveTo(x + radius, y);
@@ -105,13 +103,13 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.ctx.quadraticCurveTo(x, y, x + radius, y);
     this.ctx.closePath();
   }
-    
+
   /**
-     * Initialize game after BaseGame setup
-     */
+   * Initialize game after BaseGame setup
+   */
   async onInitialized() {
     super.onInitialized();
-    
+
     // Wait for DOM and CSS to be fully ready
     await new Promise(resolve => {
       if (document.readyState === 'complete') {
@@ -120,13 +118,13 @@ export default class BubblePopGameTemplate extends BaseGame {
         window.addEventListener('load', resolve, { once: true });
       }
     });
-    
+
     // Small additional delay to ensure CSS variables are computed
     await new Promise(resolve => setTimeout(resolve, 50));
-    
+
     // Initialize theme colors immediately to prevent fallback colors
     this.ensureThemeColors();
-    
+
     // Set canvas rendering options to prevent streaking/artifacts
     if (this.ctx) {
       this.ctx.imageSmoothingEnabled = true;
@@ -134,16 +132,16 @@ export default class BubblePopGameTemplate extends BaseGame {
       // Ensure proper composite operation for clean rendering
       this.ctx.globalCompositeOperation = 'source-over';
     }
-    
+
     this.setupThemeListener();
     this.generateQuestion();
     this.spawnBubbles();
     this.start();
   }
-    
+
   /**
-     * Listen for theme changes to update colors
-     */
+   * Listen for theme changes to update colors
+   */
   setupThemeListener() {
     document.addEventListener('themeChanged', () => {
       // Update theme colors
@@ -152,29 +150,29 @@ export default class BubblePopGameTemplate extends BaseGame {
         secondary: this.getThemeColor('--accent-secondary') || '#6f42c1',
         success: this.getThemeColor('--success-color') || '#28a745',
         danger: this.getThemeColor('--danger-color') || '#dc3545',
-        warning: this.getThemeColor('--warning-color') || '#ffc107'
+        warning: this.getThemeColor('--warning-color') || '#ffc107',
       };
-      
+
       // Clear cached bubbles to regenerate with new colors
       this.bubbleCache.clear();
-      
+
       // Force a re-render to apply new theme immediately
       if (this.state === 'playing' || this.state === 'paused') {
         this.render();
       }
     });
   }
-  
+
   /**
    * Handle theme changes from GameTemplateLoader
    */
   handleThemeChange() {
     // Reinitialize theme colors
     this.initializeThemeColors();
-    
+
     // Clear cached bubbles to regenerate with new colors
     this.bubbleCache.clear();
-    
+
     // Force a re-render to apply new theme immediately
     if (this.state === 'playing' || this.state === 'paused' || this.isTransitioning) {
       this.render();
@@ -182,11 +180,11 @@ export default class BubblePopGameTemplate extends BaseGame {
   }
 
   /**
-     * Generate a new math question based on difficulty
-     */
+   * Generate a new math question based on difficulty
+   */
   generateQuestion() {
     const max = this.settings.maxNumber;
-        
+
     switch (this.difficulty) {
     case 'easy': {
       // Simple addition
@@ -195,11 +193,11 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.currentQuestion = {
         text: `${a} + ${b}`,
         answer: a + b,
-        type: 'addition'
+        type: 'addition',
       };
       break;
     }
-                
+
     case 'medium': {
       // Addition and subtraction
       if (Math.random() < 0.6) {
@@ -208,7 +206,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         this.currentQuestion = {
           text: `${x} + ${y}`,
           answer: x + y,
-          type: 'addition'
+          type: 'addition',
         };
       } else {
         const x = getRandomInt(10, max);
@@ -216,12 +214,12 @@ export default class BubblePopGameTemplate extends BaseGame {
         this.currentQuestion = {
           text: `${x} - ${y}`,
           answer: x - y,
-          type: 'subtraction'
+          type: 'subtraction',
         };
       }
       break;
     }
-                
+
     case 'hard': {
       // Addition, subtraction, and simple multiplication
       const operation = Math.random();
@@ -231,7 +229,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         this.currentQuestion = {
           text: `${x} + ${y}`,
           answer: x + y,
-          type: 'addition'
+          type: 'addition',
         };
       } else if (operation < 0.7) {
         const x = getRandomInt(10, max);
@@ -239,7 +237,7 @@ export default class BubblePopGameTemplate extends BaseGame {
         this.currentQuestion = {
           text: `${x} - ${y}`,
           answer: x - y,
-          type: 'subtraction'
+          type: 'subtraction',
         };
       } else {
         const x = getRandomInt(2, 9);
@@ -247,32 +245,32 @@ export default class BubblePopGameTemplate extends BaseGame {
         this.currentQuestion = {
           text: `${x} × ${y}`,
           answer: x * y,
-          type: 'multiplication'
+          type: 'multiplication',
         };
       }
       break;
     }
     }
   }
-    
+
   /**
-     * Create bubbles for the current question
-     */
+   * Create bubbles for the current question
+   */
   spawnBubbles() {
     this.bubbles = [];
     this.roundEnding = false; // Reset round ending flag
     this.correctBubbleIndex = getRandomInt(0, this.settings.bubbleCount - 1);
-        
+
     // Calculate bubble positions - start off-screen (below canvas)
     const spacing = this.canvas.width / (this.settings.bubbleCount + 1);
     const radius = Math.min(40, spacing / 3);
     const startY = this.canvas.height + radius + 20; // Start below canvas
-        
+
     for (let i = 0; i < this.settings.bubbleCount; i++) {
       const x = spacing * (i + 1);
       const y = startY + getRandomInt(0, 40); // Stagger start positions slightly
       let answer;
-            
+
       if (i === this.correctBubbleIndex) {
         answer = this.currentQuestion.answer;
       } else {
@@ -282,11 +280,11 @@ export default class BubblePopGameTemplate extends BaseGame {
           answer = this.currentQuestion.answer + offset;
         } while (
           answer === this.currentQuestion.answer ||
-                    answer < 0 ||
-                    this.bubbles.some(b => b.answer === answer)
+          answer < 0 ||
+          this.bubbles.some(b => b.answer === answer)
         );
       }
-            
+
       const themeColors = this.ensureThemeColors();
       const isCorrect = i === this.correctBubbleIndex;
       const bubble = new Bubble({
@@ -298,79 +296,83 @@ export default class BubblePopGameTemplate extends BaseGame {
         bubbleBackground: this.createBubbleBackground(radius),
         ctx: this.ctx,
         floatSpeed: 0.8 + Math.random() * 0.4, // Slightly faster and more varied
-        color: isCorrect ? themeColors.success : themeColors.primary
+        color: isCorrect ? themeColors.success : themeColors.primary,
       });
-            
+
       this.bubbles.push(bubble);
     }
-        
+
     // Reset time for this round
     this.timeRemaining = this.settings.timeLimit;
   }
-    
+
   /**
-     * Create cached bubble background for performance
-     */
+   * Create cached bubble background for performance
+   */
   createBubbleBackground(radius) {
     // Ensure theme colors are available
     this.ensureThemeColors();
-    
+
     // Include theme colors in cache key to handle theme changes
     const primaryColor = this.themeColors.primary;
     const secondaryColor = this.themeColors.secondary;
     const cacheKey = `bubble_${radius}_${primaryColor}_${secondaryColor}`;
-        
+
     if (!this.bubbleCache.has(cacheKey)) {
       const bubbleCanvas = document.createElement('canvas');
       bubbleCanvas.width = radius * 2 + 4;
       bubbleCanvas.height = radius * 2 + 4;
       const bubbleCtx = bubbleCanvas.getContext('2d');
-      
+
       // Clear the bubble canvas completely first
       bubbleCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
-            
+
       // Create gradient
       const gradient = bubbleCtx.createRadialGradient(
-        radius + 2, radius + 2, 0,
-        radius + 2, radius + 2, radius
+        radius + 2,
+        radius + 2,
+        0,
+        radius + 2,
+        radius + 2,
+        radius
       );
-            
+
       // Convert colors to rgba with alpha
       const secondaryWithAlpha = this.convertToRgba(this.themeColors.secondary, 0.5);
       gradient.addColorStop(0, secondaryWithAlpha);
       gradient.addColorStop(1, this.themeColors.primary);
-            
+
       // Draw bubble
       bubbleCtx.beginPath();
       bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
       bubbleCtx.fillStyle = gradient;
       bubbleCtx.fill();
-            
+
       // Add shine effect with better opacity for dark mode
       bubbleCtx.beginPath();
-      bubbleCtx.arc(radius + 2 - radius/3, radius + 2 - radius/3, radius/4, 0, Math.PI * 2);
+      bubbleCtx.arc(radius + 2 - radius / 3, radius + 2 - radius / 3, radius / 4, 0, Math.PI * 2);
       bubbleCtx.fillStyle = 'rgba(255, 255, 255, 0.3)'; // Slightly less opacity
       bubbleCtx.fill();
-            
+
       // Border
       bubbleCtx.beginPath();
       bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
       bubbleCtx.strokeStyle = this.themeColors.primary;
       bubbleCtx.lineWidth = 2;
       bubbleCtx.stroke();
-            
+
       this.bubbleCache.set(cacheKey, bubbleCanvas);
     }
-        
+
     return this.bubbleCache.get(cacheKey);
   }
-    
+
   /**
-     * Handle click/touch on bubbles
-     */
+   * Handle click/touch on bubbles
+   */
   onClick(position, _event) {
     if (this.state !== 'playing' || !this.bubbles || this.isTransitioning) return;
-        
+
     // Check collision with bubbles
     for (let i = 0; i < this.bubbles.length; i++) {
       const bubble = this.bubbles[i];
@@ -384,63 +386,63 @@ export default class BubblePopGameTemplate extends BaseGame {
       }
     }
   }
-    
+
   /**
-     * Handle correct answer
-     */
+   * Handle correct answer
+   */
   handleCorrectAnswer(bubble) {
     // Prevent multiple round endings
     if (this.roundEnding) return;
     this.roundEnding = true;
-        
+
     // Calculate score based on time remaining and streak
     const timeBonus = Math.floor(this.timeRemaining * 2);
     const streakBonus = this.streakCount * 10;
     const difficultyBonus = Math.floor(100 * this.settings.scoreMultiplier);
     const totalPoints = difficultyBonus + timeBonus + streakBonus;
-        
+
     this.addScore(totalPoints);
     this.streakCount++;
     this.maxStreak = Math.max(this.maxStreak, this.streakCount);
-        
+
     // Create explosion particles for the clicked bubble
     this.createExplosion(bubble.x, bubble.y, this.themeColors.success);
-        
+
     // Pop all remaining bubbles simultaneously
     this.popAllBubbles();
-        
+
     // Play success sound
     this.playSound(523.25, 200); // C5 note
-        
+
     // Show feedback message
     this.addMessage(`Correct! +${totalPoints}`, this.themeColors.success);
-        
+
     if (this.streakCount >= 3) {
       this.addMessage(`${this.streakCount} in a row!`, this.themeColors.warning);
     }
-        
+
     // Next round
     this.nextRound();
   }
-    
+
   /**
-     * Handle wrong answer
-     */
+   * Handle wrong answer
+   */
   handleWrongAnswer(bubble) {
     this.streakCount = 0;
-        
+
     // Create failure particles
     this.createExplosion(bubble.x, bubble.y, this.themeColors.danger);
-        
+
     // Play error sound
     this.playSound(196, 300, 'square'); // G3 note
-        
+
     // Show feedback
     this.addMessage('Try again!', this.themeColors.danger);
-        
+
     // Remove the wrong bubble with animation
     bubble.remove();
-        
+
     // If no bubbles left except correct one, hint at it
     const remainingBubbles = this.bubbles.filter(b => b.active);
     if (remainingBubbles.length <= 2) {
@@ -452,23 +454,23 @@ export default class BubblePopGameTemplate extends BaseGame {
       }
     }
   }
-    
+
   /**
-     * Proceed to next round
-     */
+   * Proceed to next round
+   */
   nextRound() {
     this.round++;
     this.updateLevel(this.round);
-        
+
     // Set a transitioning flag but keep the game loop running for animations
     this.isTransitioning = true;
-        
+
     // Increase difficulty gradually
     if (this.round % 5 === 0 && this.settings.timeLimit > 15) {
       this.settings.timeLimit = Math.max(15, this.settings.timeLimit - 2);
       this.addMessage('Time limit decreased!', this.themeColors.warning);
     }
-        
+
     // Generate new question and bubbles after a brief delay
     setTimeout(() => {
       this.generateQuestion();
@@ -476,10 +478,10 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.isTransitioning = false; // Resume normal game logic
     }, 1500); // Slightly longer delay to allow animations to complete
   }
-    
+
   /**
-     * Create particle explosion effect
-     */
+   * Create particle explosion effect
+   */
   createExplosion(x, y, color) {
     for (let i = 0; i < 15; i++) {
       this.particles.push({
@@ -490,26 +492,26 @@ export default class BubblePopGameTemplate extends BaseGame {
         life: 1.0,
         decay: 0.02,
         color: color,
-        size: Math.random() * 4 + 2
+        size: Math.random() * 4 + 2,
       });
     }
   }
-    
+
   /**
-     * Add floating message
-     */
+   * Add floating message
+   */
   addMessage(text, color) {
     // Prevent duplicate messages
     const existingMessage = this.messageQueue.find(msg => msg.text === text && msg.life > 0.5);
     if (existingMessage) {
       return; // Don't add duplicate message
     }
-        
+
     // Limit the number of active messages to prevent overcrowding
     if (this.messageQueue.length >= 3) {
       this.messageQueue.shift(); // Remove oldest message
     }
-        
+
     this.messageQueue.push({
       text,
       color,
@@ -518,13 +520,13 @@ export default class BubblePopGameTemplate extends BaseGame {
       vy: -1,
       life: 1.0,
       decay: 0.015,
-      fontSize: 24
+      fontSize: 24,
     });
   }
-    
+
   /**
-     * Convert a color to RGBA format with specified alpha
-     */
+   * Convert a color to RGBA format with specified alpha
+   */
   convertToRgba(color, alpha = 1) {
     // If color is already in hex format, convert to rgba
     if (color.startsWith('#')) {
@@ -534,7 +536,7 @@ export default class BubblePopGameTemplate extends BaseGame {
       const b = parseInt(hex.substr(4, 2), 16);
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     }
-        
+
     // If color is in rgb format, convert to rgba
     if (color.startsWith('rgb(')) {
       const values = color.match(/\d+/g);
@@ -542,51 +544,54 @@ export default class BubblePopGameTemplate extends BaseGame {
         return `rgba(${values[0]}, ${values[1]}, ${values[2]}, ${alpha})`;
       }
     }
-        
+
     // If color is already rgba, return as-is
     if (color.startsWith('rgba(')) {
       return color;
     }
-        
+
     // Fallback - try to use the color as-is
     return color;
   }
 
   /**
-     * Update game logic
-     */
+   * Update game logic
+   */
   update(deltaTime, _timestamp) {
     // Always update animations (bubbles, particles, messages) regardless of game state
     this.updateAnimations(deltaTime);
-    
+
     // Only update game logic if playing and not transitioning
     if (this.state !== 'playing' || this.isTransitioning) return;
-        
+
     // Update time remaining
     this.timeRemaining -= deltaTime / 1000;
-        
+
     if (this.timeRemaining <= 0) {
       this.handleTimeUp();
       return;
     }
-            
+
     // Check if correct bubble was missed or all bubbles have exited (only check once per round)
     const correctBubble = this.bubbles?.find(b => b.isCorrect);
     const activeBubbles = this.bubbles?.filter(b => b.active) || [];
-    
-    if ((!correctBubble || !correctBubble.active || activeBubbles.length === 0) && !this.roundEnding) {
+
+    if (
+      (!correctBubble || !correctBubble.active || activeBubbles.length === 0) &&
+      !this.roundEnding
+    ) {
       // Prevent multiple calls by setting a flag
       this.roundEnding = true;
-      
+
       // If there are still active bubbles, pop them all before ending the round
       if (activeBubbles.length > 0) {
         this.popAllBubbles();
       }
-      
+
       this.handleMissedBubble();
     }
   }
-  
+
   /**
    * Update all animations - separated from game logic so it continues during transitions
    */
@@ -596,11 +601,11 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.bubbles.forEach(bubble => {
         bubble.update(deltaTime);
       });
-            
+
       // Remove inactive bubbles
       this.bubbles = this.bubbles.filter(bubble => bubble.active);
     }
-        
+
     // Update particles
     this.particles.forEach(particle => {
       particle.x += particle.vx;
@@ -608,32 +613,32 @@ export default class BubblePopGameTemplate extends BaseGame {
       particle.vy += 0.1; // gravity
       particle.life -= particle.decay;
     });
-        
+
     // Remove dead particles
     this.particles = this.particles.filter(p => p.life > 0);
-        
+
     // Update messages
     this.messageQueue.forEach(message => {
       message.y += message.vy;
       message.life -= message.decay;
     });
-        
+
     // Remove expired messages
     this.messageQueue = this.messageQueue.filter(m => m.life > 0);
   }
-    
+
   /**
-     * Handle time running out
-     */
+   * Handle time running out
+   */
   handleTimeUp() {
     // Prevent multiple calls
     if (this.roundEnding) return;
     this.roundEnding = true;
-        
+
     this.streakCount = 0;
     this.addMessage('Time\'s up!', this.themeColors.danger);
     this.playSound(147, 500, 'square'); // D3 note
-        
+
     // Check if we should end the game or continue
     this.lives--;
     if (this.lives <= 0) {
@@ -642,20 +647,20 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.nextRound();
     }
   }
-    
+
   /**
-     * Pop all bubbles simultaneously with explosion effects
-     */
+   * Pop all bubbles simultaneously with explosion effects
+   */
   popAllBubbles() {
     if (!this.bubbles) return;
-    
+
     // Create explosion effects for all bubbles
     this.bubbles.forEach(bubble => {
       if (bubble.active) {
         // Create smaller explosion for non-correct bubbles
         const particleCount = bubble.isCorrect ? 15 : 8;
         const color = bubble.isCorrect ? this.themeColors.success : this.themeColors.primary;
-        
+
         for (let i = 0; i < particleCount; i++) {
           this.particles.push({
             x: bubble.x,
@@ -665,10 +670,10 @@ export default class BubblePopGameTemplate extends BaseGame {
             size: Math.random() * 4 + 2,
             color: color,
             life: 1,
-            decay: 0.02
+            decay: 0.02,
           });
         }
-        
+
         // Mark bubble for removal
         bubble.isRemoving = true;
       }
@@ -676,68 +681,69 @@ export default class BubblePopGameTemplate extends BaseGame {
   }
 
   /**
-     * Handle missed correct bubble
-     */
+   * Handle missed correct bubble
+   */
   handleMissedBubble() {
     this.streakCount = 0;
-    
+
     // Pop all remaining bubbles
     this.popAllBubbles();
-    
+
     this.addMessage('Missed the answer!', this.themeColors.danger);
     this.nextRound();
   }
-    
+
   /**
-     * Render the game
-     */
+   * Render the game
+   */
   render() {
     // Clear canvas completely first
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     // Fill with theme-aware background
-    this.ctx.fillStyle = this.getThemeColor('--bg-card') || 
-                         this.getThemeColor('--bg-primary') || 
-                         this.getThemeColor('--background-color') || 
-                         '#f8f9fa';
+    this.ctx.fillStyle =
+      this.getThemeColor('--bg-card') ||
+      this.getThemeColor('--bg-primary') ||
+      this.getThemeColor('--background-color') ||
+      '#f8f9fa';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
+
     // Draw question
     this.renderQuestion();
-        
+
     // Draw timer
     this.renderTimer();
-        
+
     // Draw bubbles
     if (this.bubbles) {
       this.bubbles.forEach(bubble => {
         bubble.render();
       });
     }
-        
+
     // Draw particles
     this.renderParticles();
-        
+
     // Draw messages
     this.renderMessages();
-        
+
     // Draw streak indicator
     this.renderStreakIndicator();
   }
-    
+
   /**
-     * Render the current question
-     */
+   * Render the current question
+   */
   renderQuestion() {
     if (!this.currentQuestion || !this.currentQuestion.text) {
       return;
     }
-    
+
     this.ctx.save();
     this.ctx.font = 'bold 32px "Comic Sans MS", cursive';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-        
+
     // Background for question
     const questionText = `Solve: ${this.currentQuestion.text} = ?`;
     const metrics = this.ctx.measureText(questionText);
@@ -746,44 +752,44 @@ export default class BubblePopGameTemplate extends BaseGame {
     const bgY = 30;
     const bgWidth = metrics.width + padding * 2;
     const bgHeight = 50;
-        
+
     // Draw background
     this.ctx.fillStyle = this.getThemeColor('--bg-secondary') || '#e9ecef';
     this.drawRoundedRect(bgX, bgY, bgWidth, bgHeight, 10);
     this.ctx.fill();
-        
+
     // Add border for better visibility
     this.ctx.strokeStyle = this.getThemeColor('--border-color') || '#ddd';
     this.ctx.lineWidth = 2;
     this.drawRoundedRect(bgX, bgY, bgWidth, bgHeight, 10);
     this.ctx.stroke();
-        
+
     // Question text
     this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
     this.ctx.fillText(questionText, this.canvas.width / 2, bgY + bgHeight / 2);
-        
+
     this.ctx.restore();
   }
-    
+
   /**
-     * Render timer bar
-     */
+   * Render timer bar
+   */
   renderTimer() {
     const barWidth = this.canvas.width - 40;
     const barHeight = 8;
     const x = 20;
     const y = 100;
-        
+
     // Background
     this.ctx.fillStyle = this.getThemeColor('--border-color') || '#e0e0e0';
     this.drawRoundedRect(x, y, barWidth, barHeight, 4);
     this.ctx.fill();
-        
+
     // Timer fill - ensure theme colors are available
     this.ensureThemeColors();
     const fillWidth = (this.timeRemaining / this.settings.timeLimit) * barWidth;
     const timeRatio = this.timeRemaining / this.settings.timeLimit;
-        
+
     if (timeRatio > 0.5) {
       this.ctx.fillStyle = this.themeColors.success;
     } else if (timeRatio > 0.25) {
@@ -791,10 +797,10 @@ export default class BubblePopGameTemplate extends BaseGame {
     } else {
       this.ctx.fillStyle = this.themeColors.danger;
     }
-        
+
     this.drawRoundedRect(x, y, fillWidth, barHeight, 4);
     this.ctx.fill();
-        
+
     // Timer text
     this.ctx.font = '16px Arial';
     this.ctx.fillStyle = this.getThemeColor('--text-secondary') || '#666';
@@ -805,10 +811,10 @@ export default class BubblePopGameTemplate extends BaseGame {
       y + barHeight + 20
     );
   }
-    
+
   /**
-     * Render particle effects
-     */
+   * Render particle effects
+   */
   renderParticles() {
     this.particles.forEach(particle => {
       this.ctx.save();
@@ -820,10 +826,10 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.ctx.restore();
     });
   }
-    
+
   /**
-     * Render floating messages
-     */
+   * Render floating messages
+   */
   renderMessages() {
     this.messageQueue.forEach(message => {
       this.ctx.save();
@@ -839,35 +845,35 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.ctx.restore();
     });
   }
-    
+
   /**
-     * Render streak indicator
-     */
+   * Render streak indicator
+   */
   renderStreakIndicator() {
     if (this.streakCount > 0) {
       // Ensure theme colors are available
       this.ensureThemeColors();
-      
+
       const text = `Streak: ${this.streakCount}`;
       this.ctx.save();
       this.ctx.font = 'bold 20px Arial';
       this.ctx.fillStyle = this.themeColors.warning;
       this.ctx.textAlign = 'right';
       this.ctx.fillText(text, this.canvas.width - 20, 40);
-            
+
       // Add fire emoji for high streaks
       if (this.streakCount >= 5) {
         this.ctx.font = '24px Arial';
         this.ctx.fillText('🔥', this.canvas.width - 20, 65);
       }
-            
+
       this.ctx.restore();
     }
   }
-    
+
   /**
-     * Game over handling
-     */
+   * Game over handling
+   */
   onGameEnd() {
     // Calculate final stats
     const accuracy = this.round > 1 ? Math.round((this.score / (this.round * 100)) * 100) : 0;
@@ -876,11 +882,11 @@ export default class BubblePopGameTemplate extends BaseGame {
       rounds: this.round - 1,
       maxStreak: this.maxStreak,
       accuracy: accuracy,
-      difficulty: this.difficulty
+      difficulty: this.difficulty,
     };
-        
+
     logger.game('Game Over Stats:', finalStats);
-        
+
     // Update game info for template
     const gameInfoElement = document.getElementById('game-info');
     if (gameInfoElement) {
@@ -891,10 +897,10 @@ export default class BubblePopGameTemplate extends BaseGame {
             `;
     }
   }
-    
+
   /**
-     * Restart game
-     */
+   * Restart game
+   */
   onRestart() {
     this.bubbles = [];
     this.particles = [];
@@ -906,32 +912,32 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.isTransitioning = false;
     this.timeRemaining = this.settings.timeLimit;
     this.lives = 3;
-        
+
     this.generateQuestion();
     this.spawnBubbles();
   }
-    
+
   /**
-     * Handle resize
-     */
+   * Handle resize
+   */
   onResize(width, height) {
     super.onResize(width, height);
-        
+
     // Reposition bubbles if they exist and are properly initialized
     if (this.bubbles && this.bubbles.length > 0 && this.settings) {
       const spacing = width / (this.settings.bubbleCount + 1);
       const baseY = height - 80;
-            
+
       this.bubbles.forEach((bubble, index) => {
         bubble.x = spacing * (index + 1);
         bubble.y = baseY;
       });
     }
   }
-    
+
   /**
-     * Cleanup
-     */
+   * Cleanup
+   */
   destroy() {
     super.destroy();
     this.bubbles = [];

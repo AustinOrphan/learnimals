@@ -10,19 +10,19 @@ const mockCharacterStorage = {
   saveCharacter: vi.fn(),
   loadCharacter: vi.fn(),
   deleteCharacter: vi.fn(),
-  validateCharacter: vi.fn()
+  validateCharacter: vi.fn(),
 };
 
 const mockCharacterRenderer = {
   render: vi.fn(),
   updateCharacter: vi.fn(),
-  destroy: vi.fn()
+  destroy: vi.fn(),
 };
 
 const mockAvatarBuilder = {
   createAvatar: vi.fn(),
   updateAvatar: vi.fn(),
-  getPreview: vi.fn()
+  getPreview: vi.fn(),
 };
 
 // Mock localStorage
@@ -30,7 +30,7 @@ const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
-  clear: vi.fn()
+  clear: vi.fn(),
 };
 
 vi.stubGlobal('localStorage', localStorageMock);
@@ -39,7 +39,7 @@ describe('Character System Integration', () => {
   beforeEach(() => {
     // Reset all mocks
     vi.clearAllMocks();
-    
+
     // Set up DOM
     document.body.innerHTML = `
       <div id="character-container"></div>
@@ -73,7 +73,7 @@ describe('Character System Integration', () => {
     mockAvatarBuilder.createAvatar.mockReturnValue({
       species: 'cat',
       color: 'blue',
-      accessories: []
+      accessories: [],
     });
 
     // Simulate character creation form submission
@@ -81,7 +81,7 @@ describe('Character System Integration', () => {
       name: 'TestCat',
       species: { primary: 'cat' },
       favoriteColor: 'blue',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     // Test character validation
@@ -100,7 +100,10 @@ describe('Character System Integration', () => {
 
     // Test character rendering
     await mockCharacterRenderer.render(characterData, '#character-container');
-    expect(mockCharacterRenderer.render).toHaveBeenCalledWith(characterData, '#character-container');
+    expect(mockCharacterRenderer.render).toHaveBeenCalledWith(
+      characterData,
+      '#character-container'
+    );
 
     console.log('✅ Character creation workflow test passed');
   });
@@ -113,10 +116,10 @@ describe('Character System Integration', () => {
       favoriteColor: 'green',
       customizations: {
         accessories: ['hat', 'glasses'],
-        pattern: 'stripes'
+        pattern: 'stripes',
       },
       createdAt: '2024-01-15T10:00:00Z',
-      lastModified: '2024-01-16T14:30:00Z'
+      lastModified: '2024-01-16T14:30:00Z',
     };
 
     // Mock localStorage behavior
@@ -125,7 +128,7 @@ describe('Character System Integration', () => {
 
     // Test character loading from storage
     const loadedCharacter = await mockCharacterStorage.loadCharacter('char_123');
-    
+
     expect(loadedCharacter).toEqual(savedCharacter);
     expect(loadedCharacter.name).toBe('PersistentCat');
     expect(loadedCharacter.customizations.accessories).toContain('hat');
@@ -134,8 +137,11 @@ describe('Character System Integration', () => {
     // Test character state restoration
     mockCharacterRenderer.render.mockResolvedValue(true);
     await mockCharacterRenderer.render(loadedCharacter, '#character-container');
-    
-    expect(mockCharacterRenderer.render).toHaveBeenCalledWith(loadedCharacter, '#character-container');
+
+    expect(mockCharacterRenderer.render).toHaveBeenCalledWith(
+      loadedCharacter,
+      '#character-container'
+    );
 
     console.log('✅ Character persistence test passed');
   });
@@ -148,8 +154,8 @@ describe('Character System Integration', () => {
       favoriteColor: 'red',
       customizations: {
         accessories: [],
-        pattern: 'solid'
-      }
+        pattern: 'solid',
+      },
     };
 
     // Mock avatar update
@@ -157,14 +163,14 @@ describe('Character System Integration', () => {
       ...baseCharacter,
       customizations: {
         accessories: ['bow-tie'],
-        pattern: 'polka-dots'
-      }
+        pattern: 'polka-dots',
+      },
     });
 
     // Test customization updates
     const updatedCharacter = mockAvatarBuilder.updateAvatar(baseCharacter, {
       accessories: ['bow-tie'],
-      pattern: 'polka-dots'
+      pattern: 'polka-dots',
     });
 
     expect(updatedCharacter.customizations.accessories).toContain('bow-tie');
@@ -173,13 +179,13 @@ describe('Character System Integration', () => {
     // Test character re-rendering after customization
     mockCharacterRenderer.updateCharacter.mockResolvedValue(true);
     await mockCharacterRenderer.updateCharacter(updatedCharacter);
-    
+
     expect(mockCharacterRenderer.updateCharacter).toHaveBeenCalledWith(updatedCharacter);
 
     // Test saving updated character
     mockCharacterStorage.saveCharacter.mockResolvedValue(true);
     await mockCharacterStorage.saveCharacter(updatedCharacter);
-    
+
     expect(mockCharacterStorage.saveCharacter).toHaveBeenCalledWith(updatedCharacter);
 
     console.log('✅ Character customization test passed');
@@ -192,16 +198,16 @@ describe('Character System Integration', () => {
       { name: 'A', species: { primary: 'dog' } }, // Name too short
       { name: 'A'.repeat(51), species: { primary: 'bird' } }, // Name too long
       { species: { primary: 'cat' } }, // Missing name
-      { name: 'ValidName' } // Missing species
+      { name: 'ValidName' }, // Missing species
     ];
 
     // Test validation of invalid characters
     invalidCharacters.forEach((invalidChar, index) => {
       mockCharacterStorage.validateCharacter.mockReturnValueOnce(false);
-      
+
       const isValid = mockCharacterStorage.validateCharacter(invalidChar);
       expect(isValid).toBe(false);
-      
+
       console.log(`   ❌ Invalid character ${index + 1} correctly rejected`);
     });
 
@@ -209,11 +215,11 @@ describe('Character System Integration', () => {
     const validCharacter = {
       name: 'ValidCat',
       species: { primary: 'cat' },
-      favoriteColor: 'blue'
+      favoriteColor: 'blue',
     };
 
     mockCharacterStorage.saveCharacter.mockRejectedValue(new Error('Storage failed'));
-    
+
     try {
       await mockCharacterStorage.saveCharacter(validCharacter);
     } catch (error) {
@@ -232,22 +238,22 @@ describe('Character System Integration', () => {
         name: 'MathCat',
         species: { primary: 'cat' },
         favoriteColor: 'blue',
-        achievements: ['math-beginner', 'first-game']
+        achievements: ['math-beginner', 'first-game'],
       },
       {
-        id: 'char_2', 
+        id: 'char_2',
         name: 'ScienceDog',
         species: { primary: 'dog' },
         favoriteColor: 'green',
-        achievements: ['science-explorer', 'question-asker']
+        achievements: ['science-explorer', 'question-asker'],
       },
       {
         id: 'char_3',
         name: 'ArtBird',
         species: { primary: 'bird' },
         favoriteColor: 'purple',
-        achievements: ['creative-spirit', 'color-master']
-      }
+        achievements: ['creative-spirit', 'color-master'],
+      },
     ];
 
     // Mock gallery rendering
@@ -284,8 +290,8 @@ describe('Character System Integration', () => {
       gameStats: {
         gamesPlayed: 0,
         totalScore: 0,
-        favoriteGames: []
-      }
+        favoriteGames: [],
+      },
     };
 
     // Mock game context injection
@@ -293,12 +299,12 @@ describe('Character System Integration', () => {
     mockInjectCharacterContext.mockReturnValue({
       character: gameCharacter,
       updateGameStats: vi.fn(),
-      saveProgress: vi.fn()
+      saveProgress: vi.fn(),
     });
 
     // Test character context in game
     const gameContext = mockInjectCharacterContext(gameCharacter);
-    
+
     expect(gameContext.character).toEqual(gameCharacter);
     expect(gameContext.updateGameStats).toBeDefined();
     expect(gameContext.saveProgress).toBeDefined();
@@ -307,13 +313,13 @@ describe('Character System Integration', () => {
     gameContext.updateGameStats({
       gamesPlayed: 1,
       totalScore: 150,
-      favoriteGames: ['bubble-pop']
+      favoriteGames: ['bubble-pop'],
     });
 
     expect(gameContext.updateGameStats).toHaveBeenCalledWith({
       gamesPlayed: 1,
       totalScore: 150,
-      favoriteGames: ['bubble-pop']
+      favoriteGames: ['bubble-pop'],
     });
 
     // Test progress saving
@@ -332,8 +338,8 @@ describe('Character System Integration', () => {
       preferences: {
         theme: 'dark',
         animations: true,
-        soundEnabled: true
-      }
+        soundEnabled: true,
+      },
     };
 
     // Mock theme application
@@ -341,12 +347,15 @@ describe('Character System Integration', () => {
     mockApplyTheme.mockReturnValue({
       primaryColor: '#6B46C1',
       secondaryColor: '#A855F7',
-      backgroundImage: 'url(/images/purple-theme-bg.jpg)'
+      backgroundImage: 'url(/images/purple-theme-bg.jpg)',
     });
 
     // Test theme application based on character
-    const appliedTheme = mockApplyTheme(themedCharacter.favoriteColor, themedCharacter.preferences.theme);
-    
+    const appliedTheme = mockApplyTheme(
+      themedCharacter.favoriteColor,
+      themedCharacter.preferences.theme
+    );
+
     expect(appliedTheme.primaryColor).toBe('#6B46C1');
     expect(mockApplyTheme).toHaveBeenCalledWith('purple', 'dark');
 
@@ -369,8 +378,8 @@ describe('Character System Integration', () => {
       sessionData: {
         currentSubject: 'math',
         lastActivity: 'bubble-pop',
-        timeSpent: 1800 // 30 minutes
-      }
+        timeSpent: 1800, // 30 minutes
+      },
     };
 
     // Mock session management
@@ -378,14 +387,14 @@ describe('Character System Integration', () => {
       startSession: vi.fn(),
       endSession: vi.fn(),
       restoreSession: vi.fn(),
-      updateSession: vi.fn()
+      updateSession: vi.fn(),
     };
 
     // Test session start
     mockSessionManager.startSession.mockReturnValue({
       sessionId: 'session_123',
       startTime: Date.now(),
-      character: sessionCharacter
+      character: sessionCharacter,
     });
 
     const session = mockSessionManager.startSession(sessionCharacter);
@@ -394,11 +403,11 @@ describe('Character System Integration', () => {
 
     // Test session updates
     mockSessionManager.updateSession.mockResolvedValue(true);
-    
+
     await mockSessionManager.updateSession(session.sessionId, {
       currentSubject: 'science',
       lastActivity: 'element-match',
-      timeSpent: 2100 // 35 minutes
+      timeSpent: 2100, // 35 minutes
     });
 
     expect(mockSessionManager.updateSession).toHaveBeenCalledWith(
@@ -406,7 +415,7 @@ describe('Character System Integration', () => {
       expect.objectContaining({
         currentSubject: 'science',
         lastActivity: 'element-match',
-        timeSpent: 2100
+        timeSpent: 2100,
       })
     );
 
@@ -416,8 +425,8 @@ describe('Character System Integration', () => {
       sessionData: {
         currentSubject: 'science',
         lastActivity: 'element-match',
-        timeSpent: 2100
-      }
+        timeSpent: 2100,
+      },
     });
 
     const restoredSession = await mockSessionManager.restoreSession('session_123');
@@ -432,8 +441,8 @@ describe('Character System Integration', () => {
     const oldVersionCharacter = {
       name: 'LegacyChar',
       animal: 'cat', // Old field name
-      color: 'red',    // Old field name
-      version: '1.0'
+      color: 'red', // Old field name
+      version: '1.0',
     };
 
     // Mock migration function
@@ -442,14 +451,14 @@ describe('Character System Integration', () => {
       id: 'migrated_char',
       name: 'LegacyChar',
       species: { primary: 'cat' }, // New field structure
-      favoriteColor: 'red',        // New field name
+      favoriteColor: 'red', // New field name
       version: '2.0',
-      migratedAt: new Date().toISOString()
+      migratedAt: new Date().toISOString(),
     });
 
     // Test character migration
     const migratedCharacter = mockMigrateCharacter(oldVersionCharacter);
-    
+
     expect(migratedCharacter.species.primary).toBe('cat');
     expect(migratedCharacter.favoriteColor).toBe('red');
     expect(migratedCharacter.version).toBe('2.0');
@@ -462,7 +471,7 @@ describe('Character System Integration', () => {
     // Test saving migrated character
     mockCharacterStorage.saveCharacter.mockResolvedValue(true);
     await mockCharacterStorage.saveCharacter(migratedCharacter);
-    
+
     expect(mockCharacterStorage.saveCharacter).toHaveBeenCalledWith(migratedCharacter);
 
     console.log('✅ Character data migration test passed');

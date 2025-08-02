@@ -1,376 +1,390 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Character Customization Studio Demo - Learnimals</title>
-    
+
     <!-- CSS -->
-    <link rel="stylesheet" href="../styles/base/styles.css">
-    <link rel="stylesheet" href="../styles/components/navbar.css">
-    <link rel="stylesheet" href="../styles/components/components.css">
-    <link rel="stylesheet" href="../styles/components/themeSwitcher.css">
-    
+    <link rel="stylesheet" href="../styles/base/styles.css" />
+    <link rel="stylesheet" href="../styles/components/navbar.css" />
+    <link rel="stylesheet" href="../styles/components/components.css" />
+    <link rel="stylesheet" href="../styles/components/themeSwitcher.css" />
+
     <!-- Character Generation CSS -->
-    <link rel="stylesheet" href="../styles/components/CharacterPreviewRenderer.css">
-    <link rel="stylesheet" href="../styles/components/CharacterCustomizer.css">
-    <link rel="stylesheet" href="../styles/components/CustomizationStudio.css">
-    <link rel="stylesheet" href="../styles/components/CustomizationPreview.css">
-    <link rel="stylesheet" href="../styles/components/CustomizationPresets.css">
-    <link rel="stylesheet" href="../styles/components/ExportImportDialog.css">
-    
+    <link rel="stylesheet" href="../styles/components/CharacterPreviewRenderer.css" />
+    <link rel="stylesheet" href="../styles/components/CharacterCustomizer.css" />
+    <link rel="stylesheet" href="../styles/components/CustomizationStudio.css" />
+    <link rel="stylesheet" href="../styles/components/CustomizationPreview.css" />
+    <link rel="stylesheet" href="../styles/components/CustomizationPresets.css" />
+    <link rel="stylesheet" href="../styles/components/ExportImportDialog.css" />
+
     <style>
-        /* Demo-specific styles */
+      /* Demo-specific styles */
+      .demo-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .demo-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .demo-header h1 {
+        color: var(--text-heading);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--accent-primary), #9980fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .demo-header p {
+        color: var(--text-secondary);
+        font-size: 1.125rem;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+      }
+
+      .demo-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+      }
+
+      .demo-button {
+        background: var(--accent-primary);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+      }
+
+      .demo-button:hover {
+        background: var(--accent-primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
+      }
+
+      .demo-button.secondary {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .demo-button.secondary:hover {
+        background: var(--bg-hover);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      .demo-section {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .demo-section h2 {
+        color: var(--text-heading);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+
+      .status-success {
+        background: var(--success-color) 20;
+        color: var(--success-color);
+        border: 1px solid var(--success-color) 40;
+      }
+
+      .status-error {
+        background: var(--error-color) 20;
+        color: var(--error-color);
+        border: 1px solid var(--error-color) 40;
+      }
+
+      .status-info {
+        background: var(--accent-primary) 20;
+        color: var(--accent-primary);
+        border: 1px solid var(--accent-primary) 40;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .feature-card {
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-primary-light);
+      }
+
+      .feature-card h3 {
+        color: var(--text-heading);
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--accent-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      @media (max-width: 768px) {
         .demo-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
+          padding: 1rem;
         }
-        
-        .demo-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
+
         .demo-header h1 {
-            color: var(--text-heading);
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent-primary), #9980FA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+          font-size: 2rem;
         }
-        
-        .demo-header p {
-            color: var(--text-secondary);
-            font-size: 1.125rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
-        }
-        
+
         .demo-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
         }
-        
+
         .demo-button {
-            background: var(--accent-primary);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-        }
-        
-        .demo-button:hover {
-            background: var(--accent-primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
-        }
-        
-        .demo-button.secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .demo-button.secondary:hover {
-            background: var(--bg-hover);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-        }
-
-        .demo-section {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px var(--shadow-color);
-            border: 1px solid var(--border-color);
-        }
-        
-        .demo-section h2 {
-            color: var(--text-heading);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-        
-        .status-success {
-            background: var(--success-color)20;
-            color: var(--success-color);
-            border: 1px solid var(--success-color)40;
-        }
-        
-        .status-error {
-            background: var(--error-color)20;
-            color: var(--error-color);
-            border: 1px solid var(--error-color)40;
-        }
-
-        .status-info {
-            background: var(--accent-primary)20;
-            color: var(--accent-primary);
-            border: 1px solid var(--accent-primary)40;
+          width: 100%;
+          max-width: 300px;
+          justify-content: center;
         }
 
         .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+          grid-template-columns: 1fr;
         }
-
-        .feature-card {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 1.5rem;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: var(--accent-primary-light);
-        }
-
-        .feature-card h3 {
-            color: var(--text-heading);
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            margin: 0;
-            line-height: 1.5;
-        }
-
-        .quick-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent-primary);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        @media (max-width: 768px) {
-            .demo-container {
-                padding: 1rem;
-            }
-            
-            .demo-header h1 {
-                font-size: 2rem;
-            }
-            
-            .demo-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .demo-button {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Navbar -->
     <div id="navbar-placeholder"></div>
 
     <main class="demo-container">
-        <div class="demo-header">
-            <h1>🎨 Character Customization Studio</h1>
+      <div class="demo-header">
+        <h1>🎨 Character Customization Studio</h1>
+        <p>
+          Phase G: Advanced Character Customization - A comprehensive studio environment for creating, customizing, and
+          managing character themes with real-time preview, preset management, and export/import capabilities.
+        </p>
+      </div>
+
+      <div class="demo-actions">
+        <button class="demo-button" id="open-full-studio">
+          <span>🎨</span>
+          Open Customization Studio
+        </button>
+        <button class="demo-button secondary" id="open-customizer">
+          <span>⚙️</span>
+          Character Customizer
+        </button>
+        <button class="demo-button secondary" id="open-preview">
+          <span>👁️</span>
+          Preview Component
+        </button>
+        <button class="demo-button secondary" id="open-presets">
+          <span>🎯</span>
+          Preset Manager
+        </button>
+        <button class="demo-button secondary" id="open-export-import">
+          <span>📤</span>
+          Export/Import
+        </button>
+        <button class="demo-button secondary" id="create-test-data">
+          <span>🧪</span>
+          Generate Test Data
+        </button>
+      </div>
+
+      <div class="demo-section">
+        <h2>🔧 System Status</h2>
+        <div id="system-status">
+          <div class="status-indicator status-info">
+            <span>⏳</span>
+            Initializing customization studio system...
+          </div>
+        </div>
+        <div class="quick-stats" id="quick-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-characters">0</div>
+            <div class="stat-label">Characters</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-customizations">0</div>
+            <div class="stat-label">Customizations</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-presets">0</div>
+            <div class="stat-label">Presets</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-sessions">0</div>
+            <div class="stat-label">Sessions</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>🚀 Phase G Features</h2>
+        <p>
+          The Character Customization Studio represents the culmination of our character generation system, providing
+          advanced tools for theme customization and management.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3>🎨 Visual Customizer</h3>
             <p>
-                Phase G: Advanced Character Customization - A comprehensive studio environment for creating, 
-                customizing, and managing character themes with real-time preview, preset management, 
-                and export/import capabilities.
+              Comprehensive theming interface with 6 categories: themes, colors, effects, animations, accessories, and
+              backgrounds.
             </p>
-        </div>
+          </div>
 
-        <div class="demo-actions">
-            <button class="demo-button" id="open-full-studio">
-                <span>🎨</span>
-                Open Customization Studio
-            </button>
-            <button class="demo-button secondary" id="open-customizer">
-                <span>⚙️</span>
-                Character Customizer
-            </button>
-            <button class="demo-button secondary" id="open-preview">
-                <span>👁️</span>
-                Preview Component
-            </button>
-            <button class="demo-button secondary" id="open-presets">
-                <span>🎯</span>
-                Preset Manager
-            </button>
-            <button class="demo-button secondary" id="open-export-import">
-                <span>📤</span>
-                Export/Import
-            </button>
-            <button class="demo-button secondary" id="create-test-data">
-                <span>🧪</span>
-                Generate Test Data
-            </button>
-        </div>
+          <div class="feature-card">
+            <h3>🏢 Customization Studio</h3>
+            <p>
+              Drag-and-drop workspace with multiple modes: single character, batch customization, comparison, and
+              gallery views.
+            </p>
+          </div>
 
-        <div class="demo-section">
-            <h2>🔧 System Status</h2>
-            <div id="system-status">
-                <div class="status-indicator status-info">
-                    <span>⏳</span>
-                    Initializing customization studio system...
-                </div>
-            </div>
-            <div class="quick-stats" id="quick-stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-characters">0</div>
-                    <div class="stat-label">Characters</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-customizations">0</div>
-                    <div class="stat-label">Customizations</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-presets">0</div>
-                    <div class="stat-label">Presets</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="stat-sessions">0</div>
-                    <div class="stat-label">Sessions</div>
-                </div>
-            </div>
-        </div>
+          <div class="feature-card">
+            <h3>👁️ Real-time Preview</h3>
+            <p>Live preview component with multiple viewing modes, animation testing, and instant visual feedback.</p>
+          </div>
 
-        <div class="demo-section">
-            <h2>🚀 Phase G Features</h2>
-            <p>The Character Customization Studio represents the culmination of our character generation system, providing advanced tools for theme customization and management.</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>🎨 Visual Customizer</h3>
-                    <p>Comprehensive theming interface with 6 categories: themes, colors, effects, animations, accessories, and backgrounds.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🏢 Customization Studio</h3>
-                    <p>Drag-and-drop workspace with multiple modes: single character, batch customization, comparison, and gallery views.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>👁️ Real-time Preview</h3>
-                    <p>Live preview component with multiple viewing modes, animation testing, and instant visual feedback.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🎯 Preset Management</h3>
-                    <p>Built-in preset library with educational, playful, technical, and creative themes, plus custom preset creation.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>📤 Export/Import</h3>
-                    <p>Comprehensive data exchange system supporting individual customizations, collections, presets, and complete sessions.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>⚡ Performance</h3>
-                    <p>Optimized rendering, efficient state management, and responsive design for seamless user experience.</p>
-                </div>
-            </div>
-        </div>
+          <div class="feature-card">
+            <h3>🎯 Preset Management</h3>
+            <p>
+              Built-in preset library with educational, playful, technical, and creative themes, plus custom preset
+              creation.
+            </p>
+          </div>
 
-        <div class="demo-section">
-            <h2>📊 Component Architecture</h2>
-            <p>The customization system is built with modular, reusable components that work together seamlessly:</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>🏗️ CustomizationStudio</h3>
-                    <p>Main studio interface with drag-and-drop, multiple workspace modes, and session management.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🎛️ CharacterCustomizer</h3>
-                    <p>Detailed customization interface with categorized options and live preview integration.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>📺 CustomizationPreview</h3>
-                    <p>Multi-mode preview component with animation testing and background support.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🗂️ CustomizationPresets</h3>
-                    <p>Preset management system with categorized built-in themes and custom preset support.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🔄 CustomizationExporter</h3>
-                    <p>Data exchange utility with compression, validation, and multiple format support.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>💬 ExportImportDialog</h3>
-                    <p>User-friendly interface for data export/import operations with comprehensive options.</p>
-                </div>
-            </div>
+          <div class="feature-card">
+            <h3>📤 Export/Import</h3>
+            <p>
+              Comprehensive data exchange system supporting individual customizations, collections, presets, and
+              complete sessions.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>⚡ Performance</h3>
+            <p>Optimized rendering, efficient state management, and responsive design for seamless user experience.</p>
+          </div>
         </div>
+      </div>
+
+      <div class="demo-section">
+        <h2>📊 Component Architecture</h2>
+        <p>The customization system is built with modular, reusable components that work together seamlessly:</p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3>🏗️ CustomizationStudio</h3>
+            <p>Main studio interface with drag-and-drop, multiple workspace modes, and session management.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3>🎛️ CharacterCustomizer</h3>
+            <p>Detailed customization interface with categorized options and live preview integration.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3>📺 CustomizationPreview</h3>
+            <p>Multi-mode preview component with animation testing and background support.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3>🗂️ CustomizationPresets</h3>
+            <p>Preset management system with categorized built-in themes and custom preset support.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3>🔄 CustomizationExporter</h3>
+            <p>Data exchange utility with compression, validation, and multiple format support.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3>💬 ExportImportDialog</h3>
+            <p>User-friendly interface for data export/import operations with comprehensive options.</p>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Component Containers -->
@@ -392,465 +406,471 @@
 
     <!-- Load character generation system -->
     <script type="module">
-        import { CharacterGenerationAPI, CharacterUtils, characterEvents } from '../features/character-generation/index.js';
-        import CustomizationStudio from '../features/character-generation/ui/CustomizationStudio.js';
-        import CharacterCustomizer from '../features/character-generation/ui/CharacterCustomizer.js';
-        import CustomizationPreview from '../features/character-generation/ui/CustomizationPreview.js';
-        import CustomizationPresets from '../features/character-generation/ui/CustomizationPresets.js';
-        import ExportImportDialog from '../features/character-generation/ui/ExportImportDialog.js';
-        import CustomizationExporter from '../features/character-generation/utils/CustomizationExporter.js';
+      import {
+        CharacterGenerationAPI,
+        CharacterUtils,
+        characterEvents,
+      } from '../features/character-generation/index.js';
+      import CustomizationStudio from '../features/character-generation/ui/CustomizationStudio.js';
+      import CharacterCustomizer from '../features/character-generation/ui/CharacterCustomizer.js';
+      import CustomizationPreview from '../features/character-generation/ui/CustomizationPreview.js';
+      import CustomizationPresets from '../features/character-generation/ui/CustomizationPresets.js';
+      import ExportImportDialog from '../features/character-generation/ui/ExportImportDialog.js';
+      import CustomizationExporter from '../features/character-generation/utils/CustomizationExporter.js';
 
-        // Make available globally for debugging
-        window.CharacterGenerationAPI = CharacterGenerationAPI;
-        window.CharacterUtils = CharacterUtils;
-        window.CustomizationStudio = CustomizationStudio;
-        window.CharacterCustomizer = CharacterCustomizer;
-        window.CustomizationPreview = CustomizationPreview;
-        window.CustomizationPresets = CustomizationPresets;
-        window.ExportImportDialog = ExportImportDialog;
-        window.CustomizationExporter = CustomizationExporter;
+      // Make available globally for debugging
+      window.CharacterGenerationAPI = CharacterGenerationAPI;
+      window.CharacterUtils = CharacterUtils;
+      window.CustomizationStudio = CustomizationStudio;
+      window.CharacterCustomizer = CharacterCustomizer;
+      window.CustomizationPreview = CustomizationPreview;
+      window.CustomizationPresets = CustomizationPresets;
+      window.ExportImportDialog = ExportImportDialog;
+      window.CustomizationExporter = CustomizationExporter;
 
-        // Demo application state
-        let currentStudio = null;
-        let currentCustomizer = null;
-        let currentPreview = null;
-        let currentPresets = null;
-        let currentExportDialog = null;
-        
-        // Demo data
-        let characters = [];
-        let customizations = new Map();
-        let presets = new Map();
-        let sessions = [];
+      // Demo application state
+      let currentStudio = null;
+      let currentCustomizer = null;
+      let currentPreview = null;
+      let currentPresets = null;
+      let currentExportDialog = null;
 
-        // Initialize the demo
-        async function initializeDemo() {
-            console.log('🎨 Initializing Character Customization Studio Demo...');
-            
-            try {
-                // Test system availability
-                console.log('Testing CharacterUtils availability...');
-                const subjects = CharacterUtils.getAvailableSubjects();
-                console.log('Available subjects:', subjects);
-                
-                if (subjects.length > 0) {
-                    updateSystemStatus('success', 'Customization studio system ready');
-                    console.log('✅ Customization studio system initialized successfully');
-                } else {
-                    throw new Error('System components not properly loaded - no subjects available');
-                }
+      // Demo data
+      let characters = [];
+      let customizations = new Map();
+      let presets = new Map();
+      let sessions = [];
 
-                // Set up event listeners
-                console.log('Setting up event listeners...');
-                setupEventListeners();
-                console.log('✅ Event listeners attached');
-                
-                // Load existing data
-                console.log('Loading existing data...');
-                await loadExistingData();
-                console.log('✅ Data loaded');
-                
-                // Update stats
-                console.log('Updating stats...');
-                updateStats();
-                console.log('✅ Stats updated');
+      // Initialize the demo
+      async function initializeDemo() {
+        console.log('🎨 Initializing Character Customization Studio Demo...');
 
-                console.log('🎉 Demo initialization complete!');
+        try {
+          // Test system availability
+          console.log('Testing CharacterUtils availability...');
+          const subjects = CharacterUtils.getAvailableSubjects();
+          console.log('Available subjects:', subjects);
 
-            } catch (error) {
-                console.error('❌ Demo initialization failed:', error);
-                console.error('Error stack:', error.stack);
-                updateSystemStatus('error', `Initialization failed: ${error.message}`);
-                
-                // Still try to set up basic event listeners
-                try {
-                    console.log('Attempting to set up basic event listeners anyway...');
-                    setupEventListeners();
-                } catch (setupError) {
-                    console.error('❌ Failed to set up event listeners:', setupError);
-                }
-            }
+          if (subjects.length > 0) {
+            updateSystemStatus('success', 'Customization studio system ready');
+            console.log('✅ Customization studio system initialized successfully');
+          } else {
+            throw new Error('System components not properly loaded - no subjects available');
+          }
+
+          // Set up event listeners
+          console.log('Setting up event listeners...');
+          setupEventListeners();
+          console.log('✅ Event listeners attached');
+
+          // Load existing data
+          console.log('Loading existing data...');
+          await loadExistingData();
+          console.log('✅ Data loaded');
+
+          // Update stats
+          console.log('Updating stats...');
+          updateStats();
+          console.log('✅ Stats updated');
+
+          console.log('🎉 Demo initialization complete!');
+        } catch (error) {
+          console.error('❌ Demo initialization failed:', error);
+          console.error('Error stack:', error.stack);
+          updateSystemStatus('error', `Initialization failed: ${error.message}`);
+
+          // Still try to set up basic event listeners
+          try {
+            console.log('Attempting to set up basic event listeners anyway...');
+            setupEventListeners();
+          } catch (setupError) {
+            console.error('❌ Failed to set up event listeners:', setupError);
+          }
+        }
+      }
+
+      function setupEventListeners() {
+        console.log('Setting up button event listeners...');
+
+        // Main demo buttons with error handling
+        const buttons = [
+          { id: 'open-full-studio', handler: openFullStudio, name: 'Full Studio' },
+          { id: 'open-customizer', handler: openCharacterCustomizer, name: 'Customizer' },
+          { id: 'open-preview', handler: openPreviewComponent, name: 'Preview' },
+          { id: 'open-presets', handler: openPresetManager, name: 'Presets' },
+          { id: 'open-export-import', handler: openExportImport, name: 'Export/Import' },
+          { id: 'create-test-data', handler: createTestData, name: 'Test Data' },
+        ];
+
+        buttons.forEach(({ id, handler, name }) => {
+          const button = document.getElementById(id);
+          if (button) {
+            button.addEventListener('click', e => {
+              console.log(`${name} button clicked`);
+              try {
+                handler();
+              } catch (error) {
+                console.error(`Error in ${name} handler:`, error);
+                updateSystemStatus('error', `${name} failed: ${error.message}`);
+              }
+            });
+            console.log(`✅ ${name} button listener attached`);
+          } else {
+            console.error(`❌ Button not found: ${id}`);
+          }
+        });
+
+        // Listen for character events
+        try {
+          characterEvents.on('customizationApplied', handleCustomizationApplied);
+          characterEvents.on('presetApplied', handlePresetApplied);
+          characterEvents.on('dataExported', handleDataExported);
+          characterEvents.on('dataImported', handleDataImported);
+          console.log('✅ Character event listeners attached');
+        } catch (error) {
+          console.error('❌ Failed to set up character event listeners:', error);
+        }
+      }
+
+      async function openFullStudio() {
+        console.log('🎨 Opening Customization Studio...');
+
+        if (currentStudio) {
+          currentStudio.destroy();
         }
 
-        function setupEventListeners() {
-            console.log('Setting up button event listeners...');
-            
-            // Main demo buttons with error handling
-            const buttons = [
-                { id: 'open-full-studio', handler: openFullStudio, name: 'Full Studio' },
-                { id: 'open-customizer', handler: openCharacterCustomizer, name: 'Customizer' },
-                { id: 'open-preview', handler: openPreviewComponent, name: 'Preview' },
-                { id: 'open-presets', handler: openPresetManager, name: 'Presets' },
-                { id: 'open-export-import', handler: openExportImport, name: 'Export/Import' },
-                { id: 'create-test-data', handler: createTestData, name: 'Test Data' }
-            ];
+        const studioContainer = document.getElementById('studio-container');
 
-            buttons.forEach(({ id, handler, name }) => {
-                const button = document.getElementById(id);
-                if (button) {
-                    button.addEventListener('click', (e) => {
-                        console.log(`${name} button clicked`);
-                        try {
-                            handler();
-                        } catch (error) {
-                            console.error(`Error in ${name} handler:`, error);
-                            updateSystemStatus('error', `${name} failed: ${error.message}`);
-                        }
-                    });
-                    console.log(`✅ ${name} button listener attached`);
-                } else {
-                    console.error(`❌ Button not found: ${id}`);
-                }
+        currentStudio = new CustomizationStudio({
+          container: studioContainer,
+          characters: characters,
+          presets: presets,
+          onCustomizationApplied: data => {
+            console.log('🎨 Customization applied:', data);
+            updateStats();
+          },
+          onPresetSaved: preset => {
+            console.log('💾 Preset saved:', preset.name);
+            updateStats();
+          },
+          onClose: () => {
+            console.log('✕ Studio closed');
+            currentStudio = null;
+          },
+        });
+
+        currentStudio.render();
+        updateSystemStatus('success', 'Customization Studio opened');
+      }
+
+      function openCharacterCustomizer() {
+        console.log('⚙️ Opening Character Customizer...');
+
+        if (currentCustomizer) {
+          currentCustomizer.destroy();
+        }
+
+        const customizerContainer = document.getElementById('customizer-container');
+
+        currentCustomizer = new CharacterCustomizer({
+          container: customizerContainer,
+          onCustomizationChange: customization => {
+            console.log('🔄 Customization changed');
+          },
+          onSave: customization => {
+            console.log('💾 Customization saved');
+            customizations.set(CharacterUtils.generateId(), customization);
+            updateStats();
+          },
+          onCancel: () => {
+            console.log('❌ Customizer cancelled');
+            currentCustomizer = null;
+          },
+        });
+
+        currentCustomizer.render();
+        updateSystemStatus('success', 'Character Customizer opened');
+      }
+
+      function openPreviewComponent() {
+        console.log('👁️ Opening Preview Component...');
+
+        if (currentPreview) {
+          currentPreview.destroy();
+        }
+
+        const previewContainer = document.getElementById('preview-container');
+
+        currentPreview = new CustomizationPreview({
+          container: previewContainer,
+          showControls: true,
+          showCustomizationInfo: true,
+          enableAnimation: true,
+          onModeChange: mode => {
+            console.log('📺 Preview mode changed to:', mode);
+          },
+          onSettingsChange: settings => {
+            console.log('⚙️ Preview settings changed');
+          },
+        });
+
+        currentPreview.render();
+
+        // Set demo character if available
+        if (characters.length > 0) {
+          currentPreview.setCharacter(characters[0]);
+        }
+
+        updateSystemStatus('success', 'Preview Component opened');
+      }
+
+      function openPresetManager() {
+        console.log('🎯 Opening Preset Manager...');
+
+        if (currentPresets) {
+          currentPresets.destroy();
+        }
+
+        const presetsContainer = document.getElementById('presets-container');
+
+        currentPresets = new CustomizationPresets({
+          container: presetsContainer,
+          showCategories: true,
+          allowCustomPresets: true,
+          showPreview: true,
+          onPresetSelect: preset => {
+            console.log('🎯 Preset selected:', preset.name);
+          },
+          onPresetApply: preset => {
+            console.log('✅ Preset applied:', preset.name);
+            updateStats();
+          },
+          onPresetSave: preset => {
+            console.log('💾 Preset saved:', preset.name);
+            presets.set(preset.id, preset);
+            updateStats();
+          },
+        });
+
+        currentPresets.render();
+        updateSystemStatus('success', 'Preset Manager opened');
+      }
+
+      function openExportImport() {
+        console.log('📤 Opening Export/Import Dialog...');
+
+        if (currentExportDialog) {
+          currentExportDialog.destroy();
+        }
+
+        const exportContainer = document.getElementById('export-import-container');
+
+        currentExportDialog = new ExportImportDialog({
+          container: exportContainer,
+          customizations: customizations,
+          presets: presets,
+          characters: characters,
+          sessionData: {
+            characters,
+            customizations,
+            presets,
+            settings: {},
+            history: [],
+          },
+          onExport: data => {
+            console.log('📤 Data exported:', data.type);
+          },
+          onImport: data => {
+            console.log('📥 Data imported:', data.type);
+            updateStats();
+          },
+          onClose: () => {
+            console.log('✕ Export/Import dialog closed');
+            currentExportDialog = null;
+          },
+        });
+
+        currentExportDialog.render();
+        currentExportDialog.show();
+        updateSystemStatus('success', 'Export/Import Dialog opened');
+      }
+
+      async function createTestData() {
+        console.log('🧪 Creating test data...');
+        updateSystemStatus('info', 'Generating test data...');
+
+        try {
+          // Create test characters
+          const subjects = ['math', 'science', 'reading', 'art'];
+
+          for (let i = 0; i < 4; i++) {
+            const subject = subjects[i];
+            const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
+              autoSave: true,
             });
 
-            // Listen for character events
-            try {
-                characterEvents.on('customizationApplied', handleCustomizationApplied);
-                characterEvents.on('presetApplied', handlePresetApplied);
-                characterEvents.on('dataExported', handleDataExported);
-                characterEvents.on('dataImported', handleDataImported);
-                console.log('✅ Character event listeners attached');
-            } catch (error) {
-                console.error('❌ Failed to set up character event listeners:', error);
+            if (result.success) {
+              characters.push(result.character);
+              console.log(`✅ Created test character: ${result.character.name}`);
             }
+          }
+
+          // Create test customizations
+          for (let i = 0; i < 6; i++) {
+            const customization = generateRandomCustomization();
+            customizations.set(CharacterUtils.generateId(), customization);
+          }
+
+          // Create test session
+          sessions.push({
+            id: CharacterUtils.generateId(),
+            name: 'Demo Session',
+            created: new Date().toISOString(),
+            characters: characters.slice(0, 2),
+            customizations: Array.from(customizations.entries()).slice(0, 3),
+          });
+
+          updateStats();
+          updateSystemStatus(
+            'success',
+            `Generated ${characters.length} characters, ${customizations.size} customizations, and ${sessions.length} session`
+          );
+        } catch (error) {
+          console.error('❌ Test data creation failed:', error);
+          updateSystemStatus('error', `Test data creation failed: ${error.message}`);
         }
+      }
 
-        async function openFullStudio() {
-            console.log('🎨 Opening Customization Studio...');
-            
-            if (currentStudio) {
-                currentStudio.destroy();
-            }
+      function generateRandomCustomization() {
+        const themes = ['educational', 'playful', 'professional', 'artistic'];
+        const colorSchemes = ['primary', 'warm', 'cool', 'nature', 'royal', 'monochrome'];
+        const effects = ['glow', 'sparkles', 'shadow', 'outline', 'gradient'];
+        const animations = ['breathe', 'float', 'sway', 'none'];
 
-            const studioContainer = document.getElementById('studio-container');
-            
-            currentStudio = new CustomizationStudio({
-                container: studioContainer,
-                characters: characters,
-                presets: presets,
-                onCustomizationApplied: (data) => {
-                    console.log('🎨 Customization applied:', data);
-                    updateStats();
-                },
-                onPresetSaved: (preset) => {
-                    console.log('💾 Preset saved:', preset.name);
-                    updateStats();
-                },
-                onClose: () => {
-                    console.log('✕ Studio closed');
-                    currentStudio = null;
-                }
-            });
+        return {
+          theme: themes[Math.floor(Math.random() * themes.length)],
+          colorScheme: colorSchemes[Math.floor(Math.random() * colorSchemes.length)],
+          effects: {
+            [effects[Math.floor(Math.random() * effects.length)]]: { enabled: true, intensity: Math.random() },
+          },
+          animations: {
+            idle: animations[Math.floor(Math.random() * animations.length)],
+            hover: 'lift',
+            click: 'bounce',
+            speed: 0.8 + Math.random() * 0.4,
+          },
+          accessories: [],
+          background: Math.random() > 0.5 ? ['classroom', 'nature', 'space'][Math.floor(Math.random() * 3)] : null,
+        };
+      }
 
-            currentStudio.render();
-            updateSystemStatus('success', 'Customization Studio opened');
+      async function loadExistingData() {
+        try {
+          // Load characters
+          const existingCharacters = CharacterGenerationAPI.loadAllCharacters();
+          characters = existingCharacters;
+
+          // Load custom presets
+          const storedPresets = localStorage.getItem('learnimals_customization_presets');
+          if (storedPresets) {
+            const presetsData = JSON.parse(storedPresets);
+            presets = new Map(Object.entries(presetsData));
+          }
+
+          // Load customizations
+          const storedCustomizations = localStorage.getItem('learnimals_imported_customizations');
+          if (storedCustomizations) {
+            const customizationsData = JSON.parse(storedCustomizations);
+            customizations = new Map(Object.entries(customizationsData));
+          }
+
+          // Load sessions
+          const storedSessions = localStorage.getItem('learnimals_imported_sessions');
+          if (storedSessions) {
+            const sessionsData = JSON.parse(storedSessions);
+            sessions = Object.values(sessionsData);
+          }
+
+          console.log(
+            `📚 Loaded existing data: ${characters.length} characters, ${customizations.size} customizations, ${presets.size} presets, ${sessions.length} sessions`
+          );
+        } catch (error) {
+          console.warn('⚠️ Could not load existing data:', error);
         }
+      }
 
-        function openCharacterCustomizer() {
-            console.log('⚙️ Opening Character Customizer...');
-            
-            if (currentCustomizer) {
-                currentCustomizer.destroy();
-            }
+      function updateStats() {
+        document.getElementById('stat-characters').textContent = characters.length;
+        document.getElementById('stat-customizations').textContent = customizations.size;
+        document.getElementById('stat-presets').textContent = presets.size;
+        document.getElementById('stat-sessions').textContent = sessions.length;
+      }
 
-            const customizerContainer = document.getElementById('customizer-container');
-            
-            currentCustomizer = new CharacterCustomizer({
-                container: customizerContainer,
-                onCustomizationChange: (customization) => {
-                    console.log('🔄 Customization changed');
-                },
-                onSave: (customization) => {
-                    console.log('💾 Customization saved');
-                    customizations.set(CharacterUtils.generateId(), customization);
-                    updateStats();
-                },
-                onCancel: () => {
-                    console.log('❌ Customizer cancelled');
-                    currentCustomizer = null;
-                }
-            });
+      function updateSystemStatus(type, message) {
+        const statusContainer = document.getElementById('system-status');
+        const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'info' ? 'ℹ️' : '⏳';
+        const className = type === 'success' ? 'status-success' : type === 'error' ? 'status-error' : 'status-info';
 
-            currentCustomizer.render();
-            updateSystemStatus('success', 'Character Customizer opened');
-        }
-
-        function openPreviewComponent() {
-            console.log('👁️ Opening Preview Component...');
-            
-            if (currentPreview) {
-                currentPreview.destroy();
-            }
-
-            const previewContainer = document.getElementById('preview-container');
-            
-            currentPreview = new CustomizationPreview({
-                container: previewContainer,
-                showControls: true,
-                showCustomizationInfo: true,
-                enableAnimation: true,
-                onModeChange: (mode) => {
-                    console.log('📺 Preview mode changed to:', mode);
-                },
-                onSettingsChange: (settings) => {
-                    console.log('⚙️ Preview settings changed');
-                }
-            });
-
-            currentPreview.render();
-            
-            // Set demo character if available
-            if (characters.length > 0) {
-                currentPreview.setCharacter(characters[0]);
-            }
-            
-            updateSystemStatus('success', 'Preview Component opened');
-        }
-
-        function openPresetManager() {
-            console.log('🎯 Opening Preset Manager...');
-            
-            if (currentPresets) {
-                currentPresets.destroy();
-            }
-
-            const presetsContainer = document.getElementById('presets-container');
-            
-            currentPresets = new CustomizationPresets({
-                container: presetsContainer,
-                showCategories: true,
-                allowCustomPresets: true,
-                showPreview: true,
-                onPresetSelect: (preset) => {
-                    console.log('🎯 Preset selected:', preset.name);
-                },
-                onPresetApply: (preset) => {
-                    console.log('✅ Preset applied:', preset.name);
-                    updateStats();
-                },
-                onPresetSave: (preset) => {
-                    console.log('💾 Preset saved:', preset.name);
-                    presets.set(preset.id, preset);
-                    updateStats();
-                }
-            });
-
-            currentPresets.render();
-            updateSystemStatus('success', 'Preset Manager opened');
-        }
-
-        function openExportImport() {
-            console.log('📤 Opening Export/Import Dialog...');
-            
-            if (currentExportDialog) {
-                currentExportDialog.destroy();
-            }
-
-            const exportContainer = document.getElementById('export-import-container');
-            
-            currentExportDialog = new ExportImportDialog({
-                container: exportContainer,
-                customizations: customizations,
-                presets: presets,
-                characters: characters,
-                sessionData: {
-                    characters,
-                    customizations,
-                    presets,
-                    settings: {},
-                    history: []
-                },
-                onExport: (data) => {
-                    console.log('📤 Data exported:', data.type);
-                },
-                onImport: (data) => {
-                    console.log('📥 Data imported:', data.type);
-                    updateStats();
-                },
-                onClose: () => {
-                    console.log('✕ Export/Import dialog closed');
-                    currentExportDialog = null;
-                }
-            });
-
-            currentExportDialog.render();
-            currentExportDialog.show();
-            updateSystemStatus('success', 'Export/Import Dialog opened');
-        }
-
-        async function createTestData() {
-            console.log('🧪 Creating test data...');
-            updateSystemStatus('info', 'Generating test data...');
-            
-            try {
-                // Create test characters
-                const subjects = ['math', 'science', 'reading', 'art'];
-                
-                for (let i = 0; i < 4; i++) {
-                    const subject = subjects[i];
-                    const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
-                        autoSave: true
-                    });
-                    
-                    if (result.success) {
-                        characters.push(result.character);
-                        console.log(`✅ Created test character: ${result.character.name}`);
-                    }
-                }
-
-                // Create test customizations
-                for (let i = 0; i < 6; i++) {
-                    const customization = generateRandomCustomization();
-                    customizations.set(CharacterUtils.generateId(), customization);
-                }
-
-                // Create test session
-                sessions.push({
-                    id: CharacterUtils.generateId(),
-                    name: 'Demo Session',
-                    created: new Date().toISOString(),
-                    characters: characters.slice(0, 2),
-                    customizations: Array.from(customizations.entries()).slice(0, 3)
-                });
-
-                updateStats();
-                updateSystemStatus('success', `Generated ${characters.length} characters, ${customizations.size} customizations, and ${sessions.length} session`);
-                
-            } catch (error) {
-                console.error('❌ Test data creation failed:', error);
-                updateSystemStatus('error', `Test data creation failed: ${error.message}`);
-            }
-        }
-
-        function generateRandomCustomization() {
-            const themes = ['educational', 'playful', 'professional', 'artistic'];
-            const colorSchemes = ['primary', 'warm', 'cool', 'nature', 'royal', 'monochrome'];
-            const effects = ['glow', 'sparkles', 'shadow', 'outline', 'gradient'];
-            const animations = ['breathe', 'float', 'sway', 'none'];
-
-            return {
-                theme: themes[Math.floor(Math.random() * themes.length)],
-                colorScheme: colorSchemes[Math.floor(Math.random() * colorSchemes.length)],
-                effects: {
-                    [effects[Math.floor(Math.random() * effects.length)]]: { enabled: true, intensity: Math.random() }
-                },
-                animations: {
-                    idle: animations[Math.floor(Math.random() * animations.length)],
-                    hover: 'lift',
-                    click: 'bounce',
-                    speed: 0.8 + Math.random() * 0.4
-                },
-                accessories: [],
-                background: Math.random() > 0.5 ? ['classroom', 'nature', 'space'][Math.floor(Math.random() * 3)] : null
-            };
-        }
-
-        async function loadExistingData() {
-            try {
-                // Load characters
-                const existingCharacters = CharacterGenerationAPI.loadAllCharacters();
-                characters = existingCharacters;
-
-                // Load custom presets
-                const storedPresets = localStorage.getItem('learnimals_customization_presets');
-                if (storedPresets) {
-                    const presetsData = JSON.parse(storedPresets);
-                    presets = new Map(Object.entries(presetsData));
-                }
-
-                // Load customizations
-                const storedCustomizations = localStorage.getItem('learnimals_imported_customizations');
-                if (storedCustomizations) {
-                    const customizationsData = JSON.parse(storedCustomizations);
-                    customizations = new Map(Object.entries(customizationsData));
-                }
-
-                // Load sessions
-                const storedSessions = localStorage.getItem('learnimals_imported_sessions');
-                if (storedSessions) {
-                    const sessionsData = JSON.parse(storedSessions);
-                    sessions = Object.values(sessionsData);
-                }
-
-                console.log(`📚 Loaded existing data: ${characters.length} characters, ${customizations.size} customizations, ${presets.size} presets, ${sessions.length} sessions`);
-
-            } catch (error) {
-                console.warn('⚠️ Could not load existing data:', error);
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('stat-characters').textContent = characters.length;
-            document.getElementById('stat-customizations').textContent = customizations.size;
-            document.getElementById('stat-presets').textContent = presets.size;
-            document.getElementById('stat-sessions').textContent = sessions.length;
-        }
-
-        function updateSystemStatus(type, message) {
-            const statusContainer = document.getElementById('system-status');
-            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'info' ? 'ℹ️' : '⏳';
-            const className = type === 'success' ? 'status-success' : type === 'error' ? 'status-error' : 'status-info';
-            
-            statusContainer.innerHTML = `
+        statusContainer.innerHTML = `
                 <div class="status-indicator ${className}">
                     <span>${icon}</span>
                     ${message}
                 </div>
             `;
-        }
+      }
 
-        // Event handlers
-        function handleCustomizationApplied(data) {
-            console.log('🎨 Customization applied event:', data);
-            updateStats();
-        }
+      // Event handlers
+      function handleCustomizationApplied(data) {
+        console.log('🎨 Customization applied event:', data);
+        updateStats();
+      }
 
-        function handlePresetApplied(data) {
-            console.log('🎯 Preset applied event:', data.preset.name);
-            updateStats();
-        }
+      function handlePresetApplied(data) {
+        console.log('🎯 Preset applied event:', data.preset.name);
+        updateStats();
+      }
 
-        function handleDataExported(data) {
-            console.log('📤 Data exported event:', data.type);
-            updateSystemStatus('success', `Successfully exported ${data.type}`);
-        }
+      function handleDataExported(data) {
+        console.log('📤 Data exported event:', data.type);
+        updateSystemStatus('success', `Successfully exported ${data.type}`);
+      }
 
-        function handleDataImported(data) {
-            console.log('📥 Data imported event:', data.type);
-            updateSystemStatus('success', `Successfully imported ${data.type}`);
-            
-            // Reload data after import
-            setTimeout(() => {
-                loadExistingData();
-                updateStats();
-            }, 1000);
-        }
+      function handleDataImported(data) {
+        console.log('📥 Data imported event:', data.type);
+        updateSystemStatus('success', `Successfully imported ${data.type}`);
 
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeDemo);
-        } else {
-            initializeDemo();
-        }
+        // Reload data after import
+        setTimeout(() => {
+          loadExistingData();
+          updateStats();
+        }, 1000);
+      }
 
-        // Export for debugging
-        window.customizationDemo = {
-            openFullStudio,
-            openCharacterCustomizer,
-            openPreviewComponent,
-            openPresetManager,
-            openExportImport,
-            createTestData,
-            characters,
-            customizations,
-            presets,
-            sessions,
-            currentStudio,
-            currentCustomizer,
-            currentPreview,
-            currentPresets,
-            currentExportDialog
-        };
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeDemo);
+      } else {
+        initializeDemo();
+      }
+
+      // Export for debugging
+      window.customizationDemo = {
+        openFullStudio,
+        openCharacterCustomizer,
+        openPreviewComponent,
+        openPresetManager,
+        openExportImport,
+        createTestData,
+        characters,
+        customizations,
+        presets,
+        sessions,
+        currentStudio,
+        currentCustomizer,
+        currentPreview,
+        currentPresets,
+        currentExportDialog,
+      };
     </script>
-</body>
+  </body>
 </html>

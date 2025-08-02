@@ -1,7 +1,7 @@
 /**
  * Character Creation Wizard
  * Step-by-step guided character creation interface
- * 
+ *
  * Part of Phase D: Character Generator Core
  */
 
@@ -17,11 +17,11 @@ export default class CharacterWizard extends BaseComponent {
       tagName: 'div',
       className: 'character-wizard',
       attributes: {
-        'role': 'dialog',
+        role: 'dialog',
         'aria-labelledby': 'wizard-title',
-        'aria-modal': 'true'
+        'aria-modal': 'true',
       },
-      ...options
+      ...options,
     });
 
     // Wizard state
@@ -34,7 +34,7 @@ export default class CharacterWizard extends BaseComponent {
       personality: {},
       education: {},
       interactions: {},
-      metadata: {}
+      metadata: {},
     };
 
     // Step configuration
@@ -44,7 +44,7 @@ export default class CharacterWizard extends BaseComponent {
       { id: 3, name: 'personality', title: 'Personality', description: 'Traits and voice' },
       { id: 4, name: 'education', title: 'Education', description: 'Specialties and level' },
       { id: 5, name: 'interactions', title: 'Interactions', description: 'Messages and phrases' },
-      { id: 6, name: 'review', title: 'Review', description: 'Final check' }
+      { id: 6, name: 'review', title: 'Review', description: 'Final check' },
     ];
 
     // Validation state
@@ -56,7 +56,7 @@ export default class CharacterWizard extends BaseComponent {
     this.previewRenderer = new CharacterPreviewRenderer({
       size: 'medium',
       animated: true,
-      interactive: false
+      interactive: false,
     });
 
     // Callbacks
@@ -87,7 +87,9 @@ export default class CharacterWizard extends BaseComponent {
               <div class="progress-fill" style="width: ${(this.currentStep / this.totalSteps) * 100}%"></div>
             </div>
             <div class="progress-steps">
-              ${this.steps.map(step => `
+              ${this.steps
+    .map(
+      step => `
                 <div class="progress-step ${step.id <= this.currentStep ? 'active' : ''} ${step.id === this.currentStep ? 'current' : ''}" 
                      data-step="${step.id}">
                   <div class="step-number">${step.id}</div>
@@ -96,7 +98,9 @@ export default class CharacterWizard extends BaseComponent {
                     <div class="step-description">${step.description}</div>
                   </div>
                 </div>
-              `).join('')}
+              `
+    )
+    .join('')}
             </div>
           </div>
 
@@ -162,11 +166,15 @@ export default class CharacterWizard extends BaseComponent {
    * Render all wizard steps
    */
   renderAllSteps() {
-    return this.steps.map(step => `
+    return this.steps
+      .map(
+        step => `
       <div class="wizard-step ${step.id === this.currentStep ? 'active' : ''}" data-step="${step.id}">
         ${this.renderStep(step)}
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -196,7 +204,7 @@ export default class CharacterWizard extends BaseComponent {
    */
   renderBasicsStep() {
     const subjects = CharacterUtils.getAvailableSubjects();
-    
+
     return `
       <div class="step-content">
         <div class="step-header">
@@ -222,11 +230,15 @@ export default class CharacterWizard extends BaseComponent {
         <div class="form-group">
           <label for="character-subject" class="form-label">Subject Area *</label>
           <select id="character-subject" class="form-select" required>
-            ${subjects.map(subject => `
+            ${subjects
+    .map(
+      subject => `
               <option value="${subject}" ${this.characterData.subject === subject ? 'selected' : ''}>
                 ${subject.charAt(0).toUpperCase() + subject.slice(1)}
               </option>
-            `).join('')}
+            `
+    )
+    .join('')}
           </select>
           <div class="form-help">What subject will your character help teach?</div>
         </div>
@@ -250,7 +262,7 @@ export default class CharacterWizard extends BaseComponent {
    */
   renderAppearanceStep() {
     const colorPalettes = CharacterUtils.getColorPalettes(this.characterData.subject);
-    
+
     return `
       <div class="step-content">
         <div class="step-header">
@@ -264,25 +276,33 @@ export default class CharacterWizard extends BaseComponent {
             <div class="form-group">
               <label class="form-label">Base Shape</label>
               <div class="shape-selector">
-                ${['circle', 'oval', 'square', 'rectangle', 'triangle', 'hexagon'].map(shape => `
+                ${['circle', 'oval', 'square', 'rectangle', 'triangle', 'hexagon']
+    .map(
+      shape => `
                   <button type="button" class="shape-option ${(this.characterData.appearance?.baseShape || 'circle') === shape ? 'selected' : ''}" 
                           data-shape="${shape}" title="${shape}">
                     <div class="shape-preview shape-${shape}"></div>
                     <span>${shape}</span>
                   </button>
-                `).join('')}
+                `
+    )
+    .join('')}
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label">Size</label>
               <div class="size-selector">
-                ${['small', 'medium', 'large'].map(size => `
+                ${['small', 'medium', 'large']
+    .map(
+      size => `
                   <button type="button" class="size-option ${(this.characterData.appearance?.size || 'medium') === size ? 'selected' : ''}" 
                           data-size="${size}">
                     ${size.charAt(0).toUpperCase() + size.slice(1)}
                   </button>
-                `).join('')}
+                `
+    )
+    .join('')}
               </div>
             </div>
           </div>
@@ -290,7 +310,9 @@ export default class CharacterWizard extends BaseComponent {
           <div class="form-section">
             <h4>Colors</h4>
             <div class="color-palettes">
-              ${colorPalettes.map((palette, index) => `
+              ${colorPalettes
+    .map(
+      (palette, index) => `
                 <button type="button" class="color-palette ${index === 0 ? 'selected' : ''}" 
                         data-palette='${JSON.stringify(palette)}'>
                   <div class="palette-colors">
@@ -300,7 +322,9 @@ export default class CharacterWizard extends BaseComponent {
                   </div>
                   <span class="palette-name">${palette.name}</span>
                 </button>
-              `).join('')}
+              `
+    )
+    .join('')}
             </div>
 
             <div class="custom-colors">
@@ -361,9 +385,23 @@ export default class CharacterWizard extends BaseComponent {
    */
   renderPersonalityStep() {
     const traitCombinations = CharacterUtils.getPersonalityTraits();
-    const allTraits = ['friendly', 'energetic', 'wise', 'curious', 'patient', 'creative', 
-      'logical', 'encouraging', 'playful', 'methodical', 'inspiring', 
-      'adventurous', 'calm', 'enthusiastic', 'helpful'];
+    const allTraits = [
+      'friendly',
+      'energetic',
+      'wise',
+      'curious',
+      'patient',
+      'creative',
+      'logical',
+      'encouraging',
+      'playful',
+      'methodical',
+      'inspiring',
+      'adventurous',
+      'calm',
+      'enthusiastic',
+      'helpful',
+    ];
 
     return `
       <div class="step-content">
@@ -377,22 +415,31 @@ export default class CharacterWizard extends BaseComponent {
           <div class="trait-suggestions">
             <p class="form-help">Choose up to 3 traits that define your character:</p>
             <div class="trait-combinations">
-              ${traitCombinations.slice(0, 5).map((combo, index) => `
+              ${traitCombinations
+    .slice(0, 5)
+    .map(
+      (combo, index) => `
                 <button type="button" class="trait-combo ${index === 0 ? 'selected' : ''}" 
                         data-traits='${JSON.stringify(combo)}'>
                   ${combo.map(trait => `<span class="trait-tag">${trait}</span>`).join('')}
                 </button>
-              `).join('')}
+              `
+    )
+    .join('')}
             </div>
           </div>
 
           <div class="trait-selector">
             <div class="available-traits">
-              ${allTraits.map(trait => `
+              ${allTraits
+    .map(
+      trait => `
                 <button type="button" class="trait-option" data-trait="${trait}">
                   ${trait}
                 </button>
-              `).join('')}
+              `
+    )
+    .join('')}
             </div>
             <div class="selected-traits">
               <div class="selected-traits-label">Selected Traits:</div>
@@ -407,9 +454,13 @@ export default class CharacterWizard extends BaseComponent {
           <label for="primary-trait" class="form-label">Primary Trait</label>
           <select id="primary-trait" class="form-select">
             <option value="">Select primary trait...</option>
-            ${allTraits.map(trait => `
+            ${allTraits
+    .map(
+      trait => `
               <option value="${trait}">${trait}</option>
-            `).join('')}
+            `
+    )
+    .join('')}
           </select>
           <div class="form-help">The main personality characteristic</div>
         </div>
@@ -455,11 +506,15 @@ export default class CharacterWizard extends BaseComponent {
         <div class="form-group">
           <label class="form-label">Specialties</label>
           <div class="specialties-selector">
-            ${specialties.map(specialty => `
+            ${specialties
+    .map(
+      specialty => `
               <button type="button" class="specialty-option" data-specialty="${specialty}">
                 ${specialty}
               </button>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
           <div class="selected-specialties">
             <div class="selected-specialties-label">Selected Specialties:</div>
@@ -707,8 +762,10 @@ export default class CharacterWizard extends BaseComponent {
   attachStepEventListeners() {
     // This will be called each time the step changes
     // We'll add event listeners for the current step's form elements
-    
-    const currentStepElement = this.element.querySelector(`.wizard-step[data-step="${this.currentStep}"]`);
+
+    const currentStepElement = this.element.querySelector(
+      `.wizard-step[data-step="${this.currentStep}"]`
+    );
     if (!currentStepElement) return;
 
     // Common form input listeners
@@ -803,16 +860,16 @@ export default class CharacterWizard extends BaseComponent {
         this.characterData.appearance.primaryColor = palette.primary;
         this.characterData.appearance.secondaryColor = palette.secondary;
         this.characterData.appearance.accentColor = palette.accent;
-        
+
         // Update color inputs
         const primaryInput = stepElement.querySelector('#primary-color');
         const secondaryInput = stepElement.querySelector('#secondary-color');
         const accentInput = stepElement.querySelector('#accent-color');
-        
+
         if (primaryInput) primaryInput.value = palette.primary;
         if (secondaryInput) secondaryInput.value = palette.secondary;
         if (accentInput) accentInput.value = palette.accent;
-        
+
         this.updatePreview();
       });
     });
@@ -910,7 +967,7 @@ export default class CharacterWizard extends BaseComponent {
 
   handleFormInput(input) {
     const { id, value, type } = input;
-    
+
     // Update character data based on input
     switch (id) {
     case 'character-name':
@@ -929,10 +986,16 @@ export default class CharacterWizard extends BaseComponent {
       this.characterData.appearance.accentColor = value;
       break;
     case 'eye-shape':
-      this.characterData.appearance.eyes = { ...this.characterData.appearance.eyes, shape: value };
+      this.characterData.appearance.eyes = {
+        ...this.characterData.appearance.eyes,
+        shape: value,
+      };
       break;
     case 'mouth-shape':
-      this.characterData.appearance.mouth = { ...this.characterData.appearance.mouth, shape: value };
+      this.characterData.appearance.mouth = {
+        ...this.characterData.appearance.mouth,
+        shape: value,
+      };
       break;
     case 'primary-trait':
       this.characterData.personality.primaryTrait = value;
@@ -941,16 +1004,24 @@ export default class CharacterWizard extends BaseComponent {
       this.characterData.personality.voiceType = value;
       break;
     case 'catchphrases':
-      this.characterData.personality.catchphrases = value.split('\n').filter(phrase => phrase.trim());
+      this.characterData.personality.catchphrases = value
+        .split('\n')
+        .filter(phrase => phrase.trim());
       break;
     case 'difficulty-level':
       this.characterData.education.difficultyLevel = value;
       break;
     case 'min-age':
-      this.characterData.education.ageRange = { ...this.characterData.education.ageRange, min: parseInt(value) };
+      this.characterData.education.ageRange = {
+        ...this.characterData.education.ageRange,
+        min: parseInt(value),
+      };
       break;
     case 'max-age':
-      this.characterData.education.ageRange = { ...this.characterData.education.ageRange, max: parseInt(value) };
+      this.characterData.education.ageRange = {
+        ...this.characterData.education.ageRange,
+        max: parseInt(value),
+      };
       break;
     case 'teaching-style':
       this.characterData.education.teachingStyle = value;
@@ -959,7 +1030,9 @@ export default class CharacterWizard extends BaseComponent {
       this.characterData.interactions.greetings = value.split('\n').filter(msg => msg.trim());
       break;
     case 'encouragements':
-      this.characterData.interactions.encouragements = value.split('\n').filter(msg => msg.trim());
+      this.characterData.interactions.encouragements = value
+        .split('\n')
+        .filter(msg => msg.trim());
       break;
     case 'celebrations':
       this.characterData.interactions.celebrations = value.split('\n').filter(msg => msg.trim());
@@ -971,7 +1044,7 @@ export default class CharacterWizard extends BaseComponent {
 
     // Validate current step
     this.validateCurrentStep();
-    
+
     // Update preview
     this.updatePreview();
   }
@@ -980,7 +1053,7 @@ export default class CharacterWizard extends BaseComponent {
 
   validateCurrentStep() {
     this.validationErrors = {};
-    
+
     switch (this.currentStep) {
     case 1:
       return this.validateBasics();
@@ -1028,11 +1101,15 @@ export default class CharacterWizard extends BaseComponent {
     }
 
     // Set defaults if missing
-    if (!this.characterData.appearance.baseShape) this.characterData.appearance.baseShape = 'circle';
+    if (!this.characterData.appearance.baseShape)
+      this.characterData.appearance.baseShape = 'circle';
     if (!this.characterData.appearance.size) this.characterData.appearance.size = 'medium';
-    if (!this.characterData.appearance.primaryColor) this.characterData.appearance.primaryColor = '#4A90E2';
-    if (!this.characterData.appearance.secondaryColor) this.characterData.appearance.secondaryColor = '#FFFFFF';
-    if (!this.characterData.appearance.accentColor) this.characterData.appearance.accentColor = '#FFD700';
+    if (!this.characterData.appearance.primaryColor)
+      this.characterData.appearance.primaryColor = '#4A90E2';
+    if (!this.characterData.appearance.secondaryColor)
+      this.characterData.appearance.secondaryColor = '#FFFFFF';
+    if (!this.characterData.appearance.accentColor)
+      this.characterData.appearance.accentColor = '#FFD700';
 
     return true;
   }
@@ -1044,7 +1121,10 @@ export default class CharacterWizard extends BaseComponent {
       this.characterData.personality = {};
     }
 
-    if (!this.characterData.personality.traits || this.characterData.personality.traits.length === 0) {
+    if (
+      !this.characterData.personality.traits ||
+      this.characterData.personality.traits.length === 0
+    ) {
       this.validationErrors.traits = 'Please select at least one personality trait';
       isValid = false;
     }
@@ -1065,9 +1145,12 @@ export default class CharacterWizard extends BaseComponent {
 
     // Set defaults if missing
     if (!this.characterData.education.specialties) this.characterData.education.specialties = [];
-    if (!this.characterData.education.difficultyLevel) this.characterData.education.difficultyLevel = 'mixed';
-    if (!this.characterData.education.ageRange) this.characterData.education.ageRange = { min: 4, max: 12 };
-    if (!this.characterData.education.teachingStyle) this.characterData.education.teachingStyle = 'mixed';
+    if (!this.characterData.education.difficultyLevel)
+      this.characterData.education.difficultyLevel = 'mixed';
+    if (!this.characterData.education.ageRange)
+      this.characterData.education.ageRange = { min: 4, max: 12 };
+    if (!this.characterData.education.teachingStyle)
+      this.characterData.education.teachingStyle = 'mixed';
 
     return true;
   }
@@ -1078,9 +1161,12 @@ export default class CharacterWizard extends BaseComponent {
     }
 
     // Set defaults if missing
-    if (!this.characterData.interactions.greetings) this.characterData.interactions.greetings = ['Hello! Ready to learn together?'];
-    if (!this.characterData.interactions.encouragements) this.characterData.interactions.encouragements = ['You\'re doing great! Keep it up!'];
-    if (!this.characterData.interactions.celebrations) this.characterData.interactions.celebrations = ['Fantastic! You did it!'];
+    if (!this.characterData.interactions.greetings)
+      this.characterData.interactions.greetings = ['Hello! Ready to learn together?'];
+    if (!this.characterData.interactions.encouragements)
+      this.characterData.interactions.encouragements = ['You\'re doing great! Keep it up!'];
+    if (!this.characterData.interactions.celebrations)
+      this.characterData.interactions.celebrations = ['Fantastic! You did it!'];
     if (!this.characterData.interactions.hints) this.characterData.interactions.hints = [];
 
     return true;
@@ -1090,9 +1176,9 @@ export default class CharacterWizard extends BaseComponent {
     // Final validation using the character generation API
     const preview = CharacterGenerationAPI.generatePreview(this.characterData);
     const validation = preview.validation;
-    
+
     this.isValid = validation.isValid;
-    
+
     if (!validation.isValid) {
       this.validationErrors = { review: validation.errors };
     }
@@ -1131,8 +1217,10 @@ export default class CharacterWizard extends BaseComponent {
     const createBtn = this.element.querySelector('.wizard-create');
 
     if (backBtn) backBtn.disabled = this.currentStep === 1;
-    if (nextBtn) nextBtn.style.display = this.currentStep === this.totalSteps ? 'none' : 'inline-flex';
-    if (createBtn) createBtn.style.display = this.currentStep === this.totalSteps ? 'inline-flex' : 'none';
+    if (nextBtn)
+      nextBtn.style.display = this.currentStep === this.totalSteps ? 'none' : 'inline-flex';
+    if (createBtn)
+      createBtn.style.display = this.currentStep === this.totalSteps ? 'inline-flex' : 'none';
 
     // Re-attach event listeners for new step
     this.attachStepEventListeners();
@@ -1151,11 +1239,13 @@ export default class CharacterWizard extends BaseComponent {
     const previewTraits = this.element.querySelector('.preview-traits');
 
     if (previewName) previewName.textContent = this.previewCharacter.name || 'Character Name';
-    if (previewSubject) previewSubject.textContent = this.previewCharacter.subject || 'Subject Area';
+    if (previewSubject)
+      previewSubject.textContent = this.previewCharacter.subject || 'Subject Area';
     if (previewTraits) {
-      previewTraits.innerHTML = this.previewCharacter.personality?.traits?.map(
-        trait => `<span class="trait-tag">${trait}</span>`
-      ).join('') || '';
+      previewTraits.innerHTML =
+        this.previewCharacter.personality?.traits
+          ?.map(trait => `<span class="trait-tag">${trait}</span>`)
+          .join('') || '';
     }
 
     // Update visual character preview
@@ -1164,11 +1254,11 @@ export default class CharacterWizard extends BaseComponent {
       try {
         // Clear existing preview
         previewContainer.innerHTML = '';
-        
+
         // Render new character preview
         const characterSVG = this.previewRenderer.renderCharacter(this.previewCharacter);
         previewContainer.appendChild(characterSVG);
-        
+
         // Add preview controls if character has meaningful data
         if (this.previewCharacter.name && this.previewCharacter.appearance) {
           const controls = this.createPreviewControls();
@@ -1194,13 +1284,15 @@ export default class CharacterWizard extends BaseComponent {
     if (!validationStatus) return;
 
     const hasErrors = Object.keys(this.validationErrors).length > 0;
-    
+
     if (hasErrors) {
       validationStatus.innerHTML = `
         <div class="validation-errors">
           <div class="validation-icon">⚠️</div>
           <div class="validation-messages">
-            ${Object.values(this.validationErrors).map(error => `<div class="error-message">${error}</div>`).join('')}
+            ${Object.values(this.validationErrors)
+    .map(error => `<div class="error-message">${error}</div>`)
+    .join('')}
           </div>
         </div>
       `;
@@ -1217,11 +1309,11 @@ export default class CharacterWizard extends BaseComponent {
     Object.keys(this.validationErrors).forEach(field => {
       const input = this.element.querySelector(`#${field}, #${field.replace('_', '-')}`);
       const errorElement = this.element.querySelector(`#${field}-error`);
-      
+
       if (input) {
         input.classList.add('error');
       }
-      
+
       if (errorElement) {
         errorElement.textContent = this.validationErrors[field];
       }
@@ -1252,7 +1344,7 @@ export default class CharacterWizard extends BaseComponent {
         ...this.characterData.metadata,
         creator: 'user',
         isPublic: makePublic,
-        tags: [this.characterData.subject]
+        tags: [this.characterData.subject],
       };
 
       // Create character
@@ -1267,14 +1359,13 @@ export default class CharacterWizard extends BaseComponent {
 
         // Notify completion
         this.onComplete(result);
-        
+
         // Close wizard
         this.hide();
       } else {
         // Show error
         this.showError(result.error, result.details);
       }
-
     } catch (error) {
       console.error('Character creation failed:', error);
       this.showError('Character creation failed', [error.message]);
@@ -1292,9 +1383,12 @@ export default class CharacterWizard extends BaseComponent {
 
   selectTraits(traits) {
     this.characterData.personality.traits = [...traits];
-    
+
     // Update primary trait if not set or not in selected traits
-    if (!this.characterData.personality.primaryTrait || !traits.includes(this.characterData.personality.primaryTrait)) {
+    if (
+      !this.characterData.personality.primaryTrait ||
+      !traits.includes(this.characterData.personality.primaryTrait)
+    ) {
       this.characterData.personality.primaryTrait = traits[0];
     }
 
@@ -1310,7 +1404,7 @@ export default class CharacterWizard extends BaseComponent {
 
     const traits = this.characterData.personality.traits;
     const index = traits.indexOf(trait);
-    
+
     if (index >= 0) {
       traits.splice(index, 1);
     } else if (traits.length < 3) {
@@ -1328,7 +1422,7 @@ export default class CharacterWizard extends BaseComponent {
 
     const specialties = this.characterData.education.specialties;
     const index = specialties.indexOf(specialty);
-    
+
     if (index >= 0) {
       specialties.splice(index, 1);
     } else if (specialties.length < 5) {
@@ -1342,12 +1436,16 @@ export default class CharacterWizard extends BaseComponent {
   updateTraitDisplay() {
     const selectedTraitsList = this.element.querySelector('.selected-traits-list');
     const traitOptions = this.element.querySelectorAll('.trait-option');
-    
+
     if (selectedTraitsList) {
-      selectedTraitsList.innerHTML = this.characterData.personality.traits?.map(
-        trait => `<span class="selected-trait">${trait} <button type="button" data-remove-trait="${trait}">×</button></span>`
-      ).join('') || '<span class="no-selection">No traits selected</span>';
-      
+      selectedTraitsList.innerHTML =
+        this.characterData.personality.traits
+          ?.map(
+            trait =>
+              `<span class="selected-trait">${trait} <button type="button" data-remove-trait="${trait}">×</button></span>`
+          )
+          .join('') || '<span class="no-selection">No traits selected</span>';
+
       // Add remove listeners
       selectedTraitsList.querySelectorAll('[data-remove-trait]').forEach(btn => {
         btn.addEventListener('click', () => this.toggleTrait(btn.dataset.removeTrait));
@@ -1365,9 +1463,14 @@ export default class CharacterWizard extends BaseComponent {
     if (primaryTraitSelect) {
       primaryTraitSelect.innerHTML = `
         <option value="">Select primary trait...</option>
-        ${this.characterData.personality.traits?.map(trait => 
-    `<option value="${trait}" ${this.characterData.personality.primaryTrait === trait ? 'selected' : ''}>${trait}</option>`
-  ).join('') || ''}
+        ${
+  this.characterData.personality.traits
+    ?.map(
+      trait =>
+        `<option value="${trait}" ${this.characterData.personality.primaryTrait === trait ? 'selected' : ''}>${trait}</option>`
+    )
+    .join('') || ''
+}
       `;
     }
   }
@@ -1375,12 +1478,16 @@ export default class CharacterWizard extends BaseComponent {
   updateSpecialtyDisplay() {
     const selectedSpecialtiesList = this.element.querySelector('.selected-specialties-list');
     const specialtyOptions = this.element.querySelectorAll('.specialty-option');
-    
+
     if (selectedSpecialtiesList) {
-      selectedSpecialtiesList.innerHTML = this.characterData.education.specialties?.map(
-        specialty => `<span class="selected-specialty">${specialty} <button type="button" data-remove-specialty="${specialty}">×</button></span>`
-      ).join('') || '<span class="no-selection">No specialties selected</span>';
-      
+      selectedSpecialtiesList.innerHTML =
+        this.characterData.education.specialties
+          ?.map(
+            specialty =>
+              `<span class="selected-specialty">${specialty} <button type="button" data-remove-specialty="${specialty}">×</button></span>`
+          )
+          .join('') || '<span class="no-selection">No specialties selected</span>';
+
       // Add remove listeners
       selectedSpecialtiesList.querySelectorAll('[data-remove-specialty]').forEach(btn => {
         btn.addEventListener('click', () => this.toggleSpecialty(btn.dataset.removeSpecialty));
@@ -1389,7 +1496,9 @@ export default class CharacterWizard extends BaseComponent {
 
     // Update specialty option states
     specialtyOptions.forEach(option => {
-      const isSelected = this.characterData.education.specialties?.includes(option.dataset.specialty);
+      const isSelected = this.characterData.education.specialties?.includes(
+        option.dataset.specialty
+      );
       option.classList.toggle('selected', isSelected);
     });
   }
@@ -1399,7 +1508,7 @@ export default class CharacterWizard extends BaseComponent {
     const shapes = ['circle', 'oval', 'square', 'rectangle', 'triangle', 'hexagon'];
     const sizes = ['small', 'medium', 'large'];
     const palettes = CharacterUtils.getColorPalettes(this.characterData.subject);
-    
+
     const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
     const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
     const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
@@ -1411,7 +1520,7 @@ export default class CharacterWizard extends BaseComponent {
       size: randomSize,
       primaryColor: randomPalette.primary,
       secondaryColor: randomPalette.secondary,
-      accentColor: randomPalette.accent
+      accentColor: randomPalette.accent,
     };
 
     // Update UI
@@ -1423,22 +1532,30 @@ export default class CharacterWizard extends BaseComponent {
     // Generate subject-specific messages
     const subjectMessages = {
       math: {
-        greetings: ['Let\'s solve some fun equations!', 'Ready for number adventures?', 'Math magic time!'],
-        encouragements: ['You\'re calculating perfectly!', 'Great problem solving!', 'Mathematical genius!'],
-        celebrations: ['Number wizard!', 'Math master!', 'Equation expert!']
+        greetings: [
+          'Let\'s solve some fun equations!',
+          'Ready for number adventures?',
+          'Math magic time!',
+        ],
+        encouragements: [
+          'You\'re calculating perfectly!',
+          'Great problem solving!',
+          'Mathematical genius!',
+        ],
+        celebrations: ['Number wizard!', 'Math master!', 'Equation expert!'],
       },
       science: {
         greetings: ['Time for discovery!', 'Let\'s experiment!', 'Science adventure awaits!'],
         encouragements: ['Excellent hypothesis!', 'Great observation!', 'Scientific thinking!'],
-        celebrations: ['Scientific genius!', 'Discovery master!', 'Experiment expert!']
-      }
+        celebrations: ['Scientific genius!', 'Discovery master!', 'Experiment expert!'],
+      },
       // Add more subjects as needed
     };
 
     const messages = subjectMessages[this.characterData.subject] || {
       greetings: ['Hello! Ready to learn?', 'Let\'s explore together!', 'Learning time!'],
       encouragements: ['Great work!', 'Keep it up!', 'Excellent effort!'],
-      celebrations: ['Fantastic!', 'Amazing work!', 'You did it!']
+      celebrations: ['Fantastic!', 'Amazing work!', 'You did it!'],
     };
 
     // Update form fields
@@ -1455,7 +1572,7 @@ export default class CharacterWizard extends BaseComponent {
       ...this.characterData.interactions,
       greetings: messages.greetings,
       encouragements: messages.encouragements,
-      celebrations: messages.celebrations
+      celebrations: messages.celebrations,
     };
 
     this.updatePreview();
@@ -1469,24 +1586,28 @@ export default class CharacterWizard extends BaseComponent {
       confirmButtonText: 'Use Template',
       showCancel: true,
       onConfirm: () => {
-        const selectedTemplate = this.element.querySelector('input[name="template"]:checked')?.value;
+        const selectedTemplate = this.element.querySelector(
+          'input[name="template"]:checked'
+        )?.value;
         if (selectedTemplate) {
           this.applyTemplate(selectedTemplate);
         }
         modal.hide();
-      }
+      },
     });
     modal.show();
   }
 
   renderTemplateSelector() {
     const subjects = CharacterUtils.getAvailableSubjects();
-    
+
     return `
       <div class="template-selector">
         <p>Choose a template to get started quickly:</p>
         <div class="template-options">
-          ${subjects.map(subject => `
+          ${subjects
+    .map(
+      subject => `
             <label class="template-option">
               <input type="radio" name="template" value="${subject}">
               <div class="template-card">
@@ -1494,7 +1615,9 @@ export default class CharacterWizard extends BaseComponent {
                 <div class="template-description">Pre-configured ${subject} character</div>
               </div>
             </label>
-          `).join('')}
+          `
+    )
+    .join('')}
         </div>
       </div>
     `;
@@ -1513,18 +1636,22 @@ export default class CharacterWizard extends BaseComponent {
       content: `
         <div class="error-content">
           <div class="error-message">${message}</div>
-          ${details.length > 0 ? `
+          ${
+  details.length > 0
+    ? `
             <div class="error-details">
               <h4>Details:</h4>
               <ul>
                 ${details.map(detail => `<li>${detail}</li>`).join('')}
               </ul>
             </div>
-          ` : ''}
+          `
+    : ''
+}
         </div>
       `,
       confirmButtonText: 'OK',
-      showCancel: false
+      showCancel: false,
     });
     modal.show();
   }
@@ -1556,7 +1683,7 @@ export default class CharacterWizard extends BaseComponent {
   createPreviewControls() {
     const controls = document.createElement('div');
     controls.className = 'preview-controls';
-    
+
     controls.innerHTML = `
       <div class="preview-actions">
         <button type="button" class="preview-action" data-action="rotate" title="Rotate character">
@@ -1572,7 +1699,7 @@ export default class CharacterWizard extends BaseComponent {
     `;
 
     // Add event listeners for preview controls
-    controls.addEventListener('click', (e) => {
+    controls.addEventListener('click', e => {
       const action = e.target.closest('.preview-action')?.dataset.action;
       if (action) {
         this.handlePreviewAction(action);
@@ -1598,7 +1725,7 @@ export default class CharacterWizard extends BaseComponent {
         characterSVG.style.transform = 'rotate(0deg)';
       }, 500);
       break;
-      
+
     case 'zoom':
       // Apply zoom animation
       characterSVG.style.transition = 'transform 0.3s ease';
@@ -1607,7 +1734,7 @@ export default class CharacterWizard extends BaseComponent {
         characterSVG.style.transform = 'scale(1)';
       }, 300);
       break;
-      
+
     case 'animate':
       // Trigger character animation if supported
       if (this.previewRenderer && typeof this.previewRenderer.animateCharacter === 'function') {
@@ -1652,12 +1779,12 @@ export default class CharacterWizard extends BaseComponent {
       personality: {},
       education: {},
       interactions: {},
-      metadata: {}
+      metadata: {},
     };
     this.validationErrors = {};
     this.isValid = false;
     this.previewCharacter = null;
-    
+
     this.updateWizardDisplay();
     this.updatePreview();
   }

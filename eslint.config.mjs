@@ -65,6 +65,12 @@ export default [
         Blob: 'readonly',
         URL: 'readonly',
         
+        // Observer APIs
+        ResizeObserver: 'readonly',
+        PerformanceObserver: 'readonly',
+        MutationObserver: 'readonly',
+        IntersectionObserver: 'readonly',
+        
         // Speech API
         SpeechSynthesisUtterance: 'readonly',
         speechSynthesis: 'readonly',
@@ -121,7 +127,10 @@ export default [
         process: 'readonly',
         Buffer: 'readonly',
         __dirname: 'readonly',
-        __filename: 'readonly'
+        __filename: 'readonly',
+        require: 'readonly',
+        module: 'writable',
+        exports: 'writable'
       }
     }
   },
@@ -129,25 +138,41 @@ export default [
     // Test-specific configuration
     files: ['tests/**/*.js'],
     languageOptions: {
+    globals: {
+    // Vitest globals
+    describe: 'readonly',
+    it: 'readonly',
+    expect: 'readonly',
+    beforeEach: 'readonly',
+    afterEach: 'readonly',
+    beforeAll: 'readonly',
+    afterAll: 'readonly',
+    vi: 'readonly',
+    test: 'readonly',
+    
+    // JSDOM globals for testing
+    global: 'readonly',
+    
+    // Node.js globals for tests
+    process: 'readonly',
+    Buffer: 'readonly',
+    __dirname: 'readonly',
+      __filename: 'readonly',
+        require: 'readonly',
+        
+        // Test utilities
+        testUtils: 'readonly',
+        TestDataUtils: 'readonly'
+      }
+    }
+  },
+  {
+    // Special configuration for character generation test file
+    files: ['src/features/character-generation/test-character-system.js'],
+    languageOptions: {
       globals: {
-        // Vitest globals
-        describe: 'readonly',
-        it: 'readonly',
-        expect: 'readonly',
-        beforeEach: 'readonly',
-        afterEach: 'readonly',
-        beforeAll: 'readonly',
-        afterAll: 'readonly',
-        vi: 'readonly',
-        
-        // JSDOM globals for testing
-        global: 'readonly',
-        
-        // Node.js globals for tests
         process: 'readonly',
-        Buffer: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly'
+        require: 'readonly'
       }
     }
   }

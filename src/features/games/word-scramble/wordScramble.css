@@ -5,7 +5,7 @@
   padding: 20px;
   background-color: white;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .game-header {
@@ -47,7 +47,8 @@
   font-size: 1.1rem;
 }
 
-.scrambled-letters, .solution-area {
+.scrambled-letters,
+.solution-area {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -128,7 +129,9 @@
   border-radius: 25px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
   font-family: inherit;
 }
 

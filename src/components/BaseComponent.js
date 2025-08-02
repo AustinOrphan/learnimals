@@ -16,9 +16,9 @@ class BaseComponent {
       cssClasses: options.cssClasses || [],
       container: options.container || null,
       attributes: options.attributes || {},
-      ...options
+      ...options,
     };
-    
+
     this.element = null;
     this.isRendered = false;
     this.eventListeners = new Map();
@@ -48,10 +48,11 @@ class BaseComponent {
    */
   render(container) {
     const targetContainer = container || this.options.container;
-    const containerEl = typeof targetContainer === 'string' 
-      ? document.querySelector(targetContainer) 
-      : targetContainer;
-    
+    const containerEl =
+      typeof targetContainer === 'string'
+        ? document.querySelector(targetContainer)
+        : targetContainer;
+
     if (!containerEl) {
       console.error('Container not found:', targetContainer);
       return this;
@@ -60,17 +61,17 @@ class BaseComponent {
     // Generate and insert HTML
     const html = this.generateHTML();
     containerEl.innerHTML += html;
-    
+
     // Store reference to the element
     this.element = document.getElementById(this.options.id);
-    
+
     if (this.element) {
       this.applyAttributes();
       this.attachEventListeners();
       this.isRendered = true;
       this.onRender();
     }
-    
+
     return this;
   }
 
@@ -79,7 +80,7 @@ class BaseComponent {
    */
   applyAttributes() {
     if (!this.element) return;
-    
+
     Object.entries(this.options.attributes).forEach(([key, value]) => {
       this.element.setAttribute(key, value);
     });
@@ -100,6 +101,47 @@ class BaseComponent {
   }
 
   /**
+   * Add an event listener to the component (alias for addEventListener)
+   * @param {string} event - Event name
+   * @param {Function} handler - Event handler
+   * @param {string} [selector] - Optional selector for event delegation
+   */
+  on(event, handler, selector) {
+    return this.addEventListener(event, handler, selector);
+  }
+
+  /**
+   * Remove event listeners (alias for removeEventListeners)
+   * @param {string} event - Event name
+   * @param {Function} [handler] - Specific handler to remove
+   */
+  off(event, handler) {
+    if (handler && this.element) {
+      // Remove specific handler - need to find the wrapped handler
+      const key = `${event}-root`;
+      const listeners = this.eventListeners.get(key);
+      if (listeners && Array.isArray(listeners)) {
+        // Find and remove the specific handler
+        const index = listeners.findIndex(
+          wrappedHandler => wrappedHandler === handler || wrappedHandler.originalHandler === handler
+        );
+        if (index !== -1) {
+          const wrappedHandler = listeners[index];
+          this.element.removeEventListener(event, wrappedHandler);
+          listeners.splice(index, 1);
+          if (listeners.length === 0) {
+            this.eventListeners.delete(key);
+          }
+        }
+      }
+    } else {
+      // Remove all handlers for this event
+      this.removeEventListeners(event);
+    }
+    return this;
+  }
+
+  /**
    * Add an event listener to the component
    * @param {string} event - Event name
    * @param {Function} handler - Event handler
@@ -107,17 +149,20 @@ class BaseComponent {
    */
   addEventListener(event, handler, selector) {
     if (!this.element) return;
-    
-    const wrappedHandler = selector 
-      ? (e) => {
+
+    const wrappedHandler = selector
+      ? e => {
         if (e.target.matches(selector)) {
           handler.call(this, e);
         }
       }
       : handler.bind(this);
-    
+
+    // Store reference to original handler for removal
+    wrappedHandler.originalHandler = handler;
+
     this.element.addEventListener(event, wrappedHandler);
-    
+
     // Store for cleanup
     const key = `${event}-${selector || 'root'}`;
     if (!this.eventListeners.has(key)) {
@@ -132,23 +177,37 @@ class BaseComponent {
    */
   removeEventListeners(event) {
     if (!this.element) return;
-    
+
     if (event) {
       // Remove specific event
       const listeners = this.eventListeners.get(event);
-      if (listeners) {
+      if (listeners && Array.isArray(listeners)) {
         listeners.forEach(handler => {
-          this.element.removeEventListener(event.split('-')[0], handler);
+          try {
+            if (this.element && typeof this.element.removeEventListener === 'function') {
+              this.element.removeEventListener(event.split('-')[0], handler);
+            }
+          } catch (error) {
+            console.warn(`Error removing event listener for ${event}:`, error);
+          }
         });
         this.eventListeners.delete(event);
       }
     } else {
       // Remove all events
       this.eventListeners.forEach((handlers, key) => {
-        const eventName = key.split('-')[0];
-        handlers.forEach(handler => {
-          this.element.removeEventListener(eventName, handler);
-        });
+        if (handlers && Array.isArray(handlers)) {
+          const eventName = key.split('-')[0];
+          handlers.forEach(handler => {
+            try {
+              if (this.element && typeof this.element.removeEventListener === 'function') {
+                this.element.removeEventListener(eventName, handler);
+              }
+            } catch (error) {
+              console.warn(`Error removing event listener for ${eventName}:`, error);
+            }
+          });
+        }
       });
       this.eventListeners.clear();
     }
@@ -161,12 +220,12 @@ class BaseComponent {
    */
   update(newOptions, rerender = false) {
     Object.assign(this.options, newOptions);
-    
+
     if (rerender && this.isRendered) {
       this.destroy();
       this.render();
     }
-    
+
     return this;
   }
 
@@ -277,12 +336,29 @@ class BaseComponent {
    */
   destroy() {
     if (this.element) {
-      this.removeEventListeners();
-      this.element.remove();
+      // Remove event listeners with error handling
+      try {
+        this.removeEventListeners();
+      } catch (error) {
+        console.warn('Error removing event listeners during destroy:', error);
+      }
+
+      // Remove element from DOM with defensive check
+      try {
+        if (this.element && typeof this.element.remove === 'function') {
+          this.element.remove();
+        } else if (this.element && this.element.parentNode) {
+          // Fallback for older browsers
+          this.element.parentNode.removeChild(this.element);
+        }
+      } catch (error) {
+        console.warn('Error removing element from DOM:', error);
+      }
+
       this.element = null;
       this.isRendered = false;
     }
-    
+
     return this;
   }
 
@@ -296,11 +372,11 @@ class BaseComponent {
       const event = new CustomEvent(eventName, {
         detail,
         bubbles: true,
-        cancelable: true
+        cancelable: true,
       });
       this.element.dispatchEvent(event);
     }
-    
+
     return this;
   }
 
@@ -315,21 +391,21 @@ class BaseComponent {
    */
   static createElement(tag, options = {}) {
     const element = document.createElement(tag);
-    
+
     if (options.className) {
       element.className = options.className;
     }
-    
+
     if (options.innerHTML) {
       element.innerHTML = options.innerHTML;
     }
-    
+
     if (options.attributes) {
       Object.entries(options.attributes).forEach(([key, value]) => {
         element.setAttribute(key, value);
       });
     }
-    
+
     return element;
   }
 }

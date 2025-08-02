@@ -4,10 +4,10 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   max-width: 100%;
   margin: 0 auto;
-  background: linear-gradient(135deg, #FFB6C1 0%, #DDA0DD 50%, #98FB98 100%);
+  background: linear-gradient(135deg, #ffb6c1 0%, #dda0dd 50%, #98fb98 100%);
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   min-height: 600px;
   display: flex;
   flex-direction: column;
@@ -34,25 +34,30 @@
 .bella-avatar {
   font-size: 3rem;
   animation: bellaHop 2s ease-in-out infinite;
-  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 @keyframes bellaHop {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
 }
 
 .bella-speech {
   background: rgba(255, 255, 255, 0.95);
-  color: #4A4A4A;
+  color: #4a4a4a;
   padding: 15px;
   border-radius: 20px;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 300px;
   font-size: 0.95rem;
   line-height: 1.4;
-  border: 2px solid #DDA0DD;
+  border: 2px solid #dda0dd;
 }
 
 .bella-speech::before {
@@ -72,9 +77,15 @@
 }
 
 @keyframes speechPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Game Progress */
@@ -97,7 +108,7 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #32CD32, #00FF7F);
+  background: linear-gradient(90deg, #32cd32, #00ff7f);
   border-radius: 6px;
   transition: width 0.3s ease;
   width: 20%;
@@ -107,7 +118,7 @@
   color: white;
   font-size: 0.9rem;
   font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Game Content */
@@ -124,8 +135,8 @@
   background: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border: 2px solid #DDA0DD;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #dda0dd;
 }
 
 .sentence-hint {
@@ -136,7 +147,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #6B46C1;
+  color: #6b46c1;
   font-weight: bold;
   font-size: 1rem;
 }
@@ -152,8 +163,8 @@
 /* Sentence Area */
 .sentence-area {
   min-height: 80px;
-  background: #F8F9FF;
-  border: 3px dashed #DDA0DD;
+  background: #f8f9ff;
+  border: 3px dashed #dda0dd;
   border-radius: 12px;
   padding: 15px;
   display: flex;
@@ -165,12 +176,12 @@
 }
 
 .sentence-area:hover {
-  border-color: #BA68C8;
-  background: #F0F4FF;
+  border-color: #ba68c8;
+  background: #f0f4ff;
 }
 
 .drop-instruction {
-  color: #9E9E9E;
+  color: #9e9e9e;
   font-style: italic;
   text-align: center;
   width: 100%;
@@ -180,27 +191,27 @@
 
 .word-slot {
   background: white;
-  border: 2px solid #E0E0E0;
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
   padding: 8px 15px;
   min-width: 60px;
   text-align: center;
   font-weight: bold;
-  color: #4A4A4A;
+  color: #4a4a4a;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .word-slot.filled {
-  background: linear-gradient(135deg, #E8F5E8, #C8E6C9);
-  border-color: #4CAF50;
-  color: #2E7D32;
+  background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+  border-color: #4caf50;
+  color: #2e7d32;
   box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
 }
 
 .word-slot.empty {
   border-style: dashed;
-  color: #BDBDBD;
+  color: #bdbdbd;
 }
 
 .word-slot:hover.filled {
@@ -213,13 +224,13 @@
   background: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  border: 2px solid #98FB98;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #98fb98;
 }
 
 .word-bank h3 {
   margin: 0 0 15px 0;
-  color: #388E3C;
+  color: #388e3c;
   font-size: 1.2rem;
   text-align: center;
   font-weight: bold;
@@ -236,31 +247,31 @@
 
 /* Word Tiles */
 .word-tile {
-  background: linear-gradient(135deg, #FFFFFF, #F8F9FA);
-  border: 2px solid #E0E0E0;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border: 2px solid #e0e0e0;
   border-radius: 10px;
   padding: 10px 15px;
   font-weight: bold;
-  color: #2C3E50;
+  color: #2c3e50;
   cursor: grab;
   user-select: none;
   transition: all 0.2s ease;
   font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
 .word-tile:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-  border-color: #BA68C8;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  border-color: #ba68c8;
 }
 
 .word-tile:active,
 .word-tile.dragging {
   cursor: grabbing;
   transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
@@ -269,17 +280,35 @@
 }
 
 @keyframes tileHighlight {
-  0%, 100% { background: linear-gradient(135deg, #FFFFFF, #F8F9FA); }
-  50% { background: linear-gradient(135deg, #FFF3E0, #FFE0B2); border-color: #FF9800; }
+  0%,
+  100% {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  }
+  50% {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    border-color: #ff9800;
+  }
 }
 
 /* Grammar Category Colors */
-.grammar-articles { border-left: 4px solid #2196F3; }
-.grammar-nouns { border-left: 4px solid #4CAF50; }
-.grammar-verbs { border-left: 4px solid #FF5722; }
-.grammar-adjectives { border-left: 4px solid #9C27B0; }
-.grammar-adverbs { border-left: 4px solid #FF9800; }
-.grammar-prepositions { border-left: 4px solid #795548; }
+.grammar-articles {
+  border-left: 4px solid #2196f3;
+}
+.grammar-nouns {
+  border-left: 4px solid #4caf50;
+}
+.grammar-verbs {
+  border-left: 4px solid #ff5722;
+}
+.grammar-adjectives {
+  border-left: 4px solid #9c27b0;
+}
+.grammar-adverbs {
+  border-left: 4px solid #ff9800;
+}
+.grammar-prepositions {
+  border-left: 4px solid #795548;
+}
 
 /* Game Controls */
 .game-controls {
@@ -292,7 +321,7 @@
 }
 
 .game-btn {
-  background: linear-gradient(135deg, #8E24AA, #BA68C8);
+  background: linear-gradient(135deg, #8e24aa, #ba68c8);
   color: white;
   border: none;
   padding: 12px 20px;
@@ -306,7 +335,7 @@
 }
 
 .game-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #7B1FA2, #AB47BC);
+  background: linear-gradient(135deg, #7b1fa2, #ab47bc);
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(142, 36, 170, 0.4);
 }
@@ -317,7 +346,7 @@
 }
 
 .game-btn:disabled {
-  background: #BDBDBD;
+  background: #bdbdbd;
   color: #757575;
   cursor: not-allowed;
   transform: none;
@@ -325,42 +354,42 @@
 }
 
 .game-btn.hint-btn {
-  background: linear-gradient(135deg, #FF9800, #FFB74D);
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
   box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
 }
 
 .game-btn.hint-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #F57C00, #FF9800);
+  background: linear-gradient(135deg, #f57c00, #ff9800);
   box-shadow: 0 6px 18px rgba(255, 152, 0, 0.4);
 }
 
 .game-btn.check-btn {
-  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 .game-btn.check-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #388E3C, #4CAF50);
+  background: linear-gradient(135deg, #388e3c, #4caf50);
   box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
 }
 
 .game-btn.clear-btn {
-  background: linear-gradient(135deg, #FF7043, #FF8A65);
+  background: linear-gradient(135deg, #ff7043, #ff8a65);
   box-shadow: 0 4px 12px rgba(255, 112, 67, 0.3);
 }
 
 .game-btn.clear-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #F4511E, #FF7043);
+  background: linear-gradient(135deg, #f4511e, #ff7043);
   box-shadow: 0 6px 18px rgba(255, 112, 67, 0.4);
 }
 
 .game-btn.next-btn {
-  background: linear-gradient(135deg, #2196F3, #42A5F5);
+  background: linear-gradient(135deg, #2196f3, #42a5f5);
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
 .game-btn.next-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1976D2, #2196F3);
+  background: linear-gradient(135deg, #1976d2, #2196f3);
   box-shadow: 0 6px 18px rgba(33, 150, 243, 0.4);
 }
 
@@ -374,7 +403,7 @@
   border-radius: 12px;
   font-weight: bold;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   animation: feedbackSlideIn 0.3s ease-out;
 }
 
@@ -390,15 +419,15 @@
 }
 
 .feedback.success {
-  background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
-  color: #1B5E20;
-  border: 2px solid #4CAF50;
+  background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+  color: #1b5e20;
+  border: 2px solid #4caf50;
 }
 
 .feedback.error {
-  background: linear-gradient(135deg, #FFCDD2, #EF9A9A);
-  color: #B71C1C;
-  border: 2px solid #F44336;
+  background: linear-gradient(135deg, #ffcdd2, #ef9a9a);
+  color: #b71c1c;
+  border: 2px solid #f44336;
 }
 
 .feedback-message {
@@ -433,70 +462,70 @@
     border-radius: 12px;
     min-height: 500px;
   }
-  
+
   .game-header {
     flex-direction: column;
     gap: 15px;
     padding: 15px;
   }
-  
+
   .bella-character {
     max-width: 100%;
   }
-  
+
   .bella-avatar {
     font-size: 2.5rem;
   }
-  
+
   .bella-speech {
     max-width: 100%;
     font-size: 0.9rem;
   }
-  
+
   .game-progress {
     align-items: center;
     width: 100%;
   }
-  
+
   .progress-bar {
     width: 200px;
   }
-  
+
   .game-content {
     padding: 15px;
     gap: 20px;
   }
-  
+
   .word-tiles {
     gap: 8px;
   }
-  
+
   .word-tile {
     padding: 8px 12px;
     font-size: 0.9rem;
   }
-  
+
   .word-slot {
     padding: 6px 12px;
     min-width: 50px;
     font-size: 0.9rem;
   }
-  
+
   .game-controls {
     gap: 10px;
     padding: 15px;
   }
-  
+
   .game-btn {
     padding: 10px 16px;
     font-size: 0.9rem;
     min-width: 100px;
   }
-  
+
   .feedback {
     padding: 12px 15px;
   }
-  
+
   .feedback-message {
     font-size: 1rem;
   }
@@ -507,40 +536,40 @@
     margin: 5px;
     border-radius: 10px;
   }
-  
+
   .bella-avatar {
     font-size: 2rem;
   }
-  
+
   .bella-speech {
     padding: 12px;
     font-size: 0.85rem;
   }
-  
+
   .game-content {
     padding: 12px;
   }
-  
+
   .sentence-display,
   .word-bank {
     padding: 15px;
   }
-  
+
   .word-tile {
     padding: 6px 10px;
     font-size: 0.85rem;
   }
-  
+
   .word-slot {
     padding: 5px 10px;
     font-size: 0.85rem;
   }
-  
+
   .game-controls {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .game-btn {
     width: 100%;
     max-width: 200px;
@@ -550,25 +579,25 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .sentence-builder-game {
-    background: #FFFFFF;
+    background: #ffffff;
     border: 3px solid #000000;
   }
-  
+
   .word-tile,
   .word-slot {
-    background: #FFFFFF;
+    background: #ffffff;
     color: #000000;
     border: 2px solid #000000;
   }
-  
+
   .game-btn {
     background: #000000;
-    color: #FFFFFF;
+    color: #ffffff;
     border: 2px solid #000000;
   }
-  
+
   .game-btn:hover:not(:disabled) {
-    background: #FFFFFF;
+    background: #ffffff;
     color: #000000;
   }
 }
@@ -592,12 +621,12 @@
     color: black;
     box-shadow: none;
   }
-  
+
   .game-controls,
   .bella-avatar {
     display: none;
   }
-  
+
   .sentence-display,
   .word-bank {
     border: 1px solid black;

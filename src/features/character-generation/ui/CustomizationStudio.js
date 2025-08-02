@@ -1,7 +1,7 @@
 /**
  * Customization Studio
  * Advanced drag-and-drop interface for character customization
- * 
+ *
  * Part of Phase G: Character Customization Studio
  */
 
@@ -17,10 +17,10 @@ export default class CustomizationStudio extends BaseComponent {
       tagName: 'div',
       className: 'customization-studio',
       attributes: {
-        'role': 'application',
-        'aria-label': 'Character Customization Studio'
+        role: 'application',
+        'aria-label': 'Character Customization Studio',
       },
-      ...options
+      ...options,
     });
 
     // Studio state
@@ -40,7 +40,7 @@ export default class CustomizationStudio extends BaseComponent {
       single: 'Single Character',
       batch: 'Batch Customization',
       comparison: 'Side-by-Side Comparison',
-      gallery: 'Gallery View'
+      gallery: 'Gallery View',
     };
     this.currentMode = 'single';
 
@@ -53,8 +53,8 @@ export default class CustomizationStudio extends BaseComponent {
           theme: 'educational',
           colorScheme: 'primary',
           effects: { shadow: { enabled: true }, glow: { enabled: false } },
-          animations: { idle: 'breathe', hover: 'lift', click: 'bounce' }
-        }
+          animations: { idle: 'breathe', hover: 'lift', click: 'bounce' },
+        },
       },
       playful: {
         name: 'Playful Theme',
@@ -63,8 +63,8 @@ export default class CustomizationStudio extends BaseComponent {
           theme: 'playful',
           colorScheme: 'warm',
           effects: { sparkles: { enabled: true }, glow: { enabled: true } },
-          animations: { idle: 'float', hover: 'wiggle', click: 'spin' }
-        }
+          animations: { idle: 'float', hover: 'wiggle', click: 'spin' },
+        },
       },
       professional: {
         name: 'Professional Theme',
@@ -73,8 +73,8 @@ export default class CustomizationStudio extends BaseComponent {
           theme: 'professional',
           colorScheme: 'monochrome',
           effects: { shadow: { enabled: true }, outline: { enabled: true } },
-          animations: { idle: 'none', hover: 'subtle', click: 'gentle' }
-        }
+          animations: { idle: 'none', hover: 'subtle', click: 'gentle' },
+        },
       },
       artistic: {
         name: 'Artistic Theme',
@@ -82,10 +82,14 @@ export default class CustomizationStudio extends BaseComponent {
         customization: {
           theme: 'artistic',
           colorScheme: 'royal',
-          effects: { gradient: { enabled: true }, glow: { enabled: true }, sparkles: { enabled: true } },
-          animations: { idle: 'sway', hover: 'dance', click: 'jump' }
-        }
-      }
+          effects: {
+            gradient: { enabled: true },
+            glow: { enabled: true },
+            sparkles: { enabled: true },
+          },
+          animations: { idle: 'sway', hover: 'dance', click: 'jump' },
+        },
+      },
     };
 
     // Callbacks
@@ -108,16 +112,16 @@ export default class CustomizationStudio extends BaseComponent {
       size: 'large',
       animated: true,
       interactive: true,
-      theme: 'educational'
+      theme: 'educational',
     });
 
     this.customizer = new CharacterCustomizer({
-      onCustomizationChange: (customization) => {
+      onCustomizationChange: customization => {
         this.handleCustomizationChange(customization);
       },
-      onSave: (customization) => {
+      onSave: customization => {
         this.applyCustomization(customization);
-      }
+      },
     });
   }
 
@@ -147,12 +151,16 @@ export default class CustomizationStudio extends BaseComponent {
           </div>
           
           <div class="studio-modes">
-            ${Object.entries(this.modes).map(([id, name]) => `
+            ${Object.entries(this.modes)
+    .map(
+      ([id, name]) => `
               <button class="mode-btn ${this.currentMode === id ? 'active' : ''}" 
                       data-mode="${id}">
                 ${name}
               </button>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
 
           <div class="header-actions">
@@ -222,7 +230,9 @@ export default class CustomizationStudio extends BaseComponent {
               <div class="preset-category">
                 <h4>Built-in Presets</h4>
                 <div class="preset-list" id="builtin-presets">
-                  ${Object.entries(this.presetLibrary).map(([id, preset]) => `
+                  ${Object.entries(this.presetLibrary)
+    .map(
+      ([id, preset]) => `
                     <div class="preset-item" data-preset="${id}" draggable="true">
                       <div class="preset-preview">
                         <div class="preset-icon">${this.getPresetIcon(preset.customization.theme)}</div>
@@ -237,7 +247,9 @@ export default class CustomizationStudio extends BaseComponent {
                         </button>
                       </div>
                     </div>
-                  `).join('')}
+                  `
+    )
+    .join('')}
                 </div>
               </div>
 
@@ -591,7 +603,7 @@ export default class CustomizationStudio extends BaseComponent {
       professional: '💼',
       artistic: '🎨',
       retro: '📺',
-      neon: '⚡'
+      neon: '⚡',
     };
     return icons[theme] || '🎨';
   }
@@ -612,11 +624,11 @@ export default class CustomizationStudio extends BaseComponent {
     this.selectedCharacters.forEach(character => {
       this.customizations.set(character.id, customization);
     });
-    
+
     this.updateWorkspacePreview();
     this.updateStats();
     this.updateWorkspaceStatus('Customization applied');
-    
+
     // Emit event
     this.onCustomizationApplied(customization, this.selectedCharacters);
   }
@@ -650,11 +662,11 @@ export default class CustomizationStudio extends BaseComponent {
 
     const character = this.selectedCharacters[0];
     const customization = this.customizations.get(character.id);
-    
+
     if (customization && this.previewRenderer) {
       // Apply customization to character
       const customizedCharacter = this.applyCustomizationToCharacter(character, customization);
-      
+
       // Clear and render
       previewContainer.innerHTML = '';
       this.previewRenderer.theme = customization.theme;
@@ -669,9 +681,10 @@ export default class CustomizationStudio extends BaseComponent {
     const previewGrid = this.element.querySelector('#batch-preview-grid');
     if (!previewGrid) return;
 
-    previewGrid.innerHTML = this.selectedCharacters.map(character => {
-      const customization = this.customizations.get(character.id);
-      return `
+    previewGrid.innerHTML = this.selectedCharacters
+      .map(character => {
+        const customization = this.customizations.get(character.id);
+        return `
         <div class="batch-preview-item" data-character="${character.id}">
           <div class="preview-container" id="batch-preview-${character.id}">
             <!-- Preview will be rendered here -->
@@ -684,7 +697,8 @@ export default class CustomizationStudio extends BaseComponent {
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join('');
 
     // Render previews
     this.selectedCharacters.forEach(character => {
@@ -708,16 +722,16 @@ export default class CustomizationStudio extends BaseComponent {
   applyCustomizationToCharacter(character, customization) {
     // Create deep copy
     const customized = JSON.parse(JSON.stringify(character));
-    
+
     // Apply customization properties
     if (customization.colorScheme) {
       // Apply color scheme logic here
     }
-    
+
     if (customization.animations) {
       customized.animations = { ...customized.animations, ...customization.animations };
     }
-    
+
     return customized;
   }
 
@@ -738,7 +752,7 @@ export default class CustomizationStudio extends BaseComponent {
     const totalElement = this.element.querySelector('#total-characters');
     const selectedElement = this.element.querySelector('#selected-count');
     const customizedElement = this.element.querySelector('#customized-count');
-    
+
     if (totalElement) totalElement.textContent = this.characters.length;
     if (selectedElement) selectedElement.textContent = this.selectedCharacters.length;
     if (customizedElement) customizedElement.textContent = this.customizations.size;
@@ -753,9 +767,15 @@ export default class CustomizationStudio extends BaseComponent {
     if (!this.element) return;
 
     // Header actions
-    this.element.querySelector('#import-preset')?.addEventListener('click', () => this.importPreset());
-    this.element.querySelector('#export-customizations')?.addEventListener('click', () => this.exportCustomizations());
-    this.element.querySelector('#apply-all')?.addEventListener('click', () => this.applyAllCustomizations());
+    this.element
+      .querySelector('#import-preset')
+      ?.addEventListener('click', () => this.importPreset());
+    this.element
+      .querySelector('#export-customizations')
+      ?.addEventListener('click', () => this.exportCustomizations());
+    this.element
+      .querySelector('#apply-all')
+      ?.addEventListener('click', () => this.applyAllCustomizations());
     this.element.querySelector('#close-studio')?.addEventListener('click', () => this.close());
 
     // Mode switching
@@ -766,12 +786,12 @@ export default class CustomizationStudio extends BaseComponent {
     });
 
     // Character search
-    this.element.querySelector('#character-search')?.addEventListener('input', (e) => {
+    this.element.querySelector('#character-search')?.addEventListener('input', e => {
       this.filterCharacters(e.target.value);
     });
 
     // Character selection
-    this.element.querySelector('#character-list')?.addEventListener('click', (e) => {
+    this.element.querySelector('#character-list')?.addEventListener('click', e => {
       const characterItem = e.target.closest('.character-list-item');
       if (characterItem) {
         this.selectCharacter(characterItem.dataset.characterId);
@@ -800,14 +820,26 @@ export default class CustomizationStudio extends BaseComponent {
     });
 
     // Workspace tools
-    this.element.querySelector('#clear-workspace')?.addEventListener('click', () => this.clearWorkspace());
-    this.element.querySelector('#undo-changes')?.addEventListener('click', () => this.undoChanges());
-    this.element.querySelector('#redo-changes')?.addEventListener('click', () => this.redoChanges());
+    this.element
+      .querySelector('#clear-workspace')
+      ?.addEventListener('click', () => this.clearWorkspace());
+    this.element
+      .querySelector('#undo-changes')
+      ?.addEventListener('click', () => this.undoChanges());
+    this.element
+      .querySelector('#redo-changes')
+      ?.addEventListener('click', () => this.redoChanges());
 
     // Footer actions
-    this.element.querySelector('#save-session')?.addEventListener('click', () => this.saveSession());
-    this.element.querySelector('#load-session')?.addEventListener('click', () => this.loadSession());
-    this.element.querySelector('#export-results')?.addEventListener('click', () => this.exportResults());
+    this.element
+      .querySelector('#save-session')
+      ?.addEventListener('click', () => this.saveSession());
+    this.element
+      .querySelector('#load-session')
+      ?.addEventListener('click', () => this.loadSession());
+    this.element
+      .querySelector('#export-results')
+      ?.addEventListener('click', () => this.exportResults());
 
     // Drag and drop setup
     this.setupDragAndDrop();
@@ -823,9 +855,12 @@ export default class CustomizationStudio extends BaseComponent {
    */
   setupDragAndDrop() {
     // Make character items draggable
-    this.element.addEventListener('dragstart', (e) => {
+    this.element.addEventListener('dragstart', e => {
       if (e.target.closest('.character-list-item')) {
-        e.dataTransfer.setData('text/character-id', e.target.closest('.character-list-item').dataset.characterId);
+        e.dataTransfer.setData(
+          'text/character-id',
+          e.target.closest('.character-list-item').dataset.characterId
+        );
         this.draggedElement = e.target.closest('.character-list-item');
         this.isDragMode = true;
       } else if (e.target.closest('.preset-item')) {
@@ -836,7 +871,7 @@ export default class CustomizationStudio extends BaseComponent {
     });
 
     // Handle drop zones
-    this.element.addEventListener('dragover', (e) => {
+    this.element.addEventListener('dragover', e => {
       if (this.isDragMode) {
         e.preventDefault();
         const dropZone = e.target.closest('.drop-zone');
@@ -846,14 +881,14 @@ export default class CustomizationStudio extends BaseComponent {
       }
     });
 
-    this.element.addEventListener('dragleave', (e) => {
+    this.element.addEventListener('dragleave', e => {
       const dropZone = e.target.closest('.drop-zone');
       if (dropZone) {
         dropZone.classList.remove('drag-hover');
       }
     });
 
-    this.element.addEventListener('drop', (e) => {
+    this.element.addEventListener('drop', e => {
       e.preventDefault();
       const dropZone = e.target.closest('.drop-zone');
       if (dropZone) {
@@ -943,7 +978,7 @@ export default class CustomizationStudio extends BaseComponent {
     if (this.currentMode === mode) return;
 
     this.currentMode = mode;
-    
+
     // Update mode buttons
     this.element.querySelectorAll('.mode-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.mode === mode);
@@ -1064,7 +1099,9 @@ export default class CustomizationStudio extends BaseComponent {
     const listContainer = this.element.querySelector('#character-list');
     if (!listContainer) return;
 
-    listContainer.innerHTML = this.characters.map(character => `
+    listContainer.innerHTML = this.characters
+      .map(
+        character => `
       <div class="character-list-item ${this.selectedCharacters.find(c => c.id === character.id) ? 'selected' : ''}" 
            data-character-id="${character.id}" 
            draggable="true">
@@ -1079,7 +1116,9 @@ export default class CustomizationStudio extends BaseComponent {
           ${this.customizations.has(character.id) ? '🎨' : '⚪'}
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -1088,11 +1127,11 @@ export default class CustomizationStudio extends BaseComponent {
   filterCharacters(searchTerm) {
     const items = this.element.querySelectorAll('.character-list-item');
     const lowerSearch = searchTerm.toLowerCase();
-    
+
     items.forEach(item => {
       const character = this.characters.find(c => c.id === item.dataset.characterId);
       if (character) {
-        const matches = 
+        const matches =
           character.name.toLowerCase().includes(lowerSearch) ||
           character.subject.toLowerCase().includes(lowerSearch);
         item.style.display = matches ? 'flex' : 'none';
@@ -1107,7 +1146,9 @@ export default class CustomizationStudio extends BaseComponent {
     const preset = this.presetLibrary[presetId];
     if (preset && this.selectedCharacters.length > 0) {
       this.applyPresetToSelected(preset);
-      this.updateWorkspaceStatus(`Applied ${preset.name} to ${this.selectedCharacters.length} character(s)`);
+      this.updateWorkspaceStatus(
+        `Applied ${preset.name} to ${this.selectedCharacters.length} character(s)`
+      );
     }
   }
 
@@ -1123,9 +1164,12 @@ export default class CustomizationStudio extends BaseComponent {
           await CharacterGenerationAPI.updateCharacter(customizedCharacter);
         }
       }
-      
+
       this.updateWorkspaceStatus('All customizations applied successfully');
-      this.onCustomizationApplied(Array.from(this.customizations.values()), this.selectedCharacters);
+      this.onCustomizationApplied(
+        Array.from(this.customizations.values()),
+        this.selectedCharacters
+      );
     } catch (error) {
       console.error('❌ Failed to apply customizations:', error);
       this.updateWorkspaceStatus('Failed to apply some customizations');
@@ -1142,20 +1186,20 @@ export default class CustomizationStudio extends BaseComponent {
       customizations: Array.from(this.customizations.entries()).map(([id, customization]) => ({
         characterId: id,
         characterName: this.characters.find(c => c.id === id)?.name || 'Unknown',
-        customization
-      }))
+        customization,
+      })),
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
-    
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `learnimals-customizations-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
-    
+
     URL.revokeObjectURL(url);
     this.updateWorkspaceStatus('Customizations exported successfully');
   }
@@ -1167,15 +1211,15 @@ export default class CustomizationStudio extends BaseComponent {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json';
-    
-    input.addEventListener('change', async (e) => {
+
+    input.addEventListener('change', async e => {
       const file = e.target.files[0];
       if (!file) return;
-      
+
       try {
         const text = await file.text();
         const data = JSON.parse(text);
-        
+
         if (data.customizations) {
           // Import customizations
           data.customizations.forEach(item => {
@@ -1184,7 +1228,7 @@ export default class CustomizationStudio extends BaseComponent {
               this.customizations.set(item.characterId, item.customization);
             }
           });
-          
+
           this.updateWorkspacePreview();
           this.updateStats();
           this.updateWorkspaceStatus(`Imported ${data.customizations.length} customizations`);
@@ -1196,7 +1240,7 @@ export default class CustomizationStudio extends BaseComponent {
         this.updateWorkspaceStatus(`Import failed: ${error.message}`);
       }
     });
-    
+
     input.click();
   }
 
@@ -1208,9 +1252,9 @@ export default class CustomizationStudio extends BaseComponent {
       mode: this.currentMode,
       selectedCharacters: this.selectedCharacters.map(c => c.id),
       customizations: Array.from(this.customizations.entries()),
-      activePresets: this.activePresets
+      activePresets: this.activePresets,
     };
-    
+
     localStorage.setItem('learnimals_customization_session', JSON.stringify(sessionData));
     this.updateWorkspaceStatus('Session saved');
   }
@@ -1220,26 +1264,28 @@ export default class CustomizationStudio extends BaseComponent {
    */
   loadSession() {
     try {
-      const sessionData = JSON.parse(localStorage.getItem('learnimals_customization_session') || '{}');
-      
+      const sessionData = JSON.parse(
+        localStorage.getItem('learnimals_customization_session') || '{}'
+      );
+
       if (sessionData.mode) {
         this.switchMode(sessionData.mode);
       }
-      
+
       if (sessionData.selectedCharacters) {
         this.selectedCharacters = sessionData.selectedCharacters
           .map(id => this.characters.find(c => c.id === id))
           .filter(Boolean);
       }
-      
+
       if (sessionData.customizations) {
         this.customizations = new Map(sessionData.customizations);
       }
-      
+
       if (sessionData.activePresets) {
         this.activePresets = sessionData.activePresets;
       }
-      
+
       this.updateCharacterList();
       this.updateWorkspaceContent();
       this.updateStats();
@@ -1257,7 +1303,7 @@ export default class CustomizationStudio extends BaseComponent {
     this.selectedCharacters = [];
     this.customizations.clear();
     this.activePresets = [];
-    
+
     this.updateCharacterList();
     this.updateWorkspaceContent();
     this.updateStats();
@@ -1272,7 +1318,7 @@ export default class CustomizationStudio extends BaseComponent {
       const confirmed = confirm('You have unsaved customizations. Are you sure you want to close?');
       if (!confirmed) return;
     }
-    
+
     this.onClose();
     this.destroy();
   }

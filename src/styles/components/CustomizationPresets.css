@@ -236,18 +236,18 @@
 }
 
 .feature-tag.effects {
-  background: #FF6B6B20;
-  color: #FF6B6B;
+  background: #ff6b6b20;
+  color: #ff6b6b;
 }
 
 .feature-tag.animated {
-  background: #4ECDC420;
-  color: #4ECDC4;
+  background: #4ecdc420;
+  color: #4ecdc4;
 }
 
 .feature-tag.accessories {
-  background: #9980FA20;
-  color: #9980FA;
+  background: #9980fa20;
+  color: #9980fa;
 }
 
 /* Preset Actions */
@@ -291,9 +291,9 @@
 }
 
 .btn-edit:hover {
-  background: #FF9800;
+  background: #ff9800;
   color: white;
-  border-color: #FF9800;
+  border-color: #ff9800;
 }
 
 .btn-delete {
@@ -303,9 +303,9 @@
 }
 
 .btn-delete:hover {
-  background: #F44336;
+  background: #f44336;
   color: white;
-  border-color: #F44336;
+  border-color: #f44336;
 }
 
 /* Custom Preset Controls */
@@ -441,8 +441,12 @@ button:disabled {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -456,34 +460,34 @@ button:disabled {
   .presets-list {
     padding: 1rem;
   }
-  
+
   .preset-category-section {
     margin-bottom: 2rem;
   }
-  
+
   .preset-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .category-tab {
     min-width: 120px;
     padding: 0.75rem 1rem;
   }
-  
+
   .category-label {
     font-size: 0.8rem;
   }
-  
+
   .preset-actions {
     grid-template-columns: 1fr;
   }
-  
+
   .controls-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .controls-actions .btn-primary,
   .controls-actions .btn-secondary {
     justify-content: center;
@@ -494,35 +498,35 @@ button:disabled {
   .preset-categories {
     padding: 0;
   }
-  
+
   .category-tab {
     min-width: 100px;
     padding: 0.75rem 0.5rem;
     flex-direction: column;
     gap: 0.25rem;
   }
-  
+
   .category-icon {
     font-size: 1rem;
   }
-  
+
   .category-label {
     font-size: 0.7rem;
   }
-  
+
   .preset-card {
     padding: 1rem 0.75rem;
   }
-  
+
   .preset-preview {
     height: 60px;
   }
-  
+
   .preset-actions .btn-small {
     padding: 0.5rem 0.25rem;
     font-size: 0.75rem;
   }
-  
+
   .custom-preset-controls {
     padding: 1rem;
   }
@@ -537,11 +541,11 @@ button:disabled {
   .btn-small {
     transition: none !important;
   }
-  
+
   .preset-card:hover {
     transform: none;
   }
-  
+
   .loading-spinner {
     animation: none;
   }
@@ -552,17 +556,17 @@ button:disabled {
   .customization-presets {
     border-width: 2px;
   }
-  
+
   .preset-card {
     border-width: 2px;
   }
-  
+
   .btn-primary,
   .btn-secondary,
   .btn-small {
     border: 2px solid currentColor;
   }
-  
+
   .feature-tag {
     border: 1px solid currentColor;
   }
@@ -578,8 +582,8 @@ button:disabled {
     --text-secondary: #a0a0a0;
     --text-heading: #ffffff;
     --border-color: #404040;
-    --accent-primary: #4A90E2;
-    --accent-primary-hover: #357ABD;
+    --accent-primary: #4a90e2;
+    --accent-primary-hover: #357abd;
     --accent-primary-alpha: rgba(74, 144, 226, 0.2);
     --accent-primary-light: rgba(74, 144, 226, 0.5);
   }
@@ -591,17 +595,17 @@ button:disabled {
     background: white;
     border: 1px solid #ccc;
   }
-  
+
   .preset-card {
     break-inside: avoid;
     border: 1px solid #ccc;
     background: white;
   }
-  
+
   .preset-actions {
     display: none;
   }
-  
+
   .custom-preset-controls {
     display: none;
   }

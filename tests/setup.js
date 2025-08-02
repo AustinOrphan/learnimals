@@ -10,14 +10,14 @@ afterEach(() => {
   // Clear DOM
   document.body.innerHTML = '';
   document.head.innerHTML = '';
-  
+
   // Clear all mocks
   vi.clearAllMocks();
-  
+
   // Clear local storage
   localStorage.clear();
   sessionStorage.clear();
-  
+
   // Reset any global state
   if (global.window) {
     delete global.window.LEARNIMALS_LOG_LEVEL;
@@ -85,7 +85,7 @@ global.TestUtils = {
     const event = new Event(eventType, {
       bubbles: true,
       cancelable: true,
-      ...eventOptions
+      ...eventOptions,
     });
     element.dispatchEvent(event);
   },
@@ -104,24 +104,24 @@ global.TestUtils = {
         pathname: '/',
         search: '',
         hash: '',
-        ...additional
-      }
+        ...additional,
+      },
     };
-  }
+  },
 };
 
 // Mock IntersectionObserver (not available in jsdom)
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn()
+  disconnect: vi.fn(),
 }));
 
 // Mock ResizeObserver (not available in jsdom)
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn()
+  disconnect: vi.fn(),
 }));
 
 // Mock matchMedia (not available in jsdom)
@@ -133,8 +133,8 @@ Object.defineProperty(window, 'matchMedia', {
     onchange: null,
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
-  }))
+    dispatchEvent: vi.fn(),
+  })),
 });
 
 // Mock console methods for testing
@@ -144,7 +144,7 @@ global.console = {
   warn: vi.fn(),
   error: vi.fn(),
   info: vi.fn(),
-  debug: vi.fn()
+  debug: vi.fn(),
 };
 
 // Suppress console output during tests unless explicitly needed
@@ -166,44 +166,44 @@ global.fetch = vi.fn();
 Object.defineProperty(window, 'localStorage', {
   value: {
     store: {},
-    getItem: vi.fn(function(key) {
+    getItem: vi.fn(function (key) {
       return this.store[key] || null;
     }),
-    setItem: vi.fn(function(key, value) {
+    setItem: vi.fn(function (key, value) {
       this.store[key] = String(value);
     }),
-    removeItem: vi.fn(function(key) {
+    removeItem: vi.fn(function (key) {
       delete this.store[key];
     }),
-    clear: vi.fn(function() {
+    clear: vi.fn(function () {
       this.store = {};
-    })
+    }),
   },
-  writable: true
+  writable: true,
 });
 
 Object.defineProperty(window, 'sessionStorage', {
   value: {
     store: {},
-    getItem: vi.fn(function(key) {
+    getItem: vi.fn(function (key) {
       return this.store[key] || null;
     }),
-    setItem: vi.fn(function(key, value) {
+    setItem: vi.fn(function (key, value) {
       this.store[key] = String(value);
     }),
-    removeItem: vi.fn(function(key) {
+    removeItem: vi.fn(function (key) {
       delete this.store[key];
     }),
-    clear: vi.fn(function() {
+    clear: vi.fn(function () {
       this.store = {};
-    })
+    }),
   },
-  writable: true
+  writable: true,
 });
 
 // Mock CSS.supports
 global.CSS = {
-  supports: vi.fn(() => true)
+  supports: vi.fn(() => true),
 };
 
 // Mock BaseComponent for component tests

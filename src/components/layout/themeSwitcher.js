@@ -29,7 +29,7 @@ class ThemeSwitcher {
     }
 
     // Close menu when clicking elsewhere
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       if (
         this.isMenuOpen &&
         !e.target.closest(`#${this.themeMenuId}`) &&
@@ -40,7 +40,7 @@ class ThemeSwitcher {
     });
 
     // Keyboard accessibility
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && this.isMenuOpen) {
         this.closeMenu();
       }
@@ -71,7 +71,7 @@ class ThemeSwitcher {
     themeButton.setAttribute('aria-expanded', 'false');
     themeButton.setAttribute('aria-controls', this.themeMenuId);
     themeButton.innerHTML = ''; // Empty button for background only
-    
+
     // Create separate emoji overlay that won't be affected by filters
     const emojiOverlay = document.createElement('span');
     emojiOverlay.className = 'theme-emoji-overlay';
@@ -119,16 +119,11 @@ class ThemeSwitcher {
 
     let themeDefinitions = THEME_DEFINITIONS;
     try {
-      if (
-        window.themeManager &&
-        typeof window.themeManager.getAvailableThemes === 'function'
-      ) {
+      if (window.themeManager && typeof window.themeManager.getAvailableThemes === 'function') {
         const managerThemes = window.themeManager.getAvailableThemes();
         if (Array.isArray(managerThemes) && managerThemes.length > 0) {
           // Filter theme definitions to only include available themes
-          themeDefinitions = THEME_DEFINITIONS.filter((def) =>
-            managerThemes.includes(def.id),
-          );
+          themeDefinitions = THEME_DEFINITIONS.filter(def => managerThemes.includes(def.id));
         }
       }
     } catch (error) {
@@ -136,7 +131,7 @@ class ThemeSwitcher {
     }
 
     // Create a button for each theme
-    themeDefinitions.forEach((themeDef) => {
+    themeDefinitions.forEach(themeDef => {
       const themeButton = document.createElement('button');
       themeButton.className = 'theme-option';
       themeButton.setAttribute('data-theme', themeDef.id);
@@ -149,10 +144,7 @@ class ThemeSwitcher {
       // Add event listener to change theme
       themeButton.addEventListener('click', () => {
         try {
-          if (
-            window.themeManager &&
-            typeof window.themeManager.setTheme === 'function'
-          ) {
+          if (window.themeManager && typeof window.themeManager.setTheme === 'function') {
             window.themeManager.setTheme(themeDef.id);
           } else {
             // Fallback implementation
@@ -220,10 +212,7 @@ class ThemeSwitcher {
     let currentMode = 'light';
 
     try {
-      if (
-        window.themeManager &&
-        typeof window.themeManager.getCurrentTheme === 'function'
-      ) {
+      if (window.themeManager && typeof window.themeManager.getCurrentTheme === 'function') {
         const themeInfo = window.themeManager.getCurrentTheme();
         currentTheme = themeInfo.name;
         currentMode = themeInfo.mode;
@@ -238,9 +227,7 @@ class ThemeSwitcher {
 
         if (savedThemeMode) {
           currentMode = savedThemeMode;
-        } else if (
-          document.documentElement.getAttribute('data-theme') === 'night'
-        ) {
+        } else if (document.documentElement.getAttribute('data-theme') === 'night') {
           currentMode = 'dark';
         }
       }
@@ -250,7 +237,7 @@ class ThemeSwitcher {
 
     // Update theme buttons
     const themeButtons = document.querySelectorAll('.theme-option');
-    themeButtons.forEach((button) => {
+    themeButtons.forEach(button => {
       const theme = button.getAttribute('data-theme');
       if (theme === currentTheme) {
         button.classList.add('active');
@@ -267,7 +254,7 @@ class ThemeSwitcher {
 
   getThemeEmoji(theme) {
     // Use THEME_DEFINITIONS from registry to get the icon
-    const themeDef = THEME_DEFINITIONS.find((t) => t.id === theme);
+    const themeDef = THEME_DEFINITIONS.find(t => t.id === theme);
     return themeDef ? themeDef.icon : '🎨';
   }
 
@@ -279,10 +266,7 @@ class ThemeSwitcher {
   toggleTheme() {
     let newMode;
 
-    if (
-      window.themeManager &&
-      typeof window.themeManager.toggleMode === 'function'
-    ) {
+    if (window.themeManager && typeof window.themeManager.toggleMode === 'function') {
       newMode = window.themeManager.toggleMode();
     } else {
       const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -302,16 +286,10 @@ class ThemeSwitcher {
   updateToggleButtons(mode) {
     // Get current mode if not provided
     if (!mode) {
-      if (
-        window.themeManager &&
-        typeof window.themeManager.getCurrentTheme === 'function'
-      ) {
+      if (window.themeManager && typeof window.themeManager.getCurrentTheme === 'function') {
         mode = window.themeManager.getCurrentTheme().mode;
       } else {
-        mode =
-          document.documentElement.getAttribute('data-theme') === 'night'
-            ? 'dark'
-            : 'light';
+        mode = document.documentElement.getAttribute('data-theme') === 'night' ? 'dark' : 'light';
       }
     }
 
@@ -319,13 +297,8 @@ class ThemeSwitcher {
     const modeButton = document.getElementById(this.modeToggleId);
     if (modeButton) {
       modeButton.innerHTML =
-        mode === 'dark'
-          ? '<span class="mode-icon">☀️</span>'
-          : '<span class="mode-icon">🌙</span>';
-      modeButton.setAttribute(
-        'aria-label',
-        `Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`,
-      );
+        mode === 'dark' ? '<span class="mode-icon">☀️</span>' : '<span class="mode-icon">🌙</span>';
+      modeButton.setAttribute('aria-label', `Switch to ${mode === 'dark' ? 'light' : 'dark'} mode`);
     }
   }
 }

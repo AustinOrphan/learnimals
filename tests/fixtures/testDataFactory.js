@@ -4,8 +4,9 @@
  */
 
 // Utility functions for generating test data
-const generateId = (prefix = 'test') => `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-const randomChoice = (array) => array[Math.floor(Math.random() * array.length)];
+const generateId = (prefix = 'test') =>
+  `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+const randomChoice = array => array[Math.floor(Math.random() * array.length)];
 const randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const randomDate = (start = new Date(2024, 0, 1), end = new Date()) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -18,9 +19,26 @@ export const CharacterFactory = {
     name: randomChoice(['Max', 'Bella', 'Charlie', 'Luna', 'Cooper', 'Ruby', 'Oliver', 'Zoe']),
     species: {
       primary: randomChoice(['cat', 'dog', 'bird', 'rabbit', 'hamster']),
-      secondary: null
+      secondary: null,
     },
     favoriteColor: randomChoice(['blue', 'red', 'green', 'purple', 'orange', 'pink', 'yellow']),
+    appearance: {
+      colors: {
+        primary: randomChoice(['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444']),
+        secondary: randomChoice(['#1E40AF', '#047857', '#D97706', '#7C3AED', '#DC2626']),
+        accent: randomChoice(['#60A5FA', '#34D399', '#FBBF24', '#A78BFA', '#F87171']),
+      },
+      accessories: randomChoice([
+        [],
+        ['hat'],
+        ['glasses'],
+        ['bow-tie'],
+        ['hat', 'glasses'],
+        ['scarf', 'hat'],
+      ]),
+      pattern: randomChoice(['solid', 'stripes', 'spots', 'polka-dots']),
+      size: randomChoice(['small', 'medium', 'large']),
+    },
     customizations: {
       accessories: randomChoice([
         [],
@@ -28,10 +46,10 @@ export const CharacterFactory = {
         ['glasses'],
         ['bow-tie'],
         ['hat', 'glasses'],
-        ['scarf', 'hat']
+        ['scarf', 'hat'],
       ]),
       pattern: randomChoice(['solid', 'stripes', 'spots', 'polka-dots']),
-      size: randomChoice(['small', 'medium', 'large'])
+      size: randomChoice(['small', 'medium', 'large']),
     },
     personality: {
       traits: randomChoice([
@@ -39,20 +57,27 @@ export const CharacterFactory = {
         ['brave', 'adventurous'],
         ['calm', 'thoughtful'],
         ['energetic', 'playful'],
-        ['creative', 'artistic']
+        ['creative', 'artistic'],
       ]),
       favoriteSubjects: randomChoice([
         ['math'],
         ['science'],
         ['math', 'science'],
         ['reading', 'art'],
-        ['coding', 'math']
-      ])
+        ['coding', 'math'],
+      ]),
+    },
+    stats: {
+      level: randomNumber(1, 10),
+      xp: randomNumber(0, 5000),
+      totalScore: randomNumber(100, 10000),
+      gamesPlayed: randomNumber(1, 50),
+      timeSpent: randomNumber(300, 18000), // 5 minutes to 5 hours
     },
     createdAt: randomDate().toISOString(),
     lastModified: new Date().toISOString(),
     version: '2.0',
-    ...overrides
+    ...overrides,
   }),
 
   createBasic: (name = 'TestChar', species = 'cat') => ({
@@ -61,7 +86,7 @@ export const CharacterFactory = {
     species: { primary: species, secondary: null },
     favoriteColor: 'blue',
     createdAt: new Date().toISOString(),
-    version: '2.0'
+    version: '2.0',
   }),
 
   createWithProgress: (overrides = {}) => {
@@ -76,28 +101,67 @@ export const CharacterFactory = {
         favoriteGames: randomChoice([
           ['bubble-pop'],
           ['word-scramble', 'bubble-pop'],
-          ['element-match', 'number-line-jump']
-        ])
+          ['element-match', 'number-line-jump'],
+        ]),
       },
       achievements: randomChoice([
         [],
         ['first_steps'],
         ['first_steps', 'math_explorer'],
-        ['first_steps', 'science_lover', 'high_scorer']
-      ])
+        ['first_steps', 'science_lover', 'high_scorer'],
+      ]),
     };
   },
 
   createBatch: (count = 5) => {
-    return Array.from({ length: count }, () => CharacterFactory.create());
-  }
+    // Pre-allocate array and reuse template for performance
+    const template = CharacterFactory.create();
+    const batch = new Array(count);
+    for (let i = 0; i < count; i++) {
+      batch[i] = { ...template, id: generateId('char') };
+    }
+    return batch;
+  },
+
+  createMinimal: (overrides = {}) => ({
+    id: generateId('char'),
+    name: 'Test Character',
+    species: { primary: 'cat', secondary: null },
+    favoriteColor: 'blue',
+    appearance: {
+      colors: {
+        primary: '#3B82F6',
+        secondary: '#1E40AF',
+        accent: '#60A5FA',
+      },
+      accessories: [],
+      pattern: 'solid',
+      size: 'medium',
+    },
+    stats: {
+      level: 1,
+      xp: 0,
+      totalScore: 0,
+      gamesPlayed: 0,
+      timeSpent: 0,
+    },
+    createdAt: new Date().toISOString(),
+    version: '2.0',
+    ...overrides,
+  }),
 };
 
 // Game Test Data Factory
 export const GameFactory = {
   create: (overrides = {}) => ({
     id: generateId('game'),
-    name: randomChoice(['Bubble Pop', 'Word Scramble', 'Element Match', 'Number Line Jump', 'Color Palette']),
+    name: randomChoice([
+      'Bubble Pop',
+      'Word Scramble',
+      'Element Match',
+      'Number Line Jump',
+      'Color Palette',
+    ]),
     type: randomChoice(['arcade', 'puzzle', 'memory', 'educational', 'creative']),
     subject: randomChoice(['math', 'science', 'reading', 'art', 'coding']),
     difficulty: randomChoice(['easy', 'medium', 'hard']),
@@ -105,16 +169,39 @@ export const GameFactory = {
       timeLimit: randomChoice([30, 60, 90, 120]), // seconds
       maxLives: randomChoice([3, 5, null]),
       scoreMultiplier: randomChoice([1, 1.5, 2]),
-      powerUpsEnabled: randomChoice([true, false])
+      powerUpsEnabled: randomChoice([true, false]),
     },
     assets: {
       images: [`/images/games/${generateId('img')}.png`],
       sounds: [`/audio/games/${generateId('sound')}.mp3`],
-      sprites: [`/sprites/${generateId('sprite')}.json`]
+      sprites: [`/sprites/${generateId('sprite')}.json`],
     },
     createdAt: randomDate().toISOString(),
     version: '1.0',
-    ...overrides
+    ...overrides,
+  }),
+
+  createGameSession: (overrides = {}) => ({
+    sessionId: generateId('session'),
+    gameId: overrides.gameId || generateId('game'),
+    characterId: overrides.characterId || generateId('char'),
+    playerId: overrides.playerId || generateId('player'),
+    startTime: Date.now(),
+    endTime: null,
+    state: 'initialized',
+    score: 0,
+    level: 1,
+    timeElapsed: 0,
+    moves: 0,
+    accuracy: 100,
+    powerUpsUsed: [],
+    achievements: [],
+    metadata: {
+      browser: 'Chrome',
+      device: 'desktop',
+      viewport: '1920x1080',
+    },
+    ...overrides,
   }),
 
   createSession: (gameId = null, playerId = null, overrides = {}) => ({
@@ -134,9 +221,9 @@ export const GameFactory = {
     metadata: {
       browser: randomChoice(['Chrome', 'Firefox', 'Safari', 'Edge']),
       device: randomChoice(['desktop', 'tablet', 'mobile']),
-      viewport: randomChoice(['1920x1080', '768x1024', '375x667'])
+      viewport: randomChoice(['1920x1080', '768x1024', '375x667']),
     },
-    ...overrides
+    ...overrides,
   }),
 
   createLeaderboard: (gameId, count = 10) => {
@@ -144,98 +231,114 @@ export const GameFactory = {
       rank: index + 1,
       gameId,
       playerName: randomChoice(['Alex', 'Sam', 'Jordan', 'Casey', 'Riley', 'Taylor']),
-      score: randomNumber(1000, 5000) - (index * 100), // Decreasing scores
+      score: randomNumber(1000, 5000) - index * 100, // Decreasing scores
       level: randomNumber(1, 10),
       timeCompleted: randomNumber(30, 300),
       achievements: randomChoice([[], ['speed_run'], ['perfect_game', 'high_scorer']]),
-      playedAt: randomDate().toISOString()
+      playedAt: randomDate().toISOString(),
     }));
-  }
+  },
 };
 
-// Progress Test Data Factory
+// Progress Test Data Factory - optimized for performance
 export const ProgressFactory = {
   create: (overrides = {}) => ({
     userId: generateId('user'),
     subjects: {
       math: {
-        totalTime: randomNumber(600, 7200), // 10 minutes to 2 hours
-        activitiesCompleted: randomNumber(0, 20),
-        gamesPlayed: randomNumber(0, 30),
-        averageScore: randomNumber(300, 800),
-        highestScore: randomNumber(800, 2000),
-        lastActivity: randomDate().toISOString(),
-        activities: Array.from({ length: randomNumber(1, 5) }, () => ({
-          name: randomChoice(['bubble-pop', 'number-line-jump', 'place-value']),
-          score: randomNumber(200, 1000),
-          timeSpent: randomNumber(60, 600),
-          completedAt: randomDate().toISOString(),
-          accuracy: randomNumber(70, 100)
-        }))
+        totalTime: 1200,
+        activitiesCompleted: 10,
+        gamesPlayed: 15,
+        averageScore: 500,
+        highestScore: 1000,
+        lastActivity: fixedDate.toISOString(),
+        activities: [
+          {
+            name: 'bubble-pop',
+            score: 500,
+            timeSpent: 120,
+            completedAt: fixedDate.toISOString(),
+            accuracy: 85,
+          },
+        ],
       },
       science: {
-        totalTime: randomNumber(300, 5400),
-        activitiesCompleted: randomNumber(0, 15),
-        gamesPlayed: randomNumber(0, 25),
-        averageScore: randomNumber(250, 750),
-        highestScore: randomNumber(700, 1800),
-        lastActivity: randomDate().toISOString(),
-        activities: Array.from({ length: randomNumber(1, 4) }, () => ({
-          name: randomChoice(['element-match', 'periodic-table', 'chemistry-lab']),
-          score: randomNumber(150, 900),
-          timeSpent: randomNumber(90, 500),
-          completedAt: randomDate().toISOString(),
-          accuracy: randomNumber(65, 95)
-        }))
-      }
+        totalTime: 900,
+        activitiesCompleted: 8,
+        gamesPlayed: 12,
+        averageScore: 450,
+        highestScore: 900,
+        lastActivity: fixedDate.toISOString(),
+        activities: [
+          {
+            name: 'element-match',
+            score: 450,
+            timeSpent: 100,
+            completedAt: fixedDate.toISOString(),
+            accuracy: 80,
+          },
+        ],
+      },
     },
     overall: {
-      totalScore: randomNumber(1000, 15000),
-      totalTime: randomNumber(1800, 25200), // 30 minutes to 7 hours
-      totalActivities: randomNumber(5, 50),
-      level: randomNumber(1, 10),
-      xp: randomNumber(500, 8000),
-      completionRate: randomNumber(25, 95) // percentage
+      totalScore: 5000,
+      totalTime: 3600,
+      totalActivities: 25,
+      level: 5,
+      xp: 2500,
+      completionRate: 75,
     },
     streaks: {
-      current: randomNumber(0, 15),
-      longest: randomNumber(5, 30),
-      lastActivity: randomDate().toISOString(),
-      history: Array.from({ length: 7 }, (_, index) => ({
-        date: new Date(Date.now() - (index * 24 * 60 * 60 * 1000)).toISOString().split('T')[0],
-        activities: randomNumber(0, 5),
-        timeSpent: randomNumber(0, 3600)
-      }))
+      current: 5,
+      longest: 10,
+      lastActivity: fixedDate.toISOString(),
+      history: [{ date: '2024-01-15', activities: 2, timeSpent: 600 }],
     },
-    lastUpdated: new Date().toISOString(),
-    ...overrides
+    lastUpdated: fixedDate.toISOString(),
+    ...overrides,
   }),
 
   createAchievement: (overrides = {}) => ({
     id: generateId('achievement'),
-    name: randomChoice(['First Steps', 'Math Explorer', 'Science Lover', 'High Scorer', 'Speed Demon']),
+    name: randomChoice([
+      'First Steps',
+      'Math Explorer',
+      'Science Lover',
+      'High Scorer',
+      'Speed Demon',
+    ]),
     description: 'Complete your first activity',
     category: randomChoice(['milestone', 'skill', 'social', 'special']),
     criteria: {
-      type: randomChoice(['activities_completed', 'score_achieved', 'time_spent', 'streak_maintained']),
+      type: randomChoice([
+        'activities_completed',
+        'score_achieved',
+        'time_spent',
+        'streak_maintained',
+      ]),
       value: randomNumber(1, 100),
-      subject: randomChoice([null, 'math', 'science', 'reading'])
+      subject: randomChoice([null, 'math', 'science', 'reading']),
     },
     reward: {
       xp: randomNumber(50, 500),
       badge: randomChoice(['beginner', 'explorer', 'master', 'legend']),
-      unlockables: randomChoice([[], ['new_character'], ['special_theme']])
+      unlockables: randomChoice([[], ['new_character'], ['special_theme']]),
     },
     rarity: randomChoice(['common', 'uncommon', 'rare', 'epic', 'legendary']),
     unlockedAt: randomChoice([null, randomDate().toISOString()]),
     progress: randomNumber(0, 100), // percentage
-    ...overrides
+    ...overrides,
   }),
 
   createGoal: (overrides = {}) => ({
     id: generateId('goal'),
     type: randomChoice(['score', 'time', 'activities', 'streak']),
-    title: randomChoice(['Score Master', 'Study Marathon', 'Activity Explorer', 'Consistency King']),
+    title: randomChoice([
+      'Score Master',
+      'Study Marathon',
+      'Activity Explorer',
+      'Consistency King',
+    ]),
     description: 'Reach your learning target',
     target: randomNumber(100, 10000),
     current: randomNumber(0, 5000),
@@ -245,37 +348,119 @@ export const ProgressFactory = {
     reward: {
       xp: randomNumber(100, 1000),
       badge: randomChoice(['goal_crusher', 'determined', 'focused']),
-      bonus: randomChoice([null, 'double_xp_weekend', 'new_game_unlock'])
+      bonus: randomChoice([null, 'double_xp_weekend', 'new_game_unlock']),
     },
-    ...overrides
-  })
+    ...overrides,
+  }),
+
+  createUserProgress: (overrides = {}) => ({
+    userId: generateId('user'),
+    username: randomChoice(['TestUser', 'PlayerOne', 'Learner123', 'StudentA']),
+    level: randomNumber(1, 20),
+    xp: randomNumber(0, 50000),
+    totalScore: randomNumber(1000, 100000),
+    totalTime: randomNumber(3600, 360000), // 1 hour to 100 hours in seconds
+    gamesPlayed: randomNumber(10, 500),
+    activitiesCompleted: randomNumber(5, 200),
+    achievements: randomChoice([
+      [],
+      ['first_steps'],
+      ['first_steps', 'math_explorer'],
+      ['first_steps', 'science_lover', 'high_scorer'],
+      ['speedster', 'perfectionist', 'explorer', 'master'],
+    ]),
+    currentStreak: randomNumber(0, 30),
+    longestStreak: randomNumber(5, 60),
+    subjects: {
+      math: {
+        level: randomNumber(1, 15),
+        xp: randomNumber(0, 10000),
+        gamesPlayed: randomNumber(5, 100),
+        totalScore: randomNumber(500, 25000),
+        averageScore: randomNumber(200, 800),
+        bestScore: randomNumber(800, 2000),
+        timeSpent: randomNumber(1800, 72000),
+        lastPlayed: randomDate().toISOString(),
+      },
+      science: {
+        level: randomNumber(1, 15),
+        xp: randomNumber(0, 10000),
+        gamesPlayed: randomNumber(3, 80),
+        totalScore: randomNumber(300, 20000),
+        averageScore: randomNumber(150, 750),
+        bestScore: randomNumber(600, 1800),
+        timeSpent: randomNumber(1200, 54000),
+        lastPlayed: randomDate().toISOString(),
+      },
+      reading: {
+        level: randomNumber(1, 12),
+        xp: randomNumber(0, 8000),
+        gamesPlayed: randomNumber(2, 60),
+        totalScore: randomNumber(200, 15000),
+        averageScore: randomNumber(100, 600),
+        bestScore: randomNumber(500, 1500),
+        timeSpent: randomNumber(900, 36000),
+        lastPlayed: randomDate().toISOString(),
+      },
+    },
+    preferences: {
+      difficulty: randomChoice(['easy', 'medium', 'hard', 'adaptive']),
+      soundEnabled: randomChoice([true, false]),
+      animationsEnabled: randomChoice([true, false]),
+      notifications: randomChoice([true, false]),
+      autoSave: randomChoice([true, false]),
+    },
+    statistics: {
+      sessionCount: randomNumber(10, 200),
+      averageSessionTime: randomNumber(300, 1800), // 5-30 minutes
+      favoriteGame: randomChoice([
+        'bubble-pop',
+        'word-scramble',
+        'element-match',
+        'number-line-jump',
+      ]),
+      favoriteSubject: randomChoice(['math', 'science', 'reading', 'art']),
+      peakPerformanceHour: randomNumber(8, 20), // 8 AM to 8 PM
+      weeklyGoalCompletion: randomNumber(0, 100), // percentage
+    },
+    createdAt: randomDate(new Date(2024, 0, 1)).toISOString(),
+    lastActive: randomDate().toISOString(),
+    ...overrides,
+  }),
 };
 
 // Theme Test Data Factory
 export const ThemeFactory = {
   create: (overrides = {}) => ({
     id: generateId('theme'),
-    name: randomChoice(['Ocean Blue', 'Forest Green', 'Sunset Orange', 'Royal Purple', 'Cosmic Dark']),
+    name: randomChoice([
+      'Ocean Blue',
+      'Forest Green',
+      'Sunset Orange',
+      'Royal Purple',
+      'Cosmic Dark',
+    ]),
+    type: randomChoice(['light', 'dark']),
     category: randomChoice(['nature', 'space', 'fantasy', 'minimalist', 'colorful']),
     colors: {
       primary: randomChoice(['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444']),
       secondary: randomChoice(['#1E40AF', '#047857', '#D97706', '#7C3AED', '#DC2626']),
       accent: randomChoice(['#60A5FA', '#34D399', '#FBBF24', '#A78BFA', '#F87171']),
       background: randomChoice(['#F8FAFC', '#F0FDF4', '#FFFBEB', '#FAF5FF', '#1F2937']),
-      text: randomChoice(['#1F2937', '#064E3B', '#92400E', '#581C87', '#F9FAFB'])
+      text: randomChoice(['#1F2937', '#064E3B', '#92400E', '#581C87', '#F9FAFB']),
     },
     properties: {
       darkMode: randomChoice([true, false]),
       animations: randomChoice([true, false]),
       patterns: randomChoice([null, 'dots', 'waves', 'geometric']),
-      fontFamily: randomChoice(['Inter', 'Roboto', 'Open Sans', 'Poppins'])
+      fontFamily: randomChoice(['Inter', 'Roboto', 'Open Sans', 'Poppins']),
     },
     availability: {
       free: randomChoice([true, false]),
       requiresLevel: randomChoice([null, 5, 10, 15]),
-      requiresAchievement: randomChoice([null, 'theme_collector', 'color_master'])
+      requiresAchievement: randomChoice([null, 'theme_collector', 'color_master']),
     },
-    ...overrides
+    ...overrides,
   }),
 
   createUserPreferences: (overrides = {}) => ({
@@ -288,10 +473,142 @@ export const ThemeFactory = {
     customizations: {
       backgroundImage: randomChoice([null, '/images/custom-bg.jpg']),
       accentColor: randomChoice([null, '#FF6B9D', '#4ECDC4']),
-      fontFamily: randomChoice([null, 'Comic Sans MS'])
+      fontFamily: randomChoice([null, 'Comic Sans MS']),
     },
-    ...overrides
-  })
+    ...overrides,
+  }),
+};
+
+// DOM Mock Utilities
+export const DOMUtils = {
+  setupElementMocks: () => {
+    // Mock getBoundingClientRect for all elements
+    if (!Element.prototype.getBoundingClientRect) {
+      Element.prototype.getBoundingClientRect = vi.fn().mockReturnValue({
+        width: 100,
+        height: 100,
+        top: 0,
+        left: 0,
+        bottom: 100,
+        right: 100,
+        x: 0,
+        y: 0,
+      });
+    }
+
+    // Mock scrollIntoView
+    if (!Element.prototype.scrollIntoView) {
+      Element.prototype.scrollIntoView = vi.fn();
+    }
+
+    // Mock focus and blur methods
+    if (!Element.prototype.focus) {
+      Element.prototype.focus = vi.fn();
+    }
+
+    if (!Element.prototype.blur) {
+      Element.prototype.blur = vi.fn();
+    }
+
+    // Mock click method
+    if (!Element.prototype.click) {
+      Element.prototype.click = vi.fn();
+    }
+
+    // Mock computedStyle
+    if (!window.getComputedStyle) {
+      window.getComputedStyle = vi.fn().mockReturnValue({
+        getPropertyValue: vi.fn().mockReturnValue(''),
+        visibility: 'visible',
+        display: 'block',
+        opacity: '1',
+      });
+    }
+
+    // Mock Canvas API
+    if (!HTMLCanvasElement.prototype.getContext) {
+      HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
+        fillRect: vi.fn(),
+        clearRect: vi.fn(),
+        getImageData: vi.fn().mockReturnValue({
+          data: new Array(4).fill(0),
+        }),
+        putImageData: vi.fn(),
+        createImageData: vi.fn().mockReturnValue({
+          data: new Array(4).fill(0),
+        }),
+        setTransform: vi.fn(),
+        drawImage: vi.fn(),
+        save: vi.fn(),
+        restore: vi.fn(),
+        beginPath: vi.fn(),
+        moveTo: vi.fn(),
+        lineTo: vi.fn(),
+        closePath: vi.fn(),
+        stroke: vi.fn(),
+        fill: vi.fn(),
+      });
+    }
+
+    if (!HTMLCanvasElement.prototype.toDataURL) {
+      HTMLCanvasElement.prototype.toDataURL = vi.fn().mockImplementation(type => {
+        if (type === 'image/webp') {
+          return 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==';
+        }
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+      });
+    }
+  },
+
+  createMockElement: (tagName = 'div', attributes = {}) => {
+    const element = document.createElement(tagName);
+    Object.entries(attributes).forEach(([key, value]) => {
+      if (key === 'textContent') {
+        element.textContent = value;
+      } else if (key === 'innerHTML') {
+        element.innerHTML = value;
+      } else {
+        element.setAttribute(key, value);
+      }
+    });
+    return element;
+  },
+};
+
+// Component Mock Data Factory
+export const ComponentMockData = {
+  modalData: {
+    title: 'Test Modal',
+    content: 'This is test modal content',
+    size: 'medium',
+    buttons: [
+      { text: 'OK', type: 'primary', action: 'confirm' },
+      { text: 'Cancel', type: 'secondary', action: 'cancel' },
+    ],
+    closeOnOverlay: true,
+    closeOnEscape: true,
+    onShow: null,
+    onHide: null,
+    onConfirm: null,
+    onCancel: null,
+  },
+
+  cardData: {
+    title: 'Test Card',
+    content: 'Test card content',
+    image: '/images/test-card.jpg',
+    actions: [{ text: 'Learn More', href: '/learn-more' }],
+  },
+
+  formData: {
+    fields: [
+      { name: 'username', type: 'text', label: 'Username', required: true },
+      { name: 'email', type: 'email', label: 'Email', required: true },
+      { name: 'password', type: 'password', label: 'Password', required: true },
+    ],
+    submitText: 'Submit',
+    cancelText: 'Cancel',
+  },
 };
 
 // Test Environment Factory
@@ -300,29 +617,29 @@ export const EnvironmentFactory = {
     userAgent: randomChoice([
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0'
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
     ]),
     viewport: {
       width: randomChoice([1920, 1366, 768, 375]),
-      height: randomChoice([1080, 768, 1024, 667])
+      height: randomChoice([1080, 768, 1024, 667]),
     },
     screen: {
       colorDepth: randomChoice([24, 32]),
-      pixelRatio: randomChoice([1, 1.5, 2, 3])
+      pixelRatio: randomChoice([1, 1.5, 2, 3]),
     },
     capabilities: {
       localStorage: true,
       sessionStorage: true,
       indexedDB: randomChoice([true, false]),
       webGL: randomChoice([true, false]),
-      touchSupport: randomChoice([true, false])
+      touchSupport: randomChoice([true, false]),
     },
     performance: {
       memory: randomChoice([4, 8, 16, 32]) * 1024 * 1024 * 1024, // GB in bytes
       cores: randomChoice([2, 4, 6, 8]),
-      connection: randomChoice(['slow-2g', '2g', '3g', '4g', 'wifi'])
+      connection: randomChoice(['slow-2g', '2g', '3g', '4g', 'wifi']),
     },
-    ...overrides
+    ...overrides,
   }),
 
   createTestSession: (overrides = {}) => ({
@@ -334,16 +651,16 @@ export const EnvironmentFactory = {
       timeout: randomNumber(5000, 30000),
       retries: randomNumber(0, 3),
       parallel: randomChoice([true, false]),
-      coverage: randomChoice([true, false])
+      coverage: randomChoice([true, false]),
     },
     metadata: {
       nodeVersion: randomChoice(['18.17.0', '20.5.0', '21.1.0']),
       vitestVersion: '1.6.0',
       os: randomChoice(['linux', 'darwin', 'win32']),
-      ci: randomChoice([true, false])
+      ci: randomChoice([true, false]),
     },
-    ...overrides
-  })
+    ...overrides,
+  }),
 };
 
 // Edge Cases and Error Scenarios Factory
@@ -352,7 +669,7 @@ export const EdgeCaseFactory = {
     // Missing required fields
     name: '',
     species: null,
-    favoriteColor: undefined
+    favoriteColor: undefined,
   }),
 
   createCorruptedData: () => ({
@@ -362,14 +679,14 @@ export const EdgeCaseFactory = {
     score: 'not_a_number',
     nested: {
       deeply: {
-        broken: undefined
-      }
-    }
+        broken: undefined,
+      },
+    },
   }),
 
   createMaliciousInput: () => ({
     xssAttempt: '<script>alert("XSS")</script>',
-    sqlInjection: "'; DROP TABLE users; --",
+    sqlInjection: '\'; DROP TABLE users; --',
     pathTraversal: '../../../etc/passwd',
     prototypePolutation: '__proto__.isAdmin',
     htmlInjection: '<img src="x" onerror="evil()" />',
@@ -377,7 +694,7 @@ export const EdgeCaseFactory = {
     jsonPayload: '{"__proto__": {"isAdmin": true}}',
     oversizedData: 'A'.repeat(1000000), // 1MB string
     unicodeExploit: '\u0000\u001F\uFEFF\uFFFE',
-    regexDos: '(a+)+$' // ReDoS pattern
+    regexDos: '(a+)+$', // ReDoS pattern
   }),
 
   createNetworkErrors: () => [
@@ -385,21 +702,26 @@ export const EdgeCaseFactory = {
     { type: 'connection', message: 'Connection refused', code: 'ECONNREFUSED' },
     { type: 'dns', message: 'DNS resolution failed', code: 'ENOTFOUND' },
     { type: 'ssl', message: 'SSL certificate error', code: 'CERT_UNTRUSTED' },
-    { type: 'cors', message: 'CORS policy violation', code: 'CORS_ERROR' }
+    { type: 'cors', message: 'CORS policy violation', code: 'CORS_ERROR' },
   ],
 
   createPerformanceStress: () => ({
-    largeDataset: Array.from({ length: 10000 }, (_, i) => CharacterFactory.create({ id: `stress_${i}` })),
-    deepNesting: Array.from({ length: 100 }, () => ({ nested: {} })).reduceRight((acc, obj) => ({ ...obj, nested: acc }), {}),
+    largeDataset: Array.from({ length: 10000 }, (_, i) =>
+      CharacterFactory.create({ id: `stress_${i}` })
+    ),
+    deepNesting: Array.from({ length: 100 }, () => ({ nested: {} })).reduceRight(
+      (acc, obj) => ({ ...obj, nested: acc }),
+      {}
+    ),
     memoryIntensive: {
       images: Array.from({ length: 50 }, () => 'data:image/png;base64,' + 'A'.repeat(100000)),
-      sounds: Array.from({ length: 20 }, () => 'data:audio/wav;base64,' + 'B'.repeat(500000))
+      sounds: Array.from({ length: 20 }, () => 'data:audio/wav;base64,' + 'B'.repeat(500000)),
     },
     cpuIntensive: {
       calculations: Array.from({ length: 1000000 }, (_, i) => Math.random() * i),
-      iterations: 1000000
-    }
-  })
+      iterations: 1000000,
+    },
+  }),
 };
 
 // Mock Data Generators
@@ -407,24 +729,24 @@ export const MockFactory = {
   localStorage: () => {
     const storage = new Map();
     return {
-      getItem: vi.fn((key) => storage.get(key) || null),
+      getItem: vi.fn(key => storage.get(key) || null),
       setItem: vi.fn((key, value) => storage.set(key, value)),
-      removeItem: vi.fn((key) => storage.delete(key)),
+      removeItem: vi.fn(key => storage.delete(key)),
       clear: vi.fn(() => storage.clear()),
       length: 0,
-      key: vi.fn()
+      key: vi.fn(),
     };
   },
 
   fetch: (responses = {}) => {
-    return vi.fn((url) => {
+    return vi.fn(url => {
       const response = responses[url] || { status: 200, json: () => Promise.resolve({}) };
       return Promise.resolve({
         ok: response.status < 400,
         status: response.status,
         json: () => Promise.resolve(response.data || {}),
         text: () => Promise.resolve(response.text || ''),
-        headers: new Map(Object.entries(response.headers || {}))
+        headers: new Map(Object.entries(response.headers || {})),
       });
     });
   },
@@ -447,13 +769,13 @@ export const MockFactory = {
     restore: vi.fn(),
     translate: vi.fn(),
     rotate: vi.fn(),
-    scale: vi.fn()
-  })
+    scale: vi.fn(),
+  }),
 };
 
 // Validation helpers
 export const ValidationHelpers = {
-  isValidCharacter: (character) => {
+  isValidCharacter: character => {
     return (
       character &&
       typeof character.name === 'string' &&
@@ -464,7 +786,7 @@ export const ValidationHelpers = {
     );
   },
 
-  isValidGameSession: (session) => {
+  isValidGameSession: session => {
     return (
       session &&
       typeof session.sessionId === 'string' &&
@@ -474,7 +796,7 @@ export const ValidationHelpers = {
     );
   },
 
-  isValidProgress: (progress) => {
+  isValidProgress: progress => {
     return (
       progress &&
       progress.overall &&
@@ -483,7 +805,7 @@ export const ValidationHelpers = {
       progress.subjects &&
       typeof progress.subjects === 'object'
     );
-  }
+  },
 };
 
 export default {
@@ -494,5 +816,5 @@ export default {
   EnvironmentFactory,
   EdgeCaseFactory,
   MockFactory,
-  ValidationHelpers
+  ValidationHelpers,
 };

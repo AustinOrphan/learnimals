@@ -1,210 +1,212 @@
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Word Scramble Game - Unscramble letters to spell words with Ruby the Rabbit!" />
     <title>Word Scramble Demo - GameSystem</title>
-    
+
     <!-- Base styles -->
     <link rel="stylesheet" href="/src/styles/base/styles.css" />
     <link rel="stylesheet" href="/src/styles/components/navbar.css" />
     <link rel="stylesheet" href="/src/styles/components/components.css" />
-    
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+      }
+
+      .demo-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .demo-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .demo-header h1 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .demo-header p {
+        color: #666;
+        font-size: 18px;
+      }
+
+      .demo-controls {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .control-group {
+        margin-bottom: 15px;
+      }
+
+      .control-group label {
+        display: inline-block;
+        width: 150px;
+        font-weight: bold;
+      }
+
+      .control-group select,
+      .control-group button {
+        padding: 8px 16px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      .control-group button {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+        border: none;
+        margin-left: 10px;
+      }
+
+      .control-group button:hover {
+        background-color: #45a049;
+      }
+
+      .game-area {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        min-height: 600px;
+        padding: 20px;
+      }
+
+      .status-message {
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .status-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .status-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      .loading-indicator {
+        text-align: center;
+        padding: 50px;
+        color: #666;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-        
-        .demo-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        100% {
+          transform: rotate(360deg);
         }
-        
-        .demo-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .demo-header h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .demo-header p {
-            color: #666;
-            font-size: 18px;
-        }
-        
-        .demo-controls {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        
-        .control-group {
-            margin-bottom: 15px;
-        }
-        
-        .control-group label {
-            display: inline-block;
-            width: 150px;
-            font-weight: bold;
-        }
-        
-        .control-group select,
-        .control-group button {
-            padding: 8px 16px;
-            font-size: 16px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        
-        .control-group button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            border: none;
-            margin-left: 10px;
-        }
-        
-        .control-group button:hover {
-            background-color: #45a049;
-        }
-        
-        .game-area {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            min-height: 600px;
-            padding: 20px;
-        }
-        
-        .status-message {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 16px;
-        }
-        
-        .status-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .status-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        
-        .loading-indicator {
-            text-align: center;
-            padding: 50px;
-            color: #666;
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .code-example {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
-            border-left: 4px solid #3498db;
-        }
-        
-        .code-example h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        
-        .code-example pre {
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-x: auto;
-        }
+      }
+
+      .code-example {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 20px;
+        border-left: 4px solid #3498db;
+      }
+
+      .code-example h3 {
+        margin-top: 0;
+        color: #333;
+      }
+
+      .code-example pre {
+        margin: 0;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-x: auto;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Dynamic navbar load -->
     <div id="navbar-placeholder"></div>
 
     <div class="demo-container">
-        <div class="demo-header">
-            <h1>🎮 GameSystem Demo: Word Scramble</h1>
-            <p>This demonstrates the new GameSystem loading Word Scramble with templates</p>
+      <div class="demo-header">
+        <h1>🎮 GameSystem Demo: Word Scramble</h1>
+        <p>This demonstrates the new GameSystem loading Word Scramble with templates</p>
+      </div>
+
+      <div class="demo-controls">
+        <h2>Game Controls</h2>
+        <div class="control-group">
+          <label for="template-select">Template:</label>
+          <select id="template-select">
+            <option value="game">Full Game Template</option>
+            <option value="minimal">Minimal Template</option>
+            <option value="none">No Template (Direct)</option>
+          </select>
         </div>
-        
-        <div class="demo-controls">
-            <h2>Game Controls</h2>
-            <div class="control-group">
-                <label for="template-select">Template:</label>
-                <select id="template-select">
-                    <option value="game">Full Game Template</option>
-                    <option value="minimal">Minimal Template</option>
-                    <option value="none">No Template (Direct)</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label for="difficulty-select">Difficulty:</label>
-                <select id="difficulty-select">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <button id="load-game-btn">Load Game</button>
-                <button id="destroy-game-btn" disabled>Destroy Game</button>
-                <button id="view-stats-btn">View System Stats</button>
-            </div>
+
+        <div class="control-group">
+          <label for="difficulty-select">Difficulty:</label>
+          <select id="difficulty-select">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
         </div>
-        
-        <div id="status-message" class="status-message status-info">
-            Ready to load Word Scramble game
+
+        <div class="control-group">
+          <button id="load-game-btn">Load Game</button>
+          <button id="destroy-game-btn" disabled>Destroy Game</button>
+          <button id="view-stats-btn">View System Stats</button>
         </div>
-        
-        <div class="game-area">
-            <div id="game-container">
-                <div class="loading-indicator">
-                    <p>Click "Load Game" to start the Word Scramble game using the GameSystem</p>
-                </div>
-            </div>
+      </div>
+
+      <div id="status-message" class="status-message status-info">Ready to load Word Scramble game</div>
+
+      <div class="game-area">
+        <div id="game-container">
+          <div class="loading-indicator">
+            <p>Click "Load Game" to start the Word Scramble game using the GameSystem</p>
+          </div>
         </div>
-        
-        <div class="code-example">
-            <h3>Code Example:</h3>
-            <pre><code>// Loading a game with the new GameSystem
+      </div>
+
+      <div class="code-example">
+        <h3>Code Example:</h3>
+        <pre><code>// Loading a game with the new GameSystem
 const gameInstance = await gameSystem.loadGame(
     'word-scramble',    // Game ID from registry
     'game-container',   // Container element ID
@@ -213,7 +215,7 @@ const gameInstance = await gameSystem.loadGame(
         template: 'game'
     }
 );</code></pre>
-        </div>
+      </div>
     </div>
 
     <!-- Core JavaScript -->
@@ -222,211 +224,204 @@ const gameInstance = await gameSystem.loadGame(
     <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
     <script defer src="/src/components/layout/navbarLoader.js"></script>
     <script defer src="/src/components/component-loader.js"></script>
-    
+
     <!-- GameSystem Demo Script -->
     <script type="module">
-        import gameSystem from '/src/utils/GameSystem.js';
-        
-        // Demo state
-        let currentGameId = null;
-        let isGameLoaded = false;
-        
-        // DOM elements
-        const loadBtn = document.getElementById('load-game-btn');
-        const destroyBtn = document.getElementById('destroy-game-btn');
-        const statsBtn = document.getElementById('view-stats-btn');
-        const templateSelect = document.getElementById('template-select');
-        const difficultySelect = document.getElementById('difficulty-select');
-        const statusMessage = document.getElementById('status-message');
-        const gameContainer = document.getElementById('game-container');
-        
-        // Status message helper
-        function showStatus(message, type = 'info') {
-            statusMessage.textContent = message;
-            statusMessage.className = `status-message status-${type}`;
+      import gameSystem from '/src/utils/GameSystem.js';
+
+      // Demo state
+      let currentGameId = null;
+      let isGameLoaded = false;
+
+      // DOM elements
+      const loadBtn = document.getElementById('load-game-btn');
+      const destroyBtn = document.getElementById('destroy-game-btn');
+      const statsBtn = document.getElementById('view-stats-btn');
+      const templateSelect = document.getElementById('template-select');
+      const difficultySelect = document.getElementById('difficulty-select');
+      const statusMessage = document.getElementById('status-message');
+      const gameContainer = document.getElementById('game-container');
+
+      // Status message helper
+      function showStatus(message, type = 'info') {
+        statusMessage.textContent = message;
+        statusMessage.className = `status-message status-${type}`;
+      }
+
+      // Initialize GameSystem when page loads
+      async function initializeDemo() {
+        try {
+          showStatus('Initializing GameSystem...', 'info');
+
+          if (!gameSystem.initialized) {
+            await gameSystem.init();
+          }
+
+          showStatus('GameSystem ready! You can now load the game.', 'success');
+
+          // Listen to GameSystem events
+          gameSystem.on('gameLoaded', data => {
+            console.log('Game loaded event:', data);
+            showStatus(`Game "${data.gameId}" loaded successfully!`, 'success');
+          });
+
+          gameSystem.on('gameError', data => {
+            console.error('Game error:', data);
+            showStatus(`Game error: ${data.error.message}`, 'error');
+          });
+
+          gameSystem.on('gameDestroyed', data => {
+            console.log('Game destroyed:', data);
+            showStatus(`Game "${data.gameId}" destroyed`, 'info');
+          });
+        } catch (error) {
+          console.error('Failed to initialize GameSystem:', error);
+          showStatus(`Initialization error: ${error.message}`, 'error');
         }
-        
-        // Initialize GameSystem when page loads
-        async function initializeDemo() {
-            try {
-                showStatus('Initializing GameSystem...', 'info');
-                
-                if (!gameSystem.initialized) {
-                    await gameSystem.init();
-                }
-                
-                showStatus('GameSystem ready! You can now load the game.', 'success');
-                
-                // Listen to GameSystem events
-                gameSystem.on('gameLoaded', (data) => {
-                    console.log('Game loaded event:', data);
-                    showStatus(`Game "${data.gameId}" loaded successfully!`, 'success');
-                });
-                
-                gameSystem.on('gameError', (data) => {
-                    console.error('Game error:', data);
-                    showStatus(`Game error: ${data.error.message}`, 'error');
-                });
-                
-                gameSystem.on('gameDestroyed', (data) => {
-                    console.log('Game destroyed:', data);
-                    showStatus(`Game "${data.gameId}" destroyed`, 'info');
-                });
-                
-            } catch (error) {
-                console.error('Failed to initialize GameSystem:', error);
-                showStatus(`Initialization error: ${error.message}`, 'error');
-            }
+      }
+
+      // Load game handler
+      async function loadGame() {
+        if (isGameLoaded) {
+          showStatus('Game is already loaded. Destroy it first to load again.', 'error');
+          return;
         }
-        
-        // Load game handler
-        async function loadGame() {
-            if (isGameLoaded) {
-                showStatus('Game is already loaded. Destroy it first to load again.', 'error');
-                return;
-            }
-            
-            try {
-                const template = templateSelect.value;
-                const difficulty = difficultySelect.value;
-                
-                showStatus('Loading Word Scramble game...', 'info');
-                
-                // Show loading spinner
-                gameContainer.innerHTML = `
+
+        try {
+          const template = templateSelect.value;
+          const difficulty = difficultySelect.value;
+
+          showStatus('Loading Word Scramble game...', 'info');
+
+          // Show loading spinner
+          gameContainer.innerHTML = `
                     <div class="loading-indicator">
                         <div class="loading-spinner"></div>
                         <p>Loading game with ${template} template...</p>
                     </div>
                 `;
-                
-                // Configure game options
-                const gameOptions = {
-                    difficulty: difficulty,
-                    template: template
-                };
-                
-                // Update game registry to use selected template
-                const gameConfig = gameSystem.getGameInfo('word-scramble');
-                if (gameConfig) {
-                    gameConfig.template = template;
-                }
-                
-                // Load the game using GameSystem
-                const gameInstance = await gameSystem.loadGame(
-                    'word-scramble',
-                    'game-container',
-                    gameOptions
-                );
-                
-                currentGameId = 'word-scramble';
-                isGameLoaded = true;
-                
-                // Update UI
-                loadBtn.disabled = true;
-                destroyBtn.disabled = false;
-                templateSelect.disabled = true;
-                difficultySelect.disabled = true;
-                
-                // If using no template, we need to manually start the game
-                if (template === 'none') {
-                    // Clear container and let game render itself
-                    gameContainer.innerHTML = '';
-                    gameContainer.style.minHeight = '600px';
-                    
-                    // The game should auto-initialize since we're using BaseGame
-                    setTimeout(() => {
-                        if (gameInstance && typeof gameInstance.init === 'function') {
-                            gameInstance.init();
-                        }
-                    }, 100);
-                }
-                
-            } catch (error) {
-                console.error('Failed to load game:', error);
-                showStatus(`Failed to load game: ${error.message}`, 'error');
-                
-                // Reset state
-                isGameLoaded = false;
-                loadBtn.disabled = false;
-                destroyBtn.disabled = true;
-                templateSelect.disabled = false;
-                difficultySelect.disabled = false;
-                
-                // Show error in game area
-                gameContainer.innerHTML = `
+
+          // Configure game options
+          const gameOptions = {
+            difficulty: difficulty,
+            template: template,
+          };
+
+          // Update game registry to use selected template
+          const gameConfig = gameSystem.getGameInfo('word-scramble');
+          if (gameConfig) {
+            gameConfig.template = template;
+          }
+
+          // Load the game using GameSystem
+          const gameInstance = await gameSystem.loadGame('word-scramble', 'game-container', gameOptions);
+
+          currentGameId = 'word-scramble';
+          isGameLoaded = true;
+
+          // Update UI
+          loadBtn.disabled = true;
+          destroyBtn.disabled = false;
+          templateSelect.disabled = true;
+          difficultySelect.disabled = true;
+
+          // If using no template, we need to manually start the game
+          if (template === 'none') {
+            // Clear container and let game render itself
+            gameContainer.innerHTML = '';
+            gameContainer.style.minHeight = '600px';
+
+            // The game should auto-initialize since we're using BaseGame
+            setTimeout(() => {
+              if (gameInstance && typeof gameInstance.init === 'function') {
+                gameInstance.init();
+              }
+            }, 100);
+          }
+        } catch (error) {
+          console.error('Failed to load game:', error);
+          showStatus(`Failed to load game: ${error.message}`, 'error');
+
+          // Reset state
+          isGameLoaded = false;
+          loadBtn.disabled = false;
+          destroyBtn.disabled = true;
+          templateSelect.disabled = false;
+          difficultySelect.disabled = false;
+
+          // Show error in game area
+          gameContainer.innerHTML = `
                     <div class="loading-indicator">
                         <p style="color: #721c24;">Failed to load game. Check console for details.</p>
                     </div>
                 `;
-            }
         }
-        
-        // Destroy game handler
-        async function destroyGame() {
-            if (!isGameLoaded || !currentGameId) {
-                showStatus('No game is currently loaded', 'error');
-                return;
-            }
-            
-            try {
-                showStatus('Destroying game...', 'info');
-                
-                await gameSystem.destroyGame(currentGameId);
-                
-                // Clear game container
-                gameContainer.innerHTML = `
+      }
+
+      // Destroy game handler
+      async function destroyGame() {
+        if (!isGameLoaded || !currentGameId) {
+          showStatus('No game is currently loaded', 'error');
+          return;
+        }
+
+        try {
+          showStatus('Destroying game...', 'info');
+
+          await gameSystem.destroyGame(currentGameId);
+
+          // Clear game container
+          gameContainer.innerHTML = `
                     <div class="loading-indicator">
                         <p>Click "Load Game" to start the Word Scramble game using the GameSystem</p>
                     </div>
                 `;
-                
-                // Reset state
-                currentGameId = null;
-                isGameLoaded = false;
-                
-                // Update UI
-                loadBtn.disabled = false;
-                destroyBtn.disabled = true;
-                templateSelect.disabled = false;
-                difficultySelect.disabled = false;
-                
-            } catch (error) {
-                console.error('Failed to destroy game:', error);
-                showStatus(`Failed to destroy game: ${error.message}`, 'error');
-            }
+
+          // Reset state
+          currentGameId = null;
+          isGameLoaded = false;
+
+          // Update UI
+          loadBtn.disabled = false;
+          destroyBtn.disabled = true;
+          templateSelect.disabled = false;
+          difficultySelect.disabled = false;
+        } catch (error) {
+          console.error('Failed to destroy game:', error);
+          showStatus(`Failed to destroy game: ${error.message}`, 'error');
         }
-        
-        // View stats handler
-        function viewStats() {
-            const stats = gameSystem.getStats();
-            console.log('GameSystem Stats:', stats);
-            
-            const message = `
+      }
+
+      // View stats handler
+      function viewStats() {
+        const stats = gameSystem.getStats();
+        console.log('GameSystem Stats:', stats);
+
+        const message = `
                 GameSystem Stats:
                 - Registered Games: ${stats.registeredGames}
                 - Active Games: ${stats.activeGames}
                 - Initialized: ${stats.initialized}
                 - Games: ${stats.gamesList.join(', ')}
             `;
-            
-            alert(message);
+
+        alert(message);
+      }
+
+      // Attach event handlers
+      loadBtn.addEventListener('click', loadGame);
+      destroyBtn.addEventListener('click', destroyGame);
+      statsBtn.addEventListener('click', viewStats);
+
+      // Initialize demo on page load
+      document.addEventListener('DOMContentLoaded', initializeDemo);
+
+      // Handle page unload
+      window.addEventListener('beforeunload', () => {
+        if (isGameLoaded && currentGameId) {
+          gameSystem.destroyGame(currentGameId);
         }
-        
-        // Attach event handlers
-        loadBtn.addEventListener('click', loadGame);
-        destroyBtn.addEventListener('click', destroyGame);
-        statsBtn.addEventListener('click', viewStats);
-        
-        // Initialize demo on page load
-        document.addEventListener('DOMContentLoaded', initializeDemo);
-        
-        // Handle page unload
-        window.addEventListener('beforeunload', () => {
-            if (isGameLoaded && currentGameId) {
-                gameSystem.destroyGame(currentGameId);
-            }
-        });
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -8,27 +8,27 @@
  */
 export function formatDate(date, format = 'short') {
   if (!date) return '';
-  
+
   switch (format) {
   case 'short':
     return date.toLocaleDateString();
   case 'long':
-    return date.toLocaleDateString(undefined, { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   case 'time':
     return date.toLocaleTimeString();
   case 'full':
-    return date.toLocaleDateString(undefined, { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
+    return date.toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   default:
     return date.toLocaleDateString();
@@ -112,7 +112,7 @@ export function dispatchCustomEvent(eventName, detail = {}) {
  * @returns {boolean} - True if touch device
  */
 export function isTouchDevice() {
-  return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 }
 
 /**
@@ -132,7 +132,7 @@ export function isMobileDevice() {
 export function createCancellableTimeout(callback, delay) {
   const timeoutId = setTimeout(callback, delay);
   return {
-    clear: () => clearTimeout(timeoutId)
+    clear: () => clearTimeout(timeoutId),
   };
 }
 
@@ -161,11 +161,19 @@ export function lightenColor(color, percent) {
   const num = parseInt(color.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);
   const R = (num >> 16) + amt;
-  const G = (num >> 8 & 0x00FF) + amt;
-  const B = (num & 0x0000FF) + amt;
-  return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+  const G = ((num >> 8) & 0x00ff) + amt;
+  const B = (num & 0x0000ff) + amt;
+  return (
+    '#' +
+    (
+      0x1000000 +
+      (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+      (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+      (B < 255 ? (B < 1 ? 0 : B) : 255)
+    )
+      .toString(16)
+      .slice(1)
+  );
 }
 
 /**
@@ -178,11 +186,19 @@ export function darkenColor(color, percent) {
   const num = parseInt(color.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);
   const R = (num >> 16) - amt;
-  const G = (num >> 8 & 0x00FF) - amt;
-  const B = (num & 0x0000FF) - amt;
-  return '#' + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
-    (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
-    (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+  const G = ((num >> 8) & 0x00ff) - amt;
+  const B = (num & 0x0000ff) - amt;
+  return (
+    '#' +
+    (
+      0x1000000 +
+      (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+      (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+      (B > 255 ? 255 : B < 0 ? 0 : B)
+    )
+      .toString(16)
+      .slice(1)
+  );
 }
 
 /**
@@ -212,7 +228,7 @@ export function addFractions(num1, den1, num2, den2) {
   const gcd = getGCD(numerator, denominator);
   return {
     numerator: numerator / gcd,
-    denominator: denominator / gcd
+    denominator: denominator / gcd,
   };
 }
 
@@ -243,7 +259,7 @@ export function escapeHTML(text) {
   if (typeof text !== 'string') {
     return String(text || '');
   }
-  
+
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;

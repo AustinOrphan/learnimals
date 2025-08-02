@@ -30,8 +30,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* === DASHBOARD HEADER === */
@@ -1187,48 +1191,48 @@
   .dashboard-content {
     grid-template-columns: 1fr;
   }
-  
+
   .header-content {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .quick-stats {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .subjects-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .achievements-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .calendar-grid {
     grid-template-columns: repeat(7, 1fr);
     gap: 2px;
   }
-  
+
   .calendar-day {
     width: 32px;
     height: 32px;
     font-size: 0.7rem;
   }
-  
+
   .daily-chart {
     height: 100px;
     padding: 0.5rem;
   }
-  
+
   .summary-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .report-selector {
     flex-direction: column;
   }
-  
+
   .report-tab {
     border-radius: 4px;
     margin-bottom: 0.25rem;
@@ -1239,45 +1243,45 @@
   .progress-dashboard {
     padding: 0.5rem;
   }
-  
+
   .dashboard-header {
     padding: 1rem;
   }
-  
+
   .user-overview {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .quick-stats {
     grid-template-columns: 1fr;
   }
-  
+
   .achievement-categories {
     flex-direction: column;
   }
-  
+
   .category-btn {
     width: 100%;
     text-align: center;
   }
-  
+
   .goals-header {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .goal-header {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .goal-footer {
     flex-direction: column;
     gap: 0.5rem;
     align-items: stretch;
   }
-  
+
   .goal-actions {
     justify-content: space-between;
   }
@@ -1329,23 +1333,31 @@
 }
 
 /* Stagger animation delays */
-.achievement-card:nth-child(1) { animation-delay: 0.1s; }
-.achievement-card:nth-child(2) { animation-delay: 0.15s; }
-.achievement-card:nth-child(3) { animation-delay: 0.2s; }
-.achievement-card:nth-child(4) { animation-delay: 0.25s; }
+.achievement-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.achievement-card:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.achievement-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.achievement-card:nth-child(4) {
+  animation-delay: 0.25s;
+}
 
 /* === ACCESSIBILITY === */
 @media (prefers-reduced-motion: reduce) {
   .spinner {
     animation: none;
   }
-  
+
   .achievement-card,
   .goal-card,
   .subject-card {
     animation: none;
   }
-  
+
   .progress-fill {
     transition: none;
   }
@@ -1358,7 +1370,7 @@
   .subject-card {
     border-width: 3px;
   }
-  
+
   .progress-bar {
     border: 1px solid var(--text-primary);
   }
@@ -1379,7 +1391,7 @@
   .dashboard-section {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
-  
+
   .achievement-card:hover,
   .goal-card:hover,
   .subject-card:hover {

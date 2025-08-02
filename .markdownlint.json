@@ -1,0 +1,61 @@
+{
+  "default": true,
+  "MD003": { 
+    "style": "atx",
+    "comment": "Use ATX-style headers (# Header)"
+  },
+  "MD004": { 
+    "style": "dash",
+    "comment": "Use dashes for unordered lists"
+  },
+  "MD007": { 
+    "indent": 2,
+    "comment": "Use 2-space indentation for lists"
+  },
+  "MD013": { 
+    "line_length": 120,
+    "heading_line_length": 100,
+    "code_blocks": false,
+    "tables": false,
+    "comment": "Allow longer lines in docs, disable for code blocks and tables"
+  },
+  "MD024": { 
+    "allow_different_nesting": true,
+    "siblings_only": true,
+    "comment": "Allow duplicate headings if not siblings (e.g., in different ADRs)"
+  },
+  "MD025": {
+    "front_matter_title": "",
+    "comment": "Allow multiple top-level headings in docs"
+  },
+  "MD026": {
+    "punctuation": ".,;:!",
+    "comment": "No trailing punctuation in headings except ?"
+  },
+  "MD029": {
+    "style": "ordered",
+    "comment": "Use ordered numbering for ordered lists (1. 2. 3.)"
+  },
+  "MD033": { 
+    "allowed_elements": [
+      "details", "summary", "br", "sub", "sup", 
+      "code", "pre", "a", "img", "table", "thead", 
+      "tbody", "tr", "td", "th", "div", "span",
+      "kbd", "em", "strong"
+    ],
+    "comment": "Allow HTML elements commonly used in technical docs"
+  },
+  "MD041": false,
+  "MD046": {
+    "style": "fenced",
+    "comment": "Use fenced code blocks with backticks"
+  },
+  "MD049": {
+    "style": "underscore",
+    "comment": "Use underscores for italic emphasis"
+  },
+  "MD050": {
+    "style": "asterisk",
+    "comment": "Use asterisks for bold emphasis"
+  }
+}

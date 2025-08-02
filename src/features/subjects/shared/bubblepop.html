@@ -6,103 +6,87 @@
         <link rel="stylesheet" href="/src/styles/components/bubblepop.css" /> bubblepop.html -->
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Mango's Bubble Pop - Learnimals</title>
-        <link rel="stylesheet" href="/src/styles/base/styles.css" />
-        <link rel="stylesheet" href="/src/styles/components/navbar.css" />
-        <link rel="stylesheet" href="/src/styles/components/components.css" />
-        <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css" />
-        <link rel="stylesheet" href="/src/styles/components/base-component.css" />
-        <link rel="stylesheet" href="/src/styles/components/bubblepop.css" />
-        <script
-            type="module"
-            src="/src/features/games/bubble-pop/bubblepop.js"
-        ></script>
-    </head>
-    <body>
-        <div id="navbar-placeholder"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mango's Bubble Pop - Learnimals</title>
+    <link rel="stylesheet" href="/src/styles/base/styles.css" />
+    <link rel="stylesheet" href="/src/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/src/styles/components/components.css" />
+    <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css" />
+    <link rel="stylesheet" href="/src/styles/components/base-component.css" />
+    <link rel="stylesheet" href="/src/styles/components/bubblepop.css" />
+    <script type="module" src="/src/features/games/bubble-pop/bubblepop.js"></script>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
 
-        <main>
-            <section class="hero">
-                <h2>Mango’s Bubble Pop</h2>
-                <p>
-                    Pop the bubble with the correct answer before time runs out!
-                </p>
-                <div class="hero-image">
-                    <img
-                        src="/public/images/mango-swimming.png"
-                        alt="Mango the Shark"
-                    />
-                </div>
-            </section>
+    <main>
+      <section class="hero">
+        <h2>Mango’s Bubble Pop</h2>
+        <p>Pop the bubble with the correct answer before time runs out!</p>
+        <div class="hero-image">
+          <img src="/public/images/mango-swimming.png" alt="Mango the Shark" />
+        </div>
+      </section>
 
-            <section class="game-container">
-                <!-- Game elements will go here -->
-                <canvas id="gameCanvas"></canvas>
-                <div id="questionBox"></div>
-            </section>
+      <section class="game-container">
+        <!-- Game elements will go here -->
+        <canvas id="gameCanvas"></canvas>
+        <div id="questionBox"></div>
+      </section>
 
-            <script type="module">
-                import BubblePopGame from "/src/features/games/bubble-pop/bubblepop.js";
+      <script type="module">
+        import BubblePopGame from '/src/features/games/bubble-pop/bubblepop.js';
 
-                // Initialize the game when DOM is fully loaded or content is already available
-                if (document.readyState === "loading") {
-                    document.addEventListener("DOMContentLoaded", initGame);
-                } else {
-                    initGame();
-                }
+        // Initialize the game when DOM is fully loaded or content is already available
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initGame);
+        } else {
+          initGame();
+        }
 
-                function initGame() {
-                    // Create game instance and make available for debugging
-                    window.game = new BubblePopGame("gameCanvas");
+        function initGame() {
+          // Create game instance and make available for debugging
+          window.game = new BubblePopGame('gameCanvas');
 
-                    // Add event listeners for fullscreen mode if supported
-                    const canvasContainer =
-                        document.querySelector(".game-container");
-                    if (canvasContainer && document.fullscreenEnabled) {
-                        const fullscreenBtn = document.createElement("button");
-                        fullscreenBtn.className = "fullscreen-btn";
-                        fullscreenBtn.innerHTML = "⤢"; // Fullscreen icon
-                        fullscreenBtn.title = "Toggle fullscreen";
-                        fullscreenBtn.addEventListener("click", () => {
-                            if (!document.fullscreenElement) {
-                                canvasContainer
-                                    .requestFullscreen()
-                                    .catch((err) => {
-                                        console.log(
-                                            `Error attempting to enable fullscreen: ${err.message}`,
-                                        );
-                                    });
-                            } else {
-                                document.exitFullscreen();
-                            }
-                        });
-                        canvasContainer.appendChild(fullscreenBtn);
-                    }
-                }
-            </script>
-        </main>
+          // Add event listeners for fullscreen mode if supported
+          const canvasContainer = document.querySelector('.game-container');
+          if (canvasContainer && document.fullscreenEnabled) {
+            const fullscreenBtn = document.createElement('button');
+            fullscreenBtn.className = 'fullscreen-btn';
+            fullscreenBtn.innerHTML = '⤢'; // Fullscreen icon
+            fullscreenBtn.title = 'Toggle fullscreen';
+            fullscreenBtn.addEventListener('click', () => {
+              if (!document.fullscreenElement) {
+                canvasContainer.requestFullscreen().catch(err => {
+                  console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+              } else {
+                document.exitFullscreen();
+              }
+            });
+            canvasContainer.appendChild(fullscreenBtn);
+          }
+        }
+      </script>
+    </main>
 
-        <footer>
-            <p>&copy; 2025 Learnimals. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="/src/pages/about.html">About Us</a>
-                <a href="/src/pages/contact.html">Contact</a>
-                <a href="#" aria-label="Read our privacy policy">Privacy Policy</a>
-                <a href="/src/pages/profile.html">My Profile</a>
-            </div>
-        </footer>
+    <footer>
+      <p>&copy; 2025 Learnimals. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/src/pages/about.html">About Us</a>
+        <a href="/src/pages/contact.html">Contact</a>
+        <a href="#" aria-label="Read our privacy policy">Privacy Policy</a>
+        <a href="/src/pages/profile.html">My Profile</a>
+      </div>
+    </footer>
 
-        <!-- JS -->
-        <script defer type="module" src="/src/themeInitializer.js"></script>
-        <script type="module" src="/src/utils/themeManager.js"></script>
-        <script
-            type="module"
-            src="/src/components/layout/themeSwitcher.js"
-        ></script>
-        <script defer src="/src/components/layout/navbarLoader.js"></script>
-        <script defer src="/src/components/component-loader.js"></script>
-    </body>
+    <!-- JS -->
+    <script defer type="module" src="/src/themeInitializer.js"></script>
+    <script type="module" src="/src/utils/themeManager.js"></script>
+    <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
+    <script defer src="/src/components/layout/navbarLoader.js"></script>
+    <script defer src="/src/components/component-loader.js"></script>
+  </body>
 </html>

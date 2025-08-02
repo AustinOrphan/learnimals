@@ -77,7 +77,7 @@ export class PerformanceMonitor {
     this.measurements.set(name, {
       startTime: performance.now(),
       endTime: null,
-      duration: null
+      duration: null,
     });
   }
 
@@ -88,7 +88,7 @@ export class PerformanceMonitor {
    */
   end(name) {
     if (!this.isEnabled) return 0;
-    
+
     const measurement = this.measurements.get(name);
     if (!measurement) {
       console.warn(`No measurement started for: ${name}`);
@@ -97,7 +97,7 @@ export class PerformanceMonitor {
 
     measurement.endTime = performance.now();
     measurement.duration = measurement.endTime - measurement.startTime;
-    
+
     return measurement.duration;
   }
 
@@ -138,7 +138,7 @@ export class PerformanceMonitor {
    */
   logSummary() {
     if (!this.isEnabled) return;
-    
+
     console.group('Performance Summary');
     for (const [name, measurement] of this.measurements) {
       if (measurement.duration !== null) {
@@ -174,7 +174,7 @@ export class MemoryMonitor {
       timestamp: Date.now(),
       used: memory.usedJSHeapSize,
       total: memory.totalJSHeapSize,
-      limit: memory.jsHeapSizeLimit
+      limit: memory.jsHeapSizeLimit,
     };
 
     this.snapshots.push(snapshot);
@@ -199,7 +199,7 @@ export class MemoryMonitor {
     return {
       usedDiff: end.used - start.used,
       totalDiff: end.total - start.total,
-      timeDiff: end.timestamp - start.timestamp
+      timeDiff: end.timestamp - start.timestamp,
     };
   }
 
@@ -250,23 +250,23 @@ export class FPSMonitor {
    */
   start() {
     if (this.isRunning) return;
-    
+
     this.isRunning = true;
     this.frames = [];
-    
+
     const tick = () => {
       this.frames.push(performance.now());
-      
+
       // Keep only last 60 frames for calculation
       if (this.frames.length > 60) {
         this.frames.shift();
       }
-      
+
       if (this.isRunning) {
         this.rafId = requestAnimationFrame(tick);
       }
     };
-    
+
     requestAnimationFrame(tick);
   }
 
@@ -287,12 +287,12 @@ export class FPSMonitor {
    */
   getFPS() {
     if (this.frames.length < 2) return 0;
-    
+
     const now = performance.now();
     const firstFrame = this.frames[0];
     const frameCount = this.frames.length;
     const duration = now - firstFrame;
-    
+
     return Math.round((frameCount / duration) * 1000);
   }
 
@@ -302,10 +302,10 @@ export class FPSMonitor {
    */
   getAverageFPS() {
     if (this.frames.length < 2) return 0;
-    
+
     const totalTime = this.frames[this.frames.length - 1] - this.frames[0];
     const frameCount = this.frames.length - 1;
-    
+
     return Math.round((frameCount / totalTime) * 1000);
   }
 }
@@ -333,7 +333,7 @@ export class DOMBatcher {
    */
   scheduleFlush() {
     if (this.rafId) return;
-    
+
     this.rafId = requestAnimationFrame(() => {
       this.flush();
     });
@@ -351,7 +351,7 @@ export class DOMBatcher {
         console.error('Error in batched DOM update:', error);
       }
     });
-    
+
     this.rafId = null;
   }
 
@@ -380,16 +380,16 @@ export const domBatcher = new DOMBatcher();
  * @returns {Function} Wrapped function
  */
 export function withPerformanceMonitoring(func, name) {
-  return function(...args) {
+  return function (...args) {
     performanceMonitor.start(name);
     const result = func.apply(this, args);
     const duration = performanceMonitor.end(name);
-    
+
     // Log slow operations (> 16ms could affect 60fps)
     if (duration > 16) {
       console.warn(`Slow operation detected: ${name} took ${duration.toFixed(2)}ms`);
     }
-    
+
     return result;
   };
 }
@@ -417,9 +417,9 @@ export class AdaptiveThrottler {
       const start = performance.now();
       const result = func.apply(this, args);
       const duration = performance.now() - start;
-      
+
       this.updateThrottleTime(duration);
-      
+
       return result;
     }, this.currentThrottleTime);
   }
@@ -430,19 +430,22 @@ export class AdaptiveThrottler {
    */
   updateThrottleTime(executionTime) {
     this.performanceHistory.push(executionTime);
-    
+
     // Keep only last 10 measurements
     if (this.performanceHistory.length > 10) {
       this.performanceHistory.shift();
     }
-    
+
     // Calculate average execution time
-    const avgTime = this.performanceHistory.reduce((a, b) => a + b) / this.performanceHistory.length;
-    
+    const avgTime =
+      this.performanceHistory.reduce((a, b) => a + b) / this.performanceHistory.length;
+
     // Adjust throttle time based on performance
-    if (avgTime > 16) { // Slower than 60fps
+    if (avgTime > 16) {
+      // Slower than 60fps
       this.currentThrottleTime = Math.min(this.currentThrottleTime * 1.2, this.maxThrottleTime);
-    } else if (avgTime < 8) { // Faster than 120fps
+    } else if (avgTime < 8) {
+      // Faster than 120fps
       this.currentThrottleTime = Math.max(this.currentThrottleTime * 0.9, this.baseThrottleTime);
     }
   }

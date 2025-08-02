@@ -421,7 +421,7 @@
   background: var(--bg-hover);
 }
 
-.assessment-option input[type="radio"] {
+.assessment-option input[type='radio'] {
   margin: 0;
 }
 
@@ -478,11 +478,11 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .progress-overview {
     min-width: auto;
   }
-  
+
   .educational-sidebar {
     position: fixed;
     top: 0;
@@ -491,22 +491,22 @@
     z-index: 1000;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   }
-  
+
   .mastery-indicators {
     justify-content: center;
   }
-  
+
   .session-controls {
     flex-wrap: wrap;
     justify-content: center;
   }
-  
+
   .educational-footer {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
   }
-  
+
   .summary-stats {
     justify-content: center;
   }
@@ -516,19 +516,19 @@
   .educational-header {
     padding: 0.75rem;
   }
-  
+
   .game-container {
     padding: 0.75rem;
   }
-  
+
   .educational-controls {
     padding: 0.75rem;
   }
-  
+
   .educational-footer {
     padding: 0.75rem;
   }
-  
+
   .learning-objectives ul {
     flex-direction: column;
   }

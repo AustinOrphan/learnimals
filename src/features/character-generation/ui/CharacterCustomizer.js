@@ -1,7 +1,7 @@
 /**
  * Character Customizer
  * Advanced theme and visual customization for characters
- * 
+ *
  * Part of Phase G: Character Customization Studio
  */
 
@@ -16,10 +16,10 @@ export default class CharacterCustomizer extends BaseComponent {
       tagName: 'div',
       className: 'character-customizer',
       attributes: {
-        'role': 'application',
-        'aria-label': 'Character Customizer'
+        role: 'application',
+        'aria-label': 'Character Customizer',
       },
-      ...options
+      ...options,
     });
 
     // Customizer state
@@ -35,7 +35,7 @@ export default class CharacterCustomizer extends BaseComponent {
       { id: 'effects', label: 'Visual Effects', icon: '✨' },
       { id: 'animations', label: 'Animations', icon: '🎭' },
       { id: 'accessories', label: 'Accessories', icon: '👑' },
-      { id: 'backgrounds', label: 'Backgrounds', icon: '🖼️' }
+      { id: 'backgrounds', label: 'Backgrounds', icon: '🖼️' },
     ];
 
     // Available themes
@@ -47,7 +47,7 @@ export default class CharacterCustomizer extends BaseComponent {
         shadowStrength: 0.3,
         gradientIntensity: 0.4,
         roundness: 0.5,
-        preview: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        preview: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       },
       playful: {
         name: 'Playful',
@@ -56,7 +56,7 @@ export default class CharacterCustomizer extends BaseComponent {
         shadowStrength: 0.5,
         gradientIntensity: 0.6,
         roundness: 0.8,
-        preview: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+        preview: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
       },
       professional: {
         name: 'Professional',
@@ -65,7 +65,7 @@ export default class CharacterCustomizer extends BaseComponent {
         shadowStrength: 0.2,
         gradientIntensity: 0.2,
         roundness: 0.3,
-        preview: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+        preview: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       },
       artistic: {
         name: 'Artistic',
@@ -74,7 +74,7 @@ export default class CharacterCustomizer extends BaseComponent {
         shadowStrength: 0.4,
         gradientIntensity: 0.8,
         roundness: 0.9,
-        preview: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+        preview: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
       },
       retro: {
         name: 'Retro',
@@ -83,7 +83,7 @@ export default class CharacterCustomizer extends BaseComponent {
         shadowStrength: 0.1,
         gradientIntensity: 0.3,
         roundness: 0.1,
-        preview: 'linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)'
+        preview: 'linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)',
       },
       neon: {
         name: 'Neon',
@@ -92,8 +92,8 @@ export default class CharacterCustomizer extends BaseComponent {
         shadowStrength: 0.8,
         gradientIntensity: 0.9,
         roundness: 0.6,
-        preview: 'linear-gradient(135deg, #12c2e9 0%, #c471ed 50%, #f64f59 100%)'
-      }
+        preview: 'linear-gradient(135deg, #12c2e9 0%, #c471ed 50%, #f64f59 100%)',
+      },
     };
 
     // Color schemes
@@ -103,49 +103,49 @@ export default class CharacterCustomizer extends BaseComponent {
         colors: {
           primary: '#4A90E2',
           secondary: '#FFFFFF',
-          accent: '#FFD700'
-        }
+          accent: '#FFD700',
+        },
       },
       warm: {
         name: 'Warm Sunset',
         colors: {
           primary: '#FF6B6B',
           secondary: '#FFE66D',
-          accent: '#FF8E53'
-        }
+          accent: '#FF8E53',
+        },
       },
       cool: {
         name: 'Cool Ocean',
         colors: {
           primary: '#4ECDC4',
           secondary: '#44A08D',
-          accent: '#096B72'
-        }
+          accent: '#096B72',
+        },
       },
       nature: {
         name: 'Natural Green',
         colors: {
           primary: '#6AB04C',
           secondary: '#BADC58',
-          accent: '#F0932B'
-        }
+          accent: '#F0932B',
+        },
       },
       royal: {
         name: 'Royal Purple',
         colors: {
           primary: '#9980FA',
           secondary: '#FDA7DF',
-          accent: '#F8B500'
-        }
+          accent: '#F8B500',
+        },
       },
       monochrome: {
         name: 'Monochrome',
         colors: {
           primary: '#2C3E50',
           secondary: '#95A5A6',
-          accent: '#E74C3C'
-        }
-      }
+          accent: '#E74C3C',
+        },
+      },
     };
 
     // Visual effects
@@ -155,7 +155,7 @@ export default class CharacterCustomizer extends BaseComponent {
       shadow: { name: 'Drop Shadow', enabled: true },
       outline: { name: 'Outline Stroke', enabled: false },
       gradient: { name: 'Gradient Fill', enabled: true },
-      texture: { name: 'Texture Overlay', enabled: false }
+      texture: { name: 'Texture Overlay', enabled: false },
     };
 
     // Animation presets
@@ -163,7 +163,7 @@ export default class CharacterCustomizer extends BaseComponent {
       minimal: { name: 'Minimal', idle: 'none', hover: 'subtle', click: 'gentle' },
       standard: { name: 'Standard', idle: 'breathe', hover: 'lift', click: 'bounce' },
       energetic: { name: 'Energetic', idle: 'float', hover: 'wiggle', click: 'spin' },
-      playful: { name: 'Playful', idle: 'sway', hover: 'dance', click: 'jump' }
+      playful: { name: 'Playful', idle: 'sway', hover: 'dance', click: 'jump' },
     };
 
     // Callbacks
@@ -183,7 +183,7 @@ export default class CharacterCustomizer extends BaseComponent {
       size: 'large',
       animated: true,
       interactive: true,
-      theme: 'educational'
+      theme: 'educational',
     });
 
     // Set default customization
@@ -193,7 +193,7 @@ export default class CharacterCustomizer extends BaseComponent {
       effects: { ...this.effects },
       animations: { ...this.animationPresets.standard },
       accessories: [],
-      background: null
+      background: null,
     };
   }
 
@@ -242,13 +242,17 @@ export default class CharacterCustomizer extends BaseComponent {
           <!-- Customization Categories -->
           <div class="customization-panel">
             <div class="category-tabs">
-              ${this.categories.map(category => `
+              ${this.categories
+    .map(
+      category => `
                 <button class="category-tab ${category.id === 'themes' ? 'active' : ''}" 
                         data-category="${category.id}">
                   <span class="tab-icon">${category.icon}</span>
                   <span class="tab-label">${category.label}</span>
                 </button>
-              `).join('')}
+              `
+    )
+    .join('')}
             </div>
 
             <div class="category-content">
@@ -333,7 +337,9 @@ export default class CharacterCustomizer extends BaseComponent {
         <p class="category-description">Choose a visual style that matches your character's personality</p>
         
         <div class="theme-grid">
-          ${Object.entries(this.themes).map(([id, theme]) => `
+          ${Object.entries(this.themes)
+    .map(
+      ([id, theme]) => `
             <div class="theme-option ${this.currentCustomization.theme === id ? 'selected' : ''}" 
                  data-theme="${id}">
               <div class="theme-preview" style="background: ${theme.preview}"></div>
@@ -347,7 +353,9 @@ export default class CharacterCustomizer extends BaseComponent {
                 <span class="property-tag">Gradient: ${Math.round(theme.gradientIntensity * 100)}%</span>
               </div>
             </div>
-          `).join('')}
+          `
+    )
+    .join('')}
         </div>
       </div>
     `;
@@ -363,7 +371,9 @@ export default class CharacterCustomizer extends BaseComponent {
         <p class="category-description">Select or create custom color combinations</p>
         
         <div class="color-schemes">
-          ${Object.entries(this.colorSchemes).map(([id, scheme]) => `
+          ${Object.entries(this.colorSchemes)
+    .map(
+      ([id, scheme]) => `
             <div class="color-scheme ${this.currentCustomization.colorScheme === id ? 'selected' : ''}" 
                  data-scheme="${id}">
               <div class="color-preview">
@@ -373,7 +383,9 @@ export default class CharacterCustomizer extends BaseComponent {
               </div>
               <h5 class="scheme-name">${scheme.name}</h5>
             </div>
-          `).join('')}
+          `
+    )
+    .join('')}
         </div>
 
         <div class="custom-colors">
@@ -408,7 +420,9 @@ export default class CharacterCustomizer extends BaseComponent {
         <p class="category-description">Add special visual effects to enhance your character</p>
         
         <div class="effects-list">
-          ${Object.entries(this.effects).map(([id, effect]) => `
+          ${Object.entries(this.effects)
+    .map(
+      ([id, effect]) => `
             <div class="effect-option">
               <label class="effect-label">
                 <input type="checkbox" class="effect-checkbox" 
@@ -420,7 +434,9 @@ export default class CharacterCustomizer extends BaseComponent {
                 <div class="effect-demo ${id}" data-effect="${id}"></div>
               </div>
             </div>
-          `).join('')}
+          `
+    )
+    .join('')}
         </div>
 
         <div class="effect-intensity">
@@ -456,7 +472,9 @@ export default class CharacterCustomizer extends BaseComponent {
         <div class="animation-presets">
           <h5>Animation Presets</h5>
           <div class="preset-grid">
-            ${Object.entries(this.animationPresets).map(([id, preset]) => `
+            ${Object.entries(this.animationPresets)
+    .map(
+      ([id, preset]) => `
               <div class="animation-preset ${this.currentCustomization.animations === preset ? 'selected' : ''}" 
                    data-preset="${id}">
                 <h6 class="preset-name">${preset.name}</h6>
@@ -466,7 +484,9 @@ export default class CharacterCustomizer extends BaseComponent {
                   <span class="animation-detail">Click: ${preset.click}</span>
                 </div>
               </div>
-            `).join('')}
+            `
+    )
+    .join('')}
           </div>
         </div>
 
@@ -660,7 +680,7 @@ export default class CharacterCustomizer extends BaseComponent {
 
     // Apply current customization to character
     const customizedCharacter = this.applyCustomizationToCharacter(
-      this.selectedCharacter, 
+      this.selectedCharacter,
       this.currentCustomization
     );
 
@@ -682,7 +702,7 @@ export default class CharacterCustomizer extends BaseComponent {
    */
   applyCustomizationToCharacter(character, customization) {
     const customized = JSON.parse(JSON.stringify(character));
-    
+
     // Apply color scheme
     if (customization.colorScheme) {
       const scheme = this.colorSchemes[customization.colorScheme];
@@ -697,7 +717,7 @@ export default class CharacterCustomizer extends BaseComponent {
     if (customization.animations) {
       customized.animations = {
         ...customized.animations,
-        ...customization.animations
+        ...customization.animations,
       };
     }
 
@@ -709,7 +729,7 @@ export default class CharacterCustomizer extends BaseComponent {
    */
   applyVisualEffects(container) {
     const effects = this.currentCustomization.effects;
-    
+
     // Apply glow effect
     if (effects.glow?.enabled) {
       container.style.filter += ' drop-shadow(0 0 10px rgba(74, 144, 226, 0.6))';

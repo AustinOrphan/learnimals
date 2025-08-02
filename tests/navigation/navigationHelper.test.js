@@ -9,11 +9,11 @@ describe('NavigationHelper', () => {
   beforeEach(() => {
     // Reset modules to ensure fresh imports
     vi.resetModules();
-    
+
     // Reset DOM
     document.body.innerHTML = '';
     document.head.innerHTML = '';
-    
+
     // Setup navigation file mocks
     global.setupNavigationFileMocks();
   });
@@ -27,7 +27,7 @@ describe('NavigationHelper', () => {
       // Read the actual navigationHelper.js file content to verify no imports
       const response = await fetch('/src/utils/navigationHelper.js');
       const content = await response.text();
-      
+
       // CRITICAL: Ensure no ES6 imports that would break regular script loading
       expect(content).not.toMatch(/^\s*import\s+.*from\s+['"`].*['"`];?\s*$/m);
       expect(content).not.toMatch(/^\s*import\s*\{.*\}\s*from\s+['"`].*['"`];?\s*$/m);
@@ -39,9 +39,9 @@ describe('NavigationHelper', () => {
       const script = document.createElement('script');
       script.src = '/src/utils/navigationHelper.js';
       // Intentionally NOT setting type="module"
-      
+
       document.head.appendChild(script);
-      
+
       // Should not throw syntax errors when loaded as regular script
       expect(() => {
         // Simulate script execution
@@ -52,7 +52,7 @@ describe('NavigationHelper', () => {
     it('should have inline logger fallback instead of import', async () => {
       // Import the module to check its structure
       const module = await import('../../src/utils/navigationHelper.js');
-      
+
       // Should export NavigationHelper class
       expect(typeof module.default).toBe('function'); // Constructor function
     });
@@ -77,16 +77,16 @@ describe('NavigationHelper', () => {
       const testCases = [
         {
           pathname: '/Users/name/projects/learnimals/src/pages/index.html',
-          expected: 'http://localhost:8080/Users/name/projects/learnimals'
+          expected: 'http://localhost:8080/Users/name/projects/learnimals',
         },
         {
           pathname: '/learnimals/src/features/subjects/math.html',
-          expected: 'http://localhost:8080/learnimals'
+          expected: 'http://localhost:8080/learnimals',
         },
         {
           pathname: '/some/path/learnimals/docs/readme.html',
-          expected: 'http://localhost:8080/some/path/learnimals'
-        }
+          expected: 'http://localhost:8080/some/path/learnimals',
+        },
       ];
 
       testCases.forEach(testCase => {
@@ -94,9 +94,9 @@ describe('NavigationHelper', () => {
         Object.defineProperty(window, 'location', {
           value: {
             pathname: testCase.pathname,
-            origin: 'http://localhost:8080'
+            origin: 'http://localhost:8080',
           },
-          configurable: true
+          configurable: true,
         });
 
         const helper = new NavigationHelper();
@@ -109,26 +109,26 @@ describe('NavigationHelper', () => {
         {
           pathname: '/notlearnimals/src/pages/index.html',
           origin: 'http://localhost:8080',
-          fallback: true
+          fallback: true,
         },
         {
           pathname: '/learnimals',
           origin: 'http://localhost:8080',
-          expected: 'http://localhost:8080/learnimals'
-        }
+          expected: 'http://localhost:8080/learnimals',
+        },
       ];
 
       edgeCases.forEach(testCase => {
         Object.defineProperty(window, 'location', {
           value: {
             pathname: testCase.pathname,
-            origin: testCase.origin
+            origin: testCase.origin,
           },
-          configurable: true
+          configurable: true,
         });
 
         const helper = new NavigationHelper();
-        
+
         if (testCase.fallback) {
           // Should fallback to origin when learnimals not found in path
           expect(helper.baseUrl).toBe(testCase.origin);
@@ -140,7 +140,7 @@ describe('NavigationHelper', () => {
 
     it('should provide URL resolution methods', () => {
       const helper = new NavigationHelper();
-      
+
       // Should have expected methods for navigation
       expect(typeof helper.resolveUrl).toBe('function');
       expect(typeof helper.updateNavigationLinks).toBe('function');
@@ -150,17 +150,17 @@ describe('NavigationHelper', () => {
       Object.defineProperty(window, 'location', {
         value: {
           pathname: '/learnimals/src/pages/index.html',
-          origin: 'http://localhost:8080'
+          origin: 'http://localhost:8080',
         },
-        configurable: true
+        configurable: true,
       });
 
       const helper = new NavigationHelper();
-      
+
       // Test relative URL resolution
       const relativeUrl = '../features/subjects/math.html';
       const resolved = helper.resolveUrl(relativeUrl);
-      
+
       expect(resolved).toContain('learnimals');
       expect(resolved).toContain('math.html');
     });
@@ -170,7 +170,7 @@ describe('NavigationHelper', () => {
     it('should have fallback logger that works without import', async () => {
       const module = await import('../../src/utils/navigationHelper.js');
       const NavigationHelper = module.default;
-      
+
       // Should not throw when creating instance (logger should work)
       expect(() => {
         new NavigationHelper();
@@ -187,23 +187,23 @@ describe('NavigationHelper', () => {
         },
         error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
         warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
-        info: (...args) => console.info('[NavigationHelper INFO]', ...args)
+        info: (...args) => console.info('[NavigationHelper INFO]', ...args),
       };
 
       // Should have all required log methods
-      expect(typeof mockLogger.debug).toBe('function');
-      expect(typeof mockLogger.error).toBe('function');
-      expect(typeof mockLogger.warn).toBe('function');
-      expect(typeof mockLogger.info).toBe('function');
+      expect(typeof mock_Logger.debug).toBe('function');
+      expect(typeof mock_Logger.error).toBe('function');
+      expect(typeof mock_Logger.warn).toBe('function');
+      expect(typeof mock_Logger.info).toBe('function');
 
       // Should call appropriate console methods
       const errorSpy = vi.spyOn(console, 'error');
       const warnSpy = vi.spyOn(console, 'warn');
       const infoSpy = vi.spyOn(console, 'info');
 
-      mockLogger.error('test error');
-      mockLogger.warn('test warning');
-      mockLogger.info('test info');
+      mock_Logger.error('test error');
+      mock_Logger.warn('test warning');
+      mock_Logger.info('test info');
 
       expect(errorSpy).toHaveBeenCalledWith('[NavigationHelper ERROR]', 'test error');
       expect(warnSpy).toHaveBeenCalledWith('[NavigationHelper WARN]', 'test warning');
@@ -237,9 +237,9 @@ describe('NavigationHelper', () => {
       Object.defineProperty(window, 'location', {
         value: {
           pathname: '/learnimals/src/pages/index.html',
-          origin: 'http://localhost:8080'
+          origin: 'http://localhost:8080',
         },
-        configurable: true
+        configurable: true,
       });
 
       helper.updateNavigationLinks();
@@ -248,7 +248,7 @@ describe('NavigationHelper', () => {
       // The current implementation only updates links with data-nav attributes
       // Regular links remain unchanged, so this test should verify they exist
       expect(links.length).toBeGreaterThan(0);
-      
+
       links.forEach(link => {
         const href = link.getAttribute('href');
         expect(href).toBeTruthy();

@@ -1,0 +1,294 @@
+name: Publish Test Results to Pages
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  publish-results:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download test artifacts from workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: ${{ github.event.workflow_run.id }}
+            });
+            
+            const testArtifacts = artifacts.data.artifacts.filter(artifact => 
+              artifact.name.includes('test-results') || 
+              artifact.name === 'all-test-results-combined' ||
+              artifact.name === 'coverage-report'
+            );
+            
+            const fs = require('fs');
+            const path = require('path');
+            
+            for (const artifact of testArtifacts) {
+              console.log(`Downloading ${artifact.name}...`);
+              
+              const download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip'
+              });
+              
+              const artifactPath = path.join('${{ github.workspace }}', `${artifact.name}.zip`);
+              fs.writeFileSync(artifactPath, Buffer.from(download.data));
+            }
+      
+      - name: Extract artifacts
+        run: |
+          mkdir -p test-results-site
+          
+          # Extract all downloaded artifacts
+          for artifact in *.zip; do
+            if [ -f "$artifact" ]; then
+              echo "Extracting $artifact..."
+              unzip -q "$artifact" -d test-results-site/
+            fi
+          done
+          
+          # Organize the results
+          cd test-results-site
+          
+          # Create main index page
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Learnimals - Test Results Dashboard</title>
+              <style>
+                  :root {
+                      --primary: #3b82f6;
+                      --success: #10b981;
+                      --danger: #ef4444;
+                      --warning: #f59e0b;
+                      --dark: #1f2937;
+                      --light: #f3f4f6;
+                  }
+                  
+                  * {
+                      margin: 0;
+                      padding: 0;
+                      box-sizing: border-box;
+                  }
+                  
+                  body {
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                      background-color: var(--light);
+                      color: var(--dark);
+                      line-height: 1.6;
+                  }
+                  
+                  header {
+                      background-color: var(--primary);
+                      color: white;
+                      padding: 2rem 0;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                  }
+                  
+                  .container {
+                      max-width: 1200px;
+                      margin: 0 auto;
+                      padding: 0 1rem;
+                  }
+                  
+                  h1 {
+                      font-size: 2.5rem;
+                      margin-bottom: 0.5rem;
+                  }
+                  
+                  .subtitle {
+                      opacity: 0.9;
+                      font-size: 1.1rem;
+                  }
+                  
+                  .dashboard {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 1.5rem;
+                      margin: 2rem 0;
+                  }
+                  
+                  .card {
+                      background: white;
+                      border-radius: 8px;
+                      padding: 1.5rem;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                      transition: transform 0.2s, box-shadow 0.2s;
+                  }
+                  
+                  .card:hover {
+                      transform: translateY(-2px);
+                      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                  }
+                  
+                  .card h2 {
+                      color: var(--dark);
+                      margin-bottom: 1rem;
+                      font-size: 1.5rem;
+                  }
+                  
+                  .card-icon {
+                      font-size: 2rem;
+                      margin-right: 0.5rem;
+                      vertical-align: middle;
+                  }
+                  
+                  .status {
+                      display: inline-block;
+                      padding: 0.25rem 0.75rem;
+                      border-radius: 20px;
+                      font-size: 0.875rem;
+                      font-weight: 600;
+                  }
+                  
+                  .status-success {
+                      background-color: var(--success);
+                      color: white;
+                  }
+                  
+                  .status-failure {
+                      background-color: var(--danger);
+                      color: white;
+                  }
+                  
+                  .links {
+                      list-style: none;
+                      margin-top: 1rem;
+                  }
+                  
+                  .links li {
+                      margin: 0.5rem 0;
+                  }
+                  
+                  .links a {
+                      color: var(--primary);
+                      text-decoration: none;
+                      display: flex;
+                      align-items: center;
+                      padding: 0.5rem;
+                      border-radius: 4px;
+                      transition: background-color 0.2s;
+                  }
+                  
+                  .links a:hover {
+                      background-color: var(--light);
+                  }
+                  
+                  .timestamp {
+                      color: #6b7280;
+                      font-size: 0.875rem;
+                      margin-top: 1rem;
+                  }
+                  
+                  footer {
+                      background-color: var(--dark);
+                      color: white;
+                      text-align: center;
+                      padding: 2rem 0;
+                      margin-top: 4rem;
+                  }
+              </style>
+          </head>
+          <body>
+              <header>
+                  <div class="container">
+                      <h1>🧪 Test Results Dashboard</h1>
+                      <p class="subtitle">Learnimals - Continuous Integration Results</p>
+                  </div>
+              </header>
+              
+              <main class="container">
+                  <div class="dashboard">
+                      <div class="card">
+                          <h2><span class="card-icon">📊</span>Coverage Report</h2>
+                          <p>View detailed code coverage metrics and reports.</p>
+                          <ul class="links">
+                              <li><a href="coverage-report/index.html">📈 HTML Coverage Report</a></li>
+                              <li><a href="coverage-report/lcov.info">📄 LCOV Data</a></li>
+                              <li><a href="all-test-results-combined/README.md">📝 Coverage Summary</a></li>
+                          </ul>
+                      </div>
+                      
+                      <div class="card">
+                          <h2><span class="card-icon">🔍</span>Test Results</h2>
+                          <p>Browse test results by suite and view detailed reports.</p>
+                          <ul class="links">
+                              <li><a href="all-test-results-combined/index.html">🏠 Results Overview</a></li>
+                              <li><a href="all-test-results-combined/README.md">📋 Summary Report</a></li>
+                              <li><a href="test-results-index/index.html">🗂️ Browse by Suite</a></li>
+                          </ul>
+                      </div>
+                      
+                      <div class="card">
+                          <h2><span class="card-icon">📦</span>Test Artifacts</h2>
+                          <p>Access test artifacts and supplementary files.</p>
+                          <ul class="links">
+                              <li><a href="all-test-results-combined/reports/">📊 JUnit Reports</a></li>
+                              <li><a href="all-test-results-combined/logs/">📜 Test Logs</a></li>
+                              <li><a href="all-test-results-combined/screenshots/">🖼️ Screenshots</a></li>
+                          </ul>
+                      </div>
+                      
+                      <div class="card">
+                          <h2><span class="card-icon">🚀</span>Build Information</h2>
+                          <p>Details about this test run.</p>
+                          <ul class="links">
+                              <li>🔗 Workflow: #${{ github.event.workflow_run.id }}</li>
+                              <li>🌿 Branch: ${{ github.event.workflow_run.head_branch }}</li>
+                              <li>💾 Commit: ${{ github.event.workflow_run.head_sha }}</li>
+                          </ul>
+                          <p class="timestamp">Generated: <span id="timestamp"></span></p>
+                      </div>
+                  </div>
+              </main>
+              
+              <footer>
+                  <div class="container">
+                      <p>&copy; 2025 Learnimals. Test results are automatically generated.</p>
+                  </div>
+              </footer>
+              
+              <script>
+                  document.getElementById('timestamp').textContent = new Date().toLocaleString();
+              </script>
+          </body>
+          </html>
+          EOF
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: test-results-site/
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

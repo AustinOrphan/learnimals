@@ -24,7 +24,7 @@
   user-select: none;
   text-align: center;
   white-space: nowrap;
-  
+
   /* Default button styles */
   background-color: var(--accent-primary);
   color: var(--text-on-accent);
@@ -91,7 +91,7 @@
   .btn {
     padding: var(--space-md) var(--space-lg);
   }
-  
+
   .btn--lg {
     padding: var(--space-lg) var(--space-2xl);
     font-size: var(--text-xl);
@@ -200,11 +200,11 @@
   .card {
     padding: var(--space-lg);
   }
-  
+
   .card__title {
     font-size: var(--text-xl);
   }
-  
+
   .card__footer {
     flex-wrap: nowrap;
   }
@@ -214,7 +214,7 @@
   .card {
     padding: var(--space-xl);
   }
-  
+
   .card__title {
     font-size: var(--text-2xl);
   }
@@ -351,11 +351,11 @@
   .navbar-mobile__menu-toggle {
     display: none;
   }
-  
+
   .mobile-nav {
     display: none;
   }
-  
+
   .navbar-desktop {
     display: flex;
     align-items: center;
@@ -364,13 +364,13 @@
     background-color: var(--bg-primary);
     border-bottom: 1px solid var(--border-color);
   }
-  
+
   .navbar-desktop__nav {
     display: flex;
     align-items: center;
     gap: var(--space-lg);
   }
-  
+
   .navbar-desktop__link {
     color: var(--text-primary);
     text-decoration: none;
@@ -379,7 +379,7 @@
     border-radius: 6px;
     transition: all 0.2s ease;
   }
-  
+
   .navbar-desktop__link:hover,
   .navbar-desktop__link.is-active {
     background-color: var(--accent-primary);
@@ -500,7 +500,7 @@
     max-width: 600px;
     padding: var(--space-2xl);
   }
-  
+
   .modal__footer .btn {
     flex: none;
     min-width: 140px;
@@ -511,7 +511,7 @@
   .modal--large .modal__content {
     max-width: 800px;
   }
-  
+
   .modal--fullwidth .modal__content {
     max-width: 90vw;
   }
@@ -596,7 +596,7 @@
   .form-row {
     flex-direction: column;
   }
-  
+
   .form-row .form-group {
     min-width: auto;
   }

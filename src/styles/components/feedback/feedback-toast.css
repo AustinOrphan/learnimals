@@ -172,9 +172,15 @@
 }
 
 @keyframes reactionBounce {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Close button */
@@ -299,28 +305,35 @@
 }
 
 @keyframes achievementSparkle {
-  0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.7; }
-  50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    opacity: 1;
+  }
 }
 
 /* Stack management */
-.feedback-toast[data-stack-index="0"] {
+.feedback-toast[data-stack-index='0'] {
   z-index: 510;
 }
 
-.feedback-toast[data-stack-index="1"] {
+.feedback-toast[data-stack-index='1'] {
   z-index: 509;
   transform: scale(0.95);
   opacity: 0.9;
 }
 
-.feedback-toast[data-stack-index="2"] {
+.feedback-toast[data-stack-index='2'] {
   z-index: 508;
   transform: scale(0.9);
   opacity: 0.8;
 }
 
-.feedback-toast[data-stack-index="3"] {
+.feedback-toast[data-stack-index='3'] {
   z-index: 507;
   transform: scale(0.85);
   opacity: 0.7;
@@ -332,9 +345,23 @@
 }
 
 @keyframes errorWiggle {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-  20%, 40%, 60%, 80% { transform: translateX(3px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-3px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(3px);
+  }
 }
 
 /* Success state animations */
@@ -343,8 +370,12 @@
 }
 
 @keyframes successSlide {
-  0% { transform: translateX(100%) scale(0.8); }
-  100% { transform: translateX(0) scale(1); }
+  0% {
+    transform: translateX(100%) scale(0.8);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
 }
 
 /* Reduced motion support */
@@ -356,11 +387,11 @@
     animation: none !important;
     transition: opacity 0.2s ease !important;
   }
-  
+
   .feedback-toast:hover {
     transform: none !important;
   }
-  
+
   .feedback-toast--achievement .feedback-toast-content::before {
     animation: none !important;
   }
@@ -373,31 +404,31 @@
     max-width: calc(100vw - 40px);
     margin: 0 20px;
   }
-  
+
   .feedback-toast--top-right,
   .feedback-toast--bottom-right {
     right: 10px;
   }
-  
+
   .feedback-toast--top-left,
   .feedback-toast--bottom-left {
     left: 10px;
   }
-  
+
   .feedback-toast--top-center,
   .feedback-toast--bottom-center {
     left: 50%;
     margin: 0;
   }
-  
+
   .feedback-toast-content {
     padding: 0.875rem;
   }
-  
+
   .feedback-toast-message {
     font-size: 0.85rem;
   }
-  
+
   .feedback-toast-close {
     width: 28px;
     height: 28px;
@@ -410,18 +441,18 @@
   .feedback-toast {
     cursor: default;
   }
-  
+
   .feedback-toast:hover {
     transform: none;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
-  
+
   .feedback-toast-close {
     width: 32px;
     height: 32px;
     font-size: 1.1rem;
   }
-  
+
   .feedback-toast-close:hover {
     transform: none;
   }
@@ -433,7 +464,7 @@
     border-width: 3px;
     box-shadow: 0 0 0 2px var(--text-primary);
   }
-  
+
   .character-mini-avatar {
     border-width: 3px;
   }

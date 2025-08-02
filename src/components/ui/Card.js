@@ -25,47 +25,47 @@ class Card extends BaseComponent {
       linkUrl: options.linkUrl || null,
       linkText: options.linkText || 'Learn More',
       theme: options.theme || 'default',
-      ...options
+      ...options,
     });
   }
-
 
   /**
    * Generate card HTML
    * @returns {string} - Card HTML
    */
   generateHTML() {
-    const { title, content, imageUrl, imageAlt, linkUrl, linkText, cssClasses, theme, id } = this.options;
-    
+    const { title, content, imageUrl, imageAlt, linkUrl, linkText, cssClasses, theme, id } =
+      this.options;
+
     // Build CSS classes
     const cardClasses = ['component', 'feature-card'];
     if (theme === 'alt') cardClasses.push('feature-card--alt');
     if (cssClasses && cssClasses.length) cardClasses.push(...cssClasses);
-    
+
     let html = `<div id="${id}" class="${cardClasses.join(' ')}" role="article">`;
-    
+
     // Add image if provided
     if (imageUrl) {
       html += `<div class="card-image">
         <img src="${imageUrl}" alt="${imageAlt}" loading="lazy">
       </div>`;
     }
-    
+
     // Add title
     if (title) {
       html += `<h3 class="card-title">${title}</h3>`;
     }
-    
+
     // Add content
     html += `<div class="card-content">${content}</div>`;
-    
+
     // Add link if provided
     if (linkUrl) {
       html += `<a href="${linkUrl}" class="card-link component-button component-button--primary">${linkText}</a>`;
     }
-    
+
     html += '</div>';
-    
+
     return html;
   }
 
@@ -75,25 +75,25 @@ class Card extends BaseComponent {
   attachEventListeners() {
     // Add click event for card interactions
     this.addEventListener('click', this.handleCardClick, '.card-link');
-    
+
     // Emit card events for external handling
     this.addEventListener('mouseenter', () => {
       this.emit('cardHover', { card: this.options });
     });
   }
-  
+
   /**
    * Handle card link clicks
    */
   handleCardClick(event) {
     // Emit card click event for analytics or other tracking
-    this.emit('cardClick', { 
+    this.emit('cardClick', {
       card: this.options,
       linkUrl: this.options.linkUrl,
-      event 
+      event,
     });
   }
-  
+
   /**
    * Create a card wrapper that can be used as a link
    * @param {Object} options - Card options

@@ -1,4 +1,104 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Color codes for output
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+echo "🔍 Running pre-commit checks..."
+
+# Check for duplicate files (iCloud sync conflicts)
+echo "📋 Checking for duplicate files..."
+duplicates=$(find ./src ./docs ./tests -name "* [0-9].*" -type f 2>/dev/null | grep -E '\.(js|html|css|md)$' | grep -v node_modules || true)
+
+if [ ! -z "$duplicates" ]; then
+  echo "${RED}❌ Error: Duplicate files detected!${NC}"
+  echo "${YELLOW}These files appear to be iCloud sync conflicts:${NC}"
+  echo "$duplicates" | while read file; do
+    echo "  - $file"
+  done
+  echo ""
+  echo "${YELLOW}Please resolve these duplicates before committing:${NC}"
+  echo "1. Compare files using: diff \"original\" \"duplicate\""
+  echo "2. Merge any unique changes"
+  echo "3. Delete the duplicate files"
+  echo "4. Update any imports if necessary"
+  echo ""
+  echo "See docs/development/MAINTENANCE_GUIDE.md for detailed instructions."
+  exit 1
+fi
+
+echo "${GREEN}✅ No duplicate files found${NC}"
+
+# Check for common conflict markers
+echo "📋 Checking for merge conflict markers..."
+conflict_files=$(grep -r "^<<<<<<< \|^======= \|^>>>>>>> " ./src ./docs ./tests --include="*.js" --include="*.html" --include="*.css" --include="*.md" 2>/dev/null | cut -d: -f1 | sort -u || true)
+
+if [ ! -z "$conflict_files" ]; then
+  echo "${RED}❌ Error: Merge conflict markers detected!${NC}"
+  echo "${YELLOW}These files contain unresolved conflicts:${NC}"
+  echo "$conflict_files" | while read file; do
+    echo "  - $file"
+  done
+  echo ""
+  echo "Please resolve all conflicts before committing."
+  exit 1
+fi
+
+echo "${GREEN}✅ No conflict markers found${NC}"
+
+# Check for large files (> 1MB)
+echo "📋 Checking for large files..."
+large_files=$(find ./src ./docs ./tests -type f -size +1M 2>/dev/null | grep -v node_modules | grep -v coverage | grep -v ".git" || true)
+
+if [ ! -z "$large_files" ]; then
+  echo "${YELLOW}⚠️  Warning: Large files detected (>1MB):${NC}"
+  echo "$large_files" | while read file; do
+    size=$(ls -lh "$file" 2>/dev/null | awk '{print $5}' || echo "unknown")
+    echo "  - $file (${size})"
+  done
+  echo ""
+  echo "${YELLOW}Consider if these files should be committed or moved to Git LFS.${NC}"
+  echo "Press Enter to continue or Ctrl+C to cancel..."
+  read -r
+fi
+
+# Check for unresolved TODO/FIXME comments in staged files
+echo "📋 Checking for TODO/FIXME comments..."
+staged_files=$(git diff --cached --name-only --diff-filter=ACMRTUX | grep -E '\.(js|html|css|md)$' || true)
+
+if [ ! -z "$staged_files" ]; then
+  todo_count=0
+  echo "$staged_files" | while read file; do
+    if [ -f "$file" ]; then
+      todos=$(grep -n "TODO\|FIXME\|HACK\|XXX" "$file" 2>/dev/null || true)
+      if [ ! -z "$todos" ]; then
+        if [ $todo_count -eq 0 ]; then
+          echo "${YELLOW}📝 Found TODO/FIXME comments in staged files:${NC}"
+        fi
+        echo "${YELLOW}  $file:${NC}"
+        echo "$todos" | sed 's/^/    /'
+        todo_count=$((todo_count + 1))
+      fi
+    fi
+  done
+  
+  if [ $todo_count -gt 0 ]; then
+    echo ""
+    echo "${YELLOW}Consider resolving these before committing.${NC}"
+  fi
+fi
+
+# Run automated duplicate check (non-blocking)
+if command -v node >/dev/null 2>&1 && [ -f "scripts/checkDuplicates.js" ]; then
+  echo "📋 Running automated duplicate check..."
+  node scripts/checkDuplicates.js 2>&1 | grep -E "Found|No duplicate" || true
+fi
+
+# Run lint-staged for code quality checks
+echo "🎨 Running code quality checks..."
 npm run pre-commit
+
+echo "${GREEN}✨ All pre-commit checks passed!${NC}"

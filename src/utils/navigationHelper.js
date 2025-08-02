@@ -4,16 +4,18 @@
 // Use shared logger factory created by navbarLoader.js
 // Always use window.logger to avoid redeclaration errors
 if (typeof window !== 'undefined' && !window.logger) {
-  window.logger = window.createLogger ? window.createLogger('NavigationHelper') : {
-    debug: (...args) => {
-      if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-        console.log('[NavigationHelper DEBUG]', ...args);
-      }
-    },
-    error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
-    warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
-    info: (...args) => console.info('[NavigationHelper INFO]', ...args)
-  };
+  window.logger = window.createLogger
+    ? window.createLogger('NavigationHelper')
+    : {
+      debug: (...args) => {
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+          console.log('[NavigationHelper DEBUG]', ...args);
+        }
+      },
+      error: (...args) => console.error('[NavigationHelper ERROR]', ...args),
+      warn: (...args) => console.warn('[NavigationHelper WARN]', ...args),
+      info: (...args) => console.info('[NavigationHelper INFO]', ...args),
+    };
 }
 
 class NavigationHelper {
@@ -25,19 +27,21 @@ class NavigationHelper {
   }
 
   detectBaseUrl() {
-    // Get the current URL and find the project root  
+    // Get the current URL and find the project root
     const currentPath = window.location.pathname;
-    
+
     // Find where 'learnimals' appears as a separate path segment
     const pathSegments = currentPath.split('/');
-    const learnimalsSegmentIndex = pathSegments.findIndex(segment => segment.toLowerCase() === 'learnimals');
-    
+    const learnimalsSegmentIndex = pathSegments.findIndex(
+      segment => segment.toLowerCase() === 'learnimals'
+    );
+
     if (learnimalsSegmentIndex !== -1) {
       // Extract everything up to and including 'learnimals'
       const pathToLearnimals = pathSegments.slice(0, learnimalsSegmentIndex + 1).join('/');
       return window.location.origin + pathToLearnimals;
     }
-    
+
     // Fallback: return just the origin when learnimals not found in path
     return window.location.origin;
   }
@@ -75,18 +79,18 @@ class NavigationHelper {
   updateNavigationLinks() {
     const linkMappings = {
       // Pages
-      'home': 'src/pages/index.html',
-      'about': 'src/pages/about.html',
-      'contact': 'src/pages/contact.html',
-      'profile': 'src/pages/profile.html',
-      
+      home: 'src/pages/index.html',
+      about: 'src/pages/about.html',
+      contact: 'src/pages/contact.html',
+      profile: 'src/pages/profile.html',
+
       // Subjects
-      'math': 'src/features/subjects/shared/math.html',
-      'science': 'src/features/subjects/shared/science.html',
-      'reading': 'src/features/subjects/shared/reading.html',
-      'art': 'src/features/subjects/shared/art.html',
-      'coding': 'src/features/subjects/shared/coding.html',
-      'bubblepop': 'src/features/subjects/shared/bubblepop.html'
+      math: 'src/features/subjects/shared/math.html',
+      science: 'src/features/subjects/shared/science.html',
+      reading: 'src/features/subjects/shared/reading.html',
+      art: 'src/features/subjects/shared/art.html',
+      coding: 'src/features/subjects/shared/coding.html',
+      bubblepop: 'src/features/subjects/shared/bubblepop.html',
     };
 
     // Update links with data-nav attributes
@@ -133,7 +137,7 @@ class NavigationHelper {
 // Create global instance
 if (typeof window !== 'undefined') {
   window.navigationHelper = new NavigationHelper();
-  
+
   // Auto-update navigation when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
@@ -145,10 +149,9 @@ if (typeof window !== 'undefined') {
 }
 
 // Export for ES6 modules and testing
-// export default NavigationHelper; // Disabled for browser compatibility
+export default NavigationHelper;
 
-// Make available for dynamic imports
+// Make available for dynamic imports and browser compatibility
 if (typeof window !== 'undefined') {
   window.NavigationHelper = NavigationHelper;
 }
-
