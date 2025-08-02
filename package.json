@@ -8,6 +8,10 @@
     "list-templates": "node scripts/generateSubjects.js --list-templates",
     "lint": "eslint src/ scripts/ tests/",
     "lint:fix": "eslint src/ scripts/ tests/ --fix",
+    "lint:md": "markdownlint-cli2 '**/*.md'",
+    "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'",
+    "prose:check": "vale '**/*.md'",
+    "prose:readme": "vale README.md CLAUDE.md",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:components": "vitest run tests/components",
@@ -59,6 +63,7 @@
       "prettier --write --ignore-unknown"
     ],
     "*.md": [
+      "markdownlint-cli2 --fix",
       "prettier --write"
     ]
   }
