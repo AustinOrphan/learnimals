@@ -78,21 +78,19 @@ describe('Modal Component', () => {
         // Add to DOM
         document.body.appendChild(this.overlay);
         
-        // Trigger show animation
-        setTimeout(() => {
-          this.overlay.classList.add('modal-overlay--visible');
-          this.element.classList.add('modal--visible');
-          this.isVisible = true;
-          this.isAnimating = false;
-          
-          // Focus first focusable element
-          this.focusFirstElement();
-          
-          // Trigger onShow callback
-          if (this.options.onShow) {
-            this.options.onShow(this);
-          }
-        }, 10);
+        // Trigger show animation synchronously in test environment
+        this.overlay.classList.add('modal-overlay--visible');
+        this.element.classList.add('modal--visible');
+        this.isVisible = true;
+        this.isAnimating = false;
+        
+        // Focus first focusable element
+        this.focusFirstElement();
+        
+        // Trigger onShow callback
+        if (this.options.onShow) {
+          this.options.onShow(this);
+        }
         
         return this;
       });
@@ -102,33 +100,35 @@ describe('Modal Component', () => {
         
         this.isAnimating = true;
         
-        // Start hide animation
-        this.overlay.classList.remove('modal-overlay--visible');
-        this.element.classList.remove('modal--visible');
+        // Start hide animation synchronously in test environment
+        if (this.overlay) {
+          this.overlay.classList.remove('modal-overlay--visible');
+        }
+        if (this.element) {
+          this.element.classList.remove('modal--visible');
+        }
         
-        setTimeout(() => {
-          if (this.overlay && this.overlay.parentNode) {
-            this.overlay.parentNode.removeChild(this.overlay);
+        if (this.overlay && this.overlay.parentNode) {
+          this.overlay.parentNode.removeChild(this.overlay);
+        }
+        
+        // Restore focus
+        if (this.focusStack.length > 0) {
+          const previousFocus = this.focusStack.pop();
+          if (previousFocus && previousFocus.focus) {
+            previousFocus.focus();
           }
-          
-          // Restore focus
-          if (this.focusStack.length > 0) {
-            const previousFocus = this.focusStack.pop();
-            if (previousFocus && previousFocus.focus) {
-              previousFocus.focus();
-            }
-          }
-          
-          this.isVisible = false;
-          this.isAnimating = false;
-          
-          // Trigger onHide callback
-          if (this.options.onHide) {
-            this.options.onHide(this);
-          }
-          
-          this.cleanup();
-        }, 300);
+        }
+        
+        this.isVisible = false;
+        this.isAnimating = false;
+        
+        // Trigger onHide callback
+        if (this.options.onHide) {
+          this.options.onHide(this);
+        }
+        
+        this.cleanup();
         
         return this;
       });
@@ -172,9 +172,14 @@ describe('Modal Component', () => {
         if (this.options.buttons && this.options.buttons.length > 0) {
           html += '<div class=\"modal__footer\">';
           this.options.buttons.forEach((button, index) => {
-            const variant = button.variant || 'secondary';
-            const disabled = button.disabled ? 'disabled' : '';
-            html += `<button class=\"modal__button modal__button--${variant}\" data-action=\"${button.action}\" ${disabled}>${button.text}</button>`;
+            // Handle null or malformed button data
+            if (button && typeof button === 'object') {
+              const variant = button.variant || 'secondary';
+              const disabled = button.disabled ? 'disabled' : '';
+              const action = button.action || 'button';
+              const text = button.text || 'Button';
+              html += `<button class=\"modal__button modal__button--${variant}\" data-action=\"${action}\" ${disabled}>${text}</button>`;
+            }
           });
           html += '</div>';
         }
@@ -348,18 +353,22 @@ describe('Modal Component', () => {
           this.hide();
         }
         
-        setTimeout(() => {
-          this.cleanup();
-          this.element = null;
-          this.overlay = null;
-          this.focusStack = [];
-        }, 350);
+        // Synchronous cleanup in test environment
+        this.cleanup();
+        this.element = null;
+        this.overlay = null;
+        this.focusStack = [];
         
         return this;
       });
       
       this.toggle = vi.fn().mockImplementation(() => {
-        return this.isVisible ? this.hide() : this.show();
+        if (this.isVisible) {
+          this.hide();
+        } else {
+          this.show();
+        }
+        return this;
       });
       
       this.setLoading = vi.fn().mockImplementation((loading = true) => {
@@ -425,11 +434,9 @@ describe('Modal Component', () => {
       expect(modal.createElement).toHaveBeenCalled();
       expect(modal.bindEvents).toHaveBeenCalled();
       
-      // Wait for animation
-      setTimeout(() => {
-        expect(modal.isVisible).toBe(true);
-        expect(modal.isAnimating).toBe(false);
-      }, 50);
+      // Synchronous in test environment
+      expect(modal.isVisible).toBe(true);
+      expect(modal.isAnimating).toBe(false);
     });
 
     it('should hide modal and clean up properly', () => {
@@ -440,11 +447,9 @@ describe('Modal Component', () => {
       
       expect(modal.hide).toHaveBeenCalled();
       
-      // Wait for animation
-      setTimeout(() => {
-        expect(modal.isVisible).toBe(false);
-        expect(modal.cleanup).toHaveBeenCalled();
-      }, 350);
+      // Synchronous in test environment
+      expect(modal.isVisible).toBe(false);
+      expect(modal.cleanup).toHaveBeenCalled();
     });
 
     it('should generate proper HTML structure', () => {
@@ -480,11 +485,18 @@ describe('Modal Component', () => {
       modal.show();
     });
 
-    it('should handle close button click', () => {
-      const closeBtn = modal.element.querySelector('.modal__close');
-      testUtils.simulateEvent(closeBtn, 'click');
+    it('should handle close button click', async () => {
+      // Wait for modal to be fully shown and event listeners bound
+      await new Promise(resolve => setTimeout(resolve, 50));
       
+      const closeBtn = modal.element.querySelector('.modal__close');
+      
+      // Check that event listener was registered during bindEvents
+      expect(modal.bindEvents).toHaveBeenCalled();
       expect(modal.eventListeners.has('close')).toBe(true);
+      
+      // Test the actual click functionality
+      testUtils.simulateEvent(closeBtn, 'click');
     });
 
     it('should handle action button clicks', () => {
@@ -497,9 +509,16 @@ describe('Modal Component', () => {
       expect(modal.eventListeners.has('button-cancel')).toBe(true);
     });
 
-    it('should handle overlay click when enabled', () => {
-      testUtils.simulateEvent(modal.overlay, 'click');
+    it('should handle overlay click when enabled', async () => {
+      // Wait for modal to be fully shown and event listeners bound
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // Check that event listener was registered during bindEvents (closeOnOverlay is true by default)
+      expect(modal.bindEvents).toHaveBeenCalled();
       expect(modal.eventListeners.has('overlay')).toBe(true);
+      
+      // Test the actual overlay click functionality
+      testUtils.simulateEvent(modal.overlay, 'click');
     });
 
     it('should not handle overlay click when disabled', () => {
@@ -510,11 +529,17 @@ describe('Modal Component', () => {
       expect(modal.eventListeners.has('overlay')).toBe(false);
     });
 
-    it('should handle escape key when enabled', () => {
+    it('should handle escape key when enabled', async () => {
+      // Wait for modal to be fully shown and event listeners bound
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
+      // Check that event listener was registered during bindEvents (closeOnEscape is true by default)
+      expect(modal.bindEvents).toHaveBeenCalled();
+      expect(modal.eventListeners.has('escape')).toBe(true);
+      
+      // Test the actual escape key functionality
       const escapeEvent = new KeyboardEvent('keydown', { key: 'Escape' });
       document.dispatchEvent(escapeEvent);
-      
-      expect(modal.eventListeners.has('escape')).toBe(true);
     });
 
     it('should trigger onShow callback', () => {
@@ -523,9 +548,8 @@ describe('Modal Component', () => {
       modal = new Modal({ onShow });
       modal.show();
       
-      setTimeout(() => {
-        expect(onShow).toHaveBeenCalledWith(modal);
-      }, 50);
+      // Synchronous in test environment
+      expect(onShow).toHaveBeenCalledWith(modal);
     });
 
     it('should trigger onHide callback', () => {
@@ -533,9 +557,8 @@ describe('Modal Component', () => {
       modal.options.onHide = onHide;
       modal.hide();
       
-      setTimeout(() => {
-        expect(onHide).toHaveBeenCalledWith(modal);
-      }, 350);
+      // Synchronous in test environment
+      expect(onHide).toHaveBeenCalledWith(modal);
     });
   });
 
@@ -681,19 +704,21 @@ describe('Modal Component', () => {
       }).not.toThrow();
     });
 
-    it('should cleanup properly on destroy', () => {
+    it('should cleanup properly on destroy', async () => {
       modal = new Modal();
       modal.show();
+      
+      // Wait for show to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
       
       modal.destroy();
       
       expect(modal.destroy).toHaveBeenCalled();
       
-      setTimeout(() => {
-        expect(modal.element).toBe(null);
-        expect(modal.overlay).toBe(null);
-        expect(modal.focusStack).toHaveLength(0);
-      }, 350);
+      await new Promise(resolve => setTimeout(resolve, 400)); // Extra time for destroy sequence
+      expect(modal.element).toBe(null);
+      expect(modal.overlay).toBe(null);
+      expect(modal.focusStack).toHaveLength(0);
     });
   });
 
@@ -735,12 +760,15 @@ describe('Modal Component', () => {
       expect(modal.options.onHide).toBe(onHide);
     });
 
-    it('should support multiple modal instances', () => {
+    it('should support multiple modal instances', async () => {
       const modal1 = new Modal({ title: 'Modal 1' });
       const modal2 = new Modal({ title: 'Modal 2' });
       
       modal1.show();
       modal2.show();
+      
+      // Wait for both to show
+      await new Promise(resolve => setTimeout(resolve, 50));
       
       expect(modal1.isVisible).toBe(true);
       expect(modal2.isVisible).toBe(true);
@@ -751,7 +779,7 @@ describe('Modal Component', () => {
   });
 
   describe('Performance Considerations', () => {
-    it('should efficiently manage event listeners', () => {
+    it('should efficiently manage event listeners', async () => {
       modal = new Modal({
         buttons: [
           { text: 'Button 1', action: 'action1' },
@@ -762,14 +790,16 @@ describe('Modal Component', () => {
       
       modal.show();
       
+      // Wait for show to complete
+      await new Promise(resolve => setTimeout(resolve, 50));
+      
       // Should have listeners for close, overlay, escape, focustrap, and buttons
       expect(modal.eventListeners.size).toBeGreaterThan(4);
       
       modal.hide();
       
-      setTimeout(() => {
-        expect(modal.eventListeners.size).toBe(0);
-      }, 350);
+      await new Promise(resolve => setTimeout(resolve, 350));
+      expect(modal.eventListeners.size).toBe(0);
     });
 
     it('should handle rapid show/hide calls gracefully', () => {
