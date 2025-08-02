@@ -58,7 +58,7 @@ class SubjectTemplateLoader {
       // Inject character renderer CSS if enabled
       if (options.enableCharacterRenderer !== false) {
         const characterRendererCSS = `
-          <link rel="stylesheet" href="/src/styles/components/CharacterRenderer.css" />`;
+          <link rel="stylesheet" href="/src/styles/components/CharacterPreviewRenderer.css" />`;
         template = template.replace('</head>', `${characterRendererCSS}\n    </head>`);
       }
             
@@ -106,7 +106,7 @@ class SubjectTemplateLoader {
                 \`;
                 
                 // Initialize character renderer
-                characterRenderer = new CharacterRenderer({
+                characterRenderer = new CharacterPreviewRenderer({
                   character: characterData,
                   size: ${options.characterOptions?.size || 150},
                   interactive: ${options.characterOptions?.interactive !== false},
@@ -145,8 +145,8 @@ class SubjectTemplateLoader {
       if (options.enableCharacterRenderer !== false) {
         const characterImport = `
           <script type="module">
-            import CharacterRenderer from '/src/components/ui/CharacterRenderer.js';
-            window.CharacterRenderer = CharacterRenderer;
+            import CharacterPreviewRenderer from '/src/features/character-generation/ui/CharacterPreviewRenderer.js';
+            window.CharacterRenderer = CharacterPreviewRenderer;
           </script>`;
         template = template.replace('</head>', `${characterImport}\n    </head>`);
       }

@@ -436,7 +436,10 @@
     <!-- Load BaseComponent first -->
     <script src="../components/BaseComponent.js?v=2"></script>
     <!-- Load CharacterGallery -->
-    <script src="../components/ui/CharacterGallery.js?v=2"></script>
+    <script type="module">
+        import CharacterGallery from '../features/character-generation/ui/CharacterGallery.js';
+        window.CharacterGallery = CharacterGallery;
+    </script>
     
     <script>
         // Initialize demo when page loads

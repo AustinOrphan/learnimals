@@ -167,7 +167,7 @@
 
     <!-- Scripts -->
     <script type="module">
-        import CharacterCustomizationWizard from '/src/components/ui/CharacterCustomizationWizard.js';
+        import CharacterWizard from '/src/features/character-generation/ui/CharacterWizard.js';
         import { createCharacter } from '/src/data/characterSchema.js';
 
         class CharacterCustomizationPage {
@@ -193,7 +193,7 @@
                     this.showLoading('Loading customization wizard...');
 
                     // Create wizard instance
-                    this.wizard = new CharacterCustomizationWizard({
+                    this.wizard = new CharacterWizard({
                         characterData: newCharacter,
                         onSave: this.handleCharacterSaved.bind(this),
                         onError: this.handleError.bind(this)
