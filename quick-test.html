@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Adventure Quest Test</title>
+    <style>
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        :root {
+            --accent-primary: #4a90e2;
+            --accent-secondary: #7ed321;
+            --bg-primary: #ffffff;
+            --bg-card: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-danger: #dc3545;
+            --text-success: #28a745;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        #gameCanvas {
+            border: 3px solid var(--accent-primary);
+            border-radius: 8px;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background: var(--accent-primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover { background: #357abd; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Adventure Quest - Quick Test</h1>
+        
+        <div id="status"></div>
+        
+        <canvas id="gameCanvas" width="640" height="360">
+            Canvas not supported
+        </canvas>
+        
+        <div class="controls">
+            <button onclick="startTest()">Run Test</button>
+            <button onclick="startGame()" id="startBtn" disabled>Start Game</button>
+            <button onclick="testStory()" id="storyBtn" disabled>Test Story</button>
+            <button onclick="testChallenge()" id="challengeBtn" disabled>Test Challenge</button>
+            <button onclick="testNavigation()" id="navBtn" disabled>Test Navigation</button>
+        </div>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script type="module">
+        let game = null;
+        
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.textContent = `[${time}] ${message}`;
+            if (type === 'error') div.style.color = 'red';
+            if (type === 'success') div.style.color = 'green';
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+            console.log(`[Test] ${message}`);
+        }
+        
+        function showStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+        
+        window.startTest = async function() {
+            try {
+                showStatus('Starting tests...', 'info');
+                log('=== Adventure Quest Game Test ===', 'success');
+                
+                // Test 1: Import modules
+                log('1. Testing module imports...');
+                const GameModule = await import('./src/features/games/adventure-quest/AdventureQuestGame.js');
+                const AdventureQuestGame = GameModule.default;
+                log('✓ Game modules imported successfully', 'success');
+                
+                // Test 2: Create game instance
+                log('2. Creating game instance...');
+                game = new AdventureQuestGame('gameCanvas');
+                log('✓ Game instance created', 'success');
+                
+                // Test 3: Check game state
+                log('3. Checking initial game state...');
+                if (game.gameState && game.gameState.currentScene === 'intro') {
+                    log('✓ Game state initialized correctly', 'success');
+                } else {
+                    throw new Error('Game state not properly initialized');
+                }
+                
+                // Test 4: Check systems
+                log('4. Checking game systems...');
+                if (game.storyProgression && game.challengeManager && 
+                    game.discoveryTracker && game.islandNavigator) {
+                    log('✓ All game systems present', 'success');
+                } else {
+                    throw new Error('Game systems missing');
+                }
+                
+                // Test 5: Test rendering
+                log('5. Testing rendering...');
+                game.render();
+                log('✓ Initial render successful', 'success');
+                
+                // Test 6: Test story loading
+                log('6. Testing story system...');
+                game.storyProgression.loadStory({ chapter: 'introduction' });
+                if (game.storyProgression.currentChapter) {
+                    log('✓ Story system working', 'success');
+                } else {
+                    throw new Error('Story system failed');
+                }
+                
+                // Test 7: Test discovery system
+                log('7. Testing discovery system...');
+                const beforeCount = game.discoveryTracker.discoveries.length;
+                game.discoveryTracker.addDiscovery({
+                    type: 'test',
+                    name: 'Test Discovery',
+                    points: 25
+                });
+                if (game.discoveryTracker.discoveries.length > beforeCount) {
+                    log('✓ Discovery system working', 'success');
+                } else {
+                    throw new Error('Discovery system failed');
+                }
+                
+                // Enable buttons
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('storyBtn').disabled = false;
+                document.getElementById('challengeBtn').disabled = false;
+                document.getElementById('navBtn').disabled = false;
+                
+                showStatus('🎉 All tests passed! Game is ready to play.', 'success');
+                log('=== All tests completed successfully! ===', 'success');
+                
+            } catch (error) {
+                showStatus(`❌ Test failed: ${error.message}`, 'error');
+                log(`❌ Test failed: ${error.message}`, 'error');
+                console.error('Test error:', error);
+            }
+        };
+        
+        window.startGame = function() {
+            if (game) {
+                log('Starting the game...', 'success');
+                game.startGame();
+                showStatus('Game started! Click the canvas to interact.', 'success');
+            }
+        };
+        
+        window.testStory = function() {
+            if (game) {
+                log('Loading story scene...', 'success');
+                game.loadScene('story', { chapter: 'introduction' });
+                showStatus('Story scene loaded. Click to advance dialogue.', 'info');
+            }
+        };
+        
+        window.testChallenge = function() {
+            if (game) {
+                log('Loading challenge scene...', 'success');
+                game.loadScene('challenge', { type: 'physics', challenge: 'gravity_basics' });
+                showStatus('Challenge scene loaded. Answer the questions!', 'info');
+            }
+        };
+        
+        window.testNavigation = function() {
+            if (game) {
+                log('Loading navigation scene...', 'success');
+                game.loadScene('navigation');
+                showStatus('Navigation scene loaded. Click islands to explore!', 'info');
+            }
+        };
+        
+        // Canvas click handler
+        document.getElementById('gameCanvas').addEventListener('click', function(e) {
+            if (game) {
+                const rect = this.getBoundingClientRect();
+                const x = (e.clientX - rect.left) * (this.width / rect.width);
+                const y = (e.clientY - rect.top) * (this.height / rect.height);
+                log(`Canvas clicked at (${Math.round(x)}, ${Math.round(y)})`);
+                
+                if (game.gameState.currentScene === 'intro') {
+                    game.handleIntroClick(x, y);
+                } else {
+                    game.routeClick(x, y);
+                }
+            }
+        });
+        
+        // Keyboard handler
+        document.addEventListener('keydown', function(e) {
+            if (game && game.gameState.isPlaying) {
+                log(`Key pressed: ${e.code}`);
+                game.handleKeyPress(e);
+            }
+        });
+        
+        // Auto-start test
+        setTimeout(() => {
+            startTest();
+        }, 500);
+    </script>
+</body>
+</html>

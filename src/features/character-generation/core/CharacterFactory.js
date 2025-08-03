@@ -408,20 +408,45 @@ export class CharacterFactory {
 
     // Ensure required appearance fields
     if (!character.appearance) {
-      character.appearance = this.defaultTemplate.appearance;
+      character.appearance = JSON.parse(JSON.stringify(this.defaultTemplate.appearance));
     }
 
     // Ensure required personality fields
     if (!character.personality) {
-      character.personality = this.defaultTemplate.personality;
+      character.personality = JSON.parse(JSON.stringify(this.defaultTemplate.personality));
     }
 
     // Ensure required education fields
     if (!character.education) {
-      character.education = this.defaultTemplate.education;
+      character.education = JSON.parse(JSON.stringify(this.defaultTemplate.education));
+    }
+
+    // Ensure interactions exist
+    if (!character.interactions) {
+      character.interactions = JSON.parse(JSON.stringify(this.defaultTemplate.interactions));
+    }
+
+    // Ensure animations exist
+    if (!character.animations) {
+      character.animations = JSON.parse(JSON.stringify(this.defaultTemplate.animations));
+    }
+
+    // Ensure required personality fields are complete
+    if (!character.personality.traits || character.personality.traits.length === 0) {
+      character.personality.traits = ['friendly'];
+    }
+    
+    if (!character.personality.primaryTrait) {
+      character.personality.primaryTrait = character.personality.traits[0];
+    }
+
+    // Ensure required education fields are complete
+    if (!character.education.specialties || character.education.specialties.length === 0) {
+      character.education.specialties = ['General Learning'];
     }
 
     return character;
+  }
   }
 
   generateUniqueId(character) {

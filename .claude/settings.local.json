@@ -83,8 +83,22 @@
       "mcp__filesystem__get_file_info",
       "gh label:*",
       "gh milestone:*",
-      "git remote get-url:*"
+      "git remote get-url:*",
+      "Bash(mkdir:*)",
+      "mcp__memory__search_nodes",
+      "Bash(git rm:*)",
+      "Bash(npm run check:duplicates:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh api:*)",
+      "Bash(~/bin/ghpr:*)",
+      "Bash(mkdir:*)",
+      "Bash(timeout 60 npm test:*)",
+      "Bash(gtimeout 60 npm test -- tests/unit/BundleOptimizer.test.js --run)"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "/Users/austinorphan/Library/Mobile Documents/com~apple~CloudDocs/src/learnimals-worktrees/"
+    ]
   }
 }

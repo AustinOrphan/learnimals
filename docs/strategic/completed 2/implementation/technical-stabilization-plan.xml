@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<technicalStabilizationPlan xmlns="http://learnimals.com/docs/schema" version="1.0" lastUpdated="2025-07-29">
+  <metadata>
+    <title>Learnimals Technical Stabilization Plan</title>
+    <description>5-day plan to fix critical infrastructure issues</description>
+    <audience>Development team, technical lead</audience>
+    <priority>P0-Blocking</priority>
+    <estimatedDuration>3-5 days</estimatedDuration>
+    <requiredPersonnel>1-2 developers</requiredPersonnel>
+  </metadata>
+
+  <executiveSummary>
+    <overview>
+      This plan addresses four critical technical infrastructure failures that must be resolved before any feature development can proceed. The issues are interconnected and must be fixed in a specific order to avoid cascading failures.
+    </overview>
+    <timeline>3-5 days with 1-2 developers</timeline>
+    <priority>P0 - Blocking all other work</priority>
+    <successCriteria>Clean, stable development environment with passing tests and CI/CD</successCriteria>
+  </executiveSummary>
+
+  <problemAnalysis>
+    <criticalIssues>
+      <issue id="1" severity="critical">
+        <name>Testing Framework Failure</name>
+        <description>es-errors dependency missing, Vitest crashes</description>
+        <impact>Cannot run automated tests</impact>
+      </issue>
+      <issue id="2" severity="critical">
+        <name>Code Quality Crisis</name>
+        <description>200+ ESLint errors across codebase</description>
+        <impact>Prevents clean development</impact>
+      </issue>
+      <issue id="3" severity="critical">
+        <name>CI/CD Pipeline Broken</name>
+        <description>GitHub Actions failing due to test/lint issues</description>
+        <impact>No automated quality checks</impact>
+      </issue>
+      <issue id="4" severity="high">
+        <name>Development Environment Unstable</name>
+        <description>Inconsistent setup, missing documentation</description>
+        <impact>Developer productivity issues</impact>
+      </issue>
+    </criticalIssues>
+
+    <rootCauses>
+      <cause>Dependency Drift: Package versions out of sync, missing peer dependencies</cause>
+      <cause>Configuration Mismatch: ESLint config doesn't match actual code style</cause>
+      <cause>Process Breakdown: No enforcement of quality standards</cause>
+      <cause>Documentation Lag: Setup instructions don't reflect current reality</cause>
+    </rootCauses>
+  </problemAnalysis>
+
+  <phases>
+    <phase id="1" day="1" duration="4-5 hours">
+      <name>Dependency Resolution &amp; Testing Framework</name>
+      <objective>Get tests running without errors</objective>
+      
+      <steps>
+        <step id="1.1" duration="30 minutes" priority="critical">
+          <name>Complete Dependency Reset</name>
+          <actions>
+            <action>git add -A &amp;&amp; git commit -m "chore: backup before dependency reset"</action>
+            <action>rm -rf node_modules</action>
+            <action>rm package-lock.json</action>
+            <action>npm cache clean --force</action>
+            <action>npm install</action>
+            <action>npm install --save-dev es-errors@latest</action>
+            <action>npm install --save-dev @types/node@latest</action>
+          </actions>
+        </step>
+        
+        <step id="1.2" duration="45 minutes" priority="high">
+          <name>Vitest Configuration Audit</name>
+          <actions>
+            <action>Review and fix vitest.config.js configuration</action>
+            <action>Update test environment settings</action>
+            <action>Configure proper test timeout values</action>
+            <action>Set up coverage reporting</action>
+          </actions>
+          <configuration>
+            <file>vitest.config.js</file>
+            <content>
+              <![CDATA[
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./tests/setup.js'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'tests/**',
+        '**/*.config.js',
+        'docs/**'
+      ]
+    },
+    testTimeout: 10000,
+    hookTimeout: 10000
+  }
+});
+              ]]>
+            </content>
+          </configuration>
+        </step>
+
+        <step id="1.3" duration="30 minutes" priority="high">
+          <name>Create Missing Test Setup Files</name>
+          <actions>
+            <action>Create tests/setup.js with DOM mocks</action>
+            <action>Configure localStorage mocks</action>
+            <action>Set up global test utilities</action>
+          </actions>
+        </step>
+
+        <step id="1.4" duration="15 minutes" priority="medium">
+          <name>Test Framework Validation</name>
+          <actions>
+            <action>Run npm test to verify framework works</action>
+            <action>Document any remaining issues</action>
+          </actions>
+          <successCriteria>
+            <criterion>Tests run without crashing</criterion>
+            <criterion>Test failures acceptable (not crashes)</criterion>
+            <criterion>Framework properly configured</criterion>
+          </successCriteria>
+        </step>
+      </steps>
+
+      <deliverables>
+        <deliverable>Dependencies cleanly installed with no missing modules</deliverable>
+        <deliverable>Vitest runs without crashing</deliverable>
+        <deliverable>Test framework configuration validated</deliverable>
+        <deliverable>Package.json and package-lock.json in sync</deliverable>
+      </deliverables>
+    </phase>
+
+    <phase id="2" day="2" duration="4-6 hours">
+      <name>ESLint Error Resolution</name>
+      <objective>Achieve zero ESLint errors</objective>
+
+      <steps>
+        <step id="2.1" duration="30 minutes" priority="high">
+          <name>ESLint Configuration Analysis</name>
+          <actions>
+            <action>npm run lint > lint-errors.txt 2>&amp;1</action>
+            <action>Analyze error patterns and categories</action>
+            <action>Document most common error types</action>
+          </actions>
+        </step>
+
+        <step id="2.2" duration="30 minutes" priority="high">
+          <name>Automated Fixes</name>
+          <actions>
+            <action>npm run lint:fix</action>
+            <action>npm run lint > remaining-errors.txt 2>&amp;1</action>
+            <action>Document remaining manual fixes needed</action>
+          </actions>
+          <expectedOutcome>~178 errors auto-fixed</expectedOutcome>
+        </step>
+
+        <step id="2.3" duration="45 minutes" priority="high">
+          <name>ESLint Configuration Optimization</name>
+          <actions>
+            <action>Update eslint.config.mjs for codebase compatibility</action>
+            <action>Configure rules for development vs production</action>
+            <action>Set up test-specific rule overrides</action>
+          </actions>
+          <configuration>
+            <file>eslint.config.mjs</file>
+            <keyRules>
+              <rule name="indent">['error', 2, { SwitchCase: 1, ignoredNodes: ['TemplateLiteral'] }]</rule>
+              <rule name="quotes">['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }]</rule>
+              <rule name="no-unused-vars">['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]</rule>
+              <rule name="no-console">process.env.NODE_ENV === 'production' ? 'error' : 'warn'</rule>
+            </keyRules>
+          </configuration>
+        </step>
+
+        <step id="2.4" duration="2-3 hours" priority="high">
+          <name>Manual Error Resolution</name>
+          <actions>
+            <action>Fix errors by priority: utils, components, features, tests</action>
+            <action>Use systematic file-by-file approach</action>
+            <action>Verify fixes with npx eslint on individual files</action>
+          </actions>
+          <approach>
+            <priorityOrder>
+              <priority level="1">Core utilities (src/utils/)</priority>
+              <priority level="2">Components (src/components/)</priority>
+              <priority level="3">Features (src/features/)</priority>
+              <priority level="4">Tests (tests/)</priority>
+            </priorityOrder>
+          </approach>
+        </step>
+
+        <step id="2.5" duration="30 minutes" priority="medium">
+          <name>ESLint Integration</name>
+          <actions>
+            <action>Update package.json scripts</action>
+            <action>Configure lint-staged for pre-commit hooks</action>
+            <action>Set up ESLint IDE integration</action>
+          </actions>
+        </step>
+      </steps>
+
+      <deliverables>
+        <deliverable>Zero ESLint errors across entire codebase</deliverable>
+        <deliverable>ESLint configuration optimized for project</deliverable>
+        <deliverable>Automated fixing integrated into workflow</deliverable>
+        <deliverable>Pre-commit hooks preventing future errors</deliverable>
+      </deliverables>
+    </phase>
+
+    <phase id="3" day="3" duration="3-4 hours">
+      <name>CI/CD Pipeline Repair</name>
+      <objective>Fully functional GitHub Actions pipeline</objective>
+
+      <steps>
+        <step id="3.1" duration="30 minutes" priority="high">
+          <name>CI Configuration Analysis</name>
+          <actions>
+            <action>Review .github/workflows/ci.yml</action>
+            <action>Identify failure points</action>
+            <action>Document required fixes</action>
+          </actions>
+        </step>
+
+        <step id="3.2" duration="1 hour" priority="critical">
+          <name>GitHub Actions Configuration Fix</name>
+          <actions>
+            <action>Update CI workflow for robust dependency handling</action>
+            <action>Add multi-Node version testing</action>
+            <action>Configure proper error handling</action>
+            <action>Set up automated deployment</action>
+          </actions>
+          <configuration>
+            <file>.github/workflows/ci.yml</file>
+            <features>
+              <feature>Multi-Node version testing (18, 20)</feature>
+              <feature>Robust dependency installation</feature>
+              <feature>Comprehensive error reporting</feature>
+              <feature>Automated deployment capability</feature>
+            </features>
+          </configuration>
+        </step>
+
+        <step id="3.3" duration="30 minutes" priority="high">
+          <name>Branch Protection Setup</name>
+          <actions>
+            <action>Enable branch protection on main</action>
+            <action>Require PR reviews</action>
+            <action>Require status checks to pass</action>
+            <action>Include administrators in restrictions</action>
+          </actions>
+        </step>
+
+        <step id="3.4" duration="45 minutes" priority="high">
+          <name>CI Pipeline Testing</name>
+          <actions>
+            <action>Create test branch and PR</action>
+            <action>Monitor GitHub Actions execution</action>
+            <action>Verify all checks pass</action>
+            <action>Test deployment process</action>
+          </actions>
+        </step>
+      </steps>
+
+      <deliverables>
+        <deliverable>GitHub Actions pipeline passes all checks</deliverable>
+        <deliverable>Branch protection rules active</deliverable>
+        <deliverable>Multiple Node version testing working</deliverable>
+        <deliverable>Automated deployment functional</deliverable>
+      </deliverables>
+    </phase>
+
+    <phase id="4" day="4" duration="4-5 hours">
+      <name>Development Environment Stabilization</name>
+      <objective>Consistent, documented development setup</objective>
+
+      <steps>
+        <step id="4.1" duration="30 minutes" priority="medium">
+          <name>Environment Documentation Audit</name>
+          <actions>
+            <action>Review current setup documentation</action>
+            <action>Identify outdated instructions</action>
+            <action>Document missing troubleshooting info</action>
+          </actions>
+        </step>
+
+        <step id="4.2" duration="1 hour" priority="high">
+          <name>Comprehensive Setup Script Creation</name>
+          <actions>
+            <action>Create scripts/setup-dev-environment.sh</action>
+            <action>Include prerequisite checks</action>
+            <action>Add dependency installation</action>
+            <action>Configure Git hooks</action>
+          </actions>
+          <script>
+            <name>setup-dev-environment.sh</name>
+            <features>
+              <feature>Node.js version checking</feature>
+              <feature>Dependency installation with error handling</feature>
+              <feature>Git hooks setup</feature>
+              <feature>Local configuration creation</feature>
+            </features>
+          </script>
+        </step>
+
+        <step id="4.3" duration="1 hour" priority="high">
+          <name>Troubleshooting Guide Creation</name>
+          <actions>
+            <action>Create docs/troubleshooting.md</action>
+            <action>Document common dependency issues</action>
+            <action>Add platform-specific solutions</action>
+            <action>Include testing and ESLint troubleshooting</action>
+          </actions>
+        </step>
+
+        <step id="4.4" duration="1 hour" priority="medium">
+          <name>Development Workflow Documentation</name>
+          <actions>
+            <action>Create docs/development-workflow.md</action>
+            <action>Document daily development process</action>
+            <action>Define commit message standards</action>
+            <action>Outline PR creation process</action>
+          </actions>
+        </step>
+      </steps>
+
+      <deliverables>
+        <deliverable>Automated setup script working on fresh machines</deliverable>
+        <deliverable>Comprehensive troubleshooting documentation</deliverable>
+        <deliverable>Development workflow clearly documented</deliverable>
+        <deliverable>Platform-specific setup instructions provided</deliverable>
+      </deliverables>
+    </phase>
+
+    <phase id="5" day="5" duration="4-5 hours">
+      <name>Validation &amp; Testing</name>
+      <objective>Verify all systems working together</objective>
+
+      <steps>
+        <step id="5.1" duration="2 hours" priority="critical">
+          <name>Fresh Environment Testing</name>
+          <actions>
+            <action>Clone repository to new location</action>
+            <action>Run setup script</action>
+            <action>Verify all components work</action>
+            <action>Test CI pipeline with new PR</action>
+          </actions>
+        </step>
+
+        <step id="5.2" duration="1 hour" priority="medium">
+          <name>Performance Baseline</name>
+          <actions>
+            <action>Establish load time baselines</action>
+            <action>Run Lighthouse audit</action>
+            <action>Document performance metrics</action>
+          </actions>
+        </step>
+
+        <step id="5.3" duration="1 hour" priority="medium">
+          <name>Developer Experience Testing</name>
+          <actions>
+            <action>Simulate new developer onboarding</action>
+            <action>Test feature development workflow</action>
+            <action>Validate code review process</action>
+          </actions>
+        </step>
+      </steps>
+
+      <deliverables>
+        <deliverable>Clean setup verified on fresh environment</deliverable>
+        <deliverable>All automated tests passing</deliverable>
+        <deliverable>CI/CD pipeline fully functional</deliverable>
+        <deliverable>Performance baseline established</deliverable>
+        <deliverable>Developer workflows validated</deliverable>
+      </deliverables>
+    </phase>
+  </phases>
+
+  <successMetrics>
+    <technicalMetrics>
+      <metric>Zero ESLint errors across entire codebase</metric>
+      <metric>All tests pass without crashes or timeouts</metric>
+      <metric>CI/CD pipeline green on all branches</metric>
+      <metric>Setup script success on fresh environments</metric>
+    </technicalMetrics>
+
+    <processMetrics>
+      <metric>Setup time &lt; 10 minutes for new developers</metric>
+      <metric>PR cycle time &lt; 24 hours from creation to merge</metric>
+      <metric>Zero manual deployment steps required</metric>
+      <metric>Documentation completeness verified by testing</metric>
+    </processMetrics>
+
+    <qualityMetrics>
+      <metric>Code coverage &gt; 70% for critical paths</metric>
+      <metric>Load time &lt; 3 seconds for main pages</metric>
+      <metric>Zero critical security vulnerabilities</metric>
+      <metric>Cross-browser compatibility verified</metric>
+    </qualityMetrics>
+  </successMetrics>
+
+  <riskMitigation>
+    <highRiskScenarios>
+      <risk id="1">
+        <name>Dependency conflicts persist</name>
+        <mitigation>Document exact working versions, use npm shrinkwrap</mitigation>
+        <probability>Medium</probability>
+        <impact>High</impact>
+      </risk>
+      <risk id="2">
+        <name>ESLint configuration too strict</name>
+        <mitigation>Iterate on rules, team feedback sessions</mitigation>
+        <probability>Low</probability>
+        <impact>Medium</impact>
+      </risk>
+      <risk id="3">
+        <name>CI pipeline resource limits</name>
+        <mitigation>Optimize test suite, parallelize jobs</mitigation>
+        <probability>Low</probability>
+        <impact>Medium</impact>
+      </risk>
+    </highRiskScenarios>
+
+    <rollbackProcedures>
+      <procedure>
+        <name>Emergency Rollback</name>
+        <steps>
+          <step>git checkout main</step>
+          <step>git reset --hard &lt;last-known-good-commit&gt;</step>
+          <step>git push --force-with-lease origin main</step>
+        </steps>
+      </procedure>
+    </rollbackProcedures>
+  </riskMitigation>
+
+  <timelineSummary>
+    <day number="1">
+      <phase>Dependencies</phase>
+      <keyActivities>Fix npm issues, repair Vitest</keyActivities>
+      <deliverable>Working test framework</deliverable>
+      <effort>4-5 hours</effort>
+    </day>
+    <day number="2">
+      <phase>Code Quality</phase>
+      <keyActivities>ESLint error resolution</keyActivities>
+      <deliverable>Zero lint errors</deliverable>
+      <effort>4-6 hours</effort>
+    </day>
+    <day number="3">
+      <phase>CI/CD</phase>
+      <keyActivities>GitHub Actions repair</keyActivities>
+      <deliverable>Green pipeline</deliverable>
+      <effort>3-4 hours</effort>
+    </day>
+    <day number="4">
+      <phase>Environment</phase>
+      <keyActivities>Documentation, setup scripts</keyActivities>
+      <deliverable>Stable dev environment</deliverable>
+      <effort>4-5 hours</effort>
+    </day>
+    <day number="5">
+      <phase>Validation</phase>
+      <keyActivities>End-to-end testing</keyActivities>
+      <deliverable>Verified stability</deliverable>
+      <effort>4-5 hours</effort>
+    </day>
+  </timelineSummary>
+
+  <resourceRequirements>
+    <personnel>
+      <role>Technical Lead</role>
+      <count>1</count>
+      <commitment>Full-time</commitment>
+      <responsibilities>Architecture decisions, code review, oversight</responsibilities>
+    </personnel>
+    <personnel>
+      <role>Senior Developer</role>
+      <count>1-2</count>
+      <commitment>Full-time</commitment>
+      <responsibilities>Implementation, testing, documentation</responsibilities>
+    </personnel>
+
+    <totalEffort>19-25 hours over 5 days</totalEffort>
+    <outcome>Stable, professional development environment ready for MVP development</outcome>
+  </resourceRequirements>
+
+  <postStabilizationActions>
+    <immediate timeframe="Week 1">
+      <action>Team onboarding using new setup process</action>
+      <action>First sprint planning with stable environment</action>
+      <action>Establish code review standards</action>
+    </immediate>
+
+    <shortTerm timeframe="Month 1">
+      <action>Performance monitoring implementation</action>
+      <action>Advanced testing strategies</action>
+      <action>Continuous improvement feedback loop</action>
+    </shortTerm>
+  </postStabilizationActions>
+
+  <conclusion>
+    This plan transforms the broken technical foundation into a professional, stable development environment that supports sustainable growth and quality delivery. The 5-day investment prevents months of technical debt accumulation and establishes the foundation necessary for successful MVP development.
+  </conclusion>
+</technicalStabilizationPlan>
