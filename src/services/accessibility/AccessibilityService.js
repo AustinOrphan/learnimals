@@ -249,6 +249,30 @@ export class AccessibilityService {
         this.navigateToBottom(e);
       }
       break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+      if (e.altKey) {
+        this.handleHeadingNavigation(e, parseInt(e.key));
+      }
+      break;
+    }
+  }
+
+  /**
+   * Handle heading navigation (Alt+1 through Alt+6)
+   */
+  handleHeadingNavigation(e, level) {
+    e.preventDefault();
+    
+    const heading = document.querySelector(`h${level}`);
+    if (heading) {
+      heading.focus();
+      heading.scrollIntoView({ behavior: 'smooth' });
+      this.announce(`Navigated to ${heading.textContent || 'heading level ' + level}`, 'polite');
     }
   }
 

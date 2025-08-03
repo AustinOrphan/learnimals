@@ -52,6 +52,7 @@ class Modal extends BaseComponent {
     // Track document-level event listeners separately
     this.documentListeners = new Map();
     this.escapeHandler = null;
+    this.previouslyFocused = null;
   }
 
   /**
@@ -211,6 +212,9 @@ class Modal extends BaseComponent {
    * Open the modal
    */
   open() {
+    // Store reference to currently focused element
+    this.previouslyFocused = document.activeElement;
+    
     const modal = document.getElementById(this.options.id);
     if (!modal) {
       this.create();
@@ -259,6 +263,15 @@ class Modal extends BaseComponent {
       }
 
       this.isOpen = false;
+
+      // Restore focus to previously focused element
+      if (this.previouslyFocused && this.previouslyFocused.focus) {
+        try {
+          this.previouslyFocused.focus();
+        } catch (error) {
+          console.warn('Error restoring focus:', error);
+        }
+      }
 
       if (this.options.onClose && typeof this.options.onClose === 'function') {
         try {

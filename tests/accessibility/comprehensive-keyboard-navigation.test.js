@@ -311,11 +311,11 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
     it('should create functional skip links for common page sections', async () => {
       testContainer.innerHTML = `
         <header id="header">Header content</header>
-        <nav id="navigation">Navigation content</nav>
+        <nav id="main-navigation">Navigation content</nav>
         <main id="main-content">Main content</main>
         <aside id="sidebar">Sidebar content</aside>
         <footer id="footer">Footer content</footer>
-        <div id="search-section">Search functionality</div>
+        <div id="search">Search functionality</div>
       `;
 
       await service.initialize();
@@ -328,8 +328,8 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const links = skipLinks.querySelectorAll('.skip-link');
       expect(links.length).toBeGreaterThan(0);
 
-      // Test for expected skip links
-      const expectedTargets = ['#main-content', '#navigation', '#search-section'];
+      // Test for expected skip links (these match what AccessibilityService creates)
+      const expectedTargets = ['#main-content', '#main-navigation', '#search'];
       expectedTargets.forEach(target => {
         const skipLink = Array.from(links).find(link => link.getAttribute('href') === target);
         expect(skipLink).toBeTruthy(`Skip link to ${target} should exist`);
@@ -382,12 +382,14 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       expect(skipLinks.classList.contains('skip-links')).toBe(true);
 
       // Simulate focus on skip link
+      firstSkipLink.focus();
       firstSkipLink.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
 
-      // Should be visible when focused
-      expect(firstSkipLink.matches(':focus')).toBe(true);
+      // Should be the active element when focused
+      expect(document.activeElement).toBe(firstSkipLink);
 
       // Simulate blur
+      firstSkipLink.blur();
       firstSkipLink.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
     });
   });
@@ -567,20 +569,18 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         key: 'Tab',
         bubbles: true,
       });
-      btn1.dispatchEvent(tabEvent);
+      document.dispatchEvent(tabEvent);
 
-      // After keyboard navigation, should have keyboard-focused class
-      expect(btn1.classList.contains('keyboard-navigation')).toBe(true);
+      // After keyboard navigation, body should have keyboard-navigation class
+      expect(document.body.classList.contains('keyboard-navigation')).toBe(true);
 
       // Simulate mouse click on second button
       btn2.focus();
-      const clickEvent = new MouseEvent('click', { bubbles: true });
-      btn2.dispatchEvent(clickEvent);
+      const clickEvent = new MouseEvent('mousedown', { bubbles: true });
+      document.dispatchEvent(clickEvent);
 
       // Should not have keyboard-navigation class after mouse interaction
-      setTimeout(() => {
-        expect(btn2.classList.contains('keyboard-navigation')).toBe(false);
-      }, 100);
+      expect(document.body.classList.contains('keyboard-navigation')).toBe(false);
     });
 
     it('should maintain focus indicators for custom components', () => {

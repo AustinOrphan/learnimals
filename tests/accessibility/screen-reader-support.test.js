@@ -62,20 +62,16 @@ describe('Screen Reader Support Tests', () => {
       y: 0,
     }));
 
-    // Mock speechSynthesis
-    Object.defineProperty(window, 'speechSynthesis', {
-      writable: true,
-      configurable: true,
-      value: {
-        getVoices: vi.fn(() => [{ name: 'Test Voice', lang: 'en-US' }]),
-        speak: vi.fn(),
-        cancel: vi.fn(),
-        pause: vi.fn(),
-        resume: vi.fn(),
-        speaking: false,
-        pending: false,
-        paused: false,
-      },
+    // Mock speechSynthesis using Vitest stubGlobal
+    vi.stubGlobal('speechSynthesis', {
+      getVoices: vi.fn(() => [{ name: 'Test Voice', lang: 'en-US' }]),
+      speak: vi.fn(),
+      cancel: vi.fn(),
+      pause: vi.fn(),
+      resume: vi.fn(),
+      speaking: false,
+      pending: false,
+      paused: false,
     });
 
     service = new AccessibilityService();
@@ -87,6 +83,7 @@ describe('Screen Reader Support Tests', () => {
     }
     document.body.innerHTML = '';
     vi.clearAllMocks();
+    vi.unstubAllGlobals();
   });
 
   describe('Screen Reader Detection', () => {
@@ -130,10 +127,17 @@ describe('Screen Reader Support Tests', () => {
 
     it('should handle errors during screen reader detection', () => {
       // Mock speechSynthesis to throw error
-      Object.defineProperty(window, 'speechSynthesis', {
-        get: () => {
+      vi.stubGlobal('speechSynthesis', {
+        get getVoices() {
           throw new Error('Not available');
         },
+        speak: vi.fn(),
+        cancel: vi.fn(),
+        pause: vi.fn(),
+        resume: vi.fn(),
+        speaking: false,
+        pending: false,
+        paused: false,
       });
 
       const isDetected = service.detectScreenReader();
