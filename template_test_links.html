@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Testing Links</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .template-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; }
+        h2 { color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .game-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .game-link {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: transform 0.2s;
+        }
+        .game-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .template-name {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 0.9rem;
+        }
+        .game-name {
+            font-size: 1.1rem;
+            margin: 5px 0;
+        }
+        .game-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Template Testing Dashboard</h1>
+    
+    <div class="template-section">
+        <h2>📱 Minimal Template</h2>
+        <p>Lightweight template with essential controls only - perfect for simple games and quick testing.</p>
+        <div class="game-links">
+            <a href="/src/templates/test-minimal.html?gameId=word-scramble&gameName=Word%20Scramble&characterName=Ruby&containerId=game-container&gameScriptPath=/src/features/games/word-scramble/wordScramble.js&gameStyleSheet=/src/features/games/word-scramble/wordScramble.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">MINIMAL</div>
+                <div class="game-name">Word Scramble</div>
+                <div class="game-description">Ruby the Rabbit • Reading</div>
+            </a>
+            
+            <a href="/src/templates/test-minimal.html?gameId=bubble-pop&gameName=Bubble%20Pop%20Math&characterName=Mango&containerId=game-container&gameScriptPath=/src/features/games/bubble-pop/bubblepop.js&gameStyleSheet=/src/features/games/bubble-pop/bubblepop.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">MINIMAL</div>
+                <div class="game-name">Bubble Pop Math</div>
+                <div class="game-description">Mango the Shark • Math</div>
+            </a>
+            
+            <a href="/src/templates/test-minimal.html?gameId=pizza-maker&gameName=Pizza%20Party%20Rush&characterName=Chef%20Mario&containerId=game-container&gameScriptPath=/src/features/games/pizza-maker/PizzaMakerGame.js&gameStyleSheet=/src/features/games/pizza-maker/pizzaMaker.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">MINIMAL</div>
+                <div class="game-name">Pizza Party Rush</div>
+                <div class="game-description">Chef Mario • General</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="template-section">
+        <h2>🖥️ Fullscreen Template</h2>
+        <p>Immersive template with auto-hide UI - ideal for action games and distraction-free experiences.</p>
+        <div class="game-links">
+            <a href="/src/templates/fullscreen.html?gameId=bubble-pop&gameName=Bubble%20Pop%20Math&characterName=Mango&containerId=game-container&gameScriptPath=/src/features/games/bubble-pop/bubblepop.js&gameStyleSheet=/src/features/games/bubble-pop/bubblepop.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">FULLSCREEN</div>
+                <div class="game-name">Bubble Pop Math</div>
+                <div class="game-description">Mango the Shark • Math</div>
+            </a>
+            
+            <a href="/src/templates/fullscreen.html?gameId=element-match&gameName=Element%20Match&characterName=Zara&containerId=game-container&gameScriptPath=/src/features/games/element-match/elementMatch.js&gameStyleSheet=/src/features/games/element-match/elementMatch.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">FULLSCREEN</div>
+                <div class="game-name">Element Match</div>
+                <div class="game-description">Zara the Zebra • Science</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="template-section">
+        <h2>📱 Mobile Template</h2>
+        <p>Touch-optimized template with haptic feedback - designed for mobile-first experiences.</p>
+        <div class="game-links">
+            <a href="/src/templates/mobile.html?gameId=word-scramble&gameName=Word%20Scramble&characterName=Ruby&containerId=game-container&gameScriptPath=/src/features/games/word-scramble/wordScramble.js&gameStyleSheet=/src/features/games/word-scramble/wordScramble.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">MOBILE</div>
+                <div class="game-name">Word Scramble</div>
+                <div class="game-description">Ruby the Rabbit • Reading</div>
+            </a>
+            
+            <a href="/src/templates/mobile.html?gameId=pizza-maker&gameName=Pizza%20Party%20Rush&characterName=Chef%20Mario&containerId=game-container&gameScriptPath=/src/features/games/pizza-maker/PizzaMakerGame.js&gameStyleSheet=/src/features/games/pizza-maker/pizzaMaker.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">MOBILE</div>
+                <div class="game-name">Pizza Party Rush</div>
+                <div class="game-description">Chef Mario • General</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="template-section">
+        <h2>🎯 Standard Template (Comparison)</h2>
+        <p>The original full-featured template for comparison purposes.</p>
+        <div class="game-links">
+            <a href="/src/templates/game.html?gameId=word-scramble&gameName=Word%20Scramble&characterName=Ruby&containerId=game-container&gameScriptPath=/src/features/games/word-scramble/wordScramble.js&gameStyleSheet=/src/features/games/word-scramble/wordScramble.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">STANDARD</div>
+                <div class="game-name">Word Scramble</div>
+                <div class="game-description">Ruby the Rabbit • Reading</div>
+            </a>
+            
+            <a href="/src/templates/game.html?gameId=bubble-pop&gameName=Bubble%20Pop%20Math&characterName=Mango&containerId=game-container&gameScriptPath=/src/features/games/bubble-pop/bubblepop.js&gameStyleSheet=/src/features/games/bubble-pop/bubblepop.css&showControls=true&showStats=true" 
+               class="game-link" target="_blank">
+                <div class="template-name">STANDARD</div>
+                <div class="game-name">Bubble Pop Math</div>
+                <div class="game-description">Mango the Shark • Math</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="template-section">
+        <h2>📋 Testing Instructions</h2>
+        <ol>
+            <li><strong>Minimal Template:</strong> Check that UI is simplified and lightweight</li>
+            <li><strong>Fullscreen Template:</strong> Verify auto-fullscreen and UI auto-hide after 3 seconds</li>
+            <li><strong>Mobile Template:</strong> Test touch controls and haptic feedback (if on mobile)</li>
+            <li><strong>Standard Template:</strong> Ensure all original features work properly</li>
+        </ol>
+        <p><strong>Key Features to Test:</strong></p>
+        <ul>
+            <li>Game loading and initialization</li>
+            <li>Control buttons (start, pause, restart)</li>
+            <li>Score and level display updates</li>
+            <li>Theme consistency</li>
+            <li>Responsive behavior</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -56,7 +56,7 @@ large_files=$(find ./src ./docs ./tests -type f -size +1M 2>/dev/null | grep -v 
 if [ ! -z "$large_files" ]; then
   echo "${YELLOW}⚠️  Warning: Large files detected (>1MB):${NC}"
   echo "$large_files" | while read file; do
-    size=$(ls -lh "$file" 2>/dev/null | awk '{print $5}' || echo "unknown")
+    size=$(du -h "$file" 2>/dev/null | awk '{print $1}' || echo "unknown")
     echo "  - $file (${size})"
   done
   echo ""

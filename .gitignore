@@ -68,3 +68,6 @@ temp/
 
 # Development and test files
 dev-tests/
+# Claude settings (user-specific)
+.claude/settings.local.json
+.claude/settings.local*.json
