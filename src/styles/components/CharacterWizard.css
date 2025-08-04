@@ -162,7 +162,7 @@
 .progress-step.current .step-number {
   background: var(--accent-primary);
   color: white;
-  box-shadow: 0 0 0 4px var(--accent-primary)20;
+  box-shadow: 0 0 0 4px var(--accent-primary) 20;
 }
 
 .step-label {
@@ -361,7 +361,7 @@
 .form-textarea:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px var(--accent-primary)20;
+  box-shadow: 0 0 0 3px var(--accent-primary) 20;
 }
 
 .form-input.error,
@@ -438,7 +438,7 @@
 
 .shape-option.selected {
   border-color: var(--accent-primary);
-  background: var(--accent-primary)10;
+  background: var(--accent-primary) 10;
   color: var(--accent-primary);
 }
 
@@ -478,7 +478,7 @@
 
 .shape-preview.shape-hexagon:before,
 .shape-preview.shape-hexagon:after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0;
   border-left: 16px solid transparent;
@@ -520,7 +520,7 @@
 
 .size-option.selected {
   border-color: var(--accent-primary);
-  background: var(--accent-primary)10;
+  background: var(--accent-primary) 10;
   color: var(--accent-primary);
 }
 
@@ -548,7 +548,7 @@
 
 .color-palette.selected {
   border-color: var(--accent-primary);
-  background: var(--accent-primary)10;
+  background: var(--accent-primary) 10;
 }
 
 .palette-colors {
@@ -588,7 +588,7 @@
   margin: 0;
 }
 
-.custom-colors input[type="color"] {
+.custom-colors input[type='color'] {
   width: 40px;
   height: 40px;
   border: none;
@@ -633,7 +633,7 @@
 
 .trait-combo.selected {
   border-color: var(--accent-primary);
-  background: var(--accent-primary)10;
+  background: var(--accent-primary) 10;
 }
 
 .trait-selector {
@@ -906,7 +906,7 @@
 }
 
 .form-checkbox:checked + .checkmark::after {
-  content: "✓";
+  content: '✓';
   color: white;
   font-size: 12px;
 }
@@ -935,7 +935,7 @@
 
 .btn-outline:hover {
   border-color: var(--accent-primary);
-  background: var(--accent-primary)10;
+  background: var(--accent-primary) 10;
   color: var(--accent-primary);
 }
 
@@ -1028,8 +1028,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Validation Display */
@@ -1110,7 +1114,7 @@
 
 .template-option input:checked + .template-card {
   border-color: var(--accent-primary);
-  background: var(--accent-primary)10;
+  background: var(--accent-primary) 10;
 }
 
 .template-name {
@@ -1157,23 +1161,23 @@
     width: 95vw;
     height: 95vh;
   }
-  
+
   .wizard-body {
     flex-direction: column;
   }
-  
+
   .wizard-preview {
     width: 100%;
     border-left: none;
     border-top: 1px solid var(--border-color);
     max-height: 200px;
   }
-  
+
   .progress-steps {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .progress-step {
     flex-direction: row;
   }
@@ -1184,45 +1188,45 @@
   .wizard-footer {
     padding: 16px 20px;
   }
-  
+
   .wizard-progress {
     padding: 16px 20px;
   }
-  
+
   .wizard-main {
     padding: 20px;
   }
-  
+
   .step-header h3 {
     font-size: 1.25rem;
   }
-  
+
   .progress-steps {
     display: none;
   }
-  
+
   .shape-selector {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   .color-palettes {
     grid-template-columns: 1fr 1fr;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .wizard-actions {
     flex-direction: column-reverse;
     width: 100%;
   }
-  
+
   .wizard-actions button {
     width: 100%;
     justify-content: center;
   }
-  
+
   .wizard-footer {
     flex-direction: column;
     gap: 16px;
@@ -1236,30 +1240,30 @@
     height: 100vh;
     border-radius: 0;
   }
-  
+
   .appearance-sections {
     gap: 16px;
   }
-  
+
   .form-section {
     padding: 16px;
   }
-  
+
   .custom-colors {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .age-range-selector {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .quick-actions {
     flex-direction: column;
   }
-  
+
   .quick-actions button {
     width: 100%;
     justify-content: center;

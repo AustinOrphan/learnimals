@@ -11,21 +11,18 @@ class GeographySubject {
     this.character = {
       name: 'Atlas',
       type: 'Eagle',
-      role: 'Geography Guide'
+      role: 'Geography Guide',
     };
-    this.features = [
-      'World Map',
-      'Country Explorer',
-      'Capital Quiz',
-      'Culture Corner'
-    ];
-        
+    this.features = ['World Map', 'Country Explorer', 'Capital Quiz', 'Culture Corner'];
+
     this.init();
   }
 
   init() {
-    console.log(`🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`);
-        
+    console.log(
+      `🎓 Initializing ${this.subjectName} with ${this.character.name} the ${this.character.type}`
+    );
+
     // Set up event listeners when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setupEventListeners());
@@ -43,7 +40,7 @@ class GeographySubject {
 
   setupFeatureCards() {
     const featureCards = document.querySelectorAll('.feature-card');
-        
+
     featureCards.forEach((card, index) => {
       const feature = this.features[index];
       if (feature) {
@@ -59,7 +56,7 @@ class GeographySubject {
       characterImage.addEventListener('click', () => {
         this.showCharacterMessage();
       });
-            
+
       // Add hover effect
       characterImage.style.cursor = 'pointer';
       characterImage.title = `Click to interact with ${this.character.name}!`;
@@ -68,17 +65,17 @@ class GeographySubject {
 
   setupThemeIntegration() {
     // Listen for theme changes and update character accordingly
-    document.addEventListener('themeChanged', (event) => {
+    document.addEventListener('themeChanged', event => {
       this.onThemeChange(event.detail.theme);
     });
   }
 
   handleFeatureClick(feature) {
     console.log(`🎯 User clicked on: ${feature}`);
-        
+
     // Show character encouragement
     this.showCharacterMessage(`Great choice! Let's explore ${feature} together!`);
-        
+
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
     case 'world map':
@@ -114,10 +111,11 @@ class GeographySubject {
       `Hi! I'm ${this.character.name} the ${this.character.type}!`,
       `Ready to learn some amazing ${this.subjectName.toLowerCase()}?`,
       'Let\'s explore and have fun together!',
-      'Click on any activity to get started!'
+      'Click on any activity to get started!',
     ];
 
-    const displayMessage = message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
+    const displayMessage =
+      message || defaultMessages[Math.floor(Math.random() * defaultMessages.length)];
 
     // Create and show message modal or toast
     this.displayMessage(displayMessage);
@@ -136,7 +134,7 @@ class GeographySubject {
       confirmButtonText: 'Understood!',
       showClose: true,
       size: 'medium',
-      onConfirm: () => modal.hide()
+      onConfirm: () => modal.hide(),
     });
     modal.show();
   }
@@ -154,7 +152,7 @@ class GeographySubject {
       subject: this.subjectName,
       completedFeatures: [],
       totalFeatures: this.features.length,
-      level: 1
+      level: 1,
     };
   }
 

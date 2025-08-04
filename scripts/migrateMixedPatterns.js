@@ -240,7 +240,7 @@ class MixedPatternMigrator {
    * @param {Object} fileInfo - File information
    * @returns {Object} - Migration result
    */
-  applyMigrationRules(content, fileInfo) {
+  applyMigrationRules(content, _fileInfo) {
     let migratedContent = content;
     const appliedRules = [];
     let totalChanges = 0;

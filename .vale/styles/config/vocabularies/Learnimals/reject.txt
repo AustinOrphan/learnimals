@@ -1,0 +1,37 @@
+# Terms to flag as errors
+# These are common misspellings or incorrect forms
+
+# Common Misspellings
+learnimals
+Learnimal
+learnimal
+javascrpt
+typscript
+pythn
+reactjs
+
+# Incorrect Technical Terms
+front-end
+back-end
+e-mail
+web-site
+web site
+plugin
+username
+dataset
+dropdown
+checkbox
+
+# Avoid these terms
+simple
+simply
+obviously
+clearly
+just
+actually
+basically
+really
+very
+quite
+extremely
+highly

@@ -11,34 +11,34 @@ const mockProgressTracker = {
   updateProgress: vi.fn(),
   getProgress: vi.fn(),
   resetProgress: vi.fn(),
-  exportProgress: vi.fn()
+  exportProgress: vi.fn(),
 };
 
 const mockAchievementSystem = {
   checkAchievements: vi.fn(),
   unlockAchievement: vi.fn(),
   getUnlockedAchievements: vi.fn(),
-  getAvailableAchievements: vi.fn()
+  getAvailableAchievements: vi.fn(),
 };
 
 const mockStreakTracker = {
   updateStreak: vi.fn(),
   getCurrentStreak: vi.fn(),
   getLongestStreak: vi.fn(),
-  resetStreak: vi.fn()
+  resetStreak: vi.fn(),
 };
 
 const mockGoalTracker = {
   setGoal: vi.fn(),
   updateGoalProgress: vi.fn(),
   completeGoal: vi.fn(),
-  getActiveGoals: vi.fn()
+  getActiveGoals: vi.fn(),
 };
 
 const mockProgressDashboard = {
   render: vi.fn(),
   updateDisplay: vi.fn(),
-  showProgressDetails: vi.fn()
+  showProgressDetails: vi.fn(),
 };
 
 // Mock localStorage
@@ -46,7 +46,7 @@ const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
-  clear: vi.fn()
+  clear: vi.fn(),
 };
 
 vi.stubGlobal('localStorage', localStorageMock);
@@ -54,7 +54,7 @@ vi.stubGlobal('localStorage', localStorageMock);
 describe('Progress System Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Set up progress dashboard DOM
     document.body.innerHTML = `
       <div id="progress-dashboard">
@@ -108,7 +108,7 @@ describe('Progress System Integration', () => {
       user: {
         id: 'user_123',
         name: 'TestLearner',
-        joinDate: '2024-01-15T10:00:00Z'
+        joinDate: '2024-01-15T10:00:00Z',
       },
       subjects: {
         math: {
@@ -116,43 +116,43 @@ describe('Progress System Integration', () => {
           activitiesCompleted: 0,
           gamesPlayed: 0,
           averageScore: 0,
-          lastActivity: null
+          lastActivity: null,
         },
         science: {
           totalTime: 0,
           activitiesCompleted: 0,
           gamesPlayed: 0,
           averageScore: 0,
-          lastActivity: null
+          lastActivity: null,
         },
         reading: {
           totalTime: 0,
           activitiesCompleted: 0,
           gamesPlayed: 0,
           averageScore: 0,
-          lastActivity: null
-        }
+          lastActivity: null,
+        },
       },
       overall: {
         totalScore: 0,
         totalTime: 0,
         totalActivities: 0,
         level: 1,
-        xp: 0
+        xp: 0,
       },
       achievements: [],
       streaks: {
         current: 0,
         longest: 0,
-        lastActivity: null
+        lastActivity: null,
       },
-      goals: []
+      goals: [],
     };
 
     // Test progress initialization
     mockProgressTracker.initializeProgress.mockResolvedValue(initialProgressData);
     const progress = await mockProgressTracker.initializeProgress('user_123');
-    
+
     expect(progress.user.id).toBe('user_123');
     expect(progress.overall.totalScore).toBe(0);
     expect(progress.subjects.math.activitiesCompleted).toBe(0);
@@ -160,7 +160,7 @@ describe('Progress System Integration', () => {
     // Test initial dashboard render
     mockProgressDashboard.render.mockResolvedValue(true);
     await mockProgressDashboard.render(progress);
-    
+
     expect(mockProgressDashboard.render).toHaveBeenCalledWith(progress);
 
     console.log('✅ Progress initialization test passed');
@@ -175,8 +175,8 @@ describe('Progress System Integration', () => {
           score: 150,
           timeSpent: 300, // 5 minutes
           completed: true,
-          accuracy: 85
-        }
+          accuracy: 85,
+        },
       },
       {
         subject: 'science',
@@ -185,8 +185,8 @@ describe('Progress System Integration', () => {
           score: 200,
           timeSpent: 480, // 8 minutes
           completed: true,
-          accuracy: 92
-        }
+          accuracy: 92,
+        },
       },
       {
         subject: 'math',
@@ -195,9 +195,9 @@ describe('Progress System Integration', () => {
           score: 180,
           timeSpent: 240, // 4 minutes
           completed: true,
-          accuracy: 78
-        }
-      }
+          accuracy: 78,
+        },
+      },
     ];
 
     let totalScore = 0;
@@ -213,11 +213,11 @@ describe('Progress System Integration', () => {
         newScore: update.data.score,
         totalScore,
         totalTime,
-        updated: true
+        updated: true,
       });
 
       const result = await mockProgressTracker.updateProgress(update.subject, update.data);
-      
+
       expect(result.subject).toBe(update.subject);
       expect(result.newScore).toBe(update.data.score);
       expect(result.updated).toBe(true);
@@ -232,25 +232,25 @@ describe('Progress System Integration', () => {
           totalTime: 540, // 9 minutes
           activitiesCompleted: 2,
           averageScore: 165,
-          totalScore: 330
+          totalScore: 330,
         },
         science: {
           totalTime: 480, // 8 minutes
           activitiesCompleted: 1,
           averageScore: 200,
-          totalScore: 200
-        }
+          totalScore: 200,
+        },
       },
       overall: {
         totalScore,
         totalTime,
         totalActivities: 3,
-        averageAccuracy: 85
-      }
+        averageAccuracy: 85,
+      },
     });
 
     const aggregatedProgress = mockProgressTracker.getProgress();
-    
+
     expect(aggregatedProgress.overall.totalScore).toBe(530);
     expect(aggregatedProgress.overall.totalTime).toBe(1020); // 17 minutes
     expect(aggregatedProgress.subjects.math.activitiesCompleted).toBe(2);
@@ -266,73 +266,76 @@ describe('Progress System Integration', () => {
         name: 'First Steps',
         description: 'Complete your first activity',
         criteria: { activitiesCompleted: 1 },
-        reward: { xp: 50, badge: 'beginner' }
+        reward: { xp: 50, badge: 'beginner' },
       },
       {
         id: 'math_explorer',
         name: 'Math Explorer',
         description: 'Complete 5 math activities',
         criteria: { subject: 'math', activitiesCompleted: 5 },
-        reward: { xp: 200, badge: 'math_star' }
+        reward: { xp: 200, badge: 'math_star' },
       },
       {
         id: 'high_scorer',
         name: 'High Scorer',
         description: 'Score over 1000 points in a single game',
         criteria: { singleGameScore: 1000 },
-        reward: { xp: 150, badge: 'high_scorer' }
+        reward: { xp: 150, badge: 'high_scorer' },
       },
       {
         id: 'dedicated_learner',
         name: 'Dedicated Learner',
         description: 'Study for 1 hour total',
         criteria: { totalTime: 3600 }, // 1 hour in seconds
-        reward: { xp: 300, badge: 'dedicated' }
-      }
+        reward: { xp: 300, badge: 'dedicated' },
+      },
     ];
 
     const progressData = {
       overall: {
         totalActivities: 1,
         totalTime: 1800, // 30 minutes
-        totalScore: 500
+        totalScore: 500,
       },
       subjects: {
         math: {
           activitiesCompleted: 1,
-          highestScore: 500
-        }
+          highestScore: 500,
+        },
       },
-      gameScores: [150, 200, 500, 350]
+      gameScores: [150, 200, 500, 350],
     };
 
     // Test achievement checking
     const eligibleAchievements = ['first_steps']; // Only this one should be unlocked
-    
+
     mockAchievementSystem.checkAchievements.mockReturnValue(eligibleAchievements);
-    const achievements = mockAchievementSystem.checkAchievements(progressData, achievementDefinitions);
-    
+    const achievements = mockAchievementSystem.checkAchievements(
+      progressData,
+      achievementDefinitions
+    );
+
     expect(achievements).toContain('first_steps');
     expect(achievements).not.toContain('math_explorer'); // Needs 5 activities
     expect(achievements).not.toContain('high_scorer'); // Needs 1000+ score
     expect(achievements).not.toContain('dedicated_learner'); // Needs 1 hour
 
     // Test achievement unlocking
-    achievements.forEach(async (achievementId) => {
+    achievements.forEach(async achievementId => {
       const achievement = achievementDefinitions.find(a => a.id === achievementId);
-      
+
       mockAchievementSystem.unlockAchievement.mockResolvedValue({
         id: achievement.id,
         name: achievement.name,
         unlockedAt: new Date().toISOString(),
-        reward: achievement.reward
+        reward: achievement.reward,
       });
 
       const unlockedAchievement = await mockAchievementSystem.unlockAchievement(achievement.id);
-      
+
       expect(unlockedAchievement.id).toBe(achievement.id);
       expect(unlockedAchievement.reward).toEqual(achievement.reward);
-      
+
       console.log(`   🏆 Achievement unlocked: ${achievement.name}`);
     });
 
@@ -341,8 +344,8 @@ describe('Progress System Integration', () => {
       {
         id: 'first_steps',
         name: 'First Steps',
-        unlockedAt: '2024-01-15T10:30:00Z'
-      }
+        unlockedAt: '2024-01-15T10:30:00Z',
+      },
     ]);
 
     const unlockedAchievements = mockAchievementSystem.getUnlockedAchievements();
@@ -360,7 +363,7 @@ describe('Progress System Integration', () => {
       { date: '2024-01-18', activities: 1, totalTime: 600 },
       // Skip 2024-01-19 (break in streak)
       { date: '2024-01-20', activities: 2, totalTime: 1500 },
-      { date: '2024-01-21', activities: 3, totalTime: 1800 }
+      { date: '2024-01-21', activities: 3, totalTime: 1800 },
     ];
 
     let currentStreak = 0;
@@ -370,8 +373,9 @@ describe('Progress System Integration', () => {
     // Test streak tracking for each day
     for (const day of dailyActivities) {
       const dayDate = new Date(day.date);
-      const isConsecutive = previousDate ? 
-        (dayDate.getTime() - previousDate.getTime()) === 24 * 60 * 60 * 1000 : true;
+      const isConsecutive = previousDate
+        ? dayDate.getTime() - previousDate.getTime() === 24 * 60 * 60 * 1000
+        : true;
 
       if (isConsecutive) {
         currentStreak++;
@@ -384,16 +388,16 @@ describe('Progress System Integration', () => {
       mockStreakTracker.updateStreak.mockReturnValue({
         current: currentStreak,
         longest: longestStreak,
-        lastActivity: day.date
+        lastActivity: day.date,
       });
 
       const streakData = mockStreakTracker.updateStreak(day.date, day.activities);
-      
+
       expect(streakData.current).toBe(currentStreak);
       expect(streakData.longest).toBe(longestStreak);
 
       previousDate = dayDate;
-      
+
       console.log(`   📅 ${day.date}: Streak = ${currentStreak}, Longest = ${longestStreak}`);
     }
 
@@ -411,7 +415,7 @@ describe('Progress System Integration', () => {
     mockStreakTracker.resetStreak.mockReturnValue({
       current: 0,
       longest: 4, // Longest streak is preserved
-      resetAt: new Date().toISOString()
+      resetAt: new Date().toISOString(),
     });
 
     const resetStreak = mockStreakTracker.resetStreak();
@@ -431,7 +435,7 @@ describe('Progress System Integration', () => {
         target: 5000,
         current: 0,
         deadline: '2024-02-15T23:59:59Z',
-        reward: { xp: 500, badge: 'score_master' }
+        reward: { xp: 500, badge: 'score_master' },
       },
       {
         id: 'goal_2',
@@ -441,7 +445,7 @@ describe('Progress System Integration', () => {
         target: 36000, // 10 hours in seconds
         current: 0,
         deadline: '2024-01-31T23:59:59Z',
-        reward: { xp: 1000, badge: 'marathon_runner' }
+        reward: { xp: 1000, badge: 'marathon_runner' },
       },
       {
         id: 'goal_3',
@@ -451,8 +455,8 @@ describe('Progress System Integration', () => {
         target: 50,
         current: 0,
         deadline: '2024-03-01T23:59:59Z',
-        reward: { xp: 750, badge: 'explorer' }
-      }
+        reward: { xp: 750, badge: 'explorer' },
+      },
     ];
 
     // Test goal setting
@@ -460,7 +464,7 @@ describe('Progress System Integration', () => {
       mockGoalTracker.setGoal.mockResolvedValue({
         id: goal.id,
         set: true,
-        startDate: new Date().toISOString()
+        startDate: new Date().toISOString(),
       });
 
       const setResult = await mockGoalTracker.setGoal(goal);
@@ -475,13 +479,13 @@ describe('Progress System Integration', () => {
       { goalId: 'goal_3', increment: 1 }, // Activities
       { goalId: 'goal_1', increment: 200 }, // More score
       { goalId: 'goal_2', increment: 2400 }, // More time (40 minutes)
-      { goalId: 'goal_3', increment: 2 } // More activities
+      { goalId: 'goal_3', increment: 2 }, // More activities
     ];
 
     const goalProgress = {
       goal_1: 0,
       goal_2: 0,
-      goal_3: 0
+      goal_3: 0,
     };
 
     for (const update of progressUpdates) {
@@ -495,26 +499,28 @@ describe('Progress System Integration', () => {
         current: progress,
         target: goal.target,
         percentage: Math.min(percentage, 100),
-        completed: progress >= goal.target
+        completed: progress >= goal.target,
       });
 
       const result = await mockGoalTracker.updateGoalProgress(update.goalId, update.increment);
-      
+
       expect(result.goalId).toBe(update.goalId);
       expect(result.current).toBe(progress);
-      
-      console.log(`   🎯 ${update.goalId}: ${result.current}/${result.target} (${result.percentage.toFixed(1)}%)`);
+
+      console.log(
+        `   🎯 ${update.goalId}: ${result.current}/${result.target} (${result.percentage.toFixed(1)}%)`
+      );
     }
 
     // Test goal completion check
     const completedGoals = goals.filter(goal => goalProgress[goal.id] >= goal.target);
-    
+
     for (const completedGoal of completedGoals) {
       mockGoalTracker.completeGoal.mockResolvedValue({
         id: completedGoal.id,
         completed: true,
         completedAt: new Date().toISOString(),
-        reward: completedGoal.reward
+        reward: completedGoal.reward,
       });
 
       const completion = await mockGoalTracker.completeGoal(completedGoal.id);
@@ -539,48 +545,46 @@ describe('Progress System Integration', () => {
         totalTime: 7200, // 2 hours
         level: 3,
         xp: 1850,
-        completionRate: 65
+        completionRate: 65,
       },
       subjects: [
         { name: 'Math', progress: 80, activitiesCompleted: 8, totalActivities: 10 },
         { name: 'Science', progress: 60, activitiesCompleted: 6, totalActivities: 10 },
-        { name: 'Reading', progress: 45, activitiesCompleted: 4, totalActivities: 9 }
+        { name: 'Reading', progress: 45, activitiesCompleted: 4, totalActivities: 9 },
       ],
       recentAchievements: [
         { name: 'Math Explorer', unlockedAt: '2024-01-21T14:30:00Z' },
-        { name: 'Quick Learner', unlockedAt: '2024-01-20T16:45:00Z' }
+        { name: 'Quick Learner', unlockedAt: '2024-01-20T16:45:00Z' },
       ],
       currentStreak: 5,
       longestStreak: 8,
-      activeGoals: [
-        { title: 'Score Master', progress: 49, target: 5000, current: 2450 }
-      ]
+      activeGoals: [{ title: 'Score Master', progress: 49, target: 5000, current: 2450 }],
     };
 
     // Test initial dashboard render
     mockProgressDashboard.render.mockResolvedValue(true);
     await mockProgressDashboard.render(dashboardData);
-    
+
     expect(mockProgressDashboard.render).toHaveBeenCalledWith(dashboardData);
 
     // Test real-time updates
     const updateEvents = [
       {
         type: 'score_update',
-        data: { newScore: 150, totalScore: 2600 }
+        data: { newScore: 150, totalScore: 2600 },
       },
       {
         type: 'activity_complete',
-        data: { subject: 'science', newTotal: 7 }
+        data: { subject: 'science', newTotal: 7 },
       },
       {
         type: 'achievement_unlock',
-        data: { achievement: 'Science Explorer', timestamp: Date.now() }
+        data: { achievement: 'Science Explorer', timestamp: Date.now() },
       },
       {
         type: 'goal_progress',
-        data: { goalId: 'goal_1', newProgress: 52 }
-      }
+        data: { goalId: 'goal_1', newProgress: 52 },
+      },
     ];
 
     // Test dashboard updates for each event
@@ -588,14 +592,14 @@ describe('Progress System Integration', () => {
       mockProgressDashboard.updateDisplay.mockResolvedValue({
         updated: true,
         section: event.type,
-        data: event.data
+        data: event.data,
       });
 
       const updateResult = await mockProgressDashboard.updateDisplay(event.type, event.data);
-      
+
       expect(updateResult.updated).toBe(true);
       expect(updateResult.section).toBe(event.type);
-      
+
       console.log(`   📊 Dashboard updated: ${event.type}`);
     }
 
@@ -605,8 +609,8 @@ describe('Progress System Integration', () => {
       view: 'expanded',
       data: {
         charts: ['weekly_progress', 'subject_breakdown'],
-        tables: ['activity_history', 'achievement_timeline']
-      }
+        tables: ['activity_history', 'achievement_timeline'],
+      },
     });
 
     const detailsResult = await mockProgressDashboard.showProgressDetails('math');
@@ -621,7 +625,7 @@ describe('Progress System Integration', () => {
       user: {
         id: 'user_123',
         name: 'TestLearner',
-        joinDate: '2024-01-15T10:00:00Z'
+        joinDate: '2024-01-15T10:00:00Z',
       },
       subjects: {
         math: {
@@ -631,32 +635,30 @@ describe('Progress System Integration', () => {
           averageScore: 425,
           activities: [
             { name: 'bubble-pop', score: 450, date: '2024-01-20T14:00:00Z' },
-            { name: 'number-line-jump', score: 380, date: '2024-01-21T10:30:00Z' }
-          ]
+            { name: 'number-line-jump', score: 380, date: '2024-01-21T10:30:00Z' },
+          ],
         },
         science: {
           totalTime: 2400,
           activitiesCompleted: 6,
           gamesPlayed: 8,
           averageScore: 390,
-          activities: [
-            { name: 'element-match', score: 420, date: '2024-01-19T16:15:00Z' }
-          ]
-        }
+          activities: [{ name: 'element-match', score: 420, date: '2024-01-19T16:15:00Z' }],
+        },
       },
       achievements: [
         {
           id: 'first_steps',
           name: 'First Steps',
           unlockedAt: '2024-01-15T11:00:00Z',
-          reward: { xp: 50, badge: 'beginner' }
+          reward: { xp: 50, badge: 'beginner' },
         },
         {
           id: 'math_explorer',
           name: 'Math Explorer',
           unlockedAt: '2024-01-20T15:00:00Z',
-          reward: { xp: 200, badge: 'math_star' }
-        }
+          reward: { xp: 200, badge: 'math_star' },
+        },
       ],
       streaks: {
         current: 5,
@@ -664,8 +666,8 @@ describe('Progress System Integration', () => {
         history: [
           { date: '2024-01-15', activities: 2 },
           { date: '2024-01-16', activities: 3 },
-          { date: '2024-01-17', activities: 1 }
-        ]
+          { date: '2024-01-17', activities: 1 },
+        ],
       },
       goals: [
         {
@@ -673,18 +675,18 @@ describe('Progress System Integration', () => {
           title: 'Score Master',
           current: 2600,
           target: 5000,
-          completed: false
-        }
+          completed: false,
+        },
       ],
       overall: {
         totalScore: 2600,
         totalTime: 6000,
         totalActivities: 14,
         level: 3,
-        xp: 1850
+        xp: 1850,
       },
       exportedAt: new Date().toISOString(),
-      version: '2.0'
+      version: '2.0',
     };
 
     // Test progress export
@@ -692,11 +694,11 @@ describe('Progress System Integration', () => {
       success: true,
       data: fullProgressData,
       format: 'json',
-      size: JSON.stringify(fullProgressData).length
+      size: JSON.stringify(fullProgressData).length,
     });
 
     const exportResult = await mockProgressTracker.exportProgress('user_123', 'json');
-    
+
     expect(exportResult.success).toBe(true);
     expect(exportResult.data.user.id).toBe('user_123');
     expect(exportResult.data.achievements).toHaveLength(2);
@@ -704,7 +706,7 @@ describe('Progress System Integration', () => {
 
     // Test export data validation
     const exportedData = exportResult.data;
-    
+
     // Validate structure
     expect(exportedData).toHaveProperty('user');
     expect(exportedData).toHaveProperty('subjects');
@@ -719,7 +721,7 @@ describe('Progress System Integration', () => {
     const mathTotal = exportedData.subjects.math.totalTime;
     const scienceTotal = exportedData.subjects.science.totalTime;
     const overallTotal = exportedData.overall.totalTime;
-    
+
     expect(mathTotal + scienceTotal).toBe(overallTotal);
 
     // Test export file size
@@ -733,13 +735,16 @@ describe('Progress System Integration', () => {
       ...exportResult.data,
       backupId: `backup_${Date.now()}`,
       backupType: 'automatic',
-      compressionRatio: 0.65
+      compressionRatio: 0.65,
     };
 
     // Mock backup storage
     localStorageMock.setItem.mockReturnValue(true);
-    localStorageMock.setItem(`learnimals_backup_${backupData.backupId}`, JSON.stringify(backupData));
-    
+    localStorageMock.setItem(
+      `learnimals_backup_${backupData.backupId}`,
+      JSON.stringify(backupData)
+    );
+
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       `learnimals_backup_${backupData.backupId}`,
       JSON.stringify(backupData)
@@ -754,9 +759,9 @@ describe('Progress System Integration', () => {
       deviceId: 'device_tablet_123',
       subjects: {
         math: { activitiesCompleted: 5, totalScore: 1200 },
-        science: { activitiesCompleted: 3, totalScore: 800 }
+        science: { activitiesCompleted: 3, totalScore: 800 },
       },
-      overall: { totalScore: 2000, totalActivities: 8 }
+      overall: { totalScore: 2000, totalActivities: 8 },
     };
 
     const device2Progress = {
@@ -764,9 +769,9 @@ describe('Progress System Integration', () => {
       deviceId: 'device_phone_456',
       subjects: {
         math: { activitiesCompleted: 6, totalScore: 1350 }, // More recent
-        reading: { activitiesCompleted: 2, totalScore: 600 } // New subject
+        reading: { activitiesCompleted: 2, totalScore: 600 }, // New subject
       },
-      overall: { totalScore: 1950, totalActivities: 8 }
+      overall: { totalScore: 1950, totalActivities: 8 },
     };
 
     // Mock sync manager
@@ -774,7 +779,7 @@ describe('Progress System Integration', () => {
       compareProgress: vi.fn(),
       mergeProgress: vi.fn(),
       resolveConflicts: vi.fn(),
-      syncToCloud: vi.fn()
+      syncToCloud: vi.fn(),
     };
 
     // Test progress comparison
@@ -784,20 +789,20 @@ describe('Progress System Integration', () => {
           field: 'subjects.math',
           device1: device1Progress.subjects.math,
           device2: device2Progress.subjects.math,
-          strategy: 'use_latest'
-        }
+          strategy: 'use_latest',
+        },
       ],
       additions: [
         {
           field: 'subjects.reading',
           data: device2Progress.subjects.reading,
-          source: 'device_phone_456'
-        }
-      ]
+          source: 'device_phone_456',
+        },
+      ],
     });
 
     const comparison = mockSyncManager.compareProgress(device1Progress, device2Progress);
-    
+
     expect(comparison.conflicts).toHaveLength(1);
     expect(comparison.additions).toHaveLength(1);
     expect(comparison.conflicts[0].field).toBe('subjects.math');
@@ -805,7 +810,7 @@ describe('Progress System Integration', () => {
     // Test conflict resolution
     mockSyncManager.resolveConflicts.mockReturnValue({
       'subjects.math': device2Progress.subjects.math, // Use newer data
-      'subjects.reading': device2Progress.subjects.reading // Add new subject
+      'subjects.reading': device2Progress.subjects.reading, // Add new subject
     });
 
     const resolved = mockSyncManager.resolveConflicts(comparison.conflicts);
@@ -818,16 +823,19 @@ describe('Progress System Integration', () => {
       subjects: {
         math: device2Progress.subjects.math, // Latest
         science: device1Progress.subjects.science, // From device1
-        reading: device2Progress.subjects.reading // New
+        reading: device2Progress.subjects.reading, // New
       },
       overall: {
         totalScore: 2750, // Combined unique scores
-        totalActivities: 11 // Combined unique activities
-      }
+        totalActivities: 11, // Combined unique activities
+      },
     });
 
-    const mergedProgress = mockSyncManager.mergeProgress([device1Progress, device2Progress], resolved);
-    
+    const mergedProgress = mockSyncManager.mergeProgress(
+      [device1Progress, device2Progress],
+      resolved
+    );
+
     expect(mergedProgress.subjects.math.activitiesCompleted).toBe(6);
     expect(mergedProgress.subjects.science.activitiesCompleted).toBe(3);
     expect(mergedProgress.subjects.reading.activitiesCompleted).toBe(2);
@@ -838,7 +846,7 @@ describe('Progress System Integration', () => {
       synced: true,
       syncId: 'sync_789',
       timestamp: new Date().toISOString(),
-      devices: ['device_tablet_123', 'device_phone_456']
+      devices: ['device_tablet_123', 'device_phone_456'],
     });
 
     const syncResult = await mockSyncManager.syncToCloud(mergedProgress);

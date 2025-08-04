@@ -22,7 +22,7 @@ class ProgressDashboard extends BaseComponent {
       showReports: true,
       autoRefresh: true,
       refreshInterval: 30000, // 30 seconds
-      ...options
+      ...options,
     });
 
     this.authService = authService;
@@ -45,7 +45,7 @@ class ProgressDashboard extends BaseComponent {
     try {
       // Initialize repository
       this.repository = await getRepository();
-      
+
       // Get current user
       this.currentUser = this.authService.getCurrentUser();
       if (!this.currentUser) {
@@ -70,7 +70,7 @@ class ProgressDashboard extends BaseComponent {
     try {
       // Load progress using repository
       const progressData = await this.repository.getUserProgress(this.currentUser.id);
-      
+
       if (progressData) {
         this.progressData = progressData;
       } else {
@@ -99,19 +99,19 @@ class ProgressDashboard extends BaseComponent {
         science: { level: 1, xp: 0, timeSpent: 0, activitiesCompleted: 0 },
         reading: { level: 1, xp: 0, timeSpent: 0, activitiesCompleted: 0 },
         art: { level: 1, xp: 0, timeSpent: 0, activitiesCompleted: 0 },
-        coding: { level: 1, xp: 0, timeSpent: 0, activitiesCompleted: 0 }
+        coding: { level: 1, xp: 0, timeSpent: 0, activitiesCompleted: 0 },
       },
       achievements: [],
       statistics: {
         totalActivities: 0,
         completedActivities: 0,
-        averageScore: 0
+        averageScore: 0,
       },
       goals: [],
       preferences: {
         difficulty: 'medium',
-        timePerSession: 15
-      }
+        timePerSession: 15,
+      },
     };
   }
 
@@ -120,7 +120,7 @@ class ProgressDashboard extends BaseComponent {
     if (this.options.showCharts) {
       this.progressCharts = new ProgressCharts({
         progressData: this.progressData,
-        user: this.currentUser
+        user: this.currentUser,
       });
       await this.progressCharts.init();
     }
@@ -129,7 +129,7 @@ class ProgressDashboard extends BaseComponent {
     if (this.options.showAchievements) {
       this.achievementSystem = new AchievementSystem({
         progressData: this.progressData,
-        user: this.currentUser
+        user: this.currentUser,
       });
       await this.achievementSystem.init();
     }
@@ -138,7 +138,7 @@ class ProgressDashboard extends BaseComponent {
     if (this.options.showGoals) {
       this.goalTracker = new GoalTracker({
         progressData: this.progressData,
-        user: this.currentUser
+        user: this.currentUser,
       });
       await this.goalTracker.init();
     }
@@ -147,7 +147,7 @@ class ProgressDashboard extends BaseComponent {
     if (this.options.showStreaks) {
       this.streakTracker = new StreakTracker({
         progressData: this.progressData,
-        user: this.currentUser
+        user: this.currentUser,
       });
       await this.streakTracker.init();
     }
@@ -156,7 +156,7 @@ class ProgressDashboard extends BaseComponent {
     if (this.options.showReports) {
       this.progressReports = new ProgressReports({
         progressData: this.progressData,
-        user: this.currentUser
+        user: this.currentUser,
       });
       await this.progressReports.init();
     }
@@ -222,12 +222,16 @@ class ProgressDashboard extends BaseComponent {
           <!-- Left Column -->
           <div class="dashboard-left">
             <!-- Progress Charts -->
-            ${this.options.showCharts ? `
+            ${
+  this.options.showCharts
+    ? `
               <div class="dashboard-section">
                 <h2>Progress Overview</h2>
                 <div id="progress-charts-container"></div>
               </div>
-            ` : ''}
+            `
+    : ''
+}
 
             <!-- Subject Progress -->
             <div class="dashboard-section">
@@ -241,15 +245,21 @@ class ProgressDashboard extends BaseComponent {
           <!-- Right Column -->
           <div class="dashboard-right">
             <!-- Streak Tracker -->
-            ${this.options.showStreaks ? `
+            ${
+  this.options.showStreaks
+    ? `
               <div class="dashboard-section">
                 <h2>Learning Streak</h2>
                 <div id="streak-tracker-container"></div>
               </div>
-            ` : ''}
+            `
+    : ''
+}
 
             <!-- Recent Achievements -->
-            ${this.options.showAchievements ? `
+            ${
+  this.options.showAchievements
+    ? `
               <div class="dashboard-section">
                 <h2>Recent Achievements</h2>
                 <div id="achievements-container"></div>
@@ -257,15 +267,21 @@ class ProgressDashboard extends BaseComponent {
                   View All Achievements
                 </button>
               </div>
-            ` : ''}
+            `
+    : ''
+}
 
             <!-- Current Goals -->
-            ${this.options.showGoals ? `
+            ${
+  this.options.showGoals
+    ? `
               <div class="dashboard-section">
                 <h2>Current Goals</h2>
                 <div id="goals-container"></div>
               </div>
-            ` : ''}
+            `
+    : ''
+}
           </div>
         </div>
 
@@ -282,7 +298,7 @@ class ProgressDashboard extends BaseComponent {
 
   generateQuickStatsHTML() {
     const stats = this.calculateQuickStats();
-    
+
     return `
       <div class="stat-card">
         <div class="stat-icon">📚</div>
@@ -317,14 +333,22 @@ class ProgressDashboard extends BaseComponent {
 
   generateSubjectProgressHTML() {
     const subjects = ['math', 'science', 'reading', 'art', 'coding'];
-    
-    return subjects.map(subject => {
-      const progress = this.progressData.subjects[subject] || { level: 1, xp: 0, activitiesCompleted: 0 };
-      const nextLevelXP = this.calculateXPForLevel(progress.level + 1);
-      const currentLevelXP = this.calculateXPForLevel(progress.level);
-      const progressPercent = Math.min(((progress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100, 100);
 
-      return `
+    return subjects
+      .map(subject => {
+        const progress = this.progressData.subjects[subject] || {
+          level: 1,
+          xp: 0,
+          activitiesCompleted: 0,
+        };
+        const nextLevelXP = this.calculateXPForLevel(progress.level + 1);
+        const currentLevelXP = this.calculateXPForLevel(progress.level);
+        const progressPercent = Math.min(
+          ((progress.xp - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100,
+          100
+        );
+
+        return `
         <div class="subject-card" data-subject="${subject}">
           <div class="subject-header">
             <div class="subject-icon">${this.getSubjectIcon(subject)}</div>
@@ -342,7 +366,8 @@ class ProgressDashboard extends BaseComponent {
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join('');
   }
 
   generateRecentActivityHTML() {
@@ -351,10 +376,12 @@ class ProgressDashboard extends BaseComponent {
       { type: 'math', action: 'Completed algebra lesson', time: '2 hours ago', xp: 25 },
       { type: 'reading', action: 'Read "The Magic Garden"', time: '1 day ago', xp: 15 },
       { type: 'science', action: 'Finished chemistry experiment', time: '2 days ago', xp: 30 },
-      { type: 'achievement', action: 'Unlocked "Math Explorer" badge', time: '3 days ago', xp: 50 }
+      { type: 'achievement', action: 'Unlocked "Math Explorer" badge', time: '3 days ago', xp: 50 },
     ];
 
-    return activities.map(activity => `
+    return activities
+      .map(
+        activity => `
       <div class="activity-item">
         <div class="activity-icon">${this.getActivityIcon(activity.type)}</div>
         <div class="activity-content">
@@ -363,7 +390,9 @@ class ProgressDashboard extends BaseComponent {
         </div>
         <div class="activity-xp">+${activity.xp} XP</div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   async attachEventListeners() {
@@ -394,7 +423,7 @@ class ProgressDashboard extends BaseComponent {
     // Subject cards
     const subjectCards = this.element.querySelectorAll('.subject-card');
     subjectCards.forEach(card => {
-      card.addEventListener('click', (e) => {
+      card.addEventListener('click', e => {
         const subject = e.currentTarget.getAttribute('data-subject');
         this.showSubjectDetails(subject);
       });
@@ -498,14 +527,14 @@ class ProgressDashboard extends BaseComponent {
     const modal = new Modal({
       title: `${this.capitalizeFirst(subject)} Progress`,
       content: this.generateSubjectDetailHTML(subject),
-      size: 'large'
+      size: 'large',
     });
     modal.create().open();
   }
 
   generateSubjectDetailHTML(subject) {
     const progress = this.progressData.subjects[subject] || {};
-    
+
     return `
       <div class="subject-detail">
         <div class="subject-overview">
@@ -530,15 +559,18 @@ class ProgressDashboard extends BaseComponent {
 
   // Utility methods
   calculateQuickStats() {
-    const totalActivities = Object.values(this.progressData.subjects || {})
-      .reduce((sum, subject) => sum + (subject.activitiesCompleted || 0), 0);
-    
-    const achievementsUnlocked = (this.progressData.achievements || [])
-      .filter(achievement => achievement.unlocked).length;
+    const totalActivities = Object.values(this.progressData.subjects || {}).reduce(
+      (sum, subject) => sum + (subject.activitiesCompleted || 0),
+      0
+    );
+
+    const achievementsUnlocked = (this.progressData.achievements || []).filter(
+      achievement => achievement.unlocked
+    ).length;
 
     return {
       totalActivities,
-      achievementsUnlocked
+      achievementsUnlocked,
     };
   }
 
@@ -562,7 +594,7 @@ class ProgressDashboard extends BaseComponent {
       science: '🔬',
       reading: '📖',
       art: '🎨',
-      coding: '💻'
+      coding: '💻',
     };
     return icons[subject] || '📚';
   }
@@ -575,7 +607,7 @@ class ProgressDashboard extends BaseComponent {
       art: '🎨',
       coding: '💻',
       achievement: '🏆',
-      goal: '🎯'
+      goal: '🎯',
     };
     return icons[type] || '📝';
   }
@@ -588,7 +620,7 @@ class ProgressDashboard extends BaseComponent {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
     }
-    
+
     this.refreshTimer = setInterval(() => {
       this.refreshDashboard();
     }, this.options.refreshInterval);

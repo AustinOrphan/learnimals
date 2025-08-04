@@ -21,7 +21,7 @@
     right: 16px;
     gap: 10px;
   }
-  
+
   .theme-switcher-container button.theme-button,
   .theme-switcher-container button.theme-button:focus,
   .theme-switcher-container button.theme-button:visited {
@@ -30,7 +30,7 @@
     font-size: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   }
-  
+
   .theme-switcher-container .theme-emoji-overlay {
     width: 48px;
     height: 48px;
@@ -38,7 +38,7 @@
     top: 0;
     left: 0;
   }
-  
+
   /* Larger touch target for better mobile usability */
   .theme-switcher-container button.theme-button::before {
     content: '';
@@ -76,7 +76,13 @@
   max-width: none;
   max-height: none;
   /* Allow only specific transitions */
-  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease, width 0.3s ease, height 0.3s ease, font-size 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    filter 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease,
+    font-size 0.3s ease;
   animation: none;
   /* Reset other potential conflicting properties */
   outline: none;
@@ -86,10 +92,11 @@
 
 /* Theme switcher button - uses gradient with current theme colors */
 .theme-switcher-container button#theme-switcher-button.theme-button {
-  background: linear-gradient(135deg, 
-    var(--primary-color), 
-    var(--secondary-color), 
-    var(--accent-color), 
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color),
+    var(--accent-color),
     var(--accent-color-alt),
     var(--primary-color)
   );
@@ -103,20 +110,20 @@
 
 /* Subtle theme color shift animation */
 @keyframes colorShift {
-  0% { 
-    filter: hue-rotate(0deg) brightness(1) saturate(1); 
+  0% {
+    filter: hue-rotate(0deg) brightness(1) saturate(1);
   }
-  25% { 
-    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1); 
+  25% {
+    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1);
   }
-  50% { 
-    filter: hue-rotate(30deg) brightness(1.1) saturate(1.2); 
+  50% {
+    filter: hue-rotate(30deg) brightness(1.1) saturate(1.2);
   }
-  75% { 
-    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1); 
+  75% {
+    filter: hue-rotate(15deg) brightness(1.05) saturate(1.1);
   }
-  100% { 
-    filter: hue-rotate(0deg) brightness(1) saturate(1); 
+  100% {
+    filter: hue-rotate(0deg) brightness(1) saturate(1);
   }
 }
 
@@ -146,7 +153,11 @@
   z-index: 101;
   transition: transform 0.3s ease;
   /* This element is completely separate from the filtered button */
-  transition: width 0.3s ease, height 0.3s ease, font-size 0.3s ease, transform 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    font-size 0.3s ease,
+    transform 0.3s ease;
 }
 
 /* Emoji scales with button on hover */
@@ -195,7 +206,10 @@
   flex-direction: column;
   gap: 8px;
   min-width: 150px;
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* Show menu when active */

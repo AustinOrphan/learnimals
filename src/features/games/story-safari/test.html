@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story Safari Test - Minimal Version</title>
+    <style>
+      /* Minimal styling for testing */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #2c1810;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      .test-result {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+
+      button {
+        background: #ff7f7f;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      }
+
+      button:hover {
+        background: #e66b6b;
+      }
+
+      #game-container {
+        min-height: 400px;
+        border: 2px dashed #ddd;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🐼 Story Safari - Game Testing</h1>
+
+      <div class="test-section">
+        <h3>📋 Module Loading Tests</h3>
+        <div id="module-tests"></div>
+        <button onclick="testModuleLoading()">Test Module Loading</button>
+      </div>
+
+      <div class="test-section">
+        <h3>🎮 Game Initialization Test</h3>
+        <div id="init-tests"></div>
+        <button onclick="testGameInitialization()">Initialize Game</button>
+      </div>
+
+      <div class="test-section">
+        <h3>📚 Story Engine Test</h3>
+        <div id="story-tests"></div>
+        <button onclick="testStoryEngine()">Test Story Engine</button>
+      </div>
+
+      <div class="test-section">
+        <h3>📖 Safari Journal Test</h3>
+        <div id="journal-tests"></div>
+        <button onclick="testSafariJournal()">Test Safari Journal</button>
+      </div>
+
+      <div class="test-section">
+        <h3>🎯 Game Container</h3>
+        <div id="game-container">
+          <!-- Game will be loaded here -->
+          <p style="text-align: center; color: #666">Game will appear here when initialized...</p>
+        </div>
+        <button onclick="startFullGame()">Start Full Story Safari</button>
+      </div>
+
+      <div class="test-section">
+        <h3>📊 Test Results Summary</h3>
+        <div id="summary"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      let testResults = {
+        moduleLoading: false,
+        gameInit: false,
+        storyEngine: false,
+        safariJournal: false,
+        fullGame: false,
+      };
+
+      // Test module loading
+      window.testModuleLoading = async function () {
+        const resultsDiv = document.getElementById('module-tests');
+        resultsDiv.innerHTML = '<p>Testing module imports...</p>';
+
+        try {
+          // Test importing the main modules
+          const StorySafariGame = await import('./storySafari.js');
+          const StoryEngine = await import('./StoryEngine.js');
+          const SafariJournal = await import('./SafariJournal.js');
+          const storyData = await import('./storyData.js');
+
+          let results = [];
+
+          if (StorySafariGame.default) {
+            results.push('<div class="test-result success">✅ StorySafariGame module loaded successfully</div>');
+            testResults.moduleLoading = true;
+          } else {
+            results.push('<div class="test-result error">❌ StorySafariGame module failed to load</div>');
+          }
+
+          if (StoryEngine.default) {
+            results.push('<div class="test-result success">✅ StoryEngine module loaded successfully</div>');
+          } else {
+            results.push('<div class="test-result error">❌ StoryEngine module failed to load</div>');
+          }
+
+          if (SafariJournal.default) {
+            results.push('<div class="test-result success">✅ SafariJournal module loaded successfully</div>');
+          } else {
+            results.push('<div class="test-result error">❌ SafariJournal module failed to load</div>');
+          }
+
+          if (storyData.safariStoryData) {
+            results.push('<div class="test-result success">✅ Story data loaded successfully</div>');
+            results.push(
+              `<div class="test-result success">📖 Story contains ${storyData.safariStoryData.scenes.length} scenes</div>`
+            );
+          } else {
+            results.push('<div class="test-result error">❌ Story data failed to load</div>');
+          }
+
+          resultsDiv.innerHTML = results.join('');
+          updateSummary();
+        } catch (error) {
+          resultsDiv.innerHTML = `<div class="test-result error">❌ Module loading failed: ${error.message}</div>`;
+          console.error('Module loading error:', error);
+        }
+      };
+
+      // Test game initialization
+      window.testGameInitialization = async function () {
+        const resultsDiv = document.getElementById('init-tests');
+        resultsDiv.innerHTML = '<p>Testing game initialization...</p>';
+
+        try {
+          const StorySafariGame = await import('./storySafari.js');
+
+          // Create a test container
+          const testContainer = document.createElement('div');
+          testContainer.id = 'test-game-container';
+          testContainer.style.display = 'none';
+          document.body.appendChild(testContainer);
+
+          // Try to create game instance
+          const game = new StorySafariGame.default('test-game-container', {
+            difficulty: 'easy',
+            readingLevel: 'grade-2',
+            enableProgressTracking: false,
+            enableVocabularyTracking: false,
+          });
+
+          if (game) {
+            resultsDiv.innerHTML = '<div class="test-result success">✅ Game instance created successfully</div>';
+            testResults.gameInit = true;
+          } else {
+            resultsDiv.innerHTML = '<div class="test-result error">❌ Game instance creation failed</div>';
+          }
+
+          // Clean up
+          document.body.removeChild(testContainer);
+          updateSummary();
+        } catch (error) {
+          resultsDiv.innerHTML = `<div class="test-result error">❌ Game initialization failed: ${error.message}</div>`;
+          console.error('Game initialization error:', error);
+        }
+      };
+
+      // Test story engine
+      window.testStoryEngine = async function () {
+        const resultsDiv = document.getElementById('story-tests');
+        resultsDiv.innerHTML = '<p>Testing story engine...</p>';
+
+        try {
+          const StoryEngine = await import('./StoryEngine.js');
+          const storyData = await import('./storyData.js');
+
+          const engine = new StoryEngine.default(storyData.safariStoryData, {
+            difficulty: 'easy',
+            readingLevel: 'grade-2',
+          });
+
+          await engine.initialize();
+
+          const startingScene = engine.getStartingScene();
+
+          let results = [];
+
+          if (startingScene) {
+            results.push('<div class="test-result success">✅ Story engine initialized successfully</div>');
+            results.push(`<div class="test-result success">📚 Starting scene: "${startingScene.title}"</div>`);
+            results.push(`<div class="test-result success">🎯 Scene has ${startingScene.choices.length} choices</div>`);
+            testResults.storyEngine = true;
+          } else {
+            results.push('<div class="test-result error">❌ Failed to get starting scene</div>');
+          }
+
+          resultsDiv.innerHTML = results.join('');
+          updateSummary();
+        } catch (error) {
+          resultsDiv.innerHTML = `<div class="test-result error">❌ Story engine test failed: ${error.message}</div>`;
+          console.error('Story engine error:', error);
+        }
+      };
+
+      // Test safari journal
+      window.testSafariJournal = async function () {
+        const resultsDiv = document.getElementById('journal-tests');
+        resultsDiv.innerHTML = '<p>Testing safari journal...</p>';
+
+        try {
+          const SafariJournal = await import('./SafariJournal.js');
+
+          const journal = new SafariJournal.default({
+            enableVocabularyTracking: true,
+            enableProgressMapping: true,
+            autoSave: false,
+          });
+
+          // Test adding a vocabulary word
+          journal.addVocabularyWord('adventure', 'An exciting or dangerous experience', 'safari adventure');
+
+          // Test recording scene visit
+          journal.recordSceneVisit('test_scene', 'Test Scene', ['choice1', 'choice2']);
+
+          let results = [];
+
+          if (journal.journalData.vocabulary.size > 0) {
+            results.push('<div class="test-result success">✅ Safari journal created successfully</div>');
+            results.push('<div class="test-result success">📝 Vocabulary word added successfully</div>');
+            results.push('<div class="test-result success">🗺️ Scene visit recorded successfully</div>');
+            testResults.safariJournal = true;
+          } else {
+            results.push('<div class="test-result error">❌ Safari journal test failed</div>');
+          }
+
+          resultsDiv.innerHTML = results.join('');
+          updateSummary();
+        } catch (error) {
+          resultsDiv.innerHTML = `<div class="test-result error">❌ Safari journal test failed: ${error.message}</div>`;
+          console.error('Safari journal error:', error);
+        }
+      };
+
+      // Start full game
+      window.startFullGame = async function () {
+        const container = document.getElementById('game-container');
+        container.innerHTML = '<p>Loading Story Safari...</p>';
+
+        try {
+          const StorySafariGame = await import('./storySafari.js');
+
+          // Clear container and set up for game
+          container.innerHTML = '';
+          container.id = 'full-game-container';
+
+          const game = new StorySafariGame.default('full-game-container', {
+            difficulty: 'medium',
+            readingLevel: 'grade-3',
+            enableProgressTracking: true,
+            enableVocabularyTracking: true,
+          });
+
+          testResults.fullGame = true;
+          updateSummary();
+
+          container.innerHTML =
+            '<div class="test-result success">✅ Full Story Safari game loaded! Check above for the complete game interface.</div>';
+        } catch (error) {
+          container.innerHTML = `<div class="test-result error">❌ Full game loading failed: ${error.message}</div>`;
+          console.error('Full game error:', error);
+        }
+      };
+
+      function updateSummary() {
+        const summaryDiv = document.getElementById('summary');
+        const passed = Object.values(testResults).filter(r => r).length;
+        const total = Object.keys(testResults).length;
+
+        let status = passed === total ? 'success' : passed > 0 ? 'warning' : 'error';
+
+        summaryDiv.innerHTML = `
+                <div class="test-result ${status}">
+                    📊 Tests Passed: ${passed}/${total}
+                    ${passed === total ? '🎉 All tests passed!' : '⚠️ Some tests need attention'}
+                </div>
+            `;
+      }
+
+      // Initialize summary
+      updateSummary();
+
+      // Show initial message
+      console.log('Story Safari test page loaded. Click the test buttons to verify functionality.');
+    </script>
+  </body>
+</html>

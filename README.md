@@ -34,22 +34,26 @@ Learnimals is an interactive educational web application featuring fun games and
 ### Installation
 
 1. Clone this repository
+
    ```bash
    git clone https://github.com/AustinOrphan/learnimals.git
    cd learnimals
    ```
 
 2. Install dependencies
+
    ```bash
    npm install
    ```
 
 3. Run tests
+
    ```bash
    npm test
    ```
 
 4. Start a local web server
+
    ```bash
    python3 -m http.server 8080
    # or use the Makefile
@@ -222,7 +226,7 @@ See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed deployment procedu
 Our CI/CD pipeline includes comprehensive security scanning:
 
 - **🔍 SAST Analysis**: CodeQL and Semgrep for code vulnerabilities
-- **📦 Dependency Scanning**: npm audit and Snyk for package vulnerabilities  
+- **📦 Dependency Scanning**: npm audit and Snyk for package vulnerabilities
 - **🐳 Container Security**: Trivy and Grype for Docker image scanning
 - **🔐 Secrets Detection**: Gitleaks and TruffleHog prevent credential leaks
 - **🏗️ Infrastructure Security**: Checkov and Terrascan for IaC scanning

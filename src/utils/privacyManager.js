@@ -17,22 +17,22 @@ export class PrivacyManager {
   initializeDataRetentionPolicies() {
     this.dataRetentionPolicies.set('session_only', {
       duration: 0, // Delete immediately on session end
-      description: 'Data deleted when session ends'
+      description: 'Data deleted when session ends',
     });
-    
+
     this.dataRetentionPolicies.set('30_days', {
       duration: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-      description: 'Data deleted after 30 days'
+      description: 'Data deleted after 30 days',
     });
-    
+
     this.dataRetentionPolicies.set('90_days', {
       duration: 90 * 24 * 60 * 60 * 1000, // 90 days in milliseconds
-      description: 'Data deleted after 90 days'
+      description: 'Data deleted after 90 days',
     });
-    
+
     this.dataRetentionPolicies.set('school_year', {
       duration: 365 * 24 * 60 * 60 * 1000, // 1 year in milliseconds
-      description: 'Data deleted after one school year'
+      description: 'Data deleted after one school year',
     });
   }
 
@@ -43,7 +43,7 @@ export class PrivacyManager {
    */
   requiresParentalConsent(ageRange) {
     if (!ageRange) return true; // Default to requiring consent if age unknown
-    
+
     const [minAge] = ageRange.split('-').map(Number);
     return minAge < 13;
   }
@@ -69,8 +69,8 @@ export class PrivacyManager {
     }
 
     // Show parental consent modal
-    return new Promise((resolve) => {
-      this.showParentalConsentModal(gameMetadata, (granted) => {
+    return new Promise(resolve => {
+      this.showParentalConsentModal(gameMetadata, granted => {
         if (granted) {
           this.recordConsent(consentKey, gameMetadata);
         }
@@ -102,9 +102,9 @@ export class PrivacyManager {
       gameId: gameMetadata.id || 'unknown',
       dataTypes: gameMetadata.dataCollection?.dataTypes || [],
       purpose: gameMetadata.dataCollection?.purpose || 'educational',
-      retention: gameMetadata.dataCollection?.retention || 'session_only'
+      retention: gameMetadata.dataCollection?.retention || 'session_only',
     };
-    
+
     this.saveConsentStatus();
   }
 
@@ -117,7 +117,7 @@ export class PrivacyManager {
       this.consentStatus[consentKey].granted = false;
       this.consentStatus[consentKey].revokedAt = Date.now();
       this.saveConsentStatus();
-      
+
       // Delete related data
       this.deleteDataByConsentKey(consentKey);
     }
@@ -151,7 +151,7 @@ export class PrivacyManager {
    */
   sanitizeData(data, gameMetadata) {
     const sanitizedData = { ...data };
-    
+
     // Remove personal info if not permitted
     if (!this.isDataCollectionPermitted(gameMetadata)) {
       // Only keep essential educational data
@@ -173,7 +173,7 @@ export class PrivacyManager {
   applyDataRetentionPolicy(gameMetadata) {
     const retention = gameMetadata.dataCollection?.retention || 'session_only';
     const policy = this.dataRetentionPolicies.get(retention);
-    
+
     if (!policy) {
       console.warn(`Unknown retention policy: ${retention}`);
       return;
@@ -197,7 +197,7 @@ export class PrivacyManager {
    */
   deleteGameData(gameId) {
     const keysToDelete = [];
-    
+
     // Find all localStorage keys related to this game
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -205,12 +205,12 @@ export class PrivacyManager {
         keysToDelete.push(key);
       }
     }
-    
+
     // Delete the keys
     keysToDelete.forEach(key => {
       localStorage.removeItem(key);
     });
-    
+
     console.log(`Deleted data for game: ${gameId}`);
   }
 
@@ -220,13 +220,11 @@ export class PrivacyManager {
    * @param {number} deleteAt - Timestamp when to delete
    */
   scheduleDataDeletion(gameId, deleteAt) {
-    const scheduledDeletions = JSON.parse(
-      localStorage.getItem('scheduled_deletions') || '{}'
-    );
-    
+    const scheduledDeletions = JSON.parse(localStorage.getItem('scheduled_deletions') || '{}');
+
     scheduledDeletions[gameId] = deleteAt;
     localStorage.setItem('scheduled_deletions', JSON.stringify(scheduledDeletions));
-    
+
     // Check for expired data on load
     this.checkAndDeleteExpiredData();
   }
@@ -235,25 +233,23 @@ export class PrivacyManager {
    * Check for and delete expired data
    */
   checkAndDeleteExpiredData() {
-    const scheduledDeletions = JSON.parse(
-      localStorage.getItem('scheduled_deletions') || '{}'
-    );
-    
+    const scheduledDeletions = JSON.parse(localStorage.getItem('scheduled_deletions') || '{}');
+
     const now = Date.now();
     const toDelete = [];
-    
+
     Object.entries(scheduledDeletions).forEach(([gameId, deleteAt]) => {
       if (now >= deleteAt) {
         this.deleteGameData(gameId);
         toDelete.push(gameId);
       }
     });
-    
+
     // Remove deleted items from schedule
     toDelete.forEach(gameId => {
       delete scheduledDeletions[gameId];
     });
-    
+
     localStorage.setItem('scheduled_deletions', JSON.stringify(scheduledDeletions));
   }
 
@@ -305,7 +301,7 @@ export class PrivacyManager {
         </div>
       </div>
     `;
-    
+
     // Add styles
     const style = document.createElement('style');
     style.textContent = `
@@ -387,25 +383,25 @@ export class PrivacyManager {
         justify-content: center;
       }
     `;
-    
+
     document.head.appendChild(style);
     document.body.appendChild(modal);
-    
+
     // Event listeners
     document.getElementById('grant-consent').addEventListener('click', () => {
       document.body.removeChild(modal);
       document.head.removeChild(style);
       callback(true);
     });
-    
+
     document.getElementById('deny-consent').addEventListener('click', () => {
       document.body.removeChild(modal);
       document.head.removeChild(style);
       callback(false);
     });
-    
+
     // Close on overlay click
-    modal.querySelector('.privacy-modal-overlay').addEventListener('click', (e) => {
+    modal.querySelector('.privacy-modal-overlay').addEventListener('click', e => {
       if (e.target === e.currentTarget) {
         document.body.removeChild(modal);
         document.head.removeChild(style);

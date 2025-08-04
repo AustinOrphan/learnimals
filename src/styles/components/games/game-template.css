@@ -140,8 +140,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
@@ -161,14 +165,14 @@
   box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
 }
 
-.game-instructions[aria-hidden="true"] {
+.game-instructions[aria-hidden='true'] {
   max-height: 0;
   margin-bottom: 0;
   border: none;
   box-shadow: none;
 }
 
-.game-instructions[aria-hidden="false"] {
+.game-instructions[aria-hidden='false'] {
   max-height: 500px;
 }
 
@@ -246,7 +250,7 @@
 }
 
 .controls-list li::before {
-  content: "🎮";
+  content: '🎮';
   font-size: 1rem;
 }
 
@@ -255,21 +259,21 @@
   .game-container {
     padding: 0.5rem;
   }
-  
+
   .game-status {
     flex-direction: column;
     gap: 0.75rem;
     text-align: center;
   }
-  
+
   .game-info {
     margin: 0;
   }
-  
+
   .controls-list {
     grid-template-columns: 1fr;
   }
-  
+
   .instructions-content {
     padding: 1rem;
   }
@@ -280,7 +284,7 @@
   .game-loading {
     background: var(--bg-card, #2a2a2a);
   }
-  
+
   .loading-spinner {
     border-color: var(--border-color, #444);
     border-top-color: var(--accent-primary, #4dabf7);
@@ -295,7 +299,7 @@
   .game-instructions {
     border-width: 2px;
   }
-  
+
   .score-value,
   .level-value {
     font-weight: 900;
@@ -310,7 +314,7 @@
     transition: none;
     animation: none;
   }
-  
+
   .loading-spinner {
     border-top-color: var(--accent-primary, #007bff);
     transform: none;

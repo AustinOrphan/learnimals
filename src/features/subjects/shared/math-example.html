@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Math - Learnimals</title>
-        <script type="module">
-            import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
-            // Define content for math page
-            const mathOptions = {
-                subjectName: 'Math Tools',
-                subjectLower: 'math',
-                subjectDescription: 'Fun math tools and games for children featuring Mango the Shark',
-                characterName: 'Mango',
-                characterType: 'Shark',
-                heroSubtitle: 'Try out fun math helpers below.',
-                // Fallback HTML if Card.js doesn't work
-                featureCards: `
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math - Learnimals</title>
+    <script type="module">
+      import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
+      // Define content for math page
+      const mathOptions = {
+        subjectName: 'Math Tools',
+        subjectLower: 'math',
+        subjectDescription: 'Fun math tools and games for children featuring Mango the Shark',
+        characterName: 'Mango',
+        characterType: 'Shark',
+        heroSubtitle: 'Try out fun math helpers below.',
+        // Fallback HTML if Card.js doesn't work
+        featureCards: `
                     <div class="feature-card">
                         <h3>Number to Words</h3>
                         <p>Enter a number and get the name!</p>
@@ -44,11 +44,11 @@
                         <p>More math games and tools will be added here!</p>
                     </div>
                 `,
-                // Card.js data for generating cards
-                featureCardsData: [
-                    {
-                        title: 'Number to Words',
-                        content: `
+        // Card.js data for generating cards
+        featureCardsData: [
+          {
+            title: 'Number to Words',
+            content: `
                             <p>Enter a number and get the name!</p>
                             <label for="numberInput" class="sr-only">Enter a number</label>
                             <input
@@ -63,34 +63,34 @@
                             <button onclick="convertNumber()">Convert</button>
                             <p id="numberOutput" style="margin-top: 10px" aria-live="polite"></p>
                         `,
-                        imageUrl: '../../../public/images/math-shark.png',
-                        imageAlt: 'Mango the Math Shark'
-                    },
-                    {
-                        title: 'Mango\'s Bubble Pop',
-                        content: '<p>Pop bubbles with the right math answer to help Mango learn!</p>',
-                        linkText: 'Play Now',
-                        linkUrl: 'bubblepop.html',
-                        imageUrl: '../../../public/images/mango-swimming.png',
-                        imageAlt: 'Mango swimming with bubbles',
-                        theme: 'alt'
-                    },
-                    {
-                        title: 'Coming Soon...',
-                        content: '<p>More math games and tools will be added here!</p>',
-                        theme: 'default'
-                    }
-                ]
-            };
+            imageUrl: '../../../public/images/math-shark.png',
+            imageAlt: 'Mango the Math Shark',
+          },
+          {
+            title: "Mango's Bubble Pop",
+            content: '<p>Pop bubbles with the right math answer to help Mango learn!</p>',
+            linkText: 'Play Now',
+            linkUrl: 'bubblepop.html',
+            imageUrl: '../../../public/images/mango-swimming.png',
+            imageAlt: 'Mango swimming with bubbles',
+            theme: 'alt',
+          },
+          {
+            title: 'Coming Soon...',
+            content: '<p>More math games and tools will be added here!</p>',
+            theme: 'default',
+          },
+        ],
+      };
 
-            // Render the template with math-specific content
-            document.addEventListener('DOMContentLoaded', async () => {
-                await SubjectTemplateLoader.renderTemplate(mathOptions);
-            });
-        </script>
-    </head>
-    <body>
-        <!-- This content will be replaced by the template -->
-        <p>Loading math content...</p>
-    </body>
+      // Render the template with math-specific content
+      document.addEventListener('DOMContentLoaded', async () => {
+        await SubjectTemplateLoader.renderTemplate(mathOptions);
+      });
+    </script>
+  </head>
+  <body>
+    <!-- This content will be replaced by the template -->
+    <p>Loading math content...</p>
+  </body>
 </html>

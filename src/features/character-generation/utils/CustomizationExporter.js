@@ -1,7 +1,7 @@
 /**
  * Customization Exporter
  * Export and import functionality for character customizations
- * 
+ *
  * Part of Phase G: Character Customization Studio
  */
 
@@ -11,14 +11,14 @@ export default class CustomizationExporter {
   constructor(options = {}) {
     this.version = '1.0';
     this.supportedFormats = ['json', 'learnimals'];
-    
+
     // Export settings
     this.settings = {
       includeCharacterData: options.includeCharacterData !== false,
       includePresets: options.includePresets !== false,
       includeMetadata: options.includeMetadata !== false,
       compressData: options.compressData || false,
-      validateOnImport: options.validateOnImport !== false
+      validateOnImport: options.validateOnImport !== false,
     };
   }
 
@@ -37,8 +37,8 @@ export default class CustomizationExporter {
         description: metadata.description || 'Customization exported from Learnimals',
         tags: metadata.tags || [],
         author: metadata.author || 'Anonymous',
-        ...metadata
-      }
+        ...metadata,
+      },
     };
 
     return this.settings.compressData ? this.compressData(exportData) : exportData;
@@ -55,17 +55,20 @@ export default class CustomizationExporter {
       customizations: customizations.map(item => ({
         id: item.id || CharacterUtils.generateId(),
         customization: this.sanitizeCustomization(item.customization),
-        character: this.settings.includeCharacterData ? this.sanitizeCharacter(item.character) : null,
-        metadata: item.metadata || {}
+        character: this.settings.includeCharacterData
+          ? this.sanitizeCharacter(item.character)
+          : null,
+        metadata: item.metadata || {},
       })),
       metadata: {
         name: metadata.name || 'Customization Collection',
-        description: metadata.description || 'Collection of customizations exported from Learnimals',
+        description:
+          metadata.description || 'Collection of customizations exported from Learnimals',
         count: customizations.length,
         tags: metadata.tags || [],
         author: metadata.author || 'Anonymous',
-        ...metadata
-      }
+        ...metadata,
+      },
     };
 
     return this.settings.compressData ? this.compressData(exportData) : exportData;
@@ -84,8 +87,8 @@ export default class CustomizationExporter {
           id,
           {
             ...preset,
-            customization: this.sanitizeCustomization(preset.customization)
-          }
+            customization: this.sanitizeCustomization(preset.customization),
+          },
         ])
       ),
       metadata: {
@@ -94,8 +97,8 @@ export default class CustomizationExporter {
         count: presets.size,
         tags: metadata.tags || [],
         author: metadata.author || 'Anonymous',
-        ...metadata
-      }
+        ...metadata,
+      },
     };
 
     return this.settings.compressData ? this.compressData(exportData) : exportData;
@@ -110,16 +113,20 @@ export default class CustomizationExporter {
       type: 'studio_session',
       exported: new Date().toISOString(),
       session: {
-        characters: sessionData.characters ? sessionData.characters.map(char => this.sanitizeCharacter(char)) : [],
-        customizations: sessionData.customizations ? Object.fromEntries(
-          Array.from(sessionData.customizations.entries()).map(([id, customization]) => [
-            id,
-            this.sanitizeCustomization(customization)
-          ])
-        ) : {},
+        characters: sessionData.characters
+          ? sessionData.characters.map(char => this.sanitizeCharacter(char))
+          : [],
+        customizations: sessionData.customizations
+          ? Object.fromEntries(
+            Array.from(sessionData.customizations.entries()).map(([id, customization]) => [
+              id,
+              this.sanitizeCustomization(customization),
+            ])
+          )
+          : {},
         presets: sessionData.presets ? Object.fromEntries(sessionData.presets) : {},
         settings: sessionData.settings || {},
-        history: sessionData.history || []
+        history: sessionData.history || [],
       },
       metadata: {
         name: metadata.name || 'Studio Session',
@@ -128,8 +135,8 @@ export default class CustomizationExporter {
         duration: metadata.duration || null,
         tags: metadata.tags || [],
         author: metadata.author || 'Anonymous',
-        ...metadata
-      }
+        ...metadata,
+      },
     };
 
     return this.settings.compressData ? this.compressData(exportData) : exportData;
@@ -155,7 +162,7 @@ export default class CustomizationExporter {
         success: true,
         imported: [],
         errors: [],
-        warnings: []
+        warnings: [],
       };
 
       switch (importData.type) {
@@ -189,11 +196,10 @@ export default class CustomizationExporter {
       characterEvents.emit('customizationImported', {
         type: importData.type,
         results,
-        metadata: importData.metadata
+        metadata: importData.metadata,
       });
 
       return results;
-
     } catch (error) {
       console.error('Import failed:', error);
       return {
@@ -201,7 +207,7 @@ export default class CustomizationExporter {
         error: error.message,
         imported: [],
         errors: [error.message],
-        warnings: []
+        warnings: [],
       };
     }
   }
@@ -212,9 +218,11 @@ export default class CustomizationExporter {
   async importSingleCustomization(data, options = {}) {
     const customization = this.deserializeCustomization(data.customization);
     const character = data.character ? this.deserializeCharacter(data.character) : null;
-    
-    const importId = options.generateNewId ? CharacterUtils.generateId() : (data.id || CharacterUtils.generateId());
-    
+
+    const importId = options.generateNewId
+      ? CharacterUtils.generateId()
+      : data.id || CharacterUtils.generateId();
+
     const result = {
       id: importId,
       customization,
@@ -222,8 +230,8 @@ export default class CustomizationExporter {
       metadata: {
         ...data.metadata,
         imported: new Date().toISOString(),
-        originalId: data.id
-      }
+        originalId: data.id,
+      },
     };
 
     // Store if requested
@@ -239,7 +247,7 @@ export default class CustomizationExporter {
    */
   async importPresetCollection(data, options = {}) {
     const presets = new Map();
-    
+
     for (const [id, preset] of Object.entries(data.presets)) {
       const importId = options.generateNewId ? CharacterUtils.generateId() : id;
       const deserializedPreset = {
@@ -247,9 +255,9 @@ export default class CustomizationExporter {
         id: importId,
         customization: this.deserializeCustomization(preset.customization),
         imported: new Date().toISOString(),
-        originalId: id
+        originalId: id,
       };
-      
+
       presets.set(importId, deserializedPreset);
     }
 
@@ -258,8 +266,8 @@ export default class CustomizationExporter {
       presets,
       metadata: {
         ...data.metadata,
-        imported: new Date().toISOString()
-      }
+        imported: new Date().toISOString(),
+      },
     };
 
     // Store if requested
@@ -275,11 +283,13 @@ export default class CustomizationExporter {
    */
   async importStudioSession(data, options = {}) {
     const session = {
-      characters: data.session.characters ? data.session.characters.map(char => this.deserializeCharacter(char)) : [],
+      characters: data.session.characters
+        ? data.session.characters.map(char => this.deserializeCharacter(char))
+        : [],
       customizations: new Map(),
       presets: new Map(),
       settings: data.session.settings || {},
-      history: data.session.history || []
+      history: data.session.history || [],
     };
 
     // Import customizations
@@ -296,7 +306,7 @@ export default class CustomizationExporter {
         const importId = options.generateNewId ? CharacterUtils.generateId() : id;
         session.presets.set(importId, {
           ...preset,
-          customization: this.deserializeCustomization(preset.customization)
+          customization: this.deserializeCustomization(preset.customization),
         });
       }
     }
@@ -306,8 +316,8 @@ export default class CustomizationExporter {
       session,
       metadata: {
         ...data.metadata,
-        imported: new Date().toISOString()
-      }
+        imported: new Date().toISOString(),
+      },
     };
 
     // Store if requested
@@ -330,7 +340,7 @@ export default class CustomizationExporter {
       effects: this.sanitizeEffects(customization.effects),
       animations: this.sanitizeAnimations(customization.animations),
       accessories: customization.accessories || [],
-      background: customization.background || null
+      background: customization.background || null,
     };
   }
 
@@ -350,8 +360,8 @@ export default class CustomizationExporter {
       metadata: {
         created: character.metadata?.created,
         version: character.metadata?.version,
-        tags: character.metadata?.tags || []
-      }
+        tags: character.metadata?.tags || [],
+      },
     };
   }
 
@@ -367,7 +377,7 @@ export default class CustomizationExporter {
         sanitized[effectName] = {
           enabled: effect.enabled || false,
           intensity: effect.intensity || 0.5,
-          ...effect
+          ...effect,
         };
       }
     }
@@ -384,7 +394,7 @@ export default class CustomizationExporter {
       idle: animations.idle || 'none',
       hover: animations.hover || 'none',
       click: animations.click || 'none',
-      speed: animations.speed || 1.0
+      speed: animations.speed || 1.0,
     };
   }
 
@@ -400,7 +410,7 @@ export default class CustomizationExporter {
       effects: data.effects || {},
       animations: data.animations || {},
       accessories: data.accessories || [],
-      background: data.background || null
+      background: data.background || null,
     };
   }
 
@@ -420,8 +430,8 @@ export default class CustomizationExporter {
       metadata: {
         created: data.metadata?.created || new Date().toISOString(),
         version: data.metadata?.version || 1,
-        tags: data.metadata?.tags || ['imported']
-      }
+        tags: data.metadata?.tags || ['imported'],
+      },
     };
   }
 
@@ -430,7 +440,7 @@ export default class CustomizationExporter {
    */
   validateImportData(data) {
     const errors = [];
-    
+
     if (!data || typeof data !== 'object') {
       errors.push('Data must be a valid object');
       return { valid: false, errors };
@@ -442,7 +452,14 @@ export default class CustomizationExporter {
 
     if (!data.type) {
       errors.push('Missing data type');
-    } else if (!['customization', 'customization_collection', 'preset_collection', 'studio_session'].includes(data.type)) {
+    } else if (
+      ![
+        'customization',
+        'customization_collection',
+        'preset_collection',
+        'studio_session',
+      ].includes(data.type)
+    ) {
       errors.push(`Unsupported data type: ${data.type}`);
     }
 
@@ -475,7 +492,7 @@ export default class CustomizationExporter {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -528,7 +545,7 @@ export default class CustomizationExporter {
 
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
-    
+
     const a = document.createElement('a');
     a.href = url;
     a.download = `${filename}.${format}`;
@@ -544,8 +561,8 @@ export default class CustomizationExporter {
   readImportFile(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
-      reader.onload = (e) => {
+
+      reader.onload = e => {
         try {
           const content = e.target.result;
           let data;
@@ -568,7 +585,7 @@ export default class CustomizationExporter {
           reject(new Error(`Failed to read file: ${error.message}`));
         }
       };
-      
+
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsText(file);
     });
@@ -581,9 +598,9 @@ export default class CustomizationExporter {
     try {
       const existing = localStorage.getItem('learnimals_imported_customizations');
       const imported = existing ? JSON.parse(existing) : {};
-      
+
       imported[customization.id] = customization;
-      
+
       localStorage.setItem('learnimals_imported_customizations', JSON.stringify(imported));
     } catch (error) {
       console.error('Failed to save imported customization:', error);
@@ -597,11 +614,11 @@ export default class CustomizationExporter {
     try {
       const existing = localStorage.getItem('learnimals_customization_presets');
       const stored = existing ? JSON.parse(existing) : {};
-      
+
       for (const [id, preset] of presets) {
         stored[id] = preset;
       }
-      
+
       localStorage.setItem('learnimals_customization_presets', JSON.stringify(stored));
     } catch (error) {
       console.error('Failed to save imported presets:', error);
@@ -616,14 +633,14 @@ export default class CustomizationExporter {
       const sessionData = {
         ...session,
         id: CharacterUtils.generateId(),
-        saved: new Date().toISOString()
+        saved: new Date().toISOString(),
       };
 
       const existing = localStorage.getItem('learnimals_imported_sessions');
       const sessions = existing ? JSON.parse(existing) : {};
-      
+
       sessions[sessionData.id] = sessionData;
-      
+
       localStorage.setItem('learnimals_imported_sessions', JSON.stringify(sessions));
     } catch (error) {
       console.error('Failed to save imported session:', error);
@@ -637,7 +654,7 @@ export default class CustomizationExporter {
     return {
       version: this.version,
       supportedFormats: this.supportedFormats,
-      settings: { ...this.settings }
+      settings: { ...this.settings },
     };
   }
 

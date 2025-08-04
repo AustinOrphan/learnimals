@@ -356,7 +356,7 @@
   margin-bottom: 0.5rem;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type='checkbox'] {
   width: 18px;
   height: 18px;
   cursor: pointer;
@@ -608,26 +608,26 @@ button:disabled {
   .editor-body {
     flex-direction: column;
   }
-  
+
   .character-selector {
     width: 100%;
     height: 200px;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
   }
-  
+
   .character-list {
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0.5rem;
   }
-  
+
   .character-item {
     flex-shrink: 0;
     width: 200px;
   }
-  
+
   .preview-panel {
     width: 100%;
     border-left: none;
@@ -639,20 +639,20 @@ button:disabled {
   .editor-header {
     padding: 1rem;
   }
-  
+
   .editor-actions {
     flex-wrap: wrap;
   }
-  
+
   .editor-tabs {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .tab-panel {
     padding: 1rem;
   }
-  
+
   .color-inputs {
     grid-template-columns: 1fr;
   }
@@ -671,13 +671,13 @@ button:disabled {
   .character-editor {
     border: 2px solid var(--text-primary);
   }
-  
+
   .editor-header,
   .character-selector,
   .preview-panel {
     border-width: 2px;
   }
-  
+
   .btn-primary,
   .btn-secondary,
   .btn-danger {
@@ -695,15 +695,15 @@ button:disabled {
     --text-secondary: #a0a0a0;
     --text-heading: #ffffff;
     --border-color: #404040;
-    --accent-primary: #4A90E2;
-    --accent-primary-hover: #357ABD;
+    --accent-primary: #4a90e2;
+    --accent-primary-hover: #357abd;
     --accent-primary-alpha: rgba(74, 144, 226, 0.2);
-    --success-color: #4CAF50;
-    --warning-color: #FF9800;
-    --error-color: #F44336;
-    --error-color-dark: #D32F2F;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --error-color: #f44336;
+    --error-color-dark: #d32f2f;
     --error-color-alpha: rgba(244, 67, 54, 0.2);
-    --info-color: #2196F3;
+    --info-color: #2196f3;
   }
 }
 
@@ -713,18 +713,18 @@ button:disabled {
     position: static;
     background: white;
   }
-  
+
   .editor-header,
   .editor-status,
   .selector-actions,
   .preview-controls {
     display: none;
   }
-  
+
   .editor-body {
     flex-direction: column;
   }
-  
+
   .character-selector,
   .preview-panel {
     width: 100%;

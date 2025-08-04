@@ -8,7 +8,7 @@ const LOG_LEVELS = {
   ERROR: 0,
   WARN: 1,
   INFO: 2,
-  DEBUG: 3
+  DEBUG: 3,
 };
 
 class Logger {
@@ -29,11 +29,13 @@ class Logger {
 
     // Check if we're in development mode
     // SECURITY: Use exact hostname matching only to prevent malicious domain bypass
-    // Malicious domains like "evil-localhost.com" or "not-localhost.malicious.com" 
+    // Malicious domains like "evil-localhost.com" or "not-localhost.malicious.com"
     // could trigger development mode if substring matching was used
     const isDevelopmentHostname = () => {
       const DEVELOPMENT_HOSTNAMES = ['localhost', '127.0.0.1'];
-      return typeof window !== 'undefined' && DEVELOPMENT_HOSTNAMES.includes(window.location.hostname);
+      return (
+        typeof window !== 'undefined' && DEVELOPMENT_HOSTNAMES.includes(window.location.hostname)
+      );
     };
     const isDevelopment = isDevelopmentHostname();
 
@@ -96,7 +98,7 @@ class Logger {
   formatMessage(level, message, args) {
     const timestamp = new Date().toISOString().slice(11, 23);
     const prefix = `[${timestamp}] ${level}:`;
-    
+
     if (args.length > 0) {
       return [prefix, message, ...args];
     }

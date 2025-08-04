@@ -30,10 +30,14 @@ class FeedbackOverlay extends BaseComponent {
       showCloseButton: options.showCloseButton !== false,
       onDismiss: options.onDismiss || null,
       blockInteraction: options.blockInteraction !== false,
-      cssClasses: ['feedback-overlay', `feedback-overlay--${options.type || 'success'}`, `feedback-overlay--${options.character || 'max'}`],
-      ...options
+      cssClasses: [
+        'feedback-overlay',
+        `feedback-overlay--${options.type || 'success'}`,
+        `feedback-overlay--${options.character || 'max'}`,
+      ],
+      ...options,
     });
-    
+
     this.isVisible = false;
     this.dismissTimer = null;
     this.animationClass = '';
@@ -44,15 +48,24 @@ class FeedbackOverlay extends BaseComponent {
    * @returns {string} - Overlay HTML
    */
   generateHTML() {
-    const { 
-      id, type, message, character, animation, showCharacter, showCloseButton, blockInteraction 
+    const {
+      id,
+      type,
+      message,
+      character,
+      animation,
+      showCharacter,
+      showCloseButton,
+      blockInteraction,
     } = this.options;
-    
-    const overlayClass = blockInteraction ? 'feedback-overlay-backdrop' : 'feedback-overlay-backdrop feedback-overlay-backdrop--no-block';
+
+    const overlayClass = blockInteraction
+      ? 'feedback-overlay-backdrop'
+      : 'feedback-overlay-backdrop feedback-overlay-backdrop--no-block';
     const characterInfo = this.getCharacterInfo(character);
     const typeIcon = this.getTypeIcon(type);
     const animationClass = `feedback-overlay--animation-${animation}`;
-    
+
     return `
       <div id="${id}" class="component feedback-overlay ${animationClass}" 
            role="dialog" aria-modal="${blockInteraction}" aria-live="assertive" 
@@ -60,7 +73,9 @@ class FeedbackOverlay extends BaseComponent {
            data-character="${character}" aria-hidden="true">
         <div class="${overlayClass}"></div>
         <div class="feedback-overlay-content">
-          ${showCharacter ? `
+          ${
+  showCharacter
+    ? `
             <div class="feedback-overlay-character" data-character="${character}">
               <div class="character-avatar character-avatar--${character}">
                 <img src="${characterInfo.avatar}" alt="${characterInfo.name}" 
@@ -73,7 +88,9 @@ class FeedbackOverlay extends BaseComponent {
                 </div>
               </div>
             </div>
-          ` : ''}
+          `
+    : ''
+}
           
           <div class="feedback-overlay-main">
             <div class="feedback-overlay-icon">
@@ -84,19 +101,27 @@ class FeedbackOverlay extends BaseComponent {
               ${message}
             </div>
             
-            ${type === 'achievement' ? `
+            ${
+  type === 'achievement'
+    ? `
               <div class="feedback-overlay-achievement">
                 <div class="achievement-badge"></div>
                 <div class="achievement-sparkles"></div>
               </div>
-            ` : ''}
+            `
+    : ''
+}
             
-            ${showCloseButton ? `
+            ${
+  showCloseButton
+    ? `
               <button class="feedback-overlay-close component-button component-button--ghost" 
                       aria-label="Dismiss feedback" type="button">
                 <span aria-hidden="true">&times;</span>
               </button>
-            ` : ''}
+            `
+    : ''
+}
           </div>
         </div>
       </div>
@@ -113,30 +138,30 @@ class FeedbackOverlay extends BaseComponent {
       bella: {
         name: 'Bella the Reading Bunny',
         avatar: '/public/images/characters/bella-avatar.png',
-        subject: 'reading'
+        subject: 'reading',
       },
       max: {
         name: 'Max the Math Bear',
         avatar: '/public/images/characters/max-avatar.png',
-        subject: 'math'
+        subject: 'math',
       },
       zara: {
         name: 'Zara the Science Zebra',
         avatar: '/public/images/characters/zara-avatar.png',
-        subject: 'science'
+        subject: 'science',
       },
       aria: {
         name: 'Aria the Art Owl',
         avatar: '/public/images/characters/aria-avatar.png',
-        subject: 'art'
+        subject: 'art',
       },
       codecat: {
         name: 'CodeCat the Coding Cat',
         avatar: '/public/images/characters/codecat-avatar.png',
-        subject: 'coding'
-      }
+        subject: 'coding',
+      },
     };
-    
+
     return characters[character] || characters.max;
   }
 
@@ -151,9 +176,9 @@ class FeedbackOverlay extends BaseComponent {
       error: '<span class="feedback-icon feedback-icon--error">❌</span>',
       hint: '<span class="feedback-icon feedback-icon--hint">💡</span>',
       progress: '<span class="feedback-icon feedback-icon--progress">📈</span>',
-      achievement: '<span class="feedback-icon feedback-icon--achievement">🏆</span>'
+      achievement: '<span class="feedback-icon feedback-icon--achievement">🏆</span>',
     };
-    
+
     return icons[type] || icons.success;
   }
 
@@ -166,46 +191,98 @@ class FeedbackOverlay extends BaseComponent {
   getCharacterReaction(character, type) {
     const _reactions = {
       bella: {
-        success: ['Wonderful reading! 📚', 'You\'re becoming a great reader! 🌟', 'Perfect pronunciation! 🎭'],
-        error: ['Let\'s try that again together! 💪', 'Reading takes practice! 📖', 'We\'ll get it next time! 🤗'],
-        hint: ['Think about the sound... 🔤', 'Look at the first letter! 👀', 'Sound it out slowly! 🗣️'],
-        progress: ['You\'re improving so much! 📈', 'Great progress, reader! 🚀', 'Keep up the reading! 📚'],
-        achievement: ['Amazing reading milestone! 🎉', 'You\'re a reading star! ⭐', 'Outstanding achievement! 🏆']
+        success: [
+          'Wonderful reading! 📚',
+          'You\'re becoming a great reader! 🌟',
+          'Perfect pronunciation! 🎭',
+        ],
+        error: [
+          'Let\'s try that again together! 💪',
+          'Reading takes practice! 📖',
+          'We\'ll get it next time! 🤗',
+        ],
+        hint: [
+          'Think about the sound... 🔤',
+          'Look at the first letter! 👀',
+          'Sound it out slowly! 🗣️',
+        ],
+        progress: [
+          'You\'re improving so much! 📈',
+          'Great progress, reader! 🚀',
+          'Keep up the reading! 📚',
+        ],
+        achievement: [
+          'Amazing reading milestone! 🎉',
+          'You\'re a reading star! ⭐',
+          'Outstanding achievement! 🏆',
+        ],
       },
       max: {
         success: ['Math magic! 🎩', 'Numbers are your friend! 🔢', 'Calculating success! 📊'],
-        error: ['Let\'s solve this together! 🤔', 'Math needs patience! ⏱️', 'Try a different approach! 🔄'],
+        error: [
+          'Let\'s solve this together! 🤔',
+          'Math needs patience! ⏱️',
+          'Try a different approach! 🔄',
+        ],
         hint: ['Think step by step... 🪜', 'What operation do we need? ➕', 'Count carefully! 🔢'],
-        progress: ['Your math skills are growing! 📈', 'Number sense improving! 🧮', 'Mathematical progress! 📊'],
-        achievement: ['Mathematical genius! 🧠', 'Number wizard achieved! 🪄', 'Math champion! 🏆']
+        progress: [
+          'Your math skills are growing! 📈',
+          'Number sense improving! 🧮',
+          'Mathematical progress! 📊',
+        ],
+        achievement: ['Mathematical genius! 🧠', 'Number wizard achieved! 🪄', 'Math champion! 🏆'],
       },
       zara: {
-        success: ['Scientific discovery! 🔬', 'Hypothesis confirmed! ✅', 'Experiment successful! 🧪'],
-        error: ['Science means trying again! 🔬', 'Every mistake teaches us! 📚', 'Let\'s investigate more! 🕵️'],
+        success: [
+          'Scientific discovery! 🔬',
+          'Hypothesis confirmed! ✅',
+          'Experiment successful! 🧪',
+        ],
+        error: [
+          'Science means trying again! 🔬',
+          'Every mistake teaches us! 📚',
+          'Let\'s investigate more! 🕵️',
+        ],
         hint: ['Observe carefully... 👁️', 'What do you notice? 🤔', 'Form a hypothesis! 💭'],
-        progress: ['Scientific thinking growing! 🌱', 'Discovery skills improving! 🔍', 'Research progressing! 📋'],
-        achievement: ['Science superstar! ⭐', 'Discovery champion! 🏆', 'Research excellence! 🥇']
+        progress: [
+          'Scientific thinking growing! 🌱',
+          'Discovery skills improving! 🔍',
+          'Research progressing! 📋',
+        ],
+        achievement: ['Science superstar! ⭐', 'Discovery champion! 🏆', 'Research excellence! 🥇'],
       },
       aria: {
         success: ['Artistic brilliance! 🎨', 'Creative genius! ✨', 'Beautiful expression! 🖼️'],
-        error: ['Art is about experimenting! 🎭', 'Every artist makes mistakes! 🖌️', 'Let\'s try another way! 🎨'],
+        error: [
+          'Art is about experimenting! 🎭',
+          'Every artist makes mistakes! 🖌️',
+          'Let\'s try another way! 🎨',
+        ],
         hint: ['Feel the creativity... 💫', 'What colors speak to you? 🌈', 'Express yourself! 🎨'],
-        progress: ['Your creativity is blooming! 🌸', 'Artistic skills developing! 🎭', 'Creative growth! 🌱'],
-        achievement: ['Master artist! 🎨', 'Creative champion! 🏆', 'Artistic excellence! ⭐']
+        progress: [
+          'Your creativity is blooming! 🌸',
+          'Artistic skills developing! 🎭',
+          'Creative growth! 🌱',
+        ],
+        achievement: ['Master artist! 🎨', 'Creative champion! 🏆', 'Artistic excellence! ⭐'],
       },
       codecat: {
         success: ['Code compiled! 💻', 'Logic perfect! 🤖', 'Program successful! ⚡'],
         error: ['Debugging time! 🐛', 'Code needs tweaking! 🔧', 'Let\'s fix this bug! 🛠️'],
         hint: ['Check your syntax... 📝', 'What\'s the logic? 🤔', 'Step through the code! 👣'],
-        progress: ['Coding skills leveling up! 📈', 'Programming progress! 💾', 'Logic improving! 🧠'],
-        achievement: ['Coding wizard! 🧙‍♂️', 'Program master! 🏆', 'Code champion! 👑']
-      }
+        progress: [
+          'Coding skills leveling up! 📈',
+          'Programming progress! 💾',
+          'Logic improving! 🧠',
+        ],
+        achievement: ['Coding wizard! 🧙‍♂️', 'Program master! 🏆', 'Code champion! 👑'],
+      },
     };
-    
+
     const characterReactions = _reactions[character] || _reactions.max;
     const typeReactions = characterReactions[type] || characterReactions.success;
     const randomReaction = typeReactions[Math.floor(Math.random() * typeReactions.length)];
-    
+
     return randomReaction;
   }
 
@@ -216,30 +293,30 @@ class FeedbackOverlay extends BaseComponent {
    */
   async show(container) {
     if (this.isVisible) return;
-    
+
     // Render component
     this.render(container || document.body);
-    
+
     // Set up event listeners
     this.setupEventListeners();
-    
+
     // Show with animation
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       requestAnimationFrame(() => {
         this.element.setAttribute('aria-hidden', 'false');
         this.element.classList.add('feedback-overlay--visible');
         this.isVisible = true;
-        
+
         // Set up auto-dismiss timer
         if (this.options.duration > 0) {
           this.dismissTimer = setTimeout(() => {
             this.dismiss();
           }, this.options.duration);
         }
-        
+
         // Trigger character animation
         this.triggerCharacterAnimation();
-        
+
         resolve();
       });
     });
@@ -251,30 +328,30 @@ class FeedbackOverlay extends BaseComponent {
    */
   async dismiss() {
     if (!this.isVisible) return;
-    
+
     // Clear auto-dismiss timer
     if (this.dismissTimer) {
       clearTimeout(this.dismissTimer);
       this.dismissTimer = null;
     }
-    
-    return new Promise((resolve) => {
+
+    return new Promise(resolve => {
       this.element.classList.add('feedback-overlay--dismissing');
-      
+
       // Wait for animation
       setTimeout(() => {
         this.element.setAttribute('aria-hidden', 'true');
         this.element.classList.remove('feedback-overlay--visible', 'feedback-overlay--dismissing');
         this.isVisible = false;
-        
+
         // Call dismiss callback
         if (this.options.onDismiss) {
           this.options.onDismiss();
         }
-        
+
         // Remove from DOM
         this.destroy();
-        
+
         resolve();
       }, 300); // Animation duration
     });
@@ -285,13 +362,13 @@ class FeedbackOverlay extends BaseComponent {
    */
   setupEventListeners() {
     if (!this.element) return;
-    
+
     // Close button
     const closeButton = this.element.querySelector('.feedback-overlay-close');
     if (closeButton) {
       this.addEventListener(closeButton, 'click', () => this.dismiss());
     }
-    
+
     // Background click (if not blocking)
     if (!this.options.blockInteraction) {
       const backdrop = this.element.querySelector('.feedback-overlay-backdrop');
@@ -299,9 +376,9 @@ class FeedbackOverlay extends BaseComponent {
         this.addEventListener(backdrop, 'click', () => this.dismiss());
       }
     }
-    
+
     // Keyboard navigation
-    this.addEventListener(document, 'keydown', (e) => {
+    this.addEventListener(document, 'keydown', e => {
       if (e.key === 'Escape' && this.isVisible) {
         this.dismiss();
       }
@@ -314,13 +391,13 @@ class FeedbackOverlay extends BaseComponent {
   triggerCharacterAnimation() {
     const character = this.element?.querySelector('.feedback-overlay-character');
     if (!character) return;
-    
+
     const { type, animation } = this.options;
-    
+
     // Add animation class
     character.classList.add(`character-animation--${animation}`);
     character.classList.add(`character-animation--${type}`);
-    
+
     // Trigger speech bubble animation
     const speechBubble = character.querySelector('.character-speech-bubble');
     if (speechBubble) {
@@ -337,7 +414,7 @@ class FeedbackOverlay extends BaseComponent {
   update(newOptions) {
     // Update options
     Object.assign(this.options, newOptions);
-    
+
     // Update message
     if (newOptions.message) {
       const messageElement = this.element?.querySelector('.feedback-overlay-message');
@@ -345,7 +422,7 @@ class FeedbackOverlay extends BaseComponent {
         messageElement.textContent = newOptions.message;
       }
     }
-    
+
     // Update character reaction
     if (newOptions.character || newOptions.type) {
       const speechContent = this.element?.querySelector('.speech-bubble-content');
@@ -366,7 +443,7 @@ class FeedbackOverlay extends BaseComponent {
       clearTimeout(this.dismissTimer);
       this.dismissTimer = null;
     }
-    
+
     super.destroy();
   }
 }

@@ -11,14 +11,14 @@ export const achievementCategories = {
   CROSS_GAME: 'cross-game',
   MILESTONE: 'milestone',
   MASTERY: 'mastery',
-  EXPLORATION: 'exploration'
+  EXPLORATION: 'exploration',
 };
 
 export const achievementDifficulty = {
   BRONZE: { multiplier: 1, color: '#CD7F32', icon: '🥉' },
   SILVER: { multiplier: 2, color: '#C0C0C0', icon: '🥈' },
   GOLD: { multiplier: 3, color: '#FFD700', icon: '🥇' },
-  PLATINUM: { multiplier: 5, color: '#E5E4E2', icon: '💎' }
+  PLATINUM: { multiplier: 5, color: '#E5E4E2', icon: '💎' },
 };
 
 // Game-specific achievements
@@ -35,14 +35,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'word-completed',
-        target: 1
+        target: 1,
       },
       reward: {
         points: 50,
-        badge: 'Word Explorer'
+        badge: 'Word Explorer',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'speed-reader': {
       id: 'speed-reader',
@@ -55,14 +55,14 @@ export const gameAchievements = {
         type: 'time',
         event: 'word-completed',
         target: 30000, // 30 seconds in milliseconds
-        comparison: 'less_than'
+        comparison: 'less_than',
       },
       reward: {
         points: 100,
-        badge: 'Lightning Reader'
+        badge: 'Lightning Reader',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'vocabulary-master': {
       id: 'vocabulary-master',
@@ -74,14 +74,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'word-completed',
-        target: 10
+        target: 10,
       },
       reward: {
         points: 300,
-        badge: 'Word Master'
+        badge: 'Word Master',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'perfect-round': {
       id: 'perfect-round',
@@ -93,14 +93,14 @@ export const gameAchievements = {
       criteria: {
         type: 'perfect',
         event: 'word-completed',
-        condition: 'no-hints'
+        condition: 'no-hints',
       },
       reward: {
         points: 150,
-        badge: 'Perfect Speller'
+        badge: 'Perfect Speller',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'reading-streak': {
       id: 'reading-streak',
@@ -113,15 +113,15 @@ export const gameAchievements = {
         type: 'streak',
         event: 'word-completed',
         target: 5,
-        condition: 'perfect'
+        condition: 'perfect',
       },
       reward: {
         points: 250,
-        badge: 'Reading Champion'
+        badge: 'Reading Champion',
       },
       character: 'Bella',
-      subject: 'reading'
-    }
+      subject: 'reading',
+    },
   },
 
   // Number Line Jump (Math) - Leo the Lion
@@ -136,14 +136,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'equation-completed',
-        target: 1
+        target: 1,
       },
       reward: {
         points: 50,
-        badge: 'Number Explorer'
+        badge: 'Number Explorer',
       },
       character: 'Leo',
-      subject: 'math'
+      subject: 'math',
     },
     'math-whiz': {
       id: 'math-whiz',
@@ -156,14 +156,14 @@ export const gameAchievements = {
         type: 'count',
         event: 'equation-completed',
         target: 10,
-        condition: 'correct'
+        condition: 'correct',
       },
       reward: {
         points: 300,
-        badge: 'Math Genius'
+        badge: 'Math Genius',
       },
       character: 'Leo',
-      subject: 'math'
+      subject: 'math',
     },
     'speed-calculator': {
       id: 'speed-calculator',
@@ -176,14 +176,14 @@ export const gameAchievements = {
         type: 'time',
         event: 'equation-completed',
         target: 20000,
-        comparison: 'less_than'
+        comparison: 'less_than',
       },
       reward: {
         points: 150,
-        badge: 'Quick Thinker'
+        badge: 'Quick Thinker',
       },
       character: 'Leo',
-      subject: 'math'
+      subject: 'math',
     },
     'perfect-precision': {
       id: 'perfect-precision',
@@ -195,14 +195,14 @@ export const gameAchievements = {
       criteria: {
         type: 'perfect',
         event: 'level-completed',
-        condition: 'no-mistakes'
+        condition: 'no-mistakes',
       },
       reward: {
         points: 200,
-        badge: 'Precision Master'
+        badge: 'Precision Master',
       },
       character: 'Leo',
-      subject: 'math'
+      subject: 'math',
     },
     'number-master': {
       id: 'number-master',
@@ -214,15 +214,15 @@ export const gameAchievements = {
       criteria: {
         type: 'level',
         event: 'level-reached',
-        target: 5
+        target: 5,
       },
       reward: {
         points: 400,
-        badge: 'Number King'
+        badge: 'Number King',
       },
       character: 'Leo',
-      subject: 'math'
-    }
+      subject: 'math',
+    },
   },
 
   // Element Match (Science) - Sage the Owl
@@ -237,14 +237,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'element-matched',
-        target: 1
+        target: 1,
       },
       reward: {
         points: 50,
-        badge: 'Young Scientist'
+        badge: 'Young Scientist',
       },
       character: 'Sage',
-      subject: 'science'
+      subject: 'science',
     },
     'element-explorer': {
       id: 'element-explorer',
@@ -256,14 +256,14 @@ export const gameAchievements = {
       criteria: {
         type: 'unique_count',
         event: 'element-learned',
-        target: 15
+        target: 15,
       },
       reward: {
         points: 350,
-        badge: 'Chemistry Explorer'
+        badge: 'Chemistry Explorer',
       },
       character: 'Sage',
-      subject: 'science'
+      subject: 'science',
     },
     'chemistry-star': {
       id: 'chemistry-star',
@@ -275,14 +275,14 @@ export const gameAchievements = {
       criteria: {
         type: 'difficulty_completion',
         event: 'difficulty-completed',
-        target: ['easy', 'medium', 'hard']
+        target: ['easy', 'medium', 'hard'],
       },
       reward: {
         points: 500,
-        badge: 'Chemistry Star'
+        badge: 'Chemistry Star',
       },
       character: 'Sage',
-      subject: 'science'
+      subject: 'science',
     },
     'perfect-memory': {
       id: 'perfect-memory',
@@ -294,14 +294,14 @@ export const gameAchievements = {
       criteria: {
         type: 'perfect',
         event: 'round-completed',
-        condition: 'perfect-accuracy'
+        condition: 'perfect-accuracy',
       },
       reward: {
         points: 200,
-        badge: 'Memory Master'
+        badge: 'Memory Master',
       },
       character: 'Sage',
-      subject: 'science'
+      subject: 'science',
     },
     'science-streak': {
       id: 'science-streak',
@@ -314,15 +314,15 @@ export const gameAchievements = {
         type: 'streak',
         event: 'element-matched',
         target: 5,
-        condition: 'perfect'
+        condition: 'perfect',
       },
       reward: {
         points: 300,
-        badge: 'Science Champion'
+        badge: 'Science Champion',
       },
       character: 'Sage',
-      subject: 'science'
-    }
+      subject: 'science',
+    },
   },
 
   // Sentence Builder (Reading) - Bella the Bunny
@@ -337,14 +337,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'sentence-completed',
-        target: 1
+        target: 1,
       },
       reward: {
         points: 50,
-        badge: 'Grammar Explorer'
+        badge: 'Grammar Explorer',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'sentence-master': {
       id: 'sentence-master',
@@ -356,14 +356,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'sentence-completed',
-        target: 10
+        target: 10,
       },
       reward: {
         points: 300,
-        badge: 'Sentence Master'
+        badge: 'Sentence Master',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'perfect-grammar': {
       id: 'perfect-grammar',
@@ -375,14 +375,14 @@ export const gameAchievements = {
       criteria: {
         type: 'perfect',
         event: 'round-completed',
-        condition: 'perfect-grammar'
+        condition: 'perfect-grammar',
       },
       reward: {
         points: 200,
-        badge: 'Grammar Guru'
+        badge: 'Grammar Guru',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'reading-comprehension': {
       id: 'reading-comprehension',
@@ -394,14 +394,14 @@ export const gameAchievements = {
       criteria: {
         type: 'difficulty_completion',
         event: 'difficulty-completed',
-        target: ['easy', 'medium', 'hard']
+        target: ['easy', 'medium', 'hard'],
       },
       reward: {
         points: 500,
-        badge: 'Reading Scholar'
+        badge: 'Reading Scholar',
       },
       character: 'Bella',
-      subject: 'reading'
+      subject: 'reading',
     },
     'language-artist': {
       id: 'language-artist',
@@ -414,15 +414,15 @@ export const gameAchievements = {
         type: 'count',
         event: 'sentence-completed',
         target: 25,
-        condition: 'perfect'
+        condition: 'perfect',
       },
       reward: {
         points: 600,
-        badge: 'Language Artist'
+        badge: 'Language Artist',
       },
       character: 'Bella',
-      subject: 'reading'
-    }
+      subject: 'reading',
+    },
   },
 
   // Color Palette (Art) - Aria the Owl
@@ -437,14 +437,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'color-mixed',
-        target: 1
+        target: 1,
       },
       reward: {
         points: 50,
-        badge: 'Color Explorer'
+        badge: 'Color Explorer',
       },
       character: 'Aria',
-      subject: 'art'
+      subject: 'art',
     },
     'color-theory-student': {
       id: 'color-theory-student',
@@ -456,14 +456,14 @@ export const gameAchievements = {
       criteria: {
         type: 'knowledge',
         event: 'colors-learned',
-        target: ['red', 'blue', 'yellow', 'orange', 'green', 'purple']
+        target: ['red', 'blue', 'yellow', 'orange', 'green', 'purple'],
       },
       reward: {
         points: 200,
-        badge: 'Color Student'
+        badge: 'Color Student',
       },
       character: 'Aria',
-      subject: 'art'
+      subject: 'art',
     },
     'palette-creator': {
       id: 'palette-creator',
@@ -475,14 +475,14 @@ export const gameAchievements = {
       criteria: {
         type: 'count',
         event: 'palette-created',
-        target: 5
+        target: 5,
       },
       reward: {
         points: 300,
-        badge: 'Palette Master'
+        badge: 'Palette Master',
       },
       character: 'Aria',
-      subject: 'art'
+      subject: 'art',
     },
     'rainbow-master': {
       id: 'rainbow-master',
@@ -494,14 +494,14 @@ export const gameAchievements = {
       criteria: {
         type: 'completion',
         event: 'all-challenges-completed',
-        target: 'color-theory'
+        target: 'color-theory',
       },
       reward: {
         points: 500,
-        badge: 'Rainbow Master'
+        badge: 'Rainbow Master',
       },
       character: 'Aria',
-      subject: 'art'
+      subject: 'art',
     },
     'artistic-vision': {
       id: 'artistic-vision',
@@ -514,16 +514,16 @@ export const gameAchievements = {
         type: 'count',
         event: 'palette-created',
         target: 10,
-        condition: 'perfect'
+        condition: 'perfect',
       },
       reward: {
         points: 600,
-        badge: 'Artistic Visionary'
+        badge: 'Artistic Visionary',
       },
       character: 'Aria',
-      subject: 'art'
-    }
-  }
+      subject: 'art',
+    },
+  },
 };
 
 // Cross-game achievements that span multiple subjects
@@ -537,13 +537,19 @@ export const crossGameAchievements = {
     difficulty: achievementDifficulty.GOLD,
     criteria: {
       type: 'games_played',
-      target: ['word-scramble', 'number-line-jump', 'element-match', 'sentence-builder', 'color-palette']
+      target: [
+        'word-scramble',
+        'number-line-jump',
+        'element-match',
+        'sentence-builder',
+        'color-palette',
+      ],
     },
     reward: {
       points: 400,
-      badge: 'Well-Rounded Learner'
+      badge: 'Well-Rounded Learner',
     },
-    subjects: ['math', 'science', 'reading', 'art']
+    subjects: ['math', 'science', 'reading', 'art'],
   },
   'knowledge-seeker': {
     id: 'knowledge-seeker',
@@ -554,13 +560,13 @@ export const crossGameAchievements = {
     difficulty: achievementDifficulty.GOLD,
     criteria: {
       type: 'achievements_earned',
-      target: 10
+      target: 10,
     },
     reward: {
       points: 500,
-      badge: 'Knowledge Seeker'
+      badge: 'Knowledge Seeker',
     },
-    subjects: ['math', 'science', 'reading', 'art']
+    subjects: ['math', 'science', 'reading', 'art'],
   },
   'learning-champion': {
     id: 'learning-champion',
@@ -571,13 +577,13 @@ export const crossGameAchievements = {
     difficulty: achievementDifficulty.PLATINUM,
     criteria: {
       type: 'total_challenges',
-      target: 50
+      target: 50,
     },
     reward: {
       points: 1000,
-      badge: 'Learning Champion'
+      badge: 'Learning Champion',
     },
-    subjects: ['math', 'science', 'reading', 'art']
+    subjects: ['math', 'science', 'reading', 'art'],
   },
   'perfect-student': {
     id: 'perfect-student',
@@ -589,13 +595,13 @@ export const crossGameAchievements = {
     criteria: {
       type: 'overall_accuracy',
       target: 90,
-      minimum_attempts: 20
+      minimum_attempts: 20,
     },
     reward: {
       points: 800,
-      badge: 'Perfect Student'
+      badge: 'Perfect Student',
     },
-    subjects: ['math', 'science', 'reading', 'art']
+    subjects: ['math', 'science', 'reading', 'art'],
   },
   'dedicated-learner': {
     id: 'dedicated-learner',
@@ -606,14 +612,14 @@ export const crossGameAchievements = {
     difficulty: achievementDifficulty.GOLD,
     criteria: {
       type: 'consecutive_days',
-      target: 7
+      target: 7,
     },
     reward: {
       points: 350,
-      badge: 'Dedicated Learner'
+      badge: 'Dedicated Learner',
     },
-    subjects: ['math', 'science', 'reading', 'art']
-  }
+    subjects: ['math', 'science', 'reading', 'art'],
+  },
 };
 
 /**
@@ -639,15 +645,15 @@ export function getCrossGameAchievements() {
  */
 export function getAllAchievements() {
   const allAchievements = {};
-  
+
   // Add all game-specific achievements
   Object.values(gameAchievements).forEach(gameAchs => {
     Object.assign(allAchievements, gameAchs);
   });
-  
+
   // Add cross-game achievements
   Object.assign(allAchievements, crossGameAchievements);
-  
+
   return allAchievements;
 }
 
@@ -668,9 +674,10 @@ export function getAchievementById(achievementId) {
  */
 export function getAchievementsBySubject(subject) {
   const allAchievements = getAllAchievements();
-  return Object.values(allAchievements).filter(achievement => 
-    achievement.subject === subject || 
-    (achievement.subjects && achievement.subjects.includes(subject))
+  return Object.values(allAchievements).filter(
+    achievement =>
+      achievement.subject === subject ||
+      (achievement.subjects && achievement.subjects.includes(subject))
   );
 }
 
@@ -681,8 +688,8 @@ export function getAchievementsBySubject(subject) {
  */
 export function getAchievementsByDifficulty(difficulty) {
   const allAchievements = getAllAchievements();
-  return Object.values(allAchievements).filter(achievement => 
-    achievement.difficulty === achievementDifficulty[difficulty.toUpperCase()]
+  return Object.values(allAchievements).filter(
+    achievement => achievement.difficulty === achievementDifficulty[difficulty.toUpperCase()]
   );
 }
 
@@ -708,5 +715,5 @@ export default {
   getAchievementById,
   getAchievementsBySubject,
   getAchievementsByDifficulty,
-  getTotalPossiblePoints
+  getTotalPossiblePoints,
 };

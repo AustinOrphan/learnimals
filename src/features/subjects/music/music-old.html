@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn music theory, rhythm, and instruments with fun activities">
+    <title>Music - Learnimals</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/src/styles/base/styles.css">
+    <link rel="stylesheet" href="/src/styles/components/navbar.css">
+    <link rel="stylesheet" href="/src/styles/components/components.css">
+    <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css">
+    <link rel="stylesheet" href="/src/features/subjects/music/music.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-placeholder"></div>
+
+    <main>
+        <section class="hero">
+            <h1>Music with Melody the Songbird</h1>
+            <p>Learn music theory, rhythm, and instruments with fun activities</p>
+            <div class="hero-image">
+                <img src="/public/images/music-songbird.png" 
+                     alt="Melody the Songbird" />
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>Learning Activities</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Music Theory</h3>
+                    <p>Interactive music theory activities!</p>
+                    <button onclick="alert('Music Theory coming soon!')">Explore</button>
+                </div>
+                <div class="feature-card">
+                    <h3>Virtual Instruments</h3>
+                    <p>Interactive virtual instruments activities!</p>
+                    <button onclick="alert('Virtual Instruments coming soon!')">Explore</button>
+                </div>
+                <div class="feature-card">
+                    <h3>Rhythm Games</h3>
+                    <p>Interactive rhythm games activities!</p>
+                    <button onclick="alert('Rhythm Games coming soon!')">Explore</button>
+                </div>
+                <div class="feature-card">
+                    <h3>Song Composition</h3>
+                    <p>Interactive song composition activities!</p>
+                    <button onclick="alert('Song Composition coming soon!')">Explore</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Learnimals. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="/src/pages/about.html">About Us</a>
+            <a href="/src/pages/contact.html">Contact</a>
+            <a href="#">Privacy Policy</a>
+            <a href="/src/pages/profile.html">My Profile</a>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script defer type="module" src="/src/themeInitializer.js"></script>
+    <script type="module" src="/src/utils/themeManager.js"></script>
+    <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
+    <script defer src="/src/components/layout/navbarLoader.js"></script>
+    <script defer src="/src/components/component-loader.js"></script>
+    <script defer src="/src/features/subjects/music/music.js"></script>
+</body>
+</html>

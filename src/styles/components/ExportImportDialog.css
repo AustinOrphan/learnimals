@@ -193,7 +193,7 @@
   background: var(--accent-primary-alpha);
 }
 
-.export-type-option input[type="radio"] {
+.export-type-option input[type='radio'] {
   margin: 0.25rem 0 0 0;
   cursor: pointer;
 }
@@ -263,7 +263,7 @@
   font-size: 0.9rem;
 }
 
-.toggle-setting input[type="checkbox"] {
+.toggle-setting input[type='checkbox'] {
   width: 16px;
   height: 16px;
   cursor: pointer;
@@ -513,15 +513,15 @@
 }
 
 .success-message {
-  background: var(--success-color)20;
+  background: var(--success-color) 20;
   color: var(--success-color);
-  border: 1px solid var(--success-color)40;
+  border: 1px solid var(--success-color) 40;
 }
 
 .error-message {
-  background: var(--error-color)20;
+  background: var(--error-color) 20;
   color: var(--error-color);
-  border: 1px solid var(--error-color)40;
+  border: 1px solid var(--error-color) 40;
 }
 
 /* Buttons */
@@ -578,44 +578,44 @@
     width: 95%;
     max-height: 95vh;
   }
-  
+
   .dialog-header {
     padding: 1rem;
   }
-  
+
   .dialog-header h2 {
     font-size: 1.3rem;
   }
-  
+
   .tab-content {
     padding: 1rem;
   }
-  
+
   .export-types {
     gap: 0.75rem;
   }
-  
+
   .export-type-option {
     padding: 0.75rem;
   }
-  
+
   .setting-toggles {
     grid-template-columns: 1fr;
   }
-  
+
   .export-actions,
   .import-actions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .dialog-footer {
     padding: 1rem;
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .footer-actions {
     justify-content: center;
   }
@@ -628,32 +628,32 @@
     max-height: none;
     border-radius: 0;
   }
-  
+
   .tab-button {
     flex-direction: column;
     gap: 0.25rem;
     padding: 0.75rem 0.5rem;
   }
-  
+
   .tab-button span {
     font-size: 1rem;
   }
-  
+
   .export-type-option {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
-  .export-type-option input[type="radio"] {
+
+  .export-type-option input[type='radio'] {
     align-self: flex-start;
   }
-  
+
   .setting-group {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .setting-group label {
     min-width: auto;
   }
@@ -664,7 +664,7 @@
   .dialog-content {
     animation: none;
   }
-  
+
   .btn-primary:hover,
   .btn-secondary:hover {
     transform: none;
@@ -676,7 +676,7 @@
   .dialog-content {
     border: 2px solid var(--text-primary);
   }
-  
+
   .export-type-option,
   .file-upload-label,
   .text-input,
@@ -684,7 +684,7 @@
   .import-textarea {
     border-width: 2px;
   }
-  
+
   .btn-primary,
   .btn-secondary {
     border: 2px solid currentColor;
@@ -702,12 +702,12 @@
     --text-secondary: #a0a0a0;
     --text-heading: #ffffff;
     --border-color: #404040;
-    --accent-primary: #4A90E2;
-    --accent-primary-hover: #357ABD;
+    --accent-primary: #4a90e2;
+    --accent-primary-hover: #357abd;
     --accent-primary-alpha: rgba(74, 144, 226, 0.2);
     --accent-primary-light: rgba(74, 144, 226, 0.5);
-    --success-color: #4CAF50;
-    --warning-color: #FF9800;
-    --error-color: #F44336;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --error-color: #f44336;
   }
 }

@@ -1,6 +1,6 @@
 /**
  * xpCalculator.js
- * 
+ *
  * XP and level calculation utilities for the enhanced profile system
  */
 
@@ -11,38 +11,38 @@ const XP_CONFIG = {
   firstTimeBonus: 25,
   dailyBonusXP: 20,
   streakBonusPerDay: 5,
-  
+
   // Multipliers
   difficultyMultipliers: {
     easy: 0.8,
     medium: 1.0,
     hard: 1.5,
-    expert: 2.0
+    expert: 2.0,
   },
-  
+
   // Achievement XP values
   achievementXP: {
     common: 10,
     rare: 25,
     epic: 50,
-    legendary: 100
+    legendary: 100,
   },
-  
+
   // Game-specific bonuses
   gameCompletionXP: {
     'word-scramble': 15,
     'number-line-jump': 15,
     'element-match': 20,
     'sentence-builder': 20,
-    'color-palette': 25
+    'color-palette': 25,
   },
-  
+
   // Level curve settings
   levelCurve: {
     baseXP: 100,
     exponent: 2,
-    scaling: 1
-  }
+    scaling: 1,
+  },
 };
 
 class XPCalculator {
@@ -60,19 +60,19 @@ class XPCalculator {
       difficulty: 0,
       completion: 0,
       bonuses: [],
-      total: 0
+      total: 0,
     };
-    
+
     // Accuracy bonus (0-20 XP based on accuracy)
     if (sessionData.accuracy !== undefined) {
       breakdown.accuracy = Math.floor((sessionData.accuracy / 100) * 20);
     }
-    
+
     // Score bonus (1 XP per 100 points)
     if (sessionData.score) {
       breakdown.score = Math.floor(sessionData.score / 100);
     }
-    
+
     // Time bonus (faster completion = more XP)
     if (sessionData.duration && sessionData.expectedDuration) {
       const timeRatio = sessionData.expectedDuration / sessionData.duration;
@@ -80,54 +80,55 @@ class XPCalculator {
         breakdown.time = Math.floor((timeRatio - 1) * 10);
         breakdown.bonuses.push({
           name: 'Speed Bonus',
-          xp: breakdown.time
+          xp: breakdown.time,
         });
       }
     }
-    
+
     // Difficulty multiplier
     const difficulty = sessionData.difficulty || 'medium';
     const multiplier = XP_CONFIG.difficultyMultipliers[difficulty];
     breakdown.difficulty = Math.floor(breakdown.base * (multiplier - 1));
-    
+
     // Completion bonus
     if (sessionData.completed) {
       const gameType = sessionData.gameType;
       breakdown.completion = XP_CONFIG.gameCompletionXP[gameType] || 10;
     }
-    
+
     // Perfect game bonus
     if (sessionData.accuracy === 100 && sessionData.completed) {
       breakdown.bonuses.push({
         name: 'Perfect Game',
-        xp: XP_CONFIG.perfectGameBonus
+        xp: XP_CONFIG.perfectGameBonus,
       });
     }
-    
+
     // First time playing bonus
     if (sessionData.firstTime) {
       breakdown.bonuses.push({
         name: 'First Time',
-        xp: XP_CONFIG.firstTimeBonus
+        xp: XP_CONFIG.firstTimeBonus,
       });
     }
-    
+
     // Calculate total
-    breakdown.total = breakdown.base + 
-                     breakdown.accuracy + 
-                     breakdown.score + 
-                     breakdown.time + 
-                     breakdown.difficulty + 
-                     breakdown.completion;
-    
+    breakdown.total =
+      breakdown.base +
+      breakdown.accuracy +
+      breakdown.score +
+      breakdown.time +
+      breakdown.difficulty +
+      breakdown.completion;
+
     // Add bonuses
     breakdown.bonuses.forEach(bonus => {
       breakdown.total += bonus.xp;
     });
-    
+
     return breakdown;
   }
-  
+
   /**
    * Calculate daily bonus XP
    * @param {number} streakDays - Current streak
@@ -138,7 +139,7 @@ class XPCalculator {
     const streakBonus = Math.min(streakDays * XP_CONFIG.streakBonusPerDay, 50); // Cap at 50
     return baseBonus + streakBonus;
   }
-  
+
   /**
    * Calculate XP from achievement
    * @param {Object} achievement - Achievement data
@@ -148,7 +149,7 @@ class XPCalculator {
     const rarity = achievement.rarity || 'common';
     return XP_CONFIG.achievementXP[rarity] || 10;
   }
-  
+
   /**
    * Calculate level from total XP
    * @param {number} totalXP - Total XP
@@ -159,7 +160,7 @@ class XPCalculator {
     const { baseXP, exponent, scaling } = XP_CONFIG.levelCurve;
     return Math.floor(Math.pow(totalXP / (baseXP * scaling), 1 / exponent)) + 1;
   }
-  
+
   /**
    * Calculate XP required for a specific level
    * @param {number} level - Target level
@@ -171,7 +172,7 @@ class XPCalculator {
     if (level <= 1) return 0;
     return Math.floor(baseXP * Math.pow(level - 1, exponent) * scaling);
   }
-  
+
   /**
    * Calculate XP progress within current level
    * @param {number} totalXP - Total XP
@@ -183,7 +184,7 @@ class XPCalculator {
     const nextLevelXP = this.calculateXPForLevel(currentLevel + 1);
     const xpIntoLevel = totalXP - currentLevelXP;
     const xpForLevel = nextLevelXP - currentLevelXP;
-    
+
     return {
       level: currentLevel,
       xpIntoLevel,
@@ -192,10 +193,10 @@ class XPCalculator {
       xpToNext: xpForLevel - xpIntoLevel,
       totalXP,
       currentLevelXP,
-      nextLevelXP
+      nextLevelXP,
     };
   }
-  
+
   /**
    * Get level title based on level
    * @param {number} level - Current level
@@ -212,7 +213,7 @@ class XPCalculator {
     if (level < 100) return 'Legend';
     return 'Grandmaster';
   }
-  
+
   /**
    * Get prestige level (for levels 100+)
    * @param {number} level - Current level
@@ -223,21 +224,21 @@ class XPCalculator {
       return {
         prestige: 0,
         prestigeLevel: 0,
-        stars: 0
+        stars: 0,
       };
     }
-    
+
     const prestige = Math.floor(level / 100);
     const prestigeLevel = level % 100;
-    
+
     return {
       prestige,
       prestigeLevel: prestigeLevel || 100,
       stars: prestige,
-      title: `Prestige ${prestige} ${this.getLevelTitle(prestigeLevel || 100)}`
+      title: `Prestige ${prestige} ${this.getLevelTitle(prestigeLevel || 100)}`,
     };
   }
-  
+
   /**
    * Calculate combo multiplier
    * @param {number} comboCount - Current combo
@@ -250,7 +251,7 @@ class XPCalculator {
     if (comboCount < 50) return 2;
     return 2.5;
   }
-  
+
   /**
    * Get XP event description
    * @param {Object} xpBreakdown - XP breakdown from calculateSessionXP
@@ -258,62 +259,62 @@ class XPCalculator {
    */
   getXPEventDescriptions(xpBreakdown) {
     const events = [];
-    
+
     events.push({
       text: 'Base XP',
       value: `+${xpBreakdown.base}`,
-      type: 'base'
+      type: 'base',
     });
-    
+
     if (xpBreakdown.accuracy > 0) {
       events.push({
         text: 'Accuracy Bonus',
         value: `+${xpBreakdown.accuracy}`,
-        type: 'bonus'
+        type: 'bonus',
       });
     }
-    
+
     if (xpBreakdown.score > 0) {
       events.push({
         text: 'Score Bonus',
         value: `+${xpBreakdown.score}`,
-        type: 'bonus'
+        type: 'bonus',
       });
     }
-    
+
     if (xpBreakdown.difficulty > 0) {
       events.push({
         text: 'Difficulty Bonus',
         value: `+${xpBreakdown.difficulty}`,
-        type: 'bonus'
+        type: 'bonus',
       });
     }
-    
+
     if (xpBreakdown.completion > 0) {
       events.push({
         text: 'Completion Bonus',
         value: `+${xpBreakdown.completion}`,
-        type: 'bonus'
+        type: 'bonus',
       });
     }
-    
+
     xpBreakdown.bonuses.forEach(bonus => {
       events.push({
         text: bonus.name,
         value: `+${bonus.xp}`,
-        type: 'special'
+        type: 'special',
       });
     });
-    
+
     events.push({
       text: 'Total XP',
       value: `+${xpBreakdown.total}`,
-      type: 'total'
+      type: 'total',
     });
-    
+
     return events;
   }
-  
+
   /**
    * Estimate time to next level
    * @param {Object} progressData - Level progress data
@@ -323,15 +324,15 @@ class XPCalculator {
   estimateTimeToLevel(progressData, averageXPPerSession = 50) {
     const xpNeeded = progressData.xpToNext;
     const sessionsNeeded = Math.ceil(xpNeeded / averageXPPerSession);
-    
+
     return {
       xpNeeded,
       sessionsNeeded,
       estimatedMinutes: sessionsNeeded * 10, // Assume 10 min per session
-      description: this.getTimeEstimateDescription(sessionsNeeded)
+      description: this.getTimeEstimateDescription(sessionsNeeded),
     };
   }
-  
+
   /**
    * Get human-readable time estimate
    * @param {number} sessions - Number of sessions

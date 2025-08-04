@@ -30,7 +30,7 @@ describe('Character Generation System', () => {
       const result = await CharacterGenerationAPI.createCharacter({
         name: 'Test Character',
         subject: 'math',
-        autoSave: false
+        autoSave: false,
       });
 
       expect(result.success).toBe(true);
@@ -44,9 +44,10 @@ describe('Character Generation System', () => {
       const subjects = CharacterUtils.getAvailableSubjects();
       expect(subjects.length).toBeGreaterThan(0);
 
-      for (const subject of subjects.slice(0, 5)) { // Test first 5 subjects
+      for (const subject of subjects.slice(0, 5)) {
+        // Test first 5 subjects
         const result = await CharacterGenerationAPI.generateRandomCharacter(subject, {
-          autoSave: false
+          autoSave: false,
         });
 
         if (!result.success) {
@@ -61,11 +62,11 @@ describe('Character Generation System', () => {
 
     it('should create characters from templates', async () => {
       const subjects = ['math', 'science', 'art'];
-      
+
       for (const subject of subjects) {
         const result = await CharacterGenerationAPI.createFromTemplate(subject, {
           name: `Template ${subject} Character`,
-          autoSave: false
+          autoSave: false,
         });
 
         expect(result.success).toBe(true);
@@ -84,19 +85,19 @@ describe('Character Generation System', () => {
           size: 'medium',
           primaryColor: '#4A90E2',
           secondaryColor: '#FFFFFF',
-          accentColor: '#FFD700'
+          accentColor: '#FFD700',
         },
         personality: {
           traits: ['friendly', 'patient'],
           primaryTrait: 'friendly',
-          voiceType: 'child'
+          voiceType: 'child',
         },
         education: {
           specialties: ['Stories', 'Vocabulary'],
           difficultyLevel: 'beginner',
           ageRange: { min: 4, max: 8 },
-          teachingStyle: 'visual'
-        }
+          teachingStyle: 'visual',
+        },
       };
 
       const validation = CharacterGenerationAPI.validateCharacter(validCharacter);
@@ -108,12 +109,12 @@ describe('Character Generation System', () => {
         name: '', // Invalid: empty name
         subject: 'invalid-subject', // Invalid: not in enum
         appearance: {
-          primaryColor: 'not-a-color' // Invalid: wrong format
+          primaryColor: 'not-a-color', // Invalid: wrong format
         },
         personality: {
           traits: [], // Invalid: empty array
-          primaryTrait: 'nonexistent-trait'
-        }
+          primaryTrait: 'nonexistent-trait',
+        },
       };
 
       const validation = CharacterGenerationAPI.validateCharacter(invalidCharacter);
@@ -124,7 +125,7 @@ describe('Character Generation System', () => {
     it('should generate character previews', () => {
       const preview = CharacterGenerationAPI.generatePreview({
         name: 'Preview Character',
-        subject: 'coding'
+        subject: 'coding',
       });
 
       expect(preview.character).toBeDefined();
@@ -147,7 +148,7 @@ describe('Character Generation System', () => {
     it('should generate unique IDs', () => {
       const id1 = CharacterUtils.generateId();
       const id2 = CharacterUtils.generateId();
-      
+
       expect(id1).toBeDefined();
       expect(id2).toBeDefined();
       expect(id1).not.toBe(id2);
@@ -157,7 +158,7 @@ describe('Character Generation System', () => {
 
     it('should provide color palettes for subjects', () => {
       const subjects = ['math', 'science', 'art'];
-      
+
       for (const subject of subjects) {
         const palettes = CharacterUtils.getColorPalettes(subject);
         expect(Array.isArray(palettes)).toBe(true);
@@ -167,7 +168,7 @@ describe('Character Generation System', () => {
 
     it('should provide name suggestions', () => {
       const subjects = ['math', 'science', 'coding'];
-      
+
       for (const subject of subjects) {
         const names = CharacterUtils.getNameSuggestions(subject, 3);
         expect(Array.isArray(names)).toBe(true);
@@ -192,7 +193,7 @@ describe('Character Generation System', () => {
         personality: { primaryTrait: 'friendly' },
         appearance: { primaryColor: '#4A90E2' },
         education: { specialties: ['Numbers', 'Algebra', 'Geometry'] },
-        metadata: { created: '2023-01-01T00:00:00.000Z', popularity: 5 }
+        metadata: { created: '2023-01-01T00:00:00.000Z', popularity: 5 },
       };
 
       const summary = CharacterUtils.generateCharacterSummary(character);
@@ -216,7 +217,7 @@ describe('Character Generation System', () => {
     it('should generate random names for all subjects', () => {
       const factory = new CharacterFactory();
       const subjects = CharacterUtils.getAvailableSubjects();
-      
+
       for (const subject of subjects) {
         const name = factory.generateRandomName(subject);
         expect(typeof name).toBe('string');
@@ -228,7 +229,7 @@ describe('Character Generation System', () => {
     it('should provide education specialties for all subjects', () => {
       const factory = new CharacterFactory();
       const subjects = CharacterUtils.getAvailableSubjects();
-      
+
       for (const subject of subjects) {
         const specialties = factory.generationRules.educationSpecialties[subject];
         expect(Array.isArray(specialties)).toBe(true);
@@ -239,7 +240,7 @@ describe('Character Generation System', () => {
     it('should have color palettes available', () => {
       const factory = new CharacterFactory();
       const palettes = factory.generationRules.colorPalettes;
-      
+
       expect(Array.isArray(palettes)).toBe(true);
       expect(palettes.length).toBeGreaterThan(0);
       expect(palettes.every(p => p.primary && p.secondary && p.accent)).toBe(true);
@@ -250,7 +251,7 @@ describe('Character Generation System', () => {
     it('should handle rapid character generation', async () => {
       const promises = [];
       const subjects = CharacterUtils.getAvailableSubjects();
-      
+
       // Generate 10 characters rapidly
       for (let i = 0; i < 10; i++) {
         const subject = subjects[i % subjects.length];
@@ -258,36 +259,36 @@ describe('Character Generation System', () => {
           CharacterGenerationAPI.createCharacter({
             name: `Perf Test ${i}`,
             subject: subject,
-            autoSave: false
+            autoSave: false,
           })
         );
       }
 
       const results = await Promise.all(promises);
       const successCount = results.filter(r => r.success).length;
-      
+
       expect(successCount).toBeGreaterThanOrEqual(5); // Allow some failures in test environment
       expect(results.length).toBe(10);
     });
 
     it('should generate unique timestamps for rapid creation', async () => {
       const characters = [];
-      
+
       // Generate 5 characters rapidly
       for (let i = 0; i < 5; i++) {
         const result = await CharacterGenerationAPI.createCharacter({
           name: `Timestamp Test ${i}`,
           subject: 'math',
-          autoSave: false
+          autoSave: false,
         });
-        
+
         if (result.success) {
           characters.push(result.character);
         }
       }
 
       expect(characters.length).toBeGreaterThan(0);
-      
+
       // Check timestamp uniqueness
       const timestamps = new Set();
       characters.forEach(char => {
@@ -297,7 +298,7 @@ describe('Character Generation System', () => {
 
       // All timestamps should be unique
       expect(timestamps.size).toBe(characters.length * 2);
-      
+
       // All timestamps should be recent (within last minute)
       const now = Date.now();
       characters.forEach(char => {

@@ -18,18 +18,18 @@ export const elementDatabase = {
         'Lightest element in the universe',
         'Colorless and odorless gas',
         'Highly flammable',
-        'Most abundant element in the universe'
+        'Most abundant element in the universe',
       ],
       uses: [
         'Rocket fuel',
         'Making ammonia for fertilizers',
         'Fuel cells for clean energy',
-        'Weather balloons'
+        'Weather balloons',
       ],
       funFacts: [
         'The sun is mostly made of hydrogen!',
-        'Hydrogen was the first element created after the Big Bang'
-      ]
+        'Hydrogen was the first element created after the Big Bang',
+      ],
     },
     {
       name: 'Oxygen',
@@ -41,18 +41,18 @@ export const elementDatabase = {
         'Essential for breathing',
         'Supports combustion',
         'Colorless and odorless gas',
-        'Makes up about 21% of air'
+        'Makes up about 21% of air',
       ],
       uses: [
         'Breathing and respiration',
         'Steel production',
         'Medical treatments',
-        'Rocket oxidizer'
+        'Rocket oxidizer',
       ],
       funFacts: [
         'We breathe about 550 liters of oxygen every day!',
-        'Oxygen makes up about 65% of your body weight'
-      ]
+        'Oxygen makes up about 65% of your body weight',
+      ],
     },
     {
       name: 'Carbon',
@@ -64,18 +64,18 @@ export const elementDatabase = {
         'Forms many different compounds',
         'Found in all living things',
         'Can form diamond or graphite',
-        'Has four bonding electrons'
+        'Has four bonding electrons',
       ],
       uses: [
         'Making steel (as carbon steel)',
         'Pencil lead (graphite)',
         'Jewelry (diamonds)',
-        'Carbon fiber materials'
+        'Carbon fiber materials',
       ],
       funFacts: [
         'Diamonds and pencil lead are both made of carbon!',
-        'All life on Earth is carbon-based'
-      ]
+        'All life on Earth is carbon-based',
+      ],
     },
     {
       name: 'Iron',
@@ -87,18 +87,15 @@ export const elementDatabase = {
         'Magnetic metal',
         'Rusts when exposed to air and water',
         'Strong and durable',
-        'Fourth most abundant element in Earth\'s crust'
+        'Fourth most abundant element in Earth\'s crust',
       ],
       uses: [
         'Making steel for buildings',
         'Car parts and engines',
         'Tools and machinery',
-        'Blood (iron in hemoglobin)'
+        'Blood (iron in hemoglobin)',
       ],
-      funFacts: [
-        'Your blood is red because of iron!',
-        'The Eiffel Tower is made of iron'
-      ]
+      funFacts: ['Your blood is red because of iron!', 'The Eiffel Tower is made of iron'],
     },
     {
       name: 'Gold',
@@ -110,18 +107,18 @@ export const elementDatabase = {
         'Does not rust or tarnish',
         'Excellent conductor of electricity',
         'Very soft and malleable',
-        'Shiny yellow metal'
+        'Shiny yellow metal',
       ],
       uses: [
         'Jewelry and decorations',
         'Electronics and computer parts',
         'Dental fillings',
-        'Currency and investment'
+        'Currency and investment',
       ],
       funFacts: [
         'All the gold ever mined could fit in a swimming pool!',
-        'Gold doesn\'t rust, even after thousands of years'
-      ]
+        'Gold doesn\'t rust, even after thousands of years',
+      ],
     },
     {
       name: 'Silver',
@@ -133,19 +130,19 @@ export const elementDatabase = {
         'Best conductor of electricity',
         'Shiny white metal',
         'Antimicrobial properties',
-        'Very malleable and ductile'
+        'Very malleable and ductile',
       ],
       uses: [
         'Jewelry and silverware',
         'Photography and X-rays',
         'Electronics and solar panels',
-        'Antibacterial coatings'
+        'Antibacterial coatings',
       ],
       funFacts: [
         'Silver kills bacteria naturally!',
-        'One ounce of silver can be stretched into a wire 8,000 feet long'
-      ]
-    }
+        'One ounce of silver can be stretched into a wire 8,000 feet long',
+      ],
+    },
   ],
 
   medium: [
@@ -160,18 +157,18 @@ export const elementDatabase = {
         'Makes up 78% of Earth\'s atmosphere',
         'Colorless and odorless gas',
         'Relatively unreactive',
-        'Essential for proteins and DNA'
+        'Essential for proteins and DNA',
       ],
       uses: [
         'Fertilizers for plants',
         'Food preservation',
         'Making ammonia',
-        'Liquid nitrogen for cooling'
+        'Liquid nitrogen for cooling',
       ],
       funFacts: [
         'The air you breathe is mostly nitrogen!',
-        'Lightning helps convert nitrogen for plants to use'
-      ]
+        'Lightning helps convert nitrogen for plants to use',
+      ],
     },
     {
       name: 'Copper',
@@ -183,18 +180,18 @@ export const elementDatabase = {
         'Excellent conductor of electricity',
         'Reddish-brown metal',
         'Antimicrobial properties',
-        'Forms green patina when oxidized'
+        'Forms green patina when oxidized',
       ],
       uses: [
         'Electrical wiring',
         'Plumbing pipes',
         'Coins and decorations',
-        'Cooking pots and pans'
+        'Cooking pots and pans',
       ],
       funFacts: [
         'The Statue of Liberty is made of copper!',
-        'Copper was one of the first metals used by humans'
-      ]
+        'Copper was one of the first metals used by humans',
+      ],
     },
     {
       name: 'Aluminum',
@@ -206,19 +203,14 @@ export const elementDatabase = {
         'Lightweight and strong',
         'Does not rust',
         'Good conductor of heat',
-        'Most abundant metal in Earth\'s crust'
+        'Most abundant metal in Earth\'s crust',
       ],
-      uses: [
-        'Soda cans and foil',
-        'Airplane parts',
-        'Kitchen cookware',
-        'Building materials'
-      ],
+      uses: ['Soda cans and foil', 'Airplane parts', 'Kitchen cookware', 'Building materials'],
       funFacts: [
         'Aluminum is recycled more than any other metal!',
-        'It was once more valuable than gold'
-      ]
-    }
+        'It was once more valuable than gold',
+      ],
+    },
   ],
 
   hard: [
@@ -233,18 +225,18 @@ export const elementDatabase = {
         'Second lightest element',
         'Cannot form chemical compounds',
         'Liquid helium is the coldest liquid',
-        'Non-toxic and non-flammable'
+        'Non-toxic and non-flammable',
       ],
       uses: [
         'Party balloons',
         'Deep-sea diving gas mixtures',
         'Cooling superconducting magnets',
-        'Leak detection'
+        'Leak detection',
       ],
       funFacts: [
         'Helium makes your voice sound funny!',
-        'It was first discovered on the Sun before Earth'
-      ]
+        'It was first discovered on the Sun before Earth',
+      ],
     },
     {
       name: 'Uranium',
@@ -256,20 +248,20 @@ export const elementDatabase = {
         'Radioactive element',
         'Very heavy metal',
         'Naturally occurring',
-        'Can undergo nuclear fission'
+        'Can undergo nuclear fission',
       ],
       uses: [
         'Nuclear power plants',
         'Nuclear medicine',
         'Dating ancient rocks',
-        'Nuclear submarines'
+        'Nuclear submarines',
       ],
       funFacts: [
         'Uranium glows green under UV light!',
-        'One uranium pellet has as much energy as a ton of coal'
-      ]
-    }
-  ]
+        'One uranium pellet has as much energy as a ton of coal',
+      ],
+    },
+  ],
 };
 
 /**
@@ -308,11 +300,7 @@ export function getRandomElements(difficulty, count = 6) {
  * @returns {Object|null} Element object or null if not found
  */
 export function getElementBySymbol(symbol) {
-  const allElements = [
-    ...elementDatabase.easy,
-    ...elementDatabase.medium,
-    ...elementDatabase.hard
-  ];
+  const allElements = [...elementDatabase.easy, ...elementDatabase.medium, ...elementDatabase.hard];
   return allElements.find(element => element.symbol === symbol) || null;
 }
 
@@ -331,10 +319,10 @@ export function getElementsByType(type, difficulty = 'easy') {
  * Periodic table color scheme for element types
  */
 export const elementTypeColors = {
-  metal: '#3498DB',      // Blue
-  nonmetal: '#E74C3C',   // Red  
+  metal: '#3498DB', // Blue
+  nonmetal: '#E74C3C', // Red
   'noble gas': '#F39C12', // Orange
-  metalloid: '#9B59B6'   // Purple
+  metalloid: '#9B59B6', // Purple
 };
 
 /**
@@ -344,38 +332,38 @@ export const matchTypes = {
   symbol: {
     name: 'Symbol Match',
     description: 'Match each element with its chemical symbol',
-    getQuestion: (element) => element.name,
-    getAnswer: (element) => element.symbol,
-    instruction: 'Match the element names with their chemical symbols'
+    getQuestion: element => element.name,
+    getAnswer: element => element.symbol,
+    instruction: 'Match the element names with their chemical symbols',
   },
   atomicNumber: {
     name: 'Atomic Number',
     description: 'Match each element with its atomic number',
-    getQuestion: (element) => element.name,
-    getAnswer: (element) => element.atomicNumber.toString(),
-    instruction: 'Match the elements with their atomic numbers'
+    getQuestion: element => element.name,
+    getAnswer: element => element.atomicNumber.toString(),
+    instruction: 'Match the elements with their atomic numbers',
   },
   property: {
     name: 'Properties',
     description: 'Match each element with one of its properties',
-    getQuestion: (element) => element.name,
-    getAnswer: (element) => element.properties[Math.floor(Math.random() * element.properties.length)],
-    instruction: 'Match the elements with their properties'
+    getQuestion: element => element.name,
+    getAnswer: element => element.properties[Math.floor(Math.random() * element.properties.length)],
+    instruction: 'Match the elements with their properties',
   },
   use: {
     name: 'Uses',
     description: 'Match each element with one of its common uses',
-    getQuestion: (element) => element.name,
-    getAnswer: (element) => element.uses[Math.floor(Math.random() * element.uses.length)],
-    instruction: 'Match the elements with their common uses'
+    getQuestion: element => element.name,
+    getAnswer: element => element.uses[Math.floor(Math.random() * element.uses.length)],
+    instruction: 'Match the elements with their common uses',
   },
   type: {
     name: 'Element Type',
     description: 'Match each element with its type',
-    getQuestion: (element) => element.name,
-    getAnswer: (element) => element.type,
-    instruction: 'Match the elements with their types (metal, nonmetal, etc.)'
-  }
+    getQuestion: element => element.name,
+    getAnswer: element => element.type,
+    instruction: 'Match the elements with their types (metal, nonmetal, etc.)',
+  },
 };
 
 export default elementDatabase;

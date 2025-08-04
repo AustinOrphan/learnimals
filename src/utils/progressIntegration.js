@@ -1,6 +1,6 @@
 /**
  * progressIntegration.js
- * 
+ *
  * Utility functions to help integrate games with the EnhancedProgressTracker
  * Provides standardized methods for tracking game events and progress
  */
@@ -28,13 +28,13 @@ export function getProgressTracker() {
  */
 export function initializeGameProgress(gameId, gameInfo = {}) {
   const tracker = getProgressTracker();
-  
+
   // Mark game as played
   tracker.markGamePlayed(gameId);
-  
+
   // Initialize session
   const sessionId = Date.now().toString();
-  
+
   return {
     tracker,
     sessionId,
@@ -47,8 +47,8 @@ export function initializeGameProgress(gameId, gameInfo = {}) {
       correctAnswers: 0,
       mistakes: 0,
       hintsUsed: 0,
-      ...gameInfo
-    }
+      ...gameInfo,
+    },
   };
 }
 
@@ -59,7 +59,7 @@ export function initializeGameProgress(gameId, gameInfo = {}) {
  */
 export function trackGameEvent(session, eventData) {
   const { type, correct, score, skillType } = eventData;
-  
+
   switch (type) {
   case 'answer':
     session.sessionData.questionsAnswered++;
@@ -68,18 +68,18 @@ export function trackGameEvent(session, eventData) {
     } else {
       session.sessionData.mistakes++;
     }
-    session.sessionData.accuracy = 
+    session.sessionData.accuracy =
         (session.sessionData.correctAnswers / session.sessionData.questionsAnswered) * 100;
     break;
-      
+
   case 'hint':
     session.sessionData.hintsUsed++;
     break;
-      
+
   case 'score':
     session.sessionData.score += score || 0;
     break;
-      
+
   case 'skill':
     if (!session.sessionData.skills) {
       session.sessionData.skills = {};
@@ -87,7 +87,7 @@ export function trackGameEvent(session, eventData) {
     if (!session.sessionData.skills[skillType]) {
       session.sessionData.skills[skillType] = {
         attempts: 0,
-        correct: 0
+        correct: 0,
       };
     }
     session.sessionData.skills[skillType].attempts++;
@@ -96,7 +96,7 @@ export function trackGameEvent(session, eventData) {
     }
     break;
   }
-  
+
   // Check for achievements after each event
   checkEventAchievements(session, eventData);
 }
@@ -108,7 +108,7 @@ export function trackGameEvent(session, eventData) {
  */
 export function endGameSession(session, finalData = {}) {
   const duration = Math.floor((Date.now() - session.startTime) / 1000);
-  
+
   const sessionResult = {
     gameId: session.gameId,
     score: session.sessionData.score,
@@ -119,15 +119,15 @@ export function endGameSession(session, finalData = {}) {
     hintsUsed: session.sessionData.hintsUsed,
     duration,
     timestamp: Date.now(),
-    ...finalData
+    ...finalData,
   };
-  
+
   // Update progress tracker
   session.tracker.updateGameProgress(session.gameId, sessionResult);
-  
+
   // Check for session-end achievements
   checkSessionAchievements(session, sessionResult);
-  
+
   return sessionResult;
 }
 
@@ -138,21 +138,21 @@ export function endGameSession(session, finalData = {}) {
  */
 function checkEventAchievements(session, eventData) {
   const { gameId, tracker, sessionData } = session;
-  
+
   // Perfect streak achievements
   if (sessionData.questionsAnswered >= 5 && sessionData.accuracy === 100) {
     tracker.checkAchievement(`${gameId}-perfect-start`);
   }
-  
+
   if (sessionData.questionsAnswered >= 10 && sessionData.accuracy === 100) {
     tracker.checkAchievement(`${gameId}-flawless-ten`);
   }
-  
+
   // No hints achievement
   if (sessionData.questionsAnswered >= 20 && sessionData.hintsUsed === 0) {
     tracker.checkAchievement(`${gameId}-no-hints-needed`);
   }
-  
+
   // Game-specific event achievements
   checkGameSpecificEventAchievements(gameId, session, eventData);
 }
@@ -164,23 +164,23 @@ function checkEventAchievements(session, eventData) {
  */
 function checkSessionAchievements(session, sessionResult) {
   const { gameId, tracker } = session;
-  
+
   // High score achievement
   const analytics = tracker.gameAnalytics[gameId];
   if (analytics && sessionResult.score === analytics.highScore) {
     tracker.checkAchievement(`${gameId}-high-scorer`);
   }
-  
+
   // Perfect game achievement
   if (sessionResult.accuracy === 100 && sessionResult.totalQuestions >= 20) {
     tracker.checkAchievement(`${gameId}-perfectionist`);
   }
-  
+
   // Speed achievements
   if (sessionResult.duration <= 120 && sessionResult.score >= 100) {
     tracker.checkAchievement(`${gameId}-speed-demon`);
   }
-  
+
   // Check all cross-game achievements
   tracker.checkAllCrossGameAchievements();
 }
@@ -193,7 +193,7 @@ function checkSessionAchievements(session, sessionResult) {
  */
 function checkGameSpecificEventAchievements(gameId, session, eventData) {
   const { tracker, sessionData } = session;
-  
+
   switch (gameId) {
   case 'word-scramble':
     // Long word achievements
@@ -201,7 +201,7 @@ function checkGameSpecificEventAchievements(gameId, session, eventData) {
       tracker.checkAchievement('word-scramble-word-wizard');
     }
     break;
-      
+
   case 'number-line-jump':
     // Complex equation achievements
     if (eventData.equationType === 'complex' && eventData.correct) {
@@ -212,7 +212,7 @@ function checkGameSpecificEventAchievements(gameId, session, eventData) {
       }
     }
     break;
-      
+
   case 'element-match':
     // Multiple match type achievements
     if (eventData.matchType && eventData.correct) {
@@ -225,7 +225,7 @@ function checkGameSpecificEventAchievements(gameId, session, eventData) {
       }
     }
     break;
-      
+
   case 'sentence-builder':
     // Complex sentence achievements
     if (eventData.sentenceComplexity === 'complex' && eventData.correct) {
@@ -236,7 +236,7 @@ function checkGameSpecificEventAchievements(gameId, session, eventData) {
       }
     }
     break;
-      
+
   case 'color-palette':
     // Color harmony achievements
     if (eventData.harmonyType && eventData.correct) {
@@ -261,7 +261,7 @@ export function getGameProgressSummary(gameId) {
   const tracker = getProgressTracker();
   const analytics = tracker.gameAnalytics[gameId] || tracker.getDefaultGameAnalytics();
   const achievements = tracker.getGameAchievements(gameId);
-  
+
   return {
     sessionsPlayed: analytics.sessionsPlayed,
     totalTime: analytics.totalTimePlayed,
@@ -274,9 +274,9 @@ export function getGameProgressSummary(gameId) {
       recent: achievements
         .filter(a => a.unlocked)
         .sort((a, b) => b.unlockedAt - a.unlockedAt)
-        .slice(0, 3)
+        .slice(0, 3),
     },
-    recentSessions: analytics.sessionHistory.slice(-5).reverse()
+    recentSessions: analytics.sessionHistory.slice(-5).reverse(),
   };
 }
 
@@ -287,10 +287,10 @@ export function getGameProgressSummary(gameId) {
  */
 export function createProgressDisplay(gameId) {
   const summary = getGameProgressSummary(gameId);
-  
+
   const display = document.createElement('div');
   display.className = 'game-progress-display';
-  
+
   display.innerHTML = `
     <div class="progress-stats">
       <div class="stat">
@@ -306,19 +306,27 @@ export function createProgressDisplay(gameId) {
         <span class="stat-label">Achievements</span>
       </div>
     </div>
-    ${summary.achievements.recent.length > 0 ? `
+    ${
+  summary.achievements.recent.length > 0
+    ? `
       <div class="recent-achievements">
         <h4>Recent Achievements</h4>
-        ${summary.achievements.recent.map(a => `
+        ${summary.achievements.recent
+    .map(
+      a => `
           <div class="achievement-badge">
             <span class="badge-icon">${a.icon}</span>
             <span class="badge-name">${a.name}</span>
           </div>
-        `).join('')}
+        `
+    )
+    .join('')}
       </div>
-    ` : ''}
+    `
+    : ''
+}
   `;
-  
+
   return display;
 }
 
@@ -328,10 +336,12 @@ export function createProgressDisplay(gameId) {
  */
 export function showAchievementUnlock(achievement) {
   // Dispatch event for dashboard notification
-  window.dispatchEvent(new CustomEvent('achievementUnlocked', {
-    detail: achievement
-  }));
-  
+  window.dispatchEvent(
+    new CustomEvent('achievementUnlocked', {
+      detail: achievement,
+    })
+  );
+
   // Also show in-game notification if desired
   const notification = document.createElement('div');
   notification.className = 'game-achievement-unlock';
@@ -342,9 +352,9 @@ export function showAchievementUnlock(achievement) {
       <div class="unlock-name">${achievement.name}</div>
     </div>
   `;
-  
+
   document.body.appendChild(notification);
-  
+
   // Animate
   setTimeout(() => notification.classList.add('show'), 100);
   setTimeout(() => {
@@ -361,5 +371,5 @@ export default {
   endGameSession,
   getGameProgressSummary,
   createProgressDisplay,
-  showAchievementUnlock
+  showAchievementUnlock,
 };

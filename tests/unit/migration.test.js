@@ -50,13 +50,7 @@ describe('Migration System', () => {
             constructor() {}
           }
           
-          // Export for module usage
-          if (typeof module !== 'undefined' && module.exports) {
-            module.exports = TestComponent;
-          } else {
-            window.TestComponent = TestComponent;
-          }
-          
+          // ES module export
           export default TestComponent;
         `;
         
@@ -113,10 +107,8 @@ describe('Migration System', () => {
         const testCode = `
           class TestComponent {}
           
-          if (typeof module !== 'undefined') {
-            module.exports = TestComponent;
-          }
-          window.TestComponent = TestComponent;
+          // Clean ES6 export pattern
+          export default TestComponent;
         `;
         
         const detector = new MixedPatternDetector({ verbose: false });
@@ -208,13 +200,7 @@ describe('Migration System', () => {
         const testCode = `
           class TestComponent {}
           
-          // Export for module usage
-          if (typeof module !== 'undefined' && module.exports) {
-            module.exports = TestComponent;
-          } else {
-            window.TestComponent = TestComponent;
-          }
-          
+          // ES module export
           export default TestComponent;
         `;
         
@@ -260,9 +246,8 @@ describe('Migration System', () => {
         const testCode = `
           class TestComponent {}
           
-          if (typeof module !== 'undefined') {
-            module.exports = TestComponent;
-          }
+          // Clean ES6 export
+          export default TestComponent;
         `;
         
         const migrator = new MixedPatternMigrator({ dryRun: true });
@@ -375,9 +360,8 @@ describe('Migration System', () => {
         const migrationResult = {
           migratedContent: `
             class Card {}
-            if (typeof module !== 'undefined') {
-              module.exports = Card;
-            }
+            // Clean ES6 export
+            export default Card;
           `
         };
         
@@ -567,11 +551,8 @@ describe('Migration System', () => {
           constructor() {}
         }
         
-        if (typeof module !== 'undefined') {
-          module.exports = TestComponent;
-        } else {
-          window.TestComponent = TestComponent;
-        }
+        // Clean ES6 export
+        export default TestComponent;
       `;
       
       fs.readFile.mockResolvedValue(testContent);

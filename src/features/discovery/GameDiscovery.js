@@ -15,18 +15,18 @@ export default class GameDiscovery {
       gameType: '',
       competencyLevel: '',
       tags: [],
-      searchText: ''
+      searchText: '',
     };
-    
+
     this.init();
   }
-  
+
   init() {
     this.render();
     this.attachEventListeners();
     this.updateResults();
   }
-  
+
   render() {
     this.container.innerHTML = `
       <div class="game-discovery">
@@ -153,10 +153,10 @@ export default class GameDiscovery {
         </div>
       </div>
     `;
-    
+
     this.addStyles();
   }
-  
+
   addStyles() {
     const style = document.createElement('style');
     style.textContent = `
@@ -421,29 +421,29 @@ export default class GameDiscovery {
         }
       }
     `;
-    
+
     document.head.appendChild(style);
   }
-  
+
   attachEventListeners() {
     // Search input
-    document.getElementById('search-input').addEventListener('input', (e) => {
+    document.getElementById('search-input').addEventListener('input', e => {
       this.filters.searchText = e.target.value;
       this.updateResults();
     });
-    
+
     // Filter dropdowns
     ['subject', 'age', 'playtime', 'gametype', 'level'].forEach(filterId => {
       const element = document.getElementById(`${filterId}-filter`);
       if (element) {
-        element.addEventListener('change', (e) => {
+        element.addEventListener('change', e => {
           this.updateFilter(filterId, e.target.value);
         });
       }
     });
-    
+
     // Tag checkboxes
-    document.getElementById('tag-checkboxes').addEventListener('change', (e) => {
+    document.getElementById('tag-checkboxes').addEventListener('change', e => {
       if (e.target.type === 'checkbox') {
         if (e.target.checked) {
           this.filters.tags.push(e.target.value);
@@ -453,22 +453,22 @@ export default class GameDiscovery {
         this.updateResults();
       }
     });
-    
+
     // Sort dropdown
-    document.getElementById('sort-select').addEventListener('change', (e) => {
+    document.getElementById('sort-select').addEventListener('change', e => {
       this.updateResults(e.target.value);
     });
-    
+
     // Action buttons
     document.getElementById('clear-filters').addEventListener('click', () => {
       this.clearFilters();
     });
-    
+
     document.getElementById('get-recommendations').addEventListener('click', () => {
       this.showRecommendations();
     });
   }
-  
+
   updateFilter(filterId, value) {
     switch (filterId) {
     case 'subject':
@@ -489,26 +489,26 @@ export default class GameDiscovery {
     }
     this.updateResults();
   }
-  
+
   updateResults(sortBy = 'name') {
     let games = this.getFilteredGames();
     games = this.sortGames(games, sortBy);
-    
+
     this.renderGames(games);
     this.updateResultsCount(games.length);
   }
-  
+
   getFilteredGames() {
     const criteria = {};
-    
+
     // Basic filters
     if (this.filters.subject) criteria.subject = this.filters.subject;
     if (this.filters.gameType) criteria.gameType = this.filters.gameType;
     if (this.filters.searchText) criteria.search = this.filters.searchText;
-    
+
     // Advanced filters
     let games = GameRegistryUtil.getGamesAdvanced(criteria);
-    
+
     // Age range filtering
     if (this.filters.ageRange) {
       games = games.filter(game => {
@@ -516,48 +516,46 @@ export default class GameDiscovery {
         return GameRegistryUtil.isAgeRangeMatch(game.metadata.ageRange, this.filters.ageRange);
       });
     }
-    
+
     // Play time filtering
     if (this.filters.playTime) {
       const timeFilters = {
         short: { max: 8 },
         medium: { min: 8, max: 12 },
-        long: { min: 12 }
+        long: { min: 12 },
       };
-      
+
       const timeFilter = timeFilters[this.filters.playTime];
       if (timeFilter) {
         games = GameRegistryUtil.getGamesByPlayTime(timeFilter);
       }
     }
-    
+
     // Competency level filtering
     if (this.filters.competencyLevel) {
-      games = games.filter(game => 
-        game.metadata?.competencyLevel === this.filters.competencyLevel
-      );
+      games = games.filter(game => game.metadata?.competencyLevel === this.filters.competencyLevel);
     }
-    
+
     // Tag filtering
     if (this.filters.tags.length > 0) {
       games = games.filter(game => {
         if (!game.metadata?.tags) return false;
-        return this.filters.tags.some(tag => 
+        return this.filters.tags.some(tag =>
           game.metadata.tags.some(gameTag => gameTag.includes(tag))
         );
       });
     }
-    
+
     return games;
   }
-  
+
   sortGames(games, sortBy) {
     return GameRegistryUtil.sortGames(games, sortBy, 'asc');
   }
-  
+
   renderGames(games) {
     const container = document.getElementById('games-grid');
-    
+
     if (games.length === 0) {
       container.innerHTML = `
         <div class="no-results">
@@ -567,15 +565,15 @@ export default class GameDiscovery {
       `;
       return;
     }
-    
+
     container.innerHTML = games.map(game => this.createGameCard(game)).join('');
   }
-  
+
   createGameCard(game) {
     const playTime = game.metadata?.estimatedPlayTime || 'Unknown';
     const ageRange = game.metadata?.ageRange || 'All ages';
     const tags = game.metadata?.tags?.slice(0, 3) || [];
-    
+
     return `
       <div class="game-card" data-game-id="${game.id}">
         <div class="game-card-header">
@@ -613,11 +611,11 @@ export default class GameDiscovery {
       </div>
     `;
   }
-  
+
   updateResultsCount(count) {
     document.getElementById('results-count').textContent = `${count} games found`;
   }
-  
+
   clearFilters() {
     this.filters = {
       subject: '',
@@ -626,42 +624,42 @@ export default class GameDiscovery {
       gameType: '',
       competencyLevel: '',
       tags: [],
-      searchText: ''
+      searchText: '',
     };
-    
+
     // Reset form elements
     document.getElementById('search-input').value = '';
-    document.querySelectorAll('select').forEach(select => select.value = '');
+    document.querySelectorAll('select').forEach(select => (select.value = ''));
     document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
       checkbox.checked = false;
     });
-    
+
     this.updateResults();
   }
-  
+
   showRecommendations() {
     const preferences = {
       subjects: this.filters.subject ? [this.filters.subject] : ['math', 'reading'],
       ageRange: this.filters.ageRange || '6-10',
       playTime: this.getPlayTimeRange(),
-      learningObjectives: this.filters.tags.length > 0 ? this.filters.tags : ['problem-solving']
+      learningObjectives: this.filters.tags.length > 0 ? this.filters.tags : ['problem-solving'],
     };
-    
+
     const recommendations = GameRegistryUtil.getRecommendations(preferences, 6);
-    
+
     const recommendationsSection = document.getElementById('recommendations-section');
     const recommendationsGrid = document.getElementById('recommendations-grid');
-    
+
     if (recommendations.length > 0) {
-      recommendationsGrid.innerHTML = recommendations.map(game => 
-        this.createGameCard(game)
-      ).join('');
+      recommendationsGrid.innerHTML = recommendations
+        .map(game => this.createGameCard(game))
+        .join('');
       recommendationsSection.style.display = 'block';
     } else {
       recommendationsSection.style.display = 'none';
     }
   }
-  
+
   getPlayTimeRange() {
     switch (this.filters.playTime) {
     case 'short':

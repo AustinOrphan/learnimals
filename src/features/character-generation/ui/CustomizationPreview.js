@@ -1,7 +1,7 @@
 /**
  * Customization Preview
  * Real-time preview component for character customizations
- * 
+ *
  * Part of Phase G: Character Customization Studio
  */
 
@@ -16,10 +16,10 @@ export default class CustomizationPreview extends BaseComponent {
       tagName: 'div',
       className: 'customization-preview',
       attributes: {
-        'role': 'region',
-        'aria-label': 'Character Customization Preview'
+        role: 'region',
+        'aria-label': 'Character Customization Preview',
       },
-      ...options
+      ...options,
     });
 
     // Preview state
@@ -35,7 +35,7 @@ export default class CustomizationPreview extends BaseComponent {
       single: 'Single Character',
       comparison: 'Before/After Comparison',
       gallery: 'Gallery View',
-      animation: 'Animation Test'
+      animation: 'Animation Test',
     };
     this.currentMode = 'single';
 
@@ -46,7 +46,7 @@ export default class CustomizationPreview extends BaseComponent {
       enableAnimation: options.enableAnimation !== false,
       enableInteraction: options.enableInteraction !== false,
       autoUpdate: options.autoUpdate !== false,
-      showCustomizationInfo: options.showCustomizationInfo !== false
+      showCustomizationInfo: options.showCustomizationInfo !== false,
     };
 
     // Callbacks
@@ -65,7 +65,7 @@ export default class CustomizationPreview extends BaseComponent {
     this.previewRenderer = new CharacterPreviewRenderer({
       size: this.settings.size,
       animated: this.settings.enableAnimation,
-      interactive: this.settings.enableInteraction
+      interactive: this.settings.enableInteraction,
     });
 
     // Set up event listeners
@@ -106,13 +106,17 @@ export default class CustomizationPreview extends BaseComponent {
     return `
       <div class="preview-controls">
         <div class="preview-modes">
-          ${Object.entries(this.modes).map(([id, label]) => `
+          ${Object.entries(this.modes)
+    .map(
+      ([id, label]) => `
             <button class="mode-btn ${this.currentMode === id ? 'active' : ''}" 
                     data-mode="${id}">
               ${this.getModeIcon(id)}
               <span>${label}</span>
             </button>
-          `).join('')}
+          `
+    )
+    .join('')}
         </div>
 
         <div class="preview-settings">
@@ -283,7 +287,7 @@ export default class CustomizationPreview extends BaseComponent {
       single: '👤',
       comparison: '⚖️',
       gallery: '🖼️',
-      animation: '🎭'
+      animation: '🎭',
     };
     return icons[mode] || '📱';
   }
@@ -347,7 +351,7 @@ export default class CustomizationPreview extends BaseComponent {
     // Render character
     try {
       const characterElement = this.previewRenderer.renderCharacter(customizedCharacter);
-      
+
       // Apply background if selected
       if (this.currentBackground) {
         this.applyBackground(previewContainer, this.currentBackground);
@@ -363,7 +367,6 @@ export default class CustomizationPreview extends BaseComponent {
 
       // Apply visual effects from customization
       this.applyVisualEffects(previewContainer);
-
     } catch (error) {
       console.error('Preview render error:', error);
       previewContainer.innerHTML = this.renderPlaceholder('Preview error');
@@ -376,7 +379,7 @@ export default class CustomizationPreview extends BaseComponent {
   updateComparisonPreview() {
     const beforeContainer = this.element.querySelector('#before-preview');
     const afterContainer = this.element.querySelector('#after-preview');
-    
+
     if (!beforeContainer || !afterContainer) return;
 
     // Clear existing content
@@ -395,7 +398,6 @@ export default class CustomizationPreview extends BaseComponent {
 
       // Apply visual effects to customized version
       this.applyVisualEffects(afterContainer);
-
     } catch (error) {
       console.error('Comparison preview error:', error);
       beforeContainer.innerHTML = this.renderPlaceholder('Original');
@@ -421,8 +423,10 @@ export default class CustomizationPreview extends BaseComponent {
     try {
       // Generate multiple variations
       const variations = this.generateCustomizationVariations();
-      
-      galleryContainer.innerHTML = variations.map((variation, index) => `
+
+      galleryContainer.innerHTML = variations
+        .map(
+          (variation, index) => `
         <div class="gallery-item" data-variation="${index}">
           <div class="gallery-preview-stage" id="gallery-item-${index}">
             <!-- Character will be rendered here -->
@@ -432,7 +436,9 @@ export default class CustomizationPreview extends BaseComponent {
             <p>${variation.description}</p>
           </div>
         </div>
-      `).join('');
+      `
+        )
+        .join('');
 
       // Render each variation
       variations.forEach((variation, index) => {
@@ -443,7 +449,6 @@ export default class CustomizationPreview extends BaseComponent {
           itemContainer.appendChild(characterElement);
         }
       });
-
     } catch (error) {
       console.error('Gallery preview error:', error);
       galleryContainer.innerHTML = this.renderGalleryPlaceholder();
@@ -492,7 +497,7 @@ export default class CustomizationPreview extends BaseComponent {
     if (customization.animations) {
       customized.animations = {
         ...customized.animations,
-        ...customization.animations
+        ...customization.animations,
       };
     }
 
@@ -540,7 +545,7 @@ export default class CustomizationPreview extends BaseComponent {
       nature: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)',
       space: 'linear-gradient(135deg, #2d3436 0%, #636e72 100%)',
       underwater: 'linear-gradient(135deg, #00cec9 0%, #55efc4 100%)',
-      library: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)'
+      library: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
     };
 
     if (backgrounds[backgroundType]) {
@@ -572,12 +577,12 @@ export default class CustomizationPreview extends BaseComponent {
    */
   generateCustomizationVariations() {
     const baseCustomization = this.customization || {};
-    
+
     return [
       {
         name: 'Original',
         description: 'No customization applied',
-        customization: {}
+        customization: {},
       },
       {
         name: 'Educational',
@@ -585,8 +590,8 @@ export default class CustomizationPreview extends BaseComponent {
         customization: {
           ...baseCustomization,
           theme: 'educational',
-          colorScheme: 'primary'
-        }
+          colorScheme: 'primary',
+        },
       },
       {
         name: 'Playful',
@@ -594,8 +599,8 @@ export default class CustomizationPreview extends BaseComponent {
         customization: {
           ...baseCustomization,
           theme: 'playful',
-          colorScheme: 'warm'
-        }
+          colorScheme: 'warm',
+        },
       },
       {
         name: 'Professional',
@@ -603,9 +608,9 @@ export default class CustomizationPreview extends BaseComponent {
         customization: {
           ...baseCustomization,
           theme: 'professional',
-          colorScheme: 'monochrome'
-        }
-      }
+          colorScheme: 'monochrome',
+        },
+      },
     ];
   }
 
@@ -615,7 +620,7 @@ export default class CustomizationPreview extends BaseComponent {
   testAnimation(animationType) {
     const previewContainer = this.element.querySelector('#animation-preview');
     const character = previewContainer.querySelector('[data-component="character-preview"]');
-    
+
     if (!character) return;
 
     // Apply animation class
@@ -636,7 +641,7 @@ export default class CustomizationPreview extends BaseComponent {
     if (!this.modes[mode]) return;
 
     this.currentMode = mode;
-    
+
     // Update mode buttons
     this.element.querySelectorAll('.mode-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.mode === mode);
@@ -667,30 +672,39 @@ export default class CustomizationPreview extends BaseComponent {
     }
 
     const info = [];
-    
+
     if (this.customization.theme) {
       info.push(`<div class="info-item"><strong>Theme:</strong> ${this.customization.theme}</div>`);
     }
-    
+
     if (this.customization.colorScheme) {
-      info.push(`<div class="info-item"><strong>Colors:</strong> ${this.customization.colorScheme}</div>`);
+      info.push(
+        `<div class="info-item"><strong>Colors:</strong> ${this.customization.colorScheme}</div>`
+      );
     }
 
     if (this.customization.effects) {
       const activeEffects = Object.entries(this.customization.effects)
         .filter(([_, effect]) => effect.enabled)
         .map(([name, _]) => name);
-      
+
       if (activeEffects.length > 0) {
-        info.push(`<div class="info-item"><strong>Effects:</strong> ${activeEffects.join(', ')}</div>`);
+        info.push(
+          `<div class="info-item"><strong>Effects:</strong> ${activeEffects.join(', ')}</div>`
+        );
       }
     }
 
     if (this.customization.animations) {
-      info.push(`<div class="info-item"><strong>Animation:</strong> ${this.customization.animations.idle || 'none'}</div>`);
+      info.push(
+        `<div class="info-item"><strong>Animation:</strong> ${this.customization.animations.idle || 'none'}</div>`
+      );
     }
 
-    infoContainer.innerHTML = info.length > 0 ? info.join('') : '<p class="no-customization">Basic customization applied</p>';
+    infoContainer.innerHTML =
+      info.length > 0
+        ? info.join('')
+        : '<p class="no-customization">Basic customization applied</p>';
   }
 
   /**
@@ -733,13 +747,13 @@ export default class CustomizationPreview extends BaseComponent {
       return {
         success: true,
         data: 'data:image/png;base64,placeholder',
-        filename: `character-preview-${Date.now()}.png`
+        filename: `character-preview-${Date.now()}.png`,
       };
     } catch (error) {
       console.error('Export preview error:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }

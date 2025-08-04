@@ -4,7 +4,7 @@
 // Simple logger fallback for non-module script loading.
 // This factory will be reused by other scripts like navigationHelper.js.
 if (!window.createLogger) {
-  window.create_Logger = (prefix) => {
+  window.createLogger = prefix => {
     const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     return {
       debug: (...args) => isDev && console.log(`[${prefix} DEBUG]`, ...args),
@@ -17,28 +17,30 @@ if (!window.createLogger) {
 const logger = window.createLogger('NavbarLoader');
 
 const currentScript = document.currentScript;
-const scriptPath = currentScript.src;
-const basePath = scriptPath.substring(0, scriptPath.lastIndexOf('/'));
+const scriptPath = currentScript ? currentScript.src : '';
+const basePath = scriptPath
+  ? scriptPath.substring(0, scriptPath.lastIndexOf('/'))
+  : '/src/components/layout';
 const navbarPath = basePath + '/navbar.html';
 
 fetch(navbarPath)
-  .then((res) => {
+  .then(res => {
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     }
     return res.text();
   })
-  .then((data) => {
+  .then(data => {
     const placeholder = document.getElementById('navbar-placeholder');
     if (placeholder) {
       placeholder.innerHTML = data;
       logger.debug('Navbar loaded successfully from:', navbarPath);
-      
+
       // Update navigation links if navigation helper is available
       if (window.navigationHelper) {
         window.navigationHelper.updateNavigationLinks();
       }
-      
+
       // Dispatch event to let other scripts know navbar is loaded
       const navbarLoadedEvent = new CustomEvent('navbarLoaded');
       document.dispatchEvent(navbarLoadedEvent);
@@ -46,7 +48,7 @@ fetch(navbarPath)
       logger.error('navbar-placeholder element not found');
     }
   })
-  .catch((error) => {
+  .catch(error => {
     logger.error('Failed to load navbar:', error);
     logger.error('Attempted to load from:', navbarPath);
   });

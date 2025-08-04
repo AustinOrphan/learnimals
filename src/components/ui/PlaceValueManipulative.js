@@ -14,17 +14,17 @@ class PlaceValueManipulative {
       containerId: options.containerId,
       maxNumber: options.maxNumber || 9999,
       mode: options.mode || 'compose',
-      ...options
+      ...options,
     };
-    
+
     this.currentNumber = 0;
     this.blocks = {
       thousands: 0,
       hundreds: 0,
       tens: 0,
-      ones: 0
+      ones: 0,
     };
-    
+
     this.init();
   }
 
@@ -37,7 +37,7 @@ class PlaceValueManipulative {
       console.error('PlaceValueManipulative: Container not found:', this.options.containerId);
       return;
     }
-    
+
     this.render();
     this.attachEventListeners();
   }
@@ -162,10 +162,12 @@ class PlaceValueManipulative {
       { type: 'thousands', value: 1000, color: 'purple', label: '1000' },
       { type: 'hundreds', value: 100, color: 'blue', label: '100' },
       { type: 'tens', value: 10, color: 'green', label: '10' },
-      { type: 'ones', value: 1, color: 'orange', label: '1' }
+      { type: 'ones', value: 1, color: 'orange', label: '1' },
     ];
 
-    return blockTypes.map(block => `
+    return blockTypes
+      .map(
+        block => `
       <div class="block-type">
         <div class="block-visual block-${block.color}" data-value="${block.value}" data-type="${block.type}" draggable="true">
           ${block.label}
@@ -174,7 +176,9 @@ class PlaceValueManipulative {
           Add ${block.type}
         </button>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 
   /**
@@ -185,11 +189,13 @@ class PlaceValueManipulative {
   generatePlacedBlocks(place) {
     const count = this.blocks[place];
     const blocks = [];
-    
+
     for (let i = 0; i < count; i++) {
-      blocks.push(`<div class="placed-block block-${this.getBlockColor(place)}" data-place="${place}"></div>`);
+      blocks.push(
+        `<div class="placed-block block-${this.getBlockColor(place)}" data-place="${place}"></div>`
+      );
     }
-    
+
     return blocks.join('');
   }
 
@@ -205,20 +211,25 @@ class PlaceValueManipulative {
     const breakdown = this.decomposeNumber(this.currentNumber);
     return `
       <div class="breakdown-visual">
-        ${Object.entries(breakdown).map(([place, count]) => {
-    if (count === 0) return '';
-    return `
+        ${Object.entries(breakdown)
+    .map(([place, count]) => {
+      if (count === 0) return '';
+      return `
             <div class="breakdown-section">
               <div class="breakdown-label">${place}: ${count}</div>
               <div class="breakdown-blocks">
-                ${Array(count).fill().map(() => 
-    `<div class="breakdown-block block-${this.getBlockColor(place)}"></div>`
-  ).join('')}
+                ${Array(count)
+    .fill()
+    .map(
+      () => `<div class="breakdown-block block-${this.getBlockColor(place)}"></div>`
+    )
+    .join('')}
               </div>
               <div class="breakdown-value">${count} × ${this.getPlaceValue(place)} = ${count * this.getPlaceValue(place)}</div>
             </div>
           `;
-  }).join('')}
+    })
+    .join('')}
       </div>
     `;
   }
@@ -229,7 +240,7 @@ class PlaceValueManipulative {
   attachEventListeners() {
     // Mode toggle buttons
     this.container.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         this.options.mode = e.target.dataset.mode;
         this.render();
         this.attachEventListeners();
@@ -238,7 +249,7 @@ class PlaceValueManipulative {
 
     // Add block buttons
     this.container.querySelectorAll('.add-block-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         const type = e.target.dataset.type;
         this.addBlock(type);
       });
@@ -268,17 +279,20 @@ class PlaceValueManipulative {
   setupDragAndDrop() {
     // Make blocks draggable
     this.container.querySelectorAll('.block-visual[draggable="true"]').forEach(block => {
-      block.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', JSON.stringify({
-          type: e.target.dataset.type,
-          value: e.target.dataset.value
-        }));
+      block.addEventListener('dragstart', e => {
+        e.dataTransfer.setData(
+          'text/plain',
+          JSON.stringify({
+            type: e.target.dataset.type,
+            value: e.target.dataset.value,
+          })
+        );
       });
     });
 
     // Setup drop zones
     this.container.querySelectorAll('.place-dropzone').forEach(dropzone => {
-      dropzone.addEventListener('dragover', (e) => {
+      dropzone.addEventListener('dragover', e => {
         e.preventDefault();
         dropzone.classList.add('drag-over');
       });
@@ -287,14 +301,14 @@ class PlaceValueManipulative {
         dropzone.classList.remove('drag-over');
       });
 
-      dropzone.addEventListener('drop', (e) => {
+      dropzone.addEventListener('drop', e => {
         e.preventDefault();
         dropzone.classList.remove('drag-over');
-        
+
         try {
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
           const targetPlace = dropzone.dataset.place;
-          
+
           if (data.type === targetPlace) {
             this.addBlock(data.type);
           }
@@ -311,15 +325,15 @@ class PlaceValueManipulative {
    */
   addBlock(type) {
     if (!Object.prototype.hasOwnProperty.call(this.blocks, type)) return;
-    
+
     const value = this.getPlaceValue(type);
-    
+
     // Check if adding this block would exceed max number
     if (this.currentNumber + value > this.options.maxNumber) {
       this.showMessage(`Cannot exceed ${this.options.maxNumber}!`, 'warning');
       return;
     }
-    
+
     this.blocks[type]++;
     this.currentNumber += value;
     this.updateDisplay();
@@ -331,7 +345,7 @@ class PlaceValueManipulative {
    */
   removeBlock(type) {
     if (!Object.prototype.hasOwnProperty.call(this.blocks, type) || this.blocks[type] <= 0) return;
-    
+
     const value = this.getPlaceValue(type);
     this.blocks[type]--;
     this.currentNumber -= value;
@@ -355,8 +369,10 @@ class PlaceValueManipulative {
       // Update place value chart
       Object.keys(this.blocks).forEach(place => {
         const dropzone = this.container.querySelector(`.place-dropzone[data-place="${place}"]`);
-        const countDisplay = this.container.querySelector(`.place-column[data-place="${place}"] .place-count`);
-        
+        const countDisplay = this.container.querySelector(
+          `.place-column[data-place="${place}"] .place-count`
+        );
+
         if (dropzone) {
           dropzone.innerHTML = this.generatePlacedBlocks(place);
         }
@@ -365,11 +381,11 @@ class PlaceValueManipulative {
         }
       });
     }
-    
+
     // Update number display
     const numberValue = this.container.querySelector('.number-value');
     const numberWords = this.container.querySelector('.number-words');
-    
+
     if (numberValue) numberValue.textContent = this.formatNumber(this.currentNumber);
     if (numberWords) numberWords.textContent = this.numberToWords(this.currentNumber);
   }
@@ -380,22 +396,22 @@ class PlaceValueManipulative {
   decomposeInput() {
     const input = this.container.querySelector('#target-number');
     if (!input) return;
-    
+
     const number = parseInt(input.value);
     if (isNaN(number) || number < 1 || number > this.options.maxNumber) {
       this.showMessage(`Please enter a number between 1 and ${this.options.maxNumber}`, 'error');
       return;
     }
-    
+
     this.currentNumber = number;
     this.blocks = this.decomposeNumber(number);
-    
+
     // Update decompose display
     const breakdownSection = this.container.querySelector('.decompose-result');
     if (breakdownSection) {
       breakdownSection.innerHTML = `<div class="place-value-breakdown">${this.generateBreakdownDisplay()}</div>`;
     }
-    
+
     this.updateDisplay();
   }
 
@@ -409,7 +425,7 @@ class PlaceValueManipulative {
       thousands: Math.floor(number / 1000),
       hundreds: Math.floor((number % 1000) / 100),
       tens: Math.floor((number % 100) / 10),
-      ones: number % 10
+      ones: number % 10,
     };
   }
 
@@ -429,11 +445,11 @@ class PlaceValueManipulative {
    * @returns {string} - Color name
    */
   getBlockColor(place) {
-    const colors = { 
-      ones: 'orange', 
-      tens: 'green', 
-      hundreds: 'blue', 
-      thousands: 'purple' 
+    const colors = {
+      ones: 'orange',
+      tens: 'green',
+      hundreds: 'blue',
+      thousands: 'purple',
     };
     return colors[place] || 'gray';
   }
@@ -456,14 +472,34 @@ class PlaceValueManipulative {
     if (number === 0) return 'zero';
     if (number === 1) return 'one';
     if (number <= 20) {
-      const words = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 
-        'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 
-        'seventeen', 'eighteen', 'nineteen', 'twenty'];
+      const words = [
+        '',
+        'one',
+        'two',
+        'three',
+        'four',
+        'five',
+        'six',
+        'seven',
+        'eight',
+        'nine',
+        'ten',
+        'eleven',
+        'twelve',
+        'thirteen',
+        'fourteen',
+        'fifteen',
+        'sixteen',
+        'seventeen',
+        'eighteen',
+        'nineteen',
+        'twenty',
+      ];
       return words[number] || '';
     }
-    
+
     // For numbers > 20, use existing convertNumber logic or simplified version
-    return `${number} (${Math.floor(number/1000)}k ${Math.floor((number%1000)/100)}h ${Math.floor((number%100)/10)}t ${number%10}o)`;
+    return `${number} (${Math.floor(number / 1000)}k ${Math.floor((number % 1000) / 100)}h ${Math.floor((number % 100) / 10)}t ${number % 10}o)`;
   }
 
   /**
@@ -476,9 +512,9 @@ class PlaceValueManipulative {
     const messageEl = document.createElement('div');
     messageEl.className = `pv-message pv-message-${type}`;
     messageEl.textContent = message;
-    
+
     this.container.appendChild(messageEl);
-    
+
     setTimeout(() => {
       messageEl.remove();
     }, 3000);

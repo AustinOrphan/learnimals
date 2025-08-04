@@ -19,15 +19,15 @@ describe('EducationalTemplate', () => {
       getItem: vi.fn(),
       setItem: vi.fn(),
       removeItem: vi.fn(),
-      clear: vi.fn()
+      clear: vi.fn(),
     };
-    
+
     // Mock sessionStorage
     global.sessionStorage = {
       getItem: vi.fn(),
       setItem: vi.fn(),
       removeItem: vi.fn(),
-      clear: vi.fn()
+      clear: vi.fn(),
     };
 
     // Mock DOM elements
@@ -83,14 +83,14 @@ describe('EducationalTemplate', () => {
         gameType: 'educational-test',
         ageRange: '6-8',
         learningObjectives: ['counting', 'addition'],
-        tags: ['educational', 'math']
-      }
+        tags: ['educational', 'math'],
+      },
     };
 
     mockGame = {
       on: vi.fn(),
       pause: vi.fn(),
-      skipQuestion: vi.fn()
+      skipQuestion: vi.fn(),
     };
 
     // Mock console.log
@@ -102,17 +102,17 @@ describe('EducationalTemplate', () => {
     if (template && template.progressInterval) {
       clearInterval(template.progressInterval);
     }
-    
+
     // Restore console.log
     console.log = originalConsoleLog;
-    
+
     vi.clearAllMocks();
   });
 
   describe('Initialization', () => {
     it('should initialize with game config', () => {
       template = new EducationalTemplate(gameConfig);
-      
+
       expect(template.gameConfig).toEqual(gameConfig);
       expect(template.sessionData).toBeDefined();
       expect(template.sessionData.questionsAttempted).toBe(0);
@@ -123,7 +123,7 @@ describe('EducationalTemplate', () => {
     it('should initialize DOM elements and event listeners', () => {
       template = new EducationalTemplate(gameConfig);
       template.initialize();
-      
+
       expect(template.elements).toBeDefined();
       expect(template.elements.objectivesList).toBeDefined();
       expect(template.progressInterval).toBeDefined();
@@ -161,15 +161,15 @@ describe('EducationalTemplate', () => {
     it('should update session progress', () => {
       template.sessionData.questionsAttempted = 5;
       template.sessionData.correctAnswers = 4;
-      
+
       template.updateProgress();
-      
+
       const accuracyValue = document.getElementById('accuracy-value');
       expect(accuracyValue.textContent).toBe('80%');
-      
+
       const questionsAttempted = document.getElementById('questions-attempted');
       expect(questionsAttempted.textContent).toBe('5');
-      
+
       const correctAnswers = document.getElementById('correct-answers');
       expect(correctAnswers.textContent).toBe('4');
     });
@@ -177,20 +177,20 @@ describe('EducationalTemplate', () => {
     it('should calculate skill level based on accuracy', () => {
       template.sessionData.questionsAttempted = 10;
       template.sessionData.correctAnswers = 9;
-      
+
       template.updateProgress();
-      
+
       const skillLevel = document.getElementById('skill-level');
       expect(skillLevel.textContent).toBe('Advanced');
     });
 
     it('should handle question answered events', () => {
       const mockEvent = {
-        correct: true
+        correct: true,
       };
-      
+
       template.onQuestionAnswered(mockEvent);
-      
+
       expect(template.sessionData.correctAnswers).toBe(1);
     });
   });
@@ -204,15 +204,15 @@ describe('EducationalTemplate', () => {
     it('should toggle sidebar visibility', () => {
       const sidebar = document.getElementById('educational-sidebar');
       const toggleText = document.getElementById('sidebar-toggle-text');
-      
+
       template.toggleSidebar();
-      
+
       expect(template.sidebarOpen).toBe(true);
       expect(sidebar.classList.contains('active')).toBe(true);
       expect(toggleText.textContent).toBe('Hide Panel');
-      
+
       template.toggleSidebar();
-      
+
       expect(template.sidebarOpen).toBe(false);
       expect(sidebar.classList.contains('active')).toBe(false);
       expect(toggleText.textContent).toBe('Teacher Panel');
@@ -227,15 +227,15 @@ describe('EducationalTemplate', () => {
 
     it('should show assessment modal', () => {
       const assessmentModal = document.getElementById('assessment-modal');
-      
+
       template.showAssessment();
-      
+
       expect(assessmentModal.style.display).toBe('flex');
     });
 
     it('should generate assessment questions', () => {
       template.generateAssessmentQuestions();
-      
+
       const assessmentContent = document.getElementById('assessment-content');
       expect(assessmentContent.children.length).toBeGreaterThan(0);
     });
@@ -249,7 +249,7 @@ describe('EducationalTemplate', () => {
 
     it('should set game and listen to events', () => {
       template.setGame(mockGame);
-      
+
       expect(template.game).toBe(mockGame);
       expect(mockGame.on).toHaveBeenCalledWith('questionStarted', expect.any(Function));
       expect(mockGame.on).toHaveBeenCalledWith('questionAnswered', expect.any(Function));
@@ -266,9 +266,9 @@ describe('EducationalTemplate', () => {
 
     it('should show adaptive feedback', () => {
       const feedbackElement = document.getElementById('adaptive-feedback');
-      
+
       template.showAdaptiveFeedback('Great job!', 'success');
-      
+
       expect(feedbackElement.textContent).toBe('Great job!');
       expect(feedbackElement.className).toBe('adaptive-feedback success');
     });
@@ -276,9 +276,9 @@ describe('EducationalTemplate', () => {
     it('should generate progress report', () => {
       template.sessionData.questionsAttempted = 10;
       template.sessionData.correctAnswers = 8;
-      
+
       template.generateReport();
-      
+
       const reportContent = document.getElementById('report-content');
       expect(reportContent.innerHTML).toContain('Session Overview');
       expect(reportContent.innerHTML).toContain('80%');
@@ -286,7 +286,7 @@ describe('EducationalTemplate', () => {
 
     it('should save session data to localStorage', () => {
       template.saveSessionData();
-      
+
       expect(localStorage.setItem).toHaveBeenCalled();
     });
   });
@@ -299,10 +299,10 @@ describe('EducationalTemplate', () => {
 
     it('should cleanup properly', () => {
       const intervalId = template.progressInterval;
-      
+
       template.destroy();
-      
-      // Check that interval is cleared (we can't directly test clearInterval, 
+
+      // Check that interval is cleared (we can't directly test clearInterval,
       // but we can verify the method calls saveSessionData)
       expect(localStorage.setItem).toHaveBeenCalled();
       expect(console.log).toHaveBeenCalledWith('Educational template destroyed');

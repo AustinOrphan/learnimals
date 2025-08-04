@@ -19,24 +19,24 @@ export const colorDatabase = {
         'A primary color - cannot be made by mixing other colors',
         'The color of fire, energy, and passion',
         'Often associated with excitement and strength',
-        'One of the three basic colors in traditional color theory'
+        'One of the three basic colors in traditional color theory',
       ],
       realWorldExamples: [
         'Fire trucks and stop signs',
         'Ripe strawberries and apples',
         'Roses and poppies',
-        'Ruby gemstones'
+        'Ruby gemstones',
       ],
       emotions: ['passionate', 'energetic', 'powerful', 'exciting'],
       culturalMeanings: {
         western: 'Love, danger, excitement',
         eastern: 'Good luck, prosperity, celebration',
-        general: 'Attention, importance, urgency'
+        general: 'Attention, importance, urgency',
       },
       mixingWith: {
         yellow: { result: 'orange', type: 'secondary' },
-        blue: { result: 'purple', type: 'secondary' }
-      }
+        blue: { result: 'purple', type: 'secondary' },
+      },
     },
     {
       id: 'blue',
@@ -49,24 +49,24 @@ export const colorDatabase = {
         'A primary color - pure and unmixable',
         'The color of sky and ocean',
         'Often associated with calm and trust',
-        'Most popular color across many cultures'
+        'Most popular color across many cultures',
       ],
       realWorldExamples: [
         'Clear sky and deep ocean',
         'Blueberries and blue jays',
         'Sapphire gemstones',
-        'Police uniforms'
+        'Police uniforms',
       ],
       emotions: ['calm', 'peaceful', 'trustworthy', 'stable'],
       culturalMeanings: {
         western: 'Trust, loyalty, wisdom',
         eastern: 'Immortality, spirituality',
-        general: 'Peace, stability, professionalism'
+        general: 'Peace, stability, professionalism',
       },
       mixingWith: {
         yellow: { result: 'green', type: 'secondary' },
-        red: { result: 'purple', type: 'secondary' }
-      }
+        red: { result: 'purple', type: 'secondary' },
+      },
     },
     {
       id: 'yellow',
@@ -79,25 +79,25 @@ export const colorDatabase = {
         'A primary color - bright and pure',
         'The color of sunshine and happiness',
         'Most visible color to the human eye',
-        'Associated with joy and optimism'
+        'Associated with joy and optimism',
       ],
       realWorldExamples: [
         'Sun and sunflowers',
         'Bananas and lemons',
         'School buses and taxi cabs',
-        'Golden honey'
+        'Golden honey',
       ],
       emotions: ['happy', 'optimistic', 'energetic', 'cheerful'],
       culturalMeanings: {
         western: 'Happiness, caution, creativity',
         eastern: 'Prosperity, royalty, wisdom',
-        general: 'Attention, warmth, illumination'
+        general: 'Attention, warmth, illumination',
       },
       mixingWith: {
         red: { result: 'orange', type: 'secondary' },
-        blue: { result: 'green', type: 'secondary' }
-      }
-    }
+        blue: { result: 'green', type: 'secondary' },
+      },
+    },
   ],
 
   secondary: [
@@ -113,20 +113,20 @@ export const colorDatabase = {
         'A secondary color made by mixing red and yellow',
         'The color of autumn and harvest',
         'Combines the energy of red with the happiness of yellow',
-        'Very attention-grabbing and vibrant'
+        'Very attention-grabbing and vibrant',
       ],
       realWorldExamples: [
         'Oranges and carrots',
         'Autumn leaves and pumpkins',
         'Traffic cones and basketballs',
-        'Marigold flowers'
+        'Marigold flowers',
       ],
       emotions: ['enthusiastic', 'warm', 'adventurous', 'confident'],
       culturalMeanings: {
         western: 'Creativity, enthusiasm, adventure',
         eastern: 'Good fortune, spirituality',
-        general: 'Energy, warmth, approachability'
-      }
+        general: 'Energy, warmth, approachability',
+      },
     },
     {
       id: 'green',
@@ -140,20 +140,20 @@ export const colorDatabase = {
         'A secondary color made by mixing blue and yellow',
         'The color of nature and growth',
         'Most restful color to the human eye',
-        'Associated with life and renewal'
+        'Associated with life and renewal',
       ],
       realWorldExamples: [
         'Grass and leaves',
         'Emerald gemstones',
         'Frogs and lizards',
-        'Money and dollar bills'
+        'Money and dollar bills',
       ],
       emotions: ['peaceful', 'natural', 'growing', 'balanced'],
       culturalMeanings: {
         western: 'Nature, money, growth, envy',
         eastern: 'New beginnings, fertility',
-        general: 'Life, renewal, environment'
-      }
+        general: 'Life, renewal, environment',
+      },
     },
     {
       id: 'purple',
@@ -167,21 +167,21 @@ export const colorDatabase = {
         'A secondary color made by mixing red and blue',
         'Historically associated with royalty and luxury',
         'Combines the stability of blue with the energy of red',
-        'Often linked to creativity and mystery'
+        'Often linked to creativity and mystery',
       ],
       realWorldExamples: [
         'Violets and lavender',
         'Amethyst gemstones',
         'Eggplants and grapes',
-        'Royal robes and crowns'
+        'Royal robes and crowns',
       ],
       emotions: ['creative', 'mysterious', 'royal', 'spiritual'],
       culturalMeanings: {
         western: 'Royalty, luxury, creativity, mystery',
         eastern: 'Spirituality, transformation',
-        general: 'Nobility, wisdom, magic'
-      }
-    }
+        general: 'Nobility, wisdom, magic',
+      },
+    },
   ],
 
   tertiary: [
@@ -193,7 +193,7 @@ export const colorDatabase = {
       hsl: { h: 16, s: 100, l: 50 },
       temperature: 'warm',
       madeFrom: ['red', 'orange'],
-      properties: ['A tertiary color with high energy', 'Very warm and exciting']
+      properties: ['A tertiary color with high energy', 'Very warm and exciting'],
     },
     {
       id: 'yellow-orange',
@@ -203,7 +203,7 @@ export const colorDatabase = {
       hsl: { h: 34, s: 100, l: 63 },
       temperature: 'warm',
       madeFrom: ['yellow', 'orange'],
-      properties: ['A tertiary color like golden autumn', 'Warm and inviting']
+      properties: ['A tertiary color like golden autumn', 'Warm and inviting'],
     },
     {
       id: 'yellow-green',
@@ -213,7 +213,7 @@ export const colorDatabase = {
       hsl: { h: 80, s: 61, l: 50 },
       temperature: 'warm',
       madeFrom: ['yellow', 'green'],
-      properties: ['A tertiary color of fresh spring', 'Vibrant and natural']
+      properties: ['A tertiary color of fresh spring', 'Vibrant and natural'],
     },
     {
       id: 'blue-green',
@@ -223,7 +223,7 @@ export const colorDatabase = {
       hsl: { h: 192, s: 87, l: 39 },
       temperature: 'cool',
       madeFrom: ['blue', 'green'],
-      properties: ['A tertiary color like tropical waters', 'Cool and refreshing']
+      properties: ['A tertiary color like tropical waters', 'Cool and refreshing'],
     },
     {
       id: 'blue-purple',
@@ -233,7 +233,7 @@ export const colorDatabase = {
       hsl: { h: 275, s: 100, l: 25 },
       temperature: 'cool',
       madeFrom: ['blue', 'purple'],
-      properties: ['A tertiary color like deep twilight', 'Mysterious and deep']
+      properties: ['A tertiary color like deep twilight', 'Mysterious and deep'],
     },
     {
       id: 'red-purple',
@@ -243,9 +243,9 @@ export const colorDatabase = {
       hsl: { h: 322, s: 81, l: 43 },
       temperature: 'warm',
       madeFrom: ['red', 'purple'],
-      properties: ['A tertiary color like rich wine', 'Dramatic and bold']
-    }
-  ]
+      properties: ['A tertiary color like rich wine', 'Dramatic and bold'],
+    },
+  ],
 };
 
 /**
@@ -258,7 +258,7 @@ export const colorSchemes = {
     instruction: 'Create a palette using only variations of one color',
     example: ['#000080', '#4169E1', '#87CEEB', '#E0F6FF'],
     difficulty: 'easy',
-    educational: 'Teaches how one color can create rich, harmonious palettes'
+    educational: 'Teaches how one color can create rich, harmonious palettes',
   },
   analogous: {
     name: 'Analogous',
@@ -266,7 +266,7 @@ export const colorSchemes = {
     instruction: 'Choose colors that sit beside each other on the wheel',
     example: ['#FF0000', '#FF4500', '#FFA500', '#FFFF00'],
     difficulty: 'medium',
-    educational: 'Shows how neighboring colors create natural harmony'
+    educational: 'Shows how neighboring colors create natural harmony',
   },
   complementary: {
     name: 'Complementary',
@@ -274,7 +274,7 @@ export const colorSchemes = {
     instruction: 'Pick colors that are across from each other',
     example: ['#FF0000', '#00FF00'],
     difficulty: 'medium',
-    educational: 'Demonstrates how opposite colors create strong contrast'
+    educational: 'Demonstrates how opposite colors create strong contrast',
   },
   triadic: {
     name: 'Triadic',
@@ -282,7 +282,7 @@ export const colorSchemes = {
     instruction: 'Select three colors that form a triangle on the wheel',
     example: ['#FF0000', '#00FF00', '#0000FF'],
     difficulty: 'hard',
-    educational: 'Shows balanced, vibrant color relationships'
+    educational: 'Shows balanced, vibrant color relationships',
   },
   splitComplementary: {
     name: 'Split-Complementary',
@@ -290,7 +290,7 @@ export const colorSchemes = {
     instruction: 'Choose one color and the neighbors of its opposite',
     example: ['#FF0000', '#00FF80', '#0080FF'],
     difficulty: 'hard',
-    educational: 'Provides contrast with more color options than complementary'
+    educational: 'Provides contrast with more color options than complementary',
   },
   warm: {
     name: 'Warm Colors',
@@ -298,7 +298,7 @@ export const colorSchemes = {
     instruction: 'Create a palette that feels warm and energetic',
     example: ['#FF0000', '#FFA500', '#FFFF00', '#FF69B4'],
     difficulty: 'easy',
-    educational: 'Understanding color temperature and emotional associations'
+    educational: 'Understanding color temperature and emotional associations',
   },
   cool: {
     name: 'Cool Colors',
@@ -306,8 +306,8 @@ export const colorSchemes = {
     instruction: 'Create a palette that feels cool and calm',
     example: ['#0000FF', '#00FF00', '#800080', '#40E0D0'],
     difficulty: 'easy',
-    educational: 'Understanding color temperature and calming effects'
-  }
+    educational: 'Understanding color temperature and calming effects',
+  },
 };
 
 /**
@@ -324,7 +324,7 @@ export const challenges = {
       objective: 'red + yellow = ?',
       correctAnswer: 'orange',
       hint: 'Think about the color of a sunset!',
-      educational: 'Primary colors are the foundation of all other colors'
+      educational: 'Primary colors are the foundation of all other colors',
     },
     {
       id: 'warm-cool-sorting',
@@ -335,10 +335,10 @@ export const challenges = {
       colors: ['red', 'blue', 'yellow', 'green', 'orange', 'purple'],
       correctAnswer: {
         warm: ['red', 'yellow', 'orange'],
-        cool: ['blue', 'green', 'purple']
+        cool: ['blue', 'green', 'purple'],
       },
       hint: 'Warm colors remind you of fire and sun, cool colors of water and sky',
-      educational: 'Color temperature affects the mood and feeling of artwork'
+      educational: 'Color temperature affects the mood and feeling of artwork',
     },
     {
       id: 'color-wheel-basics',
@@ -352,11 +352,11 @@ export const challenges = {
         { position: 120, correct: 'green' },
         { position: 180, correct: 'blue' },
         { position: 240, correct: 'purple' },
-        { position: 300, correct: 'orange' }
+        { position: 300, correct: 'orange' },
       ],
       hint: 'Primary colors are evenly spaced, with secondary colors between them',
-      educational: 'The color wheel shows relationships between all colors'
-    }
+      educational: 'The color wheel shows relationships between all colors',
+    },
   ],
   medium: [
     {
@@ -368,10 +368,10 @@ export const challenges = {
       objectives: [
         { mix: ['red', 'yellow'], result: 'orange' },
         { mix: ['blue', 'yellow'], result: 'green' },
-        { mix: ['red', 'blue'], result: 'purple' }
+        { mix: ['red', 'blue'], result: 'purple' },
       ],
       hint: 'Each secondary color is made from exactly two primary colors',
-      educational: 'Secondary colors show how primary colors work together'
+      educational: 'Secondary colors show how primary colors work together',
     },
     {
       id: 'complementary-pairs',
@@ -382,10 +382,10 @@ export const challenges = {
       pairs: [
         { color1: 'red', color2: 'green' },
         { color1: 'blue', color2: 'orange' },
-        { color1: 'yellow', color2: 'purple' }
+        { color1: 'yellow', color2: 'purple' },
       ],
       hint: 'Complementary colors are across from each other on the color wheel',
-      educational: 'Complementary colors create the strongest visual contrast'
+      educational: 'Complementary colors create the strongest visual contrast',
     },
     {
       id: 'analogous-harmony',
@@ -395,8 +395,8 @@ export const challenges = {
       instruction: 'Choose 3-4 colors that sit next to each other on the wheel',
       scheme: 'analogous',
       hint: 'Think of colors you see together in nature, like a sunset',
-      educational: 'Analogous colors create peaceful, comfortable designs'
-    }
+      educational: 'Analogous colors create peaceful, comfortable designs',
+    },
   ],
   hard: [
     {
@@ -411,10 +411,10 @@ export const challenges = {
         { mix: ['yellow', 'green'], result: 'yellow-green' },
         { mix: ['blue', 'green'], result: 'blue-green' },
         { mix: ['blue', 'purple'], result: 'blue-purple' },
-        { mix: ['red', 'purple'], result: 'red-purple' }
+        { mix: ['red', 'purple'], result: 'red-purple' },
       ],
       hint: 'Tertiary colors have two-word names describing their mix',
-      educational: 'Tertiary colors provide nuanced options for artists'
+      educational: 'Tertiary colors provide nuanced options for artists',
     },
     {
       id: 'triadic-harmony',
@@ -424,7 +424,7 @@ export const challenges = {
       instruction: 'Choose three colors that form a triangle on the color wheel',
       scheme: 'triadic',
       hint: 'The primary colors (red, blue, yellow) are a perfect triadic scheme',
-      educational: 'Triadic schemes are bold but balanced'
+      educational: 'Triadic schemes are bold but balanced',
     },
     {
       id: 'split-complementary',
@@ -434,9 +434,9 @@ export const challenges = {
       instruction: 'Pick one color, then the two colors beside its complement',
       scheme: 'splitComplementary',
       hint: 'This gives you contrast without being too overwhelming',
-      educational: 'Split-complementary offers contrast with more harmony'
-    }
-  ]
+      educational: 'Split-complementary offers contrast with more harmony',
+    },
+  ],
 };
 
 /**
@@ -453,7 +453,11 @@ export function getColorsForDifficulty(difficulty) {
   case 'easy':
     return [...colorDatabase.primary, ...colorDatabase.secondary];
   case 'medium':
-    return [...colorDatabase.primary, ...colorDatabase.secondary, ...colorDatabase.tertiary.slice(0, 3)];
+    return [
+      ...colorDatabase.primary,
+      ...colorDatabase.secondary,
+      ...colorDatabase.tertiary.slice(0, 3),
+    ];
   case 'hard':
     return [...colorDatabase.primary, ...colorDatabase.secondary, ...colorDatabase.tertiary];
   default:
@@ -479,7 +483,7 @@ export function getColorById(colorId) {
   const allColors = [
     ...colorDatabase.primary,
     ...colorDatabase.secondary,
-    ...colorDatabase.tertiary
+    ...colorDatabase.tertiary,
   ];
   return allColors.find(color => color.id === colorId) || null;
 }
@@ -493,28 +497,28 @@ export function getColorById(colorId) {
 export function mixColors(color1Id, color2Id) {
   const color1 = getColorById(color1Id);
   const color2 = getColorById(color2Id);
-  
+
   if (!color1 || !color2) {
     return { success: false, result: null, message: 'Invalid colors' };
   }
-  
+
   // Check if either color has mixing information
   const mixingInfo = color1.mixingWith?.[color2Id] || color2.mixingWith?.[color1Id];
-  
+
   if (mixingInfo) {
     const _resultColor = getColorById(mixingInfo.result);
     return {
       success: true,
       result: _resultColor,
       message: `${color1.name} + ${color2.name} = ${_resultColor.name}!`,
-      type: mixingInfo.type
+      type: mixingInfo.type,
     };
   }
-  
+
   return {
     success: false,
     result: null,
-    message: `${color1.name} and ${color2.name} don't mix to create a standard color`
+    message: `${color1.name} and ${color2.name} don't mix to create a standard color`,
   };
 }
 
@@ -529,18 +533,18 @@ export function validateColorScheme(colorIds, schemeType) {
   if (!scheme) {
     return { valid: false, message: 'Unknown color scheme' };
   }
-  
+
   // Basic validation - this could be enhanced with more sophisticated checking
   if (colorIds.length < 2) {
     return { valid: false, message: 'Need at least 2 colors for a scheme' };
   }
-  
+
   // For now, return true for any reasonable attempt
   // In a full implementation, this would check color wheel positions
   return {
     valid: true,
     message: `Great ${scheme.name} color scheme!`,
-    feedback: scheme.educational
+    feedback: scheme.educational,
   };
 }
 
@@ -563,11 +567,13 @@ export function getRandomColors(count, difficulty = 'easy') {
  */
 export function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
+    : null;
 }
 
 /**
@@ -581,29 +587,35 @@ export function rgbToHsl(r, g, b) {
   r /= 255;
   g /= 255;
   b /= 255;
-  
+
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   let h, s;
   const l = (max + min) / 2;
-  
+
   if (max === min) {
     h = s = 0; // achromatic
   } else {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
-    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-    case g: h = (b - r) / d + 2; break;
-    case b: h = (r - g) / d + 4; break;
+    case r:
+      h = (g - b) / d + (g < b ? 6 : 0);
+      break;
+    case g:
+      h = (b - r) / d + 2;
+      break;
+    case b:
+      h = (r - g) / d + 4;
+      break;
     }
     h /= 6;
   }
-  
+
   return {
     h: Math.round(h * 360),
     s: Math.round(s * 100),
-    l: Math.round(l * 100)
+    l: Math.round(l * 100),
   };
 }
 

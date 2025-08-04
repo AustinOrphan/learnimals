@@ -1,0 +1,610 @@
+/**
+ * Adventure Quest Game Styles
+ * Follows Learnimals theme system with semantic CSS variables
+ */
+
+/* Game Container */
+.adventure-quest-game {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
+/* Game Header */
+.adventure-quest-header {
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--accent-primary);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.adventure-quest-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.adventure-quest-title::before {
+  content: '🚀';
+  font-size: 2rem;
+}
+
+.adventure-quest-stats {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  color: var(--accent-secondary);
+  font-size: 1.1rem;
+}
+
+/* Game Canvas Container */
+.adventure-quest-canvas-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-card) 100%);
+  padding: 1rem;
+}
+
+.adventure-quest-canvas {
+  border: 3px solid var(--accent-primary);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.adventure-quest-canvas:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+}
+
+.adventure-quest-canvas:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--accent-primary-fade);
+}
+
+/* Loading Screen */
+.adventure-quest-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--bg-card);
+  border-top: 4px solid var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Game Controls */
+.adventure-quest-controls {
+  background: var(--bg-card);
+  border-top: 2px solid var(--accent-primary);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.control-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.control-button {
+  background: var(--accent-primary);
+  color: var(--text-on-primary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-button:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.control-button:active {
+  transform: translateY(0);
+}
+
+.control-button:disabled {
+  background: var(--bg-disabled);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.control-button.secondary {
+  background: var(--accent-secondary);
+}
+
+.control-button.secondary:hover {
+  background: var(--accent-secondary-hover);
+}
+
+.control-button.danger {
+  background: var(--text-danger);
+}
+
+.control-button.danger:hover {
+  background: var(--text-danger-hover);
+}
+
+/* Progress Indicators */
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.progress-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--accent-primary);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: progress-shine 2s infinite;
+}
+
+@keyframes progress-shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Discovery Notifications */
+.discovery-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-card);
+  border: 2px solid var(--accent-secondary);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 300;
+  max-width: 300px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.discovery-notification.show {
+  transform: translateX(0);
+}
+
+.discovery-notification.hide {
+  transform: translateX(100%);
+}
+
+.discovery-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.discovery-title {
+  font-weight: bold;
+  color: var(--accent-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.discovery-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.discovery-points {
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
+/* Modal Overlays */
+.adventure-quest-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 400;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 2px solid var(--accent-primary);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--accent-primary);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Achievements Grid */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.achievement-card {
+  background: var(--bg-primary);
+  border: 2px solid var(--accent-primary);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.achievement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.achievement-card.locked {
+  border-color: var(--text-disabled);
+  opacity: 0.6;
+}
+
+.achievement-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-name {
+  font-weight: bold;
+  color: var(--accent-primary);
+  margin-bottom: 0.5rem;
+}
+
+.achievement-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.achievement-points {
+  color: var(--accent-secondary);
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+/* Scientific Journal */
+.journal-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.journal-entry {
+  background: var(--bg-primary);
+  border-left: 4px solid var(--accent-secondary);
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.journal-title {
+  font-weight: bold;
+  color: var(--accent-primary);
+}
+
+.journal-date {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.journal-content {
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.journal-illustration {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .adventure-quest-header {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .adventure-quest-title {
+    font-size: 1.4rem;
+  }
+
+  .adventure-quest-stats {
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .adventure-quest-controls {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .control-group {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-height: 90vh;
+  }
+
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .discovery-notification {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    transform: translateY(-100%);
+  }
+
+  .discovery-notification.show {
+    transform: translateY(0);
+  }
+
+  .discovery-notification.hide {
+    transform: translateY(-100%);
+  }
+}
+
+@media (max-width: 480px) {
+  .adventure-quest-canvas-container {
+    padding: 0.5rem;
+  }
+
+  .adventure-quest-canvas {
+    border-width: 2px;
+    border-radius: 8px;
+  }
+
+  .modal-content {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .control-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .adventure-quest-canvas {
+    border-width: 4px;
+  }
+
+  .control-button {
+    border: 2px solid currentColor;
+  }
+
+  .progress-bar {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .control-button {
+    transition: none;
+  }
+
+  .control-button:hover {
+    transform: none;
+  }
+
+  .progress-fill::after {
+    animation: none;
+  }
+
+  .loading-spinner {
+    animation: spin 3s linear infinite;
+  }
+}
+
+/* Print styles */
+@media print {
+  .adventure-quest-game {
+    height: auto;
+  }
+
+  .adventure-quest-canvas-container {
+    page-break-inside: avoid;
+  }
+
+  .adventure-quest-controls {
+    display: none;
+  }
+
+  .discovery-notification {
+    display: none;
+  }
+}
+
+/* Theme-specific overrides */
+[data-theme='dark'] .adventure-quest-canvas {
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .adventure-quest-canvas:hover {
+  box-shadow: 0 12px 48px rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='dark'] .modal-content {
+  box-shadow: 0 16px 64px rgba(255, 255, 255, 0.1);
+}
+
+/* Custom focus styles for accessibility */
+.adventure-quest-game *:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for webkit browsers */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary-hover);
+}

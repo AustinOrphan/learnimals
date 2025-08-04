@@ -1,7 +1,7 @@
 /**
  * Character Validator
  * Validates character data against the CharacterSchema
- * 
+ *
  * Part of Phase D: Character Generator Core
  */
 
@@ -44,7 +44,7 @@ export class CharacterValidator {
     this.validateProperty('id', character.id, this.schema.id);
     this.validateProperty('name', character.name, this.schema.name);
     this.validateProperty('subject', character.subject, this.schema.subject);
-    
+
     if (character.appearance) {
       this.validateAppearance(character.appearance);
     } else {
@@ -182,7 +182,9 @@ export class CharacterValidator {
     }
 
     if (schemaDef.maxLength && value.length > schemaDef.maxLength) {
-      this.errors.push(`${propertyName} must be no more than ${schemaDef.maxLength} characters long`);
+      this.errors.push(
+        `${propertyName} must be no more than ${schemaDef.maxLength} characters long`
+      );
     }
 
     // Pattern validation
@@ -251,14 +253,22 @@ export class CharacterValidator {
    */
   validateAppearance(appearance) {
     const appearanceSchema = this.schema.appearance.properties;
-    
+
     Object.keys(appearanceSchema).forEach(key => {
       if (key === 'eyes' && appearance.eyes) {
         this.validateObject('appearance.eyes', appearance.eyes, appearanceSchema.eyes.properties);
       } else if (key === 'mouth' && appearance.mouth) {
-        this.validateObject('appearance.mouth', appearance.mouth, appearanceSchema.mouth.properties);
+        this.validateObject(
+          'appearance.mouth',
+          appearance.mouth,
+          appearanceSchema.mouth.properties
+        );
       } else if (key === 'accessories' && appearance.accessories) {
-        this.validateProperty('appearance.accessories', appearance.accessories, appearanceSchema.accessories);
+        this.validateProperty(
+          'appearance.accessories',
+          appearance.accessories,
+          appearanceSchema.accessories
+        );
       } else {
         this.validateProperty(`appearance.${key}`, appearance[key], appearanceSchema[key]);
       }
@@ -273,7 +283,7 @@ export class CharacterValidator {
    */
   validatePersonality(personality) {
     const personalitySchema = this.schema.personality.properties;
-    
+
     Object.keys(personalitySchema).forEach(key => {
       this.validateProperty(`personality.${key}`, personality[key], personalitySchema[key]);
     });
@@ -291,14 +301,26 @@ export class CharacterValidator {
    */
   validateEducation(education) {
     const educationSchema = this.schema.education.properties;
-    
+
     Object.keys(educationSchema).forEach(key => {
       if (key === 'ageRange' && education.ageRange) {
-        this.validateProperty('education.ageRange.min', education.ageRange.min, educationSchema.ageRange.properties.min);
-        this.validateProperty('education.ageRange.max', education.ageRange.max, educationSchema.ageRange.properties.max);
-        
+        this.validateProperty(
+          'education.ageRange.min',
+          education.ageRange.min,
+          educationSchema.ageRange.properties.min
+        );
+        this.validateProperty(
+          'education.ageRange.max',
+          education.ageRange.max,
+          educationSchema.ageRange.properties.max
+        );
+
         // Validate age range logic
-        if (education.ageRange.min && education.ageRange.max && education.ageRange.min > education.ageRange.max) {
+        if (
+          education.ageRange.min &&
+          education.ageRange.max &&
+          education.ageRange.min > education.ageRange.max
+        ) {
           this.errors.push('education.ageRange.min cannot be greater than education.ageRange.max');
         }
       } else {
@@ -312,7 +334,7 @@ export class CharacterValidator {
    */
   validateInteractions(interactions) {
     const interactionsSchema = this.schema.interactions.properties;
-    
+
     Object.keys(interactionsSchema).forEach(key => {
       if (interactions[key]) {
         this.validateProperty(`interactions.${key}`, interactions[key], interactionsSchema[key]);
@@ -325,7 +347,7 @@ export class CharacterValidator {
    */
   validateAnimations(animations) {
     const animationsSchema = this.schema.animations.properties;
-    
+
     Object.keys(animationsSchema).forEach(key => {
       if (animations[key]) {
         this.validateObject(`animations.${key}`, animations[key], animationsSchema[key].properties);
@@ -338,7 +360,7 @@ export class CharacterValidator {
    */
   validateMetadata(metadata) {
     const metadataSchema = this.schema.metadata.properties;
-    
+
     Object.keys(metadataSchema).forEach(key => {
       this.validateProperty(`metadata.${key}`, metadata[key], metadataSchema[key]);
     });
@@ -383,7 +405,10 @@ export class CharacterValidator {
 
     // Color accessibility check
     if (character.appearance?.primaryColor && character.appearance?.secondaryColor) {
-      this.validateColorContrast(character.appearance.primaryColor, character.appearance.secondaryColor);
+      this.validateColorContrast(
+        character.appearance.primaryColor,
+        character.appearance.secondaryColor
+      );
     }
   }
 
@@ -392,21 +417,47 @@ export class CharacterValidator {
    */
   validateSubjectSpecialties(subject, specialties) {
     const subjectSpecialtyMap = {
-      math: ['numbers', 'algebra', 'geometry', 'statistics', 'calculus', 'problem solving', 'patterns'],
-      science: ['physics', 'chemistry', 'biology', 'experiments', 'discovery', 'nature', 'lab work'],
+      math: [
+        'numbers',
+        'algebra',
+        'geometry',
+        'statistics',
+        'calculus',
+        'problem solving',
+        'patterns',
+      ],
+      science: [
+        'physics',
+        'chemistry',
+        'biology',
+        'experiments',
+        'discovery',
+        'nature',
+        'lab work',
+      ],
       reading: ['stories', 'vocabulary', 'comprehension', 'phonics', 'literature', 'writing'],
       art: ['drawing', 'painting', 'colors', 'creativity', 'design', 'crafts'],
-      coding: ['programming', 'logic', 'algorithms', 'debugging', 'web development', 'problem solving']
+      coding: [
+        'programming',
+        'logic',
+        'algorithms',
+        'debugging',
+        'web development',
+        'problem solving',
+      ],
     };
 
     const validSpecialties = subjectSpecialtyMap[subject];
     if (validSpecialties) {
       specialties.forEach(specialty => {
-        const isValid = validSpecialties.some(valid => 
-          specialty.toLowerCase().includes(valid) || valid.includes(specialty.toLowerCase())
+        const isValid = validSpecialties.some(
+          valid =>
+            specialty.toLowerCase().includes(valid) || valid.includes(specialty.toLowerCase())
         );
         if (!isValid) {
-          this.warnings.push(`Specialty "${specialty}" may not align well with subject "${subject}"`);
+          this.warnings.push(
+            `Specialty "${specialty}" may not align well with subject "${subject}"`
+          );
         }
       });
     }
@@ -417,7 +468,7 @@ export class CharacterValidator {
    */
   validateColorCombination(appearance) {
     const { primaryColor, secondaryColor, accentColor } = appearance;
-    
+
     if (primaryColor && secondaryColor) {
       const contrast = this.calculateColorContrast(primaryColor, secondaryColor);
       if (contrast < 3.0) {
@@ -426,7 +477,9 @@ export class CharacterValidator {
     }
 
     if (primaryColor && accentColor && primaryColor.toLowerCase() === accentColor.toLowerCase()) {
-      this.warnings.push('Primary and accent colors should be different for better visual distinction');
+      this.warnings.push(
+        'Primary and accent colors should be different for better visual distinction'
+      );
     }
   }
 
@@ -434,15 +487,15 @@ export class CharacterValidator {
    * Calculate color contrast ratio
    */
   calculateColorContrast(color1, color2) {
-    const getLuminance = (color) => {
+    const getLuminance = color => {
       const r = parseInt(color.slice(1, 3), 16) / 255;
       const g = parseInt(color.slice(3, 5), 16) / 255;
       const b = parseInt(color.slice(5, 7), 16) / 255;
-      
-      const srgb = [r, g, b].map(c => 
+
+      const srgb = [r, g, b].map(c =>
         c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
       );
-      
+
       return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
     };
 
@@ -450,7 +503,7 @@ export class CharacterValidator {
     const lum2 = getLuminance(color2);
     const brightest = Math.max(lum1, lum2);
     const darkest = Math.min(lum1, lum2);
-    
+
     return (brightest + 0.05) / (darkest + 0.05);
   }
 
@@ -464,7 +517,7 @@ export class CharacterValidator {
       /on\w+\s*=/gi,
       /<iframe\b/gi,
       /<object\b/gi,
-      /<embed\b/gi
+      /<embed\b/gi,
     ];
 
     return xssPatterns.some(pattern => pattern.test(value));
@@ -476,7 +529,9 @@ export class CharacterValidator {
   validateColorContrast(color1, color2) {
     const contrast = this.calculateColorContrast(color1, color2);
     if (contrast < 2.0) {
-      this.warnings.push(`Colors ${color1} and ${color2} have low contrast ratio (${contrast.toFixed(2)})`);
+      this.warnings.push(
+        `Colors ${color1} and ${color2} have low contrast ratio (${contrast.toFixed(2)})`
+      );
     }
   }
 
@@ -497,7 +552,7 @@ export class CharacterValidator {
       errors: [...this.errors],
       warnings: [...this.warnings],
       errorCount: this.errors.length,
-      warningCount: this.warnings.length
+      warningCount: this.warnings.length,
     };
   }
 
@@ -518,9 +573,9 @@ export class CharacterValidator {
 
   static validateColor(color) {
     const validator = new CharacterValidator();
-    validator.validateProperty('color', color, { 
-      type: 'string', 
-      pattern: /^#[0-9A-Fa-f]{6}$/ 
+    validator.validateProperty('color', color, {
+      type: 'string',
+      pattern: /^#[0-9A-Fa-f]{6}$/,
     });
     return validator.getResult();
   }
@@ -534,7 +589,7 @@ export class CharacterValidator {
     const sanitized = { ...character };
 
     // Sanitize string fields
-    const sanitizeString = (str) => {
+    const sanitizeString = str => {
       if (typeof str !== 'string') return str;
       return escapeHTML(str.trim());
     };
@@ -547,7 +602,8 @@ export class CharacterValidator {
       sanitized.interactions.greetings = sanitized.interactions.greetings.map(sanitizeString);
     }
     if (sanitized.interactions?.encouragements) {
-      sanitized.interactions.encouragements = sanitized.interactions.encouragements.map(sanitizeString);
+      sanitized.interactions.encouragements =
+        sanitized.interactions.encouragements.map(sanitizeString);
     }
     if (sanitized.interactions?.celebrations) {
       sanitized.interactions.celebrations = sanitized.interactions.celebrations.map(sanitizeString);
