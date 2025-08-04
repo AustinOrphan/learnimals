@@ -94,7 +94,12 @@
       "Bash(~/bin/ghpr:*)",
       "Bash(mkdir:*)",
       "Bash(timeout 60 npm test:*)",
-      "Bash(gtimeout 60 npm test -- tests/unit/BundleOptimizer.test.js --run)"
+      "Bash(gtimeout 60 npm test -- tests/unit/BundleOptimizer.test.js --run)",
+      "mcp__filesystem__read_text_file",
+      "Bash(npx:*)",
+      "Bash(touch:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "additionalDirectories": [
