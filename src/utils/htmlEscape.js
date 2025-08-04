@@ -38,7 +38,5 @@ export function escapeHTMLAttribute(input) {
     .replace(/=/g, '&#x3D;');
 }
 
-// For CommonJS compatibility
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHTML, escapeHTMLAttribute };
-}
+// ES module export
+export default { escapeHTML, escapeHTMLAttribute };

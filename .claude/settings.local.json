@@ -99,7 +99,8 @@
       "Bash(npx:*)",
       "Bash(touch:*)",
       "Bash(find:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "mcp__serena__read_file"
     ],
     "deny": [],
     "additionalDirectories": [

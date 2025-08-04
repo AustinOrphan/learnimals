@@ -1,5 +1,7 @@
 // Component Loader
-// Handles dynamic loading of HTML components and scripts
+// Handles dynamic loading of HTML components and scripts with ModuleRegistry integration
+
+import ModuleRegistry from './ModuleRegistry.js';
 
 class ComponentLoader {
   /**
@@ -10,10 +12,74 @@ class ComponentLoader {
   constructor(options = {}) {
     this.options = {
       basePath: options.basePath || '',
+      enableModuleRegistry: options.enableModuleRegistry !== false,
+      debugMode: options.debugMode || false,
+      ...options
     };
     
     this.loadedComponents = new Set();
     this.loadPromises = {};
+    this.moduleRegistry = null;
+    
+    // Initialize module registry integration
+    if (this.options.enableModuleRegistry) {
+      this.initializeModuleRegistry();
+    }
+  }
+
+  /**
+   * Initialize module registry integration
+   */
+  initializeModuleRegistry() {
+    try {
+      // Get or create global module registry
+      this.moduleRegistry = this.getModuleRegistry();
+      
+      // Register this component loader as a service
+      if (this.moduleRegistry) {
+        this.moduleRegistry.register('ComponentLoader', this, {
+          type: 'service',
+          version: '1.0.0',
+          dependencies: [],
+          metadata: {
+            className: 'ComponentLoader',
+            description: 'Dynamic component loading service with module integration',
+            capabilities: ['html-loading', 'script-loading', 'stylesheet-loading', 'module-integration'],
+            timestamp: new Date().toISOString()
+          }
+        });
+      }
+      
+    } catch (error) {
+      if (this.options.debugMode) {
+        console.warn('Module registry initialization failed for ComponentLoader:', error);
+      }
+      // Continue without module features rather than failing
+    }
+  }
+
+  /**
+   * Get or create the global module registry
+   * @returns {ModuleRegistry} - Module registry instance
+   */
+  getModuleRegistry() {
+    // Try to get existing global registry
+    if (typeof window !== 'undefined' && window.LearnimalsModuleRegistry) {
+      return window.LearnimalsModuleRegistry;
+    }
+    
+    // Create new registry if none exists
+    const registry = new ModuleRegistry({
+      debugMode: this.options.debugMode,
+      strictMode: false // Allow flexible registration during migration
+    });
+    
+    // Store globally for sharing across components
+    if (typeof window !== 'undefined') {
+      window.LearnimalsModuleRegistry = registry;
+    }
+    
+    return registry;
   }
 
   /**
@@ -187,6 +253,18 @@ class ComponentLoader {
       try {
         this.loadPromises[fullPath] = import(fullPath);
         const module = await this.loadPromises[fullPath];
+        
+        // Register module in registry if available
+        if (this.moduleRegistry && module.default) {
+          const moduleName = path.split('/').pop().replace(/\.(m)?js$/, '');
+          this.moduleRegistry.register(moduleName, module.default, {
+            type: 'dynamically-loaded',
+            source: 'ComponentLoader',
+            path: fullPath,
+            timestamp: new Date().toISOString()
+          });
+        }
+        
         return module;
       } catch (error) {
         console.error(`Error importing module ${path}:`, error);
@@ -208,11 +286,44 @@ class ComponentLoader {
       return this.loadPromises[fullPath];
     }
   }
+
+  /**
+   * Load component from module registry
+   * @param {string} componentName - Component name in registry
+   * @param {string|HTMLElement} container - Container selector or element
+   * @param {Object} [options={}] - Component options
+   * @returns {Promise<*>} - Promise resolving to component instance
+   */
+  async loadFromRegistry(componentName, container, options = {}) {
+    if (!this.moduleRegistry) {
+      throw new Error('Module registry not available');
+    }
+    
+    const componentInfo = this.moduleRegistry.get(componentName);
+    if (!componentInfo) {
+      throw new Error(`Component '${componentName}' not found in registry`);
+    }
+    
+    const ComponentClass = componentInfo.module;
+    
+    // Create and render component instance
+    const instance = new ComponentClass(options);
+    
+    if (typeof instance.render === 'function') {
+      await instance.render(container);
+    }
+    
+    return instance;
+  }
+
+  /**
+   * Get module registry instance
+   * @returns {ModuleRegistry|null} - Module registry or null
+   */
+  getRegistry() {
+    return this.moduleRegistry;
+  }
 }
 
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = ComponentLoader;
-} else {
-  window.ComponentLoader = ComponentLoader;
-}
+// ES module export
+export default ComponentLoader;
