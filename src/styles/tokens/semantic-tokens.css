@@ -1,0 +1,660 @@
+/**
+ * Semantic Theme Tokens - Comprehensive Semantic Token System
+ * 
+ * This file provides comprehensive semantic CSS variables that extend beyond
+ * the current basic set, organized by semantic purpose rather than implementation.
+ * These tokens bridge the gap between global foundation tokens and specific usage.
+ * 
+ * Requirements Satisfied:
+ * - FR-2.1: Expand semantic CSS variables beyond current basic set
+ * - FR-2.2: Support semantic naming for component-level theme customization
+ * - NFR-2.2: Theme tokens are documented and discoverable
+ * 
+ * Token Organization:
+ * 1. Text & Typography Tokens
+ * 2. Background & Surface Tokens  
+ * 3. Border & Outline Tokens
+ * 4. Interactive State Tokens
+ * 5. Status & Feedback Tokens
+ * 6. Layout & Structure Tokens
+ * 7. Elevation & Shadow Tokens
+ * 8. Focus & Accessibility Tokens
+ * 9. Brand & Theme Variant Tokens
+ * 10. Component State Tokens
+ * 
+ * Usage Pattern:
+ * All semantic tokens build upon global-tokens.css foundation tokens
+ * and should be imported after global-tokens.css in your CSS files.
+ * 
+ * Example:
+ * color: var(--text-primary, var(--color-gray-900));
+ * background: var(--surface-primary, var(--color-white));
+ */
+
+:root {
+  /* ===========================================
+   * 1. TEXT & TYPOGRAPHY SEMANTIC TOKENS
+   * Semantic text colors for different content purposes
+   * =========================================== */
+  
+  /* Primary Text Hierarchy */
+  --text-primary: var(--color-gray-900);           /* Main content text */
+  --text-secondary: var(--color-gray-600);         /* Supporting text */
+  --text-tertiary: var(--color-gray-500);          /* Subtle text */
+  --text-muted: var(--color-gray-400);             /* Least important text */
+  --text-disabled: var(--color-gray-300);          /* Disabled states */
+  
+  /* Specialized Text Colors */
+  --text-heading: var(--color-gray-900);           /* Headings and titles */
+  --text-subheading: var(--color-gray-700);        /* Subheadings */
+  --text-body: var(--color-gray-800);              /* Body text */
+  --text-caption: var(--color-gray-500);           /* Captions and footnotes */
+  --text-label: var(--color-gray-700);             /* Form labels */
+  --text-placeholder: var(--color-gray-400);       /* Input placeholders */
+  
+  /* Interactive Text Colors */
+  --text-link: var(--color-info-light);            /* Links */
+  --text-link-hover: var(--color-info-dark);       /* Link hover state */
+  --text-link-visited: var(--color-gray-600);      /* Visited links */
+  --text-link-active: var(--color-info-dark);      /* Active links */
+  
+  /* Contrast Text (for colored backgrounds) */
+  --text-on-light: var(--color-gray-900);          /* Text on light backgrounds */
+  --text-on-dark: var(--color-white);              /* Text on dark backgrounds */
+  --text-on-primary: var(--color-white);           /* Text on primary color */
+  --text-on-secondary: var(--color-white);         /* Text on secondary color */
+  --text-on-accent: var(--color-white);            /* Text on accent color */
+  
+  /* Theme-specific Text Colors */
+  --text-on-ocean: var(--color-white);             /* Text on ocean theme */
+  --text-on-forest: var(--color-white);            /* Text on forest theme */
+  --text-on-space: var(--color-white);             /* Text on space theme */
+  --text-on-primary-secondary: rgba(255, 255, 255, 0.9); /* Secondary text on primary */
+  --text-on-ocean-secondary: rgba(255, 255, 255, 0.9);   /* Secondary text on ocean */
+  --text-on-forest-secondary: rgba(255, 255, 255, 0.9);  /* Secondary text on forest */
+  --text-on-space-secondary: rgba(255, 255, 255, 0.9);   /* Secondary text on space */
+
+  /* ===========================================
+   * 2. BACKGROUND & SURFACE SEMANTIC TOKENS
+   * Semantic backgrounds for different interface surfaces
+   * =========================================== */
+  
+  /* Primary Surface Hierarchy */
+  --surface-primary: var(--color-white);           /* Main content areas */
+  --surface-secondary: var(--color-gray-50);       /* Secondary content areas */
+  --surface-tertiary: var(--color-gray-100);       /* Subtle background areas */
+  --surface-inverse: var(--color-gray-900);        /* Dark surface (inverse) */
+  
+  /* Background Aliases (for backward compatibility) */
+  --bg-body: var(--surface-primary);               /* Page body background */
+  --bg-page: var(--surface-primary);               /* Page background */
+  --bg-card: var(--surface-primary);               /* Card backgrounds */
+  --bg-panel: var(--surface-secondary);            /* Panel backgrounds */
+  --bg-sidebar: var(--surface-secondary);          /* Sidebar backgrounds */
+  --bg-header: var(--surface-primary);             /* Header backgrounds */
+  --bg-footer: var(--surface-secondary);           /* Footer backgrounds */
+  
+  /* Surface Variants */
+  --surface-elevated: var(--color-white);          /* Elevated surfaces (modals, dropdowns) */
+  --surface-overlay: rgba(0, 0, 0, var(--alpha-60)); /* Modal/overlay backgrounds */
+  --surface-backdrop: rgba(0, 0, 0, var(--alpha-20)); /* Subtle backdrop */
+  --surface-glass: rgba(255, 255, 255, var(--alpha-80)); /* Glass morphism */
+  --surface-frosted: rgba(255, 255, 255, var(--alpha-90)); /* Frosted glass */
+  
+  /* Component-specific Backgrounds */
+  --bg-input: var(--color-white);                  /* Input field backgrounds */
+  --bg-button: var(--color-gray-100);              /* Button backgrounds */
+  --bg-tooltip: var(--color-gray-900);             /* Tooltip backgrounds */
+  --bg-modal: var(--surface-elevated);             /* Modal backgrounds */
+  --bg-dropdown: var(--surface-elevated);          /* Dropdown backgrounds */
+  --bg-popover: var(--surface-elevated);           /* Popover backgrounds */
+  
+  /* Alternate Surfaces */
+  --surface-alt: var(--color-gray-50);             /* Alternate surface color */
+  --bg-alt: var(--surface-alt);                    /* Legacy alias */
+  --bg-card-alt: var(--surface-alt);               /* Alternate card background */
+  
+  /* Image and Media Backgrounds */
+  --bg-image-placeholder: var(--color-gray-100);   /* Image placeholder backgrounds */
+  --bg-video-placeholder: var(--color-gray-200);   /* Video placeholder backgrounds */
+
+  /* ===========================================
+   * 3. BORDER & OUTLINE SEMANTIC TOKENS
+   * Semantic border colors for different purposes
+   * =========================================== */
+  
+  /* Primary Border Hierarchy */
+  --border-primary: var(--color-gray-200);         /* Main border color */
+  --border-secondary: var(--color-gray-100);       /* Subtle borders */
+  --border-strong: var(--color-gray-400);          /* Strong borders */
+  --border-subtle: var(--color-gray-50);           /* Very subtle borders */
+  
+  /* Legacy Border Aliases */
+  --border-color: var(--border-primary);           /* Default border color */
+  --border-color-light: var(--border-secondary);   /* Light border variant */
+  --border-color-dark: var(--border-strong);       /* Dark border variant */
+  --border-color-alt: var(--color-gray-300);       /* Alternative border color */
+  
+  /* Interactive Borders */
+  --border-hover: var(--color-gray-300);           /* Border on hover */
+  --border-active: var(--color-gray-400);          /* Border when active */
+  --border-focus: var(--color-info-light);         /* Focus ring border */
+  --border-selected: var(--color-info-light);      /* Selected element border */
+  
+  /* Input Borders */
+  --border-input: var(--border-primary);           /* Input field borders */
+  --border-input-hover: var(--border-hover);       /* Input hover borders */
+  --border-input-focus: var(--border-focus);       /* Input focus borders */
+  --border-input-error: var(--color-error-light);  /* Input error borders */
+  --border-input-success: var(--color-success-light); /* Input success borders */
+  
+  /* Divider Lines */
+  --border-divider: var(--border-secondary);       /* Section dividers */
+  --border-separator: var(--border-primary);       /* Content separators */
+
+  /* ===========================================
+   * 4. INTERACTIVE STATE SEMANTIC TOKENS
+   * Semantic colors for interactive element states
+   * =========================================== */
+  
+  /* Primary Interactive Colors */
+  --interactive-primary: var(--color-info-light);      /* Primary interactive color */
+  --interactive-primary-hover: var(--color-info-dark); /* Primary hover state */
+  --interactive-primary-active: var(--color-info-dark); /* Primary active state */
+  --interactive-primary-disabled: var(--color-gray-300); /* Primary disabled */
+  
+  /* Secondary Interactive Colors */
+  --interactive-secondary: var(--color-gray-600);      /* Secondary interactive */
+  --interactive-secondary-hover: var(--color-gray-700); /* Secondary hover */
+  --interactive-secondary-active: var(--color-gray-800); /* Secondary active */
+  --interactive-secondary-disabled: var(--color-gray-200); /* Secondary disabled */
+  
+  /* Interactive Backgrounds */
+  --interactive-bg: var(--color-white);                /* Interactive element background */
+  --interactive-bg-hover: var(--color-gray-50);        /* Hover background */
+  --interactive-bg-active: var(--color-gray-100);      /* Active background */
+  --interactive-bg-selected: var(--color-info-light);  /* Selected background */
+  --interactive-bg-focus: var(--color-gray-50);        /* Focus background */
+  
+  /* Button Specific States */
+  --button-primary: var(--interactive-primary);
+  --button-primary-hover: var(--interactive-primary-hover);
+  --button-primary-active: var(--interactive-primary-active);
+  --button-secondary: var(--interactive-secondary);
+  --button-secondary-hover: var(--interactive-secondary-hover);
+  --button-secondary-active: var(--interactive-secondary-active);
+  
+  /* Legacy Accent Aliases */
+  --accent-primary: var(--interactive-primary);
+  --accent-primary-hover: var(--interactive-primary-hover);
+  --accent-secondary: var(--interactive-secondary);
+
+  /* ===========================================
+   * 5. STATUS & FEEDBACK SEMANTIC TOKENS
+   * Semantic colors for status messages and feedback
+   * =========================================== */
+  
+  /* Status Colors (using global foundation tokens) */
+  --status-success: var(--color-success-light);
+  --status-success-hover: var(--color-success-dark);
+  --status-warning: var(--color-warning-light);
+  --status-warning-hover: var(--color-warning-dark);
+  --status-error: var(--color-error-light);
+  --status-error-hover: var(--color-error-dark);
+  --status-info: var(--color-info-light);
+  --status-info-hover: var(--color-info-dark);
+  
+  /* Status Backgrounds */
+  --status-success-bg: rgba(34, 197, 94, var(--alpha-10));
+  --status-warning-bg: rgba(245, 158, 11, var(--alpha-10));
+  --status-error-bg: rgba(239, 68, 68, var(--alpha-10));
+  --status-info-bg: rgba(59, 130, 246, var(--alpha-10));
+  
+  /* Status Borders */
+  --status-success-border: var(--status-success);
+  --status-warning-border: var(--status-warning);
+  --status-error-border: var(--status-error);
+  --status-info-border: var(--status-info);
+  
+  /* Legacy Status Aliases */
+  --success-color: var(--status-success);
+  --warning-color: var(--status-warning);
+  --error-color: var(--status-error);
+  --info-color: var(--status-info);
+  
+  /* Notification Colors */
+  --notification-success: var(--status-success);
+  --notification-warning: var(--status-warning);
+  --notification-error: var(--status-error);
+  --notification-info: var(--status-info);
+
+  /* ===========================================
+   * 6. LAYOUT & STRUCTURE SEMANTIC TOKENS
+   * Semantic tokens for layout and structural elements
+   * =========================================== */
+  
+  /* Container Backgrounds */
+  --layout-header-bg: var(--surface-primary);
+  --layout-footer-bg: var(--surface-secondary);
+  --layout-sidebar-bg: var(--surface-secondary);
+  --layout-main-bg: var(--surface-primary);
+  --layout-nav-bg: var(--surface-primary);
+  
+  /* Container Borders */
+  --layout-header-border: var(--border-secondary);
+  --layout-footer-border: var(--border-secondary);
+  --layout-sidebar-border: var(--border-primary);
+  --layout-main-border: var(--border-primary);
+  --layout-nav-border: var(--border-secondary);
+  
+  /* Grid and Spacing */
+  --layout-grid-gap: var(--space-4);
+  --layout-container-padding: var(--space-4);
+  --layout-section-spacing: var(--space-8);
+  --layout-component-spacing: var(--space-6);
+
+  /* ===========================================
+   * 7. ELEVATION & SHADOW SEMANTIC TOKENS
+   * Semantic shadow tokens for different elevation levels
+   * =========================================== */
+  
+  /* Component Shadows (building on global shadow tokens) */
+  --shadow-card: var(--shadow-sm);                 /* Card elevation */
+  --shadow-card-hover: var(--shadow-md);           /* Card hover elevation */
+  --shadow-card-elevated: var(--shadow-lg);        /* Elevated card */
+  --shadow-card-elevated-hover: var(--shadow-xl);  /* Elevated card hover */
+  
+  --shadow-button: var(--shadow-xs);               /* Button shadow */
+  --shadow-button-hover: var(--shadow-sm);         /* Button hover shadow */
+  --shadow-button-active: var(--shadow-xs);        /* Button active shadow */
+  
+  --shadow-modal: var(--shadow-2xl);               /* Modal shadow */
+  --shadow-dropdown: var(--shadow-lg);             /* Dropdown shadow */
+  --shadow-popover: var(--shadow-md);              /* Popover shadow */
+  --shadow-tooltip: var(--shadow-sm);              /* Tooltip shadow */
+  
+  /* Interactive Shadows */
+  --shadow-hover: var(--shadow-md);                /* General hover shadow */
+  --shadow-active: var(--shadow-sm);               /* General active shadow */
+  --shadow-focus: var(--shadow-focus-ring);        /* Focus ring shadow */
+
+  /* ===========================================
+   * 8. FOCUS & ACCESSIBILITY SEMANTIC TOKENS
+   * Semantic tokens for accessibility and focus states
+   * =========================================== */
+  
+  /* Focus Ring Colors */
+  --focus-primary: var(--focus-ring-color);
+  --focus-secondary: var(--color-gray-500);
+  --focus-success: var(--focus-ring-color-success);
+  --focus-warning: var(--focus-ring-color-warning);
+  --focus-error: var(--focus-ring-color-error);
+  
+  /* Focus Ring Properties */
+  --focus-outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-primary);
+  --focus-outline-offset: var(--focus-ring-offset);
+  --focus-shadow: var(--shadow-focus-ring);
+  
+  /* High Contrast Support */
+  --contrast-border: var(--color-black);
+  --contrast-text: var(--color-black);
+  --contrast-background: var(--color-white);
+  
+  /* Screen Reader and Accessibility */
+  --sr-only: 'screen reader only';
+  --skip-link-bg: var(--color-gray-900);
+  --skip-link-text: var(--color-white);
+
+  /* ===========================================
+   * 9. BRAND & THEME VARIANT SEMANTIC TOKENS
+   * Semantic tokens for brand colors and theme variants
+   * =========================================== */
+  
+  /* Brand Colors (educational themes) */
+  --brand-primary: #007bff;                        /* Primary brand color */
+  --brand-secondary: #6c757d;                      /* Secondary brand color */
+  --brand-ocean: #4a90e2;                          /* Ocean theme brand */
+  --brand-forest: #5cb85c;                         /* Forest theme brand */
+  --brand-space: #6f42c1;                          /* Space theme brand */
+  --brand-sunset: #fd7e14;                         /* Sunset theme brand */
+  
+  /* Theme Variant Backgrounds */
+  --theme-ocean-bg: linear-gradient(135deg, #4a90e2, #357abd);
+  --theme-forest-bg: linear-gradient(135deg, #5cb85c, #449d44);
+  --theme-space-bg: linear-gradient(135deg, #6f42c1, #5a32a3);
+  --theme-sunset-bg: linear-gradient(135deg, #fd7e14, #e55a00);
+  
+  /* Character-specific Colors */
+  --character-math-bear: var(--brand-ocean);
+  --character-science-fox: var(--brand-forest);
+  --character-reading-owl: var(--brand-space);
+  --character-art-cat: var(--brand-sunset);
+
+  /* ===========================================
+   * 10. COMPONENT STATE SEMANTIC TOKENS
+   * Semantic tokens for specific component states
+   * =========================================== */
+  
+  /* Loading States */
+  --loading-background: var(--color-gray-100);
+  --loading-shimmer: var(--color-gray-200);
+  --loading-spinner: var(--interactive-primary);
+  
+  /* Empty States */
+  --empty-state-icon: var(--color-gray-300);
+  --empty-state-text: var(--text-secondary);
+  --empty-state-bg: var(--surface-secondary);
+  
+  /* Skeleton Loading */
+  --skeleton-base: var(--color-gray-100);
+  --skeleton-highlight: var(--color-gray-50);
+  --skeleton-shimmer: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 100%
+  );
+  
+  /* Progress Indicators */
+  --progress-track: var(--color-gray-100);
+  --progress-fill: var(--interactive-primary);
+  --progress-text: var(--text-primary);
+  
+  /* Toggle States */
+  --toggle-on: var(--interactive-primary);
+  --toggle-off: var(--color-gray-300);
+  --toggle-bg-on: var(--interactive-primary);
+  --toggle-bg-off: var(--color-gray-100);
+  
+  /* Selection States */
+  --selection-bg: rgba(59, 130, 246, var(--alpha-20));
+  --selection-border: var(--interactive-primary);
+  --selection-text: var(--text-primary);
+
+  /* ===========================================
+   * 11. FORM & INPUT SEMANTIC TOKENS
+   * Semantic tokens specifically for form elements
+   * =========================================== */
+  
+  /* Input Field States */
+  --input-bg: var(--surface-primary);
+  --input-bg-hover: var(--surface-secondary);
+  --input-bg-focus: var(--surface-primary);
+  --input-bg-disabled: var(--color-gray-50);
+  --input-bg-readonly: var(--color-gray-50);
+  
+  --input-text: var(--text-primary);
+  --input-text-placeholder: var(--text-placeholder);
+  --input-text-disabled: var(--text-disabled);
+  
+  --input-border: var(--border-input);
+  --input-border-hover: var(--border-input-hover);
+  --input-border-focus: var(--border-input-focus);
+  --input-border-error: var(--border-input-error);
+  --input-border-success: var(--border-input-success);
+  
+  /* Form Labels */
+  --label-text: var(--text-label);
+  --label-required: var(--status-error);
+  --label-optional: var(--text-secondary);
+  
+  /* Form Validation */
+  --validation-error-text: var(--status-error);
+  --validation-error-bg: var(--status-error-bg);
+  --validation-success-text: var(--status-success);
+  --validation-success-bg: var(--status-success-bg);
+  --validation-warning-text: var(--status-warning);
+  --validation-warning-bg: var(--status-warning-bg);
+
+  /* ===========================================
+   * 12. NAVIGATION SEMANTIC TOKENS
+   * Semantic tokens for navigation elements
+   * =========================================== */
+  
+  /* Navigation Backgrounds */
+  --nav-bg: var(--layout-nav-bg);
+  --nav-item-bg: transparent;
+  --nav-item-bg-hover: var(--interactive-bg-hover);
+  --nav-item-bg-active: var(--interactive-bg-active);
+  --nav-item-bg-current: var(--interactive-bg-selected);
+  
+  /* Navigation Text */
+  --nav-text: var(--text-primary);
+  --nav-text-hover: var(--text-primary);
+  --nav-text-active: var(--text-primary);
+  --nav-text-current: var(--text-on-primary);
+  
+  /* Navigation Borders */
+  --nav-border: var(--layout-nav-border);
+  --nav-item-border: transparent;
+  --nav-item-border-current: var(--interactive-primary);
+  
+  /* Breadcrumb Navigation */
+  --breadcrumb-text: var(--text-secondary);
+  --breadcrumb-separator: var(--text-muted);
+  --breadcrumb-current: var(--text-primary);
+  --breadcrumb-link: var(--text-link);
+  --breadcrumb-link-hover: var(--text-link-hover);
+
+  /* ===========================================
+   * 13. DATA VISUALIZATION SEMANTIC TOKENS
+   * Semantic tokens for charts, graphs, and data display
+   * =========================================== */
+  
+  /* Chart Colors */
+  --chart-primary: var(--interactive-primary);
+  --chart-secondary: var(--interactive-secondary);
+  --chart-accent: var(--brand-ocean);
+  --chart-success: var(--status-success);
+  --chart-warning: var(--status-warning);
+  --chart-error: var(--status-error);
+  
+  /* Chart Backgrounds */
+  --chart-bg: var(--surface-primary);
+  --chart-grid: var(--border-secondary);
+  --chart-axis: var(--border-primary);
+  
+  /* Data Table */
+  --table-bg: var(--surface-primary);
+  --table-header-bg: var(--surface-secondary);
+  --table-row-hover: var(--interactive-bg-hover);
+  --table-row-selected: var(--interactive-bg-selected);
+  --table-border: var(--border-primary);
+  --table-text: var(--text-primary);
+  --table-header-text: var(--text-heading);
+}
+
+/* ===========================================
+ * DARK THEME SEMANTIC TOKEN OVERRIDES
+ * Semantic tokens optimized for dark themes
+ * =========================================== */
+
+/* Dark theme overrides - applied when dark theme is active */
+[data-theme="dark"] {
+  /* Text Tokens */
+  --text-primary: var(--color-gray-100);
+  --text-secondary: var(--color-gray-300);
+  --text-tertiary: var(--color-gray-400);
+  --text-muted: var(--color-gray-500);
+  --text-disabled: var(--color-gray-600);
+  
+  --text-heading: var(--color-gray-50);
+  --text-subheading: var(--color-gray-200);
+  --text-body: var(--color-gray-100);
+  --text-caption: var(--color-gray-400);
+  --text-label: var(--color-gray-200);
+  --text-placeholder: var(--color-gray-500);
+  
+  --text-on-light: var(--color-gray-900);
+  --text-on-dark: var(--color-gray-50);
+  
+  /* Surface Tokens */
+  --surface-primary: var(--color-gray-900);
+  --surface-secondary: var(--color-gray-800);
+  --surface-tertiary: var(--color-gray-700);
+  --surface-inverse: var(--color-white);
+  
+  --surface-elevated: var(--color-gray-800);
+  --surface-overlay: rgba(0, 0, 0, var(--alpha-80));
+  --surface-backdrop: rgba(0, 0, 0, var(--alpha-60));
+  --surface-glass: rgba(0, 0, 0, var(--alpha-60));
+  --surface-frosted: rgba(0, 0, 0, var(--alpha-80));
+  
+  --bg-input: var(--color-gray-800);
+  --bg-button: var(--color-gray-700);
+  --bg-tooltip: var(--color-gray-700);
+  --bg-image-placeholder: var(--color-gray-700);
+  
+  /* Border Tokens */
+  --border-primary: var(--color-gray-600);
+  --border-secondary: var(--color-gray-700);
+  --border-strong: var(--color-gray-500);
+  --border-subtle: var(--color-gray-800);
+  
+  --border-hover: var(--color-gray-500);
+  --border-active: var(--color-gray-400);
+  
+  /* Interactive Backgrounds */
+  --interactive-bg: var(--color-gray-800);
+  --interactive-bg-hover: var(--color-gray-700);
+  --interactive-bg-active: var(--color-gray-600);
+  --interactive-bg-focus: var(--color-gray-700);
+  
+  /* Status Backgrounds */
+  --status-success-bg: rgba(74, 222, 128, var(--alpha-10));
+  --status-warning-bg: rgba(251, 191, 36, var(--alpha-10));
+  --status-error-bg: rgba(248, 113, 113, var(--alpha-10));
+  --status-info-bg: rgba(96, 165, 250, var(--alpha-10));
+  
+  /* Navigation Dark Mode */
+  --nav-item-bg-hover: var(--color-gray-700);
+  --nav-item-bg-active: var(--color-gray-600);
+  
+  /* Form Dark Mode */
+  --input-bg-disabled: var(--color-gray-800);
+  --input-bg-readonly: var(--color-gray-800);
+  
+  /* Table Dark Mode */
+  --table-header-bg: var(--color-gray-800);
+  --table-row-hover: var(--color-gray-800);
+  --table-border: var(--color-gray-600);
+}
+
+/* ===========================================
+ * HIGH CONTRAST MODE SEMANTIC TOKEN OVERRIDES
+ * Enhanced semantic tokens for high contrast accessibility
+ * =========================================== */
+
+@media (prefers-contrast: high) {
+  :root {
+    /* Enhanced contrast for text */
+    --text-primary: var(--color-black);
+    --text-secondary: var(--color-gray-800);
+    --text-muted: var(--color-gray-700);
+    
+    /* Stronger borders for high contrast */
+    --border-primary: var(--color-gray-900);
+    --border-secondary: var(--color-gray-700);
+    --border-strong: var(--color-black);
+    
+    /* Enhanced focus rings */
+    --focus-primary: var(--color-black);
+    --focus-outline: 3px solid var(--color-black);
+    
+    /* Remove subtle backgrounds */
+    --surface-secondary: var(--color-white);
+    --surface-tertiary: var(--color-white);
+  }
+  
+  [data-theme="dark"] {
+    --text-primary: var(--color-white);
+    --text-secondary: var(--color-gray-200);
+    --text-muted: var(--color-gray-300);
+    
+    --border-primary: var(--color-white);
+    --border-secondary: var(--color-gray-300);
+    --border-strong: var(--color-white);
+    
+    --focus-primary: var(--color-white);
+    --focus-outline: 3px solid var(--color-white);
+    
+    --surface-secondary: var(--color-black);
+    --surface-tertiary: var(--color-black);
+  }
+}
+
+/* ===========================================
+ * PRINT MEDIA SEMANTIC TOKEN OVERRIDES
+ * Optimized semantic tokens for print styles
+ * =========================================== */
+
+@media print {
+  :root {
+    /* High contrast text for print */
+    --text-primary: var(--color-black);
+    --text-secondary: var(--color-gray-800);
+    --text-muted: var(--color-gray-600);
+    
+    /* White backgrounds for print efficiency */
+    --surface-primary: var(--color-white);
+    --surface-secondary: var(--color-white);
+    --surface-elevated: var(--color-white);
+    
+    /* Strong borders for print clarity */
+    --border-primary: var(--color-black);
+    --border-secondary: var(--color-gray-700);
+    
+    /* Remove shadows and effects for print */
+    --shadow-card: none;
+    --shadow-button: none;
+    --shadow-modal: none;
+    
+    /* Print-optimized interactive colors */
+    --interactive-primary: var(--color-black);
+    --interactive-secondary: var(--color-gray-700);
+  }
+}
+
+/* ===========================================
+ * DOCUMENTATION & USAGE EXAMPLES
+ * Examples and best practices for semantic tokens
+ * =========================================== */
+
+/*
+Usage Examples:
+
+1. Text Content:
+   color: var(--text-primary);
+   color: var(--text-secondary);
+   color: var(--text-link);
+
+2. Backgrounds:
+   background-color: var(--surface-primary);
+   background-color: var(--surface-elevated);
+   
+3. Interactive Elements:
+   color: var(--interactive-primary);
+   background-color: var(--interactive-bg-hover);
+   border-color: var(--border-focus);
+
+4. Status Messages:
+   color: var(--status-success);
+   background-color: var(--status-error-bg);
+   border-color: var(--status-warning-border);
+
+5. Form Elements:
+   background-color: var(--input-bg);
+   border-color: var(--input-border-focus);
+   color: var(--input-text);
+
+Best Practices:
+- Use semantic tokens instead of global foundation tokens in components
+- Always provide fallbacks for critical styles
+- Test semantic tokens in both light and dark themes
+- Consider high contrast and print scenarios
+- Use the inheritance hierarchy: semantic > component > variant > instance
+- Prefer semantic names over descriptive names (--text-primary vs --color-gray-900)
+
+Token Hierarchy:
+global-tokens.css (foundation) → semantic-tokens.css (semantic) → component-tokens.css (component-specific)
+*/

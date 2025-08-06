@@ -268,7 +268,7 @@ describe('AdventureQuestGame', () => {
       const ctx = game.ctx;
       expect(ctx.fillRect).toHaveBeenCalled();
       expect(ctx.fillText).toHaveBeenCalledWith(
-        expect.stringContaining("Sky's Scientific Expedition"),
+        expect.stringContaining('Sky\'s Scientific Expedition'),
         expect.any(Number),
         expect.any(Number)
       );
@@ -322,7 +322,7 @@ describe('StoryProgression', () => {
     storyProgression.loadStory({ chapter: 'introduction' });
     
     expect(storyProgression.currentChapter).toBeDefined();
-    expect(storyProgression.currentChapter.title).toBe("Welcome to Sky's Scientific Expedition");
+    expect(storyProgression.currentChapter.title).toBe('Welcome to Sky\'s Scientific Expedition');
     expect(storyProgression.dialogueIndex).toBe(0);
   });
   

@@ -1,0 +1,462 @@
+/**
+ * {{ComponentName}} Component CSS
+ * Enhanced CSS with theme tokens, variants, and scoping
+ * Generated from component-css.template.css
+ */
+
+/* ========================================
+   CSS Custom Properties (Theme Tokens)
+   ======================================== */
+
+.{{component-name}} {
+  /* Base tokens - can be overridden by themes */
+  --{{component-name}}-background: var(--bg-surface);
+  --{{component-name}}-border-color: var(--border-color);
+  --{{component-name}}-border-radius: var(--radius-md);
+  --{{component-name}}-padding: var(--space-md);
+  --{{component-name}}-shadow: var(--shadow-sm);
+  --{{component-name}}-text-color: var(--text-primary);
+  --{{component-name}}-transition: all 0.2s ease-in-out;
+  
+  /* Component-specific tokens */
+  --{{component-name}}-min-height: auto;
+  --{{component-name}}-max-width: 100%;
+  --{{component-name}}-z-index: 1;
+}
+
+/* ========================================
+   Base Component Styles
+   ======================================== */
+
+.{{component-name}} {
+  /* Layout */
+  display: block;
+  position: relative;
+  min-height: var(--{{component-name}}-min-height);
+  max-width: var(--{{component-name}}-max-width);
+  
+  /* Visual */
+  background-color: var(--{{component-name}}-background);
+  border: 1px solid var(--{{component-name}}-border-color);
+  border-radius: var(--{{component-name}}-border-radius);
+  box-shadow: var(--{{component-name}}-shadow);
+  
+  /* Typography */
+  color: var(--{{component-name}}-text-color);
+  font-family: var(--font-family-base);
+  
+  /* Spacing */
+  padding: var(--{{component-name}}-padding);
+  margin: 0;
+  
+  /* Transitions */
+  transition: var(--{{component-name}}-transition);
+  
+  /* Z-index management */
+  z-index: var(--{{component-name}}-z-index);
+}
+
+/* ========================================
+   Component Structure (BEM Methodology)
+   ======================================== */
+
+/* Component header section */
+.{{component-name}}__header {
+  margin-bottom: var(--space-sm);
+}
+
+/* Component title */
+.{{component-name}}__title {
+  margin: 0 0 var(--{{component-name}}-title-margin, var(--space-xs)) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--{{component-name}}-title-color, var(--text-primary));
+}
+
+/* Component body/content area */
+.{{component-name}}__body {
+  padding: var(--{{component-name}}-body-padding, var(--space-md));
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.{{component-name}}__content {
+  flex: 1;
+  line-height: var(--line-height-base);
+  color: var(--{{component-name}}-content-color, var(--text-secondary));
+  margin-bottom: var(--{{component-name}}-content-margin, var(--space-sm));
+}
+
+.{{component-name}}__content:last-child {
+  margin-bottom: 0;
+}
+
+/* Component footer section */
+.{{component-name}}__footer {
+  margin-top: var(--space-sm);
+  padding: var(--{{component-name}}-footer-padding, var(--space-sm));
+  border-top: 1px solid var(--border-color-light);
+  background-color: var(--{{component-name}}-footer-bg, var(--bg-surface-secondary));
+}
+
+/* ========================================
+   Image Handling (for components with images)
+   ======================================== */
+
+.{{component-name}}__image {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--{{component-name}}-image-placeholder, var(--bg-surface-tertiary));
+}
+
+.{{component-name}}__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.{{component-name}}:hover .{{component-name}}__img {
+  transform: scale(1.05);
+}
+
+/* ========================================
+   Button/Link Integration
+   ======================================== */
+
+.{{component-name}}__link,
+.{{component-name}}__button {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--{{component-name}}-button-padding, var(--space-sm) var(--space-md));
+  border-radius: var(--{{component-name}}-button-radius, var(--radius-sm));
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-size: inherit;
+  background: none;
+}
+
+.{{component-name}}__button--primary {
+  background-color: var(--{{component-name}}-button-primary-bg, var(--color-primary));
+  color: var(--{{component-name}}-button-primary-text, var(--text-on-primary));
+  border-color: var(--{{component-name}}-button-primary-border, var(--color-primary));
+}
+
+.{{component-name}}__button--primary:hover {
+  background-color: var(--{{component-name}}-button-primary-hover-bg, var(--color-primary-dark));
+  border-color: var(--{{component-name}}-button-primary-hover-border, var(--color-primary-dark));
+  transform: translateY(-1px);
+}
+
+.{{component-name}}__button--secondary {
+  background-color: transparent;
+  color: var(--{{component-name}}-button-secondary-text, var(--text-primary));
+  border-color: var(--{{component-name}}-button-secondary-border, var(--border-color));
+}
+
+.{{component-name}}__button--secondary:hover {
+  background-color: var(--{{component-name}}-button-secondary-hover-bg, var(--bg-surface-secondary));
+  border-color: var(--{{component-name}}-button-secondary-hover-border, var(--border-color-dark));
+}
+
+/* ========================================
+   Interactive States
+   ======================================== */
+
+.{{component-name}}:hover {
+  --{{component-name}}-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.{{component-name}}:focus {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.{{component-name}}:active {
+  transform: translateY(0);
+  --{{component-name}}-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   State Variants
+   ======================================== */
+
+/* Loading State */
+.{{component-name}}[data-state="loading"] {
+  pointer-events: none;
+  opacity: 0.7;
+  position: relative;
+}
+
+.{{component-name}}[data-state="loading"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--color-primary);
+  border-radius: 50%;
+  animation: {{component-name}}-spin 1s linear infinite;
+}
+
+/* Error State */
+.{{component-name}}[data-state="error"] {
+  --{{component-name}}-border-color: var(--color-danger);
+  --{{component-name}}-background: var(--color-danger-light);
+}
+
+/* Disabled State */
+.{{component-name}}[data-state="disabled"],
+.{{component-name}}:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   Size Variants
+   ======================================== */
+
+/* Small Size */
+.{{component-name}}[data-size="small"] {
+  --{{component-name}}-padding: var(--space-sm);
+  --{{component-name}}-font-size: var(--font-size-sm);
+  font-size: var(--{{component-name}}-font-size);
+}
+
+.{{component-name}}[data-size="small"] .{{component-name}}__title {
+  font-size: var(--font-size-base);
+}
+
+/* Large Size */
+.{{component-name}}[data-size="large"] {
+  --{{component-name}}-padding: var(--space-lg);
+  --{{component-name}}-font-size: var(--font-size-lg);
+  font-size: var(--{{component-name}}-font-size);
+}
+
+.{{component-name}}[data-size="large"] .{{component-name}}__title {
+  font-size: var(--font-size-xl);
+}
+
+/* ========================================
+   Theme Variants
+   ======================================== */
+
+/* Alternative Theme */
+.{{component-name}}[data-theme="alt"] {
+  --{{component-name}}-background: var(--bg-surface-alt);
+  --{{component-name}}-border-color: var(--border-color-alt);
+  --{{component-name}}-text-color: var(--text-primary);
+}
+
+/* Ocean Theme - Rich gradient background */
+.{{component-name}}[data-theme="ocean"] {
+  background: linear-gradient(135deg, var(--ocean-light, #e3f2fd) 0%, var(--ocean-primary, #2196f3) 100%);
+  color: var(--text-on-ocean, #ffffff);
+  border-color: var(--ocean-border, #1976d2);
+  --{{component-name}}-text-color: var(--text-on-ocean, #ffffff);
+  --{{component-name}}-title-color: var(--text-on-ocean, #ffffff);
+  --{{component-name}}-content-color: var(--text-on-ocean-secondary, rgba(255, 255, 255, 0.9));
+}
+
+.{{component-name}}[data-theme="ocean"] .{{component-name}}__footer {
+  border-top-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.{{component-name}}[data-theme="ocean"] .{{component-name}}__button--primary {
+  background-color: var(--text-on-ocean, #ffffff);
+  color: var(--ocean-primary, #2196f3);
+  border-color: var(--text-on-ocean, #ffffff);
+}
+
+/* Forest Theme - Rich gradient background */
+.{{component-name}}[data-theme="forest"] {
+  background: linear-gradient(135deg, var(--forest-light, #e8f5e8) 0%, var(--forest-primary, #4caf50) 100%);
+  color: var(--text-on-forest, #ffffff);
+  border-color: var(--forest-border, #388e3c);
+  --{{component-name}}-text-color: var(--text-on-forest, #ffffff);
+  --{{component-name}}-title-color: var(--text-on-forest, #ffffff);
+  --{{component-name}}-content-color: var(--text-on-forest-secondary, rgba(255, 255, 255, 0.9));
+}
+
+.{{component-name}}[data-theme="forest"] .{{component-name}}__footer {
+  border-top-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.{{component-name}}[data-theme="forest"] .{{component-name}}__button--primary {
+  background-color: var(--text-on-forest, #ffffff);
+  color: var(--forest-primary, #4caf50);
+  border-color: var(--text-on-forest, #ffffff);
+}
+
+/* Space Theme - Rich gradient background */
+.{{component-name}}[data-theme="space"] {
+  background: linear-gradient(135deg, var(--space-light, #e8eaf6) 0%, var(--space-primary, #673ab7) 100%);
+  color: var(--text-on-space, #ffffff);
+  border-color: var(--space-border, #512da8);
+  --{{component-name}}-text-color: var(--text-on-space, #ffffff);
+  --{{component-name}}-title-color: var(--text-on-space, #ffffff);
+  --{{component-name}}-content-color: var(--text-on-space-secondary, rgba(255, 255, 255, 0.9));
+}
+
+.{{component-name}}[data-theme="space"] .{{component-name}}__footer {
+  border-top-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.{{component-name}}[data-theme="space"] .{{component-name}}__button--primary {
+  background-color: var(--text-on-space, #ffffff);
+  color: var(--space-primary, #673ab7);
+  border-color: var(--text-on-space, #ffffff);
+}
+
+/* ========================================
+   Responsive Behavior
+   ======================================== */
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .{{component-name}} {
+    --{{component-name}}-padding: var(--space-sm);
+    --{{component-name}}-border-radius: var(--radius-sm);
+  }
+  
+  .{{component-name}}__title {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .{{component-name}} {
+    --{{component-name}}-padding: var(--space-md);
+  }
+}
+
+/* Desktop Optimizations */
+@media (min-width: 1025px) {
+  .{{component-name}}:hover {
+    --{{component-name}}-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+/* ========================================
+   Accessibility Enhancements
+   ======================================== */
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .{{component-name}} {
+    --{{component-name}}-border-color: var(--border-color-high-contrast);
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .{{component-name}},
+  .{{component-name}}::after {
+    transition: none;
+    animation: none;
+  }
+  
+  .{{component-name}}:hover {
+    transform: none;
+  }
+}
+
+/* Focus Visible Support */
+.{{component-name}}:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+.{{component-name}}--elevated {
+  --{{component-name}}-shadow: var(--shadow-lg);
+}
+
+.{{component-name}}--flat {
+  --{{component-name}}-shadow: none;
+  border: 1px solid var(--border-color);
+}
+
+.{{component-name}}--rounded {
+  --{{component-name}}-border-radius: var(--radius-lg);
+}
+
+.{{component-name}}--square {
+  --{{component-name}}-border-radius: 0;
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+
+@keyframes {{component-name}}-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes {{component-name}}-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.{{component-name}}--animate-in {
+  animation: {{component-name}}-fade-in 0.3s ease-out;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+  .{{component-name}} {
+    --{{component-name}}-shadow: none;
+    --{{component-name}}-background: transparent;
+    --{{component-name}}-border-color: var(--border-color-print);
+    page-break-inside: avoid;
+  }
+}
+
+/* ========================================
+   Dark Mode Support
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .{{component-name}} {
+    --{{component-name}}-background: var(--bg-surface-dark);
+    --{{component-name}}-border-color: var(--border-color-dark);
+    --{{component-name}}-text-color: var(--text-primary-dark);
+  }
+}

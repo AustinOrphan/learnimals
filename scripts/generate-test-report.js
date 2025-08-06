@@ -569,7 +569,7 @@ class TestReportGenerator {
       }
 
       if (result.keyboardNavigation) {
-        const passed = result.keyboardNavigation.passed || 0;
+        const _passed = result.keyboardNavigation.passed || 0;
         const failed = result.keyboardNavigation.failed || 0;
         metrics.keyboard.status = failed === 0 ? 'passed' : 'failed';
         metrics.keyboard.message =

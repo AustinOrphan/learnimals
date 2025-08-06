@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { ComponentMockData, TestDataUtils } from '../../fixtures/testDataFactory.js';
+import { ComponentMockData } from '../../fixtures/testDataFactory.js';
 
 // Mock testUtils
 const testUtils = {
@@ -154,32 +154,32 @@ describe('Modal Component', () => {
       });
 
       this.generateHTML = vi.fn().mockImplementation(() => {
-        let html = '<div class=\"modal__content\">';
+        let html = '<div class="modal__content">';
 
         // Header
         if (this.options.title) {
-          html += '<div class=\"modal__header\">';
-          html += `<h2 id=\"modal-title\" class=\"modal__title\">${this.options.title}</h2>`;
-          html += '<button class=\"modal__close\" aria-label=\"Close modal\">&times;</button>';
+          html += '<div class="modal__header">';
+          html += `<h2 id="modal-title" class="modal__title">${this.options.title}</h2>`;
+          html += '<button class="modal__close" aria-label="Close modal">&times;</button>';
           html += '</div>';
         }
 
         // Body
-        html += '<div class=\"modal__body\">';
+        html += '<div class="modal__body">';
         html += this.options.content;
         html += '</div>';
 
         // Footer with buttons
         if (this.options.buttons && this.options.buttons.length > 0) {
-          html += '<div class=\"modal__footer\">';
-          this.options.buttons.forEach((button, index) => {
+          html += '<div class="modal__footer">';
+          this.options.buttons.forEach((button, _index) => {
             // Handle null or malformed button data
             if (button && typeof button === 'object') {
               const variant = button.variant || 'secondary';
               const disabled = button.disabled ? 'disabled' : '';
               const action = button.action || 'button';
               const text = button.text || 'Button';
-              html += `<button class=\"modal__button modal__button--${variant}\" data-action=\"${action}\" ${disabled}>${text}</button>`;
+              html += `<button class="modal__button modal__button--${variant}" data-action="${action}" ${disabled}>${text}</button>`;
             }
           });
           html += '</div>';
@@ -292,7 +292,7 @@ describe('Modal Component', () => {
           'select:not([disabled])',
           'textarea:not([disabled])',
           'a[href]',
-          '[tabindex]:not([tabindex=\"-1\"])',
+          '[tabindex]:not([tabindex="-1"])',
         ];
 
         return Array.from(this.element.querySelectorAll(focusableSelectors.join(', ')));
@@ -335,7 +335,7 @@ describe('Modal Component', () => {
           } else if (this.element) {
             // Handle button and other element events
             if (event.startsWith('button-')) {
-              const button = this.element.querySelector(`[data-action=\"${event.split('-')[1]}\"]`);
+              const button = this.element.querySelector(`[data-action="${event.split('-')[1]}"]`);
               if (button) button.removeEventListener('click', handler);
             } else if (event === 'close') {
               const closeBtn = this.element.querySelector('.modal__close');
@@ -501,8 +501,8 @@ describe('Modal Component', () => {
     });
 
     it('should handle action button clicks', () => {
-      const confirmBtn = modal.element.querySelector('[data-action=\"confirm\"]');
-      const cancelBtn = modal.element.querySelector('[data-action=\"cancel\"]');
+      const confirmBtn = modal.element.querySelector('[data-action="confirm"]');
+      const cancelBtn = modal.element.querySelector('[data-action="cancel"]');
 
       expect(confirmBtn).toBeDefined();
       expect(cancelBtn).toBeDefined();

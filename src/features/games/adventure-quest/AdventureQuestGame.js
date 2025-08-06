@@ -1,5 +1,5 @@
 import config from '../../../config.js';
-import { getRandomInt, debounce } from '../../../utils/common.js';
+import { getRandomInt as _getRandomInt, debounce } from '../../../utils/common.js';
 import StoryProgression from './StoryProgression.js';
 import ChallengeManager from './ChallengeManager.js';
 import DiscoveryTracker from './DiscoveryTracker.js';
@@ -285,7 +285,7 @@ export default class AdventureQuestGame {
    * Load the intro scene
    * @param {Object} data - Scene data
    */
-  loadIntroScene(data) {
+  loadIntroScene(_data) {
     this.gameState.isPlaying = false;
     // Intro scene will be rendered in render() method
   }

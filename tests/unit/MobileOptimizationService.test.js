@@ -373,7 +373,7 @@ describe('MobileOptimizationService', () => {
     document.querySelector = vi.fn();
     document.querySelectorAll = vi.fn(() => []);
     document.getElementById = vi.fn();
-    document.createElement = document.createElement;
+    // Restore createElement after mocking
     document.addEventListener = vi.fn();
     document.removeEventListener = vi.fn();
     document.dispatchEvent = vi.fn();

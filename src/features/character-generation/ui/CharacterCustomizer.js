@@ -7,7 +7,6 @@
 
 // Use global BaseComponent (loaded via script tag in demo page)
 const BaseComponent = window.BaseComponent;
-import { CharacterGenerationAPI, CharacterUtils, characterEvents } from '../index.js';
 import CharacterPreviewRenderer from './CharacterPreviewRenderer.js';
 
 export default class CharacterCustomizer extends BaseComponent {

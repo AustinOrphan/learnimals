@@ -110,7 +110,7 @@ class ModularThemeManager extends ThemeManager {
    * @param {Object} event - Module registration event
    */
   handleModuleRegistration(event) {
-    const { moduleName, module, options } = event;
+    const { moduleName, module: _module, options } = event;
     
     // Check if this module provides themes
     if (options && options.type === 'theme' && options.themes) {

@@ -1,0 +1,293 @@
+/**
+ * Card Component Styles V2
+ * Co-located CSS for the Card component using semantic theme variables
+ */
+
+/* Base card styles */
+.card {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  
+  /* Spacing */
+  border-radius: var(--border-radius-card, 12px);
+  overflow: hidden;
+  
+  /* Colors using expanded semantic theme variables */
+  background-color: var(--component-card-background, var(--surface-primary, #ffffff));
+  border: 1px solid var(--component-card-border, var(--border-primary, #e1e5e9));
+  color: var(--component-card-text, var(--text-primary, #333333));
+  
+  /* Transitions */
+  transition: all 0.2s ease-in-out;
+  
+  /* Accessibility */
+  position: relative;
+  outline: none;
+}
+
+/* Card states */
+.card:hover,
+.card--hover {
+  transform: translateY(-2px);
+  box-shadow: var(--component-card-shadow-hover, var(--shadow-card-hover, 0 4px 12px rgba(0, 0, 0, 0.15)));
+  border-color: var(--component-card-border-hover, var(--border-hover, #d1d9e0));
+}
+
+.card:focus-within {
+  outline: var(--component-card-border-focus, var(--focus-outline, 2px solid var(--focus-primary, #007bff)));
+  outline-offset: var(--focus-outline-offset, 2px);
+}
+
+/* Card sizes */
+.card--small {
+  font-size: 0.875rem;
+}
+
+.card--small .card__title {
+  font-size: 1.125rem;
+}
+
+.card--large {
+  font-size: 1.125rem;
+}
+
+.card--large .card__title {
+  font-size: 1.5rem;
+}
+
+/* Card elevation variants */
+.card--elevated {
+  box-shadow: var(--shadow-card, 0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+.card--elevated:hover {
+  box-shadow: var(--shadow-card-elevated-hover, 0 8px 24px rgba(0, 0, 0, 0.15));
+}
+
+/* Theme variants */
+.card--alt {
+  background-color: var(--bg-card-alt, #f8f9fa);
+  border-color: var(--border-color-alt, #dee2e6);
+}
+
+.card--ocean {
+  background: linear-gradient(135deg, var(--ocean-light, #e3f2fd) 0%, var(--ocean-primary, #2196f3) 100%);
+  color: var(--text-on-ocean, #ffffff);
+  border-color: var(--ocean-border, #1976d2);
+}
+
+.card--forest {
+  background: linear-gradient(135deg, var(--forest-light, #e8f5e8) 0%, var(--forest-primary, #4caf50) 100%);
+  color: var(--text-on-forest, #ffffff);
+  border-color: var(--forest-border, #388e3c);
+}
+
+.card--space {
+  background: linear-gradient(135deg, var(--space-light, #e8eaf6) 0%, var(--space-primary, #673ab7) 100%);
+  color: var(--text-on-space, #ffffff);
+  border-color: var(--space-border, #512da8);
+}
+
+/* Card image */
+.card__image {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-image-placeholder, #f0f0f0);
+}
+
+.card__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card__img {
+  transform: scale(1.05);
+}
+
+/* Card body */
+.card__body {
+  padding: var(--spacing-card-body, 1.5rem);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card title */
+.card__title {
+  margin: 0 0 var(--spacing-card-title, 1rem);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary, #333333);
+}
+
+/* Themed title colors */
+.card--ocean .card__title,
+.card--forest .card__title,
+.card--space .card__title {
+  color: var(--text-on-primary, #ffffff);
+}
+
+/* Card content */
+.card__content {
+  flex: 1;
+  line-height: 1.6;
+  color: var(--text-secondary, #666666);
+  margin-bottom: var(--spacing-card-content, 1rem);
+}
+
+.card__content:last-child {
+  margin-bottom: 0;
+}
+
+/* Themed content colors */
+.card--ocean .card__content,
+.card--forest .card__content,
+.card--space .card__content {
+  color: var(--text-on-primary-secondary, rgba(255, 255, 255, 0.9));
+}
+
+/* Card footer */
+.card__footer {
+  padding: var(--spacing-card-footer, 1rem 1.5rem);
+  border-top: 1px solid var(--border-color-light, #f0f0f0);
+  background-color: var(--bg-card-footer, #fafafa);
+}
+
+.card--ocean .card__footer,
+.card--forest .card__footer,
+.card--space .card__footer {
+  border-top-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Card link/button */
+.card__link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-btn, 0.75rem 1.5rem);
+  border-radius: var(--border-radius-btn, 6px);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-size: inherit;
+}
+
+/* Button primary styles */
+.btn--primary {
+  background-color: var(--accent-primary, #007bff);
+  color: var(--text-on-accent, #ffffff);
+  border: 1px solid var(--accent-primary, #007bff);
+}
+
+.btn--primary:hover {
+  background-color: var(--accent-primary-hover, #0056b3);
+  border-color: var(--accent-primary-hover, #0056b3);
+  transform: translateY(-1px);
+}
+
+.btn--primary:focus {
+  outline: 2px solid var(--accent-primary, #007bff);
+  outline-offset: 2px;
+}
+
+/* Themed button adjustments */
+.card--ocean .btn--primary {
+  background-color: var(--text-on-ocean, #ffffff);
+  color: var(--ocean-primary, #2196f3);
+}
+
+.card--forest .btn--primary {
+  background-color: var(--text-on-forest, #ffffff);
+  color: var(--forest-primary, #4caf50);
+}
+
+.card--space .btn--primary {
+  background-color: var(--text-on-space, #ffffff);
+  color: var(--space-primary, #673ab7);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .card__body {
+    padding: var(--spacing-card-body-mobile, 1rem);
+  }
+  
+  .card__footer {
+    padding: var(--spacing-card-footer-mobile, 0.75rem 1rem);
+  }
+  
+  .card__title {
+    font-size: 1.125rem;
+  }
+}
+
+/* Dark theme overrides */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background-color: var(--bg-card-dark, #2d3748);
+    border-color: var(--border-color-dark, #4a5568);
+    color: var(--text-primary-dark, #f7fafc);
+  }
+  
+  .card--alt {
+    background-color: var(--bg-card-alt-dark, #1a202c);
+    border-color: var(--border-color-alt-dark, #2d3748);
+  }
+  
+  .card__content {
+    color: var(--text-secondary-dark, #a0aec0);
+  }
+  
+  .card__footer {
+    background-color: var(--bg-card-footer-dark, #1a202c);
+    border-top-color: var(--border-color-light-dark, #2d3748);
+  }
+}
+
+/* Theme-aware dark mode classes */
+.theme-dark .card {
+  background-color: var(--bg-card-dark, #2d3748);
+  border-color: var(--border-color-dark, #4a5568);
+  color: var(--text-primary-dark, #f7fafc);
+}
+
+.theme-dark .card__content {
+  color: var(--text-secondary-dark, #a0aec0);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 2px;
+  }
+  
+  .card__link {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card__img,
+  .card__link {
+    transition: none;
+  }
+  
+  .card:hover {
+    transform: none;
+  }
+  
+  .card:hover .card__img {
+    transform: none;
+  }
+}

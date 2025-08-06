@@ -7,7 +7,7 @@
 
 // Use global BaseComponent (loaded via script tag in demo page)
 const BaseComponent = window.BaseComponent;
-import { CharacterGenerationAPI, CharacterUtils, characterEvents } from '../index.js';
+import { CharacterGenerationAPI as _CharacterGenerationAPI, CharacterUtils as _CharacterUtils, characterEvents } from '../index.js';
 
 export default class CustomizationPresets extends BaseComponent {
   constructor(options = {}) {
@@ -504,8 +504,8 @@ export default class CustomizationPresets extends BaseComponent {
    */
   renderPresetPreview(preset) {
     const customization = preset.customization;
-    const theme = customization.theme || 'educational';
-    const colorScheme = customization.colorScheme || 'primary';
+    const _theme = customization.theme || 'educational';
+    const _colorScheme = customization.colorScheme || 'primary';
 
     // Generate preview based on customization
     const previewStyle = this.generatePreviewStyle(customization);
@@ -659,7 +659,7 @@ export default class CustomizationPresets extends BaseComponent {
   /**
    * Handle preset actions
    */
-  handleAction(action, presetId, target) {
+  handleAction(action, presetId, _target) {
     switch (action) {
     case 'apply':
       this.applyPreset(presetId);
@@ -943,7 +943,7 @@ export default class CustomizationPresets extends BaseComponent {
   /**
    * Handle customization change
    */
-  handleCustomizationChange(data) {
+  handleCustomizationChange(_data) {
     // Could update UI based on current customization
   }
 
@@ -968,7 +968,7 @@ export default class CustomizationPresets extends BaseComponent {
       stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
     }
 
-    for (const preset of this.customPresets.values()) {
+    for (const _preset of this.customPresets.values()) {
       stats.byCategory.custom = (stats.byCategory.custom || 0) + 1;
     }
 

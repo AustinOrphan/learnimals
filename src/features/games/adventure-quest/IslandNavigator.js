@@ -232,7 +232,7 @@ export default class IslandNavigator {
       return completedChapters.includes(condition.value);
 
     case 'challenges_completed':
-      const challengeProgress = this.game.challengeManager.getProgress();
+      const _challengeProgress = this.game.challengeManager.getProgress();
       const subjectChallenges = this.game.discoveryTracker.discoveries.filter(
         d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
       );
@@ -274,7 +274,7 @@ export default class IslandNavigator {
    * @param {Object} challenge - Completed challenge
    * @param {string} challengeType - Type of challenge
    */
-  handleChallengeCompletion(challenge, challengeType) {
+  handleChallengeCompletion(_challenge, _challengeType) {
     // Mark visit to current island type
     this.visitedIslands.add(this.currentIsland);
 
@@ -286,7 +286,7 @@ export default class IslandNavigator {
    * Handle story completion rewards
    * @param {Object} chapter - Completed story chapter
    */
-  handleStoryCompletion(chapter) {
+  handleStoryCompletion(_chapter) {
     // Story completion may unlock new areas
     this.updateUnlockedIslands();
   }
@@ -385,8 +385,8 @@ export default class IslandNavigator {
    */
   handleClick(x, y) {
     // Convert screen coordinates to world coordinates
-    const worldX = x + this.cameraX;
-    const worldY = y + this.cameraY;
+    const _worldX = x + this.cameraX;
+    const _worldY = y + this.cameraY;
 
     // Check clickable islands
     for (const bounds of this.clickableBounds) {
@@ -628,7 +628,7 @@ export default class IslandNavigator {
    */
   renderIsland(ctx, islandId, island, screenX, screenY) {
     const isUnlocked = this.unlockedIslands.has(islandId);
-    const isVisited = this.visitedIslands.has(islandId);
+    const _isVisited = this.visitedIslands.has(islandId);
     const isCurrent = islandId === this.currentIsland;
     const isHovered = islandId === this.hoveredIsland;
 
@@ -848,7 +848,7 @@ export default class IslandNavigator {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderMiniMap(ctx, canvasWidth, canvasHeight) {
+  renderMiniMap(ctx, canvasWidth, _canvasHeight) {
     const mapSize = 120;
     const mapX = canvasWidth - mapSize - 20;
     const mapY = 20;

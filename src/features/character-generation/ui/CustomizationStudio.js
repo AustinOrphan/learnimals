@@ -7,7 +7,7 @@
 
 // Use global BaseComponent (loaded via script tag in demo page)
 const BaseComponent = window.BaseComponent;
-import { CharacterGenerationAPI, CharacterUtils, characterEvents } from '../index.js';
+import { CharacterGenerationAPI, CharacterUtils as _CharacterUtils, characterEvents } from '../index.js';
 import CharacterCustomizer from './CharacterCustomizer.js';
 import CharacterPreviewRenderer from './CharacterPreviewRenderer.js';
 
@@ -611,7 +611,7 @@ export default class CustomizationStudio extends BaseComponent {
   /**
    * Handle customization change
    */
-  handleCustomizationChange(customization) {
+  handleCustomizationChange(_customization) {
     // Update workspace based on current mode
     this.updateWorkspacePreview();
     this.updateWorkspaceStatus('Customization changed');
@@ -1382,14 +1382,14 @@ export default class CustomizationStudio extends BaseComponent {
   /**
    * Handle comparison character drop
    */
-  handleComparisonCharacterDrop(character, slotType) {
+  handleComparisonCharacterDrop(_character, _slotType) {
     // Implementation for comparison mode character handling
   }
 
   /**
    * Handle comparison preset drop
    */
-  handleComparisonPresetDrop(preset, slotType) {
+  handleComparisonPresetDrop(_preset, _slotType) {
     // Implementation for comparison mode preset handling
   }
 

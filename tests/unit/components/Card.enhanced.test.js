@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { ComponentMockData, TestDataUtils } from '../../fixtures/testDataFactory.js';
+import { ComponentMockData } from '../../fixtures/testDataFactory.js';
 
 // Mock Card component
 let Card;

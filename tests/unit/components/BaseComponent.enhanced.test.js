@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { CharacterFactory, TestDataUtils } from '../../fixtures/testDataFactory.js';
+import { CharacterFactory } from '../../fixtures/testDataFactory.js';
 
 // Dynamic import to avoid module loading issues
 let BaseComponent;
@@ -130,7 +130,7 @@ describe('BaseComponent', () => {
       component = new BaseComponent('#test-component');
       component.render();
 
-      const initialElement = component.element;
+      const _initialElement = component.element;
       component.destroy();
 
       expect(component.destroy).toHaveBeenCalled();

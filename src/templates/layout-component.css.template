@@ -1,0 +1,450 @@
+/**
+ * {{ComponentName}} Layout Component CSS
+ * Specialized template for structural layout components (navigation, sidebars, grids, headers)
+ * Generated from layout-component.css.template
+ */
+
+/* ========================================
+   CSS Custom Properties (Layout Tokens)
+   ======================================== */
+
+.{{component-name}} {
+  /* Layout structure tokens */
+  --{{component-name}}-width: 100%;
+  --{{component-name}}-height: auto;
+  --{{component-name}}-min-height: 0;
+  --{{component-name}}-max-width: none;
+  --{{component-name}}-background: var(--bg-surface);
+  --{{component-name}}-border-color: var(--border-color);
+  --{{component-name}}-text-color: var(--text-primary);
+  
+  /* Layout spacing */
+  --{{component-name}}-padding: var(--space-md);
+  --{{component-name}}-gap: var(--space-md);
+  --{{component-name}}-margin: 0;
+  
+  /* Layout positioning */
+  --{{component-name}}-position: relative;
+  --{{component-name}}-z-index: var(--z-index-layout);
+  --{{component-name}}-top: auto;
+  --{{component-name}}-left: auto;
+  --{{component-name}}-right: auto;
+  --{{component-name}}-bottom: auto;
+  
+  /* Layout behavior */
+  --{{component-name}}-overflow: visible;
+  --{{component-name}}-display: block;
+  --{{component-name}}-flex-direction: row;
+  --{{component-name}}-align-items: stretch;
+  --{{component-name}}-justify-content: flex-start;
+  
+  /* Transitions for layout changes */
+  --{{component-name}}-transition: all 0.3s ease-in-out;
+}
+
+/* ========================================
+   Base Layout Component Styles
+   ======================================== */
+
+.{{component-name}} {
+  /* Core layout properties */
+  display: var(--{{component-name}}-display);
+  position: var(--{{component-name}}-position);
+  width: var(--{{component-name}}-width);
+  height: var(--{{component-name}}-height);
+  min-height: var(--{{component-name}}-min-height);
+  max-width: var(--{{component-name}}-max-width);
+  
+  /* Visual */
+  background-color: var(--{{component-name}}-background);
+  border: 1px solid var(--{{component-name}}-border-color);
+  color: var(--{{component-name}}-text-color);
+  
+  /* Spacing */
+  padding: var(--{{component-name}}-padding);
+  margin: var(--{{component-name}}-margin);
+  
+  /* Positioning */
+  z-index: var(--{{component-name}}-z-index);
+  top: var(--{{component-name}}-top);
+  left: var(--{{component-name}}-left);
+  right: var(--{{component-name}}-right);
+  bottom: var(--{{component-name}}-bottom);
+  
+  /* Behavior */
+  overflow: var(--{{component-name}}-overflow);
+  transition: var(--{{component-name}}-transition);
+  
+  /* Typography defaults for layout */
+  font-family: var(--font-family-base);
+  line-height: var(--line-height-base);
+}
+
+/* Flexbox layout variant */
+.{{component-name}}--flex {
+  display: flex;
+  flex-direction: var(--{{component-name}}-flex-direction);
+  align-items: var(--{{component-name}}-align-items);
+  justify-content: var(--{{component-name}}-justify-content);
+  gap: var(--{{component-name}}-gap);
+}
+
+/* Grid layout variant */
+.{{component-name}}--grid {
+  display: grid;
+  gap: var(--{{component-name}}-gap);
+  grid-template-columns: var(--{{component-name}}-grid-columns, 1fr);
+  grid-template-rows: var(--{{component-name}}-grid-rows, auto);
+}
+
+/* ========================================
+   Layout Type Variants
+   ======================================== */
+
+/* Header/Navigation Layout */
+.{{component-name}}--header {
+  --{{component-name}}-width: 100%;
+  --{{component-name}}-min-height: var(--header-height, 64px);
+  --{{component-name}}-position: sticky;
+  --{{component-name}}-top: 0;
+  --{{component-name}}-z-index: var(--z-index-header);
+  --{{component-name}}-display: flex;
+  --{{component-name}}-align-items: center;
+  --{{component-name}}-justify-content: space-between;
+  --{{component-name}}-padding: 0 var(--space-lg);
+  --{{component-name}}-background: var(--bg-surface-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Sidebar Layout */
+.{{component-name}}--sidebar {
+  --{{component-name}}-width: var(--sidebar-width, 280px);
+  --{{component-name}}-min-height: 100vh;
+  --{{component-name}}-position: fixed;
+  --{{component-name}}-top: 0;
+  --{{component-name}}-left: 0;
+  --{{component-name}}-z-index: var(--z-index-sidebar);
+  --{{component-name}}-overflow: auto;
+  --{{component-name}}-background: var(--bg-surface-secondary);
+  --{{component-name}}-border-color: var(--border-color-light);
+  border-right: 1px solid var(--{{component-name}}-border-color);
+  transform: translateX(var(--sidebar-translate, 0));
+}
+
+/* Main Content Layout */
+.{{component-name}}--main {
+  --{{component-name}}-display: flex;
+  --{{component-name}}-flex-direction: column;
+  --{{component-name}}-min-height: 100vh;
+  --{{component-name}}-padding: var(--space-lg);
+  margin-left: var(--main-margin-left, 0);
+}
+
+/* Footer Layout */
+.{{component-name}}--footer {
+  --{{component-name}}-width: 100%;
+  --{{component-name}}-padding: var(--space-lg);
+  --{{component-name}}-background: var(--bg-surface-secondary);
+  --{{component-name}}-border-color: var(--border-color-light);
+  border-top: 1px solid var(--{{component-name}}-border-color);
+  margin-top: auto;
+}
+
+/* Container Layout */
+.{{component-name}}--container {
+  --{{component-name}}-max-width: var(--container-max-width, 1200px);
+  --{{component-name}}-margin: 0 auto;
+  --{{component-name}}-padding: 0 var(--space-lg);
+}
+
+/* ========================================
+   Responsive Layout Patterns
+   ======================================== */
+
+/* Mobile-first responsive behavior */
+@media (max-width: 768px) {
+  .{{component-name}}--header {
+    --{{component-name}}-padding: 0 var(--space-md);
+    --{{component-name}}-min-height: var(--header-height-mobile, 56px);
+  }
+  
+  .{{component-name}}--sidebar {
+    --{{component-name}}-width: 100%;
+    --sidebar-translate: -100%;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .{{component-name}}--sidebar.is-open {
+    --sidebar-translate: 0;
+  }
+  
+  .{{component-name}}--main {
+    --{{component-name}}-padding: var(--space-md);
+    --main-margin-left: 0;
+  }
+  
+  .{{component-name}}--container {
+    --{{component-name}}-padding: 0 var(--space-md);
+  }
+  
+  /* Stack flex items on mobile */
+  .{{component-name}}--flex {
+    --{{component-name}}-flex-direction: column;
+  }
+  
+  /* Single column grid on mobile */
+  .{{component-name}}--grid {
+    --{{component-name}}-grid-columns: 1fr;
+  }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .{{component-name}}--sidebar {
+    --{{component-name}}-width: var(--sidebar-width-tablet, 240px);
+  }
+  
+  .{{component-name}}--main {
+    --main-margin-left: var(--sidebar-width-tablet, 240px);
+  }
+  
+  .{{component-name}}--container {
+    --{{component-name}}-max-width: var(--container-max-width-tablet, 960px);
+  }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1025px) {
+  .{{component-name}}--main {
+    --main-margin-left: var(--sidebar-width, 280px);
+  }
+  
+  .{{component-name}}--container {
+    --{{component-name}}-max-width: var(--container-max-width-desktop, 1200px);
+  }
+}
+
+/* Large desktop breakpoint */
+@media (min-width: 1441px) {
+  .{{component-name}}--container {
+    --{{component-name}}-max-width: var(--container-max-width-xl, 1400px);
+  }
+}
+
+/* ========================================
+   Layout State Management
+   ======================================== */
+
+/* Collapsed state for sidebars/navigation */
+.{{component-name}}[data-state="collapsed"] {
+  --{{component-name}}-width: var(--collapsed-width, 64px);
+}
+
+.{{component-name}}--sidebar[data-state="collapsed"] {
+  --{{component-name}}-width: var(--sidebar-collapsed-width, 64px);
+}
+
+.{{component-name}}--sidebar[data-state="collapsed"] + .{{component-name}}--main {
+  --main-margin-left: var(--sidebar-collapsed-width, 64px);
+}
+
+/* Expanded state */
+.{{component-name}}[data-state="expanded"] {
+  --{{component-name}}-width: var(--expanded-width, auto);
+}
+
+/* Fixed positioning state */
+.{{component-name}}[data-state="fixed"] {
+  --{{component-name}}-position: fixed;
+}
+
+/* Sticky positioning state */
+.{{component-name}}[data-state="sticky"] {
+  --{{component-name}}-position: sticky;
+  --{{component-name}}-top: 0;
+}
+
+/* Hidden state with animation */
+.{{component-name}}[data-state="hidden"] {
+  transform: var(--{{component-name}}-hide-transform, translateY(-100%));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ========================================
+   Grid System Utilities
+   ======================================== */
+
+/* CSS Grid layouts */
+.{{component-name}}--grid-2-col {
+  --{{component-name}}-grid-columns: repeat(2, 1fr);
+}
+
+.{{component-name}}--grid-3-col {
+  --{{component-name}}-grid-columns: repeat(3, 1fr);
+}
+
+.{{component-name}}--grid-4-col {
+  --{{component-name}}-grid-columns: repeat(4, 1fr);
+}
+
+.{{component-name}}--grid-auto-fit {
+  --{{component-name}}-grid-columns: repeat(auto-fit, minmax(var(--grid-min-width, 250px), 1fr));
+}
+
+.{{component-name}}--grid-auto-fill {
+  --{{component-name}}-grid-columns: repeat(auto-fill, minmax(var(--grid-min-width, 250px), 1fr));
+}
+
+/* Flexbox utilities */
+.{{component-name}}--flex-wrap {
+  flex-wrap: wrap;
+}
+
+.{{component-name}}--flex-column {
+  --{{component-name}}-flex-direction: column;
+}
+
+.{{component-name}}--flex-center {
+  --{{component-name}}-align-items: center;
+  --{{component-name}}-justify-content: center;
+}
+
+.{{component-name}}--flex-between {
+  --{{component-name}}-justify-content: space-between;
+}
+
+.{{component-name}}--flex-around {
+  --{{component-name}}-justify-content: space-around;
+}
+
+.{{component-name}}--flex-evenly {
+  --{{component-name}}-justify-content: space-evenly;
+}
+
+/* ========================================
+   Layout Accessibility
+   ======================================== */
+
+/* Skip links for navigation */
+.{{component-name}}__skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  padding: var(--space-xs) var(--space-sm);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  z-index: var(--z-index-modal);
+  transition: top 0.2s ease;
+}
+
+.{{component-name}}__skip-link:focus {
+  top: 6px;
+}
+
+/* Focus management for layout changes */
+.{{component-name}}[aria-hidden="true"] {
+  display: none;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .{{component-name}} {
+    --{{component-name}}-transition: none;
+  }
+  
+  .{{component-name}}--sidebar {
+    transition: none;
+  }
+}
+
+/* ========================================
+   Layout Animation States
+   ======================================== */
+
+@keyframes {{component-name}}-slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes {{component-name}}-slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes {{component-name}}-slide-in-top {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes {{component-name}}-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animation classes */
+.{{component-name}}--animate-slide-in-left {
+  animation: {{component-name}}-slide-in-left 0.3s ease-out;
+}
+
+.{{component-name}}--animate-slide-in-right {
+  animation: {{component-name}}-slide-in-right 0.3s ease-out;
+}
+
+.{{component-name}}--animate-slide-in-top {
+  animation: {{component-name}}-slide-in-top 0.3s ease-out;
+}
+
+.{{component-name}}--animate-fade-in {
+  animation: {{component-name}}-fade-in 0.3s ease-out;
+}
+
+/* ========================================
+   Print Layout Considerations
+   ======================================== */
+
+@media print {
+  .{{component-name}}--sidebar,
+  .{{component-name}}--header {
+    display: none;
+  }
+  
+  .{{component-name}}--main {
+    --main-margin-left: 0;
+    --{{component-name}}-padding: 0;
+  }
+  
+  .{{component-name}}--container {
+    --{{component-name}}-max-width: none;
+    --{{component-name}}-padding: 0;
+  }
+  
+  .{{component-name}} {
+    page-break-inside: avoid;
+  }
+}

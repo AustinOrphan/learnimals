@@ -117,7 +117,7 @@ export default class CharacterPreviewRenderer {
     // Extract appearance properties
     const baseShape = appearance.baseShape || 'circle';
     const primaryColor = appearance.primaryColor || '#4A90E2';
-    const secondaryColor = appearance.secondaryColor || '#FFFFFF';
+    const _secondaryColor = appearance.secondaryColor || '#FFFFFF';
     const accentColor = appearance.accentColor || '#FFD700';
     const eyeShape = appearance.eyes?.shape || 'circle';
     const eyeColor = appearance.eyes?.color || '#333333';
@@ -213,7 +213,7 @@ export default class CharacterPreviewRenderer {
       break;
 
     case 'square':
-    case 'rectangle':
+    case 'rectangle': {
       shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       const rectWidth = shape === 'square' ? size : size * 1.2;
       const rectHeight = shape === 'square' ? size : size * 0.8;
@@ -223,8 +223,9 @@ export default class CharacterPreviewRenderer {
       shapeElement.setAttribute('height', rectHeight);
       shapeElement.setAttribute('rx', size * 0.1);
       break;
+    }
 
-    case 'triangle':
+    case 'triangle': {
       shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
       const points = [
         [centerX, centerY - size / 2],
@@ -235,8 +236,9 @@ export default class CharacterPreviewRenderer {
         .join(' ');
       shapeElement.setAttribute('points', points);
       break;
+    }
 
-    case 'hexagon':
+    case 'hexagon': {
       shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
       const hexSize = size / 2;
       const hexPoints = [];
@@ -248,6 +250,7 @@ export default class CharacterPreviewRenderer {
       }
       shapeElement.setAttribute('points', hexPoints.join(' '));
       break;
+    }
 
     default:
       shapeElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -446,7 +449,7 @@ export default class CharacterPreviewRenderer {
       accessoryElement.setAttribute('fill', color || '#8B4513');
       break;
 
-    case 'glasses':
+    case 'glasses': {
       const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
       // Left lens
@@ -481,8 +484,9 @@ export default class CharacterPreviewRenderer {
 
       accessoryElement = group;
       break;
+    }
 
-    case 'bow':
+    case 'bow': {
       accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
       const bowPoints = [
         [x - width * 0.05, y],
@@ -499,6 +503,7 @@ export default class CharacterPreviewRenderer {
       accessoryElement.setAttribute('points', bowPoints);
       accessoryElement.setAttribute('fill', color || '#FF69B4');
       break;
+    }
 
     case 'badge':
       accessoryElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -733,7 +738,7 @@ export default class CharacterPreviewRenderer {
    * Phase E: Enhanced animation system
    */
   addAdvancedAnimations(svg) {
-    const currentTheme = this.themes[this.theme];
+    const _currentTheme = this.themes[this.theme];
 
     // Add floating animation for playful theme
     if (this.theme === 'playful') {
@@ -839,7 +844,7 @@ export default class CharacterPreviewRenderer {
       }
       break;
 
-    case 'atom':
+    case 'atom': {
       // Science atom pattern
       const centerX = width / 2;
       const centerY = height / 2;
@@ -866,8 +871,9 @@ export default class CharacterPreviewRenderer {
         group.appendChild(orbit);
       }
       break;
+    }
 
-    case 'letters':
+    case 'letters': {
       // Reading letters pattern
       const letters = ['A', 'B', 'C', 'D', 'E'];
       letters.forEach((letter, index) => {
@@ -880,8 +886,9 @@ export default class CharacterPreviewRenderer {
         group.appendChild(text);
       });
       break;
+    }
 
-    case 'rainbow':
+    case 'rainbow': {
       // Art rainbow pattern
       const colors = [
         '#FF0000',
@@ -905,8 +912,9 @@ export default class CharacterPreviewRenderer {
         group.appendChild(arc);
       });
       break;
+    }
 
-    case 'binary':
+    case 'binary': {
       // Coding binary pattern
       const binary = ['1', '0', '1', '1', '0', '1', '0', '0'];
       binary.forEach((bit, index) => {
@@ -919,6 +927,7 @@ export default class CharacterPreviewRenderer {
         group.appendChild(text);
       });
       break;
+    }
     }
 
     return group;
@@ -971,7 +980,7 @@ export default class CharacterPreviewRenderer {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
     switch (tool) {
-    case 'calculator':
+    case 'calculator': {
       const calc = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       calc.setAttribute('x', x - size / 2);
       calc.setAttribute('y', y - size / 2);
@@ -981,8 +990,9 @@ export default class CharacterPreviewRenderer {
       calc.setAttribute('rx', '1');
       group.appendChild(calc);
       break;
+    }
 
-    case 'microscope':
+    case 'microscope': {
       const scope = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       scope.setAttribute(
         'd',
@@ -993,8 +1003,9 @@ export default class CharacterPreviewRenderer {
       scope.setAttribute('fill', 'none');
       group.appendChild(scope);
       break;
+    }
 
-    case 'book':
+    case 'book': {
       const book = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       book.setAttribute('x', x - size / 2);
       book.setAttribute('y', y - size / 3);
@@ -1004,8 +1015,9 @@ export default class CharacterPreviewRenderer {
       book.setAttribute('rx', '1');
       group.appendChild(book);
       break;
+    }
 
-    case 'brush':
+    case 'brush': {
       const brush = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       brush.setAttribute('x1', x - size / 2);
       brush.setAttribute('y1', y + size / 2);
@@ -1016,8 +1028,9 @@ export default class CharacterPreviewRenderer {
       brush.setAttribute('stroke-linecap', 'round');
       group.appendChild(brush);
       break;
+    }
 
-    case 'laptop':
+    case 'laptop': {
       const laptop = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       laptop.setAttribute('x', x - size / 2);
       laptop.setAttribute('y', y - size / 3);
@@ -1027,6 +1040,7 @@ export default class CharacterPreviewRenderer {
       laptop.setAttribute('rx', '1');
       group.appendChild(laptop);
       break;
+    }
     }
 
     return group;

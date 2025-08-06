@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Co-location Proof of Concept</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .console-output {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 CSS Co-location System - Proof of Concept</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: BaseComponentV2 with Auto CSS Loading</h2>
+        <p>Creating a component that automatically loads its co-located CSS...</p>
+        <div id="test-component-container"></div>
+        <div class="console-output" id="console1"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: CSSManager Performance Monitoring</h2>
+        <p>Demonstrating CSS loading performance tracking...</p>
+        <div class="console-output" id="console2"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Component Manifest Integration</h2>
+        <p>Testing component manifest CSS discovery...</p>
+        <div class="console-output" id="console3"></div>
+    </div>
+
+    <!-- Load our modular CSS system -->
+    <script type="module">
+        import BaseComponent from './src/components/BaseComponentV2.js';
+        import cssManager from './src/utils/CSSManager.js';
+        import cssPathResolver from './src/utils/CSSPathResolver.js';
+        import { ComponentManifest } from './src/utils/ComponentManifest.js';
+
+        function log(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            container.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function test1_ComponentAutoCSS() {
+            log('console1', 'Creating test component with BaseComponentV2...');
+            
+            try {
+                // Create a simple test component
+                class TestProofComponent extends BaseComponent {
+                    static css = ['TestProof.css']; // This would be auto-loaded
+                    
+                    render() {
+                        return `
+                            <div class="test-proof-component">
+                                <h3>🎯 Test Component</h3>
+                                <p>This component automatically loaded its CSS!</p>
+                                <button class="test-proof-button">Click me!</button>
+                            </div>
+                        `;
+                    }
+                }
+
+                const component = new TestProofComponent({
+                    container: '#test-component-container'
+                });
+
+                log('console1', 'Component created successfully');
+                log('console1', `CSS Manager initialized: ${!!component.cssManager}`, 'success');
+                log('console1', `CSS Path Resolver available: ${!!component.cssPathResolver}`, 'success');
+                
+                // Test CSS injection
+                const testCSS = `
+                    .test-proof-component {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        padding: 20px;
+                        border-radius: 12px;
+                        text-align: center;
+                        margin: 10px 0;
+                    }
+                    .test-proof-button {
+                        background: #48bb78;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    }
+                    .test-proof-button:hover {
+                        background: #38a169;
+                        transform: translateY(-1px);
+                    }
+                `;
+
+                await component.injectCSS(testCSS, { inline: true });
+                log('console1', 'CSS injected successfully via CSSManager', 'success');
+                
+            } catch (error) {
+                log('console1', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function test2_PerformanceMonitoring() {
+            log('console2', 'Testing CSS performance monitoring...');
+            
+            try {
+                // Test CSS loading with performance tracking
+                const startTime = performance.now();
+                
+                const testCSS = `
+                    .performance-test {
+                        animation: fadeIn 0.3s ease-in;
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                `;
+
+                await cssManager.loadAndCache('performance-test.css', {
+                    content: testCSS,
+                    trackPerformance: true
+                });
+
+                const endTime = performance.now();
+                const loadTime = endTime - startTime;
+
+                log('console2', `CSS loaded in ${loadTime.toFixed(2)}ms`, 'success');
+                log('console2', `Cache status: ${cssManager.isLoaded('performance-test.css') ? 'CACHED' : 'NOT CACHED'}`, 'success');
+                
+                // Get performance stats
+                if (cssManager.getPerformanceSummary) {
+                    const stats = cssManager.getPerformanceSummary();
+                    log('console2', `Cache hit rate: ${(stats.cacheHitRate * 100).toFixed(1)}%`, 'success');
+                    log('console2', `Total CSS files loaded: ${stats.totalLoads || 'N/A'}`, 'success');
+                }
+
+            } catch (error) {
+                log('console2', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function test3_ComponentManifest() {
+            log('console3', 'Testing component manifest CSS discovery...');
+            
+            try {
+                // Test manifest with CSS configuration
+                const testManifest = {
+                    name: 'TestProofComponent',
+                    version: '1.0.0',
+                    css: {
+                        files: ['TestProof.css'],
+                        variants: {
+                            themes: ['ocean', 'forest'],
+                            sizes: ['small', 'large']
+                        },
+                        dependencies: ['global-tokens.css'],
+                        scoping: 'component'
+                    }
+                };
+
+                const manifest = new ComponentManifest(testManifest);
+                
+                log('console3', `Manifest created for: ${manifest.getName()}`, 'success');
+                
+                const cssFiles = manifest.getCSSFiles();
+                log('console3', `CSS files: ${cssFiles.join(', ')}`, 'success');
+                
+                const variants = manifest.getCSSVariants();
+                log('console3', `Available variants: ${Object.keys(variants).join(', ')}`, 'success');
+                
+                const dependencies = manifest.getCSSdependencies();
+                log('console3', `CSS dependencies: ${dependencies.join(', ')}`, 'success');
+
+            } catch (error) {
+                log('console3', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            console.log('🚀 Starting CSS Co-location Proof of Concept Tests...');
+            
+            await test1_ComponentAutoCSS();
+            await new Promise(resolve => setTimeout(resolve, 500)); // Small delay
+            
+            await test2_PerformanceMonitoring();
+            await new Promise(resolve => setTimeout(resolve, 500)); // Small delay
+            
+            await test3_ComponentManifest();
+            
+            console.log('✅ All tests completed!');
+        }
+
+        // Start tests when page loads
+        window.addEventListener('load', runAllTests);
+    </script>
+</body>
+</html>

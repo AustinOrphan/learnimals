@@ -408,7 +408,7 @@ export default class DiscoveryTracker {
    * @param {number} y - Click Y coordinate
    * @returns {boolean} True if click was handled
    */
-  handleClick(x, y) {
+  handleClick(_x, _y) {
     // Dismiss discovery notification if clicked
     if (this.currentDiscoveryDisplay) {
       this.currentDiscoveryDisplay = null;
@@ -443,7 +443,7 @@ export default class DiscoveryTracker {
    * Update particle animations
    * @param {number} deltaTime - Time since last update
    */
-  updateParticles(deltaTime) {
+  updateParticles(_deltaTime) {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
 
@@ -538,17 +538,17 @@ export default class DiscoveryTracker {
    */
   renderDiscoveryNotification(ctx) {
     const canvasWidth = ctx.canvas.width;
-    const canvasHeight = ctx.canvas.height;
+    const _canvasHeight = ctx.canvas.height;
     const discovery = this.currentDiscoveryDisplay.discovery;
 
     // Calculate animation progress
     const elapsed = this.displayTimer;
     let alpha = 1;
-    let scale = 1;
+    let _scale = 1;
 
     if (elapsed < 500) {
       // Appearing
-      scale = 0.5 + (elapsed / 500) * 0.5;
+      _scale = 0.5 + (elapsed / 500) * 0.5;
       alpha = elapsed / 500;
     } else if (elapsed > 4500) {
       // Disappearing

@@ -624,7 +624,7 @@ export default class ChallengeManager {
    * Update particle animations
    * @param {number} deltaTime - Time since last update
    */
-  updateParticles(deltaTime) {
+  updateParticles(_deltaTime) {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
 
@@ -678,7 +678,7 @@ export default class ChallengeManager {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderChallengeHeader(ctx, canvasWidth, canvasHeight) {
+  renderChallengeHeader(ctx, canvasWidth, _canvasHeight) {
     // Challenge title
     ctx.fillStyle = this.game.themeColors.primary;
     ctx.font = 'bold 28px Arial';
@@ -949,7 +949,7 @@ export default class ChallengeManager {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderFallingObjectsVisualization(ctx, canvasWidth, canvasHeight) {
+  renderFallingObjectsVisualization(ctx, canvasWidth, _canvasHeight) {
     const centerX = canvasWidth / 2;
     const startY = 180;
     const dropHeight = Math.sin(this.animationTime * 0.002) * 50 + 100;
@@ -978,7 +978,7 @@ export default class ChallengeManager {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderFizzingReactionVisualization(ctx, canvasWidth, canvasHeight) {
+  renderFizzingReactionVisualization(ctx, canvasWidth, _canvasHeight) {
     const centerX = canvasWidth / 2;
     const centerY = 200;
 
@@ -1003,19 +1003,19 @@ export default class ChallengeManager {
   }
 
   // Additional rendering methods for other experiment types would go here...
-  renderMixingInterface(ctx, canvasWidth, canvasHeight) {
+  renderMixingInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for mixing experiments
   }
 
-  renderExperimentInterface(ctx, canvasWidth, canvasHeight) {
+  renderExperimentInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for interactive experiment interfaces
   }
 
-  renderMatchingInterface(ctx, canvasWidth, canvasHeight) {
+  renderMatchingInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for matching exercises
   }
 
-  renderObservationInterface(ctx, canvasWidth, canvasHeight) {
+  renderObservationInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for observation exercises
   }
 

@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { ThemeFactory, TestDataUtils } from '../../fixtures/testDataFactory.js';
+import { ThemeFactory } from '../../fixtures/testDataFactory.js';
 
 // Mock ThemeManager
 let ThemeManager;

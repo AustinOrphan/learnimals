@@ -1,0 +1,397 @@
+/**
+ * {{ComponentName}} UI Component CSS
+ * Specialized template for interactive UI components (buttons, cards, modals, badges)
+ * Generated from ui-component.css.template
+ */
+
+/* ========================================
+   CSS Custom Properties (Theme Tokens)
+   ======================================== */
+
+.{{component-name}} {
+  /* Interactive UI tokens */
+  --{{component-name}}-background: var(--bg-surface);
+  --{{component-name}}-border-color: var(--border-color);
+  --{{component-name}}-border-radius: var(--radius-md);
+  --{{component-name}}-padding: var(--space-md);
+  --{{component-name}}-shadow: var(--shadow-sm);
+  --{{component-name}}-shadow-hover: var(--shadow-md);
+  --{{component-name}}-text-color: var(--text-primary);
+  --{{component-name}}-transition: all 0.2s ease-in-out;
+  
+  /* Interactive states */
+  --{{component-name}}-hover-transform: translateY(-2px);
+  --{{component-name}}-active-transform: translateY(0);
+  --{{component-name}}-focus-ring: 2px solid var(--focus-ring-color);
+  
+  /* Animation timing */
+  --{{component-name}}-animation-duration: 0.3s;
+  --{{component-name}}-animation-easing: ease-out;
+}
+
+/* ========================================
+   Base Interactive Component Styles
+   ======================================== */
+
+.{{component-name}} {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  
+  /* Visual */
+  background-color: var(--{{component-name}}-background);
+  border: 1px solid var(--{{component-name}}-border-color);
+  border-radius: var(--{{component-name}}-border-radius);
+  box-shadow: var(--{{component-name}}-shadow);
+  overflow: hidden;
+  
+  /* Typography */
+  color: var(--{{component-name}}-text-color);
+  font-family: var(--font-family-base);
+  
+  /* Spacing */
+  padding: var(--{{component-name}}-padding);
+  margin: 0;
+  
+  /* Interactions */
+  cursor: pointer;
+  user-select: none;
+  transition: var(--{{component-name}}-transition);
+  
+  /* Accessibility */
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ========================================
+   Interactive States (Enhanced for UI)
+   ======================================== */
+
+.{{component-name}}:hover {
+  --{{component-name}}-shadow: var(--{{component-name}}-shadow-hover);
+  transform: var(--{{component-name}}-hover-transform);
+  border-color: var(--border-color-hover);
+}
+
+.{{component-name}}:focus,
+.{{component-name}}:focus-visible {
+  outline: var(--{{component-name}}-focus-ring);
+  outline-offset: 2px;
+  z-index: var(--z-index-focus);
+}
+
+.{{component-name}}:active {
+  transform: var(--{{component-name}}-active-transform);
+  --{{component-name}}-shadow: var(--shadow-sm);
+}
+
+.{{component-name}}:disabled,
+.{{component-name}}[data-state="disabled"] {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   Interactive Animation States
+   ======================================== */
+
+/* Loading state with spinner */
+.{{component-name}}[data-state="loading"] {
+  pointer-events: none;
+  position: relative;
+}
+
+.{{component-name}}[data-state="loading"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--border-color-light);
+  border-top: 2px solid var(--color-primary);
+  border-radius: 50%;
+  animation: {{component-name}}-spin 1s linear infinite;
+  z-index: 1;
+}
+
+/* Success state */
+.{{component-name}}[data-state="success"] {
+  --{{component-name}}-border-color: var(--color-success);
+  --{{component-name}}-background: var(--color-success-light);
+  animation: {{component-name}}-success-pulse 0.6s ease-out;
+}
+
+/* Error state */
+.{{component-name}}[data-state="error"] {
+  --{{component-name}}-border-color: var(--color-danger);
+  --{{component-name}}-background: var(--color-danger-light);
+  animation: {{component-name}}-error-shake 0.5s ease-in-out;
+}
+
+/* ========================================
+   Rich Theme Variants (UI Focus)
+   ======================================== */
+
+/* Primary action styling */
+.{{component-name}}--primary {
+  --{{component-name}}-background: var(--color-primary);
+  --{{component-name}}-text-color: var(--text-on-primary);
+  --{{component-name}}-border-color: var(--color-primary);
+}
+
+.{{component-name}}--primary:hover {
+  --{{component-name}}-background: var(--color-primary-dark);
+  --{{component-name}}-border-color: var(--color-primary-dark);
+}
+
+/* Secondary action styling */
+.{{component-name}}--secondary {
+  --{{component-name}}-background: transparent;
+  --{{component-name}}-text-color: var(--color-primary);
+  --{{component-name}}-border-color: var(--color-primary);
+}
+
+.{{component-name}}--secondary:hover {
+  --{{component-name}}-background: var(--color-primary-light);
+}
+
+/* Ocean Theme - Rich gradient background */
+.{{component-name}}[data-theme="ocean"] {
+  background: linear-gradient(135deg, var(--ocean-light, #e3f2fd) 0%, var(--ocean-primary, #2196f3) 100%);
+  color: var(--text-on-ocean, #ffffff);
+  border-color: var(--ocean-border, #1976d2);
+  --{{component-name}}-text-color: var(--text-on-ocean, #ffffff);
+}
+
+.{{component-name}}[data-theme="ocean"]:hover {
+  background: linear-gradient(135deg, var(--ocean-primary, #2196f3) 0%, var(--ocean-dark, #1565c0) 100%);
+  box-shadow: 0 8px 24px rgba(33, 150, 243, 0.3);
+}
+
+/* Forest Theme - Rich gradient background */
+.{{component-name}}[data-theme="forest"] {
+  background: linear-gradient(135deg, var(--forest-light, #e8f5e8) 0%, var(--forest-primary, #4caf50) 100%);
+  color: var(--text-on-forest, #ffffff);
+  border-color: var(--forest-border, #388e3c);
+  --{{component-name}}-text-color: var(--text-on-forest, #ffffff);
+}
+
+.{{component-name}}[data-theme="forest"]:hover {
+  background: linear-gradient(135deg, var(--forest-primary, #4caf50) 0%, var(--forest-dark, #2e7d32) 100%);
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+}
+
+/* Space Theme - Rich gradient background */
+.{{component-name}}[data-theme="space"] {
+  background: linear-gradient(135deg, var(--space-light, #e8eaf6) 0%, var(--space-primary, #673ab7) 100%);
+  color: var(--text-on-space, #ffffff);
+  border-color: var(--space-border, #512da8);
+  --{{component-name}}-text-color: var(--text-on-space, #ffffff);
+}
+
+.{{component-name}}[data-theme="space"]:hover {
+  background: linear-gradient(135deg, var(--space-primary, #673ab7) 0%, var(--space-dark, #4527a0) 100%);
+  box-shadow: 0 8px 24px rgba(103, 58, 183, 0.3);
+}
+
+/* ========================================
+   Size Variants (UI Optimized)
+   ======================================== */
+
+/* Extra small for compact interfaces */
+.{{component-name}}[data-size="xs"] {
+  --{{component-name}}-padding: var(--space-xs) var(--space-sm);
+  --{{component-name}}-border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  min-height: 24px;
+}
+
+/* Small for mobile interfaces */
+.{{component-name}}[data-size="small"] {
+  --{{component-name}}-padding: var(--space-sm) var(--space-md);
+  --{{component-name}}-border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  min-height: 32px;
+}
+
+/* Large for prominent actions */
+.{{component-name}}[data-size="large"] {
+  --{{component-name}}-padding: var(--space-lg) var(--space-xl);
+  --{{component-name}}-border-radius: var(--radius-lg);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  min-height: 48px;
+}
+
+/* Extra large for hero elements */
+.{{component-name}}[data-size="xl"] {
+  --{{component-name}}-padding: var(--space-xl) var(--space-2xl);
+  --{{component-name}}-border-radius: var(--radius-lg);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  min-height: 56px;
+}
+
+/* ========================================
+   Interactive Animations (UI Specific)
+   ======================================== */
+
+@keyframes {{component-name}}-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes {{component-name}}-success-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes {{component-name}}-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes {{component-name}}-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(20px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.{{component-name}}--animate-in {
+  animation: {{component-name}}-bounce-in var(--{{component-name}}-animation-duration) var(--{{component-name}}-animation-easing);
+}
+
+/* ========================================
+   Touch and Mobile Optimizations
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  .{{component-name}} {
+    /* Larger touch targets */
+    min-height: 44px;
+    --{{component-name}}-padding: var(--space-md) var(--space-lg);
+  }
+  
+  /* Remove hover effects on touch devices */
+  .{{component-name}}:hover {
+    transform: none;
+    --{{component-name}}-shadow: var(--{{component-name}}-shadow);
+  }
+  
+  /* Enhanced active states for touch */
+  .{{component-name}}:active {
+    --{{component-name}}-background: var(--bg-surface-secondary);
+    transform: scale(0.98);
+  }
+}
+
+/* ========================================
+   Accessibility Enhancements (UI Focus)
+   ======================================== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .{{component-name}} {
+    --{{component-name}}-border-color: var(--border-color-high-contrast);
+    border-width: 2px;
+  }
+  
+  .{{component-name}}:focus {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .{{component-name}},
+  .{{component-name}}::after,
+  .{{component-name}}::before {
+    transition: none;
+    animation: none;
+  }
+  
+  .{{component-name}}:hover {
+    transform: none;
+  }
+}
+
+/* Force colors mode (Windows high contrast) */
+@media (forced-colors: active) {
+  .{{component-name}} {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  
+  .{{component-name}}:hover,
+  .{{component-name}}:focus {
+    border-color: Highlight;
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* ========================================
+   Component-Specific UI Patterns
+   ======================================== */
+
+/* Icon integration */
+.{{component-name}}__icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  margin-right: var(--space-xs);
+  flex-shrink: 0;
+}
+
+.{{component-name}}__icon--end {
+  margin-right: 0;
+  margin-left: var(--space-xs);
+}
+
+/* Badge/indicator */
+.{{component-name}}__badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--color-danger);
+  color: var(--text-on-danger);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  z-index: 1;
+}
+
+/* Loading overlay */
+.{{component-name}}__loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}

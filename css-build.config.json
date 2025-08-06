@@ -1,0 +1,70 @@
+{
+  "_comment": "CSS Build Configuration - Customize CSS bundling and optimization settings",
+  
+  "inputPatterns": [
+    "src/styles/**/*.css",
+    "src/components/**/*.css",
+    "src/features/**/*.css",
+    "src/utils/**/*.css"
+  ],
+  
+  "entryPoints": [
+    "src/styles/base/styles.css",
+    "src/styles/themes/theme-registry.css"
+  ],
+  
+  "outputDir": "dist/css",
+  
+  "outputFormat": {
+    "dev": "[name].css",
+    "prod": "[name].[contenthash].css"
+  },
+  
+  "modes": {
+    "development": {
+      "minification": false,
+      "compression": false,
+      "sourceMaps": true,
+      "optimization": false,
+      "bundling": true,
+      "criticalCSS": false
+    },
+    "production": {
+      "minification": true,
+      "compression": true,
+      "sourceMaps": false,
+      "optimization": true,
+      "bundling": true,
+      "criticalCSS": true
+    }
+  },
+  
+  "performance": {
+    "maxBundleSize": 102400,
+    "maxCriticalSize": 14336,
+    "compressionTarget": 20
+  },
+  
+  "watch": {
+    "patterns": [
+      "src/**/*.css",
+      "!dist/**",
+      "!node_modules/**"
+    ],
+    "debounceMs": 500
+  },
+  
+  "optimization": {
+    "removeUnusedCSS": true,
+    "optimizeSelectors": true,
+    "mergeDuplicateRules": true,
+    "optimizeCustomProperties": true
+  },
+  
+  "bundling": {
+    "strategy": "dependency-based",
+    "splitSharedDependencies": true,
+    "criticalPathOptimization": true,
+    "enableCodeSplitting": true
+  }
+}

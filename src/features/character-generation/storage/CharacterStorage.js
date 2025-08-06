@@ -6,7 +6,6 @@
  */
 
 import { CharacterValidator } from '../validation/CharacterValidator.js';
-import { DefaultCharacterTemplate } from '../schemas/CharacterSchema.js';
 
 export class CharacterStorage {
   constructor() {

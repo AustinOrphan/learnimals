@@ -33,6 +33,13 @@ This is a static HTML/CSS/JavaScript website that requires no build process. To 
 - `npm run test:unit` - Run unit tests
 - `npm run test:components` - Run component tests
 - `npm run test:integration` - Run integration tests
+- `npm run test:e2e` - Run end-to-end tests
+- `npm run test:performance` - Run performance tests
+- `npm run test:security` - Run security tests
+- `npm run test:accessibility` - Run accessibility tests
+- `npm run test:coverage` - Run tests with coverage reports
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:ui` - Open Vitest UI interface
 
 #### Development Tools
 - `npm run generate-subjects` - Generate new subject pages programmatically
@@ -216,9 +223,16 @@ npm test -- --coverage
 
 - `tests/unit/` - Unit tests for individual modules
 - `tests/integration/` - Integration tests for system components
+- `tests/components/` - Component-specific tests
 - `tests/navigation/` - Navigation system tests
 - `tests/security/` - Security and XSS prevention tests
+- `tests/accessibility/` - WCAG compliance and accessibility tests
+- `tests/performance/` - Performance and Core Web Vitals tests
+- `tests/e2e/` - End-to-end user journey tests
+- `tests/games/` - Game-specific functionality tests
 - `tests/utils/` - Utility module tests
+- `tests/manual/` - Manual testing HTML files
+- `tests/fixtures/` - Test data and mocks
 
 ### Manual Testing
 

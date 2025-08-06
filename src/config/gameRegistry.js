@@ -1772,36 +1772,6 @@ export class GameRegistryUtil {
     });
   }
 
-  /**
-   * Get games by learning objectives
-   * @param {Array|string} objectives - Learning objective(s) to filter by
-   * @returns {Array} Games that meet the specified learning objectives
-   */
-  static getGamesByLearningObjectives(objectives) {
-    const targetObjectives = Array.isArray(objectives) ? objectives : [objectives];
-
-    return gameRegistry.filter(game => {
-      const gameObjectives = game.metadata?.learningObjectives || [];
-      return targetObjectives.some(target =>
-        gameObjectives.some(objective => objective.toLowerCase().includes(target.toLowerCase()))
-      );
-    });
-  }
-
-  /**
-   * Get games by age range for curriculum planning
-   * @param {string} ageRange - Age range (e.g., '6-8', '9-12')
-   * @returns {Array} Games appropriate for the specified age range
-   */
-  static getGamesByAgeRange(ageRange) {
-    return gameRegistry.filter(game => {
-      const gameAgeRange = game.metadata?.ageRange;
-      if (!gameAgeRange) return false;
-
-      // Simple age range matching (could be enhanced with proper parsing)
-      return gameAgeRange === ageRange || gameAgeRange.includes(ageRange);
-    });
-  }
 
   /**
    * Get games suitable for assessment
@@ -1828,7 +1798,7 @@ export class GameRegistryUtil {
    * @returns {Object} Lesson plan with recommended games
    */
   static generateLessonPlan(criteria) {
-    const { subject, ageRange, objectives, duration = 30 } = criteria;
+    const { subject, ageRange, objectives, _duration = 30 } = criteria;
 
     // Filter games based on criteria
     let recommendedGames = gameRegistry.filter(game => {

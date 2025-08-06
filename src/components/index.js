@@ -4,8 +4,8 @@
 // Base Component
 import BaseComponent from './BaseComponent.js';
 
-// UI Components
-import Card from './ui/Card.js';
+// UI Components - Updated for co-located CSS pattern (FR-4.1: backward compatibility)
+import Card from './ui/Card/Card.js';
 import Modal from './ui/Modal.js';
 import PlaceValueManipulative from './ui/PlaceValueManipulative.js';
 

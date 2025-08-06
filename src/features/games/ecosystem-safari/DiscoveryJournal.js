@@ -318,7 +318,7 @@ export default class DiscoveryJournal {
   checkDiscoveries(triggerEvent, context = {}) {
     const newDiscoveries = [];
 
-    for (const [id, discovery] of this.discoveries) {
+    for (const [_id, discovery] of this.discoveries) {
       if (!discovery.discovered && discovery.trigger === triggerEvent) {
         if (this.evaluateTriggerCondition(discovery, context)) {
           discovery.discovered = true;
@@ -551,7 +551,7 @@ export default class DiscoveryJournal {
     // Analyze what was learned in this level
     const ecosystemHealth = levelData.finalEcosystemHealth;
     const speciesUsed = levelData.speciesUsed;
-    const challengesCompleted = levelData.challengesCompleted || [];
+    const _challengesCompleted = levelData.challengesCompleted || [];
 
     // Generate personalized next steps
     if (ecosystemHealth > 80) {

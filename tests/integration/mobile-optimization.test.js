@@ -472,9 +472,9 @@ describe('Mobile Optimization Integration', () => {
       document.body.innerHTML = `
         <div class="image-gallery">
           ${Array.from(
-            { length: 20 },
-            (_, i) => `<img data-src="gallery-${i}.jpg" alt="Gallery ${i}" class="gallery-item">`
-          ).join('')}
+    { length: 20 },
+    (_, i) => `<img data-src="gallery-${i}.jpg" alt="Gallery ${i}" class="gallery-item">`
+  ).join('')}
         </div>
       `;
 

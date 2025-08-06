@@ -80,8 +80,8 @@ class ThemeManager {
     // Apply theme-specific CSS variables
     applyColors(themeColors);
 
-    // Apply semantic variables for consistent component styling
-    setSemanticVariables(mode);
+    // Apply enhanced semantic variables with theme name for variant tokens
+    setSemanticVariables(mode, name);
 
     // Add theme classes to body element
     document.body.className = document.body.className
@@ -93,22 +93,40 @@ class ThemeManager {
 
     // Set data-theme attribute for compatibility with existing CSS
     document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'night' : name);
+    
+    // Add theme transition class for smooth switching
+    if (!document.documentElement.classList.contains('theme-transitioning')) {
+      document.documentElement.classList.add('theme-transitioning');
+      
+      // Remove transition class after animation completes
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transitioning');
+      }, 300); // Match CSS transition duration
+    }
 
     // Save preferences to localStorage
     localStorage.setItem('learnimals-theme-name', name);
     localStorage.setItem('learnimals-theme-mode', mode);
 
-    // Dispatch event for other components that need to react
-    const event = new CustomEvent('themeChanged', {
+    // Dispatch enhanced theme change event with detailed information
+    const enhancedEvent = new CustomEvent('themeChanged', {
       detail: {
         theme: name,
         mode: mode,
+        hasEnhancedTokens: ['ocean', 'forest', 'space', 'sunset'].includes(name),
+        timestamp: Date.now(),
+        semanticTokensApplied: true
       },
     });
-    document.dispatchEvent(event);
+    document.dispatchEvent(enhancedEvent);
 
     // Update theme meta tag for browser UI
     updateMetaThemeColor();
+
+    // Log theme change for debugging
+    if (this.debugMode) {
+      console.debug(`Theme applied: ${name} (${mode}) with enhanced semantic tokens`);
+    }
   }
 
   // Set theme name (color theme)

@@ -210,7 +210,7 @@ export default class EcosystemEngine {
   /**
    * Calculate carrying capacity factor for a species
    */
-  calculateCarryingCapacityFactor(population) {
+  calculateCarryingCapacityFactor(_population) {
     const totalPop = this.ecosystemData.totalPopulation;
     const capacity = this.ecosystemData.carryingCapacity;
 
@@ -373,7 +373,7 @@ export default class EcosystemEngine {
     let stability = 1.0;
 
     // Check for missing links in food chain
-    for (const [predatorId, preyList] of this.foodWeb) {
+    for (const [_predatorId, preyList] of this.foodWeb) {
       const availablePrey = preyList.filter(preyId => {
         const prey = this.populations.get(preyId);
         return prey && prey.currentPopulation > 0;

@@ -1,0 +1,468 @@
+/**
+ * {{ComponentName}} Form Component CSS
+ * Specialized template for form inputs and validation components (inputs, selects, checkboxes)
+ * Generated from form-component.css.template
+ */
+
+/* ========================================
+   CSS Custom Properties (Form Tokens)
+   ======================================== */
+
+.{{component-name}} {
+  /* Form input tokens */
+  --{{component-name}}-background: var(--bg-input);
+  --{{component-name}}-border-color: var(--border-color-input);
+  --{{component-name}}-border-radius: var(--radius-input, var(--radius-sm));
+  --{{component-name}}-padding: var(--space-sm) var(--space-md);
+  --{{component-name}}-text-color: var(--text-input);
+  --{{component-name}}-placeholder-color: var(--text-placeholder);
+  --{{component-name}}-min-height: var(--input-height, 40px);
+  
+  /* Form state colors */
+  --{{component-name}}-focus-border: var(--color-primary);
+  --{{component-name}}-focus-shadow: 0 0 0 3px var(--color-primary-light);
+  --{{component-name}}-error-border: var(--color-danger);
+  --{{component-name}}-error-shadow: 0 0 0 3px var(--color-danger-light);
+  --{{component-name}}-success-border: var(--color-success);
+  --{{component-name}}-success-shadow: 0 0 0 3px var(--color-success-light);
+  --{{component-name}}-disabled-background: var(--bg-disabled);
+  --{{component-name}}-disabled-text: var(--text-disabled);
+  
+  /* Form typography */
+  --{{component-name}}-font-size: var(--font-size-base);
+  --{{component-name}}-font-weight: var(--font-weight-normal);
+  --{{component-name}}-line-height: var(--line-height-base);
+  
+  /* Form animations */
+  --{{component-name}}-transition: all 0.2s ease-in-out;
+}
+
+/* ========================================
+   Base Form Component Styles
+   ======================================== */
+
+.{{component-name}} {
+  /* Layout */
+  display: block;
+  width: 100%;
+  min-height: var(--{{component-name}}-min-height);
+  
+  /* Visual */
+  background-color: var(--{{component-name}}-background);
+  border: 1px solid var(--{{component-name}}-border-color);
+  border-radius: var(--{{component-name}}-border-radius);
+  color: var(--{{component-name}}-text-color);
+  
+  /* Typography */
+  font-family: var(--font-family-base);
+  font-size: var(--{{component-name}}-font-size);
+  font-weight: var(--{{component-name}}-font-weight);
+  line-height: var(--{{component-name}}-line-height);
+  
+  /* Spacing */
+  padding: var(--{{component-name}}-padding);
+  margin: 0;
+  
+  /* Behavior */
+  transition: var(--{{component-name}}-transition);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Placeholder styling */
+.{{component-name}}::placeholder {
+  color: var(--{{component-name}}-placeholder-color);
+  opacity: 1;
+}
+
+.{{component-name}}::-webkit-input-placeholder {
+  color: var(--{{component-name}}-placeholder-color);
+}
+
+.{{component-name}}::-moz-placeholder {
+  color: var(--{{component-name}}-placeholder-color);
+  opacity: 1;
+}
+
+.{{component-name}}:-ms-input-placeholder {
+  color: var(--{{component-name}}-placeholder-color);
+}
+
+/* ========================================
+   Form Input States
+   ======================================== */
+
+/* Focus state */
+.{{component-name}}:focus {
+  border-color: var(--{{component-name}}-focus-border);
+  box-shadow: var(--{{component-name}}-focus-shadow);
+  outline: none;
+}
+
+/* Hover state */
+.{{component-name}}:hover:not(:disabled):not([readonly]) {
+  border-color: var(--border-color-hover);
+}
+
+/* Valid/Success state */
+.{{component-name}}:valid,
+.{{component-name}}[data-state="valid"],
+.{{component-name}}.is-valid {
+  border-color: var(--{{component-name}}-success-border);
+}
+
+.{{component-name}}:valid:focus,
+.{{component-name}}[data-state="valid"]:focus,
+.{{component-name}}.is-valid:focus {
+  box-shadow: var(--{{component-name}}-success-shadow);
+}
+
+/* Invalid/Error state */
+.{{component-name}}:invalid,
+.{{component-name}}[data-state="invalid"],
+.{{component-name}}.is-invalid {
+  border-color: var(--{{component-name}}-error-border);
+}
+
+.{{component-name}}:invalid:focus,
+.{{component-name}}[data-state="invalid"]:focus,
+.{{component-name}}.is-invalid:focus {
+  box-shadow: var(--{{component-name}}-error-shadow);
+}
+
+/* Disabled state */
+.{{component-name}}:disabled,
+.{{component-name}}[readonly] {
+  background-color: var(--{{component-name}}-disabled-background);
+  color: var(--{{component-name}}-disabled-text);
+  border-color: var(--border-color-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.{{component-name}}:disabled::placeholder,
+.{{component-name}}[readonly]::placeholder {
+  color: var(--{{component-name}}-disabled-text);
+}
+
+/* ========================================
+   Form Input Types
+   ======================================== */
+
+/* Text inputs */
+.{{component-name}}[type="text"],
+.{{component-name}}[type="email"],
+.{{component-name}}[type="password"],
+.{{component-name}}[type="url"],
+.{{component-name}}[type="tel"],
+.{{component-name}}[type="search"] {
+  /* Text-specific styling already covered in base */
+}
+
+/* Number inputs */
+.{{component-name}}[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.{{component-name}}[type="number"]::-webkit-outer-spin-button,
+.{{component-name}}[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Date/time inputs */
+.{{component-name}}[type="date"],
+.{{component-name}}[type="datetime-local"],
+.{{component-name}}[type="time"] {
+  position: relative;
+}
+
+/* File input */
+.{{component-name}}[type="file"] {
+  padding: var(--space-xs) var(--space-sm);
+  cursor: pointer;
+}
+
+.{{component-name}}[type="file"]::-webkit-file-upload-button {
+  background: var(--bg-surface-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  margin-right: var(--space-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+/* Textarea */
+.{{component-name}}[data-type="textarea"],
+textarea.{{component-name}} {
+  resize: vertical;
+  min-height: calc(var(--{{component-name}}-min-height) * 2);
+  padding: var(--space-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Select dropdown */
+.{{component-name}}[data-type="select"],
+select.{{component-name}} {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--space-sm) center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: calc(var(--space-md) + 1.5em);
+}
+
+/* ========================================
+   Checkbox and Radio Styles
+   ======================================== */
+
+/* Checkbox */
+.{{component-name}}[type="checkbox"] {
+  width: var(--checkbox-size, 18px);
+  height: var(--checkbox-size, 18px);
+  min-height: auto;
+  cursor: pointer;
+  position: relative;
+  border-radius: var(--radius-xs);
+}
+
+.{{component-name}}[type="checkbox"]:checked {
+  background-color: var(--{{component-name}}-focus-border);
+  border-color: var(--{{component-name}}-focus-border);
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 9.293l6.646-6.647a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.{{component-name}}[type="checkbox"]:indeterminate {
+  background-color: var(--{{component-name}}-focus-border);
+  border-color: var(--{{component-name}}-focus-border);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Radio button */
+.{{component-name}}[type="radio"] {
+  width: var(--radio-size, 18px);
+  height: var(--radio-size, 18px);
+  min-height: auto;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.{{component-name}}[type="radio"]:checked {
+  background-color: var(--{{component-name}}-focus-border);
+  border-color: var(--{{component-name}}-focus-border);
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ========================================
+   Form Size Variants
+   ======================================== */
+
+/* Small form inputs */
+.{{component-name}}[data-size="small"] {
+  --{{component-name}}-min-height: 32px;
+  --{{component-name}}-padding: var(--space-xs) var(--space-sm);
+  --{{component-name}}-font-size: var(--font-size-sm);
+}
+
+/* Large form inputs */
+.{{component-name}}[data-size="large"] {
+  --{{component-name}}-min-height: 48px;
+  --{{component-name}}-padding: var(--space-md) var(--space-lg);
+  --{{component-name}}-font-size: var(--font-size-lg);
+}
+
+/* ========================================
+   Form Field Group Styling
+   ======================================== */
+
+.{{component-name}}-group {
+  margin-bottom: var(--space-md);
+}
+
+.{{component-name}}-label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.{{component-name}}-label--required::after {
+  content: " *";
+  color: var(--color-danger);
+}
+
+.{{component-name}}-help {
+  display: block;
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-tight);
+}
+
+.{{component-name}}-error {
+  display: block;
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-danger);
+  line-height: var(--line-height-tight);
+}
+
+.{{component-name}}-success {
+  display: block;
+  margin-top: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-success);
+  line-height: var(--line-height-tight);
+}
+
+/* ========================================
+   Input Group Styling
+   ======================================== */
+
+.{{component-name}}-input-group {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+.{{component-name}}-input-group .{{component-name}} {
+  flex: 1;
+  min-width: 0;
+}
+
+.{{component-name}}-addon {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--bg-surface-secondary);
+  border: 1px solid var(--{{component-name}}-border-color);
+  color: var(--text-secondary);
+  font-size: var(--{{component-name}}-font-size);
+  white-space: nowrap;
+}
+
+.{{component-name}}-addon--prepend {
+  border-right: none;
+  border-radius: var(--{{component-name}}-border-radius) 0 0 var(--{{component-name}}-border-radius);
+}
+
+.{{component-name}}-addon--append {
+  border-left: none;
+  border-radius: 0 var(--{{component-name}}-border-radius) var(--{{component-name}}-border-radius) 0;
+}
+
+.{{component-name}}-input-group .{{component-name}}:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.{{component-name}}-input-group .{{component-name}}:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ========================================
+   Form Validation Animations
+   ======================================== */
+
+@keyframes {{component-name}}-error-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes {{component-name}}-success-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.{{component-name}}.animate-error {
+  animation: {{component-name}}-error-shake 0.4s ease-in-out;
+}
+
+.{{component-name}}.animate-success {
+  animation: {{component-name}}-success-pulse 0.6s ease-out;
+}
+
+/* ========================================
+   Accessibility Enhancements
+   ======================================== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .{{component-name}} {
+    border-width: 2px;
+  }
+  
+  .{{component-name}}:focus {
+    outline: 3px solid var(--{{component-name}}-focus-border);
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .{{component-name}} {
+    --{{component-name}}-transition: none;
+  }
+  
+  .{{component-name}}.animate-error,
+  .{{component-name}}.animate-success {
+    animation: none;
+  }
+}
+
+/* Windows high contrast mode */
+@media (forced-colors: active) {
+  .{{component-name}} {
+    border: 1px solid ButtonText;
+    background: Field;
+    color: FieldText;
+  }
+  
+  .{{component-name}}:focus {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+  }
+  
+  .{{component-name}}:disabled {
+    border-color: GrayText;
+    background: Field;
+    color: GrayText;
+  }
+}
+
+/* ========================================
+   Dark Theme Support
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .{{component-name}} {
+    --{{component-name}}-background: var(--bg-input-dark);
+    --{{component-name}}-border-color: var(--border-color-input-dark);
+    --{{component-name}}-text-color: var(--text-input-dark);
+    --{{component-name}}-placeholder-color: var(--text-placeholder-dark);
+  }
+}
+
+.theme-dark .{{component-name}} {
+  --{{component-name}}-background: var(--bg-input-dark);
+  --{{component-name}}-border-color: var(--border-color-input-dark);
+  --{{component-name}}-text-color: var(--text-input-dark);
+  --{{component-name}}-placeholder-color: var(--text-placeholder-dark);
+}

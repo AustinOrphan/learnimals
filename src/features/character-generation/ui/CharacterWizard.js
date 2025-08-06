@@ -935,7 +935,7 @@ export default class CharacterWizard extends BaseComponent {
   /**
    * Attach review step listeners
    */
-  attachReviewListeners(stepElement) {
+  attachReviewListeners(_stepElement) {
     // Any review-specific interactions
   }
 
@@ -966,7 +966,7 @@ export default class CharacterWizard extends BaseComponent {
   // Form handling methods
 
   handleFormInput(input) {
-    const { id, value, type } = input;
+    const { id, value, type: _type } = input;
 
     // Update character data based on input
     switch (id) {

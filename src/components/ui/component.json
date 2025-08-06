@@ -1,0 +1,282 @@
+{
+  "name": "Card",
+  "version": "2.0.0",
+  "description": "Reusable card component for consistent UI across the site with theme support and accessibility features",
+  "dependencies": [],
+  "css": {
+    "files": ["Card.css"],
+    "variants": {
+      "themes": {
+        "ocean": {
+          "files": ["Card.theme-ocean.css"],
+          "description": "Ocean theme with blue tones and wave patterns"
+        },
+        "forest": {
+          "files": ["Card.theme-forest.css"],
+          "description": "Forest theme with green tones and nature elements"
+        },
+        "space": {
+          "files": ["Card.theme-space.css"],
+          "description": "Space theme with dark backgrounds and cosmic colors"
+        }
+      },
+      "sizes": {
+        "small": {
+          "files": ["Card.small.css"],
+          "description": "Compact layout for tight spaces",
+          "tokens": {
+            "--card-padding": "var(--space-sm)",
+            "--card-title-size": "var(--font-size-sm)"
+          }
+        },
+        "large": {
+          "files": ["Card.large.css"],
+          "description": "Expanded layout for prominent display",
+          "tokens": {
+            "--card-padding": "var(--space-xl)",
+            "--card-title-size": "var(--font-size-lg)"
+          }
+        }
+      },
+      "states": {
+        "elevated": {
+          "files": ["Card.elevated.css"],
+          "description": "Enhanced shadow and hover effects",
+          "tokens": {
+            "--card-shadow": "var(--shadow-lg)",
+            "--card-hover-shadow": "var(--shadow-xl)"
+          }
+        },
+        "loading": {
+          "files": ["Card.loading.css"],
+          "description": "Loading state with skeleton or spinner"
+        },
+        "error": {
+          "files": ["Card.error.css"],
+          "description": "Error state styling with warning indicators"
+        }
+      },
+      "responsive": {
+        "mobile": {
+          "files": ["Card.mobile.css"],
+          "media": "(max-width: 768px)",
+          "description": "Mobile-optimized layout and spacing"
+        },
+        "tablet": {
+          "files": ["Card.tablet.css"],
+          "media": "(min-width: 769px) and (max-width: 1024px)",
+          "description": "Tablet-optimized layout"
+        }
+      }
+    },
+    "dependencies": [
+      "../../../styles/tokens/global-tokens.css",
+      "../../../styles/tokens/semantic-tokens.css",
+      "../../../styles/components/animations.css"
+    ],
+    "scoping": "component",
+    "critical": true,
+    "lazy": false,
+    "preload": true,
+    "media": null,
+    "tokens": {
+      "--card-background": "var(--bg-card)",
+      "--card-border-color": "var(--border-color)",
+      "--card-border-radius": "var(--radius-md)",
+      "--card-padding": "var(--space-lg)",
+      "--card-shadow": "var(--shadow-sm)",
+      "--card-title-color": "var(--text-primary)",
+      "--card-content-color": "var(--text-secondary)",
+      "--card-hover-transform": "translateY(-2px)",
+      "--card-transition": "all 0.2s ease-in-out"
+    },
+    "sassVariables": {
+      "$card-max-width": "400px",
+      "$card-min-height": "200px",
+      "$card-aspect-ratio": "16/9"
+    },
+    "customProperties": {
+      "data-theme": "Applied theme name for CSS selection",
+      "data-size": "Applied size variant for CSS selection",
+      "data-state": "Current component state (loading, error, etc.)"
+    }
+  },
+  "themes": ["default", "alt", "ocean", "forest", "space"],
+  "api": {
+    "constructor": {
+      "description": "Create a new Card component",
+      "parameters": {
+        "title": {
+          "type": "string",
+          "required": false,
+          "description": "Card title text"
+        },
+        "content": {
+          "type": "string",
+          "required": false,
+          "description": "Card content (supports HTML)"
+        },
+        "imageUrl": {
+          "type": "string",
+          "required": false,
+          "description": "Optional image URL"
+        },
+        "imageAlt": {
+          "type": "string",
+          "required": false,
+          "description": "Image alt text for accessibility"
+        },
+        "linkUrl": {
+          "type": "string",
+          "required": false,
+          "description": "Optional link URL"
+        },
+        "linkText": {
+          "type": "string",
+          "required": false,
+          "default": "Learn More",
+          "description": "Link button text"
+        },
+        "theme": {
+          "type": "string",
+          "required": false,
+          "default": "default",
+          "enum": ["default", "alt", "ocean", "forest", "space"],
+          "description": "Card theme variant"
+        },
+        "elevated": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether card should have elevation shadow"
+        },
+        "size": {
+          "type": "string",
+          "required": false,
+          "default": "medium",
+          "enum": ["small", "medium", "large"],
+          "description": "Card size variant"
+        }
+      }
+    },
+    "methods": {
+      "updateContent": {
+        "description": "Update card content dynamically",
+        "parameters": {
+          "newContent": {
+            "type": "object",
+            "required": true,
+            "description": "New content options to merge"
+          },
+          "rerender": {
+            "type": "boolean",
+            "required": false,
+            "default": true,
+            "description": "Whether to re-render the component"
+          }
+        },
+        "returns": "Card instance for chaining"
+      },
+      "getCardData": {
+        "description": "Get card data for external use",
+        "returns": {
+          "type": "object",
+          "description": "Object containing card data"
+        }
+      }
+    },
+    "events": {
+      "card:click": {
+        "description": "Fired when card link is clicked",
+        "detail": {
+          "title": "string",
+          "linkUrl": "string",
+          "timestamp": "number",
+          "event": "Event"
+        }
+      },
+      "card:hover": {
+        "description": "Fired when card is hovered or unhovered",
+        "detail": {
+          "title": "string",
+          "action": "string (enter|leave)",
+          "event": "Event"
+        }
+      },
+      "card:themeChanged": {
+        "description": "Fired when theme changes",
+        "detail": {
+          "theme": "string",
+          "colors": "object"
+        }
+      },
+      "card:contentUpdated": {
+        "description": "Fired when content is updated",
+        "detail": {
+          "oldContent": "object",
+          "newContent": "object"
+        }
+      }
+    },
+    "staticMethods": {
+      "createLinkedCard": {
+        "description": "Create a linked card wrapper",
+        "parameters": {
+          "options": {
+            "type": "object",
+            "required": true,
+            "description": "Card options"
+          },
+          "linkUrl": {
+            "type": "string",
+            "required": true,
+            "description": "URL for the link"
+          }
+        },
+        "returns": "HTML string for linked card"
+      },
+      "createCards": {
+        "description": "Create multiple cards from data array",
+        "parameters": {
+          "cardsData": {
+            "type": "array",
+            "required": true,
+            "description": "Array of card options"
+          },
+          "container": {
+            "type": "HTMLElement|string",
+            "required": true,
+            "description": "Container to render into"
+          }
+        },
+        "returns": "Array of Card instances"
+      }
+    }
+  },
+  "examples": [
+    "card-basic.html",
+    "card-with-image.html",
+    "card-themed.html"
+  ],
+  "tags": ["ui", "component", "card", "content"],
+  "browser": {
+    "ie": "11+",
+    "chrome": "60+",
+    "firefox": "55+",
+    "safari": "12+",
+    "edge": "79+"
+  },
+  "accessibility": {
+    "wcag": "AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-friendly",
+      "high-contrast-support",
+      "reduced-motion-support",
+      "semantic-html",
+      "focus-management"
+    ],
+    "roles": ["article"],
+    "landmarks": false
+  }
+}

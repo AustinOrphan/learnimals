@@ -1,0 +1,819 @@
+/**
+ * Component-Specific Theme Tokens - Component-Level Token Patterns
+ * 
+ * This file provides component-specific theme tokens that build upon semantic
+ * tokens to enable component-level theme customization and variant patterns.
+ * These tokens demonstrate the component token layer in the theme hierarchy.
+ * 
+ * Requirements Satisfied:
+ * - FR-2.2: Support component-level theme customization
+ * - FR-2.3: Implement theme inheritance hierarchy (component level)
+ * - NFR-2.2: Theme tokens are documented and discoverable
+ * 
+ * Token Organization:
+ * 1. Card Component Tokens
+ * 2. Button Component Tokens
+ * 3. Modal Component Tokens
+ * 4. Form Component Tokens
+ * 5. Navigation Component Tokens
+ * 6. Game Component Tokens
+ * 7. Educational Content Tokens
+ * 8. Layout Component Tokens
+ * 
+ * Token Inheritance:
+ * Component tokens → Semantic tokens → Global tokens
+ * 
+ * Example Token Pattern:
+ * --component-card-background: var(--surface-primary);
+ * --component-card-text: var(--text-primary);
+ * --component-card-border: var(--border-primary);
+ * 
+ * Usage in Components:
+ * background: var(--component-card-background, var(--surface-primary, #ffffff));
+ * color: var(--component-card-text, var(--text-primary, #333333));
+ */
+
+:root {
+  /* ===========================================
+   * 1. CARD COMPONENT TOKENS
+   * Comprehensive token set for Card components
+   * =========================================== */
+  
+  /* Card Structure */
+  --component-card-background: var(--surface-primary);
+  --component-card-background-hover: var(--surface-primary);
+  --component-card-background-alt: var(--surface-secondary);
+  --component-card-border: var(--border-primary);
+  --component-card-border-hover: var(--border-hover);
+  --component-card-border-focus: var(--border-focus);
+  --component-card-radius: var(--radius-card);
+  --component-card-shadow: var(--shadow-card);
+  --component-card-shadow-hover: var(--shadow-card-hover);
+  --component-card-shadow-elevated: var(--shadow-card-elevated);
+  --component-card-shadow-elevated-hover: var(--shadow-card-elevated-hover);
+  
+  /* Card Content */
+  --component-card-text: var(--text-primary);
+  --component-card-text-secondary: var(--text-secondary);
+  --component-card-title: var(--text-heading);
+  --component-card-content: var(--text-body);
+  
+  /* Card Header */
+  --component-card-header-background: transparent;
+  --component-card-header-text: var(--text-heading);
+  --component-card-header-border: var(--border-secondary);
+  --component-card-header-padding: var(--padding-card);
+  
+  /* Card Footer */
+  --component-card-footer-background: var(--surface-secondary);
+  --component-card-footer-text: var(--text-secondary);
+  --component-card-footer-border: var(--border-secondary);
+  --component-card-footer-padding: var(--space-4);
+  
+  /* Card Image */
+  --component-card-image-background: var(--bg-image-placeholder);
+  --component-card-image-radius: var(--radius-lg);
+  --component-card-image-aspect-ratio: var(--ratio-landscape);
+  
+  /* Card Theme Variants - Enhanced for better theme switching */
+  --component-card-ocean-background: var(--theme-ocean-bg, linear-gradient(135deg, #4a90e2, #357abd));
+  --component-card-ocean-text: var(--text-on-ocean, #ffffff);
+  --component-card-ocean-border: var(--brand-primary, #4a90e2);
+  --component-card-forest-background: var(--theme-forest-bg, linear-gradient(135deg, #5cb85c, #449d44));
+  --component-card-forest-text: var(--text-on-forest, #ffffff);
+  --component-card-forest-border: var(--brand-primary, #5cb85c);
+  --component-card-space-background: var(--theme-space-bg, linear-gradient(135deg, #6f42c1, #5a32a3));
+  --component-card-space-text: var(--text-on-space, #ffffff);
+  --component-card-space-border: var(--brand-primary, #6f42c1);
+  --component-card-sunset-background: var(--theme-sunset-bg, linear-gradient(135deg, #fd7e14, #e55a00));
+  --component-card-sunset-text: var(--text-on-primary, #ffffff);
+  --component-card-sunset-border: var(--brand-primary, #fd7e14);
+
+  /* ===========================================
+   * 2. BUTTON COMPONENT TOKENS
+   * Comprehensive token set for Button components
+   * =========================================== */
+  
+  /* Button Structure */
+  --component-button-radius: var(--radius-button);
+  --component-button-shadow: var(--shadow-button);
+  --component-button-shadow-hover: var(--shadow-button-hover);
+  --component-button-shadow-active: var(--shadow-button-active);
+  --component-button-height: var(--button-height);
+  --component-button-height-sm: var(--button-height-sm);
+  --component-button-height-lg: var(--button-height-lg);
+  --component-button-padding: var(--padding-button);
+  --component-button-min-width: var(--touch-target-min);
+  
+  /* Primary Button - Enhanced with theme variant support */
+  --component-button-primary-background: var(--interactive-primary, var(--button-primary, var(--brand-primary)));
+  --component-button-primary-background-hover: var(--interactive-primary-hover, var(--button-primary-hover, var(--brand-secondary)));
+  --component-button-primary-background-active: var(--interactive-primary-active, var(--button-primary-active, var(--brand-secondary)));
+  --component-button-primary-text: var(--text-on-primary, #ffffff);
+  --component-button-primary-border: var(--interactive-primary, var(--button-primary, var(--brand-primary)));
+  --component-button-primary-border-hover: var(--interactive-primary-hover, var(--button-primary-hover, var(--brand-secondary)));
+  --component-button-primary-focus: var(--focus-primary, var(--brand-primary));
+  
+  /* Secondary Button */
+  --component-button-secondary-background: transparent;
+  --component-button-secondary-background-hover: var(--interactive-bg-hover);
+  --component-button-secondary-background-active: var(--interactive-bg-active);
+  --component-button-secondary-text: var(--button-secondary);
+  --component-button-secondary-border: var(--button-secondary);
+  --component-button-secondary-border-hover: var(--button-secondary-hover);
+  --component-button-secondary-focus: var(--focus-secondary);
+  
+  /* Disabled Button */
+  --component-button-disabled-background: var(--interactive-primary-disabled);
+  --component-button-disabled-text: var(--text-disabled);
+  --component-button-disabled-border: var(--interactive-primary-disabled);
+  --component-button-disabled-opacity: 0.6;
+  
+  /* Button Size Variants */
+  --component-button-sm-padding: var(--space-2) var(--space-4);
+  --component-button-lg-padding: var(--space-4) var(--space-8);
+  --component-button-sm-font-size: var(--font-size-sm);
+  --component-button-lg-font-size: var(--font-size-lg);
+
+  /* ===========================================
+   * 3. MODAL COMPONENT TOKENS
+   * Comprehensive token set for Modal components
+   * =========================================== */
+  
+  /* Modal Structure */
+  --component-modal-background: var(--surface-elevated);
+  --component-modal-border: var(--border-primary);
+  --component-modal-radius: var(--radius-modal);
+  --component-modal-shadow: var(--shadow-modal);
+  --component-modal-padding: var(--padding-modal);
+  --component-modal-max-width: var(--container-md);
+  --component-modal-z-index: var(--z-index-modal);
+  
+  /* Modal Backdrop */
+  --component-modal-backdrop: var(--surface-overlay);
+  --component-modal-backdrop-blur: blur(4px);
+  
+  /* Modal Header */
+  --component-modal-header-background: transparent;
+  --component-modal-header-text: var(--text-heading);
+  --component-modal-header-border: var(--border-secondary);
+  --component-modal-header-padding: var(--space-6) var(--space-8);
+  
+  /* Modal Content */
+  --component-modal-content-background: transparent;
+  --component-modal-content-text: var(--text-primary);
+  --component-modal-content-padding: var(--space-4) var(--space-8);
+  
+  /* Modal Footer */
+  --component-modal-footer-background: var(--surface-secondary);
+  --component-modal-footer-border: var(--border-secondary);
+  --component-modal-footer-padding: var(--space-4) var(--space-8);
+  
+  /* Modal Close Button */
+  --component-modal-close-size: var(--space-8);
+  --component-modal-close-background: transparent;
+  --component-modal-close-background-hover: var(--interactive-bg-hover);
+  --component-modal-close-text: var(--text-secondary);
+  --component-modal-close-text-hover: var(--text-primary);
+
+  /* ===========================================
+   * 4. FORM COMPONENT TOKENS
+   * Comprehensive token set for Form components
+   * =========================================== */
+  
+  /* Form Structure */
+  --component-form-spacing: var(--space-6);
+  --component-form-background: transparent;
+  --component-form-border: var(--border-primary);
+  --component-form-radius: var(--radius);
+  
+  /* Form Labels */
+  --component-form-label-text: var(--label-text);
+  --component-form-label-font-weight: var(--font-weight-medium);
+  --component-form-label-margin: 0 0 var(--space-2) 0;
+  --component-form-label-required: var(--label-required);
+  --component-form-label-optional: var(--label-optional);
+  
+  /* Form Inputs */
+  --component-form-input-background: var(--input-bg);
+  --component-form-input-background-hover: var(--input-bg-hover);
+  --component-form-input-background-focus: var(--input-bg-focus);
+  --component-form-input-background-disabled: var(--input-bg-disabled);
+  --component-form-input-text: var(--input-text);
+  --component-form-input-text-placeholder: var(--input-text-placeholder);
+  --component-form-input-text-disabled: var(--input-text-disabled);
+  --component-form-input-border: var(--input-border);
+  --component-form-input-border-hover: var(--input-border-hover);
+  --component-form-input-border-focus: var(--input-border-focus);
+  --component-form-input-border-error: var(--input-border-error);
+  --component-form-input-border-success: var(--input-border-success);
+  --component-form-input-radius: var(--radius);
+  --component-form-input-padding: var(--padding-input);
+  --component-form-input-height: var(--input-height);
+  --component-form-input-shadow-focus: var(--shadow-focus);
+  
+  /* Form Validation */
+  --component-form-validation-error-text: var(--validation-error-text);
+  --component-form-validation-error-background: var(--validation-error-bg);
+  --component-form-validation-success-text: var(--validation-success-text);
+  --component-form-validation-success-background: var(--validation-success-bg);
+  --component-form-validation-warning-text: var(--validation-warning-text);
+  --component-form-validation-warning-background: var(--validation-warning-bg);
+  --component-form-validation-font-size: var(--font-size-sm);
+  --component-form-validation-margin: var(--space-1) 0 0 0;
+  
+  /* Form Fieldset */
+  --component-form-fieldset-border: var(--border-primary);
+  --component-form-fieldset-background: var(--surface-secondary);
+  --component-form-fieldset-padding: var(--space-4);
+  --component-form-fieldset-radius: var(--radius);
+  
+  /* Form Legend */
+  --component-form-legend-text: var(--text-heading);
+  --component-form-legend-font-weight: var(--font-weight-semibold);
+  --component-form-legend-font-size: var(--font-size-lg);
+
+  /* ===========================================
+   * 5. NAVIGATION COMPONENT TOKENS
+   * Comprehensive token set for Navigation components
+   * =========================================== */
+  
+  /* Navigation Structure */
+  --component-nav-background: var(--nav-bg);
+  --component-nav-border: var(--nav-border);
+  --component-nav-padding: var(--space-4) var(--space-6);
+  --component-nav-shadow: var(--shadow-sm);
+  --component-nav-z-index: var(--z-index-sticky);
+  
+  /* Navigation Items */
+  --component-nav-item-background: var(--nav-item-bg);
+  --component-nav-item-background-hover: var(--nav-item-bg-hover);
+  --component-nav-item-background-active: var(--nav-item-bg-active);
+  --component-nav-item-background-current: var(--nav-item-bg-current);
+  --component-nav-item-text: var(--nav-text);
+  --component-nav-item-text-hover: var(--nav-text-hover);
+  --component-nav-item-text-active: var(--nav-text-active);
+  --component-nav-item-text-current: var(--nav-text-current);
+  --component-nav-item-border: var(--nav-item-border);
+  --component-nav-item-border-current: var(--nav-item-border-current);
+  --component-nav-item-padding: var(--space-3) var(--space-4);
+  --component-nav-item-radius: var(--radius);
+  
+  /* Navigation Links */
+  --component-nav-link-text: var(--text-link);
+  --component-nav-link-text-hover: var(--text-link-hover);
+  --component-nav-link-text-decoration: none;
+  --component-nav-link-text-decoration-hover: none;
+  
+  /* Navigation Dropdown */
+  --component-nav-dropdown-background: var(--surface-elevated);
+  --component-nav-dropdown-border: var(--border-primary);
+  --component-nav-dropdown-shadow: var(--shadow-dropdown);
+  --component-nav-dropdown-radius: var(--radius);
+  --component-nav-dropdown-z-index: var(--z-index-dropdown);
+  --component-nav-dropdown-min-width: 200px;
+  
+  /* Breadcrumb Navigation */
+  --component-breadcrumb-text: var(--breadcrumb-text);
+  --component-breadcrumb-separator: var(--breadcrumb-separator);
+  --component-breadcrumb-current: var(--breadcrumb-current);
+  --component-breadcrumb-link: var(--breadcrumb-link);
+  --component-breadcrumb-link-hover: var(--breadcrumb-link-hover);
+  --component-breadcrumb-font-size: var(--font-size-sm);
+
+  /* ===========================================
+   * 6. GAME COMPONENT TOKENS
+   * Tokens for educational game interface components
+   * =========================================== */
+  
+  /* Game UI Structure */
+  --component-game-background: var(--surface-primary);
+  --component-game-overlay: var(--surface-overlay);
+  --component-game-border: var(--border-primary);
+  --component-game-radius: var(--radius-xl);
+  --component-game-shadow: var(--shadow-lg);
+  --component-game-padding: var(--space-6);
+  
+  /* Game HUD (Heads-Up Display) */
+  --component-game-hud-background: rgba(0, 0, 0, var(--alpha-60));
+  --component-game-hud-text: var(--color-white);
+  --component-game-hud-border: var(--color-white);
+  --component-game-hud-radius: var(--radius);
+  --component-game-hud-padding: var(--space-3) var(--space-4);
+  
+  /* Game Score */
+  --component-game-score-text: var(--text-heading);
+  --component-game-score-background: var(--brand-primary);
+  --component-game-score-color: var(--text-on-primary);
+  --component-game-score-font-size: var(--font-size-2xl);
+  --component-game-score-font-weight: var(--font-weight-bold);
+  
+  /* Game Progress */
+  --component-game-progress-track: var(--progress-track);
+  --component-game-progress-fill: var(--brand-primary);
+  --component-game-progress-text: var(--progress-text);
+  --component-game-progress-height: 8px;
+  --component-game-progress-radius: var(--radius-pill);
+  
+  /* Game Controls */
+  --component-game-control-background: var(--interactive-primary);
+  --component-game-control-background-hover: var(--interactive-primary-hover);
+  --component-game-control-text: var(--text-on-primary);
+  --component-game-control-border: var(--interactive-primary);
+  --component-game-control-radius: var(--radius-pill);
+  --component-game-control-padding: var(--space-3) var(--space-6);
+  --component-game-control-font-size: var(--font-size-lg);
+  --component-game-control-font-weight: var(--font-weight-semibold);
+  
+  /* Game Feedback */
+  --component-game-success: var(--status-success);
+  --component-game-success-background: var(--status-success-bg);
+  --component-game-error: var(--status-error);
+  --component-game-error-background: var(--status-error-bg);
+  --component-game-warning: var(--status-warning);
+  --component-game-warning-background: var(--status-warning-bg);
+
+  /* ===========================================
+   * 7. EDUCATIONAL CONTENT TOKENS
+   * Tokens for educational content components
+   * =========================================== */
+  
+  /* Subject Theme Colors (based on character themes) */
+  --component-subject-math-primary: var(--character-math-bear);
+  --component-subject-science-primary: var(--character-science-fox);
+  --component-subject-reading-primary: var(--character-reading-owl);
+  --component-subject-art-primary: var(--character-art-cat);
+  
+  /* Educational Card Variants */
+  --component-edu-card-math-background: var(--theme-ocean-bg);
+  --component-edu-card-math-text: var(--text-on-ocean);
+  --component-edu-card-science-background: var(--theme-forest-bg);
+  --component-edu-card-science-text: var(--text-on-forest);
+  --component-edu-card-reading-background: var(--theme-space-bg);
+  --component-edu-card-reading-text: var(--text-on-space);
+  --component-edu-card-art-background: var(--theme-sunset-bg);
+  --component-edu-card-art-text: var(--text-on-primary);
+  
+  /* Learning Progress */
+  --component-progress-beginner: var(--status-info);
+  --component-progress-intermediate: var(--status-warning);
+  --component-progress-advanced: var(--status-success);
+  --component-progress-background: var(--surface-secondary);
+  --component-progress-text: var(--text-secondary);
+  
+  /* Achievement Badges */
+  --component-badge-gold: #ffd700;
+  --component-badge-silver: #c0c0c0;
+  --component-badge-bronze: #cd7f32;
+  --component-badge-background: var(--surface-elevated);
+  --component-badge-text: var(--text-primary);
+  --component-badge-border: var(--border-primary);
+  --component-badge-radius: var(--radius-pill);
+  --component-badge-shadow: var(--shadow);
+  
+  /* Quiz Components */
+  --component-quiz-question-background: var(--surface-primary);
+  --component-quiz-question-text: var(--text-primary);
+  --component-quiz-answer-background: var(--surface-secondary);
+  --component-quiz-answer-background-hover: var(--interactive-bg-hover);
+  --component-quiz-answer-background-selected: var(--interactive-bg-selected);
+  --component-quiz-answer-background-correct: var(--status-success-bg);
+  --component-quiz-answer-background-incorrect: var(--status-error-bg);
+  --component-quiz-answer-text: var(--text-primary);
+  --component-quiz-answer-border: var(--border-primary);
+  --component-quiz-answer-border-selected: var(--interactive-primary);
+  --component-quiz-answer-border-correct: var(--status-success);
+  --component-quiz-answer-border-incorrect: var(--status-error);
+
+  /* ===========================================
+   * 8. LAYOUT COMPONENT TOKENS
+   * Tokens for layout and structural components
+   * =========================================== */
+  
+  /* Header Component */
+  --component-header-background: var(--layout-header-bg);
+  --component-header-text: var(--text-primary);
+  --component-header-border: var(--layout-header-border);
+  --component-header-shadow: var(--shadow-sm);
+  --component-header-padding: var(--space-4) var(--space-6);
+  --component-header-height: 64px;
+  --component-header-z-index: var(--z-index-sticky);
+  
+  /* Footer Component */
+  --component-footer-background: var(--layout-footer-bg);
+  --component-footer-text: var(--text-secondary);
+  --component-footer-border: var(--layout-footer-border);
+  --component-footer-padding: var(--space-8) var(--space-6);
+  --component-footer-link: var(--text-link);
+  --component-footer-link-hover: var(--text-link-hover);
+  
+  /* Sidebar Component */
+  --component-sidebar-background: var(--layout-sidebar-bg);
+  --component-sidebar-text: var(--text-primary);
+  --component-sidebar-border: var(--layout-sidebar-border);
+  --component-sidebar-width: 280px;
+  --component-sidebar-width-collapsed: 64px;
+  --component-sidebar-padding: var(--space-6);
+  --component-sidebar-shadow: var(--shadow);
+  --component-sidebar-z-index: var(--z-index-docked);
+  
+  /* Main Content Area */
+  --component-main-background: var(--layout-main-bg);
+  --component-main-padding: var(--space-6);
+  --component-main-max-width: var(--container-xl);
+  --component-main-margin: 0 auto;
+  
+  /* Section Components */
+  --component-section-background: transparent;
+  --component-section-padding: var(--layout-section-spacing);
+  --component-section-margin: var(--margin-section);
+  --component-section-border: var(--border-secondary);
+  
+  /* Container Components */
+  --component-container-background: transparent;
+  --component-container-padding: var(--layout-container-padding);
+  --component-container-max-width: var(--container-lg);
+  --component-container-margin: 0 auto;
+
+  /* ===========================================
+   * 9. LOADING & SKELETON COMPONENT TOKENS
+   * Tokens for loading states and skeleton components
+   * =========================================== */
+  
+  /* Loading Spinner */
+  --component-loading-spinner-color: var(--loading-spinner);
+  --component-loading-spinner-size: 24px;
+  --component-loading-spinner-thickness: 2px;
+  
+  /* Loading Overlay */
+  --component-loading-overlay-background: var(--surface-overlay);
+  --component-loading-overlay-backdrop: var(--surface-backdrop);
+  --component-loading-text: var(--text-secondary);
+  --component-loading-background: var(--loading-background);
+  
+  /* Skeleton Loading */
+  --component-skeleton-base: var(--skeleton-base);
+  --component-skeleton-highlight: var(--skeleton-highlight);
+  --component-skeleton-shimmer: var(--skeleton-shimmer);
+  --component-skeleton-radius: var(--radius);
+  --component-skeleton-height-text: 1em;
+  --component-skeleton-height-title: 1.5em;
+  --component-skeleton-height-avatar: 40px;
+  --component-skeleton-height-image: 200px;
+  
+  /* Empty State */
+  --component-empty-icon: var(--empty-state-icon);
+  --component-empty-text: var(--empty-state-text);
+  --component-empty-background: var(--empty-state-bg);
+  --component-empty-padding: var(--space-12);
+
+  /* ===========================================
+   * 10. ANIMATION & TRANSITION TOKENS
+   * Component-specific animation tokens
+   * =========================================== */
+  
+  /* Card Animations */
+  --component-card-transition: all var(--duration-normal) var(--ease-default);
+  --component-card-hover-transform: translateY(-2px);
+  --component-card-active-transform: translateY(0px);
+  
+  /* Button Animations */
+  --component-button-transition: all var(--duration-fast) var(--ease-interactive);
+  --component-button-hover-transform: translateY(-1px);
+  --component-button-active-transform: translateY(0px);
+  
+  /* Modal Animations */
+  --component-modal-transition-enter: opacity var(--duration-normal) var(--ease-out),
+                                      transform var(--duration-normal) var(--ease-out);
+  --component-modal-transition-exit: opacity var(--duration-fast) var(--ease-in),
+                                     transform var(--duration-fast) var(--ease-in);
+  --component-modal-enter-transform: scale(0.95) translateY(-10px);
+  --component-modal-exit-transform: scale(0.95) translateY(10px);
+  
+  /* Navigation Animations */
+  --component-nav-transition: all var(--duration-fast) var(--ease-default);
+  --component-nav-dropdown-transition: opacity var(--duration-fast) var(--ease-out),
+                                       transform var(--duration-fast) var(--ease-out);
+  
+  /* Game Animations */
+  --component-game-feedback-transition: all var(--duration-normal) var(--ease-back-out);
+  --component-game-success-transform: scale(1.1);
+  --component-game-error-transform: translateX(-5px);
+}
+
+/* ===========================================
+ * DARK THEME COMPONENT TOKEN OVERRIDES
+ * Component tokens optimized for dark themes
+ * =========================================== */
+
+[data-theme="dark"] {
+  /* Card Dark Mode */
+  --component-card-footer-background: var(--color-gray-800);
+  --component-modal-footer-background: var(--color-gray-800);
+  
+  /* Form Dark Mode */
+  --component-form-fieldset-background: var(--color-gray-800);
+  
+  /* Game Dark Mode */
+  --component-game-hud-background: rgba(255, 255, 255, var(--alpha-20));
+  --component-game-hud-text: var(--color-white);
+  
+  /* Skeleton Dark Mode */
+  --component-skeleton-base: var(--color-gray-700);
+  --component-skeleton-highlight: var(--color-gray-600);
+  
+  /* Educational Content Dark Mode */
+  --component-quiz-question-background: var(--color-gray-800);
+  --component-quiz-answer-background: var(--color-gray-700);
+  --component-badge-background: var(--color-gray-800);
+}
+
+/* ===========================================
+ * RESPONSIVE COMPONENT TOKEN OVERRIDES
+ * Responsive adjustments for component tokens
+ * =========================================== */
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  :root {
+    /* Modal mobile adjustments */
+    --component-modal-padding: var(--space-4);
+    --component-modal-header-padding: var(--space-4);
+    --component-modal-content-padding: var(--space-4);
+    --component-modal-footer-padding: var(--space-4);
+    
+    /* Card mobile adjustments */
+    --component-card-header-padding: var(--space-4);
+    --component-card-footer-padding: var(--space-3);
+    
+    /* Navigation mobile adjustments */
+    --component-nav-padding: var(--space-3) var(--space-4);
+    --component-nav-item-padding: var(--space-2) var(--space-3);
+    
+    /* Header mobile adjustments */
+    --component-header-height: 56px;
+    --component-header-padding: var(--space-3) var(--space-4);
+    
+    /* Sidebar mobile adjustments */
+    --component-sidebar-width: 100vw;
+    --component-sidebar-z-index: var(--z-index-modal);
+    
+    /* Main content mobile adjustments */
+    --component-main-padding: var(--space-4);
+  }
+}
+
+/* Large screen adjustments */
+@media (min-width: 1024px) {
+  :root {
+    /* Enhanced spacing for larger screens */
+    --component-modal-padding: var(--space-12);
+    --component-card-header-padding: var(--space-8);
+    --component-main-padding: var(--space-8);
+  }
+}
+
+/* ===========================================
+ * PRINT MEDIA COMPONENT TOKEN OVERRIDES
+ * Component tokens optimized for print
+ * =========================================== */
+
+@media print {
+  :root {
+    /* Remove shadows and backgrounds for print */
+    --component-card-shadow: none;
+    --component-modal-shadow: none;
+    --component-button-shadow: none;
+    --component-nav-shadow: none;
+    
+    /* High contrast borders for print */
+    --component-card-border: 1px solid var(--color-black);
+    --component-form-input-border: 1px solid var(--color-black);
+    --component-nav-border: 1px solid var(--color-black);
+    
+    /* Simplified backgrounds for print */
+    --component-card-background: var(--color-white);
+    --component-modal-background: var(--color-white);
+    --component-form-input-background: var(--color-white);
+  }
+}
+
+/* ===========================================
+ * COMPONENT TOKEN DOCUMENTATION
+ * Usage examples and best practices
+ * =========================================== */
+
+/*
+Component Token Usage Examples:
+
+1. Card Component CSS:
+   .card {
+     background-color: var(--component-card-background);
+     color: var(--component-card-text);
+     border: 1px solid var(--component-card-border);
+     border-radius: var(--component-card-radius);
+     box-shadow: var(--component-card-shadow);
+     transition: var(--component-card-transition);
+   }
+   
+   .card:hover {
+     box-shadow: var(--component-card-shadow-hover);
+     border-color: var(--component-card-border-hover);
+     transform: var(--component-card-hover-transform);
+   }
+
+2. Button Component CSS:
+   .button-primary {
+     background-color: var(--component-button-primary-background);
+     color: var(--component-button-primary-text);
+     border: 1px solid var(--component-button-primary-border);
+     border-radius: var(--component-button-radius);
+     padding: var(--component-button-padding);
+     transition: var(--component-button-transition);
+   }
+   
+   .button-primary:hover {
+     background-color: var(--component-button-primary-background-hover);
+     transform: var(--component-button-hover-transform);
+   }
+
+3. Modal Component CSS:
+   .modal {
+     background-color: var(--component-modal-background);
+     border-radius: var(--component-modal-radius);
+     box-shadow: var(--component-modal-shadow);
+     padding: var(--component-modal-padding);
+     max-width: var(--component-modal-max-width);
+   }
+   
+   .modal-backdrop {
+     background-color: var(--component-modal-backdrop);
+     backdrop-filter: var(--component-modal-backdrop-blur);
+   }
+
+Token Hierarchy Example:
+Component Level: --component-card-background: var(--surface-primary);
+Semantic Level:  --surface-primary: var(--color-white);
+Global Level:    --color-white: rgb(255, 255, 255);
+
+Best Practices:
+- Use component tokens in component CSS files
+- Always provide fallback to semantic tokens
+- Test component tokens in all theme variants
+- Document component-specific token usage
+- Follow the naming convention: --component-{component}-{property}
+- Group related tokens together (structure, content, states)
+- Consider responsive, dark mode, and print scenarios
+- Use semantic names for component variants
+*/
+
+/* ===========================================
+ * THEME-SPECIFIC COMPONENT TOKEN OVERRIDES
+ * Enhanced theme switching support for component tokens
+ * =========================================== */
+
+/* Ocean Theme Component Token Overrides */
+.theme-ocean {
+  /* Enhanced card tokens for ocean theme */
+  --component-card-background: var(--component-card-ocean-background);
+  --component-card-text: var(--component-card-ocean-text);
+  --component-card-border: var(--component-card-ocean-border);
+  
+  /* Enhanced button tokens for ocean theme */
+  --component-button-primary-background: var(--brand-primary, #4a90e2);
+  --component-button-primary-background-hover: var(--brand-secondary, #357abd);
+  --component-button-primary-border: var(--brand-primary, #4a90e2);
+  
+  /* Enhanced navigation tokens for ocean theme */
+  --component-nav-item-background-current: var(--brand-primary, #4a90e2);
+  --component-nav-item-text-current: var(--text-on-ocean, #ffffff);
+  
+  /* Enhanced game tokens for ocean theme */
+  --component-game-score-background: var(--brand-primary, #4a90e2);
+  --component-game-control-background: var(--brand-primary, #4a90e2);
+  --component-game-progress-fill: var(--brand-primary, #4a90e2);
+}
+
+/* Forest Theme Component Token Overrides */
+.theme-forest {
+  /* Enhanced card tokens for forest theme */
+  --component-card-background: var(--component-card-forest-background);
+  --component-card-text: var(--component-card-forest-text);
+  --component-card-border: var(--component-card-forest-border);
+  
+  /* Enhanced button tokens for forest theme */
+  --component-button-primary-background: var(--brand-primary, #5cb85c);
+  --component-button-primary-background-hover: var(--brand-secondary, #449d44);
+  --component-button-primary-border: var(--brand-primary, #5cb85c);
+  
+  /* Enhanced navigation tokens for forest theme */
+  --component-nav-item-background-current: var(--brand-primary, #5cb85c);
+  --component-nav-item-text-current: var(--text-on-forest, #ffffff);
+  
+  /* Enhanced game tokens for forest theme */
+  --component-game-score-background: var(--brand-primary, #5cb85c);
+  --component-game-control-background: var(--brand-primary, #5cb85c);
+  --component-game-progress-fill: var(--brand-primary, #5cb85c);
+}
+
+/* Space Theme Component Token Overrides */
+.theme-space {
+  /* Enhanced card tokens for space theme */
+  --component-card-background: var(--component-card-space-background);
+  --component-card-text: var(--component-card-space-text);
+  --component-card-border: var(--component-card-space-border);
+  
+  /* Enhanced button tokens for space theme */
+  --component-button-primary-background: var(--brand-primary, #6f42c1);
+  --component-button-primary-background-hover: var(--brand-secondary, #5a32a3);
+  --component-button-primary-border: var(--brand-primary, #6f42c1);
+  
+  /* Enhanced navigation tokens for space theme */
+  --component-nav-item-background-current: var(--brand-primary, #6f42c1);
+  --component-nav-item-text-current: var(--text-on-space, #ffffff);
+  
+  /* Enhanced game tokens for space theme */
+  --component-game-score-background: var(--brand-primary, #6f42c1);
+  --component-game-control-background: var(--brand-primary, #6f42c1);
+  --component-game-progress-fill: var(--brand-primary, #6f42c1);
+}
+
+/* Sunset Theme Component Token Overrides */
+.theme-sunset {
+  /* Enhanced card tokens for sunset theme */
+  --component-card-background: var(--component-card-sunset-background);
+  --component-card-text: var(--component-card-sunset-text);
+  --component-card-border: var(--component-card-sunset-border);
+  
+  /* Enhanced button tokens for sunset theme */
+  --component-button-primary-background: var(--brand-primary, #fd7e14);
+  --component-button-primary-background-hover: var(--brand-secondary, #e55a00);
+  --component-button-primary-border: var(--brand-primary, #fd7e14);
+  
+  /* Enhanced navigation tokens for sunset theme */
+  --component-nav-item-background-current: var(--brand-primary, #fd7e14);
+  --component-nav-item-text-current: var(--text-on-primary, #ffffff);
+  
+  /* Enhanced game tokens for sunset theme */
+  --component-game-score-background: var(--brand-primary, #fd7e14);
+  --component-game-control-background: var(--brand-primary, #fd7e14);
+  --component-game-progress-fill: var(--brand-primary, #fd7e14);
+}
+
+/* ===========================================
+ * ENHANCED THEME TRANSITION SUPPORT
+ * Optimized transitions for component tokens
+ * =========================================== */
+
+/* Enhanced transition properties for component tokens during theme switching */
+.theme-transitioning .card,
+.theme-transitioning .btn,
+.theme-transitioning .button,
+.theme-transitioning .modal,
+.theme-transitioning .nav-item,
+.theme-transitioning .game-score,
+.theme-transitioning .component-test {
+  transition-property: 
+    background-color, 
+    background-image,
+    color, 
+    border-color, 
+    box-shadow,
+    fill,
+    stroke;
+  transition-duration: var(--theme-transition-duration, 300ms);
+  transition-timing-function: var(--theme-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Performance optimization: limit transitions to essential properties */
+.theme-transitioning * {
+  transition-property: 
+    background-color, 
+    color, 
+    border-color;
+  transition-duration: var(--theme-transition-duration, 300ms);
+  transition-timing-function: var(--theme-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* Dark mode component token overrides */
+.theme-mode-dark {
+  /* Enhanced component token overrides for dark mode */
+  --component-card-background: var(--surface-primary, #2d3748);
+  --component-card-border: var(--border-primary, #4a5568);
+  --component-card-text: var(--text-primary, #f7fafc);
+  --component-card-text-secondary: var(--text-secondary, #a0aec0);
+  --component-card-footer-background: var(--surface-secondary, #1a202c);
+  
+  --component-button-primary-text: var(--text-on-primary, #ffffff);
+  --component-modal-background: var(--surface-elevated, #2d3748);
+  --component-form-input-background: var(--surface-secondary, #1a202c);
+  --component-nav-background: var(--surface-primary, #1a202c);
+}
+
+/* Disable transitions for reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .theme-transitioning,
+  .theme-transitioning * {
+    transition: none !important;
+  }
+}

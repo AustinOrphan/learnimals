@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Component - Co-located CSS Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 2rem;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .test-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Card Component - Co-located CSS Pattern Test</h1>
+        <p>Testing task 5.1: FR-1.1 (co-location), FR-1.2 (naming), FR-4.1 (backward compatibility)</p>
+
+        <div class="test-section">
+            <h2>Component Import Test</h2>
+            <div id="import-test-result" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Card Rendering Test</h2>
+            <div id="render-test-result" class="test-result"></div>
+            <div id="card-container" class="cards-grid"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>Backward Compatibility Test</h2>
+            <div id="compatibility-test-result" class="test-result"></div>
+            <div id="compatibility-container" class="cards-grid"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>CSS Co-location Test Results</h2>
+            <div id="css-test-result" class="test-result"></div>
+        </div>
+    </div>
+
+    <!-- Test the component -->
+    <script type="module">
+        // Mock required utilities for testing
+        window.performance = window.performance || {
+            now: () => Date.now()
+        };
+
+        // Mock theme service
+        const mockThemeService = {
+            onThemeChange: (callback) => () => {},
+            getCurrentTheme: () => 'default',
+            isDarkMode: () => false,
+            getThemeColor: (variable, fallback) => fallback,
+            getThemeColors: (variables, fallback) => fallback,
+            getSemanticColors: () => ({})
+        };
+
+        // Mock component manifest
+        const mockComponentManifest = {
+            loadFromPath: async () => null,
+            fromComponent: () => ({
+                isValid: true,
+                data: { dependencies: [], css: { files: ['Card.css'] } },
+                getCSSFiles: () => ['Card.css']
+            })
+        };
+
+        // Mock component registry
+        const mockComponentRegistry = {
+            register: () => {}
+        };
+
+        // Mock dependency resolver
+        const mockDependencyResolver = {
+            isLoaded: () => true,
+            loadWithDependencies: async () => null
+        };
+
+        // Mock CSS manager
+        const mockCSSManager = {
+            isLoaded: () => ({ loaded: false, cached: false, injected: false }),
+            injectCSS: async () => document.createElement('style'),
+            loadAndCache: async () => {},
+            getCacheStats: () => ({}),
+            invalidateCache: () => {}
+        };
+
+        // Mock CSS path resolver
+        const mockCSSPathResolver = {
+            resolve: (cssFile) => `/src/components/ui/Card/${cssFile}`,
+            getStats: () => ({})
+        };
+
+        // Set up mocks
+        window.themeService = mockThemeService;
+        window.ComponentManifest = mockComponentManifest;
+        window.componentRegistry = mockComponentRegistry;
+        window.dependencyResolver = mockDependencyResolver;
+        window.cssManager = mockCSSManager;
+        window.cssPathResolver = mockCSSPathResolver;
+
+        async function runTests() {
+            const importResult = document.getElementById('import-test-result');
+            const renderResult = document.getElementById('render-test-result');
+            const compatibilityResult = document.getElementById('compatibility-test-result');
+            const cssResult = document.getElementById('css-test-result');
+
+            try {
+                // Test 1: Import the new Card component
+                const { default: Card } = await import('./Card.js');
+                importResult.className = 'test-result test-success';
+                importResult.textContent = '✓ Card component imported successfully from new co-located structure';
+
+                // Test 2: Create and render card instances
+                const cardContainer = document.getElementById('card-container');
+                
+                const testCards = [
+                    {
+                        title: 'Basic Card',
+                        content: 'This is a basic card component with co-located CSS.',
+                        theme: 'default'
+                    },
+                    {
+                        title: 'Ocean Theme Card',
+                        content: 'This card uses the ocean theme variant.',
+                        theme: 'ocean',
+                        elevated: true
+                    },
+                    {
+                        title: 'Large Forest Card',
+                        content: 'This is a large card with forest theme.',
+                        theme: 'forest',
+                        size: 'large',
+                        linkUrl: '#test',
+                        linkText: 'Test Link'
+                    }
+                ];
+
+                for (const cardData of testCards) {
+                    const card = new Card(cardData);
+                    await card.render(cardContainer);
+                }
+
+                renderResult.className = 'test-result test-success';
+                renderResult.textContent = `✓ Successfully created and rendered ${testCards.length} card instances`;
+
+                // Test 3: Backward compatibility with CardV2
+                const compatibilityContainer = document.getElementById('compatibility-container');
+                const { default: CardV2 } = await import('../CardV2.js');
+                
+                const compatCard = new CardV2({
+                    title: 'Backward Compatibility Test',
+                    content: 'This card was created using CardV2 import but uses the new co-located CSS structure.',
+                    theme: 'space',
+                    elevated: true
+                });
+                
+                await compatCard.render(compatibilityContainer);
+                
+                compatibilityResult.className = 'test-result test-success';
+                compatibilityResult.textContent = '✓ CardV2 backward compatibility maintained - redirects to new Card structure';
+
+                // Test 4: CSS co-location validation
+                const cssTests = [
+                    Card.css.includes('Card.css') ? '✓ FR-1.2: CSS file follows ComponentName.css naming convention' : '✗ CSS naming convention failed',
+                    typeof Card.prototype.getComponentPath === 'function' ? '✓ FR-1.1: Component path resolution for co-located CSS' : '✗ Component path resolution missing',
+                    Card === CardV2 ? '✓ FR-4.1: Backward compatibility maintained' : '✗ Backward compatibility broken'
+                ];
+
+                cssResult.className = 'test-result test-success';
+                cssResult.innerHTML = cssTests.join('<br>');
+
+            } catch (error) {
+                console.error('Test failed:', error);
+                importResult.className = 'test-result test-error';
+                importResult.textContent = `✗ Test failed: ${error.message}`;
+            }
+        }
+
+        // Run tests when page loads
+        runTests();
+    </script>
+</body>
+</html>

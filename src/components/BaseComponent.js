@@ -410,10 +410,15 @@ class BaseComponent {
   }
 }
 
-// ES module export only
+// Export for ES modules
 export default BaseComponent;
 
-// Also make available globally for legacy compatibility
+// Also make available globally for non-module script tags
 if (typeof window !== 'undefined') {
   window.BaseComponent = BaseComponent;
+}
+
+// CommonJS compatibility
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = BaseComponent;
 }

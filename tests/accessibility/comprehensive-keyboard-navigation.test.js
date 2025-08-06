@@ -55,8 +55,8 @@ vi.mock('../../src/utils/logger.js', () => ({
 describe('Comprehensive Keyboard Navigation Tests', () => {
   let testContainer;
   let service;
-  let originalActiveElement;
-  let originalFocus;
+  let _originalActiveElement;
+  let _originalFocus;
   let focusHistory = [];
 
   beforeEach(() => {
@@ -114,7 +114,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
 
     // Enhanced blur method
     Element.prototype.blur = vi.fn(function () {
-      const previous = this;
+      const _previous = this;
 
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
@@ -378,7 +378,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const firstSkipLink = skipLinks.querySelector('.skip-link');
 
       // Initially, skip links should be visually hidden but accessible
-      const initialStyles = window.getComputedStyle(skipLinks);
+      const _initialStyles = window.getComputedStyle(skipLinks);
       expect(skipLinks.classList.contains('skip-links')).toBe(true);
 
       // Simulate focus on skip link
@@ -743,7 +743,7 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       component.setupKeyboardNavigation();
 
       const fileMenu = testContainer.querySelector('#file-menu');
-      const editMenu = testContainer.querySelector('#edit-menu');
+      const _editMenu = testContainer.querySelector('#edit-menu');
 
       // Focus file menu
       fileMenu.focus();
@@ -1034,26 +1034,26 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
       const movementHandler = e => {
         const moveDistance = 10;
         switch (e.key.toLowerCase()) {
-          case 'w':
-          case 'arrowup':
-            playerPosition.y -= moveDistance;
-            e.preventDefault();
-            break;
-          case 'a':
-          case 'arrowleft':
-            playerPosition.x -= moveDistance;
-            e.preventDefault();
-            break;
-          case 's':
-          case 'arrowdown':
-            playerPosition.y += moveDistance;
-            e.preventDefault();
-            break;
-          case 'd':
-          case 'arrowright':
-            playerPosition.x += moveDistance;
-            e.preventDefault();
-            break;
+        case 'w':
+        case 'arrowup':
+          playerPosition.y -= moveDistance;
+          e.preventDefault();
+          break;
+        case 'a':
+        case 'arrowleft':
+          playerPosition.x -= moveDistance;
+          e.preventDefault();
+          break;
+        case 's':
+        case 'arrowdown':
+          playerPosition.y += moveDistance;
+          e.preventDefault();
+          break;
+        case 'd':
+        case 'arrowright':
+          playerPosition.x += moveDistance;
+          e.preventDefault();
+          break;
         }
         player.style.left = `${playerPosition.x}px`;
         player.style.top = `${playerPosition.y}px`;
@@ -1181,8 +1181,8 @@ describe('Comprehensive Keyboard Navigation Tests', () => {
         <button id="target-btn">Target</button>
       `;
 
-      const enableBtn = testContainer.querySelector('#enable-btn');
-      const disableBtn = testContainer.querySelector('#disable-btn');
+      const _enableBtn = testContainer.querySelector('#enable-btn');
+      const _disableBtn = testContainer.querySelector('#disable-btn');
       const targetBtn = testContainer.querySelector('#target-btn');
 
       // Focus target button

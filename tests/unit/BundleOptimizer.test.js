@@ -164,36 +164,36 @@ describe('BundleOptimizer', () => {
     // Comprehensive document.createElement mock
     document.createElement = vi.fn(tagName => {
       switch (tagName.toLowerCase()) {
-        case 'canvas':
-          return { ...mockCanvas };
-        case 'link':
-          return { ...mockLink };
-        case 'script':
-          return { ...mockScript };
-        case 'style':
-          return { ...mockStyle };
-        case 'div':
-          return { ...mockDiv };
-        default:
-          return {
-            tagName: tagName.toUpperCase(),
-            setAttribute: vi.fn(),
-            getAttribute: vi.fn(),
-            addEventListener: vi.fn(),
-            removeEventListener: vi.fn(),
-            dispatchEvent: vi.fn(),
-            appendChild: vi.fn(),
-            removeChild: vi.fn(),
-            innerHTML: '',
-            textContent: '',
-            style: {},
-            classList: {
-              add: vi.fn(),
-              remove: vi.fn(),
-              contains: vi.fn(() => false),
-              toggle: vi.fn(),
-            },
-          };
+      case 'canvas':
+        return { ...mockCanvas };
+      case 'link':
+        return { ...mockLink };
+      case 'script':
+        return { ...mockScript };
+      case 'style':
+        return { ...mockStyle };
+      case 'div':
+        return { ...mockDiv };
+      default:
+        return {
+          tagName: tagName.toUpperCase(),
+          setAttribute: vi.fn(),
+          getAttribute: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+          appendChild: vi.fn(),
+          removeChild: vi.fn(),
+          innerHTML: '',
+          textContent: '',
+          style: {},
+          classList: {
+            add: vi.fn(),
+            remove: vi.fn(),
+            contains: vi.fn(() => false),
+            toggle: vi.fn(),
+          },
+        };
       }
     });
 

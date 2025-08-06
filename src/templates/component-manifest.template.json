@@ -1,0 +1,383 @@
+{
+  "name": "{{ComponentName}}",
+  "version": "1.0.0",
+  "description": "{{ComponentDescription}}",
+  "dependencies": [],
+  "css": {
+    "files": ["{{ComponentName}}.css"],
+    "variants": {
+      "themes": {
+        "ocean": {
+          "files": ["{{ComponentName}}.theme-ocean.css"],
+          "description": "Ocean theme variant with blue tones and wave patterns",
+          "condition": "theme === 'ocean'"
+        },
+        "forest": {
+          "files": ["{{ComponentName}}.theme-forest.css"],
+          "description": "Forest theme variant with green tones and nature elements",
+          "condition": "theme === 'forest'"
+        },
+        "space": {
+          "files": ["{{ComponentName}}.theme-space.css"],
+          "description": "Space theme variant with dark backgrounds and cosmic colors",
+          "condition": "theme === 'space'"
+        }
+      },
+      "sizes": {
+        "small": {
+          "files": ["{{ComponentName}}.small.css"],
+          "description": "Compact layout for tight spaces and mobile devices",
+          "tokens": {
+            "--{{component-name}}-padding": "var(--space-sm)",
+            "--{{component-name}}-font-size": "var(--font-size-sm)"
+          },
+          "condition": "size === 'small'"
+        },
+        "medium": {
+          "files": ["{{ComponentName}}.medium.css"],
+          "description": "Default medium size layout",
+          "tokens": {
+            "--{{component-name}}-padding": "var(--space-md)",
+            "--{{component-name}}-font-size": "var(--font-size-base)"
+          },
+          "condition": "size === 'medium'"
+        },
+        "large": {
+          "files": ["{{ComponentName}}.large.css"],
+          "description": "Expanded layout for prominent display",
+          "tokens": {
+            "--{{component-name}}-padding": "var(--space-lg)",
+            "--{{component-name}}-font-size": "var(--font-size-lg)"
+          },
+          "condition": "size === 'large'"
+        }
+      },
+      "states": {
+        "loading": {
+          "files": ["{{ComponentName}}.loading.css"],
+          "description": "Loading state styling with skeleton or spinner effects",
+          "condition": "state === 'loading'"
+        },
+        "error": {
+          "files": ["{{ComponentName}}.error.css"],
+          "description": "Error state styling with warning indicators",
+          "condition": "state === 'error'"
+        },
+        "disabled": {
+          "files": ["{{ComponentName}}.disabled.css"],
+          "description": "Disabled state styling with reduced opacity",
+          "condition": "disabled === true"
+        },
+        "focus": {
+          "files": ["{{ComponentName}}.focus.css"],
+          "description": "Enhanced focus styling for accessibility",
+          "condition": "element.matches(':focus')"
+        }
+      },
+      "responsive": {
+        "mobile": {
+          "files": ["{{ComponentName}}.mobile.css"],
+          "media": "(max-width: 768px)",
+          "description": "Mobile-optimized layout and spacing"
+        },
+        "tablet": {
+          "files": ["{{ComponentName}}.tablet.css"],
+          "media": "(min-width: 769px) and (max-width: 1024px)",
+          "description": "Tablet-optimized layout and interactions"
+        },
+        "desktop": {
+          "files": ["{{ComponentName}}.desktop.css"],
+          "media": "(min-width: 1025px)",
+          "description": "Desktop-optimized layout with hover effects"
+        }
+      }
+    },
+    "dependencies": [
+      "../../../styles/tokens/global-tokens.css",
+      "../../../styles/tokens/semantic-tokens.css",
+      "../../../styles/components/base.css"
+    ],
+    "scoping": "component",
+    "critical": false,
+    "lazy": false,
+    "preload": false,
+    "media": null,
+    "tokens": {
+      "--{{component-name}}-background": "var(--bg-surface)",
+      "--{{component-name}}-border-color": "var(--border-color)",
+      "--{{component-name}}-border-radius": "var(--radius-md)",
+      "--{{component-name}}-padding": "var(--space-md)",
+      "--{{component-name}}-shadow": "var(--shadow-sm)",
+      "--{{component-name}}-text-color": "var(--text-primary)",
+      "--{{component-name}}-transition": "all 0.2s ease-in-out"
+    },
+    "sassVariables": {
+      "${{component-name}}-z-index": "10",
+      "${{component-name}}-max-width": "100%",
+      "${{component-name}}-min-height": "auto"
+    },
+    "customProperties": {
+      "data-theme": "Applied theme name for CSS variant selection",
+      "data-size": "Applied size variant for CSS variant selection",
+      "data-state": "Current component state (loading, error, disabled, etc.)",
+      "data-component": "Component identifier for scoping and debugging"
+    },
+    "performance": {
+      "bundleGroup": "ui-components",
+      "loadPriority": "normal",
+      "cacheStrategy": "aggressive"
+    }
+  },
+  "themes": ["default", "alt", "ocean", "forest", "space"],
+  "api": {
+    "constructor": {
+      "description": "Create a new {{ComponentName}} component",
+      "parameters": {
+        "title": {
+          "type": "string",
+          "required": false,
+          "description": "Component title text"
+        },
+        "content": {
+          "type": "string",
+          "required": false,
+          "description": "Component content (supports HTML)"
+        },
+        "imageUrl": {
+          "type": "string",
+          "required": false,
+          "description": "Optional image URL"
+        },
+        "imageAlt": {
+          "type": "string",
+          "required": false,
+          "description": "Image alt text for accessibility"
+        },
+        "theme": {
+          "type": "string",
+          "required": false,
+          "default": "default",
+          "enum": ["default", "alt", "ocean", "forest", "space"],
+          "description": "Component theme variant"
+        },
+        "size": {
+          "type": "string",
+          "required": false,
+          "default": "medium",
+          "enum": ["small", "medium", "large"],
+          "description": "Component size variant"
+        },
+        "elevated": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether component should have elevation shadow"
+        },
+        "disabled": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether component is disabled"
+        },
+        "className": {
+          "type": "string",
+          "required": false,
+          "description": "Additional CSS classes"
+        }
+      }
+    },
+    "methods": {
+      "render": {
+        "description": "Render the component to a container",
+        "parameters": {
+          "container": {
+            "type": "HTMLElement|string",
+            "required": true,
+            "description": "Container element or selector"
+          }
+        },
+        "returns": "Component instance for chaining"
+      },
+      "updateContent": {
+        "description": "Update component content dynamically",
+        "parameters": {
+          "newContent": {
+            "type": "object",
+            "required": true,
+            "description": "New content options to merge"
+          },
+          "rerender": {
+            "type": "boolean",
+            "required": false,
+            "default": true,
+            "description": "Whether to re-render the component"
+          }
+        },
+        "returns": "Component instance for chaining"
+      },
+      "getComponentData": {
+        "description": "Get component data for external use",
+        "returns": {
+          "type": "object",
+          "description": "Object containing component data"
+        }
+      },
+      "updateOptions": {
+        "description": "Update component configuration",
+        "parameters": {
+          "newOptions": {
+            "type": "object",
+            "required": true,
+            "description": "New options to merge"
+          }
+        },
+        "returns": "Component instance for chaining"
+      },
+      "destroy": {
+        "description": "Clean up component and remove from DOM",
+        "returns": "void"
+      }
+    },
+    "events": {
+      "{{component-name}}:created": {
+        "description": "Fired when component is created",
+        "detail": {
+          "component": "Component instance",
+          "options": "Initial options"
+        }
+      },
+      "{{component-name}}:rendered": {
+        "description": "Fired when component is rendered to DOM",
+        "detail": {
+          "element": "HTMLElement",
+          "container": "Container element"
+        }
+      },
+      "{{component-name}}:click": {
+        "description": "Fired when component is clicked",
+        "detail": {
+          "title": "string",
+          "timestamp": "number",
+          "event": "Event"
+        }
+      },
+      "{{component-name}}:hover": {
+        "description": "Fired when component is hovered or unhovered",
+        "detail": {
+          "title": "string",
+          "action": "string (enter|leave)",
+          "event": "Event"
+        }
+      },
+      "{{component-name}}:themeChanged": {
+        "description": "Fired when theme changes",
+        "detail": {
+          "theme": "string",
+          "colors": "object"
+        }
+      },
+      "{{component-name}}:contentUpdated": {
+        "description": "Fired when content is updated",
+        "detail": {
+          "oldContent": "object",
+          "newContent": "object"
+        }
+      },
+      "{{component-name}}:updated": {
+        "description": "Fired when component options are updated",
+        "detail": {
+          "oldOptions": "Previous options",
+          "newOptions": "Updated options"
+        }
+      },
+      "{{component-name}}:destroyed": {
+        "description": "Fired when component is destroyed",
+        "detail": {
+          "component": "Component instance"
+        }
+      }
+    },
+    "staticMethods": {
+      "createLinked{{ComponentName}}": {
+        "description": "Create a linked component wrapper",
+        "parameters": {
+          "options": {
+            "type": "object",
+            "required": true,
+            "description": "Component options"
+          },
+          "linkUrl": {
+            "type": "string",
+            "required": true,
+            "description": "URL for the link"
+          }
+        },
+        "returns": "HTML string for linked component"
+      },
+      "create{{ComponentName}}s": {
+        "description": "Create multiple components from data array",
+        "parameters": {
+          "componentsData": {
+            "type": "array",
+            "required": true,
+            "description": "Array of component options"
+          },
+          "container": {
+            "type": "HTMLElement|string",
+            "required": true,
+            "description": "Container to render into"
+          }
+        },
+        "returns": "Array of Component instances"
+      }
+    }
+  },
+  "examples": [
+    "{{component-name}}-basic.html",
+    "{{component-name}}-themed.html",
+    "{{component-name}}-sizes.html"
+  ],
+  "tags": ["ui", "component", "{{component-type}}"],
+  "browser": {
+    "ie": "11+",
+    "chrome": "60+",
+    "firefox": "55+",
+    "safari": "12+",
+    "edge": "79+"
+  },
+  "accessibility": {
+    "wcag": "AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-friendly",
+      "high-contrast-support",
+      "reduced-motion-support",
+      "semantic-html",
+      "focus-management"
+    ],
+    "roles": ["{{aria-role}}"],
+    "landmarks": false,
+    "testing": {
+      "automated": ["axe-core", "lighthouse"],
+      "manual": ["keyboard-navigation", "screen-reader-testing"]
+    }
+  },
+  "performance": {
+    "metrics": {
+      "loadTime": "<100ms",
+      "renderTime": "<50ms",
+      "memoryUsage": "<1MB"
+    },
+    "optimizations": [
+      "css-bundling",
+      "lazy-loading",
+      "caching"
+    ]
+  },
+  "testing": {
+    "unit": "{{ComponentName}}.test.js",
+    "integration": "{{ComponentName}}.integration.test.js",
+    "visual": "{{ComponentName}}.visual.test.js",
+    "accessibility": "{{ComponentName}}.a11y.test.js"
+  }
+}

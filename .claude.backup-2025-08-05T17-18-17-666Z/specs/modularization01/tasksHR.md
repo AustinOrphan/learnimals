@@ -1,0 +1,41 @@
+# Tasks - modularization01
+
+## Task List
+
+- [x] **1.1** Create CSSManager class in `src/utils/CSSManager.js` with cache, loading promises, and basic CSS injection
+- [x] **1.2** Implement CSS loading and caching methods in CSSManager: loadAndCache(), isLoaded(), invalidateCache()
+- [x] **1.3** Create CSSPathResolver class in `src/utils/CSSPathResolver.js` for component CSS file path resolution with alias support
+- [x] **2.1** Extend BaseComponentV2 constructor to initialize CSSManager instance for all components
+- [x] **2.2** Enhance injectCSS() method in BaseComponentV2 to use CSSManager for loading and caching
+- [x] **2.3** Add CSS scoping methods to BaseComponentV2: applyScopedStyles() method for component CSS scoping
+- [x] **3.1** Create CSSPerformanceMonitor class in `src/utils/CSSPerformanceMonitor.js` for tracking CSS load timing and cache metrics
+- [x] **3.2** Integrate performance monitoring into CSSManager to track all CSS operations with timing and cache metrics
+- [x] **4.1** Extend ComponentManifest schema to support enhanced CSS declarations with variants and dependencies
+- [x] **4.2** Add CSS file discovery methods to ComponentManifest: getCSSFiles(), getCSSVariants(), getCSSdependencies()
+- [x] **4.3** Update component.json template with enhanced CSS schema showing variants, dependencies, and scoping options
+- [x] **5.1** Restructure Card component to use co-located CSS pattern in new directory structure
+- [x] **5.2** Create CSS file templates for different component types: component-css.template and component-manifest.template
+- [x] **6.1** Create CSSScopingManager class in `src/utils/CSSScopingManager.js` with multiple scoping strategies (class, attribute, css-modules)
+- [x] **6.2** Integrate CSS scoping into CSSManager loading pipeline for automatic scoping during injection
+- [x] **7.1** Create ThemeTokenProcessor class in `src/utils/ThemeTokenProcessor.js` for token extraction, resolution, and inheritance processing
+- [x] **7.2** Implement token validation and debugging methods: validateTokenUsage(), generateTokenDocumentation()
+- [x] **7.3** Integrate ThemeTokenProcessor into CSSManager pipeline for automatic token processing during CSS loading
+- [ ] **8.1** Create enhanced global theme tokens in `src/styles/tokens/global-tokens.css` with comprehensive foundation tokens
+- [ ] **8.2** Create semantic theme tokens in `src/styles/tokens/semantic-tokens.css` for text, backgrounds, interactions, states
+- [ ] **8.3** Create component-specific token patterns in `src/styles/tokens/component-tokens.css` for component-level theme customization
+- [ ] **9.1** Update existing Card CSS to use new theme token hierarchy system
+- [ ] **9.2** Create theme token documentation generator utility in `src/utils/TokenDocumentationGenerator.js`
+- [ ] **10.1** Create CSSBundler class in `src/utils/CSSBundler.js` for CSS bundling, minification, and optimization for production
+- [ ] **10.2** Implement CSS dependency analysis in CSSBundler for dependency tree analysis and optimization
+- [ ] **10.3** Create CSS build integration script in `scripts/build-css.js` and integrate into package.json build process
+- [ ] **11.1** Implement critical CSS detection in CSSBundler for critical path CSS identification and prioritization
+- [ ] **11.2** Add CSS lazy loading support to CSSManager for on-demand loading based on component visibility
+- [ ] **11.3** Create CSS performance dashboard for development in `src/dev-tools/CSSPerformanceDashboard.js`
+- [ ] **12.1** Create CSSMigrationUtility class in `src/utils/CSSMigrationUtility.js` for automated extraction of component styles from global CSS
+- [ ] **12.2** Implement token conversion in CSSMigrationUtility for automatic conversion of hardcoded values to theme tokens
+- [ ] **12.3** Create migration CLI tool in `scripts/migrate-component-css.js` for command-line component migration
+- [ ] **13.1** Create CSS debugging utilities for development mode in `src/dev-tools/CSSDebugger.js` with token inspection
+- [ ] **13.2** Add CSS validation to build process in `scripts/validate-css.js` and integrate with package.json
+- [ ] **14.1** Create CSS architecture unit tests in `tests/unit/css-architecture.test.js` for CSSManager, token processing, and scoping
+- [ ] **14.2** Add CSS performance benchmarks in `tests/performance/css-performance.test.js` for automated performance regression testing
+- [ ] **14.3** Create visual regression tests for CSS migration in `tests/visual/css-migration.test.js` for automated visual validation

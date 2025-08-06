@@ -5,6 +5,32 @@
   box-sizing: border-box;
 }
 
+/*/* Enhanced theme transition system for smooth semantic token switching */
+:root {
+  /* Transition duration for theme switching */
+  --theme-transition-duration: 300ms;
+  --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --theme-fast-transition: 150ms;
+}
+
+/* Theme transitioning state - applied during theme changes */
+.theme-transitioning,
+.theme-transitioning * {
+  /* Enhanced transition properties for semantic tokens */
+  transition-property: 
+    background-color, 
+    color, 
+    border-color, 
+    box-shadow, 
+    fill, 
+    stroke,
+    background-image,
+    backdrop-filter,
+    opacity;
+  transition-duration: var(--theme-transition-duration);
+  transition-timing-function: var(--theme-transition-timing);
+}
+
 /* Targeted theme transition system for better performance */
 body,
 .hero,
@@ -24,26 +50,58 @@ button,
 .question,
 footer,
 .footer-links a {
-  transition-property: background-color, color, border-color, box-shadow, fill, stroke;
-  will-change: background-color, color, border-color, box-shadow, fill, stroke; /* Add will-change */
-  transition-duration: 0.4s;
-  transition-timing-function: ease;
+  /* Enhanced transition properties for semantic tokens */
+  transition-property: 
+    background-color, 
+    color, 
+    border-color, 
+    box-shadow, 
+    fill, 
+    stroke,
+    background-image;
+  transition-duration: var(--theme-transition-duration);
+  transition-timing-function: var(--theme-transition-timing);
+  will-change: background-color, color, border-color, box-shadow, fill, stroke;
 }
 
-/* Exceptions for elements that need faster or no transitions */
+/* Fast transitions for interactive elements */
 button:hover,
 a:hover,
 input:focus,
 select:focus,
 textarea:focus,
 [role='button']:hover,
-.fast-transition,
-.no-theme-transition {
-  transition-duration: 0.2s;
+.fast-transition {
+  transition-duration: var(--theme-fast-transition);
 }
 
+/* Elements that should not have theme transitions */
 .no-theme-transition {
   transition-property: none;
+}
+
+/* Enhanced transitions for theme-specific elements */
+[class*="theme-"],
+[data-theme],
+.interactive-primary,
+.interactive-secondary,
+.status-success,
+.status-error,
+.status-warning,
+.status-info,
+.brand-primary,
+.brand-secondary {
+  transition-property: 
+    background-color, 
+    color, 
+    border-color, 
+    box-shadow, 
+    fill, 
+    stroke,
+    background-image,
+    transform;
+  transition-duration: var(--theme-transition-duration);
+  transition-timing-function: var(--theme-transition-timing);
 }
 
 /* Preserve existing animations - they override transitions */

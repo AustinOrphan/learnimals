@@ -8,8 +8,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
 import {
-  accessibilityService,
-  AccessibilityService,
+  accessibilityService as _accessibilityService,
+  AccessibilityService as _AccessibilityService,
 } from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger

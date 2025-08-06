@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BaseGame } from '../../src/components/games/BaseGame.js';
+import { BaseGame as _BaseGame } from '../../src/components/games/BaseGame.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -24,7 +24,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 
 describe('ARIA Game-Specific Patterns', () => {
   let testContainer;
-  let mockGameInstance;
+  let _mockGameInstance;
 
   beforeEach(() => {
     document.body.innerHTML = '';
@@ -371,7 +371,7 @@ describe('ARIA Game-Specific Patterns', () => {
 
       // Create draggable animals
       const animals = ['Lion', 'Fish', 'Bird'];
-      animals.forEach((animal, index) => {
+      animals.forEach((animal, _index) => {
         const draggable = document.createElement('div');
         draggable.setAttribute('role', 'button');
         draggable.setAttribute('draggable', 'true');
@@ -536,7 +536,7 @@ describe('ARIA Game-Specific Patterns', () => {
 
       const streakDetails = document.createElement('div');
       streakDetails.id = 'streak-details';
-      streakDetails.textContent = "7 day learning streak! You've practiced every day this week.";
+      streakDetails.textContent = '7 day learning streak! You\'ve practiced every day this week.';
 
       const badgesList = document.createElement('ul');
       badgesList.setAttribute('role', 'list');
@@ -762,7 +762,7 @@ describe('ARIA Game-Specific Patterns', () => {
       responses.setAttribute('aria-label', 'Response options');
 
       const option1 = document.createElement('button');
-      option1.textContent = "Yes, I'm ready!";
+      option1.textContent = 'Yes, I\'m ready!';
       option1.setAttribute('aria-describedby', 'option1-result');
 
       const option2 = document.createElement('button');
@@ -798,7 +798,7 @@ describe('ARIA Game-Specific Patterns', () => {
 
       // Simulate character response
       dialogueText.textContent =
-        "Excellent choice! Here's a helpful strategy: try breaking the problem into smaller parts.";
+        'Excellent choice! Here\'s a helpful strategy: try breaking the problem into smaller parts.';
       expect(dialogueText.textContent).toContain('helpful strategy');
     });
 
@@ -844,9 +844,9 @@ describe('ARIA Game-Specific Patterns', () => {
 
       // Simulate different feedback types
       const feedbackMessages = [
-        "Fantastic work! You're really getting the hang of this!",
-        "Don't worry, everyone makes mistakes. Let's try again!",
-        "You're so close! Think about what we just learned.",
+        'Fantastic work! You\'re really getting the hang of this!',
+        'Don\'t worry, everyone makes mistakes. Let\'s try again!',
+        'You\'re so close! Think about what we just learned.',
         'Perfect! You solved that like a true mathematician!',
       ];
 
@@ -881,7 +881,7 @@ describe('ARIA Game-Specific Patterns', () => {
       // Simulate BaseGame feedback patterns
       const feedbackMessages = [
         'Correct answer! Great job!',
-        "Oops, that's not quite right. Try again!",
+        'Oops, that\'s not quite right. Try again!',
         'Hint: Think about grouping the numbers.',
         'Level 2 unlocked! Excellent progress!',
       ];

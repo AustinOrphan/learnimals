@@ -706,17 +706,17 @@ export class LazyLoadManager {
 
       let content;
       switch (contentType) {
-        case 'json':
-          content = await response.json();
-          await this.renderJsonContent(element, content);
-          break;
-        case 'text':
-          content = await response.text();
-          element.textContent = content;
-          break;
-        default:
-          content = await response.text();
-          element.innerHTML = content;
+      case 'json':
+        content = await response.json();
+        await this.renderJsonContent(element, content);
+        break;
+      case 'text':
+        content = await response.text();
+        element.textContent = content;
+        break;
+      default:
+        content = await response.text();
+        element.innerHTML = content;
       }
 
       element.classList.add('content-loaded');
@@ -780,15 +780,15 @@ export class LazyLoadManager {
       }
 
       switch (item.type) {
-        case 'image':
-          await this.loadImage(item.element);
-          break;
-        case 'component':
-          await this.loadComponent(item.element);
-          break;
-        case 'content':
-          await this.loadContent(item.element);
-          break;
+      case 'image':
+        await this.loadImage(item.element);
+        break;
+      case 'component':
+        await this.loadComponent(item.element);
+        break;
+      case 'content':
+        await this.loadContent(item.element);
+        break;
       }
 
       // Remove from queue on success

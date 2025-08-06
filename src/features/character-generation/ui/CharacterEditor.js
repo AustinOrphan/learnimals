@@ -1773,7 +1773,7 @@ export default class CharacterEditor extends BaseComponent {
   /**
    * Update preview expression
    */
-  updatePreviewExpression(expression) {
+  updatePreviewExpression(_expression) {
     this.updatePreview(); // Expression is passed in updatePreview method
   }
 

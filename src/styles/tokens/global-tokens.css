@@ -1,0 +1,566 @@
+/**
+ * Global Theme Tokens - Enhanced Foundation System
+ * 
+ * This file provides comprehensive global theme tokens that extend the existing
+ * Learnimals theme system. These tokens serve as the foundation for all
+ * theme-aware components and build upon the current theme variables.
+ * 
+ * Requirements Satisfied:
+ * - FR-2.1: Expanded semantic CSS variables beyond current basic set
+ * - NFR-2.2: Theme tokens are documented and discoverable
+ * - NFR-4.2: CSS custom property fallbacks for browser compatibility
+ * 
+ * Token Categories:
+ * 1. Foundation Colors (grayscale, system colors)
+ * 2. Typography System (font families, sizes, weights, line heights)
+ * 3. Spacing System (consistent spacing scale)
+ * 4. Layout System (breakpoints, containers, z-index)
+ * 5. Animation System (durations, easings)
+ * 6. Border System (radius, width values)
+ * 7. Shadow System (elevation levels)
+ * 8. Focus System (accessibility-compliant focus styles)
+ * 
+ * Usage:
+ * Import this file before any component CSS to ensure tokens are available.
+ * All tokens include fallback values for browser compatibility.
+ */
+
+:root {
+  /* ===========================================
+   * 1. FOUNDATION COLOR TOKENS
+   * Core color values that support all themes
+   * =========================================== */
+  
+  /* Grayscale Foundation */
+  --color-white: rgb(255, 255, 255);
+  --color-black: rgb(0, 0, 0);
+  --color-transparent: transparent;
+  
+  /* Enhanced Grayscale Palette */
+  --color-gray-50: rgb(249, 250, 251);
+  --color-gray-100: rgb(243, 244, 246);
+  --color-gray-200: rgb(229, 231, 235);
+  --color-gray-300: rgb(209, 213, 219);
+  --color-gray-400: rgb(156, 163, 175);
+  --color-gray-500: rgb(107, 114, 128);
+  --color-gray-600: rgb(75, 85, 99);
+  --color-gray-700: rgb(55, 65, 81);
+  --color-gray-800: rgb(31, 41, 55);
+  --color-gray-900: rgb(17, 24, 39);
+  --color-gray-950: rgb(3, 7, 18);
+  
+  /* System Status Colors (theme-independent) */
+  --color-success-light: rgb(34, 197, 94);
+  --color-success-dark: rgb(74, 222, 128);
+  --color-warning-light: rgb(245, 158, 11);
+  --color-warning-dark: rgb(251, 191, 36);
+  --color-error-light: rgb(239, 68, 68);
+  --color-error-dark: rgb(248, 113, 113);
+  --color-info-light: rgb(59, 130, 246);
+  --color-info-dark: rgb(96, 165, 250);
+  
+  /* Alpha Channel Utilities */
+  --alpha-10: 0.1;
+  --alpha-20: 0.2;
+  --alpha-30: 0.3;
+  --alpha-40: 0.4;
+  --alpha-50: 0.5;
+  --alpha-60: 0.6;
+  --alpha-70: 0.7;
+  --alpha-80: 0.8;
+  --alpha-90: 0.9;
+  
+  /* ===========================================
+   * 2. TYPOGRAPHY SYSTEM TOKENS
+   * Comprehensive typography scale and properties
+   * =========================================== */
+  
+  /* Font Families */
+  --font-family-primary: 'Comic Sans MS', 'Marker Felt', 'Trebuchet MS', cursive, sans-serif;
+  --font-family-secondary: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+  --font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  --font-family-display: 'Comic Sans MS', 'Marker Felt', cursive, fantasy;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  
+  /* Font Sizes - Mobile-first responsive scale */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  --font-size-6xl: 3.75rem;   /* 60px */
+  --font-size-7xl: 4.5rem;    /* 72px */
+  --font-size-8xl: 6rem;      /* 96px */
+  --font-size-9xl: 8rem;      /* 128px */
+  
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+  
+  /* ===========================================
+   * 3. SPACING SYSTEM TOKENS
+   * Consistent spacing scale based on 0.25rem (4px) units
+   * =========================================== */
+  
+  /* Base Spacing Scale */
+  --space-px: 1px;
+  --space-0: 0px;
+  --space-0-5: 0.125rem;  /* 2px */
+  --space-1: 0.25rem;     /* 4px */
+  --space-1-5: 0.375rem;  /* 6px */
+  --space-2: 0.5rem;      /* 8px */
+  --space-2-5: 0.625rem;  /* 10px */
+  --space-3: 0.75rem;     /* 12px */
+  --space-3-5: 0.875rem;  /* 14px */
+  --space-4: 1rem;        /* 16px */
+  --space-5: 1.25rem;     /* 20px */
+  --space-6: 1.5rem;      /* 24px */
+  --space-7: 1.75rem;     /* 28px */
+  --space-8: 2rem;        /* 32px */
+  --space-9: 2.25rem;     /* 36px */
+  --space-10: 2.5rem;     /* 40px */
+  --space-11: 2.75rem;    /* 44px */
+  --space-12: 3rem;       /* 48px */
+  --space-14: 3.5rem;     /* 56px */
+  --space-16: 4rem;       /* 64px */
+  --space-20: 5rem;       /* 80px */
+  --space-24: 6rem;       /* 96px */
+  --space-28: 7rem;       /* 112px */
+  --space-32: 8rem;       /* 128px */
+  --space-36: 9rem;       /* 144px */
+  --space-40: 10rem;      /* 160px */
+  --space-44: 11rem;      /* 176px */
+  --space-48: 12rem;      /* 192px */
+  --space-52: 13rem;      /* 208px */
+  --space-56: 14rem;      /* 224px */
+  --space-60: 15rem;      /* 240px */
+  --space-64: 16rem;      /* 256px */
+  --space-72: 18rem;      /* 288px */
+  --space-80: 20rem;      /* 320px */
+  --space-96: 24rem;      /* 384px */
+  
+  /* Semantic Spacing Names */
+  --space-xs: var(--space-1);    /* 4px */
+  --space-sm: var(--space-2);    /* 8px */
+  --space-md: var(--space-4);    /* 16px */
+  --space-lg: var(--space-6);    /* 24px */
+  --space-xl: var(--space-8);    /* 32px */
+  --space-2xl: var(--space-12);  /* 48px */
+  --space-3xl: var(--space-16);  /* 64px */
+  --space-4xl: var(--space-24);  /* 96px */
+  --space-5xl: var(--space-32);  /* 128px */
+  
+  /* ===========================================
+   * 4. LAYOUT SYSTEM TOKENS
+   * Responsive breakpoints, containers, and layout utilities
+   * =========================================== */
+  
+  /* Breakpoints (mobile-first) */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  
+  /* Container Max Widths */
+  --container-xs: 100%;
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+  
+  /* Z-Index Scale */
+  --z-index-hide: -1;
+  --z-index-auto: auto;
+  --z-index-base: 0;
+  --z-index-docked: 10;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-banner: 1030;
+  --z-index-overlay: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-skiplink: 1070;
+  --z-index-toast: 1080;
+  --z-index-tooltip: 1090;
+  
+  /* Grid System */
+  --grid-columns: 12;
+  --grid-gap: var(--space-6);
+  --grid-gap-sm: var(--space-4);
+  --grid-gap-lg: var(--space-8);
+  
+  /* ===========================================
+   * 5. ANIMATION SYSTEM TOKENS
+   * Consistent timing and easing for animations
+   * =========================================== */
+  
+  /* Animation Durations */
+  --duration-instant: 0ms;
+  --duration-75: 75ms;
+  --duration-100: 100ms;
+  --duration-150: 150ms;
+  --duration-200: 200ms;
+  --duration-300: 300ms;
+  --duration-500: 500ms;
+  --duration-700: 700ms;
+  --duration-1000: 1000ms;
+  
+  /* Semantic Animation Durations */
+  --duration-fast: var(--duration-150);
+  --duration-normal: var(--duration-300);
+  --duration-slow: var(--duration-500);
+  --duration-slower: var(--duration-700);
+  
+  /* Easing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-back-in: cubic-bezier(0.36, 0, 0.66, -0.56);
+  --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-back-in-out: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --ease-bounce-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* Default Easing for Educational Content */
+  --ease-default: var(--ease-out);
+  --ease-interactive: var(--ease-back-out);
+  
+  /* ===========================================
+   * 6. BORDER SYSTEM TOKENS
+   * Border radius and width utilities
+   * =========================================== */
+  
+  /* Border Radius */
+  --radius-none: 0px;
+  --radius-sm: 0.125rem;    /* 2px */
+  --radius: 0.25rem;        /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius-lg: 0.5rem;      /* 8px */
+  --radius-xl: 0.75rem;     /* 12px */
+  --radius-2xl: 1rem;       /* 16px */
+  --radius-3xl: 1.5rem;     /* 24px */
+  --radius-full: 9999px;
+  
+  /* Semantic Border Radius */
+  --radius-button: var(--radius-lg);
+  --radius-card: var(--radius-xl);
+  --radius-modal: var(--radius-2xl);
+  --radius-pill: var(--radius-full);
+  
+  /* Border Widths */
+  --border-width-0: 0px;
+  --border-width: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
+  
+  /* ===========================================
+   * 7. SHADOW SYSTEM TOKENS
+   * Elevation-based shadow system
+   * =========================================== */
+  
+  /* Shadow Values */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-2xl: 0 50px 100px -20px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --shadow-none: 0 0 #0000;
+  
+  /* Semantic Shadow Names */
+  --shadow-card: var(--shadow-sm);
+  --shadow-card-hover: var(--shadow-md);
+  --shadow-modal: var(--shadow-2xl);
+  --shadow-dropdown: var(--shadow-lg);
+  --shadow-button: var(--shadow-xs);
+  --shadow-button-hover: var(--shadow);
+  
+  /* Colored Shadows (for focus states) */
+  --shadow-focus-ring: 0 0 0 3px rgb(59 130 246 / 0.5);
+  --shadow-error-ring: 0 0 0 3px rgb(239 68 68 / 0.5);
+  --shadow-success-ring: 0 0 0 3px rgb(34 197 94 / 0.5);
+  
+  /* ===========================================
+   * 8. FOCUS SYSTEM TOKENS
+   * Accessibility-compliant focus styles
+   * =========================================== */
+  
+  /* Focus Ring Properties */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-opacity: 0.5;
+  --focus-ring-style: solid;
+  
+  /* Focus Colors (will be overridden by theme) */
+  --focus-ring-color: rgb(59, 130, 246);
+  --focus-ring-color-error: rgb(239, 68, 68);
+  --focus-ring-color-success: rgb(34, 197, 94);
+  --focus-ring-color-warning: rgb(245, 158, 11);
+  
+  /* ===========================================
+   * 9. COMPONENT TOKENS
+   * Common component-level tokens
+   * =========================================== */
+  
+  /* Interactive Element Sizes */
+  --touch-target-min: 44px;  /* WCAG AA minimum touch target */
+  --button-height-sm: 32px;
+  --button-height: 40px;
+  --button-height-lg: 48px;
+  --input-height: 40px;
+  --input-height-sm: 32px;
+  --input-height-lg: 48px;
+  
+  /* Common Ratios */
+  --ratio-square: 1;
+  --ratio-landscape: 4/3;
+  --ratio-portrait: 3/4;
+  --ratio-widescreen: 16/9;
+  --ratio-ultrawide: 21/9;
+  --ratio-golden: 1.618;
+  
+  /* ===========================================
+   * 10. BROWSER COMPATIBILITY FALLBACKS
+   * Fallback values for older browsers
+   * =========================================== */
+  
+  /* Fallback font stacks for older browsers */
+  --font-fallback-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-fallback-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-fallback-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  /* CSS Grid fallbacks */
+  --display-grid-fallback: block;
+  --display-flex-fallback: block;
+  
+  /* Modern CSS feature fallbacks */
+  --gap-fallback: var(--space-4);
+  --aspect-ratio-fallback: 16/9;
+  
+  /* ===========================================
+   * 11. SEMANTIC TOKEN ALIASES
+   * Human-readable names for common patterns
+   * =========================================== */
+  
+  /* Spacing Aliases */
+  --padding-button: var(--space-3) var(--space-6);
+  --padding-input: var(--space-3) var(--space-4);
+  --padding-card: var(--space-6);
+  --padding-modal: var(--space-8);
+  --padding-section: var(--space-16) var(--space-4);
+  
+  /* Margin Aliases */
+  --margin-section: var(--space-16) 0;
+  --margin-element: var(--space-4) 0;
+  --margin-component: var(--space-8) 0;
+  
+  /* Typography Aliases */
+  --text-heading-primary: var(--font-size-4xl);
+  --text-heading-secondary: var(--font-size-2xl);
+  --text-heading-tertiary: var(--font-size-xl);
+  --text-body: var(--font-size-base);
+  --text-caption: var(--font-size-sm);
+  --text-label: var(--font-size-sm);
+  
+  /* ===========================================
+   * 12. PRINT MEDIA TOKENS
+   * Optimized values for print styles
+   * =========================================== */
+  
+  --print-font-size-base: 12pt;
+  --print-line-height: 1.4;
+  --print-margin: 0.5in;
+  --print-color-text: black;
+  --print-color-background: white;
+  
+  /* ===========================================
+   * 13. HIGH CONTRAST MODE TOKENS
+   * Enhanced contrast for accessibility
+   * =========================================== */
+  
+  --high-contrast-border-width: 2px;
+  --high-contrast-focus-width: 3px;
+  --high-contrast-text-shadow: none;
+  --high-contrast-box-shadow: none;
+}
+
+/* ===========================================
+ * RESPONSIVE TOKEN OVERRIDES
+ * Adjust tokens for different screen sizes
+ * =========================================== */
+
+/* Small screens (mobile) */
+@media (max-width: 640px) {
+  :root {
+    /* Smaller typography scale for mobile */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.375rem;
+    --font-size-3xl: 1.5rem;
+    --font-size-4xl: 1.75rem;
+    --font-size-5xl: 2rem;
+    
+    /* Adjusted spacing for smaller screens */
+    --padding-section: var(--space-8) var(--space-4);
+    --padding-modal: var(--space-6);
+    
+    /* Smaller shadows for mobile */
+    --shadow-card: var(--shadow-xs);
+    --shadow-modal: var(--shadow-lg);
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  :root {
+    /* Enhanced spacing for larger screens */
+    --padding-section: var(--space-20) var(--space-8);
+    --padding-card: var(--space-8);
+    --grid-gap: var(--space-8);
+  }
+}
+
+/* ===========================================
+ * ACCESSIBILITY OVERRIDES
+ * Respect user preferences
+ * =========================================== */
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: var(--duration-instant);
+    --duration-normal: var(--duration-75);
+    --duration-slow: var(--duration-100);
+    --duration-slower: var(--duration-150);
+    
+    /* Simplified easing for reduced motion */
+    --ease-default: var(--ease-linear);
+    --ease-interactive: var(--ease-linear);
+  }
+}
+
+/* High contrast preferences */
+@media (prefers-contrast: high) {
+  :root {
+    /* Enhanced contrast ratios */
+    --border-width: var(--high-contrast-border-width);
+    --focus-ring-width: var(--high-contrast-focus-width);
+    
+    /* Remove subtle shadows in high contrast */
+    --shadow-xs: var(--high-contrast-box-shadow);
+    --shadow-sm: var(--high-contrast-box-shadow);
+    --shadow: var(--high-contrast-box-shadow);
+  }
+}
+
+/* Print media adjustments */
+@media print {
+  :root {
+    /* Optimize for print */
+    --font-size-base: var(--print-font-size-base);
+    --line-height-normal: var(--print-line-height);
+    
+    /* Remove shadows and backgrounds for print */
+    --shadow-card: none;
+    --shadow-modal: none;
+    --shadow-button: none;
+  }
+}
+
+/* ===========================================
+ * LEGACY BROWSER SUPPORT
+ * Fallbacks for older browsers that don't support CSS custom properties
+ * =========================================== */
+
+/* CSS custom properties not supported fallback */
+@supports not (--custom: property) {
+  :root {
+    /* Provide static fallback values */
+    color: #333;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  /* Basic button styles without custom properties */
+  button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    color: #333;
+  }
+}
+
+/* ===========================================
+ * DOCUMENTATION COMMENTS
+ * Guide for developers using these tokens
+ * =========================================== */
+
+/*
+Usage Examples:
+
+1. Typography:
+   font-size: var(--font-size-lg, 1.125rem);
+   line-height: var(--line-height-normal, 1.5);
+   font-family: var(--font-family-primary, 'Comic Sans MS', cursive, sans-serif);
+
+2. Spacing:
+   padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+   margin: var(--space-md, 1rem) 0;
+
+3. Colors (use with theme system):
+   color: var(--text-primary, #333);
+   background-color: var(--bg-card, #fff);
+
+4. Animations:
+   transition: all var(--duration-normal, 300ms) var(--ease-default, ease-out);
+
+5. Shadows and Borders:
+   box-shadow: var(--shadow-card, 0 1px 3px rgba(0,0,0,0.1));
+   border-radius: var(--radius-card, 0.75rem);
+
+6. Layout:
+   z-index: var(--z-index-modal, 1050);
+   max-width: var(--container-lg, 1024px);
+
+Best Practices:
+- Always provide fallback values for critical properties
+- Use semantic token names when possible (--space-md vs --space-4)
+- Test with various color themes to ensure compatibility
+- Consider print and high-contrast scenarios
+- Follow the spacing scale for consistency
+*/

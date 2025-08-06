@@ -1,6 +1,7 @@
 // Card Component
 // Reusable card component for consistent UI across the site
 
+// Import BaseComponent - works for both ES modules and script tags
 import BaseComponent from '../BaseComponent.js';
 
 class Card extends BaseComponent {
@@ -110,12 +111,15 @@ class Card extends BaseComponent {
   }
 }
 
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Card;
-} else {
+// Export for ES modules
+export default Card;
+
+// Also make available globally for non-module script tags
+if (typeof window !== 'undefined') {
   window.Card = Card;
 }
 
-// ES module export
-export default Card;
+// CommonJS compatibility
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = Card;
+}

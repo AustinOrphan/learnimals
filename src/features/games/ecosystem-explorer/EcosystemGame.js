@@ -1,11 +1,11 @@
-import { getRandomInt, debounce } from '../../../utils/common.js';
+import { getRandomInt as _getRandomInt, debounce } from '../../../utils/common.js';
 
 /**
  * EcosystemGame - Sky's Ecosystem Explorer
  * A dynamic ecosystem-building game where players create balanced ecosystems
  */
 export default class EcosystemGame {
-  constructor(canvasId, options = {}) {
+  constructor(canvasId, _options = {}) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d', { alpha: false });
 
@@ -367,7 +367,7 @@ export default class EcosystemGame {
     }
   }
 
-  handlePaletteClick(x, y) {
+  handlePaletteClick(x, _y) {
     const speciesIndex = Math.floor((x - 20) / 100);
     if (speciesIndex >= 0 && speciesIndex < this.availableSpecies.length) {
       this.gameState.selectedSpecies = this.availableSpecies[speciesIndex].id;

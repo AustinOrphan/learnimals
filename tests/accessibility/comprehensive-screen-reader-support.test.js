@@ -5,12 +5,12 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
+import { AccessibleComponent as _AccessibleComponent } from '../../src/components/AccessibleComponent.js';
 import {
-  accessibilityService,
+  accessibilityService as _accessibilityService,
   AccessibilityService,
 } from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import { accessibilityTester as _accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -42,7 +42,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 describe('Comprehensive Screen Reader Support Tests', () => {
   let testContainer;
   let service;
-  let mockTimer;
+  let _mockTimer;
 
   beforeEach(() => {
     // Set up clean DOM
@@ -52,7 +52,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     document.body.appendChild(testContainer);
 
     // Mock timers for announcement testing
-    mockTimer = vi.useFakeTimers();
+    _mockTimer = vi.useFakeTimers();
 
     // Mock getBoundingClientRect
     Element.prototype.getBoundingClientRect = vi.fn(() => ({
@@ -526,7 +526,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const form = testContainer.querySelector('form');
       const fieldsets = testContainer.querySelectorAll('fieldset');
-      const labels = testContainer.querySelectorAll('label');
+      const _labels = testContainer.querySelectorAll('label');
       const inputs = testContainer.querySelectorAll('input, select');
       const requiredInputs = testContainer.querySelectorAll('[required]');
 
@@ -921,7 +921,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const pagination = testContainer.querySelector('nav[aria-label="Pagination navigation"]');
-      const paginationItems = pagination.querySelectorAll('li');
+      const _paginationItems = pagination.querySelectorAll('li');
       const currentPage = pagination.querySelector('[aria-current="page"]');
       const statusRegion = testContainer.querySelector('#pagination-status');
 
@@ -1049,7 +1049,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const usernameError = testContainer.querySelector('#username-error');
       const passwordStrength = testContainer.querySelector('#password-strength');
-      const passwordError = testContainer.querySelector('#password-error');
+      const _passwordError = testContainer.querySelector('#password-error');
       const formStatus = testContainer.querySelector('.form-status');
 
       // Test error announcements (assertive)
@@ -1524,7 +1524,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const form = testContainer.querySelector('form');
       const fieldsets = testContainer.querySelectorAll('fieldset');
-      const labels = testContainer.querySelectorAll('label');
+      const _labels = testContainer.querySelectorAll('label');
       const inputs = testContainer.querySelectorAll('input, select');
       const helpTexts = testContainer.querySelectorAll('.help-text');
       const errorContainers = testContainer.querySelectorAll('[role="alert"]');
@@ -1628,12 +1628,12 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const usernameInput = testContainer.querySelector('#username');
-      const passwordInput = testContainer.querySelector('#password');
+      const _passwordInput = testContainer.querySelector('#password');
       const confirmPasswordInput = testContainer.querySelector('#confirm-password');
 
       const usernameError = testContainer.querySelector('#username-error');
       const passwordStrength = testContainer.querySelector('#password-strength');
-      const passwordError = testContainer.querySelector('#password-error');
+      const _passwordError = testContainer.querySelector('#password-error');
       const confirmPasswordError = testContainer.querySelector('#confirm-password-error');
 
       // Test username validation
@@ -1893,11 +1893,11 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       // Verify lesson structure
       const lesson = testContainer.querySelector('.lesson');
-      const header = lesson.querySelector('header');
-      const nav = lesson.querySelector('nav');
-      const main = lesson.querySelector('main');
-      const aside = lesson.querySelector('aside');
-      const footer = lesson.querySelector('footer');
+      const _header = lesson.querySelector('header');
+      const _nav = lesson.querySelector('nav');
+      const _main = lesson.querySelector('main');
+      const _aside = lesson.querySelector('aside');
+      const _footer = lesson.querySelector('footer');
 
       expect(lesson.getAttribute('role')).toBe('main');
       expect(lesson.getAttribute('aria-labelledby')).toBe('lesson-title');
@@ -2290,9 +2290,9 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const tablist = testContainer.querySelector('[role="tablist"]');
       const tabs = testContainer.querySelectorAll('[role="tab"]');
-      const tabpanels = testContainer.querySelectorAll('[role="tabpanel"]');
+      const _tabpanels = testContainer.querySelectorAll('[role="tabpanel"]');
       const menubar = testContainer.querySelector('[role="menubar"]');
-      const menuitems = testContainer.querySelectorAll('[role="menuitem"]');
+      const _menuitems = testContainer.querySelectorAll('[role="menuitem"]');
       const tree = testContainer.querySelector('[role="tree"]');
       const treeitems = testContainer.querySelectorAll('[role="treeitem"]');
       const grid = testContainer.querySelector('[role="grid"]');

@@ -1,0 +1,340 @@
+{
+  "name": "Card",
+  "version": "2.0.0",
+  "description": "Reusable card component for consistent UI across the site with theme support and accessibility features. Restructured with co-located CSS pattern following FR-1.1, FR-1.2, and FR-4.1.",
+  "dependencies": [],
+  "css": {
+    "primary": "Card.css",
+    "files": ["Card.css"],
+    "variants": {
+      "themes": {
+        "ocean": {
+          "files": ["Card.theme-ocean.css"],
+          "description": "Ocean theme with blue tones and wave patterns",
+          "tokens": {
+            "--card-ocean-background": "linear-gradient(135deg, var(--ocean-light, #e3f2fd) 0%, var(--ocean-primary, #2196f3) 100%)",
+            "--card-ocean-text": "var(--text-on-ocean, #ffffff)",
+            "--card-ocean-border": "var(--ocean-border, #1976d2)"
+          }
+        },
+        "forest": {
+          "files": ["Card.theme-forest.css"],
+          "description": "Forest theme with green tones and nature elements",
+          "tokens": {
+            "--card-forest-background": "linear-gradient(135deg, var(--forest-light, #e8f5e8) 0%, var(--forest-primary, #4caf50) 100%)",
+            "--card-forest-text": "var(--text-on-forest, #ffffff)",
+            "--card-forest-border": "var(--forest-border, #388e3c)"
+          }
+        },
+        "space": {
+          "files": ["Card.theme-space.css"],
+          "description": "Space theme with dark backgrounds and cosmic colors",
+          "tokens": {
+            "--card-space-background": "linear-gradient(135deg, var(--space-light, #e8eaf6) 0%, var(--space-primary, #673ab7) 100%)",
+            "--card-space-text": "var(--text-on-space, #ffffff)",
+            "--card-space-border": "var(--space-border, #512da8)"
+          }
+        }
+      },
+      "sizes": {
+        "small": {
+          "files": ["Card.small.css"],
+          "description": "Compact layout for tight spaces",
+          "tokens": {
+            "--card-padding": "var(--space-sm)",
+            "--card-title-size": "var(--font-size-sm)",
+            "--card-font-size-small": "0.875rem",
+            "--card-title-size-small": "1.125rem"
+          }
+        },
+        "large": {
+          "files": ["Card.large.css"],
+          "description": "Expanded layout for prominent display",
+          "tokens": {
+            "--card-padding": "var(--space-xl)",
+            "--card-title-size": "var(--font-size-lg)",
+            "--card-font-size-large": "1.125rem",
+            "--card-title-size-large": "1.5rem"
+          }
+        }
+      },
+      "states": {
+        "elevated": {
+          "files": ["Card.elevated.css"],
+          "description": "Enhanced shadow and hover effects",
+          "tokens": {
+            "--card-shadow": "var(--shadow-lg)",
+            "--card-hover-shadow": "var(--shadow-xl)",
+            "--card-shadow-elevated-hover": "0 8px 24px rgba(0, 0, 0, 0.15)"
+          }
+        },
+        "loading": {
+          "files": ["Card.loading.css"],
+          "description": "Loading state with skeleton or spinner"
+        },
+        "error": {
+          "files": ["Card.error.css"],
+          "description": "Error state styling with warning indicators"
+        }
+      },
+      "responsive": {
+        "mobile": {
+          "files": ["Card.mobile.css"],
+          "media": "(max-width: 768px)",
+          "description": "Mobile-optimized layout and spacing",
+          "tokens": {
+            "--card-mobile-padding": "var(--spacing-card-body-mobile, 1rem)",
+            "--card-mobile-footer-padding": "var(--spacing-card-footer-mobile, 0.75rem 1rem)",
+            "--card-mobile-title-size": "1.125rem"
+          }
+        },
+        "tablet": {
+          "files": ["Card.tablet.css"],
+          "media": "(min-width: 769px) and (max-width: 1024px)",
+          "description": "Tablet-optimized layout"
+        }
+      }
+    },
+    "dependencies": [
+      "../../../styles/tokens/global-tokens.css",
+      "../../../styles/tokens/semantic-tokens.css",
+      "../../../styles/components/animations.css"
+    ],
+    "scoping": "component",
+    "critical": true,
+    "lazy": false,
+    "preload": true,
+    "media": null,
+    "tokens": {
+      "--card-background": "var(--bg-card)",
+      "--card-border-color": "var(--border-color)",
+      "--card-border-radius": "var(--radius-md)",
+      "--card-padding": "var(--space-lg)",
+      "--card-shadow": "var(--shadow-sm)",
+      "--card-title-color": "var(--text-primary)",
+      "--card-content-color": "var(--text-secondary)",
+      "--card-hover-transform": "translateY(-2px)",
+      "--card-transition": "all 0.2s ease-in-out",
+      "--card-focus-color": "var(--accent-primary)",
+      "--card-shadow-hover": "var(--shadow-card-hover, 0 4px 12px rgba(0, 0, 0, 0.15))",
+      "--card-border-color-hover": "var(--border-color-hover)",
+      "--card-title-size": "1.25rem",
+      "--card-title-weight": "600",
+      "--card-title-line-height": "1.3",
+      "--card-content-line-height": "1.6",
+      "--card-footer-padding": "var(--spacing-card-footer, 1rem 1.5rem)",
+      "--card-footer-background": "var(--bg-card-footer, #fafafa)",
+      "--card-footer-border-color": "var(--border-color-light, #f0f0f0)"
+    },
+    "darkModeTokens": {
+      "--card-dark-background": "var(--bg-card-dark, #2d3748)",
+      "--card-dark-border-color": "var(--border-color-dark, #4a5568)",
+      "--card-dark-title-color": "var(--text-primary-dark, #f7fafc)",
+      "--card-dark-content-color": "var(--text-secondary-dark, #a0aec0)",
+      "--card-dark-footer-background": "var(--bg-card-footer-dark, #1a202c)",
+      "--card-dark-footer-border-color": "var(--border-color-light-dark, #2d3748)"
+    },
+    "sassVariables": {
+      "$card-max-width": "400px",
+      "$card-min-height": "200px",
+      "$card-aspect-ratio": "16/9"
+    },
+    "customProperties": {
+      "data-theme": "Applied theme name for CSS selection",
+      "data-size": "Applied size variant for CSS selection",
+      "data-state": "Current component state (loading, error, etc.)",
+      "data-component-scope": "Component scoping identifier for CSS isolation"
+    }
+  },
+  "themes": ["default", "alt", "ocean", "forest", "space"],
+  "api": {
+    "constructor": {
+      "description": "Create a new Card component with co-located CSS support",
+      "parameters": {
+        "title": {
+          "type": "string",
+          "required": false,
+          "description": "Card title text"
+        },
+        "content": {
+          "type": "string",
+          "required": false,
+          "description": "Card content (supports HTML)"
+        },
+        "imageUrl": {
+          "type": "string",
+          "required": false,
+          "description": "Optional image URL"
+        },
+        "imageAlt": {
+          "type": "string",
+          "required": false,
+          "description": "Image alt text for accessibility"
+        },
+        "linkUrl": {
+          "type": "string",
+          "required": false,
+          "description": "Optional link URL"
+        },
+        "linkText": {
+          "type": "string",
+          "required": false,
+          "default": "Learn More",
+          "description": "Link button text"
+        },
+        "theme": {
+          "type": "string",
+          "required": false,
+          "default": "default",
+          "enum": ["default", "alt", "ocean", "forest", "space"],
+          "description": "Card theme variant"
+        },
+        "elevated": {
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Whether card should have elevation shadow"
+        },
+        "size": {
+          "type": "string",
+          "required": false,
+          "default": "medium",
+          "enum": ["small", "medium", "large"],
+          "description": "Card size variant"
+        }
+      }
+    },
+    "methods": {
+      "updateContent": {
+        "description": "Update card content dynamically",
+        "parameters": {
+          "newContent": {
+            "type": "object",
+            "required": true,
+            "description": "New content options to merge"
+          },
+          "rerender": {
+            "type": "boolean",
+            "required": false,
+            "default": true,
+            "description": "Whether to re-render the component"
+          }
+        },
+        "returns": "Card instance for chaining"
+      },
+      "getCardData": {
+        "description": "Get card data for external use",
+        "returns": {
+          "type": "object",
+          "description": "Object containing card data"
+        }
+      }
+    },
+    "events": {
+      "card:click": {
+        "description": "Fired when card link is clicked",
+        "detail": {
+          "title": "string",
+          "linkUrl": "string",
+          "timestamp": "number",
+          "event": "Event"
+        }
+      },
+      "card:hover": {
+        "description": "Fired when card is hovered or unhovered",
+        "detail": {
+          "title": "string",
+          "action": "string (enter|leave)",
+          "event": "Event"
+        }
+      },
+      "card:themeChanged": {
+        "description": "Fired when theme changes",
+        "detail": {
+          "theme": "string",
+          "colors": "object"
+        }
+      },
+      "card:contentUpdated": {
+        "description": "Fired when content is updated",
+        "detail": {
+          "oldContent": "object",
+          "newContent": "object"
+        }
+      }
+    },
+    "staticMethods": {
+      "createLinkedCard": {
+        "description": "Create a linked card wrapper",
+        "parameters": {
+          "options": {
+            "type": "object",
+            "required": true,
+            "description": "Card options"
+          },
+          "linkUrl": {
+            "type": "string",
+            "required": true,
+            "description": "URL for the link"
+          }
+        },
+        "returns": "HTML string for linked card"
+      },
+      "createCards": {
+        "description": "Create multiple cards from data array",
+        "parameters": {
+          "cardsData": {
+            "type": "array",
+            "required": true,
+            "description": "Array of card options"
+          },
+          "container": {
+            "type": "HTMLElement|string",
+            "required": true,
+            "description": "Container to render into"
+          }
+        },
+        "returns": "Array of Card instances"
+      }
+    }
+  },
+  "examples": [
+    "card-basic.html",
+    "card-with-image.html",
+    "card-themed.html"
+  ],
+  "tags": ["ui", "component", "card", "content", "co-located-css"],
+  "browser": {
+    "ie": "11+",
+    "chrome": "60+",
+    "firefox": "55+",
+    "safari": "12+",
+    "edge": "79+"
+  },
+  "accessibility": {
+    "wcag": "AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-friendly",
+      "high-contrast-support",
+      "reduced-motion-support",
+      "semantic-html",
+      "focus-management"
+    ],
+    "roles": ["article"],
+    "landmarks": false
+  },
+  "migration": {
+    "from": "CardV2",
+    "backwardCompatibility": true,
+    "globalCSSFallback": true,
+    "description": "Migrated from CardV2 to co-located CSS pattern following FR-1.1, FR-1.2, and FR-4.1 requirements"
+  },
+  "architecture": {
+    "pattern": "co-located-css",
+    "baseComponent": "BaseComponentV2",
+    "cssInjection": "automatic",
+    "scoping": "component-level",
+    "themeTokens": "semantic-enhanced"
+  }
+}
