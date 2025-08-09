@@ -1,0 +1,52 @@
+$ bun run type-check
+🔍 Python Type Checker (mypy)
+==============================
+⚠️  No mypy configuration found.
+   Run 'setup-mypy' to create one, or add [tool.mypy] to pyproject.toml
+📋 Running: mypy .
+
+./multi_agent_system_docs/daily_sync.py:107: SyntaxWarning: invalid escape sequence '\['
+  pattern = f"- \[({'x' if critical['task'] in content and '- [x]' in content else ' '})\] \*\*{critical['task']}"
+./multi_agent_system_docs/daily_sync.py:107: SyntaxWarning: invalid escape sequence '\]'
+  pattern = f"- \[({'x' if critical['task'] in content and '- [x]' in content else ' '})\] \*\*{critical['task']}"
+multi_agent_system_docs/launch_interactive_cli.py:92: error: "object" has no attribute "lower"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:48: error: Incompatible return value type (got "dict[str, Path]", expected "dict[str, str]")  [return-value]
+multi_agent_system_docs/initialize_agent.py:56: error: "str" has no attribute "read_text"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:56: error: "str" has no attribute "exists"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:57: error: "str" has no attribute "read_text"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:57: error: "str" has no attribute "exists"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:140: error: "str" has no attribute "name"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:141: error: "str" has no attribute "name"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:145: error: "str" has no attribute "parent"  [attr-defined]
+multi_agent_system_docs/initialize_agent.py:146: error: "str" has no attribute "write_text"  [attr-defined]
+multi_agent_system_docs/daily_sync.py:107: error: Unsupported operand types for in ("object" and "str")  [operator]
+multi_agent_system_docs/setup_interactive.py:13: error: Library stubs not installed for "yaml"  [import-untyped]
+multi_agent_system_docs/setup_interactive.py:13: note: Hint: "python3 -m pip install types-PyYAML"
+multi_agent_system_docs/setup_interactive.py:13: note: (or run "mypy --install-types" to install all missing stub packages)
+multi_agent_system_docs/launch_cli_agents.py:34: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+multi_agent_system_docs/launch_cli_agents.py:35: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]
+multi_agent_system_docs/claude_code_api_launcher.py:27: error: Cannot find implementation or library stub for module named "anthropic"  [import-not-found]
+multi_agent_system_docs/claude_code_api_launcher.py:27: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+multi_agent_system_docs/claude_code_api_launcher.py:43: error: Need type annotation for "messages" (hint: "messages: list[<type>] = ...")  [var-annotated]
+multi_agent_system_docs/claude_code_api_launcher.py:176: error: Need type annotation for "launch_log" (hint: "launch_log: list[<type>] = ...")  [var-annotated]
+multi_agent_system_docs/claude_code_api_launcher.py:254: error: Need type annotation for "priority_groups" (hint: "priority_groups: dict[<type>, <type>] = ...")  [var-annotated]
+Found 16 errors in 5 files (checked 15 source files)
+
+❌ Type errors found. Fix them for better code safety.
+
+💡 Common fixes:
+   • Add type hints: def func(x: int) -> str:
+   • Use Optional: from typing import Optional
+   • Add # type: ignore comments for complex cases
+
+💡 Usage examples:
+   type-check                    # Check all files
+   type-check mymodule.py        # Check specific file
+   type-check --strict           # Enable strict mode
+error: "type-check" exited with code 1
+
+
+$ bun run lint
+$ eslint src/ scripts/ tests/
+/opt/homebrew/bin/bash: line 1: eslint: command not found
+error: script "lint" exited with code 127
