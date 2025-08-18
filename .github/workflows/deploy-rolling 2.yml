@@ -51,7 +51,7 @@ jobs:
           fi
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Validate deployment readiness
         id: validation
@@ -101,7 +101,7 @@ jobs:
       deployment-id: ${{ steps.deploy.outputs.deployment-id }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
@@ -193,7 +193,7 @@ jobs:
             **Approve this deployment by commenting `/approve`**
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
@@ -272,7 +272,7 @@ jobs:
       name: ${{ needs.pre-deployment.outputs.deployment-environment }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
