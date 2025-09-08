@@ -310,7 +310,7 @@ jobs:
       
       - name: Publish coverage report comment
         if: matrix.node-version == 20 && matrix.shard == 0 && github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -440,7 +440,7 @@ jobs:
 
       - name: Comment test summary on PR
         if: matrix.node-version == 20 && github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
