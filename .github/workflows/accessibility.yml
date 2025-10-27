@@ -160,7 +160,7 @@ jobs:
       
       - name: Upload axe results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: axe-results
           path: axe-results.json
@@ -269,7 +269,7 @@ jobs:
       
       - name: Upload Pa11y results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pa11y-results
           path: pa11y-results.txt
@@ -479,7 +479,7 @@ jobs:
       
       - name: Upload keyboard test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: keyboard-test-results
           path: keyboard-test-results.json
@@ -622,7 +622,7 @@ jobs:
       
       - name: Upload contrast results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: contrast-results
           path: contrast-results.json
@@ -670,7 +670,7 @@ jobs:
           echo "✅ All accessibility tests passed"
       
       - name: Upload accessibility report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: accessibility-report
           path: accessibility-report.md

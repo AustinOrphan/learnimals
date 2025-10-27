@@ -293,7 +293,7 @@ jobs:
       
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-shard${{ matrix.shard }}-node${{ matrix.node-version }}
           path: test-artifacts/
@@ -302,7 +302,7 @@ jobs:
       
       - name: Upload coverage to artifact
         if: matrix.node-version == 20 && matrix.shard == 0 && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-report
           path: coverage/
@@ -523,7 +523,7 @@ jobs:
       
       - name: Upload build artifacts
         if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-files
           path: |
@@ -607,7 +607,7 @@ jobs:
             --only-categories pwa,performance,accessibility
         
       - name: Upload lighthouse results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lighthouse-results
           path: lighthouse-results.json
@@ -752,7 +752,7 @@ jobs:
       
       - name: Upload combined test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: all-test-results-combined
           path: combined-test-artifacts/
@@ -811,7 +811,7 @@ jobs:
           
       - name: Upload test report index
         if: always()  
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-index
           path: combined-test-artifacts/index.html

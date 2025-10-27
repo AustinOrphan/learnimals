@@ -68,7 +68,7 @@ jobs:
       
       - name: Upload Lighthouse results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lighthouse-results
           path: |
@@ -177,7 +177,7 @@ jobs:
       
       - name: Upload mobile results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: mobile-lighthouse-results
           path: |

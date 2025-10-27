@@ -108,7 +108,7 @@ jobs:
       
       - name: Upload build artifacts
         if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-files
           path: |
@@ -192,7 +192,7 @@ jobs:
             --only-categories pwa,performance,accessibility
         
       - name: Upload lighthouse results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lighthouse-results
           path: lighthouse-results.json
