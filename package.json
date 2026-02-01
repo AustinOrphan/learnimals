@@ -23,6 +23,10 @@
     "test:e2e": "vitest run tests/e2e",
     "test:e2e:user-journeys": "vitest run tests/e2e/user-journeys",
     "test:e2e:accessibility": "vitest run tests/e2e/user-journeys/accessibility-journey.e2e.test.js",
+    "test:e2e:playwright": "playwright test",
+    "test:e2e:playwright:ui": "playwright test --ui",
+    "test:e2e:playwright:headed": "playwright test --headed",
+    "test:e2e:playwright:ci": "playwright test --reporter=html",
     "test:performance": "vitest run tests/performance",
     "test:security": "vitest run tests/security",
     "test:accessibility": "vitest run tests/e2e/user-journeys/accessibility-journey.e2e.test.js",
@@ -56,7 +60,9 @@
   ],
   "private": true,
   "devDependencies": {
+    "@austinorphan/e2e-core": "file:../../e2e-core",
     "@eslint/js": "^8.57.0",
+    "@playwright/test": "^1.58.1",
     "@vitest/coverage-v8": "^1.6.0",
     "@vitest/ui": "^1.6.0",
     "eslint": "^8.57.0",
@@ -65,7 +71,8 @@
     "lint-staged": "^15.2.0",
     "markdownlint-cli2": "^0.18.1",
     "prettier": "^3.0.0",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "wait-on": "^9.0.3"
   },
   "lint-staged": {
     "src/**/*.js": [
