@@ -1,37 +1,30 @@
-import { test, expect } from '@austinorphan/e2e-core';
+import { createSmokeTests, createPageLoadTest, createLinkCheckTest } from '@austinorphan/e2e-core';
 
-test.describe('Learnimals Smoke Tests', () => {
-  test('homepage loads successfully', async ({ page }) => {
-    await page.goto('/');
+// Standard smoke tests
+createSmokeTests({
+  appName: 'Learnimals',
+  expectedTitle: /Learnimals/i,
+  hasNavigation: true,
+  hasInteractiveElements: true,
+  customChecks: [
+    {
+      name: 'heading is visible',
+      check: async (page) => {
+        const heading = page.locator('h1').first();
+        await page.waitForSelector('h1', { timeout: 5000 });
+      },
+    },
+  ],
+});
 
-    // Check title
-    await expect(page).toHaveTitle(/Learnimals/i);
+// Test specific subject pages
+createPageLoadTest('/pages/math.html', {
+  expectedHeading: /math/i,
+});
 
-    // Check main heading exists
-    const heading = page.locator('h1').first();
-    await expect(heading).toBeVisible();
-  });
-
-  test('navigation links are present', async ({ page }) => {
-    await page.goto('/');
-
-    // Check for main navigation
-    const nav = page.locator('nav').first();
-    await expect(nav).toBeVisible();
-
-    // Check for subject links (Math, Science, Reading, Art, Coding)
-    const mathLink = page.getByRole('link', { name: /math/i });
-    await expect(mathLink).toBeVisible();
-  });
-
-  test('subject page loads', async ({ page }) => {
-    await page.goto('/pages/math.html');
-
-    // Check page loaded
-    await expect(page.locator('body')).toBeVisible();
-
-    // Check for math-specific content
-    const content = page.locator('main, .content, .container').first();
-    await expect(content).toBeVisible();
-  });
+// Verify navigation links work
+createLinkCheckTest({
+  selector: 'nav a',
+  maxLinksToCheck: 5,
+  skipExternal: true,
 });
