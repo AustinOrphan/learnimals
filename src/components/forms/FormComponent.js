@@ -517,3 +517,5 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   window.FormComponent = FormComponent;
 }
+
+export default FormComponent;

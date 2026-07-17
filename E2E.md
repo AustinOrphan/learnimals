@@ -6,7 +6,7 @@ This project uses Playwright Test for end-to-end testing with shared configurati
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 20.15.1 (see .nvmrc)
 - npm or equivalent package manager
 - Playwright browsers installed
 
@@ -26,25 +26,25 @@ npx playwright install
 npm run serve
 
 # In another terminal, run E2E tests
-npm run test:e2e:playwright
+npm run test:e2e
 ```
 
 ### Watch Mode (UI)
 
 ```bash
-npm run test:e2e:playwright:ui
+npm run test:e2e:ui
 ```
 
 ### Headed Mode (see browser)
 
 ```bash
-npm run test:e2e:playwright:headed
+npm run test:e2e:headed
 ```
 
 ### CI Mode
 
 ```bash
-npm run test:e2e:playwright:ci
+npm run test:e2e:ci
 ```
 
 ## Selector Strategy

@@ -54,6 +54,9 @@
     "learning"
   ],
   "private": true,
+  "engines": {
+    "node": ">=20.15.1"
+  },
   "devDependencies": {
     "@austinorphan/e2e-core": "file:../../e2e-core",
     "@eslint/js": "^8.57.0",

@@ -5,7 +5,7 @@
 .DEFAULT_GOAL := help
 
 # Variables
-NODE_VERSION := 18
+NODE_VERSION := 20
 DOCKER_IMAGE := learnimals
 DOCKER_TAG := latest
 PORT := 8080
