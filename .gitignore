@@ -71,3 +71,7 @@ dev-tests/
 
 # Claude Code settings (should be local only)
 .claude/settings.local.json
+
+# Playwright artifacts
+test-results/
+playwright-report/
