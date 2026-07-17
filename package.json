@@ -44,7 +44,7 @@
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run test:performance && npm run test:security",
     "test:ci": "npm run lint && npm run test:all && npm run test:coverage:all",
     "generate-test-report": "node scripts/generate-test-report.js",
-    "serve": "python -m http.server 3000 -d src/pages",
+    "serve": "python3 -m http.server 3000",
     "build": "echo 'Static site - no build required'",
     "prepare": "husky",
     "pre-commit": "lint-staged",
