@@ -160,15 +160,9 @@
         };
       });
 
-      // Fallback error handling
+      // Error logging (fallback page removed 2026-07-17)
       window.addEventListener('error', e => {
-        console.error('❌ Enhanced reading page error:', e.error);
-
-        // If there's a critical error, show fallback
-        if (e.error && e.error.message.includes('SubjectTemplateLoader')) {
-          console.log('🔄 Falling back to original reading page...');
-          window.location.href = '/src/features/subjects/shared/reading-original.html';
-        }
+        console.error('Enhanced reading page error:', e.error);
       });
     </script>
   </body>

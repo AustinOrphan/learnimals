@@ -75,3 +75,5 @@ dev-tests/
 # Playwright artifacts
 test-results/
 playwright-report/
+# Generated test output
+coverage-report.json
