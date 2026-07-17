@@ -64,7 +64,7 @@ class NavigationHelper {
   }
 
   getSubjectUrl(subject) {
-    return this.getUrl(`src/features/subjects/shared/${subject}.html`);
+    return this.getUrl(`src/features/subjects/${subject}/${subject}.html`);
   }
 
   getImageUrl(imageName) {
@@ -85,11 +85,11 @@ class NavigationHelper {
       profile: 'src/pages/profile.html',
 
       // Subjects
-      math: 'src/features/subjects/shared/math.html',
-      science: 'src/features/subjects/shared/science.html',
-      reading: 'src/features/subjects/shared/reading.html',
-      art: 'src/features/subjects/shared/art.html',
-      coding: 'src/features/subjects/shared/coding.html',
+      math: 'src/features/subjects/math/math.html',
+      science: 'src/features/subjects/science/science.html',
+      reading: 'src/features/subjects/reading/reading.html',
+      art: 'src/features/subjects/art/art.html',
+      coding: 'src/features/subjects/coding/coding.html',
       bubblepop: 'src/features/subjects/shared/bubblepop.html',
     };
 

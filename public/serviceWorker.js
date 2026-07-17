@@ -1,9 +1,9 @@
 // Service Worker for Learnimals PWA
-const CACHE_NAME = 'learnimals-cache-v4';
+const CACHE_NAME = 'learnimals-cache-v5';
 const ASSETS_TO_CACHE = [
   // HTML pages (only cache existing pages)
   '/src/pages/index.html',
-  '/src/features/subjects/shared/math.html',
+  '/src/features/subjects/math/math.html',
   '/src/features/subjects/shared/bubblepop.html',
   
   // CSS files (only cache existing CSS)

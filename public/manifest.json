@@ -1,4 +1,5 @@
-{  "name": "Learnimals - Educational Games for Kids",
+{
+  "name": "Learnimals - Educational Games for Kids",
   "short_name": "Learnimals",
   "description": "Fun educational games with animal friends for children to learn math, science, reading and art",
   "start_url": "/src/pages/index.html",
@@ -45,21 +46,21 @@
       "name": "Play Math Games",
       "short_name": "Math",
       "description": "Start playing math games with Mango the Shark",
-      "url": "/src/features/subjects/shared/math.html",
+      "url": "/src/features/subjects/math/math.html",
       "icons": [{ "src": "./images/math-shark.png", "sizes": "96x96" }]
     },
     {
       "name": "Read Stories",
       "short_name": "Reading",
       "description": "Read fun stories with Ruby the Panda",
-      "url": "/src/features/subjects/shared/reading.html",
+      "url": "/src/features/subjects/reading/reading.html",
       "icons": [{ "src": "./images/reading-panda.png", "sizes": "96x96" }]
     },
     {
       "name": "Science Experiments",
       "short_name": "Science",
       "description": "Explore science with Sky the Parrot",
-      "url": "/src/features/subjects/shared/science.html",
+      "url": "/src/features/subjects/science/science.html",
       "icons": [{ "src": "./images/science-parrot.png", "sizes": "96x96" }]
     },
     {
