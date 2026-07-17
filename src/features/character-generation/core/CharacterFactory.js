@@ -6,7 +6,6 @@
  */
 
 import {
-  CharacterSchema,
   DefaultCharacterTemplate,
   SubjectTemplates,
 } from '../schemas/CharacterSchema.js';
@@ -465,7 +464,6 @@ export class CharacterFactory {
 
     return character;
   }
-  }
 
   generateUniqueId(character) {
     const baseName = (character.name || 'character').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -501,7 +499,7 @@ export class CharacterFactory {
     return shuffled.slice(0, count);
   }
 
-  generateRandomAccessories(subject) {
+  generateRandomAccessories(_subject) {
     const accessories = [];
     const accessoryTypes = ['glasses', 'hat', 'badge', 'bow'];
 

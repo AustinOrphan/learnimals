@@ -127,44 +127,6 @@ export class CharacterValidator {
     if (schemaDef.enum && !schemaDef.enum.includes(value)) {
       this.errors.push(`${propertyName} must be one of: ${schemaDef.enum.join(', ')}`);
     }
-  } is required`);
-      return;
-    }
-
-    if (value === undefined || value === null) {
-      return; // Optional field not provided
-    }
-
-    // Type validation (handle array type specially)
-    if (schemaDef.type) {
-      if (schemaDef.type === 'array' && !Array.isArray(value)) {
-        this.errors.push(`${propertyName} must be an array`);
-        return;
-      } else if (schemaDef.type !== 'array' && typeof value !== schemaDef.type) {
-        this.errors.push(`${propertyName} must be of type ${schemaDef.type}`);
-        return;
-      }
-    }
-
-    // String validations
-    if (schemaDef.type === 'string') {
-      this.validateString(propertyName, value, schemaDef);
-    }
-
-    // Number validations
-    if (schemaDef.type === 'number') {
-      this.validateNumber(propertyName, value, schemaDef);
-    }
-
-    // Array validations
-    if (schemaDef.type === 'array') {
-      this.validateArray(propertyName, value, schemaDef);
-    }
-
-    // Enum validation
-    if (schemaDef.enum && !schemaDef.enum.includes(value)) {
-      this.errors.push(`${propertyName} must be one of: ${schemaDef.enum.join(', ')}`);
-    }
   }
 
   /**
