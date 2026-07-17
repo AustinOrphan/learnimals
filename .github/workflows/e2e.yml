@@ -39,7 +39,7 @@ jobs:
           token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
-      - name: Place and build e2e-core where the file: dependency expects it
+      - name: Place and build e2e-core sibling dependency
         run: |
           mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
           cd "$GITHUB_WORKSPACE/../../e2e-core"
