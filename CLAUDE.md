@@ -263,9 +263,10 @@ them up automatically.
 > red suite can block commits for pre-existing failures.
 
 14 workflows in `.github/workflows/`. The load-bearing ones: `ci.yml` (lint, 4-way sharded
-tests, coverage gates; Node matrix [20, 22, 23] from `.nvmrc`), `e2e.yml` (cannot work on
-GitHub runners until `@austinorphan/e2e-core` is published — the `file:` dep only resolves on
-this machine),
+tests, coverage gates; Node matrix [20, 22, 23] from `.nvmrc`), `e2e.yml` (checks out the
+private `AustinOrphan/e2e-core` repo as the `file:` sibling and builds it; requires the
+`E2E_CORE_TOKEN` secret — a fine-grained PAT with read access to that repo — and stays red
+until the secret exists),
 `comprehensive-testing.yml` (daily cron; pins Node 18; visual job always fails),
 `accessibility.yml`, `lighthouse.yml`, `security.yml` (CodeQL, ZAP, child-safety scans),
 `deploy.yml` (GitHub Pages), `deploy-rolling.yml` (K8s, aspirational), `monitoring.yml` (cron

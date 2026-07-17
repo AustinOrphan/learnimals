@@ -25,8 +25,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
+
+      # The @austinorphan/e2e-core dependency is file:../../e2e-core, so the
+      # sibling repo must exist two levels above the package root. It is a
+      # private repo: the E2E_CORE_TOKEN secret must hold a fine-grained PAT
+      # with read access to AustinOrphan/e2e-core.
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core where the file: dependency expects it
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
 
       - name: Install dependencies
         run: npm ci
@@ -34,18 +52,10 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Build application
-        run: echo "No build step required for static HTML"
-
-      - name: Start application server
-        run: |
-          python3 -m http.server 3000 &
-          npx wait-on http://localhost:3000 -t 60000
-        env:
-          NODE_ENV: test
-
+      # No manual server step: the Playwright config's webServer starts
+      # `npm run serve` (repo root on port 3000) and waits for it.
       - name: Run Playwright tests
-        run: npx playwright test --project=${{ matrix.browser }}
+        run: npx playwright test --config e2e/playwright.config.ts --project=${{ matrix.browser }}
         env:
           CI: true
 
