@@ -49,8 +49,15 @@ npm run serve
 `npm run serve` runs `python3 -m http.server 3000` from the repo root, matching CI (`e2e.yml`)
 and the Playwright BASE_URL default. (Fixed 2026-07-17 — it previously served `src/pages` as
 the docroot, breaking every root-absolute `/src/...` and `/public/...` URL, and used `python`
-instead of `python3`.) Pages must always be served from the repo root. The root `index.html` is
-a launcher/navigation page, not the app; the app homepage is `src/pages/index.html`.
+instead of `python3`.) Pages must always be served from the repo root. The root `index.html`
+redirects to the app homepage `src/pages/index.html` (until 2026-07-17 it was a stale
+"migration complete" launcher page with no nav and dead links).
+
+The `@austinorphan/e2e-core` dependency installs as a **copy**, not a symlink
+(`install-links=true` in `.npmrc` — required so e2e-core resolves this repo's single
+`@playwright/test` instance instead of its own). After editing e2e-core, refresh with
+`rm -rf node_modules/@austinorphan/e2e-core && npm install` (a plain `npm install` won't
+re-copy while the version number is unchanged).
 
 ## Essential Commands (verified)
 
@@ -79,25 +86,25 @@ npm run generate-subjects -- --subjects=music,geography
 npm run list-templates                # built-ins: music, geography, history, language,
                                       # physics, cooking, environment
 npm run check:duplicates              # iCloud-conflict detector (see Gotchas)
+
+# Browser e2e (Playwright; fixed 2026-07-17 — 30 tests across 5 browser projects)
+npm run test:e2e:playwright           # full matrix; auto-starts npm run serve via webServer
+npm run test:e2e:playwright:headed | :ui
+npx playwright test --config e2e/playwright.config.ts --project=chromium   # one browser
+npx playwright install                # download browser binaries after Playwright upgrades
 ```
 
 ### Broken commands — do not assume these work
 
 Verified broken as of 2026-07-17:
 
-- **All `test:e2e:playwright*` scripts.** From the repo root `playwright test` finds no config,
-  falls into default discovery, and crashes on two copies of `@playwright/test` (e2e-core bundles
-  its own) plus Vitest files. With `--config e2e/playwright.config.ts` it finds **0 tests**:
-  e2e-core's `createConfig` defaults `testDir` to `./e2e` relative to the config file →
-  `e2e/e2e/`, which doesn't exist (the spec is in `e2e/tests/`). The lone smoke spec also targets
-  `/pages/math.html`, a URL that exists under no document root. `.github/workflows/e2e.yml` has
-  the same defects and cannot ever have passed as written.
 - **`npm run test:visual`** — `tests/visual/` does not exist; exits 1. This also hard-fails the
   visual-regression job in `comprehensive-testing.yml` on every run.
 - **`npm test` alone** is watch mode; use `npx vitest run` for one-shot.
 
 ### Current test health (measured 2026-07-17)
 
+Playwright browser suite: 30/30 green (all five browser projects, verified 2026-07-17).
 `npm run test:unit`: 10 of 25 files failing, 118 of 856 tests failing. The suite cannot meet its
 own 80% coverage gates right now. `tests/accessibility/` (22 files, the largest category) has
 **no npm script**; `test:accessibility` misleadingly runs a single jsdom journey file instead.
@@ -165,7 +172,7 @@ nothing serves /api**.
 `navbarLoader.js` (fetches `layout/navbar.html` into `#navbar-placeholder`, fires
 `navbarLoaded`) → `navigationHelper.js` → `PWAInstaller.js` → `main.js` (confetti only) →
 `navigation.js` → `themeManager.js` → `themeSwitcher.js`. PWA: `public/serviceWorker.js`
-(cache-first, `learnimals-cache-v4`, offline fallback) + `public/manifest.json`.
+(cache-first, `learnimals-cache-v5`, offline fallback) + `public/manifest.json`.
 
 ## Project Structure
 
@@ -189,7 +196,7 @@ _main/
 │   └── themeInitializer.js # import-free FOUC guard
 ├── public/                # manifest.json, serviceWorker.js, images/
 ├── tests/                 # Vitest suites (see Testing) — tests/e2e/ is jsdom, NOT browser
-├── e2e/                   # Playwright (broken; spec in e2e/tests/, config expects e2e/e2e/)
+├── e2e/                   # Playwright browser tests (spec in e2e/tests/, config sets testDir)
 ├── scripts/               # generateSubjects, checkDuplicates, test-sharding, coverage-report…
 ├── docs/                  # ~126 md files in 12 categories; components doc: docs/ux-design/components.md
 ├── docker/  k8s/          # aspirational — see Gotchas
@@ -256,7 +263,9 @@ them up automatically.
 > red suite can block commits for pre-existing failures.
 
 14 workflows in `.github/workflows/`. The load-bearing ones: `ci.yml` (lint, 4-way sharded
-tests, coverage gates; Node matrix [20, 22, 23] from `.nvmrc`), `e2e.yml` (broken — see above),
+tests, coverage gates; Node matrix [20, 22, 23] from `.nvmrc`), `e2e.yml` (cannot work on
+GitHub runners until `@austinorphan/e2e-core` is published — the `file:` dep only resolves on
+this machine),
 `comprehensive-testing.yml` (daily cron; pins Node 18; visual job always fails),
 `accessibility.yml`, `lighthouse.yml`, `security.yml` (CodeQL, ZAP, child-safety scans),
 `deploy.yml` (GitHub Pages), `deploy-rolling.yml` (K8s, aspirational), `monitoring.yml` (cron
@@ -267,8 +276,8 @@ older docs listing FOSSA/DOCKER/GITLEAKS secrets are wrong.
 ## Hidden Context & Gotchas
 
 1. **Two unrelated "e2e" suites.** `npm run test:e2e` = Vitest jsdom journey tests in
-   `tests/e2e/`. Real browser e2e = Playwright in `e2e/` via `test:e2e:playwright` (currently
-   broken end-to-end). Never conflate them.
+   `tests/e2e/`. Real browser e2e = Playwright in `e2e/` via `test:e2e:playwright` (fixed
+   2026-07-17; 30 tests × 5 browser projects, verified green). Never conflate them.
 2. **iCloud duplicate files are a chronic, first-class problem.** The repo once lived in iCloud
    Drive; sync conflicts created `name 2.ext`-style duplicates. Tooling exists
    (`scripts/checkDuplicates.js`, pre-commit check, `docs/development/MAINTENANCE_GUIDE.md`),
@@ -282,10 +291,11 @@ older docs listing FOSSA/DOCKER/GITLEAKS secrets are wrong.
    `k8s/{staging,production}/` with `envsubst` — **no Kustomize**. The nginx CSP
    (`script-src 'self'`) would block the inline scripts in `src/pages/index.html` if the Docker
    path were ever used seriously.
-4. **Primary navigation is broken.** `navbar.html`, `navigationHelper.js`, the homepage hero
-   CTA, `manifest.json` shortcuts, and the service-worker precache all point at
-   `/src/features/subjects/shared/{math,science,coding,reading,art}.html` — none exist. Real
-   pages: `src/features/subjects/<subject>/<subject>.html`.
+4. **Subject-page URLs**: real pages live at `src/features/subjects/<subject>/<subject>.html`
+   — never link `shared/<subject>.html` (those pages don't exist; `shared/` holds only
+   bubblepop and `*-example` pages). Until 2026-07-17 the navbar, homepage CTA, manifest
+   shortcuts, and service-worker precache all pointed at the dead `shared/` paths; all fixed,
+   but old habits in docs/examples may still show the wrong pattern.
 5. **Known broken imports**: `src/features/progress/{progressReports,progressDashboard,
 goalTracker}.js` import `getRepository` from `../../config/storage.js`, which doesn't exist;
    `src/components/index.js` barrel fails on FormComponent's missing ES export.
