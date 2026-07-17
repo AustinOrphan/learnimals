@@ -422,6 +422,7 @@ export class AccessibilityService {
    */
   announce(message, priority = 'polite', timeout = 1000) {
     if (!message) return;
+    if (!this.announcer) return; // best-effort: service not initialized
 
     const announcer = priority === 'assertive' 
       ? this.announcer.assertive 

@@ -13,7 +13,7 @@ import {
   getPreferredColorScheme,
 } from './themeManagerUtils.js';
 
-class ThemeManager {
+export class ThemeManager {
   constructor() {
     // Import theme definitions from the registry
     this.commonColors = COMMON_COLORS;

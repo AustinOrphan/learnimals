@@ -3,6 +3,9 @@
  * Provides realistic test data for characters, games, progress, and other entities
  */
 
+// Deterministic timestamp for progress fixtures
+const fixedDate = new Date('2024-01-15T12:00:00Z');
+
 // Utility functions for generating test data
 const generateId = (prefix = 'test') =>
   `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

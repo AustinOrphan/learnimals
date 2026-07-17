@@ -241,6 +241,7 @@ export function setupAccessibilityMocks() {
       removeEventListener: vi.fn(),
     },
     writable: true,
+    configurable: true,
   });
 
   // Mock focus management APIs with better JSDOM compatibility

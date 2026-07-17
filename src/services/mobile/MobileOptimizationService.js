@@ -861,10 +861,15 @@ export class MobileOptimizationService {
   }
 
   supportsWebP() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1;
-    canvas.height = 1;
-    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const dataUrl = canvas.toDataURL('image/webp');
+      return typeof dataUrl === 'string' && dataUrl.indexOf('data:image/webp') === 0;
+    } catch {
+      return false; // canvas not implemented (e.g. jsdom)
+    }
   }
 
   getNetworkInfo() {

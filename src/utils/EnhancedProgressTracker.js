@@ -10,7 +10,7 @@ import {
 } from './achievementDefinitions.js';
 import logger from './logger.js';
 
-class EnhancedProgressTracker {
+export class EnhancedProgressTracker {
   constructor() {
     this.achievements = getAllAchievements();
     this.gameStats = new Map();

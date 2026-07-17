@@ -92,7 +92,7 @@ describe('ThemeManager', () => {
 
     // Import ThemeManager after setting up mocks
     const module = await import('../../src/utils/themeManager.js');
-    ThemeManager = module.default;
+    ThemeManager = module.ThemeManager;
   });
 
   afterEach(() => {

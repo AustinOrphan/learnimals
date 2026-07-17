@@ -12,14 +12,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Mock file system operations
-vi.mock('fs', () => ({
-  promises: {
+vi.mock('fs', () => {
+  const promises = {
     readFile: vi.fn(),
     writeFile: vi.fn(),
     mkdir: vi.fn(),
     access: vi.fn()
-  }
-}));
+  };
+  return { default: { promises }, promises };
+});
 
 describe('Migration System', () => {
   let MixedPatternDetector;

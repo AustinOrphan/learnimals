@@ -20,7 +20,7 @@
 
 // Import dependencies
 import userProgress from '../features/user/userProgress.js';
-import EnhancedProgressTracker from './EnhancedProgressTracker.js';
+import { EnhancedProgressTracker } from './EnhancedProgressTracker.js';
 
 class ProgressService {
   constructor(options = {}) {

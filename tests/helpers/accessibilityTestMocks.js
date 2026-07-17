@@ -557,6 +557,7 @@ export function setupAccessibilityTestMocks() {
   Object.defineProperty(window, 'getComputedStyle', {
     value: getComputedStyleMock,
     configurable: true,
+    writable: true,
   });
 
   // Setup focus management
