@@ -13,41 +13,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run npm audit
         run: |
           echo "Running npm audit..."
           npm audit --audit-level moderate || true
-          
+
           # Generate audit report
           npm audit --json > audit-report.json || true
-          
+
           # Check for high/critical vulnerabilities
           HIGH_VULNS=$(npm audit --json | jq '.metadata.vulnerabilities.high // 0')
           CRITICAL_VULNS=$(npm audit --json | jq '.metadata.vulnerabilities.critical // 0')
-          
+
           echo "High vulnerabilities: $HIGH_VULNS"
           echo "Critical vulnerabilities: $CRITICAL_VULNS"
-          
+
           if [ "$CRITICAL_VULNS" -gt 0 ]; then
             echo "❌ Critical vulnerabilities found!"
             exit 1
           fi
-          
+
           if [ "$HIGH_VULNS" -gt 3 ]; then
             echo "⚠️ Too many high vulnerabilities found!"
             exit 1
           fi
-      
+
       - name: Upload audit report
         if: always()
         uses: actions/upload-artifact@v4
@@ -56,56 +70,53 @@ jobs:
           path: audit-report.json
           retention-days: 30
 
-  codeql-analysis:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-          queries: security-extended
-      
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-      
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+  # codeql-analysis job removed 2026-07-17: code scanning is not enabled on
+  # this private repo (requires Advanced Security), so the analysis ran for
+  # ~5 minutes per push and then failed at upload, every time.
 
   owasp-zap-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Start development server
         run: |
           # Start server in background
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
-          
+
           # Wait for server to be ready
           sleep 15
-          
+
           # Verify server is running
           curl -f http://localhost:3000 || exit 1
-      
+
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
         with:
@@ -116,8 +127,7 @@ jobs:
             -j
             -m 5
             -T 60
-            -z "-configFile /zap/wrk/.zap/options.prop"
-      
+
       - name: Upload ZAP results
         if: always()
         uses: actions/upload-artifact@v4
@@ -132,20 +142,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Check for sensitive content
         run: |
           echo "Scanning for sensitive content..."
-          
+
           # Check for potential secrets in code
           if command -v grep &> /dev/null; then
             echo "Checking for potential secrets..."
@@ -165,32 +189,32 @@ jobs:
             # Email addresses in non-test files
             grep -r "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" src/ --include="*.js" --include="*.html" | grep -v "test\|spec\|example.com" || true
           fi
-      
+
       - name: Validate Content Security Policy
         run: |
           echo "Checking for CSP headers..."
-          
+
           # Check if CSP is defined in HTML files
           find src -name "*.html" -exec grep -l "Content-Security-Policy" {} \; || echo "No CSP found in HTML files"
-          
+
           # Check for inline scripts (potential CSP violations)
           find src -name "*.html" -exec grep -l "javascript:" {} \; && echo "⚠️ Found inline javascript: URLs" || true
           find src -name "*.html" -exec grep -l "onclick=" {} \; && echo "⚠️ Found inline onclick handlers" || true
           find src -name "*.html" -exec grep -l "onload=" {} \; && echo "⚠️ Found inline onload handlers" || true
-      
+
       - name: Check for unsafe practices
         run: |
           echo "Checking for unsafe JavaScript practices..."
-          
+
           # Check for eval usage
           grep -r "eval(" src/ --include="*.js" && echo "⚠️ Found eval() usage" || true
-          
+
           # Check for innerHTML usage (potential XSS)
           grep -r "innerHTML" src/ --include="*.js" && echo "⚠️ Found innerHTML usage" || true
-          
+
           # Check for document.write usage
           grep -r "document\.write" src/ --include="*.js" && echo "⚠️ Found document.write usage" || true
-          
+
           # Check for dangerous jQuery methods
           grep -r "\.html(" src/ --include="*.js" && echo "⚠️ Found jQuery .html() usage" || true
 
@@ -198,46 +222,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: COPPA Compliance Check
         run: |
           echo "Checking COPPA compliance..."
-          
+
           # Check for data collection forms
           echo "Checking for data collection forms..."
           find src -name "*.html" -exec grep -l "input.*name.*email\|input.*name.*phone\|input.*name.*address" {} \; || true
-          
+
           # Check for tracking scripts
           echo "Checking for tracking scripts..."
           find src -name "*.html" -exec grep -l "google-analytics\|facebook\|tracking" {} \; || true
-          
+
           # Check for third-party embedded content
           echo "Checking for third-party embedded content..."
           find src -name "*.html" -exec grep -l "iframe\|embed\|object" {} \; || true
-          
+
           # Check for user-generated content areas
           echo "Checking for user-generated content areas..."
           find src -name "*.html" -exec grep -l "textarea\|contenteditable" {} \; || true
-      
+
       - name: Privacy Policy Check
         run: |
           echo "Checking for privacy policy..."
-          
+
           # Look for privacy policy references
           find src -name "*.html" -exec grep -l -i "privacy.*policy\|privacy.*statement" {} \; || echo "⚠️ No privacy policy found"
-          
+
           # Check for cookie usage
           grep -r "cookie" src/ --include="*.js" --include="*.html" || true
-          
+
           # Check for localStorage usage
           grep -r "localStorage\|sessionStorage" src/ --include="*.js" || true
 
@@ -245,42 +283,56 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Start development server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
-      
+
       - name: Check security headers
         run: |
           echo "Checking security headers..."
-          
+
           # Check for security headers
           curl -I http://localhost:3000 > headers.txt
-          
+
           echo "Current headers:"
           cat headers.txt
-          
+
           # Check for important security headers
           grep -i "content-security-policy" headers.txt || echo "⚠️ Missing Content-Security-Policy header"
           grep -i "x-frame-options" headers.txt || echo "⚠️ Missing X-Frame-Options header"
           grep -i "x-content-type-options" headers.txt || echo "⚠️ Missing X-Content-Type-Options header"
           grep -i "referrer-policy" headers.txt || echo "⚠️ Missing Referrer-Policy header"
           grep -i "permissions-policy" headers.txt || echo "⚠️ Missing Permissions-Policy header"
-          
+
           # Check for secure cookie settings (if any)
           grep -i "set-cookie" headers.txt | grep -i "secure" || echo "ℹ️ No secure cookies found"
           grep -i "set-cookie" headers.txt | grep -i "httponly" || echo "ℹ️ No httponly cookies found"
@@ -288,7 +340,8 @@ jobs:
 
   report-security-status:
     runs-on: ubuntu-latest
-    needs: [dependency-scan, codeql-analysis, owasp-zap-scan, content-security-scan, child-safety-scan, security-headers]
+    needs:
+      [dependency-scan, owasp-zap-scan, content-security-scan, child-safety-scan, security-headers]
     if: always()
     steps:
       - name: Security scan summary
@@ -296,12 +349,11 @@ jobs:
           echo "Security Scan Results:"
           echo "===================="
           echo "Dependency Scan: ${{ needs.dependency-scan.result }}"
-          echo "CodeQL Analysis: ${{ needs.codeql-analysis.result }}"
           echo "OWASP ZAP Scan: ${{ needs.owasp-zap-scan.result }}"
           echo "Content Security Scan: ${{ needs.content-security-scan.result }}"
           echo "Child Safety Scan: ${{ needs.child-safety-scan.result }}"
           echo "Security Headers: ${{ needs.security-headers.result }}"
-          
+
           # Create security report
           echo "# Security Scan Report" > security-report.md
           echo "Date: $(date)" >> security-report.md
@@ -313,7 +365,7 @@ jobs:
           echo "- Content Security Scan: ${{ needs.content-security-scan.result }}" >> security-report.md
           echo "- Child Safety Scan: ${{ needs.child-safety-scan.result }}" >> security-report.md
           echo "- Security Headers: ${{ needs.security-headers.result }}" >> security-report.md
-      
+
       - name: Upload security report
         uses: actions/upload-artifact@v4
         with:

@@ -1,32 +1,11 @@
 name: 📊 Monitoring & Observability
 
+# ASPIRATIONAL INFRASTRUCTURE — gated to manual dispatch (learnimals.app does not serve this app; the 15-min cron burned the Actions free tier).
+# Restore event triggers only when the underlying infrastructure exists.
 on:
-  schedule:
-    # Run health checks every 15 minutes
-    - cron: '*/15 * * * *'
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to monitor'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - staging
-          - production
-      check_type:
-        description: 'Type of check to run'
-        required: true
-        default: 'all'
-        type: choice
-        options:
-          - all
-          - health
-          - performance
-          - accessibility
-
 env:
-  NODE_VERSION: '24'
+  NODE_VERSION: '20.15.1'
 
 jobs:
   # Application Health Monitoring
@@ -52,16 +31,16 @@ jobs:
       - name: Health Check Endpoint
         run: |
           echo "🔍 Checking health of ${{ steps.env.outputs.name }} environment"
-          
+
           # Health check with detailed output
           response=$(curl -s -w "HTTPSTATUS:%{http_code};TIME:%{time_total}" "${{ steps.env.outputs.url }}/health" || echo "HTTPSTATUS:000;TIME:timeout")
-          
+
           http_code=$(echo $response | sed -E 's/.*HTTPSTATUS:([0-9]{3}).*/\1/')
           time_total=$(echo $response | sed -E 's/.*TIME:([0-9.]+).*/\1/')
-          
+
           echo "HTTP Status: $http_code"
           echo "Response Time: ${time_total}s"
-          
+
           if [[ "$http_code" == "200" ]]; then
             echo "✅ Health check passed for ${{ steps.env.outputs.name }}"
           else
@@ -72,15 +51,15 @@ jobs:
       - name: Application Availability Check
         run: |
           echo "🌐 Checking application availability"
-          
+
           endpoints=(
             "${{ steps.env.outputs.url }}/"
             "${{ steps.env.outputs.url }}/src/pages/about.html"
-            "${{ steps.env.outputs.url }}/src/features/subjects/shared/math.html"
+            "${{ steps.env.outputs.url }}/src/features/subjects/math/math.html"
           )
-          
+
           failed_endpoints=0
-          
+
           for endpoint in "${endpoints[@]}"; do
             echo "Checking: $endpoint"
             
@@ -95,7 +74,7 @@ jobs:
               failed_endpoints=$((failed_endpoints + 1))
             fi
           done
-          
+
           if [[ $failed_endpoints -gt 0 ]]; then
             echo "❌ $failed_endpoints endpoint(s) failed availability check"
             exit 1
@@ -106,13 +85,13 @@ jobs:
       - name: DNS Resolution Check
         run: |
           echo "🌍 Checking DNS resolution"
-          
+
           if [[ "${{ matrix.environment }}" == "production" ]]; then
             domains=("learnimals.app" "www.learnimals.app")
           else
             domains=("staging.learnimals.app")
           fi
-          
+
           for domain in "${domains[@]}"; do
             echo "Resolving: $domain"
             if nslookup "$domain" > /dev/null 2>&1; then
@@ -126,13 +105,13 @@ jobs:
       - name: SSL Certificate Check
         run: |
           echo "🔒 Checking SSL certificate"
-          
+
           domain="${{ steps.env.outputs.url }}"
           domain="${domain#https://}"
-          
+
           # Check SSL certificate expiry
           cert_info=$(echo | openssl s_client -servername "$domain" -connect "$domain:443" 2>/dev/null | openssl x509 -noout -dates 2>/dev/null)
-          
+
           if [[ -n "$cert_info" ]]; then
             echo "✅ SSL certificate is valid"
             echo "$cert_info"
@@ -195,10 +174,10 @@ jobs:
       - name: WebPageTest Performance Check
         run: |
           echo "🏃 Running WebPageTest performance check"
-          
+
           # Simple performance timing check using curl
           url="${{ steps.env.outputs.url }}"
-          
+
           echo "Testing: $url"
           timing=$(curl -w "@-" -o /dev/null -s "$url" <<'EOF'
           time_namelookup:    %{time_namelookup}s\n
@@ -210,14 +189,14 @@ jobs:
           time_total:         %{time_total}s\n
           EOF
           )
-          
+
           echo "Performance Timing Results:"
           echo "$timing"
-          
+
           # Extract total time and check against threshold
           total_time=$(echo "$timing" | grep "time_total" | awk '{print $2}' | sed 's/s//')
           threshold=5.0
-          
+
           if (( $(echo "$total_time <= $threshold" | bc -l) )); then
             echo "✅ Performance check passed (${total_time}s <= ${threshold}s)"
           else
@@ -257,18 +236,18 @@ jobs:
       - name: Accessibility Audit with axe-core
         run: |
           echo "♿ Running accessibility audit"
-          
+
           # Install axe-core CLI
           npm install -g @axe-core/cli
-          
+
           urls=(
             "${{ steps.env.outputs.url }}/"
             "${{ steps.env.outputs.url }}/src/pages/about.html"
-            "${{ steps.env.outputs.url }}/src/features/subjects/shared/math.html"
+            "${{ steps.env.outputs.url }}/src/features/subjects/math/math.html"
           )
-          
+
           total_violations=0
-          
+
           for url in "${urls[@]}"; do
             echo "Testing accessibility: $url"
             
@@ -283,7 +262,7 @@ jobs:
               echo "  ✅ No accessibility violations"
             fi
           done
-          
+
           if [[ $total_violations -gt 0 ]]; then
             echo "❌ Accessibility monitoring found violations on $total_violations page(s)"
             exit 1
@@ -327,11 +306,11 @@ jobs:
       - name: Critical User Journey Test
         run: |
           echo "👤 Testing critical user journeys"
-          
+
           # Create a simple Playwright test for critical user journeys
           cat > user-journey-test.js << 'EOF'
           const { chromium } = require('playwright');
-          
+
           (async () => {
             const browser = await chromium.launch();
             const context = await browser.newContext();
@@ -348,13 +327,13 @@ jobs:
               
               // Test 2: Navigation to Math section
               console.log('Testing navigation to Math section...');
-              await page.goto(baseUrl + '/src/features/subjects/shared/math.html', { waitUntil: 'networkidle' });
+              await page.goto(baseUrl + '/src/features/subjects/math/math.html', { waitUntil: 'networkidle' });
               await page.waitForSelector('h1', { timeout: 10000 });
               console.log('✅ Math section loaded successfully');
               
               // Test 3: Navigation to Science section
               console.log('Testing navigation to Science section...');
-              await page.goto(baseUrl + '/src/features/subjects/shared/science.html', { waitUntil: 'networkidle' });
+              await page.goto(baseUrl + '/src/features/subjects/science/science.html', { waitUntil: 'networkidle' });
               await page.waitForSelector('h1', { timeout: 10000 });
               console.log('✅ Science section loaded successfully');
               
@@ -373,7 +352,7 @@ jobs:
             }
           })();
           EOF
-          
+
           BASE_URL="${{ steps.env.outputs.url }}" node user-journey-test.js
 
   # Monitoring Summary

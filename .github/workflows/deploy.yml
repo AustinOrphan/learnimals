@@ -1,17 +1,16 @@
 name: Deploy to GitHub Pages
 
+# ASPIRATIONAL INFRASTRUCTURE — gated to manual dispatch (GitHub Pages is not configured on this private repo).
+# Restore event triggers only when the underlying infrastructure exists.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
@@ -20,28 +19,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run tests
         run: npm test
-        
+
       - name: Build site
         run: |
           # Create deployment directory structure
           mkdir -p _site
-          
+
           # Copy main files
           cp -r src/pages/* _site/
           cp -r public/* _site/
-          
+
           # Create proper directory structure
           mkdir -p _site/assets/images
           mkdir -p _site/src/components
@@ -49,27 +48,27 @@ jobs:
           mkdir -p _site/src/utils
           mkdir -p _site/src/config
           mkdir -p _site/src/features
-          
+
           # Copy assets
           cp -r public/images/* _site/assets/images/ 2>/dev/null || true
-          
+
           # Copy source files maintaining structure
           cp -r src/components _site/src/
           cp -r src/styles _site/src/
           cp -r src/utils _site/src/
           cp src/config.js _site/src/
           cp -r src/features _site/src/
-          
+
           # Copy PWA files
           cp public/manifest.json _site/
           cp public/serviceWorker.js _site/
-          
+
           # Create a simple 404 page
           echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>404 - Page Not Found</title><link rel="stylesheet" href="/src/styles/main.css"></head><body><h1>404 - Page Not Found</h1><p><a href="/">Go Home</a></p></body></html>' > _site/404.html
-          
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

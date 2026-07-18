@@ -1,26 +1,9 @@
 name: 🚀 Rolling Deployment
 
+# ASPIRATIONAL INFRASTRUCTURE — gated to manual dispatch (no K8s clusters or kubeconfig secrets exist).
+# Restore event triggers only when the underlying infrastructure exists.
 on:
-  push:
-    branches: [main]
-  release:
-    types: [published]
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - staging
-          - production
-      force_deploy:
-        description: 'Force deployment (skip some checks)'
-        required: false
-        default: false
-        type: boolean
-
 concurrency:
   group: deploy-${{ github.event.inputs.environment || 'staging' }}
   cancel-in-progress: false
@@ -28,7 +11,6 @@ concurrency:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  NODE_VERSION: '18'
 
 jobs:
   # Pre-deployment Validation
@@ -62,7 +44,7 @@ jobs:
             echo "⚠️ Force deployment enabled - skipping some validation checks"
             exit 0
           fi
-          
+
           # Validate branch for production deployments
           if [[ "${{ steps.environment.outputs.environment }}" == "production" ]]; then
             if [[ "${{ github.ref }}" != "refs/heads/main" ]] && [[ "${{ github.event_name }}" != "release" ]]; then
@@ -71,7 +53,7 @@ jobs:
               exit 1
             fi
           fi
-          
+
           echo "should-deploy=true" >> $GITHUB_OUTPUT
 
   # Development Environment Deployment
@@ -119,27 +101,27 @@ jobs:
           # Generate deployment ID for tracking
           DEPLOYMENT_ID="staging-$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA:0:8}"
           echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
-          
+
           echo "🚀 Starting rolling deployment to staging"
           echo "📦 Deployment ID: $DEPLOYMENT_ID"
-          
+
           # Apply Kubernetes manifests with rolling update strategy
           envsubst < k8s/staging/deployment.yaml | kubectl apply -f -
           envsubst < k8s/staging/service.yaml | kubectl apply -f -
           envsubst < k8s/staging/ingress.yaml | kubectl apply -f -
-          
+
           # Wait for rollout to complete
           kubectl rollout status deployment/learnimals-app -n staging --timeout=600s
-          
+
           echo "✅ Rolling deployment completed successfully"
 
       - name: Verify deployment health
         run: |
           echo "🔍 Verifying deployment health..."
-          
+
           # Wait for pods to be ready
           kubectl wait --for=condition=ready pod -l app=learnimals-app -n staging --timeout=300s
-          
+
           # Health check endpoint
           for i in {1..30}; do
             if curl -f https://staging.learnimals.app/health; then
@@ -153,10 +135,10 @@ jobs:
       - name: Run post-deployment tests
         run: |
           echo "🧪 Running post-deployment tests..."
-          
+
           # Smoke tests
-          npx playwright test --config=tests/e2e/playwright.config.js --grep="@smoke"
-          
+          npx playwright test --config=e2e/playwright.config.ts --grep="@smoke"
+
           # Performance validation
           npx lighthouse-ci autorun --config=.lighthouserc.staging.json
 
@@ -176,20 +158,20 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: ${{ github.repository_owner }}
           minimum-approvals: 1
-          issue-title: "Production Deployment Approval Required"
+          issue-title: 'Production Deployment Approval Required'
           issue-body: |
             ## 🚀 Production Deployment Request
-            
+
             **Branch:** ${{ github.ref }}
             **Commit:** ${{ github.sha }}
             **Staging Deployment:** ${{ needs.deploy-staging.outputs.deployment-id }}
-            
+
             ### Pre-deployment Checklist
             - [ ] Staging deployment successful
             - [ ] All tests passing
             - [ ] Performance metrics acceptable
             - [ ] Business stakeholders notified
-            
+
             **Approve this deployment by commenting `/approve`**
 
       - name: Checkout code
@@ -211,37 +193,37 @@ jobs:
           # Generate deployment ID for tracking
           DEPLOYMENT_ID="prod-$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA:0:8}"
           echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
-          
+
           echo "🚀 Starting PRODUCTION rolling deployment"
           echo "📦 Deployment ID: $DEPLOYMENT_ID"
           echo "⚠️ PRODUCTION DEPLOYMENT - Proceeding with caution"
-          
+
           # Apply production manifests with rolling update
           envsubst < k8s/production/deployment.yaml | kubectl apply -f -
           envsubst < k8s/production/service.yaml | kubectl apply -f -
           envsubst < k8s/production/ingress.yaml | kubectl apply -f -
-          
+
           # Wait for rollout with longer timeout for production
           kubectl rollout status deployment/learnimals-app -n production --timeout=900s
-          
+
           echo "✅ Production rolling deployment completed"
 
       - name: Comprehensive production health checks
         run: |
           echo "🔍 Running comprehensive production health checks..."
-          
+
           # Wait for all pods to be ready
           kubectl wait --for=condition=ready pod -l app=learnimals-app -n production --timeout=600s
-          
+
           # Verify all replicas are running
           DESIRED=$(kubectl get deployment learnimals-app -n production -o jsonpath='{.spec.replicas}')
           READY=$(kubectl get deployment learnimals-app -n production -o jsonpath='{.status.readyReplicas}')
-          
+
           if [[ "$READY" != "$DESIRED" ]]; then
             echo "❌ Not all replicas are ready: $READY/$DESIRED"
             exit 1
           fi
-          
+
           # Health check endpoints
           for i in {1..60}; do
             if curl -f https://learnimals.app/health; then
@@ -255,7 +237,7 @@ jobs:
       - name: Production smoke tests
         run: |
           echo "🧪 Running production smoke tests..."
-          npx playwright test --config=tests/e2e/playwright.config.js --grep="@critical"
+          npx playwright test --config=e2e/playwright.config.ts --grep="@critical"
 
       - name: Performance validation
         run: |
@@ -294,13 +276,13 @@ jobs:
       - name: Rollback deployment
         run: |
           echo "🔄 Rolling back deployment in ${{ env.NAMESPACE }}"
-          
+
           # Rollback to previous version
           kubectl rollout undo deployment/learnimals-app -n ${{ env.NAMESPACE }}
-          
+
           # Wait for rollback to complete
           kubectl rollout status deployment/learnimals-app -n ${{ env.NAMESPACE }} --timeout=600s
-          
+
           echo "✅ Rollback completed successfully"
 
       - name: Verify rollback health

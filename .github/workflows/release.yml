@@ -29,21 +29,21 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      
+
       - name: Determine version bump
         id: version
         run: |
@@ -60,50 +60,50 @@ jobs:
             fi
           fi
           echo "version_type=$VERSION_TYPE" >> $GITHUB_OUTPUT
-      
+
       - name: Bump version
         id: bump
         run: |
           # Get current version
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Current version: $CURRENT_VERSION"
-          
+
           # Bump version
           npm version ${{ steps.version.outputs.version_type }} --no-git-tag-version
-          
+
           # Get new version
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "New version: $NEW_VERSION"
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
-      
+
       - name: Generate changelog
         id: changelog
         run: |
           # Get commits since last tag
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          
+
           if [ -z "$LAST_TAG" ]; then
             COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
           else
             COMMITS=$(git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
           fi
-          
+
           # Create changelog
           cat > CHANGELOG_ENTRY.md << EOF
           ## Version ${{ steps.bump.outputs.new_version }} ($(date +%Y-%m-%d))
-          
+
           ### Changes
           $COMMITS
-          
+
           ### Contributors
           $(git log $LAST_TAG..HEAD --pretty=format:"- @%an" --no-merges | sort -u)
           EOF
-          
+
           # Store changelog for release notes
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           cat CHANGELOG_ENTRY.md >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-      
+
       - name: Update CHANGELOG.md
         run: |
           # Prepend new entry to CHANGELOG.md
@@ -116,13 +116,13 @@ jobs:
             mv CHANGELOG_ENTRY.md CHANGELOG.md
           fi
           rm -f CHANGELOG_ENTRY.md
-      
+
       - name: Commit version bump
         run: |
           git add package.json package-lock.json CHANGELOG.md
           git commit -m "chore: bump version to ${{ steps.bump.outputs.new_version }} [skip ci]"
           git push
-      
+
       - name: Create Release
         uses: actions/create-release@v1
         env:
@@ -133,7 +133,7 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
-      
+
       - name: Create release assets
         run: |
           # Create release archive
@@ -144,7 +144,7 @@ jobs:
             --exclude=tests \
             --exclude=.github \
             src public *.json *.md *.html
-      
+
       - name: Upload release assets
         uses: actions/upload-release-asset@v1
         env:

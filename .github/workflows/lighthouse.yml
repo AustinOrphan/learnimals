@@ -13,19 +13,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli
-      
+
       - name: Build project
         run: |
           if grep -q "build" package.json; then
@@ -33,29 +47,29 @@ jobs:
           else
             echo "No build script found, using source files"
           fi
-      
+
       - name: Start server
         run: |
           # Start development server in background
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
-          
+
           # Wait for server to be ready
           sleep 10
-          
+
           # Test server is running
           curl -f http://localhost:3000 || exit 1
-      
+
       - name: Run Lighthouse CI
         run: |
           lhci autorun \
             --collect.url=http://localhost:3000 \
-            --collect.url=http://localhost:3000/activities \
-            --collect.url=http://localhost:3000/math \
-            --collect.url=http://localhost:3000/science \
+            --collect.url=http://localhost:3000/src/pages/index.html \
+            --collect.url=http://localhost:3000/src/features/subjects/math/math.html \
+            --collect.url=http://localhost:3000/src/features/subjects/science/science.html \
             --collect.numberOfRuns=3 \
             --assert.assertions.categories:performance=0.8 \
             --assert.assertions.categories:accessibility=0.9 \
@@ -65,7 +79,7 @@ jobs:
             --upload.target=temporary-public-storage || true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-      
+
       - name: Upload Lighthouse results
         if: always()
         uses: actions/upload-artifact@v4
@@ -75,7 +89,7 @@ jobs:
             .lighthouseci/
             lhci_reports/
           retention-days: 30
-      
+
       - name: Performance Budget Check
         run: |
           # Check if performance budget file exists
@@ -86,81 +100,50 @@ jobs:
             echo "No performance budget file found, skipping budget check"
           fi
 
-  performance-regression:
-    runs-on: ubuntu-latest
-    needs: lighthouse
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli
-      
-      - name: Compare performance with main branch
-        run: |
-          # Get main branch lighthouse results
-          git checkout main
-          
-          # Start server for main branch
-          if command -v python3 &> /dev/null; then
-            python3 -m http.server 3001 --directory src/pages &
-          else
-            npx serve src/pages -p 3001 &
-          fi
-          
-          sleep 10
-          
-          # Run lighthouse on main branch
-          lhci autorun \
-            --collect.url=http://localhost:3001 \
-            --collect.numberOfRuns=1 \
-            --collect.settings.output=json \
-            --collect.settings.outputPath=./main-lighthouse.json
-          
-          # Switch back to PR branch
-          git checkout ${{ github.head_ref }}
-          
-          # Download PR lighthouse results and compare
-          echo "Performance comparison complete"
-        continue-on-error: true
+  # performance-regression job removed 2026-07-17: its main-branch checkout
+  # dance never produced a comparison (results discarded, echo-only), and it
+  # could not fail (continue-on-error) — pure compute burn.
 
   mobile-performance:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli
-      
+
       - name: Start server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
-      
+
       - name: Run mobile Lighthouse audit
         run: |
           lhci autorun \
@@ -174,7 +157,7 @@ jobs:
             --assert.assertions.categories:performance=0.7 \
             --assert.assertions.categories:accessibility=0.9 \
             --upload.target=temporary-public-storage || true
-      
+
       - name: Upload mobile results
         if: always()
         uses: actions/upload-artifact@v4
@@ -189,37 +172,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install web-vitals
         run: npm install -g web-vitals
-      
+
       - name: Start server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
-      
+
       - name: Measure Core Web Vitals
         run: |
           # Install puppeteer for headless testing
           npm install puppeteer
-          
+
           # Create web vitals test script
           cat > web-vitals-test.js << 'EOF'
           const puppeteer = require('puppeteer');
-          
+
           (async () => {
             const browser = await puppeteer.launch({
               headless: true,
@@ -252,6 +249,6 @@ jobs:
             await browser.close();
           })();
           EOF
-          
+
           # Run the test
           node web-vitals-test.js || true

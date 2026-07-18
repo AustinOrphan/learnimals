@@ -13,47 +13,61 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install axe-core and puppeteer
         run: |
           npm install -g axe-core puppeteer
-      
+
       - name: Start development server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
           curl -f http://localhost:3000 || exit 1
-      
+
       - name: Run axe-core accessibility tests
         run: |
           # Create axe test script
           cat > axe-test.js << 'EOF'
           const puppeteer = require('puppeteer');
           const { createReadStream } = require('fs');
-          
+
           const testPages = [
             'http://localhost:3000',
-            'http://localhost:3000/activities',
-            'http://localhost:3000/math',
-            'http://localhost:3000/science',
-            'http://localhost:3000/reading',
-            'http://localhost:3000/art',
-            'http://localhost:3000/coding'
+            'http://localhost:3000/src/pages/index.html',
+            'http://localhost:3000/src/features/subjects/math/math.html',
+            'http://localhost:3000/src/features/subjects/science/science.html',
+            'http://localhost:3000/src/features/subjects/reading/reading.html',
+            'http://localhost:3000/src/features/subjects/art/art.html',
+            'http://localhost:3000/src/features/subjects/coding/coding.html'
           ];
-          
+
           (async () => {
             const browser = await puppeteer.launch({
               headless: true,
@@ -154,10 +168,10 @@ jobs:
             console.log('\n✅ Accessibility tests passed!');
           })();
           EOF
-          
+
           # Run the test
           node axe-test.js
-      
+
       - name: Upload axe results
         if: always()
         uses: actions/upload-artifact@v4
@@ -170,32 +184,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Pa11y
         run: npm install -g pa11y
-      
+
       - name: Start development server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
-      
+
       - name: Run Pa11y tests
         run: |
           echo "Running Pa11y accessibility tests..."
-          
+
           # Create pa11y configuration
           cat > pa11y.json << 'EOF'
           {
@@ -207,25 +235,25 @@ jobs:
             }
           }
           EOF
-          
+
           # Test pages
           PAGES=(
             "http://localhost:3000"
-            "http://localhost:3000/activities"
-            "http://localhost:3000/math"
-            "http://localhost:3000/science"
-            "http://localhost:3000/reading"
-            "http://localhost:3000/art"
-            "http://localhost:3000/coding"
+            "http://localhost:3000/src/pages/index.html"
+            "http://localhost:3000/src/features/subjects/math/math.html"
+            "http://localhost:3000/src/features/subjects/science/science.html"
+            "http://localhost:3000/src/features/subjects/reading/reading.html"
+            "http://localhost:3000/src/features/subjects/art/art.html"
+            "http://localhost:3000/src/features/subjects/coding/coding.html"
           )
-          
+
           echo "# Pa11y Test Results" > pa11y-results.txt
           echo "Date: $(date)" >> pa11y-results.txt
           echo "" >> pa11y-results.txt
-          
+
           TOTAL_ERRORS=0
           TOTAL_WARNINGS=0
-          
+
           for page in "${PAGES[@]}"; do
             echo "Testing: $page"
             echo "## Testing: $page" >> pa11y-results.txt
@@ -246,27 +274,27 @@ jobs:
             cat page-results.txt >> pa11y-results.txt
             echo "" >> pa11y-results.txt
           done
-          
+
           echo "=== Pa11y Summary ===" >> pa11y-results.txt
           echo "Total errors: $TOTAL_ERRORS" >> pa11y-results.txt
           echo "Total warnings: $TOTAL_WARNINGS" >> pa11y-results.txt
-          
+
           echo "Total errors: $TOTAL_ERRORS"
           echo "Total warnings: $TOTAL_WARNINGS"
-          
+
           # Fail if too many errors
           if [ $TOTAL_ERRORS -gt 0 ]; then
             echo "❌ Pa11y found $TOTAL_ERRORS accessibility errors!"
             exit 1
           fi
-          
+
           if [ $TOTAL_WARNINGS -gt 10 ]; then
             echo "⚠️ Pa11y found $TOTAL_WARNINGS accessibility warnings!"
             exit 1
           fi
-          
+
           echo "✅ Pa11y tests passed!"
-      
+
       - name: Upload Pa11y results
         if: always()
         uses: actions/upload-artifact@v4
@@ -279,36 +307,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install Playwright
         run: |
           npm install -g playwright
           npx playwright install chromium
-      
+
       - name: Start development server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
-      
+
       - name: Run keyboard navigation tests
         run: |
           # Create keyboard navigation test
           cat > keyboard-test.js << 'EOF'
           const { chromium } = require('playwright');
-          
+
           async function testKeyboardNavigation() {
             const browser = await chromium.launch({ headless: true });
             const page = await browser.newPage();
@@ -470,13 +512,13 @@ jobs:
             
             console.log('✅ Keyboard navigation tests passed!');
           }
-          
+
           testKeyboardNavigation();
           EOF
-          
+
           # Run the test
           node keyboard-test.js
-      
+
       - name: Upload keyboard test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -489,35 +531,49 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
-      
+
+      - name: Checkout e2e-core (private sibling dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: AustinOrphan/e2e-core
+          token: ${{ secrets.E2E_CORE_TOKEN }}
+          path: .e2e-core-checkout
+
+      - name: Place and build e2e-core sibling dependency
+        run: |
+          mv .e2e-core-checkout "$GITHUB_WORKSPACE/../../e2e-core"
+          cd "$GITHUB_WORKSPACE/../../e2e-core"
+          npm ci
+          npm run build
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Install color-contrast tools
         run: |
           npm install -g puppeteer
-      
+
       - name: Start development server
         run: |
           if command -v python3 &> /dev/null; then
-            python3 -m http.server 3000 --directory src/pages &
+            python3 -m http.server 3000 &
           else
-            npx serve src/pages -p 3000 &
+            npx serve . -p 3000 &
           fi
           sleep 10
-      
+
       - name: Run color contrast tests
         run: |
           # Create color contrast test
           cat > contrast-test.js << 'EOF'
           const puppeteer = require('puppeteer');
-          
+
           function getLuminance(r, g, b) {
             const [rs, gs, bs] = [r, g, b].map(c => {
               c = c / 255;
@@ -525,7 +581,7 @@ jobs:
             });
             return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
           }
-          
+
           function getContrastRatio(color1, color2) {
             const lum1 = getLuminance(...color1);
             const lum2 = getLuminance(...color2);
@@ -533,7 +589,7 @@ jobs:
             const darkest = Math.min(lum1, lum2);
             return (brightest + 0.05) / (darkest + 0.05);
           }
-          
+
           async function testColorContrast() {
             const browser = await puppeteer.launch({ headless: true });
             const page = await browser.newPage();
@@ -613,13 +669,13 @@ jobs:
             
             console.log('✅ All color contrast tests passed!');
           }
-          
+
           testColorContrast();
           EOF
-          
+
           # Run the test
           node contrast-test.js
-      
+
       - name: Upload contrast results
         if: always()
         uses: actions/upload-artifact@v4
@@ -641,7 +697,7 @@ jobs:
           echo "Pa11y Testing: ${{ needs.pa11y-testing.result }}"
           echo "Keyboard Navigation: ${{ needs.keyboard-navigation.result }}"
           echo "Color Contrast: ${{ needs.color-contrast.result }}"
-          
+
           # Create accessibility report
           echo "# Accessibility Test Report" > accessibility-report.md
           echo "Date: $(date)" >> accessibility-report.md
@@ -657,7 +713,7 @@ jobs:
           echo "- Keyboard Navigation: Full support required" >> accessibility-report.md
           echo "- Screen Reader: Compatible with NVDA, JAWS, VoiceOver" >> accessibility-report.md
           echo "- Color Contrast: 4.5:1 for normal text, 3:1 for large text" >> accessibility-report.md
-          
+
           # Check if any tests failed
           if [ "${{ needs.axe-core-testing.result }}" == "failure" ] || \
              [ "${{ needs.pa11y-testing.result }}" == "failure" ] || \
@@ -666,9 +722,9 @@ jobs:
             echo "❌ Some accessibility tests failed"
             exit 1
           fi
-          
+
           echo "✅ All accessibility tests passed"
-      
+
       - name: Upload accessibility report
         uses: actions/upload-artifact@v4
         with:
