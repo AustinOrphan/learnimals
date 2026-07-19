@@ -80,7 +80,7 @@
 
 .mode-btn.active {
   background: var(--accent-primary, #007bff);
-  color: white;
+  color: var(--text-on-accent, #142233);
 }
 
 /* Workspace Area */
@@ -199,7 +199,7 @@
 .decompose-btn {
   padding: 0.75rem 1.5rem;
   background: var(--accent-primary, #007bff);
-  color: white;
+  color: var(--text-on-accent, #142233);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -524,7 +524,7 @@
 
 .pv-table th {
   background: var(--accent-primary, #007bff);
-  color: white;
+  color: var(--text-on-accent, #142233);
   font-weight: 600;
 }
 

@@ -783,7 +783,9 @@ describe('LazyLoadManager', () => {
       await manager.processLoadingItem('item1', item);
 
       const endTime = performance.now();
-      expect(endTime - startTime).toBeGreaterThanOrEqual(100);
+      // setTimeout can undershoot its nominal delay by a few ms (timer
+      // clamping); assert the delay happened, not its exact precision.
+      expect(endTime - startTime).toBeGreaterThanOrEqual(95);
     });
   });
 

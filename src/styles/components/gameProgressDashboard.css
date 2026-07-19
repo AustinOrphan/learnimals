@@ -220,7 +220,7 @@
 
 .filter-button.active {
   background-color: var(--accent-primary);
-  color: white;
+  color: var(--text-on-accent, #142233);
 }
 
 .achievements-grid {

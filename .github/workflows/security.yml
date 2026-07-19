@@ -139,6 +139,11 @@ jobs:
           target: 'http://localhost:3000'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a -j -m 5 -T 60'
+          # The action tries to open a GitHub issue with results by default;
+          # the workflow token has no issues:write, which failed the job even
+          # though the scan itself passed (FAIL-NEW: 0). Artifact upload is
+          # the reporting channel.
+          allow_issue_writing: false
 
       - name: Upload ZAP results
         if: always()
