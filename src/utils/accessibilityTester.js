@@ -3,6 +3,8 @@
  * Tools for automated and manual accessibility testing
  */
 
+/* global Node */
+
 import logger from './logger.js';
 
 export class AccessibilityTester {
@@ -842,6 +844,80 @@ export class AccessibilityTester {
     }
 
     return report;
+  }
+
+  /**
+   * Run the full accessibility audit for a container
+   * Alias of runAudit kept as the public entry point for integration flows
+   */
+  runFullAccessibilityAudit(container = document) {
+    return this.runAudit(container);
+  }
+
+  /**
+   * Test modal and dialog accessibility
+   */
+  testModalAccessibility(container) {
+    if (this.hasKeyboardTraps(container)) {
+      throw new Error('Keyboard trap detected without escape mechanism');
+    }
+
+    const dialogs = container.querySelectorAll('[role="dialog"], [role="alertdialog"]');
+    dialogs.forEach(dialog => {
+      if (!dialog.getAttribute('aria-labelledby') && !dialog.getAttribute('aria-label')) {
+        throw new Error(`Dialog missing accessible name: ${this.getElementSelector(dialog)}`);
+      }
+    });
+  }
+
+  /**
+   * Generate a synchronous WCAG compliance report for a container
+   */
+  generateComplianceReport(container = document) {
+    this.violations = [];
+    this.warnings = [];
+    this.passes = [];
+
+    const categoryTests = [
+      { category: 'ARIA Compliance', test: () => this.testARIA(container) },
+      { category: 'Keyboard Navigation', test: () => this.testKeyboardNavigation(container) },
+      {
+        category: 'Screen Reader Support',
+        test: () => {
+          this.testImageAccessibility(container);
+          this.testLiveRegions(container);
+        },
+      },
+      { category: 'Focus Management', test: () => this.testFocusManagement(container) },
+      { category: 'Color Contrast', test: () => this.testColorContrast(container) },
+      { category: 'Form Accessibility', test: () => this.testFormAccessibility(container) },
+      { category: 'Modal/Dialog Accessibility', test: () => this.testModalAccessibility(container) },
+      { category: 'Navigation Accessibility', test: () => this.testLandmarks(container) },
+    ];
+
+    const passedTests = [];
+    const failedTests = [];
+
+    categoryTests.forEach(({ category, test }) => {
+      try {
+        test();
+        passedTests.push(category);
+        this.passes.push(category);
+      } catch (error) {
+        failedTests.push({ category, error: error.message });
+        this.violations.push({ test: category, error: error.message });
+      }
+    });
+
+    return {
+      wcagLevel: 'AA',
+      categories: categoryTests.map(entry => entry.category),
+      passedTests,
+      failedTests,
+      warnings: [...this.warnings],
+      recommendations: failedTests.map(failure => `Resolve ${failure.category}: ${failure.error}`),
+      timestamp: new Date().toISOString(),
+    };
   }
 
   /**

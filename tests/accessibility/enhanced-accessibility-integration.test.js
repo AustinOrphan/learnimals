@@ -5,12 +5,9 @@
  * Ensures WCAG 2.1 Level AA compliance in integrated workflows
  */
 
+/* global FocusEvent */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -679,7 +676,6 @@ describe('Enhanced Accessibility Integration Tests', () => {
       const menuTrigger = testContainer.querySelector('#subjects-menu-trigger');
       const subjectsMenu = testContainer.querySelector('#subjects-menu');
       const mathLink = testContainer.querySelector('#math-link');
-      const subjectCards = testContainer.querySelectorAll('.subject-card');
       const mathCard = testContainer.querySelector('[data-subject="math"]');
       const notificationArea = testContainer.querySelector('#notification-area');
 
@@ -805,7 +801,6 @@ describe('Enhanced Accessibility Integration Tests', () => {
       const profileForm = testContainer.querySelector('#profile-form');
       const displayNameInput = testContainer.querySelector('#display-name');
       const nameError = testContainer.querySelector('#name-error');
-      const saveButton = testContainer.querySelector('#save-profile');
       const progressError = testContainer.querySelector('#progress-error');
       const globalError = testContainer.querySelector('#global-error');
 

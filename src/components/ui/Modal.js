@@ -1,8 +1,7 @@
 // Modal Component
 // Reusable modal component for consistent UI across the site
 
-// Use global BaseComponent (loaded via script tag in demo page)
-const BaseComponent = window.BaseComponent;
+import BaseComponent from '../BaseComponent.js';
 
 // Inline escapeHTML function to avoid module import
 function escapeHTML(input) {
@@ -16,6 +15,10 @@ function escapeHTML(input) {
     .replace(/'/g, '&#x27;')
     .replace(/\//g, '&#x2F;');
 }
+
+// Stack of currently open modals; the last entry is the topmost dialog.
+// Used so Escape only closes the topmost modal (WAI-ARIA APG dialog pattern).
+const openModalStack = [];
 
 class Modal extends BaseComponent {
   /**
@@ -180,15 +183,78 @@ class Modal extends BaseComponent {
       }
     });
 
-    // Close on Escape key - handled globally
+    // Trap Tab / Shift+Tab focus inside the dialog (WAI-ARIA APG dialog pattern)
+    this.addEventListener('keydown', e => this.handleTabKey(e));
+
+    // Close on Escape key - handled globally, but only for the topmost open modal
     this.escapeHandler = e => {
-      if (e.key === 'Escape' && this.isOpen) {
+      if (
+        e.key === 'Escape' &&
+        this.isOpen &&
+        openModalStack[openModalStack.length - 1] === this
+      ) {
         this.close();
       }
     };
 
     // Track document-level event listener
     this.addDocumentEventListener('keydown', this.escapeHandler);
+  }
+
+  /**
+   * Get the keyboard-focusable elements inside the dialog, in DOM order.
+   * Excludes disabled controls, elements removed from the tab order via
+   * tabindex="-1", and elements inside hidden containers.
+   * @returns {Element[]} - Focusable elements
+   */
+  getFocusableElements() {
+    const dialog = this.element ? this.element.querySelector('.modal') : null;
+    if (!dialog) {
+      return [];
+    }
+
+    const selector = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled]):not([type="hidden"])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]',
+      '[contenteditable="true"]',
+    ].join(', ');
+
+    return Array.from(dialog.querySelectorAll(selector)).filter(
+      el => el.getAttribute('tabindex') !== '-1' && !el.closest('[hidden]')
+    );
+  }
+
+  /**
+   * Handle Tab / Shift+Tab while the modal is open, keeping focus inside
+   * the dialog and wrapping at either end (WAI-ARIA APG dialog pattern).
+   * @param {KeyboardEvent} event - Keydown event
+   */
+  handleTabKey(event) {
+    if (event.key !== 'Tab' || !this.isOpen) {
+      return;
+    }
+
+    const focusable = this.getFocusableElements();
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const currentIndex = focusable.indexOf(document.activeElement);
+    let nextIndex;
+    if (event.shiftKey) {
+      nextIndex = currentIndex <= 0 ? focusable.length - 1 : currentIndex - 1;
+    } else {
+      nextIndex =
+        currentIndex === -1 || currentIndex === focusable.length - 1 ? 0 : currentIndex + 1;
+    }
+
+    event.preventDefault();
+    focusable[nextIndex].focus();
   }
 
   /**
@@ -237,6 +303,32 @@ class Modal extends BaseComponent {
       }
 
       this.isOpen = true;
+
+      // Track as the topmost open modal for Escape handling
+      if (!openModalStack.includes(this)) {
+        openModalStack.push(this);
+      }
+
+      // Move focus into the dialog (WAI-ARIA APG dialog pattern):
+      // focus the first focusable element, or the dialog itself if none exist
+      const focusable = this.getFocusableElements();
+      if (focusable.length > 0) {
+        try {
+          focusable[0].focus();
+        } catch (error) {
+          console.warn('Error setting initial focus:', error);
+        }
+      } else {
+        const dialog = openModal.querySelector('.modal');
+        if (dialog) {
+          try {
+            dialog.setAttribute('tabindex', '0');
+            dialog.focus();
+          } catch (error) {
+            console.warn('Error focusing dialog element:', error);
+          }
+        }
+      }
     }
 
     return this;
@@ -263,6 +355,12 @@ class Modal extends BaseComponent {
       }
 
       this.isOpen = false;
+
+      // Remove from the open modal stack
+      const stackIndex = openModalStack.indexOf(this);
+      if (stackIndex !== -1) {
+        openModalStack.splice(stackIndex, 1);
+      }
 
       // Restore focus to previously focused element
       if (this.previouslyFocused && this.previouslyFocused.focus) {
@@ -331,6 +429,12 @@ class Modal extends BaseComponent {
 
     this.isOpen = false;
     this.escapeHandler = null;
+
+    // Remove from the open modal stack
+    const stackIndex = openModalStack.indexOf(this);
+    if (stackIndex !== -1) {
+      openModalStack.splice(stackIndex, 1);
+    }
 
     // Call parent destroy method
     try {

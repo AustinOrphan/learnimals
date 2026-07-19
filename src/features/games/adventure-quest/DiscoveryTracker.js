@@ -131,6 +131,19 @@ export default class DiscoveryTracker {
   }
 
   /**
+   * Load the discovery scene
+   * Scene entry hook invoked by AdventureQuestGame.loadScene('discovery'),
+   * mirroring loadStory/loadChallenge/loadNavigation on the other systems.
+   * The tracker renders from its persisted state, so entering the scene only
+   * clears any transient notification overlay.
+   * @param {Object} _data - Optional scene data (currently unused)
+   */
+  loadDiscovery(_data = {}) {
+    this.currentDiscoveryDisplay = null;
+    this.displayTimer = 0;
+  }
+
+  /**
    * Add a new discovery
    * @param {Object} discoveryData - Discovery information
    * @param {string} discoveryData.type - Type of discovery
@@ -256,11 +269,12 @@ export default class DiscoveryTracker {
         this.discoveries.filter(d => d.type === 'challenge_complete').length >= condition.value
       );
 
-    case 'islands_visited':
+    case 'islands_visited': {
       const visitedTypes = new Set(
         this.discoveries.filter(d => d.type === 'exploration').map(d => d.metadata.islandType)
       );
       return visitedTypes.size >= condition.value;
+    }
 
     case 'subject_challenges':
       return (
@@ -287,9 +301,10 @@ export default class DiscoveryTracker {
     case 'journal_entries':
       return this.scientificJournal.length >= condition.value;
 
-    case 'total_points':
+    case 'total_points': {
       const totalPoints = this.discoveries.reduce((sum, d) => sum + d.points, 0);
       return totalPoints >= condition.value;
+    }
 
     default:
       return false;
@@ -404,11 +419,11 @@ export default class DiscoveryTracker {
 
   /**
    * Handle click events for discovery interface
-   * @param {number} x - Click X coordinate
-   * @param {number} y - Click Y coordinate
+   * @param {number} _x - Click X coordinate (currently unused)
+   * @param {number} _y - Click Y coordinate (currently unused)
    * @returns {boolean} True if click was handled
    */
-  handleClick(x, y) {
+  handleClick(_x, _y) {
     // Dismiss discovery notification if clicked
     if (this.currentDiscoveryDisplay) {
       this.currentDiscoveryDisplay = null;
@@ -441,9 +456,9 @@ export default class DiscoveryTracker {
 
   /**
    * Update particle animations
-   * @param {number} deltaTime - Time since last update
+   * @param {number} _deltaTime - Time since last update (currently unused)
    */
-  updateParticles(deltaTime) {
+  updateParticles(_deltaTime) {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
 
@@ -538,17 +553,14 @@ export default class DiscoveryTracker {
    */
   renderDiscoveryNotification(ctx) {
     const canvasWidth = ctx.canvas.width;
-    const canvasHeight = ctx.canvas.height;
     const discovery = this.currentDiscoveryDisplay.discovery;
 
     // Calculate animation progress
     const elapsed = this.displayTimer;
     let alpha = 1;
-    let scale = 1;
 
     if (elapsed < 500) {
       // Appearing
-      scale = 0.5 + (elapsed / 500) * 0.5;
       alpha = elapsed / 500;
     } else if (elapsed > 4500) {
       // Disappearing

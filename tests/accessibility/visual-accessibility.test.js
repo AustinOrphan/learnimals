@@ -5,11 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -106,13 +102,19 @@ describe('Visual Accessibility Tests', () => {
       expect(lightGrayOnWhite.isAA).toBe(false);
 
       // Test large text contrast (3:1 requirement)
-      const mediumGrayOnWhite = service.checkContrast('#767676', '#ffffff');
+      // #949494 on white is about 3.03:1 - passes AA large text, fails AA normal text
+      const mediumGrayOnWhite = service.checkContrast('#949494', '#ffffff');
       expect(mediumGrayOnWhite.isAALarge).toBe(true);
       expect(mediumGrayOnWhite.isAA).toBe(false);
     });
 
     it('should handle RGB color formats', () => {
-      const rgbContrast = service.calculateContrastRatio('rgb(0, 0, 0)', 'rgb(255, 255, 255)');
+      // accessibilityTester parses rgb()/rgba() strings (as returned by
+      // getComputedStyle); AccessibilityService.calculateContrastRatio is hex-only
+      const rgbContrast = accessibilityTester.calculateContrastRatio(
+        'rgb(0, 0, 0)',
+        'rgb(255, 255, 255)'
+      );
       expect(rgbContrast).toBeCloseTo(21, 0);
     });
 
@@ -188,17 +190,16 @@ describe('Visual Accessibility Tests', () => {
 
       const button = testContainer.querySelector('button');
       const link = testContainer.querySelector('a');
-      const input = testContainer.querySelector('input');
 
-      // Test button contrast
-      const buttonContrast = service.calculateContrastRatio(
+      // Test button contrast (rgb() strings require the tester's color parser)
+      const buttonContrast = accessibilityTester.calculateContrastRatio(
         button.dataset.color,
         button.dataset.backgroundColor
       );
       expect(buttonContrast).toBeLessThan(4.5);
 
       // Test link contrast
-      const linkContrast = service.calculateContrastRatio(
+      const linkContrast = accessibilityTester.calculateContrastRatio(
         link.dataset.color,
         link.dataset.backgroundColor
       );
@@ -213,9 +214,6 @@ describe('Visual Accessibility Tests', () => {
         <button id="poor-focus" data-focus-color="rgb(200, 200, 200)">Poor Focus</button>
       `;
 
-      const goodButton = testContainer.querySelector('#good-focus');
-      const poorButton = testContainer.querySelector('#poor-focus');
-
       // Test focus indicator contrast
       const goodFocusContrast = service.checkContrast('#0064c8', '#ffffff');
       expect(goodFocusContrast.isAA).toBe(true);
@@ -227,30 +225,30 @@ describe('Visual Accessibility Tests', () => {
     it('should test error and success state indicators', () => {
       testContainer.innerHTML = `
         <div class="error" data-color="rgb(200, 0, 0)" data-background-color="rgb(255, 240, 240)">Error message</div>
-        <div class="success" data-color="rgb(0, 150, 0)" data-background-color="rgb(240, 255, 240)">Success message</div>
-        <div class="warning" data-color="rgb(200, 150, 0)" data-background-color="rgb(255, 255, 240)">Warning message</div>
+        <div class="success" data-color="rgb(0, 120, 0)" data-background-color="rgb(240, 255, 240)">Success message</div>
+        <div class="warning" data-color="rgb(150, 100, 0)" data-background-color="rgb(255, 255, 240)">Warning message</div>
       `;
 
       const errorDiv = testContainer.querySelector('.error');
       const successDiv = testContainer.querySelector('.success');
       const warningDiv = testContainer.querySelector('.warning');
 
-      // Test error state contrast
-      const errorContrast = service.calculateContrastRatio(
+      // Test error state contrast (rgb() strings require the tester's color parser)
+      const errorContrast = accessibilityTester.calculateContrastRatio(
         errorDiv.dataset.color,
         errorDiv.dataset.backgroundColor
       );
       expect(errorContrast).toBeGreaterThan(4.5);
 
       // Test success state contrast
-      const successContrast = service.calculateContrastRatio(
+      const successContrast = accessibilityTester.calculateContrastRatio(
         successDiv.dataset.color,
         successDiv.dataset.backgroundColor
       );
       expect(successContrast).toBeGreaterThan(4.5);
 
       // Test warning state contrast
-      const warningContrast = service.calculateContrastRatio(
+      const warningContrast = accessibilityTester.calculateContrastRatio(
         warningDiv.dataset.color,
         warningDiv.dataset.backgroundColor
       );
@@ -560,7 +558,7 @@ describe('Visual Accessibility Tests', () => {
       expect(document.body.classList.contains('reduce-motion')).toBe(true);
 
       // Test animation control availability
-      const animationControl = testContainer.querySelector('.animation-control');
+      // const animationControl = testContainer.querySelector('.animation-control');
       // Animation control should be present when animations exist
       // (This would be implemented in the actual application)
     });
@@ -662,7 +660,6 @@ describe('Visual Accessibility Tests', () => {
       `;
 
       const externalLink = testContainer.querySelector('.external-link');
-      const interactiveWidget = testContainer.querySelector('.interactive-widget');
       const printAlternative = testContainer.querySelector('.print-alternative');
 
       // External links should show URLs in print
@@ -707,7 +704,6 @@ describe('Visual Accessibility Tests', () => {
 
       const errorMessage = testContainer.querySelector('.message.error');
       const successMessage = testContainer.querySelector('.message.success');
-      const warningMessage = testContainer.querySelector('.message.warning');
 
       // Status messages should have icons and text, not just color
       expect(errorMessage.querySelector('.icon').getAttribute('aria-label')).toBe('Error');

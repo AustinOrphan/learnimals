@@ -14,15 +14,20 @@ Thank you for your interest in contributing to Learnimals! This document provide
 
 1. Fork the repository
 2. Clone your fork:
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/learnimals.git
    cd learnimals
    ```
+
 3. Install dependencies:
+
    ```bash
    npm install
    ```
+
 4. Create a feature branch:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -38,8 +43,9 @@ Thank you for your interest in contributing to Learnimals! This document provide
 ### Pre-commit Hooks
 
 The project uses Husky for Git hooks:
+
 - **Pre-commit**: Runs ESLint and related tests
-- **Pre-push**: Runs full test suite
+- **Pre-commit only** — there is no pre-push hook; run `npx vitest run` before pushing
 
 ### Running Tests
 
@@ -77,6 +83,7 @@ npm run test:integration
 ### PR Title Format
 
 Use conventional commit format:
+
 - `feat:` New features
 - `fix:` Bug fixes
 - `docs:` Documentation changes

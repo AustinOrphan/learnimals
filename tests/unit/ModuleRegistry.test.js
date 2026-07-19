@@ -72,7 +72,7 @@ describe('ModuleRegistry', () => {
       const result = registry.register('TestComponent', TestComponent);
       
       expect(result).toBe(true);
-      expect(registry.list()).toContain('TestComponent');
+      expect(registry.list().map(mod => mod.name)).toContain('TestComponent');
     });
     
     it('should register component with metadata', () => {
@@ -232,18 +232,18 @@ describe('ModuleRegistry', () => {
     });
     
     it('should list all registered components', () => {
-      const components = Array.from(registry.list());
-      
+      const components = registry.list().map(mod => mod.name);
+
       expect(components).toContain('TestComponent1');
       expect(components).toContain('TestComponent2');
       expect(components.length).toBe(2);
     });
-    
+
     it('should unregister components', () => {
       const result = registry.unregister('TestComponent1');
-      
+
       expect(result).toBe(true);
-      expect(registry.list()).not.toContain('TestComponent1');
+      expect(registry.list().map(mod => mod.name)).not.toContain('TestComponent1');
       expect(registry.get('TestComponent1')).toBeNull();
     });
     
@@ -407,7 +407,7 @@ describe('ModuleRegistry', () => {
         expect(result).toBe(true);
       }
       
-      expect(registry.list().size).toBe(100);
+      expect(registry.list().length).toBe(100);
     });
   });
 

@@ -69,16 +69,15 @@ const mockEnhancedTracker = {
   getGameAnalyticsSummary: vi.fn(() => ({})),
 };
 
-// Mock global constructors
-global.UserProgress = vi.fn(() => mockUserProgress);
-global.EnhancedProgressTracker = vi.fn(() => mockEnhancedTracker);
-
 // Import the class to test
+// Note: progressService.js imports userProgress and EnhancedProgressTracker directly,
+// so the mocks above are injected via constructor options rather than globals.
 import ProgressService from '../../src/utils/progressService.js';
 
 describe('ProgressService', () => {
   let progressService;
-  let mockDocument;
+  let documentAddEventListenerSpy;
+  let documentRemoveEventListenerSpy;
 
   beforeEach(() => {
     // Reset mocks but preserve return values
@@ -111,12 +110,9 @@ describe('ProgressService', () => {
     mockEnhancedTracker.getProgressSummary = vi.fn(() => ({}));
     mockEnhancedTracker.getGameAnalyticsSummary = vi.fn(() => ({}));
 
-    // Mock document
-    mockDocument = {
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    };
-    global.document = mockDocument;
+    // Spy on the real jsdom document instead of replacing it so shared setup hooks keep working
+    documentAddEventListenerSpy = vi.spyOn(document, 'addEventListener');
+    documentRemoveEventListenerSpy = vi.spyOn(document, 'removeEventListener');
 
     // Create fresh instance
     progressService = new ProgressService({
@@ -126,6 +122,16 @@ describe('ProgressService', () => {
   });
 
   afterEach(() => {
+    // Tear down the instance so its document listeners and cache interval are removed
+    if (progressService) {
+      progressService.destroy();
+      progressService = null;
+    }
+
+    // Restore document spies so later tests see the real methods
+    documentAddEventListenerSpy.mockRestore();
+    documentRemoveEventListenerSpy.mockRestore();
+
     // Clear any timers
     vi.clearAllTimers();
   });
@@ -144,11 +150,11 @@ describe('ProgressService', () => {
     });
 
     it('should set up event forwarding', () => {
-      expect(mockDocument.addEventListener).toHaveBeenCalledWith(
+      expect(documentAddEventListenerSpy).toHaveBeenCalledWith(
         'userDataUpdated',
         expect.any(Function)
       );
-      expect(mockDocument.addEventListener).toHaveBeenCalledWith(
+      expect(documentAddEventListenerSpy).toHaveBeenCalledWith(
         'achievementUnlocked',
         expect.any(Function)
       );

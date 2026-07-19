@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import AdventureQuestGame from '../../src/features/games/adventure-quest/AdventureQuestGame.js';
 import StoryProgression from '../../src/features/games/adventure-quest/StoryProgression.js';
 import ChallengeManager from '../../src/features/games/adventure-quest/ChallengeManager.js';
@@ -27,7 +27,8 @@ const mockCanvas = {
     createLinearGradient: vi.fn(() => ({
       addColorStop: vi.fn()
     })),
-    setLineDash: vi.fn()
+    setLineDash: vi.fn(),
+    canvas: mockCanvas
   })),
   width: 1280,
   height: 720,
@@ -48,56 +49,63 @@ const mockCanvas = {
   focus: vi.fn()
 };
 
-// Mock localStorage
+// Spy container for localStorage; the spies are installed on the real jsdom
+// localStorage in the file-level beforeEach below.
 const mockLocalStorage = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn()
+  getItem: null,
+  setItem: null,
+  removeItem: null,
+  clear: null
 };
-global.localStorage = mockLocalStorage;
 
-// Mock document
-global.document = {
-  getElementById: vi.fn((id) => {
-    if (id === 'gameCanvas') return mockCanvas;
-    return null;
-  }),
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  documentElement: {
-    style: {
-      getPropertyValue: vi.fn(() => '#4a90e2')
-    }
+// Spy on the real jsdom document/window instead of replacing the globals.
+// Replacing them with plain-object stubs crashes the shared setup hooks in
+// tests/setup/enhanced-setup.js (which need document.body, createElement, etc.).
+// MutationObserver, performance, and requestAnimationFrame mocks are already
+// provided by the shared setup's beforeAll.
+const domSpies = [];
+
+beforeEach(() => {
+  domSpies.push(
+    vi.spyOn(document, 'getElementById').mockImplementation(id => {
+      if (id === 'gameCanvas') return mockCanvas;
+      return null;
+    }),
+    vi.spyOn(document, 'addEventListener'),
+    vi.spyOn(document, 'removeEventListener'),
+    vi.spyOn(window, 'addEventListener'),
+    vi.spyOn(window, 'removeEventListener')
+  );
+
+  // Store-backed localStorage spies: assertions on calls still work, and
+  // read-after-write flows (e.g. story chapter completion feeding island
+  // unlock conditions) behave like real storage.
+  let localStorageStore = {};
+  mockLocalStorage.getItem = vi
+    .spyOn(localStorage, 'getItem')
+    .mockImplementation(key => (key in localStorageStore ? localStorageStore[key] : null));
+  mockLocalStorage.setItem = vi.spyOn(localStorage, 'setItem').mockImplementation((key, value) => {
+    localStorageStore[key] = String(value);
+  });
+  mockLocalStorage.removeItem = vi.spyOn(localStorage, 'removeItem').mockImplementation(key => {
+    delete localStorageStore[key];
+  });
+  mockLocalStorage.clear = vi.spyOn(localStorage, 'clear').mockImplementation(() => {
+    localStorageStore = {};
+  });
+  domSpies.push(
+    mockLocalStorage.getItem,
+    mockLocalStorage.setItem,
+    mockLocalStorage.removeItem,
+    mockLocalStorage.clear
+  );
+});
+
+afterEach(() => {
+  while (domSpies.length > 0) {
+    domSpies.pop().mockRestore();
   }
-};
-
-// Mock window
-global.window = {
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  getComputedStyle: vi.fn(() => ({
-    getPropertyValue: vi.fn(() => '#4a90e2')
-  }))
-};
-
-// Mock MutationObserver
-global.MutationObserver = class {
-  constructor(callback) {
-    this.callback = callback;
-  }
-  observe() {}
-  disconnect() {}
-};
-
-// Mock performance.now()
-global.performance = {
-  now: vi.fn(() => Date.now())
-};
-
-// Mock requestAnimationFrame
-global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 16));
-global.cancelAnimationFrame = vi.fn(clearTimeout);
+});
 
 describe('AdventureQuestGame', () => {
   let game;
@@ -268,7 +276,7 @@ describe('AdventureQuestGame', () => {
       const ctx = game.ctx;
       expect(ctx.fillRect).toHaveBeenCalled();
       expect(ctx.fillText).toHaveBeenCalledWith(
-        expect.stringContaining("Sky's Scientific Expedition"),
+        expect.stringContaining('Sky\'s Scientific Expedition'),
         expect.any(Number),
         expect.any(Number)
       );
@@ -322,7 +330,7 @@ describe('StoryProgression', () => {
     storyProgression.loadStory({ chapter: 'introduction' });
     
     expect(storyProgression.currentChapter).toBeDefined();
-    expect(storyProgression.currentChapter.title).toBe("Welcome to Sky's Scientific Expedition");
+    expect(storyProgression.currentChapter.title).toBe('Welcome to Sky\'s Scientific Expedition');
     expect(storyProgression.dialogueIndex).toBe(0);
   });
   
@@ -363,8 +371,10 @@ describe('ChallengeManager', () => {
   });
   
   it('should adapt difficulty based on performance', () => {
-    challengeManager.playerPerformance.correct = 8;
-    challengeManager.playerPerformance.incorrect = 2;
+    // adaptDifficulty raises difficulty only when accuracy is strictly above 0.8,
+    // so use 9/10 rather than the exact 8/10 boundary value
+    challengeManager.playerPerformance.correct = 9;
+    challengeManager.playerPerformance.incorrect = 1;
     challengeManager.playerPerformance.streak = 4;
     
     challengeManager.adaptDifficulty();

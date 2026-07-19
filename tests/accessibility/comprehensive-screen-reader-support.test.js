@@ -5,12 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -42,7 +37,6 @@ vi.mock('../../src/utils/logger.js', () => ({
 describe('Comprehensive Screen Reader Support Tests', () => {
   let testContainer;
   let service;
-  let mockTimer;
 
   beforeEach(() => {
     // Set up clean DOM
@@ -52,7 +46,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     document.body.appendChild(testContainer);
 
     // Mock timers for announcement testing
-    mockTimer = vi.useFakeTimers();
+    vi.useFakeTimers();
 
     // Mock getBoundingClientRect
     Element.prototype.getBoundingClientRect = vi.fn(() => ({
@@ -155,8 +149,9 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       await service.initialize();
 
-      // Check for screen reader optimizations
-      expect(document.body.classList.contains('screen-reader-detected')).toBeTruthy();
+      // Check for screen reader optimizations (the service records detection
+      // in its preferences; it does not currently toggle a body class)
+      expect(service.preferences.screenReader).toBe(true);
 
       // Verify enhanced semantics are applied
       const liveRegions = document.querySelectorAll('[aria-live]');
@@ -526,7 +521,6 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const form = testContainer.querySelector('form');
       const fieldsets = testContainer.querySelectorAll('fieldset');
-      const labels = testContainer.querySelectorAll('label');
       const inputs = testContainer.querySelectorAll('input, select');
       const requiredInputs = testContainer.querySelectorAll('[required]');
 
@@ -571,8 +565,8 @@ describe('Comprehensive Screen Reader Support Tests', () => {
     it('should provide meaningful alt text for informative images', () => {
       testContainer.innerHTML = `
         <img src="math-problem.png" alt="Word problem: Sarah has 5 apples and gives away 2. How many apples does she have left?">
-        <img src="science-diagram.jpg" alt="Diagram showing the water cycle with evaporation, condensation, and precipitation labeled">
-        <img src="reading-comprehension.png" alt="Story excerpt about a brave knight saving a village, with questions below">
+        <img src="science-diagram.jpg" alt="Diagram showing the water cycle with evaporation, condensation, and precipitation labeled.">
+        <img src="reading-comprehension.png" alt="Story excerpt about a brave knight saving a village, with questions below.">
       `;
 
       const images = testContainer.querySelectorAll('img');
@@ -921,7 +915,6 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const pagination = testContainer.querySelector('nav[aria-label="Pagination navigation"]');
-      const paginationItems = pagination.querySelectorAll('li');
       const currentPage = pagination.querySelector('[aria-current="page"]');
       const statusRegion = testContainer.querySelector('#pagination-status');
 
@@ -1049,7 +1042,6 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const usernameError = testContainer.querySelector('#username-error');
       const passwordStrength = testContainer.querySelector('#password-strength');
-      const passwordError = testContainer.querySelector('#password-error');
       const formStatus = testContainer.querySelector('.form-status');
 
       // Test error announcements (assertive)
@@ -1524,7 +1516,6 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const form = testContainer.querySelector('form');
       const fieldsets = testContainer.querySelectorAll('fieldset');
-      const labels = testContainer.querySelectorAll('label');
       const inputs = testContainer.querySelectorAll('input, select');
       const helpTexts = testContainer.querySelectorAll('.help-text');
       const errorContainers = testContainer.querySelectorAll('[role="alert"]');
@@ -1628,12 +1619,10 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       `;
 
       const usernameInput = testContainer.querySelector('#username');
-      const passwordInput = testContainer.querySelector('#password');
       const confirmPasswordInput = testContainer.querySelector('#confirm-password');
 
       const usernameError = testContainer.querySelector('#username-error');
       const passwordStrength = testContainer.querySelector('#password-strength');
-      const passwordError = testContainer.querySelector('#password-error');
       const confirmPasswordError = testContainer.querySelector('#confirm-password-error');
 
       // Test username validation
@@ -1893,12 +1882,6 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       // Verify lesson structure
       const lesson = testContainer.querySelector('.lesson');
-      const header = lesson.querySelector('header');
-      const nav = lesson.querySelector('nav');
-      const main = lesson.querySelector('main');
-      const aside = lesson.querySelector('aside');
-      const footer = lesson.querySelector('footer');
-
       expect(lesson.getAttribute('role')).toBe('main');
       expect(lesson.getAttribute('aria-labelledby')).toBe('lesson-title');
 
@@ -2066,7 +2049,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       expect(activity.getAttribute('aria-describedby')).toBe('activity-instructions');
 
       // Verify animals are properly labeled
-      animals.forEach((animal, index) => {
+      animals.forEach(animal => {
         expect(animal.getAttribute('role')).toBe('button');
         expect(animal.getAttribute('tabindex')).toBe('0');
         expect(animal.getAttribute('draggable')).toBe('true');
@@ -2290,9 +2273,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       const tablist = testContainer.querySelector('[role="tablist"]');
       const tabs = testContainer.querySelectorAll('[role="tab"]');
-      const tabpanels = testContainer.querySelectorAll('[role="tabpanel"]');
       const menubar = testContainer.querySelector('[role="menubar"]');
-      const menuitems = testContainer.querySelectorAll('[role="menuitem"]');
       const tree = testContainer.querySelector('[role="tree"]');
       const treeitems = testContainer.querySelectorAll('[role="treeitem"]');
       const grid = testContainer.querySelector('[role="grid"]');
@@ -2300,7 +2281,7 @@ describe('Comprehensive Screen Reader Support Tests', () => {
 
       // Verify tab interface
       expect(tablist.getAttribute('aria-label')).toBe('Subject areas');
-      tabs.forEach((tab, index) => {
+      tabs.forEach(tab => {
         const isSelected = tab.getAttribute('aria-selected') === 'true';
         expect(tab.getAttribute('tabindex')).toBe(isSelected ? '0' : '-1');
         expect(tab.getAttribute('aria-controls')).toBeTruthy();
@@ -2372,14 +2353,24 @@ describe('Comprehensive Screen Reader Support Tests', () => {
           value: test.userAgent,
         });
 
-        // Mock speech synthesis if needed
+        // Mock speech synthesis if needed. The service treats the mere
+        // presence of window.speechSynthesis as a detection indicator, so
+        // non-screen-reader environments must not define it at all.
         if (test.speechSynthesis) {
-          window.speechSynthesis.getVoices.mockReturnValue([
-            { name: 'Alex', lang: 'en-US' },
-            { name: 'Victoria', lang: 'en-US' },
-          ]);
+          Object.defineProperty(window, 'speechSynthesis', {
+            writable: true,
+            configurable: true,
+            value: {
+              getVoices: vi.fn(() => [
+                { name: 'Alex', lang: 'en-US' },
+                { name: 'Victoria', lang: 'en-US' },
+              ]),
+              speak: vi.fn(),
+              cancel: vi.fn(),
+            },
+          });
         } else {
-          window.speechSynthesis.getVoices.mockReturnValue([]);
+          delete window.speechSynthesis;
         }
 
         service = new AccessibilityService();

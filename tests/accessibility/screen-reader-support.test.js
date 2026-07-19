@@ -6,11 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -250,7 +246,15 @@ describe('Screen Reader Support Tests', () => {
     });
 
     it('should announce status changes properly', () => {
-      const component = new AccessibleComponent({
+      // The base class generateStateChangeMessage returns null by design;
+      // subclasses supply state-specific announcement messages
+      class StatusComponent extends AccessibleComponent {
+        generateStateChangeMessage(oldState, newState) {
+          return newState.loading ? 'Loading started' : null;
+        }
+      }
+
+      const component = new StatusComponent({
         announceChanges: true,
       });
 
@@ -262,7 +266,7 @@ describe('Screen Reader Support Tests', () => {
 
       component.setState({ loading: true }, true);
 
-      expect(announceSpy).toHaveBeenCalled();
+      expect(announceSpy).toHaveBeenCalledWith('Loading started', 'polite');
     });
 
     it('should handle form validation announcements', () => {
@@ -413,6 +417,10 @@ describe('Screen Reader Support Tests', () => {
       const nav = document.createElement('nav');
       component.element = nav;
       testContainer.appendChild(nav);
+
+      // getComponentName reads the accessible name from the DOM, so the
+      // ariaLabel option must be applied to the element first
+      component.applyARIAAttributes();
 
       const announceSpy = vi.spyOn(component, 'announce');
 

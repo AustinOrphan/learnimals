@@ -3,86 +3,31 @@
  * Tests for Sky's Ecosystem Explorer game
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { JSDOM } from 'jsdom';
+import { setupCanvasMocking } from '../helpers/canvasMock.js';
+import EcosystemGame from '../../src/features/games/ecosystem-explorer/EcosystemGame.js';
 
-// Mock the dependencies
+// Mock the dependencies (plain functions so global mock resets cannot strip implementations)
 vi.mock('../../src/utils/common.js', () => ({
-  getRandomInt: vi.fn((min, max) => Math.floor(min + (max - min) * 0.5)),
-  debounce: vi.fn(fn => fn),
+  getRandomInt: (min, max) => Math.floor(min + (max - min) * 0.5),
+  debounce: fn => fn,
 }));
 
 describe('Ecosystem Explorer Game', () => {
-  let dom;
-  let document;
-  let window;
-  let EcosystemGame;
+  beforeEach(() => {
+    // Use the ambient vitest jsdom document; global setup clears the body before each test
+    document.body.innerHTML = '<canvas id="ecosystem-canvas" width="800" height="600"></canvas>';
 
-  beforeEach(async () => {
-    // Set up DOM environment
-    dom = new JSDOM(
-      `
-      <!DOCTYPE html>
-      <html>
-        <body>
-          <canvas id="ecosystem-canvas" width="800" height="600"></canvas>
-        </body>
-      </html>
-    `,
-      {
-        pretendToBeVisual: true,
-        resources: 'usable',
-      }
-    );
+    // jsdom has no canvas 2D implementation; mock it on the prototype
+    setupCanvasMocking({ width: 800, height: 600 });
 
-    document = dom.window.document;
-    window = dom.window;
-
-    // Set up globals
-    global.document = document;
-    global.window = window;
-    global.HTMLCanvasElement = window.HTMLCanvasElement;
-    global.requestAnimationFrame = vi.fn();
-    global.performance = { now: vi.fn(() => Date.now()) };
-
-    // Mock window.location
-    Object.defineProperty(window, 'location', {
-      value: {
-        href: 'http://localhost:3000',
-        origin: 'http://localhost:3000',
-        pathname: '/',
-        search: '',
-        hash: '',
-      },
-      writable: true,
-      configurable: true,
-    });
-
-    // Mock canvas context
-    const mockContext = {
-      fillRect: vi.fn(),
-      strokeRect: vi.fn(),
-      fillText: vi.fn(),
-      beginPath: vi.fn(),
-      moveTo: vi.fn(),
-      lineTo: vi.fn(),
-      stroke: vi.fn(),
-      save: vi.fn(),
-      restore: vi.fn(),
-      setTransform: vi.fn(),
-      clearRect: vi.fn(),
-    };
-
-    vi.spyOn(window.HTMLCanvasElement.prototype, 'getContext').mockReturnValue(mockContext);
-
-    // Import the game class
-    const module = await import('../../src/features/games/ecosystem-explorer/EcosystemGame.js');
-    EcosystemGame = module.default;
+    // Prevent the game loop from scheduling frames during tests
+    vi.stubGlobal('requestAnimationFrame', vi.fn());
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
-    vi.resetModules();
-    dom.window.close();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    document.body.innerHTML = '';
   });
 
   describe('Game Initialization', () => {

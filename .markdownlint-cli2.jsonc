@@ -1,0 +1,12 @@
+{
+  // Scope markdownlint to authored project docs. docs/ is a historical
+  // archive (plans/reports); node_modules is third-party.
+  "ignores": [
+    "node_modules/**",
+    "docs/**",
+    ".claudeCodeStuffToStashForNow/**",
+    ".claude/**",
+    "playwright-report/**",
+    "test-results/**"
+  ]
+}

@@ -26,7 +26,7 @@ Learnimals is an interactive educational web application featuring fun games and
 
 ### Prerequisites
 
-- Node.js 18+ (use `.nvmrc` for exact version)
+- Node.js 20.15.1 (pinned in `.nvmrc`)
 - npm or yarn
 - Python 3 (for local development server)
 - Modern web browser (Chrome, Firefox, Edge, etc.)
@@ -55,14 +55,14 @@ Learnimals is an interactive educational web application featuring fun games and
 4. Start a local web server
 
    ```bash
-   python3 -m http.server 8080
+   npm run serve   # python3 http server on port 3000, repo root
    # or use the Makefile
    make dev-server
    # or
    npx serve src/pages
    ```
 
-5. Open `http://localhost:8080` in your browser
+5. Open `http://localhost:3000/src/pages/index.html` in your browser
 
 ### CI/CD Pipeline
 
@@ -74,7 +74,7 @@ This project uses GitHub Actions for continuous integration and deployment:
   - HTML validation
   - PWA audit with Lighthouse
   - Security scanning
-  - Multi-version Node.js testing (18, 20)
+  - Lint + full Vitest suite on the `.nvmrc` Node version
 
 - **Deployment**: Automatic deployment to GitHub Pages on main branch
 - **Release Management**: Automated versioning and changelog generation
@@ -108,7 +108,7 @@ make docker-run      # Run with Docker
 
 ### Project Structure
 
-```
+```text
 learnimals/
 ├── src/                    # Source code
 │   ├── components/         # Reusable UI components
@@ -128,7 +128,7 @@ learnimals/
 ### Technology Stack
 
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
-- **Testing**: Vitest, Happy DOM
+- **Testing**: Vitest (jsdom) + Playwright browser e2e
 - **CI/CD**: GitHub Actions, Docker, Kubernetes
 - **Monitoring**: Prometheus, Grafana, Lighthouse CI
 - **Security**: CodeQL, Snyk, Trivy
@@ -149,7 +149,7 @@ npm test -- tests/integration/
 # Run with coverage
 npm test -- --coverage
 npm run test:unit
-npm run test:navigation
+npx vitest run tests/navigation
 npm run test:integration
 
 # Generate coverage report
@@ -202,35 +202,14 @@ make deploy-production
 make validate-k8s
 ```
 
-See [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed deployment procedures.
+See [Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md) for detailed deployment procedures.
 
 ## 🔒 Security
 
-- **Continuous Security Scanning**: Daily vulnerability scans
-- **Dependency Management**: Automated updates with Dependabot
-- **Container Security**: Multi-stage builds with security hardening
-- **Network Policies**: Kubernetes-native traffic control
-- **HTTPS Only**: Enforced TLS with HSTS
-
-## 📊 Monitoring & Performance
-
-- **Health Checks**: Continuous application monitoring
-- **Performance Metrics**: Core Web Vitals tracking
-- **Accessibility**: WCAG 2.1 AA compliance
-- **User Journey Testing**: Synthetic monitoring
-
-## 🔒 Security
-
-### Security Scanning
-
-Our CI/CD pipeline includes comprehensive security scanning:
-
-- **🔍 SAST Analysis**: CodeQL and Semgrep for code vulnerabilities
-- **📦 Dependency Scanning**: npm audit and Snyk for package vulnerabilities
-- **🐳 Container Security**: Trivy and Grype for Docker image scanning
-- **🔐 Secrets Detection**: Gitleaks and TruffleHog prevent credential leaks
-- **🏗️ Infrastructure Security**: Checkov and Terrascan for IaC scanning
-- **📄 License Compliance**: Automated license checking with FOSSA
+Weekly and per-push scanning via `security.yml`: npm audit, OWASP ZAP
+baseline scan, content/child-safety scans, and security-header checks.
+Dependabot manages dependency updates. (CodeQL/Snyk/Trivy/FOSSA are not
+active — they require services this private repo does not have enabled.)
 
 ### Security Features
 
@@ -242,7 +221,7 @@ Our CI/CD pipeline includes comprehensive security scanning:
 
 ### Reporting Security Issues
 
-Please see our [Security Policy](docs/SECURITY.md) for details on reporting vulnerabilities.
+Please see our [Security Policy](docs/security/SECURITY.md) for details on reporting vulnerabilities.
 
 ## 🤝 Contributing
 
@@ -258,7 +237,7 @@ See our [PR template](.github/pull_request_template.md) for more details.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+License: MIT intended — no LICENSE file exists yet (tracked in PLAN.md decisions).
 
 ## 🙏 Acknowledgments
 
