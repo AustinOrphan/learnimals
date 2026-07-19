@@ -20,7 +20,7 @@ This document captures the key architectural decisions made during the developme
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -51,7 +51,7 @@ constructor(canvasId, options = {}) {
 setupCanvas() {
   const dpr = window.devicePixelRatio || 1;
   const rect = this.canvas.getBoundingClientRect();
-  
+
   // High-DPI display support
   this.canvas.width = rect.width * dpr;
   this.canvas.height = rect.height * dpr;
@@ -62,17 +62,20 @@ setupCanvas() {
 ### Consequences
 
 **Positive:**
+
 - Smooth 60fps animations
 - Direct control over rendering pipeline
 - Excellent performance for complex visualizations
 - Easy integration with existing web technologies
 
 **Negative:**
+
 - Canvas content is not accessible to screen readers by default
 - Requires manual implementation of hover states and interaction zones
 - No built-in responsive behavior
 
 **Mitigation:**
+
 - Implemented ARIA live regions for accessibility
 - Created manual interaction zone detection
 - Added responsive canvas sizing system
@@ -83,7 +86,7 @@ setupCanvas() {
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -127,6 +130,7 @@ class EcosystemSafariGame {
 ### Consequences
 
 **Positive:**
+
 - Clear separation of concerns
 - Easy to test individual components
 - Facilitates parallel development
@@ -134,6 +138,7 @@ class EcosystemSafariGame {
 - Self-documenting code structure
 
 **Negative:**
+
 - More complex initial setup
 - Requires understanding of module interactions
 - Potential for over-engineering simple features
@@ -144,7 +149,7 @@ class EcosystemSafariGame {
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -171,18 +176,18 @@ updatePopulations(deltaTime) {
     const carryingCapacityFactor = Math.min(population.currentPopulation / population.carryingCapacity, 1);
     const environmentalStress = this.calculateEnvironmentalStress(population.species);
     const foodAvailability = this.calculateFoodAvailability(population.species);
-    
-    const effectiveGrowthRate = population.growthRate * 
-      carryingCapacityFactor * 
-      (1 - environmentalStress) * 
-      foodAvailability * 
+
+    const effectiveGrowthRate = population.growthRate *
+      carryingCapacityFactor *
+      (1 - environmentalStress) *
+      foodAvailability *
       this.climateFactor;
-    
+
     // Apply logistic growth equation
     const dt = deltaTime / 1000; // Convert to seconds
-    const growthChange = effectiveGrowthRate * population.currentPopulation * 
+    const growthChange = effectiveGrowthRate * population.currentPopulation *
       (1 - population.currentPopulation / population.carryingCapacity) * dt;
-    
+
     population.currentPopulation = Math.max(0, population.currentPopulation + growthChange);
   });
 }
@@ -191,17 +196,20 @@ updatePopulations(deltaTime) {
 ### Consequences
 
 **Positive:**
+
 - Scientifically accurate ecosystem behavior
 - Engaging visual feedback for student actions
 - Supports inquiry-based learning
 - Demonstrates complex ecological relationships
 
 **Negative:**
+
 - Computational complexity increases with species count
 - Requires careful parameter tuning for stability
 - May be too complex for younger students initially
 
 **Mitigation:**
+
 - Implemented performance monitoring and optimization
 - Created simplified modes for different age groups
 - Added educational explanations for model behavior
@@ -212,7 +220,7 @@ updatePopulations(deltaTime) {
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -242,7 +250,7 @@ class DiscoveryJournal {
 
   triggerDiscovery(triggerType, context) {
     const discoveries = this.interactionTriggers.get(triggerType) || [];
-    
+
     discoveries.forEach(discovery => {
       if (this.checkDiscoveryConditions(discovery, context)) {
         this.unlockContent(discovery.contentId);
@@ -258,8 +266,11 @@ class DiscoveryJournal {
         case 'population_threshold':
           return context.population >= condition.value;
         case 'species_interaction':
-          return context.speciesA && context.speciesB && 
-                 this.speciesManager.areRelated(context.speciesA, context.speciesB);
+          return (
+            context.speciesA &&
+            context.speciesB &&
+            this.speciesManager.areRelated(context.speciesA, context.speciesB)
+          );
         case 'time_elapsed':
           return context.gameTime >= condition.value;
         default:
@@ -281,6 +292,7 @@ class DiscoveryJournal {
 ### Consequences
 
 **Positive:**
+
 - Higher student engagement through curiosity
 - Reduced cognitive overload
 - Improved learning retention
@@ -288,11 +300,13 @@ class DiscoveryJournal {
 - Self-directed learning support
 
 **Negative:**
+
 - Risk of missing important information
 - Complex content management system
 - Requires extensive playtesting for balance
 
 **Mitigation:**
+
 - Implemented content review system
 - Added multiple pathways to key concepts
 - Created teacher dashboard for tracking student progress
@@ -303,7 +317,7 @@ class DiscoveryJournal {
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -336,26 +350,26 @@ class AccessibilityManager {
   setupScreenReaderSupport() {
     // Create ARIA live regions for dynamic content
     this.createLiveRegions();
-    
+
     // Alternative text-based game state descriptions
     this.updateScreenReaderContent();
-    
+
     // Keyboard-accessible controls
     this.setupKeyboardControls();
   }
 
   createLiveRegions() {
     const gameContainer = this.game.canvas.parentElement;
-    
+
     // Population updates
     this.populationLiveRegion = this.createLiveRegion('polite', 'population-updates');
-    
+
     // Discovery notifications
     this.discoveryLiveRegion = this.createLiveRegion('assertive', 'discovery-notifications');
-    
+
     // Game state changes
     this.stateLiveRegion = this.createLiveRegion('polite', 'game-state');
-    
+
     gameContainer.appendChild(this.populationLiveRegion);
     gameContainer.appendChild(this.discoveryLiveRegion);
     gameContainer.appendChild(this.stateLiveRegion);
@@ -375,6 +389,7 @@ class AccessibilityManager {
 ### Consequences
 
 **Positive:**
+
 - Inclusive access for all students
 - Improved usability for all users
 - Legal compliance and reduced risk
@@ -382,11 +397,13 @@ class AccessibilityManager {
 - Supports diverse learning styles
 
 **Negative:**
+
 - Increased development complexity
 - Additional testing requirements
 - Performance considerations for assistive technologies
 
 **Mitigation:**
+
 - Early accessibility integration reduces retrofit costs
 - Automated accessibility testing tools
 - Regular user testing with assistive technology users
@@ -397,7 +414,7 @@ class AccessibilityManager {
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -430,18 +447,19 @@ class PerformanceManager {
   optimizeRendering() {
     // Dirty rectangle optimization
     this.dirtyRegions = new Set();
-    
+
     // Object pooling for frequently created objects
     this.particlePool = new ObjectPool(() => new Particle(), 100);
     this.speciesPool = new ObjectPool(() => new SpeciesInstance(), 50);
-    
+
     // Level-of-detail rendering
     this.lodManager = new LODManager();
   }
 
   adaptivePerformance() {
     // Monitor frame rate and adjust quality
-    if (this.averageFrameTime > 16.67) { // Below 60fps
+    if (this.averageFrameTime > 16.67) {
+      // Below 60fps
       this.reduceQuality();
     } else if (this.averageFrameTime < 12 && this.qualityLevel < this.maxQuality) {
       this.increaseQuality();
@@ -452,7 +470,7 @@ class PerformanceManager {
     // Periodic cleanup of unused resources
     this.cleanupUnusedTextures();
     this.garbageCollectPools();
-    
+
     // Lazy loading of educational content
     this.contentLoader.loadOnDemand();
   }
@@ -472,17 +490,20 @@ class PerformanceManager {
 ### Consequences
 
 **Positive:**
+
 - Smooth performance across diverse devices
 - Better battery life on mobile devices
 - Improved accessibility for users with assistive technologies
 - Reduced loading times and memory usage
 
 **Negative:**
+
 - Increased code complexity
 - Additional development and testing overhead
 - Potential quality trade-offs during performance scaling
 
 **Mitigation:**
+
 - Performance monitoring and alerting
 - A/B testing of optimization strategies
 - User feedback collection on performance experience
@@ -493,7 +514,7 @@ class PerformanceManager {
 
 **Status:** Implemented  
 **Date:** 2025-08-01  
-**Decision Makers:** Development Team  
+**Decision Makers:** Development Team
 
 ### Context
 
@@ -521,11 +542,19 @@ class SystemInterface {
       throw new Error('SystemInterface is abstract');
     }
   }
-  
-  initialize() { throw new Error('Must implement initialize()'); }
-  update(deltaTime) { throw new Error('Must implement update()'); }
-  render(ctx) { throw new Error('Must implement render()'); }
-  cleanup() { throw new Error('Must implement cleanup()'); }
+
+  initialize() {
+    throw new Error('Must implement initialize()');
+  }
+  update(deltaTime) {
+    throw new Error('Must implement update()');
+  }
+  render(ctx) {
+    throw new Error('Must implement render()');
+  }
+  cleanup() {
+    throw new Error('Must implement cleanup()');
+  }
 }
 
 // Event-driven communication between systems
@@ -533,7 +562,7 @@ class EventBus {
   constructor() {
     this.listeners = new Map();
   }
-  
+
   emit(eventType, data) {
     const listeners = this.listeners.get(eventType) || [];
     listeners.forEach(listener => {
@@ -544,7 +573,7 @@ class EventBus {
       }
     });
   }
-  
+
   on(eventType, listener) {
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, []);
@@ -575,6 +604,7 @@ class EventBus {
 ### Consequences
 
 **Positive:**
+
 - Highly maintainable and testable codebase
 - Parallel development capability
 - Easy feature addition and modification
@@ -582,11 +612,13 @@ class EventBus {
 - Reusable components for future projects
 
 **Negative:**
+
 - Initial development overhead
 - Potential over-engineering for simple features
 - Requires discipline to maintain boundaries
 
 **Mitigation:**
+
 - Clear documentation of system interfaces
 - Automated testing to verify contracts
 - Code review process to maintain standards
@@ -599,6 +631,7 @@ class EventBus {
 ### Error Handling and Resilience
 
 All systems implement graceful error handling with fallbacks:
+
 - User actions never crash the game
 - Missing content gracefully degrades
 - Performance issues trigger automatic quality reduction
@@ -607,6 +640,7 @@ All systems implement graceful error handling with fallbacks:
 ### Logging and Monitoring
 
 Comprehensive logging for debugging and analytics:
+
 - User interaction tracking for UX improvements
 - Performance metrics for optimization
 - Error reporting for bug fixes
@@ -615,6 +649,7 @@ Comprehensive logging for debugging and analytics:
 ### Internationalization
 
 Architecture supports future localization:
+
 - Text externalization system
 - Cultural adaptation capabilities
 - RTL language support preparation
@@ -623,6 +658,7 @@ Architecture supports future localization:
 ### Security and Privacy
 
 Privacy-first design for educational environments:
+
 - No unnecessary data collection
 - Local storage preference
 - COPPA compliance preparation
@@ -633,18 +669,21 @@ Privacy-first design for educational environments:
 ## Future Architecture Considerations
 
 ### Scalability Improvements
+
 - Web Worker integration for heavy computations
 - WebAssembly for performance-critical algorithms
 - Progressive Web App capabilities
 - Cloud save synchronization
 
 ### Educational Features
+
 - Learning analytics integration
 - Curriculum standard alignment tracking
 - Teacher dashboard architecture
 - Student collaboration features
 
 ### Technical Debt Management
+
 - Regular architectural reviews
 - Dependency updates and security patches
 - Performance regression testing

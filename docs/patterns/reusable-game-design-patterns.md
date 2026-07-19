@@ -22,29 +22,38 @@ class EducationalGameBase extends BaseGame {
       useDOMContainer: true,
       enableAccessibility: true,
       enableProgressTracking: true,
-      ...options
+      ...options,
     });
-    
+
     // Educational-specific initialization
     this.setupEducationalFeatures();
   }
-  
+
   setupEducationalFeatures() {
     this.learningTracker = new LearningProgressTracker();
     this.vocabularySystem = new VocabularyTracker();
     this.assessmentEngine = new FormativeAssessment();
     this.feedbackSystem = new EducationalFeedback();
   }
-  
+
   // Standard educational methods all games should implement
-  trackLearningProgress(objective, performance) { /* */ }
-  provideFeedback(type, content) { /* */ }
-  addVocabularyTerm(term, context) { /* */ }
-  recordChoice(choice, context) { /* */ }
+  trackLearningProgress(objective, performance) {
+    /* */
+  }
+  provideFeedback(type, content) {
+    /* */
+  }
+  addVocabularyTerm(term, context) {
+    /* */
+  }
+  recordChoice(choice, context) {
+    /* */
+  }
 }
 ```
 
 **Benefits**:
+
 - Consistent educational functionality across games
 - Standardized progress tracking and assessment
 - Shared accessibility features
@@ -67,31 +76,48 @@ class StoryEngine {
       sceneId: storyData.startScene,
       playerChoices: [],
       discoveredVocabulary: [],
-      storyPath: []
+      storyPath: [],
     };
-    
+
     this.config = {
       adaptiveContent: config.adaptiveContent !== false,
       vocabularyTracking: config.vocabularyTracking !== false,
-      assessmentIntegration: config.assessmentIntegration !== false
+      assessmentIntegration: config.assessmentIntegration !== false,
     };
   }
-  
+
   // Core story progression methods
-  getCurrentScene() { /* */ }
-  makeChoice(choiceIndex) { /* */ }
-  canGoBack() { /* */ }
-  goBack() { /* */ }
-  getStoryProgress() { /* */ }
-  
+  getCurrentScene() {
+    /* */
+  }
+  makeChoice(choiceIndex) {
+    /* */
+  }
+  canGoBack() {
+    /* */
+  }
+  goBack() {
+    /* */
+  }
+  getStoryProgress() {
+    /* */
+  }
+
   // Educational integration methods
-  extractVocabulary(scene) { /* */ }
-  createAssessmentPoint(scene) { /* */ }
-  adaptContentForLevel(content, level) { /* */ }
+  extractVocabulary(scene) {
+    /* */
+  }
+  createAssessmentPoint(scene) {
+    /* */
+  }
+  adaptContentForLevel(content, level) {
+    /* */
+  }
 }
 ```
 
 **Applications**:
+
 - Story-based reading games (like Story Safari)
 - Interactive science experiments with sequential steps
 - Math problem-solving adventures
@@ -113,33 +139,42 @@ class EducationalModal extends Modal {
       className: `educational-modal modal--${type}`,
       escapeToClose: true,
       focusOnOpen: true,
-      ...options
+      ...options,
     });
-    
+
     this.modalType = type; // vocabulary, achievement, help, assessment
     this.setupEducationalFeatures();
   }
-  
+
   setupEducationalFeatures() {
     // Add educational-specific ARIA attributes
     this.content.setAttribute('role', 'dialog');
     this.content.setAttribute('aria-labelledby', 'modal-title');
     this.content.setAttribute('aria-describedby', 'modal-content');
-    
+
     // Set up educational event tracking
     this.on('open', () => this.trackModalOpen());
     this.on('close', () => this.trackModalClose());
   }
-  
+
   // Specialized content methods
-  showVocabularyDefinition(term, definition, context) { /* */ }
-  showAchievement(achievement) { /* */ }
-  showHelp(helpContent) { /* */ }
-  showAssessmentFeedback(feedback) { /* */ }
+  showVocabularyDefinition(term, definition, context) {
+    /* */
+  }
+  showAchievement(achievement) {
+    /* */
+  }
+  showHelp(helpContent) {
+    /* */
+  }
+  showAssessmentFeedback(feedback) {
+    /* */
+  }
 }
 ```
 
 **Modal Types**:
+
 - **Vocabulary**: Word definitions with context
 - **Achievement**: Progress celebrations and unlocks
 - **Help**: Contextual assistance and hints
@@ -162,7 +197,7 @@ class LearningProgressTracker {
     this.storage = new PrivacyFirstStorage(`progress_${gameType}`);
     this.events = new EventEmitter();
   }
-  
+
   // Core tracking methods
   recordProgress(objective, performance, context = {}) {
     const progressEntry = {
@@ -170,23 +205,32 @@ class LearningProgressTracker {
       performance,
       context,
       timestamp: Date.now(),
-      sessionId: this.getCurrentSession()
+      sessionId: this.getCurrentSession(),
     };
-    
+
     this.storage.append('progress_log', progressEntry);
     this.updateObjectiveProgress(objective, performance);
     this.events.emit('progress:recorded', progressEntry);
   }
-  
+
   // Analysis methods
-  getProgressSummary() { /* */ }
-  calculateMastery(objective) { /* */ }
-  getRecommendations() { /* */ }
-  exportProgress() { /* */ }
+  getProgressSummary() {
+    /* */
+  }
+  calculateMastery(objective) {
+    /* */
+  }
+  getRecommendations() {
+    /* */
+  }
+  exportProgress() {
+    /* */
+  }
 }
 ```
 
 **Integration Points**:
+
 - Story choice quality analysis
 - Vocabulary acquisition tracking
 - Time-on-task measurement
@@ -205,22 +249,26 @@ class LearningProgressTracker {
   <div class="choice-prompt">
     <h3 id="choice-question">What should Ruby do next?</h3>
   </div>
-  
+
   <div class="choice-options">
-    <button type="button" 
-            class="choice-option" 
-            aria-describedby="choice-1-description"
-            data-choice-id="help-elephants">
+    <button
+      type="button"
+      class="choice-option"
+      aria-describedby="choice-1-description"
+      data-choice-id="help-elephants"
+    >
       <div class="choice-text">Help the elephant family find water</div>
       <div class="choice-description" id="choice-1-description">
         This choice focuses on cooperation and animal behavior
       </div>
     </button>
-    
-    <button type="button" 
-            class="choice-option" 
-            aria-describedby="choice-2-description"
-            data-choice-id="explore-alone">
+
+    <button
+      type="button"
+      class="choice-option"
+      aria-describedby="choice-2-description"
+      data-choice-id="explore-alone"
+    >
       <div class="choice-text">Explore the watering hole alone</div>
       <div class="choice-description" id="choice-2-description">
         This choice emphasizes independence and observation skills
@@ -287,16 +335,16 @@ class VocabularyHighlighter {
     this.container = container;
     this.vocabulary = new Map(vocabularyData.map(item => [item.term, item]));
     this.highlightedTerms = new Set();
-    
+
     this.setupVocabularyInteractions();
   }
-  
+
   highlightVocabularyTerms(text) {
     let highlightedText = text;
-    
+
     this.vocabulary.forEach((data, term) => {
       const regex = new RegExp(`\\b${term}\\b`, 'gi');
-      highlightedText = highlightedText.replace(regex, (match) => {
+      highlightedText = highlightedText.replace(regex, match => {
         return `<span class="vocabulary-term" 
                       data-term="${term}" 
                       tabindex="0" 
@@ -306,26 +354,22 @@ class VocabularyHighlighter {
                 </span>`;
       });
     });
-    
+
     return highlightedText;
   }
-  
+
   setupVocabularyInteractions() {
     this.container.addEventListener('click', this.handleVocabularyClick.bind(this));
     this.container.addEventListener('keydown', this.handleVocabularyKeydown.bind(this));
   }
-  
+
   showVocabularyDefinition(term) {
     const vocabData = this.vocabulary.get(term.toLowerCase());
     if (!vocabData) return;
-    
+
     const modal = new EducationalModal('vocabulary');
-    modal.showVocabularyDefinition(
-      vocabData.term,
-      vocabData.definition,
-      vocabData.context
-    );
-    
+    modal.showVocabularyDefinition(vocabData.term, vocabData.definition, vocabData.context);
+
     // Track vocabulary interaction
     this.recordVocabularyInteraction(term);
   }
@@ -347,7 +391,7 @@ class ProgressVisualizer {
     this.container = container;
     this.progressData = progressData;
   }
-  
+
   renderLinearProgress(current, total, label) {
     return `
       <div class="progress-indicator" role="progressbar" 
@@ -357,32 +401,40 @@ class ProgressVisualizer {
            aria-label="${label}">
         <div class="progress-label">${label}</div>
         <div class="progress-bar">
-          <div class="progress-fill" style="width: ${(current/total)*100}%"></div>
+          <div class="progress-fill" style="width: ${(current / total) * 100}%"></div>
         </div>
         <div class="progress-text">${current} of ${total}</div>
       </div>
     `;
   }
-  
+
   renderSkillProgress(skills) {
-    return skills.map(skill => `
+    return skills
+      .map(
+        skill => `
       <div class="skill-progress">
         <div class="skill-name">${skill.name}</div>
         <div class="skill-level">
           ${this.renderStarRating(skill.level, skill.maxLevel)}
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   renderAchievementBadges(achievements) {
-    return achievements.map(achievement => `
+    return achievements
+      .map(
+        achievement => `
       <div class="achievement-badge ${achievement.unlocked ? 'unlocked' : 'locked'}"
            title="${achievement.description}">
         <div class="badge-icon">${achievement.icon}</div>
         <div class="badge-name">${achievement.name}</div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 }
 ```
@@ -404,25 +456,25 @@ class AdaptiveContentEngine {
     this.baseContent = baseContent;
     this.learnerProfile = learnerProfile;
     this.adaptationStrategies = new Map();
-    
+
     this.initializeStrategies();
   }
-  
+
   initializeStrategies() {
     this.adaptationStrategies.set('reading-level', this.adaptReadingLevel.bind(this));
     this.adaptationStrategies.set('vocabulary', this.adaptVocabulary.bind(this));
     this.adaptationStrategies.set('pacing', this.adaptPacing.bind(this));
     this.adaptationStrategies.set('scaffolding', this.adaptScaffolding.bind(this));
   }
-  
+
   adaptContent(content, adaptationType) {
     const strategy = this.adaptationStrategies.get(adaptationType);
     return strategy ? strategy(content) : content;
   }
-  
+
   adaptReadingLevel(content) {
     const targetLevel = this.learnerProfile.readingLevel;
-    
+
     switch (targetLevel) {
       case 'beginner':
         return this.simplifyLanguage(content);
@@ -434,7 +486,7 @@ class AdaptiveContentEngine {
         return content;
     }
   }
-  
+
   adaptVocabulary(content) {
     // Adjust vocabulary complexity based on learner's known terms
     const knownTerms = this.learnerProfile.vocabularyMastery;
@@ -459,53 +511,51 @@ class InGameAssessment {
     this.assessmentPoints = [];
     this.performanceData = new Map();
   }
-  
+
   createAssessmentPoint(objective, trigger, evaluator) {
     const assessmentPoint = {
       id: `assessment_${Date.now()}`,
       objective,
       trigger, // 'choice-made', 'vocabulary-interaction', 'time-threshold'
       evaluator, // Function to evaluate performance
-      weight: objective.importance || 1
+      weight: objective.importance || 1,
     };
-    
+
     this.assessmentPoints.push(assessmentPoint);
     return assessmentPoint.id;
   }
-  
+
   evaluatePerformance(trigger, data) {
-    const relevantAssessments = this.assessmentPoints.filter(
-      point => point.trigger === trigger
-    );
-    
+    const relevantAssessments = this.assessmentPoints.filter(point => point.trigger === trigger);
+
     relevantAssessments.forEach(assessment => {
       const performance = assessment.evaluator(data);
       this.recordPerformance(assessment.objective, performance, data);
     });
   }
-  
+
   // Example evaluators for different assessment types
   evaluateChoiceQuality(choice, expectedOutcome) {
     // Assess the educational value of a story choice
     const alignment = this.calculateAlignment(choice.consequences, expectedOutcome);
     const reasoning = this.assessReasoning(choice.rationale);
-    
+
     return {
       score: (alignment + reasoning) / 2,
       confidence: this.calculateConfidence(choice),
-      evidence: { alignment, reasoning }
+      evidence: { alignment, reasoning },
     };
   }
-  
+
   evaluateVocabularyInteraction(interaction) {
     // Assess vocabulary learning through interaction patterns
     const engagement = interaction.timeSpent > 3000 ? 1.0 : 0.5;
     const retention = interaction.previousInteractions > 0 ? 0.8 : 1.0;
-    
+
     return {
       score: engagement * retention,
       confidence: 0.7,
-      evidence: { engagement, retention }
+      evidence: { engagement, retention },
     };
   }
 }
@@ -529,7 +579,7 @@ class FocusManager {
     this.focusStack = [];
     this.trapStack = [];
   }
-  
+
   // Announce content changes to screen readers
   announceToScreenReader(message, priority = 'polite') {
     const announcement = document.createElement('div');
@@ -537,9 +587,9 @@ class FocusManager {
     announcement.setAttribute('aria-atomic', 'true');
     announcement.className = 'sr-only';
     announcement.textContent = message;
-    
+
     this.container.appendChild(announcement);
-    
+
     // Remove after announcement
     setTimeout(() => {
       if (announcement.parentNode) {
@@ -547,14 +597,14 @@ class FocusManager {
       }
     }, 1000);
   }
-  
+
   // Manage focus for new content
   focusNewContent(element, announceChange = true) {
     if (announceChange) {
       const contentDescription = this.getContentDescription(element);
       this.announceToScreenReader(`New content loaded: ${contentDescription}`);
     }
-    
+
     // Focus the first interactive element or the container
     const firstFocusable = this.getFirstFocusableElement(element);
     if (firstFocusable) {
@@ -564,16 +614,16 @@ class FocusManager {
       element.focus();
     }
   }
-  
+
   // Trap focus within modal dialogs
   trapFocus(container) {
     const focusableElements = this.getFocusableElements(container);
     if (focusableElements.length === 0) return;
-    
+
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
-    
-    const trapHandler = (e) => {
+
+    const trapHandler = e => {
       if (e.key === 'Tab') {
         if (e.shiftKey) {
           if (document.activeElement === firstElement) {
@@ -588,7 +638,7 @@ class FocusManager {
         }
       }
     };
-    
+
     container.addEventListener('keydown', trapHandler);
     this.trapStack.push({ container, handler: trapHandler });
     firstElement.focus();
@@ -611,50 +661,50 @@ class KeyboardNavigationPattern {
     this.gameElement = gameElement;
     this.navigationModes = new Map();
     this.activeMode = null;
-    
+
     this.setupGlobalKeyboardHandlers();
     this.initializeNavigationModes();
   }
-  
+
   initializeNavigationModes() {
     // Story reading mode
     this.navigationModes.set('story', {
-      'ArrowDown': () => this.scrollContent('down'),
-      'ArrowUp': () => this.scrollContent('up'),
-      'Space': () => this.continueStory(),
-      'Enter': () => this.makeChoice(),
-      'Escape': () => this.showMenu()
+      ArrowDown: () => this.scrollContent('down'),
+      ArrowUp: () => this.scrollContent('up'),
+      Space: () => this.continueStory(),
+      Enter: () => this.makeChoice(),
+      Escape: () => this.showMenu(),
     });
-    
+
     // Choice selection mode
     this.navigationModes.set('choice', {
-      'ArrowDown': () => this.selectNextChoice(),
-      'ArrowUp': () => this.selectPreviousChoice(),
-      'Enter': () => this.confirmChoice(),
-      'Space': () => this.confirmChoice(),
-      'Escape': () => this.cancelChoice()
+      ArrowDown: () => this.selectNextChoice(),
+      ArrowUp: () => this.selectPreviousChoice(),
+      Enter: () => this.confirmChoice(),
+      Space: () => this.confirmChoice(),
+      Escape: () => this.cancelChoice(),
     });
-    
+
     // Vocabulary mode
     this.navigationModes.set('vocabulary', {
-      'Enter': () => this.showDefinition(),
-      'Space': () => this.showDefinition(),
-      'Escape': () => this.closeDefinition(),
-      'Tab': () => this.nextVocabularyTerm()
+      Enter: () => this.showDefinition(),
+      Space: () => this.showDefinition(),
+      Escape: () => this.closeDefinition(),
+      Tab: () => this.nextVocabularyTerm(),
     });
   }
-  
+
   setNavigationMode(mode) {
     this.activeMode = mode;
     this.announceNavigationMode(mode);
   }
-  
+
   handleKeyDown(event) {
     if (!this.activeMode) return;
-    
+
     const modeHandlers = this.navigationModes.get(this.activeMode);
     const handler = modeHandlers[event.key];
-    
+
     if (handler) {
       event.preventDefault();
       handler();
@@ -682,13 +732,13 @@ class PrivacyFirstStorage {
       encryption: options.encryption !== false,
       dataMinimization: options.dataMinimization !== false,
       autoCleanup: options.autoCleanup !== false,
-      maxAge: options.maxAge || (30 * 24 * 60 * 60 * 1000), // 30 days
-      ...options
+      maxAge: options.maxAge || 30 * 24 * 60 * 60 * 1000, // 30 days
+      ...options,
     };
-    
+
     this.setupAutoCleanup();
   }
-  
+
   store(key, data, metadata = {}) {
     const storageEntry = {
       data: this.options.dataMinimization ? this.minimizeData(data) : data,
@@ -696,13 +746,13 @@ class PrivacyFirstStorage {
         timestamp: Date.now(),
         version: '1.0.0',
         dataType: metadata.dataType || 'unknown',
-        ...metadata
-      }
+        ...metadata,
+      },
     };
-    
+
     const serialized = JSON.stringify(storageEntry);
     const finalData = this.options.encryption ? this.encrypt(serialized) : serialized;
-    
+
     try {
       localStorage.setItem(`${this.namespace}_${key}`, finalData);
     } catch (error) {
@@ -710,54 +760,54 @@ class PrivacyFirstStorage {
       this.handleStorageFailure(key, data);
     }
   }
-  
+
   retrieve(key) {
     try {
       const stored = localStorage.getItem(`${this.namespace}_${key}`);
       if (!stored) return null;
-      
+
       const decrypted = this.options.encryption ? this.decrypt(stored) : stored;
       const parsed = JSON.parse(decrypted);
-      
+
       // Check if data has expired
       if (this.isExpired(parsed.metadata)) {
         this.remove(key);
         return null;
       }
-      
+
       return parsed.data;
     } catch (error) {
       console.warn('Retrieval failed:', error);
       return null;
     }
   }
-  
+
   minimizeData(data) {
     // Remove or hash personal identifiers
     const minimized = { ...data };
-    
+
     // Remove potentially identifying information
     delete minimized.userId;
     delete minimized.username;
     delete minimized.email;
-    
+
     // Keep only educational data
     return {
       progress: minimized.progress,
       achievements: minimized.achievements,
       preferences: minimized.preferences,
-      performanceMetrics: minimized.performanceMetrics
+      performanceMetrics: minimized.performanceMetrics,
     };
   }
-  
+
   exportData() {
     // Create privacy-compliant export
     const exportData = {
       exportDate: new Date().toISOString(),
       namespace: this.namespace,
-      data: {}
+      data: {},
     };
-    
+
     // Export all stored data
     Object.keys(localStorage).forEach(key => {
       if (key.startsWith(`${this.namespace}_`)) {
@@ -765,7 +815,7 @@ class PrivacyFirstStorage {
         exportData.data[dataKey] = this.retrieve(dataKey);
       }
     });
-    
+
     return exportData;
   }
 }
@@ -787,43 +837,43 @@ class GameEventBus {
     this.eventHistory = [];
     this.middleware = [];
   }
-  
+
   // Standard educational game events
   static EVENTS = {
     // Story events
     STORY_SCENE_LOADED: 'story:scene:loaded',
     STORY_CHOICE_MADE: 'story:choice:made',
     STORY_COMPLETED: 'story:completed',
-    
+
     // Learning events
     VOCABULARY_DISCOVERED: 'learning:vocabulary:discovered',
     PROGRESS_UPDATED: 'learning:progress:updated',
     ACHIEVEMENT_UNLOCKED: 'learning:achievement:unlocked',
-    
+
     // UI events
     MODAL_OPENED: 'ui:modal:opened',
     MODAL_CLOSED: 'ui:modal:closed',
     FOCUS_CHANGED: 'ui:focus:changed',
-    
+
     // Assessment events
     PERFORMANCE_RECORDED: 'assessment:performance:recorded',
-    FEEDBACK_PROVIDED: 'assessment:feedback:provided'
+    FEEDBACK_PROVIDED: 'assessment:feedback:provided',
   };
-  
+
   emit(eventType, data = {}) {
     const event = {
       type: eventType,
       data,
       timestamp: Date.now(),
-      id: this.generateEventId()
+      id: this.generateEventId(),
     };
-    
+
     // Apply middleware transformations
     const processedEvent = this.applyMiddleware(event);
-    
+
     // Record event
     this.eventHistory.push(processedEvent);
-    
+
     // Notify listeners
     const listeners = this.listeners.get(eventType) || [];
     listeners.forEach(listener => {
@@ -834,14 +884,14 @@ class GameEventBus {
       }
     });
   }
-  
+
   on(eventType, listener) {
     if (!this.listeners.has(eventType)) {
       this.listeners.set(eventType, []);
     }
-    
+
     this.listeners.get(eventType).push(listener);
-    
+
     // Return unsubscribe function
     return () => {
       const listeners = this.listeners.get(eventType);
@@ -851,22 +901,22 @@ class GameEventBus {
       }
     };
   }
-  
+
   // Educational game-specific event helpers
   emitLearningProgress(objective, performance) {
     this.emit(GameEventBus.EVENTS.PROGRESS_UPDATED, {
       objective,
       performance,
-      learningContext: this.getCurrentLearningContext()
+      learningContext: this.getCurrentLearningContext(),
     });
   }
-  
+
   emitVocabularyInteraction(term, context) {
     this.emit(GameEventBus.EVENTS.VOCABULARY_DISCOVERED, {
       term,
       context,
       discoveryMethod: context.method || 'click',
-      sceneContext: this.getCurrentScene()
+      sceneContext: this.getCurrentScene(),
     });
   }
 }
@@ -886,32 +936,32 @@ class GameEventBus {
   --reading-primary: #ff7f7f;
   --reading-secondary: #87ceeb;
   --reading-accent: #6b8e5a;
-  
-  --math-primary: #4A90E2;
+
+  --math-primary: #4a90e2;
   --math-secondary: #f39c12;
   --math-accent: #27ae60;
-  
+
   --science-primary: #9b59b6;
   --science-secondary: #3498db;
   --science-accent: #e67e22;
-  
+
   /* Universal educational colors */
   --success: #27ae60;
   --warning: #f39c12;
   --error: #e74c3c;
   --info: #3498db;
-  
+
   /* Accessibility-compliant text colors */
   --text-primary: #2c3e50;
   --text-secondary: #7f8c8d;
   --text-on-primary: #ffffff;
   --text-on-dark: #ffffff;
-  
+
   /* Interactive element styling */
-  --focus-ring: 3px solid #4A90E2;
+  --focus-ring: 3px solid #4a90e2;
   --focus-offset: 2px;
   --touch-target-min: 44px;
-  
+
   /* Educational content spacing */
   --content-padding: 2rem;
   --section-spacing: 3rem;
@@ -997,11 +1047,11 @@ class GameEventBus {
     padding: 2rem;
     font-size: 1.125rem;
   }
-  
+
   .game-content {
     max-width: 700px;
   }
-  
+
   .choice-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1014,11 +1064,11 @@ class GameEventBus {
   .educational-game {
     padding: 3rem;
   }
-  
+
   .game-content {
     max-width: 900px;
   }
-  
+
   .choice-grid {
     gap: 2rem;
   }
@@ -1037,7 +1087,7 @@ class GameEventBus {
     min-height: 48px; /* Larger touch targets */
     padding: 1rem;
   }
-  
+
   .choice-option {
     padding: 1.5rem;
   }
@@ -1049,7 +1099,7 @@ class GameEventBus {
     --focus-ring: 4px solid #000000;
     --text-primary: #000000;
   }
-  
+
   .choice-option {
     border-width: 3px;
   }
@@ -1084,55 +1134,55 @@ class EducationalGameTestSuite {
       accessibility: null,
       educational: null,
       functionality: null,
-      performance: null
+      performance: null,
     };
   }
-  
+
   async runFullTestSuite() {
     console.log('Starting comprehensive educational game testing...');
-    
+
     this.testResults.accessibility = await this.testAccessibility();
     this.testResults.educational = await this.testEducationalFeatures();
     this.testResults.functionality = await this.testGameFunctionality();
     this.testResults.performance = await this.testPerformance();
-    
+
     return this.generateTestReport();
   }
-  
+
   async testAccessibility() {
     const accessibilityTests = {
       keyboardNavigation: this.testKeyboardNavigation(),
       screenReaderSupport: this.testScreenReaderSupport(),
       colorContrast: this.testColorContrast(),
       focusManagement: this.testFocusManagement(),
-      ariaAttributes: this.testAriaAttributes()
+      ariaAttributes: this.testAriaAttributes(),
     };
-    
+
     const results = await Promise.all(Object.values(accessibilityTests));
     return this.combineTestResults('accessibility', results);
   }
-  
+
   async testEducationalFeatures() {
     const educationalTests = {
       learningObjectives: this.testLearningObjectiveAlignment(),
       progressTracking: this.testProgressTracking(),
       assessmentAccuracy: this.testAssessmentAccuracy(),
       vocabularySystem: this.testVocabularySystem(),
-      adaptiveFeatures: this.testAdaptiveFeatures()
+      adaptiveFeatures: this.testAdaptiveFeatures(),
     };
-    
+
     const results = await Promise.all(Object.values(educationalTests));
     return this.combineTestResults('educational', results);
   }
-  
+
   testKeyboardNavigation() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const interactiveElements = this.game.container.querySelectorAll(
         'button, [role="button"], input, select, textarea, a[href], [tabindex]'
       );
-      
+
       const issues = [];
-      
+
       interactiveElements.forEach((element, index) => {
         // Test focusability
         element.focus();
@@ -1140,61 +1190,61 @@ class EducationalGameTestSuite {
           issues.push({
             element: element.tagName + (element.id ? `#${element.id}` : ''),
             issue: 'Element is not focusable',
-            severity: 'high'
+            severity: 'high',
           });
         }
-        
+
         // Test accessible name
         const accessibleName = this.getAccessibleName(element);
         if (!accessibleName) {
           issues.push({
             element: element.tagName + (element.id ? `#${element.id}` : ''),
             issue: 'Element lacks accessible name',
-            severity: 'high'
+            severity: 'high',
           });
         }
       });
-      
+
       resolve({
         testName: 'Keyboard Navigation',
         passed: issues.length === 0,
         issues,
-        elementsTestedCount: interactiveElements.length
+        elementsTestedCount: interactiveElements.length,
       });
     });
   }
-  
+
   testLearningObjectiveAlignment() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const objectives = this.game.learningObjectives || [];
       const alignmentIssues = [];
-      
+
       objectives.forEach(objective => {
         // Check if objective has measurable outcomes
         if (!objective.assessmentCriteria) {
           alignmentIssues.push({
             objective: objective.name,
             issue: 'No assessment criteria defined',
-            severity: 'medium'
+            severity: 'medium',
           });
         }
-        
+
         // Check if objective is being tracked
         const hasTracking = this.game.assessmentEngine?.hasObjective(objective.id);
         if (!hasTracking) {
           alignmentIssues.push({
             objective: objective.name,
             issue: 'No progress tracking configured',
-            severity: 'high'
+            severity: 'high',
           });
         }
       });
-      
+
       resolve({
         testName: 'Learning Objective Alignment',
         passed: alignmentIssues.length === 0,
         issues: alignmentIssues,
-        objectivesCount: objectives.length
+        objectivesCount: objectives.length,
       });
     });
   }
@@ -1206,13 +1256,15 @@ class EducationalGameTestSuite {
 ### Pattern Selection Guide
 
 **For Story-Based Games:**
+
 - Educational Game Base Pattern
-- Story Engine Pattern  
+- Story Engine Pattern
 - Choice Selection Pattern
 - Vocabulary Highlighting Pattern
 - Progress Tracking Pattern
 
 **For Quiz/Assessment Games:**
+
 - Educational Game Base Pattern
 - Assessment Integration Pattern
 - Choice Selection Pattern
@@ -1220,6 +1272,7 @@ class EducationalGameTestSuite {
 - Adaptive Content Pattern
 
 **For Skill-Building Games:**
+
 - Educational Game Base Pattern
 - Progress Tracking Pattern
 - Achievement System Pattern
@@ -1267,4 +1320,4 @@ Each pattern has been proven through the development of Story Safari and incorpo
 
 ---
 
-*This pattern library should be regularly updated as new patterns emerge and existing patterns are refined through real-world usage and user feedback.*
+_This pattern library should be regularly updated as new patterns emerge and existing patterns are refined through real-world usage and user feedback._

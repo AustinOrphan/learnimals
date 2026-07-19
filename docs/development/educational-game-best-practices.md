@@ -37,10 +37,11 @@ Based on WCAG 2.1 guidelines, educational games must prioritize:
 #### Interactive Content Guidelines
 
 **Focus Management:**
+
 ```css
 /* Ensure focus indicators are visible and clear */
 .game-button:focus {
-  outline: 3px solid #4A90E2;
+  outline: 3px solid #4a90e2;
   outline-offset: 2px;
 }
 
@@ -51,17 +52,17 @@ Based on WCAG 2.1 guidelines, educational games must prioritize:
 ```
 
 **ARIA Labeling for Game Elements:**
+
 ```html
 <!-- Provide clear context for interactive elements -->
-<button aria-describedby="hint-text" class="story-choice">
-  Make friends with the elephants
-</button>
+<button aria-describedby="hint-text" class="story-choice">Make friends with the elephants</button>
 <div id="hint-text" class="accessibly-hidden">
   This choice leads to learning about elephant social behavior
 </div>
 ```
 
 **Screen Reader Hidden Content:**
+
 ```css
 .accessibly-hidden {
   position: absolute;
@@ -76,17 +77,19 @@ Based on WCAG 2.1 guidelines, educational games must prioritize:
 #### Keyboard Navigation Patterns
 
 **Tab Order Management:**
+
 - Ensure logical tab order follows reading sequence
 - Use `tabindex="0"` for custom interactive elements
 - Use `tabindex="-1"` for programmatically focused elements
 - Never use positive tabindex values
 
 **Key Event Handling:**
+
 ```javascript
 // Support both mouse and keyboard interactions
 function setupAccessibleButton(element) {
   element.addEventListener('click', handleAction);
-  element.addEventListener('keydown', (e) => {
+  element.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleAction(e);
@@ -98,14 +101,16 @@ function setupAccessibleButton(element) {
 #### Content Structure and Semantics
 
 **Heading Hierarchy:**
+
 ```html
 <!-- Maintain logical heading structure -->
 <h1>Ruby's Story Safari</h1>
-  <h2>Chapter 1: The Great Migration</h2>
-    <h3>Scene: At the Watering Hole</h3>
+<h2>Chapter 1: The Great Migration</h2>
+<h3>Scene: At the Watering Hole</h3>
 ```
 
 **Lists and Navigation:**
+
 ```html
 <!-- Use semantic lists for choices -->
 <ul role="group" aria-label="Story choices">
@@ -116,6 +121,7 @@ function setupAccessibleButton(element) {
 ```
 
 **Landmarks and Regions:**
+
 ```html
 <!-- Define clear content regions -->
 <main role="main" aria-label="Game content">
@@ -123,7 +129,7 @@ function setupAccessibleButton(element) {
     <h2 id="story-heading">Current Story</h2>
     <!-- Story content -->
   </section>
-  
+
   <aside aria-label="Vocabulary journal">
     <!-- Vocabulary tracking -->
   </aside>
@@ -135,12 +141,14 @@ function setupAccessibleButton(element) {
 ### Age-Appropriate Interface Design
 
 **Visual Design:**
+
 - Use large, easily tappable interface elements (minimum 44px touch targets)
 - Implement clear visual hierarchy with sufficient white space
 - Choose colors with high contrast and consider color blindness
 - Use consistent visual patterns and iconography
 
 **Interaction Design:**
+
 - Provide immediate visual and audio feedback for actions
 - Use progressive disclosure to avoid overwhelming young users
 - Implement forgiving interaction patterns (undo, retry options)
@@ -149,12 +157,14 @@ function setupAccessibleButton(element) {
 ### Learning Objective Integration
 
 **Implicit Learning:**
+
 - Embed educational content naturally within gameplay
 - Avoid interrupting flow with explicit "teaching moments"
 - Use contextual vocabulary introduction
 - Provide immediate application of new concepts
 
 **Assessment Integration:**
+
 - Implement formative assessment through gameplay choices
 - Track learning progress implicitly through user actions
 - Provide adaptive difficulty based on performance
@@ -163,11 +173,12 @@ function setupAccessibleButton(element) {
 ### Content Accessibility for Different Abilities
 
 **Reading Level Adaptation:**
+
 ```javascript
 // Example: Adaptive text complexity
 class TextAdapter {
   static adaptForReadingLevel(text, level) {
-    switch(level) {
+    switch (level) {
       case 'beginner':
         return this.simplifyVocabulary(text);
       case 'intermediate':
@@ -180,6 +191,7 @@ class TextAdapter {
 ```
 
 **Multi-Modal Content Delivery:**
+
 - Provide both visual and auditory content presentation
 - Support text-to-speech for all readable content
 - Include visual cues for audio content
@@ -190,6 +202,7 @@ class TextAdapter {
 ### Progressive Enhancement Strategy
 
 **Core Functionality First:**
+
 ```javascript
 // Ensure basic functionality works without JavaScript
 class GameEnhancement {
@@ -199,19 +212,18 @@ class GameEnhancement {
       this.provideFallbackExperience();
       return;
     }
-    
+
     this.initializeEnhancedFeatures();
   }
-  
+
   supportsRequiredFeatures() {
-    return 'localStorage' in window && 
-           'addEventListener' in window &&
-           'querySelector' in document;
+    return 'localStorage' in window && 'addEventListener' in window && 'querySelector' in document;
   }
 }
 ```
 
 **Feature Detection:**
+
 ```javascript
 // Progressive enhancement for advanced features
 function initializeAdvancedFeatures() {
@@ -219,12 +231,12 @@ function initializeAdvancedFeatures() {
   if ('ontouchstart' in window) {
     this.enableTouchInteractions();
   }
-  
+
   // Check for audio support
   if (window.Audio) {
     this.enableAudioFeedback();
   }
-  
+
   // Check for local storage
   if (window.localStorage) {
     this.enableProgressSaving();
@@ -235,16 +247,17 @@ function initializeAdvancedFeatures() {
 ### Performance Optimization for Educational Content
 
 **Resource Loading:**
+
 ```javascript
 // Prioritize critical educational content
 class ContentLoader {
   async loadLearningContent() {
     // Load essential content first
     await this.loadCriticalPath();
-    
+
     // Then load enhancements
     this.loadEnhancements();
-    
+
     // Finally load nice-to-have features
     this.loadOptionalFeatures();
   }
@@ -252,13 +265,14 @@ class ContentLoader {
 ```
 
 **Memory Management:**
+
 ```javascript
 // Clean up resources when switching content
 class GameStateManager {
   switchScene(newScene) {
     // Clean up current scene resources
     this.currentScene.cleanup();
-    
+
     // Load new scene efficiently
     this.loadScene(newScene);
   }
@@ -268,6 +282,7 @@ class GameStateManager {
 ### Error Handling and Resilience
 
 **Graceful Degradation:**
+
 ```javascript
 // Provide meaningful fallbacks
 function initializeGame() {
@@ -283,6 +298,7 @@ function initializeGame() {
 ```
 
 **User-Friendly Error Messages:**
+
 ```html
 <!-- Clear, actionable error states -->
 <div class="error-state" role="alert">
@@ -302,22 +318,24 @@ function initializeGame() {
 ### COPPA Compliance
 
 **Data Collection Principles:**
+
 - Collect only necessary data for educational functionality
 - Store all data locally when possible
 - Obtain proper consent for any data transmission
 - Implement data retention policies
 
 **Safe Content Filtering:**
+
 ```javascript
 // Content safety validation
 class ContentValidator {
   static validateUserInput(input) {
     // Remove potentially harmful content
     const cleaned = this.sanitizeInput(input);
-    
+
     // Check against inappropriate content
     const isSafe = this.checkContentSafety(cleaned);
-    
+
     return { cleaned, isSafe };
   }
 }
@@ -326,16 +344,20 @@ class ContentValidator {
 ### Privacy-First Design
 
 **Local Storage Strategy:**
+
 ```javascript
 // Minimize external data dependencies
 class PrivacyFirstStorage {
   saveProgress(gameData) {
     // Store locally only
-    localStorage.setItem('gameProgress', JSON.stringify({
-      progress: gameData.progress,
-      achievements: gameData.achievements,
-      // No personal information
-    }));
+    localStorage.setItem(
+      'gameProgress',
+      JSON.stringify({
+        progress: gameData.progress,
+        achievements: gameData.achievements,
+        // No personal information
+      })
+    );
   }
 }
 ```
@@ -345,6 +367,7 @@ class PrivacyFirstStorage {
 ### Accessibility Testing Protocol
 
 **Automated Testing:**
+
 ```javascript
 // Example accessibility test
 describe('Game Accessibility', () => {
@@ -354,7 +377,7 @@ describe('Game Accessibility', () => {
       expect(button).toHaveAccessibleName();
     });
   });
-  
+
   test('color contrast meets WCAG standards', () => {
     // Test color combinations
   });
@@ -362,6 +385,7 @@ describe('Game Accessibility', () => {
 ```
 
 **Manual Testing Checklist:**
+
 - [ ] Navigate entire game using only keyboard
 - [ ] Test with screen reader (NVDA, JAWS, VoiceOver)
 - [ ] Verify color contrast ratios
@@ -371,12 +395,14 @@ describe('Game Accessibility', () => {
 ### Educational Content Testing
 
 **Learning Objective Validation:**
+
 - Verify alignment with educational standards
 - Test with target age group
 - Validate difficulty progression
 - Ensure content accuracy and appropriateness
 
 **Usability Testing with Children:**
+
 - Observe natural interaction patterns
 - Note confusion points and barriers
 - Test comprehension of instructions
@@ -387,6 +413,7 @@ describe('Game Accessibility', () => {
 ### Component-Based Architecture
 
 **Reusable Educational Components:**
+
 ```javascript
 // Base educational game component
 class EducationalGameComponent {
@@ -395,44 +422,52 @@ class EducationalGameComponent {
     this.assessmentStrategy = config.assessmentStrategy;
     this.accessibilityConfig = config.accessibility;
   }
-  
+
   // Standard methods all educational games should implement
-  trackLearningProgress() { /* */ }
-  provideAccessibleFeedback() { /* */ }
-  adaptToDifficulty() { /* */ }
+  trackLearningProgress() {
+    /* */
+  }
+  provideAccessibleFeedback() {
+    /* */
+  }
+  adaptToDifficulty() {
+    /* */
+  }
 }
 ```
 
 **Theme Integration:**
+
 ```css
 /* Educational game theme variables */
 :root {
-  --educational-primary: #4A90E2;
-  --educational-success: #6B8E5A;
-  --educational-warning: #FFA500;
-  --educational-error: #E74C3C;
-  
+  --educational-primary: #4a90e2;
+  --educational-success: #6b8e5a;
+  --educational-warning: #ffa500;
+  --educational-error: #e74c3c;
+
   /* Accessibility-compliant contrasts */
-  --text-on-primary: #FFFFFF;
-  --text-on-light: #2C1810;
+  --text-on-primary: #ffffff;
+  --text-on-light: #2c1810;
 }
 ```
 
 ### Integration with Existing Systems
 
 **BaseGame Extension Pattern:**
+
 ```javascript
 class AccessibleEducationalGame extends BaseGame {
   constructor(containerId, options = {}) {
     super(containerId, {
       useDOMContainer: true,
       enableAccessibility: true,
-      ...options
+      ...options,
     });
-    
+
     this.setupAccessibilityFeatures();
   }
-  
+
   setupAccessibilityFeatures() {
     this.addKeyboardNavigation();
     this.addScreenReaderSupport();
@@ -446,16 +481,19 @@ class AccessibleEducationalGame extends BaseGame {
 ### Emerging Technologies
 
 **Voice Interaction:**
+
 - Speech recognition for vocabulary practice
 - Voice-controlled navigation options
 - Audio description capabilities
 
 **AI Enhancement:**
+
 - Personalized learning path adaptation
 - Intelligent content recommendation
 - Automated accessibility testing
 
 **Multi-Device Experiences:**
+
 - Cross-device progress synchronization
 - Companion parent/teacher dashboards
 - Collaborative learning features
@@ -463,21 +501,23 @@ class AccessibleEducationalGame extends BaseGame {
 ### Internationalization Readiness
 
 **Text Localization:**
+
 ```javascript
 // Internationalization structure
 const i18n = {
-  'en': {
+  en: {
     'story.choice.help_elephants': 'Help the elephant family',
-    'vocabulary.definition.migration': 'Movement from one place to another'
+    'vocabulary.definition.migration': 'Movement from one place to another',
   },
-  'es': {
+  es: {
     'story.choice.help_elephants': 'Ayuda a la familia de elefantes',
-    'vocabulary.definition.migration': 'Movimiento de un lugar a otro'
-  }
+    'vocabulary.definition.migration': 'Movimiento de un lugar a otro',
+  },
 };
 ```
 
 **Cultural Adaptation:**
+
 - Character and story localization
 - Cultural sensitivity in content
 - Region-appropriate examples and contexts
@@ -490,4 +530,4 @@ The principles outlined here should guide all educational game development withi
 
 ---
 
-*This document should be regularly updated as new research, technologies, and best practices emerge in educational game development and web accessibility.*
+_This document should be regularly updated as new research, technologies, and best practices emerge in educational game development and web accessibility._

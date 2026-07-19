@@ -9,7 +9,8 @@ This document captures the architectural and design decisions made during the de
 ### Core Architecture Decision: DOM-Based Game Engine
 
 **Decision**: Use DOM-based rendering instead of Canvas-based approach
-**Rationale**: 
+**Rationale**:
+
 - Reading games benefit from native browser text rendering capabilities
 - Better accessibility support with semantic HTML and ARIA labels
 - Easier integration with existing CSS theme system
@@ -22,12 +23,14 @@ This document captures the architectural and design decisions made during the de
 
 **Decision**: Implement game as composition of specialized modules
 **Components**:
+
 - **StorySafariGame**: Main game controller and UI orchestration
 - **StoryEngine**: Narrative logic and branching story management
 - **SafariJournal**: Vocabulary tracking and progress visualization
 - **Story Data**: JSON-based content structure
 
 **Benefits**:
+
 - Clean separation of concerns
 - Testable individual components
 - Reusable patterns for other narrative games
@@ -39,6 +42,7 @@ This document captures the architectural and design decisions made during the de
 
 **Decision**: Embed educational elements naturally within story flow
 **Implementation**:
+
 - Comprehension challenges integrated as story choices
 - Vocabulary discovery through contextual interaction
 - Critical thinking through meaningful consequence chains
@@ -50,6 +54,7 @@ This document captures the architectural and design decisions made during the de
 
 **Decision**: Implement implicit assessment through gameplay analytics
 **Features**:
+
 - Choice quality analysis for comprehension assessment
 - Vocabulary acquisition tracking with contextual metadata
 - Reading engagement metrics (time spent, replay behavior)
@@ -63,12 +68,14 @@ This document captures the architectural and design decisions made during the de
 
 **Decision**: Use vanilla JavaScript with ES6 modules, minimize external dependencies
 **Rationale**:
+
 - Faster loading times for educational content
 - Better long-term maintainability
 - Reduced security surface area
 - Easier deployment and version management
 
 **Structure**:
+
 ```
 src/features/games/story-safari/
 ├── storySafari.js           # Main game class
@@ -83,11 +90,13 @@ src/features/games/story-safari/
 
 **Decision**: Implement layered state management
 **Layers**:
+
 1. **Game State**: Transient UI and interaction state (StorySafariGame)
-2. **Story State**: Narrative progression and choices (StoryEngine)  
+2. **Story State**: Narrative progression and choices (StoryEngine)
 3. **Progress State**: Persistent learning data (SafariJournal + localStorage)
 
 **Benefits**:
+
 - Clear data ownership boundaries
 - Efficient state synchronization
 - Robust persistence handling
@@ -97,12 +106,14 @@ src/features/games/story-safari/
 
 **Decision**: Implement progressive degradation with graceful fallbacks
 **Strategy**:
+
 - Fallback content for module loading failures
 - User-friendly error messages with retry options
 - Asset loading error handling with placeholder content
 - Local storage failure graceful degradation
 
 **Implementation Example**:
+
 ```javascript
 // Graceful error handling in index.html
 catch (error) {
@@ -122,20 +133,22 @@ catch (error) {
 
 **Decision**: Watercolor safari theme with semantic CSS variables
 **Implementation**:
+
 - CSS custom properties for consistent theming
 - Responsive mobile-first design approach
 - Accessibility-compliant color contrast ratios
 - Animation and interaction feedback for engagement
 
 **Theme Variables**:
+
 ```css
 :root {
-    --primary-color: #ff7f7f;
-    --secondary-color: #87ceeb;
-    --accent-color: #6b8e5a;
-    --text-primary: #2c1810;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f4e4b8;
+  --primary-color: #ff7f7f;
+  --secondary-color: #87ceeb;
+  --accent-color: #6b8e5a;
+  --text-primary: #2c1810;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4e4b8;
 }
 ```
 
@@ -143,6 +156,7 @@ catch (error) {
 
 **Decision**: Create intuitive, age-appropriate interaction patterns
 **Patterns**:
+
 - Large touch targets for mobile devices
 - Clear visual feedback for interactive elements
 - Progressive disclosure of complex features
@@ -152,6 +166,7 @@ catch (error) {
 
 **Decision**: Optimize for natural reading flow and comprehension
 **Features**:
+
 - Adjustable text pacing for different reading levels
 - Visual highlighting for new vocabulary terms
 - Context-sensitive help and hints
@@ -163,6 +178,7 @@ catch (error) {
 
 **Decision**: JSON-based hierarchical story structure
 **Format**:
+
 ```javascript
 {
   scenes: {
@@ -185,6 +201,7 @@ catch (error) {
 ```
 
 **Benefits**:
+
 - Easy content authoring and modification
 - Version control friendly format
 - Localizable structure for internationalization
@@ -194,6 +211,7 @@ catch (error) {
 
 **Decision**: Contextual vocabulary learning with progressive disclosure
 **Implementation**:
+
 - Hover/tap definitions with visual context
 - Automatic vocabulary journal population
 - Spaced repetition reminders
@@ -205,12 +223,14 @@ catch (error) {
 
 **Decision**: Establish reusable patterns for future educational games
 **Patterns Established**:
+
 - BaseGame extension with configuration objects
 - Component-based module architecture
 - Theme integration through CSS custom properties
 - Consistent error handling and loading states
 
 **Reusability Strategy**:
+
 ```javascript
 // Template for future games
 class NewEducationalGame extends BaseGame {
@@ -219,7 +239,7 @@ class NewEducationalGame extends BaseGame {
       useDOMContainer: true,
       gameType: 'new-game-type',
       subject: 'target-subject',
-      ...options
+      ...options,
     });
   }
 }
@@ -229,6 +249,7 @@ class NewEducationalGame extends BaseGame {
 
 **Decision**: Create scalable content authoring and management system
 **Features**:
+
 - Template-based story creation
 - Character and setting libraries
 - Educational objective mapping
@@ -307,6 +328,7 @@ class NewEducationalGame extends BaseGame {
 The architectural decisions made during Story Safari development establish a solid foundation for educational game development within the Learnimals ecosystem. The modular, accessible, and scalable approach provides patterns that can be replicated and enhanced for future games while maintaining educational effectiveness and user engagement.
 
 These decisions prioritize:
+
 - **Educational Integrity**: Learning objectives seamlessly integrated into gameplay
 - **Technical Excellence**: Modern, maintainable, and performant implementation
 - **User Experience**: Age-appropriate, accessible, and engaging interactions
@@ -316,4 +338,4 @@ The framework established through Story Safari can serve as a blueprint for deve
 
 ---
 
-*This document serves as both a historical record of decisions made and a guide for future development in the Learnimals educational game ecosystem.*
+_This document serves as both a historical record of decisions made and a guide for future development in the Learnimals educational game ecosystem._

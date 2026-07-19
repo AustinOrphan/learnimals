@@ -1,12 +1,14 @@
 # Architecture and Code Structure
 
 ## Modern Component-Based System
+
 - **Reusable Components**: Located in `src/components/` organized by type (ui/, layout/, forms/)
 - **Feature-Based Organization**: Subject-specific code grouped in `src/features/subjects/`
 - **Template System**: Subject pages use a shared template (`src/templates/subject.html`) with dynamic content loading
 - **Theme Management**: Centralized theming system with light/dark mode support
 
 ## Directory Structure
+
 ```
 ├── src/                     # All source code
 │   ├── components/          # Reusable UI components by type
@@ -32,6 +34,7 @@
 ```
 
 ## Key Systems
+
 - **Subject Template System**: Uses `SubjectTemplateLoader` for consistency
 - **Theme System**: `themeRegistry.js`, `themeManager.js`, `themeSwitcher.js`
 - **Component Library**: Card, Modal, Form components with BaseComponent pattern

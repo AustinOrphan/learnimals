@@ -1,14 +1,17 @@
 # GitHub Actions Workflows
 
-This directory contains automated workflows for the Learnimals project. These workflows ensure code quality, security, performance, and accessibility standards are maintained.
+This directory contains automated workflows for the Learnimals project. These workflows ensure code
+quality, security, performance, and accessibility standards are maintained.
 
 ## Available Workflows
 
 ### 1. CI Pipeline (`ci.yml`)
+
 **Trigger**: Push to main, Pull requests to main
 **Purpose**: Core continuous integration checks
 
 **Jobs**:
+
 - **Lint**: ESLint code quality checks
 - **Test**: Unit tests across Node.js versions 18 & 20
 - **Build**: Project build verification
@@ -17,21 +20,25 @@ This directory contains automated workflows for the Learnimals project. These wo
 - **Security Scan**: Basic npm audit and dependency scanning
 
 **Artifacts**:
+
 - Build files (retained 30 days)
 - Test coverage reports (uploaded to Codecov)
 - Lighthouse audit results
 
 ### 2. Lighthouse CI (`lighthouse.yml`)
+
 **Trigger**: Push to main, Pull requests to main, Weekly schedule
 **Purpose**: Performance monitoring and Core Web Vitals tracking
 
 **Jobs**:
+
 - **Lighthouse**: Desktop performance testing
 - **Performance Regression**: Compare PR performance vs main
 - **Mobile Performance**: Mobile-specific performance tests
 - **Web Vitals**: Core Web Vitals measurement
 
 **Performance Targets**:
+
 - Performance: 80%
 - Accessibility: 90%
 - Best Practices: 90%
@@ -39,6 +46,7 @@ This directory contains automated workflows for the Learnimals project. These wo
 - PWA: 80%
 
 **Key Metrics**:
+
 - First Contentful Paint: <2s
 - Largest Contentful Paint: <2.5s
 - Cumulative Layout Shift: <0.1
@@ -46,10 +54,12 @@ This directory contains automated workflows for the Learnimals project. These wo
 - Speed Index: <3s
 
 ### 3. Security Scanning (`security.yml`)
+
 **Trigger**: Push to main, Pull requests to main, Weekly schedule
 **Purpose**: Comprehensive security analysis
 
 **Jobs**:
+
 - **Dependency Scan**: npm audit for vulnerabilities
 - **CodeQL Analysis**: GitHub's semantic code analysis
 - **OWASP ZAP Scan**: Dynamic application security testing
@@ -58,6 +68,7 @@ This directory contains automated workflows for the Learnimals project. These wo
 - **Security Headers**: HTTP security headers validation
 
 **Security Standards**:
+
 - Zero critical vulnerabilities
 - <4 high vulnerabilities
 - OWASP Top 10 compliance
@@ -65,16 +76,19 @@ This directory contains automated workflows for the Learnimals project. These wo
 - Proper security headers implementation
 
 ### 4. Accessibility Testing (`accessibility.yml`)
+
 **Trigger**: Push to main, Pull requests to main, Weekly schedule
 **Purpose**: WCAG 2.1 Level AA compliance verification
 
 **Jobs**:
+
 - **Axe Core Testing**: Automated accessibility testing
 - **Pa11y Testing**: Command-line accessibility testing
 - **Keyboard Navigation**: Keyboard accessibility verification
 - **Color Contrast**: Color contrast ratio testing
 
 **Accessibility Standards**:
+
 - WCAG 2.1 Level AA compliance
 - Keyboard navigation support
 - Screen reader compatibility
@@ -84,29 +98,37 @@ This directory contains automated workflows for the Learnimals project. These wo
 ## Configuration Files
 
 ### `lighthouserc.json`
+
 Lighthouse CI configuration defining:
+
 - Test URLs
 - Performance budgets
 - Assertion thresholds
 - Upload targets
 
 ### `lighthouse-budget.json`
+
 Performance budget definitions:
+
 - Timing budgets (FCP, LCP, SI, TBT, CLS)
 - Resource size budgets (JS, CSS, images, fonts)
 
 ### `.zap/rules.tsv`
+
 OWASP ZAP scanning rules configuration:
+
 - Security vulnerability detection rules
 - Warning levels and thresholds
 - Scan scope definitions
 
 ### `.nvmrc`
+
 Node.js version specification for consistent environments
 
 ## Workflow Status Requirements
 
 ### Required Checks (Block PR merges)
+
 - ✅ Lint checks pass
 - ✅ Unit tests pass
 - ✅ Build succeeds
@@ -114,6 +136,7 @@ Node.js version specification for consistent environments
 - ✅ No critical accessibility violations
 
 ### Advisory Checks (Warn but don't block)
+
 - ⚠️ Performance regression
 - ⚠️ High security vulnerabilities (if <4)
 - ⚠️ Accessibility warnings (if <10)
@@ -122,16 +145,19 @@ Node.js version specification for consistent environments
 ## Setting Up Workflows
 
 ### Required Secrets
+
 Add these secrets to your GitHub repository:
 
 1. **CODECOV_TOKEN**: For test coverage reporting
 2. **LHCI_GITHUB_APP_TOKEN**: For Lighthouse CI GitHub integration
 
 ### Optional Secrets
+
 1. **SLACK_WEBHOOK**: For workflow notifications
 2. **GITHUB_TOKEN**: Automatically provided by GitHub
 
 ### Branch Protection Rules
+
 Recommended branch protection settings for `main`:
 
 ```json
@@ -140,7 +166,7 @@ Recommended branch protection settings for `main`:
     "strict": true,
     "contexts": [
       "ci/lint",
-      "ci/test", 
+      "ci/test",
       "ci/build",
       "security/dependency-scan",
       "accessibility/axe-core-testing"
@@ -158,6 +184,7 @@ Recommended branch protection settings for `main`:
 ## Local Development
 
 ### Running Tests Locally
+
 ```bash
 # Install dependencies
 npm ci
@@ -173,6 +200,7 @@ npx lighthouse http://localhost:3000 --view
 ```
 
 ### Pre-commit Hooks
+
 Consider setting up pre-commit hooks to run checks locally:
 
 ```bash
@@ -187,21 +215,25 @@ npx husky add .husky/pre-commit "npm run lint && npm test"
 
 ### Common Issues
 
-**1. Workflow fails with "Module not found"**
+#### 1. Workflow fails with "Module not found"
+
 - Ensure all dependencies are listed in `package.json`
 - Check that `npm ci` is used instead of `npm install`
 
-**2. Lighthouse tests timeout**
+#### 2. Lighthouse tests timeout
+
 - Increase timeout in workflow
 - Check server startup delays
 - Verify localhost URLs are accessible
 
-**3. Accessibility tests fail**
+#### 3. Accessibility tests fail
+
 - Review axe-core violations
 - Check color contrast ratios
 - Verify keyboard navigation
 
-**4. Security scans report false positives**
+#### 4. Security scans report false positives
+
 - Update `.zap/rules.tsv` to exclude false positives
 - Review and update npm dependencies
 - Add security exceptions if needed
@@ -216,16 +248,19 @@ npx husky add .husky/pre-commit "npm run lint && npm test"
 ## Monitoring and Alerts
 
 ### Workflow Monitoring
+
 - GitHub Actions dashboard shows workflow status
 - Failed workflows trigger email notifications
 - Artifacts are retained for debugging
 
 ### Performance Monitoring
+
 - Lighthouse CI tracks performance over time
 - Performance budgets prevent regressions
 - Core Web Vitals are measured continuously
 
 ### Security Monitoring
+
 - Weekly security scans catch new vulnerabilities
 - CodeQL analysis identifies potential issues
 - Dependency scanning catches known vulnerabilities
@@ -243,6 +278,7 @@ When adding new workflows:
 ## Support
 
 For workflow issues:
+
 1. Check workflow logs in GitHub Actions
 2. Review artifact outputs
 3. Consult the troubleshooting section
@@ -250,4 +286,5 @@ For workflow issues:
 
 ---
 
-*These workflows are designed to maintain the highest standards of quality, security, and accessibility for the Learnimals educational platform.*
+_These workflows are designed to maintain the highest standards of quality, security, and
+accessibility for the Learnimals educational platform._

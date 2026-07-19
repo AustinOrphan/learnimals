@@ -20,10 +20,13 @@ This document captures reusable patterns derived from the Ecosystem Safari game 
 ## Canvas-Based Game Architecture Pattern
 
 ### Intent
+
 Provide a structured approach for building high-performance educational games using HTML5 Canvas while maintaining clean architecture principles.
 
 ### Applicability
+
 Use when creating educational games that require:
+
 - Real-time animations and interactions
 - Complex visual simulations
 - Performance optimization across diverse devices
@@ -40,31 +43,31 @@ class BaseEducationalGame {
     this.gameLoop = new GameLoop();
     this.inputHandler = new InputHandler(this.canvas);
     this.accessibilityManager = new AccessibilityManager(this);
-    
+
     this.setupCanvas();
     this.initializeSystems();
   }
-  
+
   setupCanvas() {
     // High-DPI display support
     const dpr = window.devicePixelRatio || 1;
     const rect = this.canvas.getBoundingClientRect();
-    
+
     this.canvas.width = rect.width * dpr;
     this.canvas.height = rect.height * dpr;
     this.ctx.scale(dpr, dpr);
-    
+
     // Performance optimizations
     this.ctx.imageSmoothingEnabled = false; // For pixel-perfect rendering
   }
-  
+
   initializeSystems() {
     // Override in derived classes
     throw new Error('Must implement initializeSystems()');
   }
-  
+
   start() {
-    this.gameLoop.start((deltaTime) => {
+    this.gameLoop.start(deltaTime => {
       this.update(deltaTime);
       this.render();
     });
@@ -81,6 +84,7 @@ class BaseEducationalGame {
 5. **System Initialization**: Template method for game-specific setup
 
 ### Benefits
+
 - Consistent canvas setup across games
 - Built-in performance optimizations
 - Accessibility considerations from the start
@@ -95,12 +99,12 @@ class MathAdventureGame extends BaseEducationalGame {
     this.problemGenerator = new ProblemGenerator();
     this.visualEffects = new VisualEffectsSystem();
   }
-  
+
   update(deltaTime) {
     this.mathEngine.update(deltaTime);
     this.visualEffects.update(deltaTime);
   }
-  
+
   render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.mathEngine.render(this.ctx);
@@ -114,10 +118,13 @@ class MathAdventureGame extends BaseEducationalGame {
 ## Discovery-Based Content Delivery Pattern
 
 ### Intent
+
 Deliver educational content contextually through gameplay interactions rather than front-loading information, supporting constructivist learning principles.
 
 ### Applicability
+
 Use when:
+
 - Educational content is complex or extensive
 - Students benefit from scaffolded learning
 - Intrinsic motivation is preferred over extrinsic rewards
@@ -133,16 +140,16 @@ class DiscoveryContentSystem {
     this.userProgress = new ProgressTracker();
     this.contentDelivery = new ContentDeliveryEngine();
   }
-  
+
   registerContent(contentId, content, triggers, prerequisites = []) {
     this.contentDatabase.set(contentId, {
       content,
       triggers,
       prerequisites,
       discovered: false,
-      timestamp: null
+      timestamp: null,
     });
-    
+
     // Register triggers
     triggers.forEach(trigger => {
       if (!this.discoveryTriggers.has(trigger.type)) {
@@ -151,21 +158,21 @@ class DiscoveryContentSystem {
       this.discoveryTriggers.get(trigger.type).push({
         contentId,
         conditions: trigger.conditions,
-        priority: trigger.priority || 0
+        priority: trigger.priority || 0,
       });
     });
   }
-  
+
   checkDiscoveries(triggerType, context) {
     const triggers = this.discoveryTriggers.get(triggerType) || [];
-    
+
     triggers
       .filter(trigger => this.evaluateConditions(trigger.conditions, context))
       .filter(trigger => this.checkPrerequisites(trigger.contentId))
       .sort((a, b) => b.priority - a.priority)
       .forEach(trigger => this.triggerDiscovery(trigger.contentId, context));
   }
-  
+
   evaluateConditions(conditions, context) {
     return conditions.every(condition => {
       switch (condition.type) {
@@ -202,6 +209,7 @@ class DiscoveryContentSystem {
 - **Context Triggers**: Based on environmental conditions
 
 ### Benefits
+
 - Reduced cognitive overload
 - Increased student engagement through curiosity
 - Contextual learning improves retention
@@ -212,27 +220,31 @@ class DiscoveryContentSystem {
 
 ```javascript
 // Register content with discovery triggers
-discoverySystem.registerContent('photosynthesis-basics', {
-  title: 'How Plants Make Food',
-  content: 'Plants use sunlight, water, and CO2 to create glucose...',
-  type: 'concept-explanation'
-}, [
+discoverySystem.registerContent(
+  'photosynthesis-basics',
   {
-    type: 'interaction',
-    conditions: [
-      { type: 'interaction', value: 'plant-sunlight' },
-      { type: 'threshold', property: 'plantsPlaced', value: 3 }
-    ],
-    priority: 1
-  }
-]);
+    title: 'How Plants Make Food',
+    content: 'Plants use sunlight, water, and CO2 to create glucose...',
+    type: 'concept-explanation',
+  },
+  [
+    {
+      type: 'interaction',
+      conditions: [
+        { type: 'interaction', value: 'plant-sunlight' },
+        { type: 'threshold', property: 'plantsPlaced', value: 3 },
+      ],
+      priority: 1,
+    },
+  ]
+);
 
 // Trigger discovery during gameplay
-game.on('plant-placed', (context) => {
+game.on('plant-placed', context => {
   discoverySystem.checkDiscoveries('interaction', {
     interactionType: 'plant-sunlight',
     plantsPlaced: context.totalPlants,
-    timeElapsed: context.gameTime
+    timeElapsed: context.gameTime,
   });
 });
 ```
@@ -242,10 +254,13 @@ game.on('plant-placed', (context) => {
 ## Modular Educational Game Pattern
 
 ### Intent
+
 Structure educational games with clear separation of concerns, enabling maintainability, testability, and reusability while supporting educational objectives.
 
 ### Applicability
+
 Use for:
+
 - Complex educational games with multiple systems
 - Games requiring frequent updates and content additions
 - Projects with multiple developers
@@ -262,28 +277,28 @@ class GameSystem {
     this.initialized = false;
     this.enabled = true;
   }
-  
+
   async initialize(gameContext) {
     if (this.initialized) return;
-    
+
     // Check dependencies
     await this.checkDependencies(gameContext);
-    
+
     // System-specific initialization
     await this.onInitialize(gameContext);
-    
+
     this.initialized = true;
   }
-  
+
   async onInitialize(gameContext) {
     // Override in derived classes
   }
-  
+
   update(deltaTime, gameContext) {
     if (!this.enabled || !this.initialized) return;
     this.onUpdate(deltaTime, gameContext);
   }
-  
+
   onUpdate(deltaTime, gameContext) {
     // Override in derived classes
   }
@@ -297,19 +312,19 @@ class EducationalGameArchitecture {
     this.eventBus = new EventBus();
     this.gameContext = new GameContext();
   }
-  
+
   registerSystem(system) {
     this.systems.set(system.name, system);
     this.updateSystemOrder();
   }
-  
+
   async initializeAllSystems() {
     for (const systemName of this.systemOrder) {
       const system = this.systems.get(systemName);
       await system.initialize(this.gameContext);
     }
   }
-  
+
   updateAllSystems(deltaTime) {
     for (const systemName of this.systemOrder) {
       const system = this.systems.get(systemName);
@@ -329,6 +344,7 @@ class EducationalGameArchitecture {
 6. **Integration Systems**: LMS integration, external APIs
 
 ### Benefits
+
 - Clear separation of concerns
 - Easy unit testing of individual systems
 - Parallel development capability
@@ -343,12 +359,12 @@ class BiologySimulationSystem extends GameSystem {
   constructor() {
     super('biology-simulation', ['rendering', 'input']);
   }
-  
+
   async onInitialize(gameContext) {
     this.ecosystem = new EcosystemModel();
     this.species = new SpeciesManager();
   }
-  
+
   onUpdate(deltaTime, gameContext) {
     this.ecosystem.simulate(deltaTime);
     this.updateSpeciesInteractions();
@@ -369,10 +385,13 @@ await game.initializeAllSystems();
 ## Accessibility-First Game Design Pattern
 
 ### Intent
+
 Integrate accessibility considerations from the beginning of game development, ensuring inclusive design that benefits all users.
 
 ### Applicability
+
 Essential for all educational games, particularly when:
+
 - Targeting diverse student populations
 - Compliance with accessibility standards is required
 - Universal design principles are valued
@@ -390,7 +409,7 @@ class AccessibilityLayer {
     this.audioDescription = new AudioDescriptionSystem();
     this.reducedMotion = this.checkMotionPreferences();
   }
-  
+
   setupAccessibilityFeatures() {
     this.createARIAStructure();
     this.setupKeyboardControls();
@@ -398,37 +417,37 @@ class AccessibilityLayer {
     this.addAlternativeContent();
     this.setupAudioCues();
   }
-  
+
   createARIAStructure() {
     const gameContainer = this.game.canvas.parentElement;
-    
+
     // Live regions for dynamic content
     this.createLiveRegion('polite', 'game-status');
     this.createLiveRegion('assertive', 'important-updates');
     this.createLiveRegion('off', 'detailed-descriptions');
-    
+
     // Game state description
     this.gameStateDescriptor = this.createGameStateDescriptor();
     gameContainer.appendChild(this.gameStateDescriptor);
   }
-  
+
   updateScreenReaderContent(gameState) {
     const description = this.generateGameStateDescription(gameState);
     this.updateLiveRegion('game-status', description);
   }
-  
+
   setupKeyboardControls() {
     const keyMap = {
-      'ArrowUp': () => this.game.inputHandler.handleMove('up'),
-      'ArrowDown': () => this.game.inputHandler.handleMove('down'),
-      'ArrowLeft': () => this.game.inputHandler.handleMove('left'),
-      'ArrowRight': () => this.game.inputHandler.handleMove('right'),
-      'Space': () => this.game.inputHandler.handleAction('select'),
-      'Enter': () => this.game.inputHandler.handleAction('confirm'),
-      'Escape': () => this.game.inputHandler.handleAction('menu')
+      ArrowUp: () => this.game.inputHandler.handleMove('up'),
+      ArrowDown: () => this.game.inputHandler.handleMove('down'),
+      ArrowLeft: () => this.game.inputHandler.handleMove('left'),
+      ArrowRight: () => this.game.inputHandler.handleMove('right'),
+      Space: () => this.game.inputHandler.handleAction('select'),
+      Enter: () => this.game.inputHandler.handleAction('confirm'),
+      Escape: () => this.game.inputHandler.handleAction('menu'),
     };
-    
-    document.addEventListener('keydown', (event) => {
+
+    document.addEventListener('keydown', event => {
       if (keyMap[event.code] && this.game.hasFocus()) {
         event.preventDefault();
         keyMap[event.code]();
@@ -456,6 +475,7 @@ class AccessibilityLayer {
 - **Flexible Options**: User-configurable accessibility preferences
 
 ### Benefits
+
 - Inclusive access for all students
 - Improved usability for everyone
 - Legal compliance and reduced risk
@@ -467,10 +487,13 @@ class AccessibilityLayer {
 ## Performance Optimization Pattern
 
 ### Intent
+
 Ensure educational games run smoothly across diverse devices and network conditions while maintaining educational effectiveness.
 
 ### Applicability
+
 Critical for:
+
 - Educational games in school environments with varied hardware
 - Mobile-friendly educational applications
 - Games with complex simulations or many visual elements
@@ -487,50 +510,50 @@ class PerformanceOptimizationLayer {
     this.resourceManager = new ResourceManager();
     this.renderOptimizer = new RenderOptimizer();
   }
-  
+
   initialize() {
     this.setupPerformanceMonitoring();
     this.initializeObjectPools();
     this.configureAdaptiveQuality();
     this.setupResourceOptimization();
   }
-  
+
   setupPerformanceMonitoring() {
-    this.performanceMonitor.onFrameRateChange((fps) => {
+    this.performanceMonitor.onFrameRateChange(fps => {
       if (fps < 45) {
         this.adaptiveQuality.reduceQuality();
       } else if (fps > 55 && this.adaptiveQuality.canIncrease()) {
         this.adaptiveQuality.increaseQuality();
       }
     });
-    
+
     this.performanceMonitor.onMemoryPressure(() => {
       this.resourceManager.cleanupUnusedResources();
       this.game.garbageCollect();
     });
   }
-  
+
   initializeObjectPools() {
     // Common object pools for educational games
     this.pools = {
       particles: new ObjectPool(() => new Particle(), 200),
       sprites: new ObjectPool(() => new Sprite(), 100),
       textLabels: new ObjectPool(() => new TextLabel(), 50),
-      soundEffects: new ObjectPool(() => new SoundEffect(), 20)
+      soundEffects: new ObjectPool(() => new SoundEffect(), 20),
     };
   }
-  
+
   optimizeRendering() {
     // Dirty rectangle optimization
     this.renderOptimizer.enableDirtyRectangles();
-    
+
     // Level of detail management
     this.renderOptimizer.setupLOD({
-      highDetail: (distance) => distance < 100,
-      mediumDetail: (distance) => distance < 300,
-      lowDetail: (distance) => distance >= 300
+      highDetail: distance => distance < 100,
+      mediumDetail: distance => distance < 300,
+      lowDetail: distance => distance >= 300,
     });
-    
+
     // Batch rendering for similar objects
     this.renderOptimizer.enableBatching();
   }
@@ -556,6 +579,7 @@ class PerformanceOptimizationLayer {
 - **Network Efficiency**: Minimize bandwidth usage
 
 ### Benefits
+
 - Smooth experience across device types
 - Better accessibility for users with assistive technologies
 - Improved battery life on mobile devices
@@ -567,10 +591,13 @@ class PerformanceOptimizationLayer {
 ## Event-Driven System Communication Pattern
 
 ### Intent
+
 Enable loose coupling between game systems while maintaining clear communication paths and educational event tracking.
 
 ### Applicability
+
 Use when:
+
 - Multiple systems need to communicate without tight coupling
 - Educational analytics require comprehensive event tracking
 - System interactions are complex or frequent
@@ -586,47 +613,47 @@ class EducationalEventSystem {
     this.educationalAnalytics = new EducationalAnalytics();
     this.eventValidation = new EventValidation();
   }
-  
+
   emit(eventType, data, context = {}) {
     // Validate event structure
     if (!this.eventValidation.validate(eventType, data)) {
       console.warn(`Invalid event: ${eventType}`, data);
       return;
     }
-    
+
     // Enrich with educational context
     const enrichedData = {
       ...data,
       timestamp: Date.now(),
       sessionId: this.getSessionId(),
       userId: this.getUserId(),
-      educationalContext: context
+      educationalContext: context,
     };
-    
+
     // Record for analytics
     this.educationalAnalytics.recordEvent(eventType, enrichedData);
-    
+
     // Store in history for replay/debugging
     this.eventHistory.add(eventType, enrichedData);
-    
+
     // Emit to subscribers
     this.eventBus.emit(eventType, enrichedData);
   }
-  
+
   on(eventType, handler, options = {}) {
-    const wrappedHandler = (data) => {
+    const wrappedHandler = data => {
       try {
         // Educational event preprocessing
         if (options.educationalTracking) {
           this.trackLearningEvent(eventType, data);
         }
-        
+
         handler(data);
       } catch (error) {
         this.handleEventError(eventType, error, data);
       }
     };
-    
+
     this.eventBus.on(eventType, wrappedHandler);
   }
 }
@@ -654,18 +681,19 @@ const educationalEvent = {
     conceptId: 'photosynthesis-basics',
     discoveryMethod: 'experimentation',
     timeToDiscover: 45000,
-    attemptsRequired: 3
+    attemptsRequired: 3,
   },
   educationalContext: {
     subject: 'biology',
     gradeLevel: 5,
     learningObjective: 'understand-plant-nutrition',
-    priorKnowledge: ['plant-structure', 'sunlight-energy']
-  }
+    priorKnowledge: ['plant-structure', 'sunlight-energy'],
+  },
 };
 ```
 
 ### Benefits
+
 - Loose coupling between systems
 - Comprehensive educational analytics
 - Easy debugging through event history
@@ -677,10 +705,13 @@ const educationalEvent = {
 ## Progressive Educational Content Pattern
 
 ### Intent
+
 Structure educational content delivery to match cognitive load theory and constructivist learning principles, building knowledge progressively.
 
 ### Applicability
+
 Use for:
+
 - Complex subject matter requiring scaffolding
 - Diverse learner populations with varying prior knowledge
 - Games supporting multiple learning objectives
@@ -696,58 +727,56 @@ class ProgressiveContentSystem {
     this.adaptiveEngine = new AdaptiveContentEngine();
     this.scaffoldingSystem = new ScaffoldingSystem();
   }
-  
+
   buildContentGraph(subject, gradeLevel) {
     const concepts = this.loadConcepts(subject, gradeLevel);
-    
+
     concepts.forEach(concept => {
       this.contentGraph.addNode(concept.id, {
         content: concept,
         prerequisites: concept.prerequisites || [],
         difficulty: concept.difficulty,
         cognitiveLoad: concept.cognitiveLoad,
-        learningObjectives: concept.learningObjectives
+        learningObjectives: concept.learningObjectives,
       });
     });
-    
+
     this.contentGraph.validateDependencies();
   }
-  
+
   getNextContent(studentProgress, currentContext) {
     // Find available content based on prerequisites
-    const availableContent = this.contentGraph.getAvailableNodes(
-      studentProgress.masteredConcepts
-    );
-    
+    const availableContent = this.contentGraph.getAvailableNodes(studentProgress.masteredConcepts);
+
     // Apply adaptive filtering
     const appropriateContent = this.adaptiveEngine.filter(
       availableContent,
       studentProgress,
       currentContext
     );
-    
+
     // Select optimal content using pedagogical algorithms
     return this.selectOptimalContent(appropriateContent, studentProgress);
   }
-  
+
   selectOptimalContent(candidates, studentProgress) {
     return candidates
       .map(content => ({
         content,
-        score: this.calculateContentScore(content, studentProgress)
+        score: this.calculateContentScore(content, studentProgress),
       }))
       .sort((a, b) => b.score - a.score)[0]?.content;
   }
-  
+
   calculateContentScore(content, studentProgress) {
     const factors = {
       readiness: this.assessReadiness(content, studentProgress),
       interest: this.assessInterest(content, studentProgress),
       cognitiveLoad: this.assessCognitiveLoad(content, studentProgress),
       novelty: this.assessNovelty(content, studentProgress),
-      difficulty: this.assessDifficultyFit(content, studentProgress)
+      difficulty: this.assessDifficultyFit(content, studentProgress),
     };
-    
+
     // Weighted scoring based on educational priorities
     return (
       factors.readiness * 0.3 +
@@ -776,6 +805,7 @@ class ProgressiveContentSystem {
 - **Conceptual Scaffolding**: Concept understanding support
 
 ### Benefits
+
 - Optimal cognitive load management
 - Personalized learning paths
 - Higher learning retention
@@ -787,10 +817,13 @@ class ProgressiveContentSystem {
 ## Scientific Simulation Pattern
 
 ### Intent
+
 Create accurate, educational simulations of scientific phenomena while maintaining game engagement and performance.
 
 ### Applicability
+
 Use for:
+
 - STEM education games requiring scientific accuracy
 - Complex system simulations (ecosystems, physics, chemistry)
 - Games supporting inquiry-based learning
@@ -808,41 +841,41 @@ class ScientificSimulationEngine {
     this.visualizers = new Map();
     this.dataCollector = new DataCollector();
   }
-  
+
   registerModel(name, model, validator, visualizer) {
     this.models.set(name, model);
     this.validators.set(name, validator);
     this.visualizers.set(name, visualizer);
   }
-  
+
   simulate(modelName, parameters, deltaTime) {
     const model = this.models.get(modelName);
     const validator = this.validators.get(modelName);
-    
+
     if (!model || !validator) {
       throw new Error(`Model ${modelName} not found or invalid`);
     }
-    
+
     // Validate input parameters
     if (!validator.validateInput(parameters)) {
       throw new Error(`Invalid parameters for model ${modelName}`);
     }
-    
+
     // Run simulation step
     const result = model.step(parameters, deltaTime);
-    
+
     // Validate output
     if (!validator.validateOutput(result)) {
       console.warn(`Simulation ${modelName} produced invalid output`, result);
       return this.getFailsafeResult(modelName);
     }
-    
+
     // Collect data for analysis
     this.dataCollector.record(modelName, parameters, result, deltaTime);
-    
+
     return result;
   }
-  
+
   visualize(modelName, simulationState, context) {
     const visualizer = this.visualizers.get(modelName);
     return visualizer ? visualizer.render(simulationState, context) : null;
@@ -856,28 +889,28 @@ class PopulationDynamicsModel {
     this.growthRate = parameters.growthRate || 0.1;
     this.environmentalFactors = parameters.environmentalFactors || {};
   }
-  
+
   step(currentState, deltaTime) {
     const population = currentState.population;
     const resources = currentState.resources;
-    
+
     // Logistic growth with environmental factors
     const environmentalStress = this.calculateEnvironmentalStress(currentState);
     const resourceLimitation = this.calculateResourceLimitation(resources, population);
-    
-    const effectiveGrowthRate = this.growthRate * 
-      (1 - environmentalStress) * 
-      resourceLimitation;
-    
-    const growthChange = effectiveGrowthRate * population * 
-      (1 - population / this.carryingCapacity) * 
+
+    const effectiveGrowthRate = this.growthRate * (1 - environmentalStress) * resourceLimitation;
+
+    const growthChange =
+      effectiveGrowthRate *
+      population *
+      (1 - population / this.carryingCapacity) *
       (deltaTime / 1000);
-    
+
     return {
       population: Math.max(0, population + growthChange),
       resources: this.updateResources(resources, population, deltaTime),
       environmentalStress,
-      resourceLimitation
+      resourceLimitation,
     };
   }
 }
@@ -898,6 +931,7 @@ class PopulationDynamicsModel {
 - **Stability Checking**: Prevent simulation instability
 
 ### Benefits
+
 - Scientifically accurate educational content
 - Support for inquiry-based learning
 - Data collection for learning analytics

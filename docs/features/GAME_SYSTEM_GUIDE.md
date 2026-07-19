@@ -3,6 +3,7 @@
 This guide explains how to use the new GameSystem to create consistent, maintainable games for Learnimals.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Quick Start](#quick-start)
 - [Core Components](#core-components)
@@ -16,6 +17,7 @@ This guide explains how to use the new GameSystem to create consistent, maintain
 ## Overview
 
 The GameSystem provides:
+
 - 🎮 **Centralized game management** with registration and lifecycle control
 - 📄 **Template-based page generation** for consistent UI across all games
 - 🔧 **BaseGame integration** for analytics, progress tracking, and mobile support
@@ -33,11 +35,11 @@ await gameSystem.init();
 
 // Load a game
 const gameInstance = await gameSystem.loadGame(
-  'word-scramble',    // Game ID from registry
-  'game-container',   // Container element ID
+  'word-scramble', // Game ID from registry
+  'game-container', // Container element ID
   {
     difficulty: 'medium',
-    template: 'game'  // Use full game template
+    template: 'game', // Use full game template
   }
 );
 ```
@@ -45,6 +47,7 @@ const gameInstance = await gameSystem.loadGame(
 ### Available Games
 
 All games are registered in `/src/config/gameRegistry.js`:
+
 - `word-scramble` - Word unscrambling game (Reading)
 - `bubble-pop` - Math bubble popping game
 - `pizza-maker` - Pizza making game
@@ -73,7 +76,7 @@ if (gameSystem.isGameActive('word-scramble')) {
 await gameSystem.destroyGame('word-scramble');
 
 // Listen to system events
-gameSystem.on('gameComplete', (data) => {
+gameSystem.on('gameComplete', data => {
   console.log(`Game ${data.gameId} completed with score ${data.score}`);
 });
 ```
@@ -83,17 +86,20 @@ gameSystem.on('gameComplete', (data) => {
 Three built-in templates:
 
 #### Full Game Template (`game`)
+
 - Complete UI with header, controls, progress bar
 - Settings and help modals
 - Keyboard shortcuts
 - Mobile-responsive design
 
 #### Minimal Template (`minimal`)
+
 - Basic wrapper for simple games
 - No extra UI elements
 - Lightweight and fast
 
 #### Fullscreen Template (`fullscreen`)
+
 - Maximizes game area
 - Ideal for immersive experiences
 - No distracting UI elements
@@ -112,10 +118,10 @@ class MyNewGame extends BaseGame {
       gameType: 'my-game',
       subject: 'math',
       difficulty: options.difficulty || 'easy',
-      ...options
+      ...options,
     });
   }
-  
+
   // Template integration for GameSystem
   setupTemplateIntegration() {
     // Connect to template UI elements
@@ -123,20 +129,20 @@ class MyNewGame extends BaseGame {
       score: document.getElementById('header-score'),
       level: document.getElementById('header-level'),
       timer: document.getElementById('header-timer'),
-      progressBar: document.getElementById('progress-fill')
+      progressBar: document.getElementById('progress-fill'),
     };
-    
+
     // Listen to GameSystem events
     if (window.gameSystem) {
       window.gameSystem.on('gameStart', this.handleGameStart.bind(this));
       window.gameSystem.on('gamePause', this.handleGamePause.bind(this));
     }
   }
-  
+
   // Update template UI
   updateTemplateUI() {
     if (!this.templateElements) return;
-    
+
     if (this.templateElements.score) {
       this.templateElements.score.textContent = this.score;
     }
@@ -162,37 +168,37 @@ export default class MyNewGame extends BaseGame {
       subject: 'math',
       difficulty: options.difficulty || 'easy',
       enableProgressTracking: true,
-      ...options
+      ...options,
     });
-    
+
     // Game-specific properties
     this.maxScore = 100;
     this.timeLimit = 60;
   }
-  
+
   // Required: Set up DOM structure
   setupDOMContainer() {
     super.setupDOMContainer();
     this.createGameUI();
   }
-  
+
   // Required: Game initialization
   onInitialized() {
     super.onInitialized();
     console.log('My game initialized!');
   }
-  
+
   // Required: Start game logic
   onStart() {
     super.onStart();
     this.startGameplay();
   }
-  
+
   // Required: Template integration
   setupTemplateIntegration() {
     // Connect to GameSystem template
   }
-  
+
   createGameUI() {
     this.container.innerHTML = `
       <div class="my-game-container">
@@ -203,7 +209,7 @@ export default class MyNewGame extends BaseGame {
       </div>
     `;
   }
-  
+
   startGameplay() {
     // Your game logic here
   }
@@ -222,29 +228,29 @@ Add your game to `/src/config/gameRegistry.js`:
   gameClass: 'MyNewGame',
   scriptPath: '/src/features/games/my-new-game/myNewGame.js',
   styleSheet: '/src/features/games/my-new-game/myNewGame.css',
-  
+
   // Metadata
   subject: 'math',
   character: 'Benny',
   characterType: 'Bear',
-  
+
   // Game configuration
   difficulty: ['easy', 'medium', 'hard'],
   features: ['analytics', 'progress', 'mobile', 'themes'],
   template: 'game',
-  
+
   // UI options
   showControls: true,
   showProgress: true,
   showStats: true,
-  
+
   // Game-specific options
   options: {
     maxScore: 100,
     timeLimit: 60,
     enableHints: true
   },
-  
+
   // Template content (optional)
   templateContent: `
     <div class="my-game-container">
@@ -287,24 +293,24 @@ Create a test page or use the demo:
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>My New Game - Test</title>
-    <link rel="stylesheet" href="/src/styles/base/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/src/styles/base/styles.css" />
+  </head>
+  <body>
     <div id="game-container"></div>
-    
+
     <script type="module">
-        import gameSystem from '/src/utils/GameSystem.js';
-        
-        async function loadGame() {
-            await gameSystem.init();
-            await gameSystem.loadGame('my-new-game', 'game-container');
-        }
-        
-        loadGame();
+      import gameSystem from '/src/utils/GameSystem.js';
+
+      async function loadGame() {
+        await gameSystem.init();
+        await gameSystem.loadGame('my-new-game', 'game-container');
+      }
+
+      loadGame();
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -315,17 +321,17 @@ Create a test page or use the demo:
 ```javascript
 // Full game template (default)
 gameSystem.loadGame('my-game', 'container', {
-  template: 'game'
+  template: 'game',
 });
 
 // Minimal template
 gameSystem.loadGame('my-game', 'container', {
-  template: 'minimal'
+  template: 'minimal',
 });
 
 // No template (direct rendering)
 gameSystem.loadGame('my-game', 'container', {
-  template: 'none'
+  template: 'none',
 });
 ```
 
@@ -335,18 +341,19 @@ Register your own template:
 
 ```javascript
 gameSystem.templateEngine.registerTemplate('custom', {
-  path: '/src/templates/custom-game.html'
+  path: '/src/templates/custom-game.html',
 });
 
 // Or inline template
 gameSystem.templateEngine.registerTemplate('custom', {
-  content: '<div>{{gameName}}</div>'
+  content: '<div>{{gameName}}</div>',
 });
 ```
 
 ### Template Variables
 
 Available variables in templates:
+
 - `{{gameId}}` - Unique game identifier
 - `{{gameName}}` - Display name
 - `{{gameDescription}}` - Game description
@@ -397,6 +404,7 @@ console.log(stats);
 For games like BubblePopGame that don't extend BaseGame:
 
 1. **Extend BaseGame**:
+
 ```javascript
 // Before
 class BubblePopGame {
@@ -415,7 +423,7 @@ class BubblePopGame extends BaseGame {
       useDOMContainer: false, // Using canvas
       gameType: 'bubble-pop',
       subject: 'math',
-      ...options
+      ...options,
     });
     // ...
   }
@@ -423,6 +431,7 @@ class BubblePopGame extends BaseGame {
 ```
 
 2. **Add Required Methods**:
+
 ```javascript
 onInitialized() {
   super.onInitialized();
@@ -440,6 +449,7 @@ setupTemplateIntegration() {
 ```
 
 3. **Update Registry Entry**:
+
 ```javascript
 {
   id: 'bubble-pop',
@@ -455,20 +465,20 @@ setupTemplateIntegration() {
 
 ```javascript
 // Core methods
-gameSystem.init() // Initialize system
-gameSystem.registerGame(config) // Register new game
-gameSystem.loadGame(gameId, containerId, options) // Load and start game
-gameSystem.destroyGame(gameId) // Clean up game
-gameSystem.getAvailableGames(filters) // Query games
-gameSystem.getGameInfo(gameId) // Get game config
-gameSystem.isGameActive(gameId) // Check if running
-gameSystem.getActiveGames() // List active games
-gameSystem.getStats() // System statistics
+gameSystem.init(); // Initialize system
+gameSystem.registerGame(config); // Register new game
+gameSystem.loadGame(gameId, containerId, options); // Load and start game
+gameSystem.destroyGame(gameId); // Clean up game
+gameSystem.getAvailableGames(filters); // Query games
+gameSystem.getGameInfo(gameId); // Get game config
+gameSystem.isGameActive(gameId); // Check if running
+gameSystem.getActiveGames(); // List active games
+gameSystem.getStats(); // System statistics
 
 // Event methods
-gameSystem.on(event, handler) // Add listener
-gameSystem.off(event, handler) // Remove listener
-gameSystem.emit(event, data) // Trigger event
+gameSystem.on(event, handler); // Add listener
+gameSystem.off(event, handler); // Remove listener
+gameSystem.emit(event, data); // Trigger event
 ```
 
 ### GameSystem Events
@@ -487,21 +497,23 @@ gameSystem.emit(event, data) // Trigger event
 ### Template Engine Methods
 
 ```javascript
-templateEngine.registerTemplate(name, definition)
-templateEngine.getTemplate(name)
-templateEngine.renderGamePage(gameConfig, containerId)
-templateEngine.processTemplate(template, variables)
-templateEngine.clearCache()
+templateEngine.registerTemplate(name, definition);
+templateEngine.getTemplate(name);
+templateEngine.renderGamePage(gameConfig, containerId);
+templateEngine.processTemplate(template, variables);
+templateEngine.clearCache();
 ```
 
 ## Best Practices
 
 ### 1. Always Extend BaseGame
+
 - Provides analytics, progress tracking, mobile optimization
 - Consistent lifecycle management
 - Built-in error handling
 
 ### 2. Use Theme Variables
+
 ```css
 /* Good */
 color: var(--text-primary);
@@ -513,11 +525,13 @@ background: white;
 ```
 
 ### 3. Implement Template Integration
+
 - Connect to template UI elements
 - Listen to GameSystem events
 - Update UI through `updateTemplateUI()`
 
 ### 4. Handle Cleanup Properly
+
 ```javascript
 onDestroy() {
   // Remove event listeners
@@ -528,16 +542,19 @@ onDestroy() {
 ```
 
 ### 5. Use Configuration Over Code
+
 - Define game behavior in registry
 - Use options for customization
 - Keep game classes focused on gameplay
 
 ### 6. Test Across Templates
+
 - Test with `game`, `minimal`, and `none` templates
 - Ensure mobile responsiveness
 - Verify theme compatibility
 
 ### 7. Progressive Enhancement
+
 ```javascript
 // Check for template elements before using
 if (this.templateElements?.score) {
@@ -548,6 +565,7 @@ if (this.templateElements?.score) {
 ## Example: Complete Game Implementation
 
 See `/src/features/games/word-scramble/wordScramble.js` for a complete example of:
+
 - BaseGame extension
 - Template integration
 - Mobile optimization
@@ -557,24 +575,28 @@ See `/src/features/games/word-scramble/wordScramble.js` for a complete example o
 ## Troubleshooting
 
 ### Game Won't Load
+
 1. Check browser console for errors
 2. Verify game is registered in `gameRegistry.js`
 3. Ensure script path is correct
 4. Check that game class is exported as default
 
 ### Template Not Rendering
+
 1. Verify template name in registry
 2. Check that container element exists
 3. Look for template syntax errors
 4. Ensure GameSystem is initialized
 
 ### Events Not Working
+
 1. Verify event names match exactly
 2. Check that handlers are bound correctly
 3. Ensure GameSystem is available globally
 4. Use arrow functions or bind `this` context
 
 ### Performance Issues
+
 1. Use `requestAnimationFrame` for animations
 2. Implement object pooling for frequently created objects
 3. Optimize canvas rendering
@@ -583,6 +605,7 @@ See `/src/features/games/word-scramble/wordScramble.js` for a complete example o
 ## Support
 
 For questions or issues:
+
 1. Check existing games for examples
 2. Review test files for usage patterns
 3. Consult BaseGame documentation

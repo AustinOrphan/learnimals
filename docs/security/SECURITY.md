@@ -22,34 +22,40 @@ If you discover a security vulnerability, please:
 ### Application Security
 
 #### Content Security Policy (CSP)
+
 - Strict CSP headers configured in `docker/nginx.conf`
 - No inline scripts or styles allowed
 - External resources restricted to same origin
 
 #### XSS Prevention
+
 - All user inputs are escaped using utility functions
 - Template rendering uses safe interpolation
 - Modal and dynamic content creation sanitizes inputs
 
 #### Authentication & Authorization
+
 - Currently a static site with no authentication
 - Future features will implement secure session management
 
 ### Infrastructure Security
 
 #### Container Security
+
 - Multi-stage Docker builds minimize attack surface
 - Runs as non-root user (appuser:appgroup)
 - Regular base image updates (nginx:1.25-alpine3.19)
 - Security scanning with Trivy and Grype
 
 #### Secrets Management
+
 - No secrets stored in code
 - Environment variables for sensitive configuration
 - GitHub secrets for CI/CD credentials
 - Regular scanning with Gitleaks and TruffleHog
 
 #### Dependency Security
+
 - Regular npm audit checks
 - Snyk integration for vulnerability scanning
 - Automated dependency updates via Dependabot
@@ -58,8 +64,10 @@ If you discover a security vulnerability, please:
 ### CI/CD Security
 
 #### Workflow Permissions
+
 - Minimal permissions principle
 - Explicit permissions in workflow files:
+
   ```yaml
   permissions:
     contents: read
@@ -69,6 +77,7 @@ If you discover a security vulnerability, please:
   ```
 
 #### Security Scanning Pipeline
+
 1. **SAST Analysis** - CodeQL and Semgrep
 2. **Dependency Scanning** - npm audit and Snyk
 3. **Container Scanning** - Trivy and Grype
@@ -79,36 +88,42 @@ If you discover a security vulnerability, please:
 ### Security Configuration Files
 
 #### `.gitleaks.toml`
+
 - Custom rules for project-specific patterns
 - Allowlists for false positives
 - Excludes test files and documentation
 
 #### `.trivyignore`
+
 - Container vulnerability exclusions
 - Documents accepted risks
 
 #### `.trufflehogignore`
+
 - Path-based exclusions for secrets scanning
 - Prevents scanning of test and documentation files
 
 ### Best Practices
 
 1. **Keep Dependencies Updated**
+
    ```bash
    npm audit fix
    npm update
    ```
 
 2. **Run Security Scans Locally**
+
    ```bash
    # Check for vulnerabilities
    npm audit
-   
+
    # Run ESLint security rules
    npm run lint
    ```
 
 3. **Container Security**
+
    ```bash
    # Scan Docker image locally
    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \

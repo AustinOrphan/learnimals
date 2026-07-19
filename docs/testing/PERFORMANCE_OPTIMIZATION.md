@@ -10,14 +10,14 @@ This guide outlines performance optimization strategies for the Learnimals platf
 
 ### Core Web Vitals Goals
 
-| Metric | Target | Mobile Target | Description |
-|--------|--------|---------------|-------------|
-| **LCP** (Largest Contentful Paint) | < 2.5s | < 3.0s | Main content visible |
-| **FID** (First Input Delay) | < 100ms | < 200ms | Time to interactivity |
-| **CLS** (Cumulative Layout Shift) | < 0.1 | < 0.15 | Visual stability |
-| **FCP** (First Contentful Paint) | < 1.8s | < 2.4s | First content visible |
-| **TTI** (Time to Interactive) | < 3.8s | < 5.0s | Fully interactive |
-| **TBT** (Total Blocking Time) | < 200ms | < 300ms | Main thread blocking |
+| Metric                             | Target  | Mobile Target | Description           |
+| ---------------------------------- | ------- | ------------- | --------------------- |
+| **LCP** (Largest Contentful Paint) | < 2.5s  | < 3.0s        | Main content visible  |
+| **FID** (First Input Delay)        | < 100ms | < 200ms       | Time to interactivity |
+| **CLS** (Cumulative Layout Shift)  | < 0.1   | < 0.15        | Visual stability      |
+| **FCP** (First Contentful Paint)   | < 1.8s  | < 2.4s        | First content visible |
+| **TTI** (Time to Interactive)      | < 3.8s  | < 5.0s        | Fully interactive     |
+| **TBT** (Total Blocking Time)      | < 200ms | < 300ms       | Main thread blocking  |
 
 ### Performance Budget
 
@@ -27,24 +27,24 @@ export const PERFORMANCE_BUDGET = {
   javascript: {
     main: 150, // KB
     vendor: 100, // KB
-    perRoute: 50 // KB
+    perRoute: 50, // KB
   },
   css: {
     main: 50, // KB
-    perComponent: 10 // KB
+    perComponent: 10, // KB
   },
   images: {
     hero: 100, // KB
     thumbnail: 30, // KB
-    icon: 10 // KB
+    icon: 10, // KB
   },
   fonts: {
-    total: 100 // KB
+    total: 100, // KB
   },
   total: {
     initialLoad: 400, // KB
-    cached: 100 // KB
-  }
+    cached: 100, // KB
+  },
 };
 ```
 
@@ -55,40 +55,50 @@ export const PERFORMANCE_BUDGET = {
 ### Critical Rendering Path
 
 #### Optimize Initial Load
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <!-- Preconnect to required origins -->
-  <link rel="preconnect" href="https://api.learnimals.com">
-  <link rel="dns-prefetch" href="https://cdn.learnimals.com">
-  
-  <!-- Critical CSS inline -->
-  <style>
-    /* Critical above-the-fold styles */
-    :root { --color-primary: #007bff; }
-    body { margin: 0; font-family: system-ui; }
-    .loading { display: flex; justify-content: center; }
-  </style>
-  
-  <!-- Preload critical resources -->
-  <link rel="preload" href="/fonts/main.woff2" as="font" crossorigin>
-  <link rel="preload" href="/js/app.js" as="script">
-  
-  <!-- Non-critical CSS -->
-  <link rel="stylesheet" href="/css/main.css" media="print" onload="this.media='all'">
-</head>
-<body>
-  <!-- Initial loading state -->
-  <div class="loading">Loading Learnimals...</div>
-  
-  <!-- Async load non-critical scripts -->
-  <script src="/js/app.js" async></script>
-</body>
+  <head>
+    <!-- Preconnect to required origins -->
+    <link rel="preconnect" href="https://api.learnimals.com" />
+    <link rel="dns-prefetch" href="https://cdn.learnimals.com" />
+
+    <!-- Critical CSS inline -->
+    <style>
+      /* Critical above-the-fold styles */
+      :root {
+        --color-primary: #007bff;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui;
+      }
+      .loading {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/fonts/main.woff2" as="font" crossorigin />
+    <link rel="preload" href="/js/app.js" as="script" />
+
+    <!-- Non-critical CSS -->
+    <link rel="stylesheet" href="/css/main.css" media="print" onload="this.media='all'" />
+  </head>
+  <body>
+    <!-- Initial loading state -->
+    <div class="loading">Loading Learnimals...</div>
+
+    <!-- Async load non-critical scripts -->
+    <script src="/js/app.js" async></script>
+  </body>
 </html>
 ```
 
 #### Progressive Enhancement
+
 ```javascript
 // Progressive feature loading
 class FeatureLoader {
@@ -128,6 +138,7 @@ class FeatureLoader {
 ### Code Splitting
 
 #### Route-Based Splitting
+
 ```javascript
 // Router with dynamic imports
 class Router {
@@ -166,6 +177,7 @@ router.addRoute('/settings', () => import('./pages/Settings.js'));
 ```
 
 #### Component-Based Splitting
+
 ```javascript
 // Lazy load heavy components
 class LazyComponent {
@@ -207,13 +219,12 @@ const heavyChart = new LazyComponent(() => import('./components/Chart.js'));
 ### Resource Optimization
 
 #### Image Optimization
+
 ```javascript
 // Responsive image loader
 class ImageOptimizer {
   static generateSrcSet(imagePath, sizes = [320, 640, 1024, 1920]) {
-    return sizes
-      .map(size => `${imagePath}?w=${size} ${size}w`)
-      .join(', ');
+    return sizes.map(size => `${imagePath}?w=${size} ${size}w`).join(', ');
   }
 
   static getLazyImageHTML(src, alt, sizes = '100vw') {
@@ -232,7 +243,7 @@ class ImageOptimizer {
 
   static observeImages() {
     if ('IntersectionObserver' in window) {
-      const imageObserver = new IntersectionObserver((entries) => {
+      const imageObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const img = entry.target;
@@ -253,12 +264,14 @@ class ImageOptimizer {
 ```
 
 #### Font Optimization
+
 ```css
 /* Font loading strategy */
 @font-face {
   font-family: 'LearnimalsFont';
-  src: url('/fonts/learnimals.woff2') format('woff2'),
-       url('/fonts/learnimals.woff') format('woff');
+  src:
+    url('/fonts/learnimals.woff2') format('woff2'),
+    url('/fonts/learnimals.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap; /* Show fallback immediately */
@@ -266,13 +279,17 @@ class ImageOptimizer {
 
 /* System font stack fallback */
 :root {
-  --font-stack: 'LearnimalsFont', system-ui, -apple-system, 'Segoe UI', 
-                Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-stack:
+    'LearnimalsFont', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
 }
 
 /* Critical text uses system fonts */
 .critical-text {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 ```
 
@@ -283,6 +300,7 @@ class ImageOptimizer {
 ### JavaScript Optimization
 
 #### Debouncing and Throttling
+
 ```javascript
 // Debounce for search inputs
 function debounce(fn, delay = 300) {
@@ -300,7 +318,7 @@ function throttle(fn, limit = 100) {
     if (!inThrottle) {
       fn.apply(this, args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
@@ -313,6 +331,7 @@ window.addEventListener('scroll', throttle(handleScroll, 100));
 ```
 
 #### Efficient DOM Manipulation
+
 ```javascript
 // Batch DOM updates
 class DOMBatcher {
@@ -328,7 +347,7 @@ class DOMBatcher {
 
   scheduleUpdate() {
     if (this.scheduled) return;
-    
+
     this.scheduled = true;
     requestAnimationFrame(() => {
       this.flush();
@@ -349,7 +368,7 @@ class VirtualScroller {
     this.items = items;
     this.itemHeight = itemHeight;
     this.visibleRange = { start: 0, end: 0 };
-    
+
     this.init();
   }
 
@@ -357,47 +376,50 @@ class VirtualScroller {
     // Create scroll container
     this.scrollContainer = document.createElement('div');
     this.scrollContainer.style.height = `${this.items.length * this.itemHeight}px`;
-    
+
     // Create viewport
     this.viewport = document.createElement('div');
     this.viewport.style.overflow = 'auto';
     this.viewport.style.height = '100%';
-    
+
     this.viewport.appendChild(this.scrollContainer);
     this.container.appendChild(this.viewport);
-    
-    this.viewport.addEventListener('scroll', throttle(() => this.render(), 10));
+
+    this.viewport.addEventListener(
+      'scroll',
+      throttle(() => this.render(), 10)
+    );
     this.render();
   }
 
   render() {
     const scrollTop = this.viewport.scrollTop;
     const viewportHeight = this.viewport.clientHeight;
-    
+
     // Calculate visible range
     const start = Math.floor(scrollTop / this.itemHeight);
     const end = Math.ceil((scrollTop + viewportHeight) / this.itemHeight);
-    
+
     // Only update if range changed
     if (start === this.visibleRange.start && end === this.visibleRange.end) {
       return;
     }
-    
+
     this.visibleRange = { start, end };
-    
+
     // Clear container
     this.scrollContainer.innerHTML = '';
-    
+
     // Render visible items
     const fragment = document.createDocumentFragment();
-    
+
     for (let i = start; i < end && i < this.items.length; i++) {
       const item = this.createItem(this.items[i], i);
       item.style.position = 'absolute';
       item.style.top = `${i * this.itemHeight}px`;
       fragment.appendChild(item);
     }
-    
+
     this.scrollContainer.appendChild(fragment);
   }
 
@@ -413,6 +435,7 @@ class VirtualScroller {
 ### Memory Management
 
 #### Preventing Memory Leaks
+
 ```javascript
 // Event listener cleanup
 class ComponentWithCleanup {
@@ -424,7 +447,7 @@ class ComponentWithCleanup {
 
   addEventListener(element, event, handler) {
     element.addEventListener(event, handler);
-    
+
     // Track for cleanup
     if (!this.listeners.has(element)) {
       this.listeners.set(element, new Map());
@@ -463,6 +486,7 @@ class ComponentWithCleanup {
 ```
 
 #### Object Pooling
+
 ```javascript
 // Reuse objects to reduce GC pressure
 class ObjectPool {
@@ -488,7 +512,7 @@ class ObjectPool {
 // Usage for game objects
 const particlePool = new ObjectPool(
   () => ({ x: 0, y: 0, vx: 0, vy: 0, active: false }),
-  (particle) => {
+  particle => {
     particle.x = 0;
     particle.y = 0;
     particle.vx = 0;
@@ -506,15 +530,22 @@ const particlePool = new ObjectPool(
 
 ```css
 /* ✅ GOOD - Efficient selectors */
-.button { }
-.card-header { }
-#main-nav { }
-[data-theme="dark"] { }
+.button {
+}
+.card-header {
+}
+#main-nav {
+}
+[data-theme='dark'] {
+}
 
 /* ❌ BAD - Inefficient selectors */
-div > ul > li > a { }  /* Deep nesting */
-.container * { }       /* Universal selector */
-div.container { }      /* Redundant qualifier */
+div > ul > li > a {
+} /* Deep nesting */
+.container * {
+} /* Universal selector */
+div.container {
+} /* Redundant qualifier */
 ```
 
 ### Animation Performance
@@ -595,7 +626,7 @@ class APIBatcher {
 
   scheduleBatch() {
     if (this.timeout) return;
-    
+
     this.timeout = setTimeout(() => {
       this.sendBatch();
     }, this.delay);
@@ -604,20 +635,20 @@ class APIBatcher {
   async sendBatch() {
     const batch = this.queue.splice(0);
     this.timeout = null;
-    
+
     if (batch.length === 0) return;
-    
+
     try {
       const response = await fetch(this.batchEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          requests: batch.map(item => item.request)
-        })
+          requests: batch.map(item => item.request),
+        }),
       });
-      
+
       const results = await response.json();
-      
+
       batch.forEach((item, index) => {
         if (results[index].error) {
           item.reject(results[index].error);
@@ -657,7 +688,7 @@ self.addEventListener('fetch', event => {
       })
     );
   }
-  
+
   // Network-first for API calls
   else if (url.pathname.startsWith('/api/')) {
     event.respondWith(
@@ -710,14 +741,14 @@ class PerformanceMonitor {
     // Observe various performance metrics
     if ('PerformanceObserver' in window) {
       // LCP
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
         this.metrics.lcp = lastEntry.startTime;
       }).observe({ entryTypes: ['largest-contentful-paint'] });
 
       // FID
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         const entries = list.getEntries();
         entries.forEach(entry => {
           this.metrics.fid = entry.processingStart - entry.startTime;
@@ -725,7 +756,7 @@ class PerformanceMonitor {
       }).observe({ entryTypes: ['first-input'] });
 
       // CLS
-      new PerformanceObserver((list) => {
+      new PerformanceObserver(list => {
         let cls = 0;
         list.getEntries().forEach(entry => {
           if (!entry.hadRecentInput) {
@@ -740,7 +771,8 @@ class PerformanceMonitor {
     window.addEventListener('load', () => {
       setTimeout(() => {
         const navigation = performance.getEntriesByType('navigation')[0];
-        this.metrics.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
+        this.metrics.domContentLoaded =
+          navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
         this.metrics.loadComplete = navigation.loadEventEnd - navigation.loadEventStart;
         this.reportMetrics();
       }, 0);
@@ -782,7 +814,7 @@ class CustomMetrics {
   static async measureAsync(name, asyncFn) {
     const startMark = `${name}-start`;
     const endMark = `${name}-end`;
-    
+
     this.mark(startMark);
     try {
       const result = await asyncFn();
@@ -808,6 +840,7 @@ CustomMetrics.measureAsync('fetch-user-data', async () => {
 ## Performance Checklist
 
 ### Development Phase
+
 - [ ] Enable performance budgets in build tool
 - [ ] Use production builds for testing
 - [ ] Test on real devices, not just DevTools
@@ -815,6 +848,7 @@ CustomMetrics.measureAsync('fetch-user-data', async () => {
 - [ ] Audit with Lighthouse regularly
 
 ### Before Deploy
+
 - [ ] Minify all assets (JS, CSS, HTML)
 - [ ] Enable compression (gzip/brotli)
 - [ ] Optimize images (WebP, AVIF)
@@ -822,6 +856,7 @@ CustomMetrics.measureAsync('fetch-user-data', async () => {
 - [ ] Verify lazy loading works
 
 ### Monitoring
+
 - [ ] Set up Real User Monitoring (RUM)
 - [ ] Configure performance alerts
 - [ ] Track Core Web Vitals
@@ -833,6 +868,7 @@ CustomMetrics.measureAsync('fetch-user-data', async () => {
 ## Tools & Resources
 
 ### Performance Testing Tools
+
 - **Lighthouse**: Automated auditing
 - **WebPageTest**: Detailed performance analysis
 - **Chrome DevTools**: Performance profiling
@@ -840,12 +876,14 @@ CustomMetrics.measureAsync('fetch-user-data', async () => {
 - **Coverage Tab**: Find unused code
 
 ### Monitoring Services
+
 - **Google Analytics**: Core Web Vitals tracking
 - **Sentry**: Performance monitoring
 - **SpeedCurve**: Continuous monitoring
 - **Calibre**: Performance tracking
 
 ### Build Tools
+
 - **Vite**: Fast builds with optimization
 - **Terser**: JavaScript minification
 - **PurgeCSS**: Remove unused CSS
@@ -853,4 +891,4 @@ CustomMetrics.measureAsync('fetch-user-data', async () => {
 
 ---
 
-*Performance optimization is an ongoing process. Regular monitoring and incremental improvements lead to the best results.*
+_Performance optimization is an ongoing process. Regular monitoring and incremental improvements lead to the best results._

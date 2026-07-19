@@ -10,10 +10,12 @@
 ## Week 1: Setup & Stabilization
 
 ### Task Group 1: Development Environment Setup
+
 **Priority**: P0 (Blocker)
 **Estimated Effort**: 8 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Fix npm dependency issues** - 2 hours
    - [ ] Resolve `es-errors` module missing dependency
    - [ ] Run `npm audit fix` to resolve security vulnerabilities
@@ -32,17 +34,20 @@
    - [ ] Set up test coverage reporting
    - [ ] Document testing workflow
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ All npm commands run without errors
 - ✅ ESLint shows 0 errors across codebase
 - ✅ Test suite runs successfully
 - ✅ Development environment documented
 
 ### Task Group 2: CI/CD Pipeline
+
 **Priority**: P1 (High)
 **Estimated Effort**: 6 hours
 
-#### Tasks:
+#### Tasks
+
 1. **GitHub Actions workflow** - 3 hours
    - [ ] Configure CI pipeline to run on PRs and main branch
    - [ ] Add ESLint check to CI
@@ -60,16 +65,19 @@
    - [ ] Configure custom domain (if available)
    - [ ] Test deployment process
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ CI runs on every PR
 - ✅ Main branch protected from direct pushes
 - ✅ Automated deployment to GitHub Pages works
 
 ### Task Group 3: Code Organization
+
 **Priority**: P1 (High)
 **Estimated Effort**: 4 hours
 
-#### Tasks:
+#### Tasks
+
 1. **File structure cleanup** - 2 hours
    - [ ] Remove unused files and dependencies
    - [ ] Organize components by feature
@@ -82,7 +90,8 @@
    - [ ] Create developer onboarding guide
    - [ ] Update CLAUDE.md with current state
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ File structure follows established patterns
 - ✅ All imports work correctly
 - ✅ Documentation reflects current state
@@ -90,10 +99,12 @@
 ## Week 2: Progress Tracking System
 
 ### Task Group 4: Progress Data Schema
+
 **Priority**: P0 (Blocker)
 **Estimated Effort**: 8 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Design progress data model** - 3 hours
    - [ ] Define user progress schema
    - [ ] Design XP and leveling system
@@ -114,25 +125,25 @@ const progressSchema = {
           highScore: 'number',
           timesPlayed: 'number',
           averageScore: 'number',
-          lastPlayed: 'timestamp'
-        }
-      }
-    }
+          lastPlayed: 'timestamp',
+        },
+      },
+    },
   },
   achievements: ['array of achievement IDs'],
   daily: {
     loginStreak: 'number',
     lastLogin: 'date',
     todayPlayTime: 'number',
-    todayGamesPlayed: 'number'
+    todayGamesPlayed: 'number',
   },
   stats: {
     totalPlayTime: 'number',
     favoriteSubject: 'string',
     totalGamesCompleted: 'number',
-    averageSessionLength: 'number'
-  }
-}
+    averageSessionLength: 'number',
+  },
+};
 ```
 
 2. **Implement ProgressTracker class** - 3 hours
@@ -147,16 +158,19 @@ const progressSchema = {
    - [ ] Create backup/restore functionality
    - [ ] Add migration support for schema changes
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ Progress data model fully defined
 - ✅ ProgressTracker class functional and tested
 - ✅ Data persists correctly in LocalStorage
 
 ### Task Group 5: Progress UI Components
+
 **Priority**: P1 (High)
 **Estimated Effort**: 10 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Progress bar component** - 3 hours
    - [ ] Create reusable progress bar component
    - [ ] Add animated progress updates
@@ -181,16 +195,19 @@ const progressSchema = {
    - [ ] Display recent achievements
    - [ ] Add stats summary
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ Progress visualizations work smoothly
 - ✅ Animations enhance user experience
 - ✅ All components are mobile-responsive
 
 ### Task Group 6: Integration with Existing Games
+
 **Priority**: P1 (High)
 **Estimated Effort**: 6 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Update existing games** - 4 hours
    - [ ] Integrate ProgressTracker into Bubble Pop game
    - [ ] Add progress tracking to Word Scramble
@@ -203,7 +220,8 @@ const progressSchema = {
    - [ ] Display achievements unlocked
    - [ ] Add "play again" and "next game" options
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ All existing games track progress
 - ✅ Players can see immediate feedback on performance
 - ✅ XP and achievements work across all games
@@ -211,10 +229,12 @@ const progressSchema = {
 ## Week 3: Character System Enhancement
 
 ### Task Group 7: Character Selection & Customization
+
 **Priority**: P1 (High)
 **Estimated Effort**: 12 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Character data model** - 2 hours
    - [ ] Define character attributes schema
    - [ ] Create customization options data
@@ -234,21 +254,21 @@ const characterSchema = {
     current: {
       color: 'teal',
       accessory: 'glasses',
-      outfit: 'casual'
+      outfit: 'casual',
     },
     unlocked: {
       colors: ['teal', 'blue', 'purple'],
       accessories: ['glasses', 'hat', 'bowtie'],
-      outfits: ['casual', 'formal', 'sporty']
-    }
+      outfits: ['casual', 'formal', 'sporty'],
+    },
   },
   animations: {
     idle: 'bounce',
     success: 'cheer',
     thinking: 'scratch_head',
-    encouraging: 'thumbs_up'
-  }
-}
+    encouraging: 'thumbs_up',
+  },
+};
 ```
 
 2. **Character selection UI** - 4 hours
@@ -269,16 +289,19 @@ const characterSchema = {
    - [ ] Add character reactions to game events
    - [ ] Update game screens with character presence
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ Users can select and customize characters
 - ✅ Character preferences persist across sessions
 - ✅ Characters appear consistently throughout app
 
 ### Task Group 8: Character Animation System
+
 **Priority**: P2 (Medium)
 **Estimated Effort**: 8 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Animation framework** - 3 hours
    - [ ] Create CSS animation library
    - [ ] Define standard animation triggers
@@ -297,7 +320,8 @@ const characterSchema = {
    - [ ] Implement smooth transitions
    - [ ] Test performance on mobile devices
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ Animations enhance user experience without lag
 - ✅ Characters feel alive and responsive
 - ✅ Animations work on all target devices
@@ -305,10 +329,12 @@ const characterSchema = {
 ## Week 4: Parent Dashboard & Polish
 
 ### Task Group 9: Parent Dashboard (Minimal Version)
+
 **Priority**: P1 (High)
 **Estimated Effort**: 10 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Dashboard UI layout** - 3 hours
    - [ ] Create parent dashboard page structure
    - [ ] Design overview cards for key metrics
@@ -333,16 +359,19 @@ const characterSchema = {
    - [ ] Add export data functionality
    - [ ] Create reset progress option
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ Parents can view child's learning progress
 - ✅ Dashboard loads quickly with accurate data
 - ✅ Basic parental controls are functional
 
 ### Task Group 10: UI/UX Polish
+
 **Priority**: P2 (Medium)
 **Estimated Effort**: 8 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Visual consistency** - 3 hours
    - [ ] Standardize colors and typography
    - [ ] Ensure consistent spacing and layouts
@@ -361,16 +390,19 @@ const characterSchema = {
    - [ ] Test with screen reader
    - [ ] Improve color contrast ratios
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ App looks professional and polished
 - ✅ Mobile experience is smooth and intuitive
 - ✅ Basic accessibility standards met
 
 ### Task Group 11: Quality Assurance
+
 **Priority**: P0 (Blocker)
 **Estimated Effort**: 6 hours
 
-#### Tasks:
+#### Tasks
+
 1. **Cross-browser testing** - 2 hours
    - [ ] Test on Chrome, Firefox, Safari, Edge
    - [ ] Verify mobile browser compatibility
@@ -389,7 +421,8 @@ const characterSchema = {
    - [ ] Remove debug code and comments
    - [ ] Final code review and cleanup
 
-#### Acceptance Criteria:
+#### Acceptance Criteria
+
 - ✅ App works consistently across browsers
 - ✅ Load time under 3 seconds on average connection
 - ✅ No critical bugs or console errors
@@ -397,18 +430,21 @@ const characterSchema = {
 ## Sprint 1 Success Metrics
 
 ### Technical Metrics
+
 - [ ] 0 ESLint errors
 - [ ] 100% test pass rate
 - [ ] Load time < 3 seconds
 - [ ] Works offline for core features
 
 ### Feature Metrics
+
 - [ ] Progress tracking works for all games
 - [ ] Character selection and customization functional
 - [ ] Parent dashboard shows accurate data
 - [ ] All existing games enhanced with new systems
 
 ### Quality Metrics
+
 - [ ] No critical bugs
 - [ ] Mobile-friendly across all pages
 - [ ] Basic accessibility compliance
@@ -417,11 +453,13 @@ const characterSchema = {
 ## Risk Management
 
 ### High-Risk Items
+
 1. **LocalStorage limitations** - Monitor data size, implement cleanup
 2. **Performance on low-end devices** - Test early and often
 3. **Browser compatibility** - Automated testing setup
 
 ### Mitigation Strategies
+
 - Daily standups to catch issues early
 - Feature flags for gradual rollout
 - Rollback plan for critical issues
@@ -440,6 +478,7 @@ const characterSchema = {
 ## Next Sprint Preview
 
 Sprint 2 will focus on:
+
 - Completing remaining MVP games
 - Adding sound and music
 - Implementing achievement system

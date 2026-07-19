@@ -16,14 +16,17 @@ This guide documents the recent enhancements to the Learnimals game system, incl
 The game system now supports four template types, each optimized for different use cases:
 
 ### 1. Standard Template (`game`)
+
 The original full-featured template with complete UI, modals, and controls.
 
 **Use when:** You need full UI features, settings, help modals, and progress tracking.
 
 ### 2. Minimal Template (`minimal`)
+
 A lightweight template with only essential controls and minimal UI overhead.
 
 **Features:**
+
 - Simple score/level display
 - Basic controls (start, pause, restart)
 - Minimal overlays
@@ -43,9 +46,11 @@ A lightweight template with only essential controls and minimal UI overhead.
 ```
 
 ### 3. Fullscreen Template (`fullscreen`)
+
 An immersive template designed for distraction-free gameplay.
 
 **Features:**
+
 - Auto-hide UI after 3 seconds of inactivity
 - Fullscreen mode on load
 - Keyboard shortcuts (ESC for pause, H for hide UI)
@@ -65,9 +70,11 @@ An immersive template designed for distraction-free gameplay.
 ```
 
 ### 4. Mobile Template (`mobile`)
+
 Optimized for touch devices with mobile-first design.
 
 **Features:**
+
 - Touch-optimized controls
 - Haptic feedback support
 - Visual touch feedback
@@ -99,13 +106,13 @@ The game registry now includes powerful filtering and discovery features:
 ```javascript
 // Multi-criteria filtering
 const games = GameRegistryUtil.getGamesAdvanced({
-  subject: 'math',              // Filter by subject
-  difficulty: 'easy',           // Filter by difficulty
+  subject: 'math', // Filter by subject
+  difficulty: 'easy', // Filter by difficulty
   features: ['mobile', 'audio'], // Required features
-  template: 'minimal',          // Template type
-  character: 'Mango',           // Character name
-  search: 'addition',           // Search in name/description
-  baseGameOnly: true            // Only BaseGame-enabled games
+  template: 'minimal', // Template type
+  character: 'Mango', // Character name
+  search: 'addition', // Search in name/description
+  baseGameOnly: true, // Only BaseGame-enabled games
 });
 ```
 
@@ -137,15 +144,18 @@ Games can now include rich metadata:
 Get personalized game recommendations:
 
 ```javascript
-const recommendations = GameRegistryUtil.getRecommendations({
-  subjects: ['math', 'science'],      // Preferred subjects
-  difficulty: 'medium',               // Preferred difficulty
-  ageRange: '8-10',                  // Age range
-  playTime: { min: 5, max: 15 },     // Play time preference
-  learningObjectives: ['problem-solving', 'logic'],
-  platform: 'mobile',
-  features: ['offline', 'progress']
-}, 10); // Return top 10 recommendations
+const recommendations = GameRegistryUtil.getRecommendations(
+  {
+    subjects: ['math', 'science'], // Preferred subjects
+    difficulty: 'medium', // Preferred difficulty
+    ageRange: '8-10', // Age range
+    playTime: { min: 5, max: 15 }, // Play time preference
+    learningObjectives: ['problem-solving', 'logic'],
+    platform: 'mobile',
+    features: ['offline', 'progress'],
+  },
+  10
+); // Return top 10 recommendations
 ```
 
 ### Utility Functions
@@ -194,6 +204,7 @@ const puzzleGames = GameRegistryUtil.getGamesByTags(['puzzle', 'logic']);
 Games migrated to BaseGame automatically gain these features:
 
 ### Standard Features
+
 - **Analytics**: Automatic tracking of play time, attempts, success rate
 - **Progress Tracking**: Save/load game state, achievement integration
 - **Mobile Support**: Touch controls, responsive design, device orientation
@@ -203,6 +214,7 @@ Games migrated to BaseGame automatically gain these features:
 ### Migration Example
 
 **Before (Standalone Game):**
+
 ```javascript
 class BubblePopGame {
   constructor(canvasId) {
@@ -211,7 +223,7 @@ class BubblePopGame {
     this.score = 0;
     this.bubbles = [];
   }
-  
+
   start() {
     this.gameLoop();
   }
@@ -219,6 +231,7 @@ class BubblePopGame {
 ```
 
 **After (BaseGame):**
+
 ```javascript
 export default class BubblePopGame extends BaseGame {
   constructor(containerId, options = {}) {
@@ -231,26 +244,26 @@ export default class BubblePopGame extends BaseGame {
         progress: true,
         mobile: true,
         themes: true,
-        audio: true
+        audio: true,
       },
-      ...options
+      ...options,
     };
-    
+
     super(containerId, gameConfig);
-    
+
     // Game-specific properties
     this.bubbles = [];
   }
-  
+
   onStart() {
     super.onStart();
     // Game-specific start logic
   }
-  
+
   update(deltaTime) {
     // Game update logic
   }
-  
+
   render() {
     // Game rendering
   }
@@ -265,7 +278,7 @@ For games using DOM instead of canvas:
 const gameConfig = {
   name: 'Pizza Maker',
   id: 'pizza-maker',
-  useDOMContainer: true,  // Enable DOM mode
+  useDOMContainer: true, // Enable DOM mode
   // ... other config
 };
 ```
@@ -274,21 +287,21 @@ const gameConfig = {
 
 ### GameRegistryUtil Methods
 
-| Method | Description | Parameters | Returns |
-|--------|-------------|------------|---------|
-| `getAllGames()` | Get all registered games | None | Array of games |
-| `getGameById(id)` | Get game by ID | `id: string` | Game object or null |
-| `getGamesBySubject(subject)` | Filter by subject | `subject: string` | Array of games |
-| `getGamesByDifficulty(difficulty)` | Filter by difficulty | `difficulty: string` | Array of games |
-| `getGamesByFeatures(features)` | Filter by features | `features: Array\|string` | Array of games |
-| `getGamesAdvanced(criteria)` | Multi-criteria filter | `criteria: Object` | Array of games |
-| `getGamesByTemplate(template)` | Filter by template | `template: string` | Array of games |
-| `getGamesByMetadata(criteria)` | Filter by metadata | `criteria: Object` | Array of games |
-| `getRecommendations(prefs, limit)` | Get recommendations | `prefs: Object, limit: number` | Array of games |
-| `getSimilarGames(gameId, limit)` | Find similar games | `gameId: string, limit: number` | Array of games |
-| `sortGames(games, sortBy, order)` | Sort games | `games: Array, sortBy: string, order: string` | Array of games |
-| `getGamesGrouped(groupBy)` | Group games | `groupBy: string` | Object of arrays |
-| `exportRegistry(format)` | Export registry | `format: string` | String (JSON/CSV) |
+| Method                             | Description              | Parameters                                    | Returns             |
+| ---------------------------------- | ------------------------ | --------------------------------------------- | ------------------- |
+| `getAllGames()`                    | Get all registered games | None                                          | Array of games      |
+| `getGameById(id)`                  | Get game by ID           | `id: string`                                  | Game object or null |
+| `getGamesBySubject(subject)`       | Filter by subject        | `subject: string`                             | Array of games      |
+| `getGamesByDifficulty(difficulty)` | Filter by difficulty     | `difficulty: string`                          | Array of games      |
+| `getGamesByFeatures(features)`     | Filter by features       | `features: Array\|string`                     | Array of games      |
+| `getGamesAdvanced(criteria)`       | Multi-criteria filter    | `criteria: Object`                            | Array of games      |
+| `getGamesByTemplate(template)`     | Filter by template       | `template: string`                            | Array of games      |
+| `getGamesByMetadata(criteria)`     | Filter by metadata       | `criteria: Object`                            | Array of games      |
+| `getRecommendations(prefs, limit)` | Get recommendations      | `prefs: Object, limit: number`                | Array of games      |
+| `getSimilarGames(gameId, limit)`   | Find similar games       | `gameId: string, limit: number`               | Array of games      |
+| `sortGames(games, sortBy, order)`  | Sort games               | `games: Array, sortBy: string, order: string` | Array of games      |
+| `getGamesGrouped(groupBy)`         | Group games              | `groupBy: string`                             | Object of arrays    |
+| `exportRegistry(format)`           | Export registry          | `format: string`                              | String (JSON/CSV)   |
 
 ### Template Variables
 
@@ -321,6 +334,7 @@ All templates support these Handlebars-style variables:
    - Use `mobile` for mobile-first games
 
 2. **Update registry entry:**
+
    ```javascript
    {
      id: 'my-game',
@@ -334,9 +348,10 @@ All templates support these Handlebars-style variables:
 ### Migrating to BaseGame
 
 1. **Extend BaseGame class:**
+
    ```javascript
    import BaseGame from '../../../components/games/BaseGame.js';
-   
+
    export default class MyGame extends BaseGame {
      // ... implementation
    }
@@ -359,8 +374,9 @@ All templates support these Handlebars-style variables:
    - `this.showFeedback(type, message)` - Show feedback
 
 4. **Update registry features:**
+
    ```javascript
-   features: ['analytics', 'progress', 'mobile', 'themes', 'audio']
+   features: ['analytics', 'progress', 'mobile', 'themes', 'audio'];
    ```
 
 ### Adding Metadata
@@ -389,30 +405,35 @@ metadata: {
 ## Best Practices
 
 ### Template Selection
+
 - Use **minimal** template for prototypes and simple games
 - Use **fullscreen** for action games and immersive experiences
 - Use **mobile** when mobile is the primary platform
 - Use **game** (standard) when you need all UI features
 
 ### Registry Organization
+
 - Always include metadata for better discoverability
 - Use consistent tags across similar games
 - Keep learning objectives specific and measurable
 - Update version and lastUpdated fields
 
 ### Performance
+
 - Minimal template loads 60% faster than standard
 - Mobile template includes touch optimizations
 - Fullscreen template reduces UI overhead
 - Use appropriate template for your use case
 
 ### Accessibility
+
 - All templates support keyboard navigation
 - Include accessibility metadata
 - Test with screen readers
 - Ensure sufficient color contrast
 
 ### Mobile Considerations
+
 - Test haptic feedback on various devices
 - Handle orientation changes gracefully
 - Support both touch and mouse input
@@ -421,17 +442,20 @@ metadata: {
 ## Troubleshooting
 
 ### Template Not Loading
+
 - Verify template name in registry is correct
 - Check that template file exists in `/src/templates/`
 - Ensure GameSystem is initialized
 
 ### BaseGame Features Not Working
+
 - Confirm game extends BaseGame class
 - Check that features are listed in registry
 - Verify super() is called in constructor
 - Ensure lifecycle methods call super methods
 
 ### Registry Filtering Issues
+
 - Check metadata format matches examples
 - Verify filter criteria spelling
 - Use console.log to debug filter results
@@ -440,6 +464,7 @@ metadata: {
 ## Future Enhancements
 
 Planned improvements include:
+
 - Educational template with lesson integration
 - Multiplayer template for collaborative games
 - Offline template with enhanced caching

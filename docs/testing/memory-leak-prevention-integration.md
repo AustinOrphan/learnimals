@@ -18,12 +18,12 @@ destroy() {
   if (this.gameInstance && typeof this.gameInstance.destroy === 'function') {
     this.gameInstance.destroy(); // ✅ Calls our new destroy() methods
   }
-  
+
   // Remove event listeners
   document.removeEventListener('keydown', this.handleKeyboard);
   document.removeEventListener('fullscreenchange', this.handleFullscreenChange);
   document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-  
+
   this.gameInstance = null;
   this.isInitialized = false;
 }
@@ -33,17 +33,20 @@ destroy() {
 
 ## Games with Memory Leak Prevention
 
-### ✅ **PizzaMakerGame** 
+### ✅ **PizzaMakerGame**
+
 - **File**: `src/features/games/pizza-maker/PizzaMakerGame.js`
 - **Status**: ✅ Complete `destroy()` method implemented
 - **Cleanup**: Timers, event listeners, audio context, DOM references
 
 ### ✅ **WordScrambleGame**
-- **File**: `src/features/games/word-scramble/wordScramble.js` 
+
+- **File**: `src/features/games/word-scramble/wordScramble.js`
 - **Status**: ✅ Complete `destroy()` method implemented
 - **Cleanup**: Timers, event listeners, DOM references
 
 ### ✅ **BubblePopGameTemplate**
+
 - **File**: `src/features/games/bubble-pop/BubblePopGameTemplate.js`
 - **Status**: ✅ Already extends BaseGame (has comprehensive cleanup)
 - **Cleanup**: All BaseGame cleanup patterns
@@ -59,7 +62,7 @@ export default class MyNewGame {
   constructor() {
     // Game initialization
   }
-  
+
   /**
    * Clean up all resources and prevent memory leaks
    */
@@ -69,21 +72,21 @@ export default class MyNewGame {
       clearInterval(this.gameTimer);
       this.gameTimer = null;
     }
-    
+
     // 2. Remove event listeners
     // Use bound handlers or clone/replace pattern
-    
+
     // 3. Close audio contexts
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;
     }
-    
+
     // 4. Clear all object references
     this.gameState = null;
     this.container = null;
     // ... clear all properties
-    
+
     console.log('MyNewGame destroyed and cleaned up');
   }
 }
@@ -118,7 +121,7 @@ function switchToNewGame() {
 ### **Manual Testing Checklist**
 
 - [ ] **Timer Cleanup**: Verify setInterval/setTimeout are cleared
-- [ ] **Event Listeners**: Check event listeners are removed 
+- [ ] **Event Listeners**: Check event listeners are removed
 - [ ] **Audio Context**: Confirm audio contexts are closed
 - [ ] **DOM References**: Ensure DOM elements are nullified
 - [ ] **Repeated Loading**: Test multiple game initialize/destroy cycles
@@ -139,15 +142,15 @@ import { createMemoryManager } from '../utils/MemoryLeakPrevention.js';
 class AdvancedGame {
   constructor() {
     this.memoryManager = createMemoryManager();
-    
+
     // Register resources for automatic cleanup
     this.timer = this.memoryManager.setInterval(() => {
       this.gameLoop();
     }, 16);
-    
+
     this.memoryManager.addEventListener(document, 'keydown', this.handleKey.bind(this));
   }
-  
+
   destroy() {
     // Automatic cleanup of all registered resources
     this.memoryManager.destroy();
@@ -180,11 +183,13 @@ performance.memory; // Chrome only
 ## Future Integration Points
 
 ### **Character Components** (When Re-added)
+
 - CharacterGallery autoplay animations
 - CharacterCustomizationWizard event delegation
 - CharacterRenderer resource management
 
 ### **Subject Template System**
+
 - Template loader lifecycle management
 - Component initialization/destruction
 - Animation cleanup on page transitions
@@ -195,7 +200,8 @@ performance.memory; // Chrome only
 
 ⚠️ **Developer Responsibility**: New games MUST implement the `destroy()` method pattern to prevent memory leaks.
 
-📋 **Next Steps**: 
+📋 **Next Steps**:
+
 1. Monitor production memory usage
 2. Add integration tests for component lifecycle
 3. Extend patterns to character components when re-added

@@ -9,6 +9,7 @@ Test sharding splits the test suite into multiple balanced groups (shards) that 
 ## How It Works
 
 ### 1. Test Categorization
+
 Tests are categorized by type with relative execution weights:
 
 - **Unit tests** (weight: 1) - Fast, isolated tests
@@ -20,6 +21,7 @@ Tests are categorized by type with relative execution weights:
 - **E2E tests** (weight: 5) - Full browser tests
 
 ### 2. Shard Distribution Algorithm
+
 The sharding script uses a greedy algorithm to distribute tests:
 
 1. Sort all test files by their weighted cost (category weight + file size)
@@ -27,13 +29,14 @@ The sharding script uses a greedy algorithm to distribute tests:
 3. This ensures balanced execution time across all shards
 
 ### 3. CI/CD Integration
+
 The GitHub Actions workflow runs tests in parallel:
 
 ```yaml
 strategy:
   matrix:
     node-version: [20, 22, 23]
-    shard: [0, 1, 2, 3]  # 4 shards
+    shard: [0, 1, 2, 3] # 4 shards
 ```
 
 This creates 12 parallel jobs (3 Node versions × 4 shards).
@@ -42,7 +45,8 @@ This creates 12 parallel jobs (3 Node versions × 4 shards).
 
 ### Local Development
 
-#### Run tests for a specific shard:
+#### Run tests for a specific shard
+
 ```bash
 # Run shard 0 (of 4 total shards)
 SHARD_COUNT=4 SHARD_INDEX=0 npm run test:shard
@@ -51,7 +55,8 @@ SHARD_COUNT=4 SHARD_INDEX=0 npm run test:shard
 SHARD_COUNT=4 SHARD_INDEX=1 npm run test:shard
 ```
 
-#### View sharding report:
+#### View sharding report
+
 ```bash
 npm run test:shard:report
 ```
@@ -80,7 +85,8 @@ Shard 2:
 ...
 ```
 
-#### List files for a specific shard:
+#### List files for a specific shard
+
 ```bash
 # Human-readable list
 SHARD_INDEX=0 node scripts/test-sharding.js --list
@@ -103,11 +109,13 @@ In GitHub Actions, sharding is automatic:
 
 ### Configuration
 
-#### Environment Variables:
+#### Environment Variables
+
 - `SHARD_COUNT`: Total number of shards (default: 4)
 - `SHARD_INDEX`: Current shard index, 0-based (default: 0)
 
-#### Vitest Configuration:
+#### Vitest Configuration
+
 The `vitest.config.js` includes parallel execution settings:
 
 ```javascript
@@ -124,12 +132,14 @@ poolOptions: {
 
 ## Performance Benefits
 
-### Before Sharding:
+### Before Sharding
+
 - Sequential execution of all test suites
 - Total time: ~20-30 minutes per Node version
 - 3 Node versions = ~60-90 minutes total
 
-### After Sharding:
+### After Sharding
+
 - Parallel execution across 4 shards
 - Total time: ~5-8 minutes per Node version
 - All Node versions run in parallel

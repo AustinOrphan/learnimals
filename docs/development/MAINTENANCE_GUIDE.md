@@ -5,11 +5,13 @@ This guide provides best practices and procedures to prevent file duplication is
 ## Understanding the Problem
 
 iCloud (and other cloud sync services) can create duplicate files when:
+
 - Multiple devices edit the same file simultaneously
 - Network issues occur during syncing
 - Merge conflicts can't be automatically resolved
 
 These duplicates appear with suffixes like:
+
 - `filename 2.js`
 - `component 3.html`
 - `styles 4.css`
@@ -19,12 +21,15 @@ These duplicates appear with suffixes like:
 ### 1. Development Workflow
 
 #### Single Device Development
+
 - **Preferred**: Work on one device at a time
 - **Wait for sync**: Allow iCloud to fully sync before switching devices
 - **Check sync status**: Ensure iCloud icon shows checkmark before switching
 
 #### Multi-Device Workflow
+
 If you must work across devices:
+
 1. **Commit frequently**: Push changes to git before switching
 2. **Pull before starting**: Always pull latest changes
 3. **Use branches**: Create device-specific branches if needed
@@ -33,6 +38,7 @@ If you must work across devices:
 ### 2. Git Best Practices
 
 #### Commit Hygiene
+
 ```bash
 # Before switching devices or ending work session
 git add .
@@ -44,6 +50,7 @@ git pull --rebase
 ```
 
 #### Branch Strategy
+
 ```bash
 # Create device-specific branches if needed
 git checkout -b feature/component-macbook
@@ -57,11 +64,13 @@ git merge feature/component-macbook
 ### 3. File Organization
 
 #### Naming Conventions
+
 - **Avoid spaces** in critical filenames: Use hyphens or underscores
 - **Lowercase preferred**: Reduces case-sensitivity issues
 - **Descriptive names**: Makes duplicates easier to identify
 
 #### Directory Structure
+
 - **Flat is better**: Deeply nested structures increase conflict chances
 - **Logical grouping**: Keep related files together
 - **Single source of truth**: Avoid similar files in different locations
@@ -102,16 +111,18 @@ Add to your npm scripts in `package.json`:
 When duplicates are found:
 
 1. **Stop and assess**:
+
    ```bash
    # List all duplicates
    find . -name "* [0-9].*" -type f
    ```
 
 2. **Compare files**:
+
    ```bash
    # Use diff to compare
    diff "component.js" "component 2.js"
-   
+
    # Or use VS Code
    code --diff "component.js" "component 2.js"
    ```
@@ -123,6 +134,7 @@ When duplicates are found:
    - Delete the duplicate
 
 4. **Update imports**:
+
    ```bash
    # Find files importing the duplicate
    grep -r "component 2" --include="*.js" --include="*.html"
@@ -194,18 +206,21 @@ Add to `.github/workflows/ci.yml`:
 ## Quick Reference
 
 ### Daily Checklist
+
 - [ ] Pull latest changes before starting work
 - [ ] Check for duplicates: `npm run check:duplicates`
 - [ ] Commit and push before switching devices
 - [ ] Wait for iCloud sync to complete
 
 ### Weekly Maintenance
+
 - [ ] Run full duplicate audit
 - [ ] Check for similar filenames
 - [ ] Review and update `.gitignore` patterns
 - [ ] Verify automation tools are working
 
 ### When Issues Occur
+
 1. **Stop work immediately**
 2. **Run duplicate check**
 3. **Compare and merge files**
@@ -218,6 +233,7 @@ Add to `.github/workflows/ci.yml`:
 If massive duplication occurs:
 
 1. **Create backup branch**:
+
    ```bash
    git checkout -b backup/before-cleanup
    git add .
@@ -225,10 +241,11 @@ If massive duplication occurs:
    ```
 
 2. **Use cleanup script**:
+
    ```bash
    # Dry run first
    node scripts/cleanupDuplicates.js --dry-run
-   
+
    # Then execute
    node scripts/cleanupDuplicates.js
    ```
@@ -251,5 +268,5 @@ If massive duplication occurs:
 
 ---
 
-*Last updated: [Current Date]*  
-*Maintainer: Development Team*
+_Last updated: [Current Date]_  
+_Maintainer: Development Team_

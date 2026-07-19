@@ -7,6 +7,7 @@ This document outlines a comprehensive plan to modernize the Learnimals educatio
 ## Current State Assessment
 
 ### Strengths
+
 - ✅ **Solid Architecture**: Component-based design with clear separation of concerns
 - ✅ **Good Documentation**: Comprehensive CLAUDE.md and project documentation
 - ✅ **Security Focus**: Recent security fixes and comprehensive testing (logger security tests)
@@ -14,6 +15,7 @@ This document outlines a comprehensive plan to modernize the Learnimals educatio
 - ✅ **Modern Patterns**: ES6+ features, semantic CSS variables, PWA capabilities
 
 ### Areas Needing Modernization
+
 - ❌ **No Build System**: Static files with manual management, no optimization
 - ❌ **Limited Testing**: Only 1 test file (logger.test.js) with 429 comprehensive test cases
 - ❌ **Module System**: Mixed CommonJS/ES6 patterns causing inconsistency
@@ -23,12 +25,14 @@ This document outlines a comprehensive plan to modernize the Learnimals educatio
 ## Code Quality Analysis
 
 ### File Statistics
+
 - **JavaScript Files**: 39 files (~9,770 lines total)
 - **CSS Files**: 23 files
 - **Test Coverage**: 1 comprehensive test file (logger utility)
 - **Dependencies**: Minimal (ESLint only in devDependencies)
 
 ### Technical Debt Identified
+
 1. **Mixed Module Patterns**: IIFE, CommonJS, and ES6 modules in same codebase
 2. **Inline Styles**: JavaScript-generated CSS in main.js
 3. **Security Concerns**: Some innerHTML usage without sanitization
@@ -39,9 +43,11 @@ This document outlines a comprehensive plan to modernize the Learnimals educatio
 ### Phase 1: Foundation & Tooling (Weeks 1-2)
 
 #### 1.1 Build System Setup
+
 **Goal**: Replace static file serving with modern build pipeline
 
 **Tools to Add**:
+
 ```bash
 npm install --save-dev vite @vitejs/plugin-legacy
 npm install --save-dev typescript @types/node
@@ -49,20 +55,24 @@ npm install --save-dev @vitejs/plugin-pwa
 ```
 
 **Configuration Files**:
+
 - `vite.config.js` - Build configuration with PWA plugin
 - `tsconfig.json` - TypeScript configuration for gradual adoption
 - `.env.example` - Environment variables template
 
 **Benefits**:
+
 - ⚡ Hot Module Replacement (HMR) for faster development
 - 📦 Optimized bundles with tree shaking
 - 🔄 Enhanced PWA build process
 - 🎯 Development/production environment separation
 
 #### 1.2 Testing Infrastructure Expansion
+
 **Goal**: Comprehensive testing coverage beyond current logger tests
 
 **Tools to Add**:
+
 ```bash
 npm install --save-dev vitest @vitest/ui jsdom
 npm install --save-dev @testing-library/dom @testing-library/user-event
@@ -71,12 +81,14 @@ npm install --save-dev @vitest/coverage-v8
 ```
 
 **Testing Strategy**:
+
 1. **Unit Tests**: Component and utility testing (target 80% coverage)
 2. **Integration Tests**: Feature workflow testing
 3. **E2E Tests**: User journey automation with Playwright
 4. **Visual Regression**: Screenshot comparison testing
 
 **Test Structure**:
+
 ```
 tests/
 ├── unit/           # Individual component/utility tests
@@ -86,9 +98,11 @@ tests/
 ```
 
 #### 1.3 Code Quality Enhancement
+
 **Goal**: Automated code quality enforcement
 
 **Tools to Add**:
+
 ```bash
 npm install --save-dev prettier husky lint-staged
 npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin
@@ -96,6 +110,7 @@ npm install --save-dev @eslint/config-recommended
 ```
 
 **Quality Gates**:
+
 - **Pre-commit hooks** with Husky for automated checks
 - **Prettier** for consistent code formatting
 - **Enhanced ESLint** with TypeScript support
@@ -104,12 +119,14 @@ npm install --save-dev @eslint/config-recommended
 ### Phase 2: Module System & Architecture (Weeks 3-4)
 
 #### 2.1 Module System Standardization
+
 **Current Problem**: Mixed module patterns causing confusion
 
 **Current Patterns Found**:
+
 ```javascript
 // IIFE Pattern (legacy)
-(function() {
+(function () {
   'use strict';
   // Component definition
   window.Card = Card;
@@ -124,6 +141,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ```
 
 **Modernized Approach**:
+
 ```javascript
 // Pure ES6 modules with TypeScript interfaces
 export interface CardOptions {
@@ -135,7 +153,7 @@ export interface CardOptions {
 export class Card extends BaseComponent {
   // Modern class syntax with private fields
   #isRendered = false;
-  
+
   constructor(options: CardOptions) {
     super(options);
   }
@@ -143,9 +161,11 @@ export class Card extends BaseComponent {
 ```
 
 #### 2.2 Dependency Management
+
 **Current Dependencies**: Minimal (only ESLint)
 
 **Dependencies to Add**:
+
 ```bash
 # Data visualization (already planned in PR #245)
 npm install chart.js
@@ -164,13 +184,16 @@ npm install concurrently cross-env
 ```
 
 #### 2.3 Component System Refactor
+
 **Goals**:
+
 - **Consistent base class** usage across all components
 - **Event system** standardization with TypeScript interfaces
 - **Props validation** with compile-time checking
 - **Lifecycle methods** for proper initialization/cleanup
 
 **Component Architecture**:
+
 ```typescript
 interface ComponentOptions {
   id?: string;
@@ -195,7 +218,9 @@ abstract class BaseComponent<T extends ComponentOptions = ComponentOptions> {
 ### Phase 3: Performance & Security (Weeks 5-6)
 
 #### 3.1 Performance Optimization
+
 **Current Issues Identified**:
+
 - No bundling or minification
 - Inline styles in JavaScript (main.js:39-67)
 - No lazy loading for components
@@ -204,6 +229,7 @@ abstract class BaseComponent<T extends ComponentOptions = ComponentOptions> {
 **Performance Improvements**:
 
 1. **Code Splitting**:
+
 ```javascript
 // Route-based code splitting
 const MathSubject = lazy(() => import('./features/subjects/math/math.js'));
@@ -214,11 +240,13 @@ const Card = lazy(() => import('./components/ui/Card.js'));
 ```
 
 2. **Asset Optimization**:
+
 - **Image optimization** with modern formats (WebP, AVIF)
 - **Font optimization** with font-display: swap
 - **CSS optimization** with PurgeCSS
 
 3. **Service Worker Enhancement**:
+
 ```javascript
 const CACHE_VERSION = 'v2';
 const STATIC_CACHE = `learnimals-static-${CACHE_VERSION}`;
@@ -227,17 +255,20 @@ const STATIC_CACHE = `learnimals-static-${CACHE_VERSION}`;
 const cacheStrategy = {
   static: 'CacheFirst',
   dynamic: 'NetworkFirst',
-  images: 'CacheFirst'
+  images: 'CacheFirst',
 };
 ```
 
 4. **Bundle Analysis**:
+
 - **Bundle size monitoring** with size limits
 - **Tree shaking** optimization
 - **Chunk optimization** for better caching
 
 #### 3.2 Security Hardening
+
 **Current Security Issues Found**:
+
 - innerHTML usage without sanitization in math.js, wordScramble.js
 - No Content Security Policy (CSP)
 - No comprehensive input validation framework
@@ -245,15 +276,19 @@ const cacheStrategy = {
 **Security Enhancements**:
 
 1. **Content Security Policy**:
+
 ```html
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; 
                script-src 'self' 'unsafe-inline'; 
                style-src 'self' 'unsafe-inline'; 
-               img-src 'self' data: https:;">
+               img-src 'self' data: https:;"
+/>
 ```
 
 2. **Input Sanitization**:
+
 ```javascript
 import DOMPurify from 'dompurify';
 
@@ -262,11 +297,13 @@ element.innerHTML = DOMPurify.sanitize(htmlContent);
 ```
 
 3. **XSS Protection**:
+
 - **Template literal sanitization**
 - **User input validation**
 - **Output encoding** for all dynamic content
 
 4. **Security Headers**:
+
 - X-Content-Type-Options: nosniff
 - X-Frame-Options: DENY
 - X-XSS-Protection: 1; mode=block
@@ -274,7 +311,9 @@ element.innerHTML = DOMPurify.sanitize(htmlContent);
 ### Phase 4: Developer Experience (Weeks 7-8)
 
 #### 4.1 Development Workflow Enhancement
+
 **Modern Development Scripts**:
+
 ```json
 {
   "scripts": {
@@ -298,9 +337,11 @@ element.innerHTML = DOMPurify.sanitize(htmlContent);
 ```
 
 #### 4.2 CI/CD Pipeline Enhancement
+
 **Building on PR #246 (CI/CD Enhancement)**:
 
 **GitHub Actions Workflows**:
+
 1. **Quality Gate Workflow**:
    - ESLint and Prettier checks
    - TypeScript compilation
@@ -323,19 +364,23 @@ element.innerHTML = DOMPurify.sanitize(htmlContent);
    - Production deployment with approval
 
 #### 4.3 Documentation System
+
 **Interactive Documentation**:
 
 1. **Component Library Documentation**:
+
 ```bash
 npm install --save-dev @storybook/html @storybook/addon-docs
 ```
 
 2. **API Documentation**:
+
 ```bash
 npm install --save-dev typedoc @microsoft/api-extractor
 ```
 
 3. **Documentation Structure**:
+
 ```
 docs/
 ├── API/                    # Generated API docs
@@ -348,6 +393,7 @@ docs/
 ## Implementation Timeline
 
 ### Week 1-2: Foundation
+
 - [ ] Setup Vite build system
 - [ ] Configure TypeScript
 - [ ] Add Prettier and pre-commit hooks
@@ -355,18 +401,21 @@ docs/
 - [ ] Create development scripts
 
 ### Week 3-4: Architecture
+
 - [ ] Standardize module system
 - [ ] Add missing dependencies
 - [ ] Refactor component architecture
 - [ ] Implement type safety
 
 ### Week 5-6: Performance & Security
+
 - [ ] Implement code splitting
 - [ ] Add security enhancements
 - [ ] Optimize assets and bundles
 - [ ] Performance monitoring
 
 ### Week 7-8: Developer Experience
+
 - [ ] Complete CI/CD pipeline
 - [ ] Setup documentation system
 - [ ] Performance optimization
@@ -375,24 +424,28 @@ docs/
 ## Success Metrics
 
 ### Developer Experience
+
 - ⚡ **90% faster builds** with Vite HMR vs current static files
 - 🛡️ **Type safety** with gradual TypeScript adoption
 - 🔍 **Better debugging** with source maps and dev tools
 - 📦 **Smaller bundles** with tree shaking and optimization
 
 ### Code Quality
+
 - ✅ **80%+ test coverage** (current: ~2% with only logger tests)
 - 🔒 **Security hardening** with CSP and input sanitization
 - 📐 **Consistent formatting** with Prettier and ESLint
 - 📚 **Interactive documentation** with Storybook
 
 ### Performance
+
 - 🚀 **Faster load times** with optimized bundles
 - 📱 **Better mobile experience** with progressive loading
 - ⚡ **Improved Core Web Vitals** scores
 - 🔄 **Enhanced PWA** capabilities
 
 ### Security
+
 - 🛡️ **CSP implementation** preventing XSS attacks
 - 🔐 **Input sanitization** for all user content
 - 🔍 **Automated security scanning** in CI/CD
@@ -401,12 +454,14 @@ docs/
 ## Risk Assessment & Mitigation
 
 ### Risks
+
 1. **Breaking Changes**: Modernization might break existing functionality
 2. **Learning Curve**: Team needs to learn new tools and patterns
 3. **Performance Regression**: Build system might slow development initially
 4. **Dependency Bloat**: Adding too many dependencies
 
 ### Mitigation Strategies
+
 1. **Gradual Implementation**: Phase-by-phase rollout with testing
 2. **Backward Compatibility**: Maintain existing patterns during transition
 3. **Comprehensive Testing**: Ensure no functionality regression
@@ -416,10 +471,13 @@ docs/
 ## Cost-Benefit Analysis
 
 ### Time Investment: 8 weeks total
+
 ### Risk Level: Low-Medium (gradual implementation with rollback options)
+
 ### Resource Requirements: 1-2 developers part-time
 
 ### Benefits
+
 - **Maintainability**: 70% easier to add new features with modern tooling
 - **Performance**: 50-70% improvement in load times and build speeds
 - **Security**: Enterprise-grade security practices and compliance
@@ -428,6 +486,7 @@ docs/
 - **Scalability**: Better architecture for team growth and feature expansion
 
 ### Return on Investment
+
 - **Short-term** (3 months): Improved developer productivity and code quality
 - **Medium-term** (6-12 months): Better performance and user experience
 - **Long-term** (1+ years): Easier maintenance, feature development, and team scaling

@@ -7,6 +7,7 @@ This guide outlines the **Rolling Deployment** strategy implemented for the Lear
 ## 🏗️ Architecture Overview
 
 ### Environment Progression
+
 ```
 Development → Staging → Production
      ↓           ↓         ↓
@@ -15,6 +16,7 @@ Development → Staging → Production
 ```
 
 ### Deployment Strategy: Rolling Deployment
+
 - **Zero Downtime**: Gradual replacement of application instances
 - **Health Monitoring**: Continuous health checks during deployment
 - **Automatic Rollback**: Instance-by-instance rollback on failure detection
@@ -24,7 +26,9 @@ Development → Staging → Production
 ## 🔄 CI/CD Pipeline Architecture
 
 ### 1. Continuous Integration (`ci.yml`)
+
 **Triggers**: Push to main/develop, Pull Requests
+
 - **Security Scanning**: CodeQL, dependency audits, vulnerability scans
 - **Quality Gates**: Unit, navigation, and integration tests
 - **Build & Package**: Docker image creation with multi-architecture support
@@ -32,7 +36,9 @@ Development → Staging → Production
 - **Performance Validation**: Core Web Vitals and performance benchmarks
 
 ### 2. Rolling Deployment (`deploy-rolling.yml`)
+
 **Triggers**: Push to main, Releases, Manual dispatch
+
 - **Pre-deployment Validation**: Environment readiness and safety checks
 - **Multi-Environment Support**: Development, Staging, Production
 - **Manual Approval Gates**: Production deployments require explicit approval
@@ -40,7 +46,9 @@ Development → Staging → Production
 - **Automatic Rollback**: Failure detection and automatic recovery
 
 ### 3. Security Monitoring (`security.yml`)
+
 **Triggers**: Daily scans, Push events, Manual dispatch
+
 - **SAST Analysis**: Static application security testing
 - **Dependency Scanning**: NPM audit, Snyk, vulnerability detection
 - **Container Security**: Trivy, Grype container vulnerability scans
@@ -48,7 +56,9 @@ Development → Staging → Production
 - **Infrastructure Security**: Checkov, Terrascan IaC security validation
 
 ### 4. Continuous Monitoring (`monitoring.yml`)
+
 **Triggers**: Every 15 minutes, Manual dispatch
+
 - **Health Checks**: Application availability and response time monitoring
 - **Performance Monitoring**: Lighthouse audits, WebPageTest integration
 - **Accessibility Monitoring**: axe-core accessibility compliance checking
@@ -57,6 +67,7 @@ Development → Staging → Production
 ## 🐳 Containerization Strategy
 
 ### Docker Multi-Stage Build
+
 ```dockerfile
 # Builder stage - Dependencies and testing
 FROM node:18-alpine AS builder
@@ -73,6 +84,7 @@ FROM nginx:alpine AS production
 ```
 
 ### Container Security Features
+
 - **Non-root User**: Application runs as user ID 1001
 - **Read-only Filesystem**: Immutable container filesystem
 - **Health Checks**: Built-in application health monitoring
@@ -82,6 +94,7 @@ FROM nginx:alpine AS production
 ## ☸️ Kubernetes Deployment Configuration
 
 ### Staging Environment
+
 - **Replicas**: 3 instances
 - **Rolling Update**: Max 1 unavailable, max 1 surge
 - **Resource Requests**: 128Mi memory, 100m CPU
@@ -89,6 +102,7 @@ FROM nginx:alpine AS production
 - **Health Probes**: Liveness, readiness, and startup probes
 
 ### Production Environment
+
 - **Replicas**: 6 instances
 - **Rolling Update**: Max 1 unavailable, max 2 surge
 - **Resource Requests**: 256Mi memory, 200m CPU
@@ -97,6 +111,7 @@ FROM nginx:alpine AS production
 - **Pod Disruption Budget**: Minimum 3 available instances
 
 ### Security Configurations
+
 - **Network Policies**: Ingress/egress traffic control
 - **Service Accounts**: Minimal privilege principles
 - **Security Context**: Non-root, read-only filesystem
@@ -105,6 +120,7 @@ FROM nginx:alpine AS production
 ## 🔍 Quality Gates & Approvals
 
 ### Automated Quality Gates
+
 - **Code Quality**: ESLint compliance
 - **Security Scans**: No high/critical vulnerabilities
 - **Test Coverage**: Minimum coverage requirements
@@ -112,7 +128,9 @@ FROM nginx:alpine AS production
 - **Accessibility**: WCAG 2.1 AA compliance
 
 ### Manual Approval Process
+
 Production deployments require:
+
 1. **Staging Success**: Successful staging deployment
 2. **Test Validation**: All automated tests passing
 3. **Performance Metrics**: Acceptable performance benchmarks
@@ -122,18 +140,21 @@ Production deployments require:
 ## 📊 Monitoring & Observability
 
 ### Health Monitoring
+
 - **Application Health**: `/health` endpoint monitoring
 - **Infrastructure Health**: Kubernetes cluster monitoring
 - **Database Health**: Connection and performance monitoring
 - **External Dependencies**: Third-party service availability
 
 ### Performance Monitoring
+
 - **Core Web Vitals**: LCP, FID, CLS tracking
 - **Response Times**: API and page load performance
 - **Error Rates**: Application error monitoring
 - **User Experience**: Real user monitoring (RUM)
 
 ### Alerting Strategy
+
 - **Critical Alerts**: Immediate notification for outages
 - **Warning Alerts**: Performance degradation notifications
 - **Informational**: Deployment status and metrics
@@ -142,12 +163,14 @@ Production deployments require:
 ## 🚨 Incident Response & Rollback
 
 ### Automatic Rollback Triggers
+
 - **Health Check Failures**: Multiple consecutive failures
 - **Error Rate Spike**: Above threshold error rates
 - **Performance Degradation**: Response time increases
 - **Resource Exhaustion**: Memory or CPU limits exceeded
 
 ### Manual Rollback Process
+
 ```bash
 # Emergency rollback
 kubectl rollout undo deployment/learnimals-app -n production
@@ -155,6 +178,7 @@ kubectl rollout status deployment/learnimals-app -n production
 ```
 
 ### Incident Response
+
 1. **Detection**: Automated monitoring alerts
 2. **Assessment**: Impact and severity evaluation
 3. **Response**: Rollback or hotfix deployment
@@ -164,11 +188,13 @@ kubectl rollout status deployment/learnimals-app -n production
 ## 🔧 Configuration Management
 
 ### Environment-Specific Configurations
+
 - **Development**: Feature flags enabled, debug logging
 - **Staging**: Production-like environment, test data
 - **Production**: Optimized performance, production data
 
 ### Secrets Management
+
 - **Kubernetes Secrets**: Database credentials, API keys
 - **Sealed Secrets**: Encrypted secrets in Git
 - **External Secrets**: Integration with secret management systems
@@ -177,6 +203,7 @@ kubectl rollout status deployment/learnimals-app -n production
 ## 📈 Deployment Metrics & KPIs
 
 ### Key Performance Indicators
+
 - **Deployment Frequency**: Deployments per week
 - **Lead Time**: Code commit to production deployment
 - **Mean Time to Recovery (MTTR)**: Incident resolution time
@@ -184,6 +211,7 @@ kubectl rollout status deployment/learnimals-app -n production
 - **Deployment Success Rate**: Successful deployment percentage
 
 ### Monitoring Dashboards
+
 - **Deployment Pipeline**: Build and deployment status
 - **Application Health**: Performance and availability metrics
 - **Infrastructure**: Resource utilization and capacity
@@ -192,6 +220,7 @@ kubectl rollout status deployment/learnimals-app -n production
 ## 🔐 Security & Compliance
 
 ### Security Scanning
+
 - **SAST**: Static application security testing
 - **DAST**: Dynamic application security testing
 - **SCA**: Software composition analysis
@@ -199,6 +228,7 @@ kubectl rollout status deployment/learnimals-app -n production
 - **Infrastructure**: IaC security validation
 
 ### Compliance Requirements
+
 - **GDPR**: Data protection and privacy
 - **COPPA**: Children's online privacy protection
 - **WCAG 2.1 AA**: Accessibility compliance
@@ -207,12 +237,14 @@ kubectl rollout status deployment/learnimals-app -n production
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Kubernetes cluster (v1.24+)
 - GitHub Actions runner
 - Container registry access
 - Domain and SSL certificates
 
 ### Initial Setup
+
 1. **Configure Secrets**: Add required secrets to GitHub
 2. **Setup Environments**: Create staging and production namespaces
 3. **Deploy Infrastructure**: Apply Kubernetes manifests
@@ -220,6 +252,7 @@ kubectl rollout status deployment/learnimals-app -n production
 5. **Configure Monitoring**: Setup monitoring and alerting
 
 ### Deployment Commands
+
 ```bash
 # Manual staging deployment
 gh workflow run deploy-rolling.yml -f environment=staging

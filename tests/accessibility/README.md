@@ -1,13 +1,17 @@
 # Keyboard Navigation Tests
 
-This directory contains comprehensive keyboard navigation tests for the Learnimals educational application. These tests ensure complete keyboard accessibility compliance with WCAG 2.1 Level AA guidelines.
+This directory contains comprehensive keyboard navigation tests for the Learnimals educational
+application. These tests ensure complete keyboard accessibility compliance with WCAG 2.1 Level AA
+guidelines.
 
 ## Test Files Overview
 
 ### 1. `comprehensive-keyboard-navigation.test.js`
+
 **Primary test suite covering fundamental keyboard navigation patterns:**
+
 - Tab order and focus management across complex layouts
-- Skip links for efficient page navigation  
+- Skip links for efficient page navigation
 - Keyboard shortcuts and hotkeys (F6 landmark navigation, Ctrl+Home/End, Alt+1-6 for headings)
 - Focus indicators and visual feedback
 - Roving tabindex implementation for component groups
@@ -16,7 +20,9 @@ This directory contains comprehensive keyboard navigation tests for the Learnima
 - Automated accessibility audits
 
 ### 2. `modal-keyboard-navigation.test.js`
+
 **Comprehensive modal dialog keyboard accessibility:**
+
 - Focus trapping within modal boundaries
 - Focus restoration when modals close
 - Escape key functionality for closing modals
@@ -27,7 +33,9 @@ This directory contains comprehensive keyboard navigation tests for the Learnima
 - ARIA compliance and screen reader support
 
 ### 3. `game-keyboard-navigation.test.js`
+
 **Educational game keyboard controls:**
+
 - WASD and arrow key controls for character movement
 - Space bar for primary game actions and interactions
 - Number keys (1-9) for educational game selections
@@ -38,7 +46,9 @@ This directory contains comprehensive keyboard navigation tests for the Learnima
 - Performance testing for rapid key presses
 
 ### 4. `navigation-keyboard-navigation.test.js`
+
 **Website navigation system keyboard accessibility:**
+
 - Primary navigation structure with proper tab order
 - Mobile menu keyboard navigation (Enter/Space to toggle, Escape to close)
 - Dropdown/submenu navigation with arrow keys and Escape
@@ -49,7 +59,9 @@ This directory contains comprehensive keyboard navigation tests for the Learnima
 - ARIA labeling for navigation landmarks
 
 ### 5. `form-keyboard-navigation.test.js`
+
 **Form control keyboard accessibility:**
+
 - Tab and Shift+Tab navigation through form fields
 - Radio button groups with roving tabindex and arrow key navigation
 - Checkbox individual tab navigation
@@ -60,7 +72,9 @@ This directory contains comprehensive keyboard navigation tests for the Learnima
 - Screen reader announcements for form states
 
 ### 6. `keyboard-navigation-test-suite.test.js`
+
 **Master integration test suite:**
+
 - Complete keyboard-only user journeys through the application
 - Multi-modal interaction testing (sidebar, toolbar, tabs, content)
 - Performance testing under heavy keyboard interaction
@@ -73,22 +87,26 @@ This directory contains comprehensive keyboard navigation tests for the Learnima
 These tests validate compliance with the following WCAG success criteria:
 
 ### Level A
+
 - **2.1.1 Keyboard**: All functionality available from keyboard
-- **2.1.2 No Keyboard Trap**: Users not trapped in any part of content  
+- **2.1.2 No Keyboard Trap**: Users not trapped in any part of content
 - **2.4.1 Bypass Blocks**: Skip links to bypass repeated content
 - **2.4.3 Focus Order**: Logical and intuitive focus order
 - **3.2.1 On Focus**: No unexpected context changes on focus
 - **3.2.2 On Input**: No unexpected context changes on input
 
-### Level AA  
+### Level AA
+
 - **2.4.7 Focus Visible**: Visible focus indicators for all interactive elements
 
 ### Level AAA (Additional Coverage)
+
 - **2.1.3 Keyboard (No Exception)**: All functionality available via keyboard without exceptions
 
 ## Running the Tests
 
 ### Individual Test Suites
+
 ```bash
 # Run all keyboard navigation tests
 npm test tests/accessibility/
@@ -105,11 +123,13 @@ npm test tests/accessibility/keyboard-navigation-test-suite.test.js
 ```
 
 ### With Coverage
+
 ```bash
 npm test tests/accessibility/ -- --coverage
 ```
 
 ### Watch Mode for Development
+
 ```bash
 npm test tests/accessibility/ -- --watch
 ```
@@ -117,6 +137,7 @@ npm test tests/accessibility/ -- --watch
 ## Test Features
 
 ### Keyboard Event Simulation
+
 - **KeyboardEvent creation**: Proper key, keyCode, and which properties
 - **Modifier keys**: Ctrl, Alt, Shift, Meta key combinations
 - **Event bubbling**: Tests event propagation through DOM
@@ -124,17 +145,20 @@ npm test tests/accessibility/ -- --watch
 - **Focus simulation**: Tracks focus changes and history
 
 ### Performance Monitoring
+
 - **Focus timing**: Measures time to focus elements
 - **Key response time**: Tracks keyboard event processing speed
 - **Memory usage**: Monitors for memory leaks in keyboard handlers
 - **Large dataset handling**: Tests performance with 1000+ focusable elements
 
 ### Cross-Browser Compatibility
+
 - **Event property variations**: Handles browser differences in KeyboardEvent
 - **Virtual keyboard support**: Tests inputmode attributes for mobile
 - **Focus behavior differences**: Accounts for browser-specific focus handling
 
 ### Screen Reader Integration
+
 - **ARIA announcements**: Validates aria-live region updates
 - **State changes**: Tests aria-expanded, aria-selected announcements
 - **Error announcements**: Validates form validation messaging
@@ -143,12 +167,14 @@ npm test tests/accessibility/ -- --watch
 ## Test Data and Fixtures
 
 ### Mock Components
+
 - **AccessibleComponent**: Enhanced base component with keyboard navigation
 - **Modal**: Dialog component with focus trapping
 - **FormComponent**: Form with validation and keyboard handling
 - **Navigation**: Menu system with mobile responsive behavior
 
 ### Test Utilities
+
 - **Focus tracking**: Records focus history and timing
 - **Keyboard simulation**: Helper functions for key combinations
 - **Accessibility auditing**: Automated compliance checking
@@ -156,7 +182,8 @@ npm test tests/accessibility/ -- --watch
 
 ## Expected Outcomes
 
-### All Tests Passing Indicates:
+### All Tests Passing Indicates
+
 ✅ **Complete keyboard accessibility** - All interactive elements reachable via keyboard  
 ✅ **No keyboard traps** - Users can always navigate away from any component  
 ✅ **Logical focus order** - Tab navigation follows visual and logical flow  
@@ -173,6 +200,7 @@ npm test tests/accessibility/ -- --watch
 ### Test Failure Debugging
 
 When tests fail, check:
+
 1. **Focus management**: Are elements receiving focus as expected?
 2. **Event handling**: Are keyboard events being prevented/handled correctly?
 3. **ARIA attributes**: Are accessibility properties set properly?
@@ -192,6 +220,7 @@ npm run test:accessibility -- --reporter=json > accessibility-report.json
 ```
 
 The test suite generates comprehensive reports including:
+
 - WCAG compliance status
 - Performance metrics
 - Coverage statistics
@@ -199,17 +228,21 @@ The test suite generates comprehensive reports including:
 
 ## Maintenance Notes
 
-### When Adding New Components:
+### When Adding New Components
+
 1. **Add keyboard navigation tests** to appropriate test file
 2. **Update integration tests** in keyboard-navigation-test-suite.test.js
 3. **Verify WCAG compliance** with automated audits
-4. **Test cross-browser compatibility** 
+4. **Test cross-browser compatibility**
 5. **Document keyboard shortcuts** in component documentation
 
-### Performance Considerations:
+### Performance Considerations
+
 - Tests include performance benchmarks to prevent regression
 - Large dataset tests ensure scalability
 - Memory leak detection prevents accumulation issues
 - Response time validation maintains user experience standards
 
-This comprehensive test suite ensures that Learnimals provides an excellent keyboard navigation experience for all users, including those who rely on keyboard-only interaction due to motor disabilities or assistive technology usage.
+This comprehensive test suite ensures that Learnimals provides an excellent keyboard navigation
+experience for all users, including those who rely on keyboard-only interaction due to motor
+disabilities or assistive technology usage.

@@ -9,12 +9,14 @@ This document provides a comprehensive, phase-by-phase implementation plan for t
 ## 🎯 Strategic Integration with Existing Roadmap
 
 ### Timeline Alignment
+
 - **Phase 1 Foundation**: Weeks 9-10 (Roadmap Phase 3)
-- **Phase 2 Personalization**: Weeks 11-12 (Roadmap Phase 3)  
+- **Phase 2 Personalization**: Weeks 11-12 (Roadmap Phase 3)
 - **Phase 3 Intelligence**: Weeks 13-14 (Roadmap Phase 4)
 - **Phase 4 Advanced Features**: Weeks 15-16 (Roadmap Phase 4)
 
 ### Dependencies Satisfied
+
 - ✅ **IndexedDB**: Available from Roadmap Phase 2 Week 5
 - ✅ **Activity API**: Foundation built in Roadmap Phase 3 Week 9
 - ✅ **Testing Framework**: Established in Roadmap Phase 1
@@ -25,6 +27,7 @@ This document provides a comprehensive, phase-by-phase implementation plan for t
 ## 📋 Phase 1: Foundation (Weeks 9-10)
 
 ### Goals
+
 - Establish character data architecture
 - Build basic SVG rendering system
 - Create simple customization interface
@@ -33,6 +36,7 @@ This document provides a comprehensive, phase-by-phase implementation plan for t
 ### Technical Architecture
 
 #### 1.1 Character Data Schema
+
 ```javascript
 // src/data/characterSchema.js
 const CharacterSchema = {
@@ -42,14 +46,14 @@ const CharacterSchema = {
   created: 'Date',
   lastModified: 'Date',
   version: 'number', // For data migration
-  
+
   // Base Configuration
   species: {
     primary: 'string', // cat, dog, shark, etc.
     secondary: 'string|null', // for hybrids
-    category: 'string' // mammal, bird, aquatic, mythical
+    category: 'string', // mammal, bird, aquatic, mythical
   },
-  
+
   // Visual Properties
   appearance: {
     size: 'string', // tiny, small, medium, large, giant
@@ -57,38 +61,38 @@ const CharacterSchema = {
     colors: {
       primary: 'string', // HEX color
       secondary: 'string', // HEX color
-      accent: 'string' // HEX color
+      accent: 'string', // HEX color
     },
     patterns: {
       type: 'string', // solid, stripes, spots, gradient
       density: 'number', // 0-100
-      variation: 'number' // 0-100
+      variation: 'number', // 0-100
     },
     features: {
       eyes: 'string', // round, sleepy, star, heart
       mouth: 'string', // smile, grin, serious, tongue-out
       ears: 'string', // small, large, floppy, pointed
-      tail: 'string' // short, long, fluffy, curly
-    }
+      tail: 'string', // short, long, fluffy, curly
+    },
   },
-  
+
   // Personality & Behavior
   personality: {
     traits: {
       enthusiasm: 'number', // 0-100
       patience: 'number', // 0-100
       curiosity: 'number', // 0-100
-      playfulness: 'number' // 0-100
+      playfulness: 'number', // 0-100
     },
     learningStyle: 'string', // visual, auditory, kinesthetic, mixed
     favoriteSubject: 'string', // math, science, reading, etc.
     voice: {
       pitch: 'number', // 0.5-2.0
       speed: 'number', // 0.5-2.0
-      accent: 'string' // friendly, excited, calm, wise
-    }
+      accent: 'string', // friendly, excited, calm, wise
+    },
   },
-  
+
   // Progression System
   progression: {
     level: 'number', // 1-100
@@ -101,29 +105,30 @@ const CharacterSchema = {
       science: 'number',
       reading: 'number',
       art: 'number',
-      coding: 'number'
-    }
+      coding: 'number',
+    },
   },
-  
+
   // Customization & Accessories
   accessories: {
     head: 'Array<string>', // hats, bows, glasses
     body: 'Array<string>', // scarves, capes, backpacks
-    special: 'Array<string>' // wings, magic-wands, instruments
+    special: 'Array<string>', // wings, magic-wands, instruments
   },
-  
+
   // Animation Preferences
   animations: {
     idle: 'string',
     happy: 'string',
     learning: 'string',
     celebrating: 'string',
-    encouraging: 'string'
-  }
+    encouraging: 'string',
+  },
 };
 ```
 
 #### 1.2 Character Storage Service
+
 ```javascript
 // src/services/character/CharacterStorage.js
 class CharacterStorage {
@@ -133,29 +138,29 @@ class CharacterStorage {
     this.version = 1;
     this.db = null;
   }
-  
+
   async init() {
     // Initialize IndexedDB connection
     // Create object store with proper indexes
   }
-  
+
   async saveCharacter(character) {
     // Validate schema
     // Save to IndexedDB
     // Update cache
   }
-  
+
   async loadCharacter(id) {
     // Load from cache first
     // Fallback to IndexedDB
     // Migrate if needed
   }
-  
+
   async getUserCharacters(userId) {
     // Get all characters for user
     // Return sorted by last modified
   }
-  
+
   async deleteCharacter(id) {
     // Soft delete with backup
     // Clear from cache
@@ -164,6 +169,7 @@ class CharacterStorage {
 ```
 
 #### 1.3 SVG Character Renderer
+
 ```javascript
 // src/components/character/CharacterRenderer.js
 class CharacterRenderer {
@@ -174,7 +180,7 @@ class CharacterRenderer {
     this.parts = new Map(); // Store SVG parts for animation
     this.animations = new Map();
   }
-  
+
   render() {
     this.svg = this.createBaseSVG();
     this.renderBody();
@@ -183,31 +189,31 @@ class CharacterRenderer {
     this.setupAnimations();
     this.container.appendChild(this.svg);
   }
-  
+
   createBaseSVG() {
     // Create responsive SVG element
     // Set up viewBox and responsive sizing
     // Add base styles and defs
   }
-  
+
   renderBody() {
     // Generate body shape based on species
     // Apply colors and patterns
     // Use procedural generation for unique shapes
   }
-  
+
   renderFeatures() {
     // Add eyes, mouth, ears based on character data
     // Position relative to body
     // Apply expression states
   }
-  
+
   renderAccessories() {
     // Add unlocked accessories
     // Layer properly (head accessories above features)
     // Apply theme colors
   }
-  
+
   updateAppearance(newCharacterData) {
     // Animate transitions between states
     // Update SVG elements
@@ -219,6 +225,7 @@ class CharacterRenderer {
 ### User Interface Components
 
 #### 1.4 Character Creator Modal
+
 ```javascript
 // src/components/character/CharacterCreator.js
 class CharacterCreator extends BaseComponent {
@@ -232,10 +239,10 @@ class CharacterCreator extends BaseComponent {
       'appearance-basic',
       'personality-quiz',
       'name-character',
-      'final-preview'
+      'final-preview',
     ];
   }
-  
+
   render() {
     return `
       <div class="character-creator-modal">
@@ -273,19 +280,19 @@ class CharacterCreator extends BaseComponent {
       </div>
     `;
   }
-  
+
   renderSpeciesSelection() {
     // Grid of animal options with preview animations
     // Categories: Common, Exotic, Mythical
     // Search and filter functionality
   }
-  
+
   renderAppearanceCustomization() {
     // Color pickers with live preview
     // Size and body type sliders
     // Pattern selection with visual samples
   }
-  
+
   renderPersonalityQuiz() {
     // 5 fun questions to determine traits
     // Visual question format with character reactions
@@ -297,6 +304,7 @@ class CharacterCreator extends BaseComponent {
 ### Integration Points
 
 #### 1.5 Subject System Integration
+
 ```javascript
 // src/utils/characterIntegration.js
 class CharacterIntegration {
@@ -304,25 +312,25 @@ class CharacterIntegration {
     // If user has custom character, use it
     // Otherwise use default subject character
     // Apply subject-specific customizations
-    
-    const character = userCharacter ? 
-      this.adaptCharacterToSubject(userCharacter, subjectConfig) :
-      subjectConfig.character;
-      
+
+    const character = userCharacter
+      ? this.adaptCharacterToSubject(userCharacter, subjectConfig)
+      : subjectConfig.character;
+
     return {
       ...subjectConfig,
       character,
-      characterCustomized: !!userCharacter
+      characterCustomized: !!userCharacter,
     };
   }
-  
+
   static adaptCharacterToSubject(character, subject) {
     // Add subject-specific accessories
     // Modify appearance for subject context
     // Adjust personality display for subject
-    
+
     const adapted = { ...character };
-    
+
     switch (subject.name.toLowerCase()) {
       case 'science':
         adapted.accessories.head.push('lab-goggles');
@@ -334,7 +342,7 @@ class CharacterIntegration {
         break;
       // Additional subject adaptations
     }
-    
+
     return adapted;
   }
 }
@@ -343,6 +351,7 @@ class CharacterIntegration {
 ### Testing Strategy
 
 #### 1.6 Character Component Tests
+
 ```javascript
 // src/components/character/__tests__/CharacterRenderer.test.js
 describe('CharacterRenderer', () => {
@@ -350,36 +359,37 @@ describe('CharacterRenderer', () => {
     const character = createTestCharacter();
     const container = document.createElement('div');
     const renderer = new CharacterRenderer(container, character);
-    
+
     renderer.render();
-    
+
     expect(container.querySelector('svg')).toBeTruthy();
     expect(container.querySelector('.character-body')).toBeTruthy();
     expect(container.querySelector('.character-features')).toBeTruthy();
   });
-  
+
   test('applies colors correctly', () => {
     const character = createTestCharacter({
-      appearance: { colors: { primary: '#FF6B6B' } }
+      appearance: { colors: { primary: '#FF6B6B' } },
     });
     const renderer = new CharacterRenderer(document.createElement('div'), character);
-    
+
     renderer.render();
-    
+
     const bodyElement = renderer.svg.querySelector('.character-body');
     expect(bodyElement.getAttribute('fill')).toBe('#FF6B6B');
   });
-  
+
   test('handles missing data gracefully', () => {
     const invalidCharacter = {};
     const renderer = new CharacterRenderer(document.createElement('div'), invalidCharacter);
-    
+
     expect(() => renderer.render()).not.toThrow();
   });
 });
 ```
 
 ### Performance Requirements
+
 - Character generation: <2 seconds
 - Rendering: <500ms initial, <100ms updates
 - Storage operations: <200ms
@@ -390,6 +400,7 @@ describe('CharacterRenderer', () => {
 ## 📋 Phase 2: Personalization (Weeks 11-12)
 
 ### Goals
+
 - Advanced customization interface
 - Personality system implementation
 - Character animation engine
@@ -398,6 +409,7 @@ describe('CharacterRenderer', () => {
 ### Advanced Customization
 
 #### 2.1 Advanced Creator Interface
+
 ```javascript
 // src/components/character/AdvancedCreator.js
 class AdvancedCreator extends CharacterCreator {
@@ -407,7 +419,7 @@ class AdvancedCreator extends CharacterCreator {
     this.colorPalettes = this.loadColorPalettes();
     this.patternLibrary = this.loadPatterns();
   }
-  
+
   renderAdvancedAppearance() {
     return `
       <div class="advanced-customization">
@@ -428,7 +440,7 @@ class AdvancedCreator extends CharacterCreator {
       </div>
     `;
   }
-  
+
   renderColorCustomization() {
     return `
       <div class="color-section">
@@ -437,16 +449,24 @@ class AdvancedCreator extends CharacterCreator {
         <div class="color-presets">
           <h4>Quick Palettes</h4>
           <div class="palette-grid">
-            ${this.colorPalettes.map(palette => `
+            ${this.colorPalettes
+              .map(
+                palette => `
               <div class="color-palette" onclick="this.applyPalette('${palette.id}')">
                 <div class="palette-preview">
-                  ${palette.colors.map(color => `
+                  ${palette.colors
+                    .map(
+                      color => `
                     <div class="color-swatch" style="background: ${color}"></div>
-                  `).join('')}
+                  `
+                    )
+                    .join('')}
                 </div>
                 <span class="palette-name">${palette.name}</span>
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
         
@@ -487,6 +507,7 @@ class AdvancedCreator extends CharacterCreator {
 ```
 
 #### 2.2 Personality Engine
+
 ```javascript
 // src/services/character/PersonalityEngine.js
 class PersonalityEngine {
@@ -496,15 +517,15 @@ class PersonalityEngine {
     this.moodHistory = [];
     this.currentMood = 'neutral';
   }
-  
+
   calculatePersonality(quizResults) {
     const traits = {
       enthusiasm: 50,
       patience: 50,
       curiosity: 50,
-      playfulness: 50
+      playfulness: 50,
     };
-    
+
     // Process quiz results
     quizResults.forEach(result => {
       switch (result.questionType) {
@@ -523,22 +544,22 @@ class PersonalityEngine {
         // Additional question processing
       }
     });
-    
+
     // Normalize to 0-100 range
     Object.keys(traits).forEach(trait => {
       traits[trait] = Math.max(0, Math.min(100, traits[trait]));
     });
-    
+
     return traits;
   }
-  
+
   generateResponse(context) {
     const { situation, userAction, progress, subject } = context;
     const personality = this.character.personality.traits;
-    
+
     let responseType = 'neutral';
     let intensity = 0.5;
-    
+
     // Determine response based on personality
     if (situation === 'correct-answer') {
       responseType = 'celebration';
@@ -550,58 +571,51 @@ class PersonalityEngine {
       responseType = 'curiosity';
       intensity = personality.curiosity / 100;
     }
-    
+
     return this.getResponseTemplate(responseType, intensity, subject);
   }
-  
+
   getResponseTemplate(type, intensity, subject) {
     const templates = {
       celebration: {
         high: [
           "Fantastic! You're absolutely brilliant at this!",
           "Wow! That was amazing! You're really getting the hang of {subject}!",
-          "Incredible work! I'm so proud of you!"
+          "Incredible work! I'm so proud of you!",
         ],
         medium: [
-          "Great job! You got it right!",
+          'Great job! You got it right!',
           "Nice work! You're doing well!",
-          "Good thinking! Keep it up!"
+          'Good thinking! Keep it up!',
         ],
-        low: [
-          "Correct! Well done.",
-          "That's right! Good job.",
-          "You got it! Nice work."
-        ]
+        low: ['Correct! Well done.', "That's right! Good job.", 'You got it! Nice work.'],
       },
       encouragement: {
         high: [
-          "No worries at all! Mistakes help us learn and grow!",
+          'No worries at all! Mistakes help us learn and grow!',
           "That's totally fine! Every expert was once a beginner!",
-          "Don't worry! I believe in you - let's try again together!"
+          "Don't worry! I believe in you - let's try again together!",
         ],
         medium: [
           "That's okay! Let's look at this differently.",
-          "No problem! Learning takes practice.",
-          "That's alright! Want me to show you a hint?"
+          'No problem! Learning takes practice.',
+          "That's alright! Want me to show you a hint?",
         ],
-        low: [
-          "Let's try that again.",
-          "Not quite, but you're close!",
-          "Try once more!"
-        ]
-      }
+        low: ["Let's try that again.", "Not quite, but you're close!", 'Try once more!'],
+      },
     };
-    
+
     const intensityLevel = intensity > 0.7 ? 'high' : intensity > 0.4 ? 'medium' : 'low';
     const responses = templates[type][intensityLevel];
     const selectedResponse = responses[Math.floor(Math.random() * responses.length)];
-    
+
     return selectedResponse.replace('{subject}', subject);
   }
 }
 ```
 
 #### 2.3 Animation Engine
+
 ```javascript
 // src/services/character/AnimationEngine.js
 class AnimationEngine {
@@ -611,11 +625,11 @@ class AnimationEngine {
     this.animationQueue = [];
     this.isPlaying = false;
   }
-  
+
   playAnimation(animationType, options = {}) {
     const animation = this.getAnimation(animationType);
     if (!animation) return;
-    
+
     const animationId = this.generateAnimationId();
     const animationData = {
       id: animationId,
@@ -623,15 +637,15 @@ class AnimationEngine {
       duration: options.duration || animation.duration,
       startTime: performance.now(),
       loop: options.loop || false,
-      onComplete: options.onComplete || null
+      onComplete: options.onComplete || null,
     };
-    
+
     this.activeAnimations.set(animationId, animationData);
     this.startAnimationLoop();
-    
+
     return animationId;
   }
-  
+
   getAnimation(type) {
     const animations = {
       idle: {
@@ -639,8 +653,8 @@ class AnimationEngine {
         keyframes: [
           { time: 0, transform: 'translateY(0px) scale(1)', easing: 'ease-in-out' },
           { time: 0.5, transform: 'translateY(-2px) scale(1.01)', easing: 'ease-in-out' },
-          { time: 1, transform: 'translateY(0px) scale(1)', easing: 'ease-in-out' }
-        ]
+          { time: 1, transform: 'translateY(0px) scale(1)', easing: 'ease-in-out' },
+        ],
       },
       celebration: {
         duration: 1500,
@@ -650,8 +664,8 @@ class AnimationEngine {
           { time: 0.4, transform: 'scale(0.9) rotate(5deg)', easing: 'ease-in-out' },
           { time: 0.6, transform: 'scale(1.1) rotate(-3deg)', easing: 'ease-in-out' },
           { time: 0.8, transform: 'scale(0.95) rotate(2deg)', easing: 'ease-in-out' },
-          { time: 1, transform: 'scale(1) rotate(0deg)', easing: 'ease-in' }
-        ]
+          { time: 1, transform: 'scale(1) rotate(0deg)', easing: 'ease-in' },
+        ],
       },
       wave: {
         duration: 1000,
@@ -659,8 +673,8 @@ class AnimationEngine {
           { time: 0, transform: 'rotate(0deg)', part: 'arm' },
           { time: 0.25, transform: 'rotate(30deg)', part: 'arm' },
           { time: 0.75, transform: 'rotate(-20deg)', part: 'arm' },
-          { time: 1, transform: 'rotate(0deg)', part: 'arm' }
-        ]
+          { time: 1, transform: 'rotate(0deg)', part: 'arm' },
+        ],
       },
       learning: {
         duration: 800,
@@ -668,40 +682,40 @@ class AnimationEngine {
           { time: 0, transform: 'rotateY(0deg)', easing: 'ease-in-out' },
           { time: 0.3, transform: 'rotateY(10deg)', easing: 'ease-in-out' },
           { time: 0.7, transform: 'rotateY(-5deg)', easing: 'ease-in-out' },
-          { time: 1, transform: 'rotateY(0deg)', easing: 'ease-in-out' }
-        ]
-      }
+          { time: 1, transform: 'rotateY(0deg)', easing: 'ease-in-out' },
+        ],
+      },
     };
-    
+
     return animations[type];
   }
-  
+
   startAnimationLoop() {
     if (this.isPlaying) return;
-    
+
     this.isPlaying = true;
     const loop = () => {
       this.updateAnimations();
-      
+
       if (this.activeAnimations.size > 0) {
         requestAnimationFrame(loop);
       } else {
         this.isPlaying = false;
       }
     };
-    
+
     requestAnimationFrame(loop);
   }
-  
+
   updateAnimations() {
     const currentTime = performance.now();
-    
+
     this.activeAnimations.forEach((animation, id) => {
       const elapsed = currentTime - animation.startTime;
       const progress = Math.min(elapsed / animation.duration, 1);
-      
+
       this.applyAnimationFrame(animation, progress);
-      
+
       if (progress >= 1) {
         if (animation.loop) {
           animation.startTime = currentTime;
@@ -714,11 +728,11 @@ class AnimationEngine {
       }
     });
   }
-  
+
   applyAnimationFrame(animation, progress) {
     const animationData = this.getAnimation(animation.type);
     const currentFrame = this.interpolateKeyframes(animationData.keyframes, progress);
-    
+
     if (currentFrame.part) {
       const element = this.renderer.svg.querySelector(`.character-${currentFrame.part}`);
       if (element) {
@@ -734,6 +748,7 @@ class AnimationEngine {
 ### Social Features
 
 #### 2.4 Character Sharing System
+
 ```javascript
 // src/services/character/CharacterSharing.js
 class CharacterSharing {
@@ -743,34 +758,34 @@ class CharacterSharing {
       species: character.species,
       appearance: character.appearance,
       name: character.name,
-      personality: character.personality
+      personality: character.personality,
     };
-    
+
     // Compress and encode
     const compressed = this.compressData(shareData);
     const encoded = btoa(compressed);
-    
+
     return `LEARN-${encoded.substring(0, 12)}`;
   }
-  
+
   static generateCharacterCard(character) {
     const canvas = document.createElement('canvas');
     canvas.width = 400;
     canvas.height = 600;
     const ctx = canvas.getContext('2d');
-    
+
     // Draw character card background
     this.drawCardBackground(ctx);
-    
+
     // Render character
     this.drawCharacterOnCard(ctx, character);
-    
+
     // Add character info
     this.drawCharacterInfo(ctx, character);
-    
+
     return canvas.toDataURL('image/png');
   }
-  
+
   static async shareCharacter(character, method = 'url') {
     switch (method) {
       case 'url':
@@ -778,19 +793,19 @@ class CharacterSharing {
         const shareUrl = `${window.location.origin}/character?code=${shareCode}`;
         await navigator.clipboard.writeText(shareUrl);
         return { success: true, url: shareUrl };
-        
+
       case 'image':
         const cardImage = this.generateCharacterCard(character);
         // Trigger download
         this.downloadImage(cardImage, `${character.name}-character-card.png`);
         return { success: true, type: 'download' };
-        
+
       case 'social':
         if (navigator.share) {
           await navigator.share({
             title: `Meet ${character.name}!`,
             text: `Check out my character ${character.name} on Learnimals!`,
-            url: shareUrl
+            url: shareUrl,
           });
           return { success: true, type: 'native-share' };
         }
@@ -805,6 +820,7 @@ class CharacterSharing {
 ## 📋 Phase 3: Intelligence (Weeks 13-14)
 
 ### Goals
+
 - AI-powered dialogue system
 - Educational integration and adaptation
 - Character growth and evolution
@@ -813,6 +829,7 @@ class CharacterSharing {
 ### AI Dialogue System
 
 #### 3.1 Dialogue Engine
+
 ```javascript
 // src/services/character/DialogueEngine.js
 class DialogueEngine {
@@ -823,28 +840,28 @@ class DialogueEngine {
     this.contextMemory = new Map();
     this.responseTemplates = this.loadResponseTemplates();
   }
-  
+
   async generateResponse(input) {
     const context = this.analyzeContext(input);
     const personalityResponse = this.personality.generateResponse(context);
     const contextualResponse = this.addContextualElements(personalityResponse, context);
-    
+
     // Store in conversation history
     this.conversationHistory.push({
       timestamp: Date.now(),
       input: input,
       response: contextualResponse,
-      context: context
+      context: context,
     });
-    
+
     return {
       text: contextualResponse.text,
       animation: contextualResponse.suggestedAnimation,
       emotion: contextualResponse.emotion,
-      actionSuggestions: contextualResponse.actions
+      actionSuggestions: contextualResponse.actions,
     };
   }
-  
+
   analyzeContext(input) {
     return {
       type: this.classifyInputType(input),
@@ -853,10 +870,10 @@ class DialogueEngine {
       emotion: this.detectUserEmotion(input),
       progress: this.getUserProgress(input),
       timeOfDay: this.getTimeContext(),
-      previousInteractions: this.getRecentInteractions()
+      previousInteractions: this.getRecentInteractions(),
     };
   }
-  
+
   classifyInputType(input) {
     // Determine if input is:
     // - question about subject matter
@@ -864,76 +881,76 @@ class DialogueEngine {
     // - sharing excitement/frustration
     // - asking for encouragement
     // - wanting to play/explore
-    
+
     const patterns = {
       question: /\b(what|how|why|when|where|can you|could you)\b/i,
       help: /\b(help|stuck|don't understand|confused)\b/i,
       excitement: /\b(awesome|cool|amazing|love|fun)\b/i,
       frustration: /\b(hard|difficult|hate|boring|stupid)\b/i,
       encouragement: /\b(tired|sad|give up|can't do)\b/i,
-      play: /\b(play|game|fun|explore|try)\b/i
+      play: /\b(play|game|fun|explore|try)\b/i,
     };
-    
+
     for (const [type, pattern] of Object.entries(patterns)) {
       if (pattern.test(input.text || input)) {
         return type;
       }
     }
-    
+
     return 'general';
   }
-  
+
   addContextualElements(baseResponse, context) {
     let enhancedResponse = { ...baseResponse };
-    
+
     // Add subject-specific knowledge
     if (context.subject) {
       enhancedResponse = this.addSubjectContext(enhancedResponse, context.subject);
     }
-    
+
     // Adjust for time of day
     enhancedResponse = this.addTimeContext(enhancedResponse, context.timeOfDay);
-    
+
     // Consider user's emotional state
     enhancedResponse = this.adjustForEmotion(enhancedResponse, context.emotion);
-    
+
     // Add progress-aware elements
     enhancedResponse = this.addProgressContext(enhancedResponse, context.progress);
-    
+
     return enhancedResponse;
   }
-  
+
   addSubjectContext(response, subject) {
     const subjectPersonalities = {
       math: {
         vocabulary: ['calculate', 'solve', 'equation', 'pattern', 'logic'],
         approach: 'analytical',
-        analogies: ['puzzle pieces', 'building blocks', 'recipes']
+        analogies: ['puzzle pieces', 'building blocks', 'recipes'],
       },
       science: {
         vocabulary: ['discover', 'experiment', 'observe', 'hypothesis', 'wonder'],
         approach: 'experimental',
-        analogies: ['detective work', 'treasure hunting', 'magic tricks']
+        analogies: ['detective work', 'treasure hunting', 'magic tricks'],
       },
       reading: {
         vocabulary: ['story', 'adventure', 'character', 'journey', 'imagine'],
         approach: 'narrative',
-        analogies: ['doorways', 'adventures', 'conversations with authors']
-      }
+        analogies: ['doorways', 'adventures', 'conversations with authors'],
+      },
     };
-    
+
     const subjectData = subjectPersonalities[subject];
     if (subjectData) {
       // Incorporate subject-specific vocabulary
       response.text = this.enhanceWithVocabulary(response.text, subjectData.vocabulary);
-      
+
       // Add subject-appropriate analogies
       response.analogies = subjectData.analogies;
-      
+
       // Suggest subject-specific animations
       response.suggestedAnimation = this.getSubjectAnimation(subject, response.emotion);
     }
-    
+
     return response;
   }
 }
@@ -942,6 +959,7 @@ class DialogueEngine {
 ### Educational Integration
 
 #### 3.2 Learning Adaptation System
+
 ```javascript
 // src/services/character/LearningAdaptation.js
 class LearningAdaptation {
@@ -951,29 +969,29 @@ class LearningAdaptation {
     this.analytics = analyticsService;
     this.adaptationRules = this.loadAdaptationRules();
   }
-  
+
   async adaptToUserProgress(userId, subject) {
     const userProgress = await this.progressService.getUserProgress(userId, subject);
     const analyticsData = await this.analytics.getUserAnalytics(userId, subject);
-    
+
     const adaptations = {
       difficulty: this.adaptDifficulty(userProgress, analyticsData),
       encouragement: this.adaptEncouragement(userProgress, analyticsData),
       hints: this.adaptHintStyle(userProgress, analyticsData),
       pacing: this.adaptPacing(userProgress, analyticsData),
-      content: this.adaptContentType(userProgress, analyticsData)
+      content: this.adaptContentType(userProgress, analyticsData),
     };
-    
+
     return this.applyAdaptations(adaptations);
   }
-  
+
   adaptDifficulty(progress, analytics) {
     const successRate = analytics.successRate || 0;
     const averageTime = analytics.averageCompletionTime || 0;
     const currentLevel = progress.level || 1;
-    
+
     let recommendedDifficulty = currentLevel;
-    
+
     // Increase difficulty if user is succeeding quickly
     if (successRate > 0.8 && averageTime < analytics.expectedTime * 0.7) {
       recommendedDifficulty = Math.min(currentLevel + 1, 10);
@@ -982,23 +1000,23 @@ class LearningAdaptation {
     else if (successRate < 0.4 || averageTime > analytics.expectedTime * 1.5) {
       recommendedDifficulty = Math.max(currentLevel - 1, 1);
     }
-    
+
     return {
       current: currentLevel,
       recommended: recommendedDifficulty,
-      reasoning: this.generateDifficultyReasoning(successRate, averageTime)
+      reasoning: this.generateDifficultyReasoning(successRate, averageTime),
     };
   }
-  
+
   adaptEncouragement(progress, analytics) {
     const frustrationLevel = analytics.frustrationIndicators || 0;
     const mistakePattern = analytics.commonMistakes || [];
     const personalityTraits = this.character.personality.traits;
-    
+
     let encouragementStyle = 'balanced';
     let frequency = 'normal';
     let intensity = personalityTraits.enthusiasm / 100;
-    
+
     // High frustration - increase support
     if (frustrationLevel > 0.7) {
       encouragementStyle = 'supportive';
@@ -1011,63 +1029,63 @@ class LearningAdaptation {
       frequency = 'high';
       intensity = Math.min(intensity + 0.2, 1.0);
     }
-    
+
     return {
       style: encouragementStyle,
       frequency: frequency,
       intensity: intensity,
-      focusAreas: mistakePattern.slice(0, 3) // Top 3 areas to encourage
+      focusAreas: mistakePattern.slice(0, 3), // Top 3 areas to encourage
     };
   }
-  
+
   adaptContentType(progress, analytics) {
     const learningStyle = analytics.preferredLearningStyle || 'mixed';
     const engagementByType = analytics.engagementByContentType || {};
-    
+
     // Rank content types by engagement
     const rankedTypes = Object.entries(engagementByType)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .map(([type]) => type);
-    
+
     return {
       preferred: rankedTypes.slice(0, 2),
       avoid: rankedTypes.slice(-1),
       learningStyle: learningStyle,
-      recommendations: this.generateContentRecommendations(rankedTypes, learningStyle)
+      recommendations: this.generateContentRecommendations(rankedTypes, learningStyle),
     };
   }
-  
+
   generatePersonalizedHints(problem, userHistory) {
     const hintStyle = this.character.personality.traits.patience > 70 ? 'gentle' : 'direct';
     const complexity = userHistory.averageSuccessRate > 0.7 ? 'detailed' : 'simple';
-    
+
     const hints = {
       gentle: {
         simple: [
           "Let's think about this step by step together...",
-          "What do you notice about this problem?",
-          "Can you find a pattern here?"
+          'What do you notice about this problem?',
+          'Can you find a pattern here?',
         ],
         detailed: [
-          "This reminds me of something we learned before. What connections do you see?",
+          'This reminds me of something we learned before. What connections do you see?',
           "Let's break this down into smaller pieces and tackle each one.",
-          "What strategies have worked for you with similar problems?"
-        ]
+          'What strategies have worked for you with similar problems?',
+        ],
       },
       direct: {
         simple: [
-          "Try looking at the first part of this problem.",
-          "Remember the rule we learned about this type of question.",
-          "Focus on the key information given."
+          'Try looking at the first part of this problem.',
+          'Remember the rule we learned about this type of question.',
+          'Focus on the key information given.',
         ],
         detailed: [
-          "Apply the strategy we used in the previous example.",
-          "Consider using the method that worked well for you before.",
-          "Think about the underlying concept here and how it applies."
-        ]
-      }
+          'Apply the strategy we used in the previous example.',
+          'Consider using the method that worked well for you before.',
+          'Think about the underlying concept here and how it applies.',
+        ],
+      },
     };
-    
+
     return hints[hintStyle][complexity];
   }
 }
@@ -1076,6 +1094,7 @@ class LearningAdaptation {
 ### Character Evolution
 
 #### 3.3 Evolution System
+
 ```javascript
 // src/services/character/EvolutionSystem.js
 class EvolutionSystem {
@@ -1085,29 +1104,29 @@ class EvolutionSystem {
     this.evolutionStages = this.loadEvolutionStages();
     this.achievements = this.loadAchievements();
   }
-  
+
   async checkForEvolution(userId) {
     const totalProgress = await this.progressService.getTotalProgress(userId);
     const currentStage = this.character.progression.evolutionStage;
     const nextStage = this.getNextEvolutionStage(currentStage);
-    
+
     if (nextStage && this.meetsEvolutionRequirements(totalProgress, nextStage)) {
       return await this.evolveCharacter(nextStage, totalProgress);
     }
-    
+
     return null;
   }
-  
+
   getNextEvolutionStage(currentStage) {
     const stages = ['baby', 'child', 'teen', 'adult', 'master'];
     const currentIndex = stages.indexOf(currentStage);
-    
+
     return currentIndex < stages.length - 1 ? stages[currentIndex + 1] : null;
   }
-  
+
   meetsEvolutionRequirements(progress, targetStage) {
     const requirements = this.evolutionStages[targetStage];
-    
+
     return (
       progress.totalExperience >= requirements.experienceRequired &&
       progress.subjectsCompleted >= requirements.subjectsRequired &&
@@ -1115,49 +1134,49 @@ class EvolutionSystem {
       progress.daysActive >= requirements.daysActiveRequired
     );
   }
-  
+
   async evolveCharacter(newStage, progress) {
     const evolution = {
       fromStage: this.character.progression.evolutionStage,
       toStage: newStage,
       timestamp: Date.now(),
-      triggerProgress: progress
+      triggerProgress: progress,
     };
-    
+
     // Update character data
     this.character.progression.evolutionStage = newStage;
-    
+
     // Unlock new features
     const newFeatures = this.evolutionStages[newStage].unlockedFeatures;
     this.character.progression.unlockedFeatures.push(...newFeatures);
-    
+
     // Enhance appearance options
     const newAppearanceOptions = this.evolutionStages[newStage].appearanceOptions;
     this.character.appearance = { ...this.character.appearance, ...newAppearanceOptions };
-    
+
     // Update personality growth
     this.enhancePersonalityTraits(newStage);
-    
+
     // Generate evolution animation
     const evolutionAnimation = this.createEvolutionAnimation(evolution);
-    
+
     return {
       evolution,
       animations: evolutionAnimation,
       newFeatures: newFeatures,
-      celebrationText: this.generateEvolutionMessage(evolution)
+      celebrationText: this.generateEvolutionMessage(evolution),
     };
   }
-  
+
   enhancePersonalityTraits(newStage) {
     const enhancements = this.evolutionStages[newStage].personalityEnhancements;
-    
+
     Object.entries(enhancements).forEach(([trait, boost]) => {
       const currentValue = this.character.personality.traits[trait];
       this.character.personality.traits[trait] = Math.min(100, currentValue + boost);
     });
   }
-  
+
   createEvolutionAnimation(evolution) {
     return {
       type: 'evolution',
@@ -1166,49 +1185,49 @@ class EvolutionSystem {
         {
           name: 'preparation',
           duration: 500,
-          effects: ['glow', 'sparkles']
+          effects: ['glow', 'sparkles'],
         },
         {
           name: 'transformation',
           duration: 2000,
-          effects: ['size-growth', 'color-enhancement', 'feature-unlock']
+          effects: ['size-growth', 'color-enhancement', 'feature-unlock'],
         },
         {
           name: 'celebration',
           duration: 500,
-          effects: ['confetti', 'celebration-dance', 'sound-fanfare']
-        }
-      ]
+          effects: ['confetti', 'celebration-dance', 'sound-fanfare'],
+        },
+      ],
     };
   }
-  
+
   generateEvolutionMessage(evolution) {
     const messages = {
       'baby-to-child': [
         "Look how much you've grown! Your character is becoming more confident in their learning journey!",
-        "Amazing progress! Your companion has evolved and is ready for bigger challenges!",
-        "Wonderful! Your character has grown wiser and is excited to learn even more with you!"
+        'Amazing progress! Your companion has evolved and is ready for bigger challenges!',
+        'Wonderful! Your character has grown wiser and is excited to learn even more with you!',
       ],
       'child-to-teen': [
-        "Incredible! Your character has become a true learning enthusiast!",
-        "Fantastic growth! Your companion now has access to advanced learning tools!",
-        "Outstanding! Your character has evolved into a skilled learning partner!"
+        'Incredible! Your character has become a true learning enthusiast!',
+        'Fantastic growth! Your companion now has access to advanced learning tools!',
+        'Outstanding! Your character has evolved into a skilled learning partner!',
       ],
       'teen-to-adult': [
-        "Remarkable achievement! Your character has mastered the fundamentals and is ready for expert-level learning!",
-        "Exceptional progress! Your companion has become a true learning mentor!",
-        "Extraordinary! Your character has evolved into a wise learning guide!"
+        'Remarkable achievement! Your character has mastered the fundamentals and is ready for expert-level learning!',
+        'Exceptional progress! Your companion has become a true learning mentor!',
+        'Extraordinary! Your character has evolved into a wise learning guide!',
       ],
       'adult-to-master': [
-        "Legendary accomplishment! Your character has achieved mastery and become a learning legend!",
-        "Ultimate evolution! Your companion has reached the pinnacle of learning excellence!",
-        "Mythical achievement! Your character has transcended to become a master of all learning!"
-      ]
+        'Legendary accomplishment! Your character has achieved mastery and become a learning legend!',
+        'Ultimate evolution! Your companion has reached the pinnacle of learning excellence!',
+        'Mythical achievement! Your character has transcended to become a master of all learning!',
+      ],
     };
-    
+
     const key = `${evolution.fromStage}-to-${evolution.toStage}`;
-    const messageArray = messages[key] || ["Your character has evolved! Congratulations!"];
-    
+    const messageArray = messages[key] || ['Your character has evolved! Congratulations!'];
+
     return messageArray[Math.floor(Math.random() * messageArray.length)];
   }
 }
@@ -1219,6 +1238,7 @@ class EvolutionSystem {
 ## 📋 Phase 4: Advanced Features (Weeks 15-16)
 
 ### Goals
+
 - AR/VR character interactions
 - Voice synthesis and recognition
 - Advanced social features
@@ -1227,6 +1247,7 @@ class EvolutionSystem {
 ### AR Implementation
 
 #### 4.1 AR Character System
+
 ```javascript
 // src/services/character/ARCharacterSystem.js
 class ARCharacterSystem {
@@ -1236,10 +1257,10 @@ class ARCharacterSystem {
     this.sceneManager = null;
     this.isARSupported = this.checkARSupport();
   }
-  
+
   async checkARSupport() {
     if (!navigator.xr) return false;
-    
+
     try {
       const supported = await navigator.xr.isSessionSupported('immersive-ar');
       return supported;
@@ -1248,86 +1269,91 @@ class ARCharacterSystem {
       return false;
     }
   }
-  
+
   async initializeAR() {
     if (!this.isARSupported) {
       throw new Error('AR not supported on this device');
     }
-    
+
     try {
       this.arSession = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['local', 'hit-test'],
         optionalFeatures: ['dom-overlay'],
-        domOverlay: { root: document.getElementById('ar-overlay') }
+        domOverlay: { root: document.getElementById('ar-overlay') },
       });
-      
+
       await this.setupARScene();
       this.startARRenderLoop();
-      
+
       return true;
     } catch (error) {
       console.error('Failed to initialize AR:', error);
       throw error;
     }
   }
-  
+
   async setupARScene() {
     // Initialize Three.js scene for AR
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
     this.renderer = new THREE.WebGLRenderer({ alpha: true });
-    
+
     // Load character 3D model
     const characterModel = await this.create3DCharacterModel();
     this.scene.add(characterModel);
-    
+
     // Setup lighting for AR
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     this.scene.add(ambientLight);
-    
+
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(0, 1, 0);
     this.scene.add(directionalLight);
   }
-  
+
   async create3DCharacterModel() {
     // Convert SVG character to 3D representation
     const geometry = this.generateCharacterGeometry();
     const materials = this.generateCharacterMaterials();
-    
+
     const characterGroup = new THREE.Group();
-    
+
     // Create body parts
     const body = new THREE.Mesh(geometry.body, materials.body);
     const head = new THREE.Mesh(geometry.head, materials.head);
     const accessories = this.createAccessories();
-    
+
     characterGroup.add(body, head, ...accessories);
-    
+
     // Add animation mixer
     this.mixer = new THREE.AnimationMixer(characterGroup);
     this.loadCharacterAnimations();
-    
+
     return characterGroup;
   }
-  
+
   generateCharacterGeometry() {
     const species = this.character.species.primary;
     const size = this.character.appearance.size;
-    
+
     // Procedural geometry generation based on character data
     const geometries = {
       body: this.createBodyGeometry(species, size),
       head: this.createHeadGeometry(species, size),
-      limbs: this.createLimbGeometry(species, size)
+      limbs: this.createLimbGeometry(species, size),
     };
-    
+
     return geometries;
   }
-  
+
   placeCharacterInAR(hitTestResult) {
     if (!this.characterModel) return;
-    
+
     // Position character at hit test location
     const pose = hitTestResult.getPose(this.referenceSpace);
     this.characterModel.position.set(
@@ -1335,27 +1361,27 @@ class ARCharacterSystem {
       pose.transform.position.y,
       pose.transform.position.z
     );
-    
+
     // Orient character to face user
     const userPosition = this.camera.position;
     this.characterModel.lookAt(userPosition);
-    
+
     // Play placement animation
     this.playARAnimation('appear');
   }
-  
+
   handleARInteraction(gesture) {
     switch (gesture.type) {
       case 'tap':
         this.playARAnimation('greet');
         this.triggerDialogue('ar-greeting');
         break;
-        
+
       case 'wave':
         this.playARAnimation('wave-back');
         this.triggerDialogue('ar-wave-response');
         break;
-        
+
       case 'pinch':
         // Scale character
         const newScale = Math.max(0.5, Math.min(2.0, gesture.scale));
@@ -1369,6 +1395,7 @@ class ARCharacterSystem {
 ### Voice System
 
 #### 4.2 Voice Synthesis and Recognition
+
 ```javascript
 // src/services/character/VoiceSystem.js
 class VoiceSystem {
@@ -1379,125 +1406,125 @@ class VoiceSystem {
     this.voiceProfile = this.createVoiceProfile();
     this.isListening = false;
   }
-  
+
   createVoiceProfile() {
     const personality = this.character.personality.traits;
     const species = this.character.species.primary;
-    
+
     return {
       pitch: this.calculateVoicePitch(personality, species),
       rate: this.calculateVoiceRate(personality),
       volume: 0.8,
       language: 'en-US',
-      accent: this.selectVoiceAccent(personality, species)
+      accent: this.selectVoiceAccent(personality, species),
     };
   }
-  
+
   calculateVoicePitch(personality, species) {
     let basePitch = 1.0;
-    
+
     // Adjust based on species
     const speciesPitchMap = {
-      'bird': 1.3,
-      'cat': 1.1,
-      'dog': 0.9,
-      'bear': 0.7,
-      'elephant': 0.6,
-      'mouse': 1.5
+      bird: 1.3,
+      cat: 1.1,
+      dog: 0.9,
+      bear: 0.7,
+      elephant: 0.6,
+      mouse: 1.5,
     };
-    
+
     basePitch = speciesPitchMap[species] || 1.0;
-    
+
     // Modify based on personality
     if (personality.enthusiasm > 70) basePitch += 0.2;
     if (personality.playfulness > 70) basePitch += 0.1;
     if (personality.patience > 70) basePitch -= 0.1;
-    
+
     return Math.max(0.5, Math.min(2.0, basePitch));
   }
-  
+
   calculateVoiceRate(personality) {
     let baseRate = 1.0;
-    
+
     if (personality.enthusiasm > 70) baseRate += 0.2;
     if (personality.patience > 70) baseRate -= 0.2;
     if (personality.curiosity > 70) baseRate += 0.1;
-    
+
     return Math.max(0.5, Math.min(1.5, baseRate));
   }
-  
+
   async speak(text, options = {}) {
     if (!this.synthesis) {
       console.warn('Speech synthesis not supported');
       return false;
     }
-    
+
     const utterance = new SpeechSynthesisUtterance(text);
-    
+
     // Apply voice profile
     utterance.pitch = options.pitch || this.voiceProfile.pitch;
     utterance.rate = options.rate || this.voiceProfile.rate;
     utterance.volume = options.volume || this.voiceProfile.volume;
-    
+
     // Select appropriate voice
     const voices = this.synthesis.getVoices();
     const selectedVoice = this.selectBestVoice(voices, options.preferredGender);
     if (selectedVoice) {
       utterance.voice = selectedVoice;
     }
-    
+
     // Add emotion processing
     if (options.emotion) {
       this.applyEmotionToSpeech(utterance, options.emotion);
     }
-    
+
     // Add SSML-like processing for emphasis
     const processedText = this.processSpeechMarkup(text);
     utterance.text = processedText;
-    
-    return new Promise((resolve) => {
+
+    return new Promise(resolve => {
       utterance.onend = () => resolve(true);
       utterance.onerror = () => resolve(false);
-      
+
       this.synthesis.speak(utterance);
     });
   }
-  
+
   initializeRecognition() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       console.warn('Speech recognition not supported');
       return null;
     }
-    
+
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
+
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
-    
-    recognition.onresult = (event) => {
+
+    recognition.onresult = event => {
       const result = event.results[event.results.length - 1];
       if (result.isFinal) {
         this.handleSpeechInput(result[0].transcript);
       }
     };
-    
-    recognition.onerror = (event) => {
+
+    recognition.onerror = event => {
       console.error('Speech recognition error:', event.error);
       this.isListening = false;
     };
-    
+
     recognition.onend = () => {
       this.isListening = false;
     };
-    
+
     return recognition;
   }
-  
+
   startListening() {
     if (!this.recognition || this.isListening) return false;
-    
+
     try {
       this.isListening = true;
       this.recognition.start();
@@ -1508,40 +1535,40 @@ class VoiceSystem {
       return false;
     }
   }
-  
+
   stopListening() {
     if (this.recognition && this.isListening) {
       this.recognition.stop();
       this.isListening = false;
     }
   }
-  
+
   async handleSpeechInput(transcript) {
     // Process the speech input
     const processedInput = {
       text: transcript,
       timestamp: Date.now(),
       confidence: this.getConfidenceScore(transcript),
-      type: 'voice'
+      type: 'voice',
     };
-    
+
     // Generate character response
     const dialogueEngine = this.character.getDialogueEngine();
     const response = await dialogueEngine.generateResponse(processedInput);
-    
+
     // Speak the response
     await this.speak(response.text, {
-      emotion: response.emotion
+      emotion: response.emotion,
     });
-    
+
     // Trigger visual animation
     if (response.animation) {
       this.character.playAnimation(response.animation);
     }
-    
+
     return response;
   }
-  
+
   processSpeechMarkup(text) {
     // Process custom markup for speech enhancement
     return text
@@ -1551,7 +1578,7 @@ class VoiceSystem {
       .replace(/\[excitement\]/g, '<prosody rate="fast" pitch="high">') // [excitement]
       .replace(/\[\/excitement\]/g, '</prosody>'); // [/excitement]
   }
-  
+
   applyEmotionToSpeech(utterance, emotion) {
     const emotionMods = {
       happy: { pitch: 0.2, rate: 0.1 },
@@ -1559,9 +1586,9 @@ class VoiceSystem {
       sad: { pitch: -0.2, rate: -0.2 },
       calm: { pitch: -0.1, rate: -0.1 },
       surprised: { pitch: 0.4, rate: 0.0 },
-      encouraging: { pitch: 0.1, rate: -0.1 }
+      encouraging: { pitch: 0.1, rate: -0.1 },
     };
-    
+
     const mods = emotionMods[emotion];
     if (mods) {
       utterance.pitch = Math.max(0.5, Math.min(2.0, utterance.pitch + mods.pitch));
@@ -1574,6 +1601,7 @@ class VoiceSystem {
 ### Social Platform
 
 #### 4.3 Character Social Network
+
 ```javascript
 // src/services/character/SocialNetwork.js
 class CharacterSocialNetwork {
@@ -1583,7 +1611,7 @@ class CharacterSocialNetwork {
     this.friendRequests = new Map();
     this.socialEvents = [];
   }
-  
+
   async shareCharacterToGallery(character, shareOptions = {}) {
     const shareData = {
       id: this.generateShareId(),
@@ -1595,66 +1623,61 @@ class CharacterSocialNetwork {
       tags: shareOptions.tags || [],
       description: shareOptions.description || '',
       isPublic: shareOptions.isPublic !== false,
-      allowRemix: shareOptions.allowRemix !== false
+      allowRemix: shareOptions.allowRemix !== false,
     };
-    
+
     // Store in gallery
     this.characterGallery.set(shareData.id, shareData);
-    
+
     // Generate share card
     const shareCard = await this.generateShareCard(shareData);
-    
+
     return {
       shareId: shareData.id,
       shareUrl: `${window.location.origin}/gallery/${shareData.id}`,
       shareCard: shareCard,
-      success: true
+      success: true,
     };
   }
-  
+
   async browseCharacterGallery(filters = {}) {
-    const allCharacters = Array.from(this.characterGallery.values())
-      .filter(char => char.isPublic);
-    
+    const allCharacters = Array.from(this.characterGallery.values()).filter(char => char.isPublic);
+
     // Apply filters
     let filtered = allCharacters;
-    
+
     if (filters.species) {
-      filtered = filtered.filter(char => 
-        char.character.species.primary === filters.species
-      );
+      filtered = filtered.filter(char => char.character.species.primary === filters.species);
     }
-    
+
     if (filters.tags && filters.tags.length > 0) {
-      filtered = filtered.filter(char =>
-        filters.tags.some(tag => char.tags.includes(tag))
-      );
+      filtered = filtered.filter(char => filters.tags.some(tag => char.tags.includes(tag)));
     }
-    
+
     if (filters.sortBy) {
       filtered = this.sortCharacters(filtered, filters.sortBy);
     }
-    
+
     // Paginate results
     const page = filters.page || 1;
     const pageSize = filters.pageSize || 20;
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
-    
+
     return {
       characters: filtered.slice(start, end),
       totalCount: filtered.length,
       page: page,
-      hasMore: end < filtered.length
+      hasMore: end < filtered.length,
     };
   }
-  
+
   async remixCharacter(originalId, modifications) {
     const original = this.characterGallery.get(originalId);
     if (!original || !original.allowRemix) {
       throw new Error('Character cannot be remixed');
     }
-    
+
     // Create new character based on original
     const remixedCharacter = {
       ...original.character,
@@ -1663,18 +1686,18 @@ class CharacterSocialNetwork {
       metadata: {
         ...original.character.metadata,
         remixedFrom: originalId,
-        remixedAt: Date.now()
-      }
+        remixedAt: Date.now(),
+      },
     };
-    
+
     // Validate remix (ensure it's sufficiently different)
     if (!this.isValidRemix(original.character, remixedCharacter)) {
       throw new Error('Remix must be significantly different from original');
     }
-    
+
     return remixedCharacter;
   }
-  
+
   async createCharacterPlaydate(hostCharacterId, invitedCharacterIds) {
     const playdate = {
       id: this.generatePlaydateId(),
@@ -1683,28 +1706,28 @@ class CharacterSocialNetwork {
       created: Date.now(),
       status: 'pending',
       activities: [],
-      chatHistory: []
+      chatHistory: [],
     };
-    
+
     // Send invitations
     const invitations = invitedCharacterIds.map(id => ({
       playdateId: playdate.id,
       invitedCharacter: id,
       status: 'pending',
-      expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+      expires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     }));
-    
+
     return {
       playdate,
       invitations,
-      joinUrl: `${window.location.origin}/playdate/${playdate.id}`
+      joinUrl: `${window.location.origin}/playdate/${playdate.id}`,
     };
   }
-  
+
   async startCollaborativeLearning(playdateId, activity) {
     const playdate = this.getPlaydate(playdateId);
     if (!playdate) throw new Error('Playdate not found');
-    
+
     const learningSession = {
       id: this.generateSessionId(),
       playdateId: playdateId,
@@ -1715,49 +1738,49 @@ class CharacterSocialNetwork {
       interactions: [],
       sharedWorkspace: {
         elements: [],
-        history: []
-      }
+        history: [],
+      },
     };
-    
+
     // Initialize progress tracking for each participant
     playdate.participants.forEach(participantId => {
       learningSession.progress.set(participantId, {
         score: 0,
         completed: 0,
         timeSpent: 0,
-        contributions: []
+        contributions: [],
       });
     });
-    
+
     return learningSession;
   }
-  
+
   generateShareCard(shareData) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const canvas = document.createElement('canvas');
       canvas.width = 600;
       canvas.height = 800;
       const ctx = canvas.getContext('2d');
-      
+
       // Draw background
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#667eea');
       gradient.addColorStop(1, '#764ba2');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // Draw character (simplified representation)
       this.drawCharacterOnCard(ctx, shareData.character, canvas.width / 2, 250);
-      
+
       // Add text information
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 32px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(shareData.character.name, canvas.width / 2, 480);
-      
+
       ctx.font = '24px Arial';
       ctx.fillText(`${shareData.character.species.primary}`, canvas.width / 2, 520);
-      
+
       if (shareData.description) {
         ctx.font = '18px Arial';
         const words = shareData.description.split(' ');
@@ -1775,11 +1798,11 @@ class CharacterSocialNetwork {
         });
         ctx.fillText(line, canvas.width / 2, y);
       }
-      
+
       // Add Learnimals branding
       ctx.font = '16px Arial';
       ctx.fillText('Created with Learnimals', canvas.width / 2, canvas.height - 40);
-      
+
       resolve(canvas.toDataURL('image/png'));
     });
   }
@@ -1793,6 +1816,7 @@ class CharacterSocialNetwork {
 ### Performance Optimization
 
 #### Database Schema Optimization
+
 ```sql
 -- IndexedDB Schema Design
 CREATE STORE characters (
@@ -1809,6 +1833,7 @@ CREATE INDEX idx_characters_modified ON characters(last_modified);
 ```
 
 #### Rendering Optimization
+
 ```javascript
 // Character rendering performance optimizations
 class OptimizedCharacterRenderer {
@@ -1818,11 +1843,11 @@ class OptimizedCharacterRenderer {
     this.animationQueue = [];
     this.isRendering = false;
   }
-  
+
   render(character, container) {
     // Use object pooling for SVG elements
     const svgElement = this.getSVGFromPool() || this.createNewSVG();
-    
+
     // Cache rendered parts
     const cacheKey = this.generateCacheKey(character);
     if (this.cache.has(cacheKey)) {
@@ -1831,10 +1856,10 @@ class OptimizedCharacterRenderer {
       this.renderFromScratch(svgElement, character);
       this.cache.set(cacheKey, this.extractCacheData(svgElement));
     }
-    
+
     container.appendChild(svgElement);
   }
-  
+
   optimizeAnimations() {
     // Batch animation updates
     if (this.animationQueue.length > 0 && !this.isRendering) {
@@ -1851,17 +1876,18 @@ class OptimizedCharacterRenderer {
 ### Security Considerations
 
 #### Data Validation
+
 ```javascript
 // Character data validation and sanitization
 class CharacterValidator {
   static validate(characterData) {
     const errors = [];
-    
+
     // Validate required fields
     if (!characterData.id || typeof characterData.id !== 'string') {
       errors.push('Invalid character ID');
     }
-    
+
     // Validate colors (prevent XSS through CSS injection)
     if (characterData.appearance?.colors) {
       Object.entries(characterData.appearance.colors).forEach(([key, color]) => {
@@ -1870,12 +1896,12 @@ class CharacterValidator {
         }
       });
     }
-    
+
     // Validate text fields (prevent script injection)
     if (characterData.name) {
       characterData.name = this.sanitizeText(characterData.name);
     }
-    
+
     // Validate numeric ranges
     if (characterData.personality?.traits) {
       Object.entries(characterData.personality.traits).forEach(([trait, value]) => {
@@ -1884,18 +1910,18 @@ class CharacterValidator {
         }
       });
     }
-    
+
     return {
       isValid: errors.length === 0,
       errors: errors,
-      sanitizedData: characterData
+      sanitizedData: characterData,
     };
   }
-  
+
   static isValidHexColor(color) {
     return /^#[0-9A-F]{6}$/i.test(color);
   }
-  
+
   static sanitizeText(text) {
     return text
       .replace(/[<>]/g, '') // Remove potential HTML tags
@@ -1909,6 +1935,7 @@ class CharacterValidator {
 ### Testing Strategy
 
 #### Unit Tests
+
 ```javascript
 // Example test suite
 describe('Character Generation System', () => {
@@ -1918,12 +1945,12 @@ describe('Character Generation System', () => {
       const renderer = new CharacterRenderer();
       expect(() => renderer.render(character)).not.toThrow();
     });
-    
+
     it('should handle invalid character data gracefully', () => {
       const renderer = new CharacterRenderer();
       expect(() => renderer.render({})).not.toThrow();
     });
-    
+
     it('should generate consistent output for same character', () => {
       const character = createTestCharacter();
       const renderer = new CharacterRenderer();
@@ -1932,7 +1959,7 @@ describe('Character Generation System', () => {
       expect(output1.outerHTML).toBe(output2.outerHTML);
     });
   });
-  
+
   describe('PersonalityEngine', () => {
     it('should generate appropriate responses based on traits', () => {
       const character = createTestCharacter({ personality: { enthusiasm: 90 } });
@@ -1945,6 +1972,7 @@ describe('Character Generation System', () => {
 ```
 
 #### Integration Tests
+
 ```javascript
 describe('Character Integration', () => {
   it('should integrate with subject template system', async () => {
@@ -1953,14 +1981,14 @@ describe('Character Integration', () => {
     const integrated = CharacterIntegration.extendSubjectTemplate(subject, character);
     expect(integrated.characterCustomized).toBe(true);
   });
-  
+
   it('should save and load characters correctly', async () => {
     const storage = new CharacterStorage();
     await storage.init();
-    
+
     const character = createTestCharacter();
     await storage.saveCharacter(character);
-    
+
     const loaded = await storage.loadCharacter(character.id);
     expect(loaded).toEqual(character);
   });
@@ -1974,24 +2002,28 @@ describe('Character Integration', () => {
 ### Key Performance Indicators
 
 #### Technical Metrics
+
 - **Character Generation Time**: Target <2 seconds
 - **Rendering Performance**: 60fps for animations
 - **Storage Efficiency**: <5MB per character
 - **Load Time Impact**: <200ms additional load time
 
 #### User Engagement Metrics
+
 - **Creation Completion Rate**: Target >80%
 - **Daily Character Interactions**: Track frequency
 - **Customization Usage**: Monitor feature adoption
 - **Character Evolution Rate**: Track progression
 
 #### Educational Impact Metrics
+
 - **Learning Engagement Increase**: Target +40%
 - **Activity Completion Rate**: With vs without characters
 - **Time on Task**: Character vs default experience
 - **Knowledge Retention**: Long-term impact assessment
 
 ### Analytics Implementation
+
 ```javascript
 // Character analytics tracking
 class CharacterAnalytics {
@@ -2000,26 +2032,26 @@ class CharacterAnalytics {
       species: characterData.species.primary,
       completion_time: completionTime,
       customization_depth: this.calculateCustomizationDepth(characterData),
-      user_age_group: this.getUserAgeGroup()
+      user_age_group: this.getUserAgeGroup(),
     });
   }
-  
+
   static trackCharacterInteraction(interaction) {
     analytics.track('character_interaction', {
       interaction_type: interaction.type,
       character_id: interaction.characterId,
       subject: interaction.subject,
       response_time: interaction.responseTime,
-      user_satisfaction: interaction.userRating
+      user_satisfaction: interaction.userRating,
     });
   }
-  
+
   static trackLearningImpact(beforeMetrics, afterMetrics) {
     analytics.track('learning_impact', {
       engagement_change: afterMetrics.engagement - beforeMetrics.engagement,
       completion_rate_change: afterMetrics.completionRate - beforeMetrics.completionRate,
       time_on_task_change: afterMetrics.timeOnTask - beforeMetrics.timeOnTask,
-      character_presence: true
+      character_presence: true,
     });
   }
 }
@@ -2030,12 +2062,14 @@ class CharacterAnalytics {
 ## 🚀 Deployment Strategy
 
 ### Rollout Plan
+
 1. **Alpha Testing** (Internal): Core team testing with 5 test characters
 2. **Beta Testing** (Limited): 100 users, basic character creation only
 3. **Gradual Rollout**: 25% → 50% → 75% → 100% of users
 4. **Feature Flags**: Enable advanced features progressively
 
 ### Performance Monitoring
+
 ```javascript
 // Performance monitoring for character system
 class CharacterPerformanceMonitor {
@@ -2043,23 +2077,27 @@ class CharacterPerformanceMonitor {
     performance.mark('character-render-start');
     // ... rendering code ...
     performance.mark('character-render-end');
-    
-    const measure = performance.measure('character-render', 'character-render-start', 'character-render-end');
-    
+
+    const measure = performance.measure(
+      'character-render',
+      'character-render-start',
+      'character-render-end'
+    );
+
     if (measure.duration > 500) {
       console.warn('Slow character rendering detected:', measure.duration);
       this.reportSlowRender(measure);
     }
   }
-  
+
   static monitorMemoryUsage() {
     if (performance.memory) {
       const memoryInfo = {
         used: performance.memory.usedJSHeapSize,
         total: performance.memory.totalJSHeapSize,
-        limit: performance.memory.jsHeapSizeLimit
+        limit: performance.memory.jsHeapSizeLimit,
       };
-      
+
       if (memoryInfo.used / memoryInfo.limit > 0.8) {
         console.warn('High memory usage detected:', memoryInfo);
         this.reportHighMemoryUsage(memoryInfo);
@@ -2074,12 +2112,14 @@ class CharacterPerformanceMonitor {
 ## 📝 Documentation Plan
 
 ### User Documentation
+
 - **Character Creation Guide**: Step-by-step tutorial
 - **Customization Tips**: Best practices for character design
 - **Troubleshooting**: Common issues and solutions
 - **Accessibility Guide**: Features for users with disabilities
 
 ### Developer Documentation
+
 - **API Reference**: Complete function and class documentation
 - **Architecture Guide**: System design and data flow
 - **Extension Guide**: How to add new character features

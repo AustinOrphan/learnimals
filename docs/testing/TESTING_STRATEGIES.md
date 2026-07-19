@@ -21,7 +21,7 @@ This guide outlines comprehensive testing strategies for the Learnimals platform
 ```
          /\
         /E2E\        (5%)  - Critical user journeys
-       /------\      
+       /------\
       /Integration\  (15%) - Component interactions
      /------------\
     /  Unit Tests  \ (80%) - Individual functions/components
@@ -51,24 +51,24 @@ export default defineConfig({
         ...configDefaults.coverage.exclude,
         'src/test/**',
         '**/*.config.js',
-        '**/mockData/**'
+        '**/mockData/**',
       ],
       thresholds: {
         branches: 80,
         functions: 80,
         lines: 80,
-        statements: 80
-      }
+        statements: 80,
+      },
     },
     testTimeout: 10000,
-    hookTimeout: 10000
+    hookTimeout: 10000,
   },
   resolve: {
     alias: {
       '@': '/src',
-      '@test': '/src/test'
-    }
-  }
+      '@test': '/src/test',
+    },
+  },
 });
 ```
 
@@ -114,14 +114,14 @@ global.TestUtils = {
       };
       check();
     });
-  }
+  },
 };
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn()
+  disconnect: vi.fn(),
 }));
 
 // Mock matchMedia
@@ -133,8 +133,8 @@ Object.defineProperty(window, 'matchMedia', {
     onchange: null,
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
-  }))
+    dispatchEvent: vi.fn(),
+  })),
 });
 ```
 
@@ -203,7 +203,7 @@ describe('validators', () => {
       ['invalid@', false],
       ['', false],
       [null, false],
-      [undefined, false]
+      [undefined, false],
     ])('validateEmail(%s) returns %s', (input, expected) => {
       expect(validateEmail(input)).toBe(expected);
     });
@@ -248,7 +248,7 @@ describe('ApiService', () => {
     it('makes GET request with correct headers', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ data: 'test' })
+        json: async () => ({ data: 'test' }),
       });
 
       const result = await apiService.get('/users');
@@ -258,8 +258,8 @@ describe('ApiService', () => {
         expect.objectContaining({
           method: 'GET',
           headers: expect.objectContaining({
-            'Content-Type': 'application/json'
-          })
+            'Content-Type': 'application/json',
+          }),
         })
       );
       expect(result).toEqual({ data: 'test' });
@@ -269,7 +269,7 @@ describe('ApiService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
         status: 404,
-        statusText: 'Not Found'
+        statusText: 'Not Found',
       });
 
       await expect(apiService.get('/users')).rejects.toThrow('Not Found');
@@ -300,7 +300,7 @@ describe('Button', () => {
   it('renders with text', () => {
     const button = new Button({
       text: 'Click me',
-      onClick: vi.fn()
+      onClick: vi.fn(),
     });
 
     document.body.appendChild(button.render());
@@ -312,13 +312,13 @@ describe('Button', () => {
     const handleClick = vi.fn();
     const button = new Button({
       text: 'Click me',
-      onClick: handleClick
+      onClick: handleClick,
     });
 
     document.body.appendChild(button.render());
-    
+
     fireEvent.click(screen.getByRole('button'));
-    
+
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
@@ -327,14 +327,14 @@ describe('Button', () => {
     const button = new Button({
       text: 'Click me',
       onClick: handleClick,
-      disabled: true
+      disabled: true,
     });
 
     document.body.appendChild(button.render());
-    
+
     const buttonElement = screen.getByRole('button');
     expect(buttonElement).toBeDisabled();
-    
+
     fireEvent.click(buttonElement);
     expect(handleClick).not.toHaveBeenCalled();
   });
@@ -343,11 +343,11 @@ describe('Button', () => {
     const button = new Button({
       text: 'Click me',
       variant: 'primary',
-      size: 'large'
+      size: 'large',
     });
 
     document.body.appendChild(button.render());
-    
+
     const buttonElement = screen.getByRole('button');
     expect(buttonElement).toHaveClass('button--primary');
     expect(buttonElement).toHaveClass('button--large');
@@ -370,22 +370,22 @@ describe('Form', () => {
     const form = new Form({
       fields: [
         { name: 'email', type: 'email', required: true },
-        { name: 'password', type: 'password', required: true }
+        { name: 'password', type: 'password', required: true },
       ],
-      onSubmit: handleSubmit
+      onSubmit: handleSubmit,
     });
 
     document.body.appendChild(form.render());
-    
+
     // Submit without filling fields
     fireEvent.submit(screen.getByRole('form'));
-    
+
     // Check error messages appear
     await waitFor(() => {
       expect(screen.getByText('Email is required')).toBeInTheDocument();
       expect(screen.getByText('Password is required')).toBeInTheDocument();
     });
-    
+
     expect(handleSubmit).not.toHaveBeenCalled();
   });
 
@@ -394,25 +394,25 @@ describe('Form', () => {
     const form = new Form({
       fields: [
         { name: 'email', type: 'email', required: true },
-        { name: 'password', type: 'password', required: true }
+        { name: 'password', type: 'password', required: true },
       ],
-      onSubmit: handleSubmit
+      onSubmit: handleSubmit,
     });
 
     document.body.appendChild(form.render());
-    
+
     // Fill form
     const user = userEvent.setup();
     await user.type(screen.getByLabelText('Email'), 'test@example.com');
     await user.type(screen.getByLabelText('Password'), 'password123');
-    
+
     // Submit
     await user.click(screen.getByRole('button', { name: 'Submit' }));
-    
+
     await waitFor(() => {
       expect(handleSubmit).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'password123'
+        password: 'password123',
       });
     });
   });
@@ -420,37 +420,37 @@ describe('Form', () => {
   it('shows real-time validation', async () => {
     const form = new Form({
       fields: [
-        { 
-          name: 'email', 
-          type: 'email', 
+        {
+          name: 'email',
+          type: 'email',
           required: true,
-          validate: (value) => {
+          validate: value => {
             if (!value.includes('@')) {
               return 'Please enter a valid email';
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     document.body.appendChild(form.render());
-    
+
     const emailInput = screen.getByLabelText('Email');
     const user = userEvent.setup();
-    
+
     // Type invalid email
     await user.type(emailInput, 'invalid');
     fireEvent.blur(emailInput);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Please enter a valid email')).toBeInTheDocument();
     });
-    
+
     // Fix email
     await user.clear(emailInput);
     await user.type(emailInput, 'valid@email.com');
     fireEvent.blur(emailInput);
-    
+
     await waitFor(() => {
       expect(screen.queryByText('Please enter a valid email')).not.toBeInTheDocument();
     });
@@ -487,55 +487,53 @@ describe('Activity Flow Integration', () => {
     // Setup
     const container = document.createElement('div');
     document.body.appendChild(container);
-    
+
     await activityManager.loadActivity('math-basics', container);
-    
+
     // Start activity
     const startButton = screen.getByRole('button', { name: 'Start Activity' });
     fireEvent.click(startButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Question 1 of 5')).toBeInTheDocument();
     });
-    
+
     // Answer questions
     for (let i = 0; i < 5; i++) {
       const correctAnswer = screen.getByRole('button', { name: /correct/i });
       fireEvent.click(correctAnswer);
-      
+
       if (i < 4) {
         await waitFor(() => {
           expect(screen.getByText(`Question ${i + 2} of 5`)).toBeInTheDocument();
         });
       }
     }
-    
+
     // Check completion
     await waitFor(() => {
       expect(screen.getByText('Activity Complete!')).toBeInTheDocument();
       expect(screen.getByText('Score: 100%')).toBeInTheDocument();
     });
-    
+
     // Verify progress saved
     const progress = await progressService.getActivityProgress('math-basics');
     expect(progress).toMatchObject({
       completed: true,
       score: 100,
-      attempts: 1
+      attempts: 1,
     });
   });
 
   it('handles activity errors gracefully', async () => {
     // Simulate network error
-    vi.spyOn(activityManager, 'loadActivity').mockRejectedValueOnce(
-      new Error('Network error')
-    );
-    
+    vi.spyOn(activityManager, 'loadActivity').mockRejectedValueOnce(new Error('Network error'));
+
     const container = document.createElement('div');
     document.body.appendChild(container);
-    
+
     await activityManager.initialize('math-basics', container);
-    
+
     await waitFor(() => {
       expect(screen.getByText(/Unable to load activity/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Try Again' })).toBeInTheDocument();
@@ -565,9 +563,9 @@ describe('User Progress Integration', () => {
     userService = new UserService(mockDb);
     progressService = new ProgressService(mockDb);
     achievementService = new AchievementService(progressService);
-    
+
     // Connect services
-    progressService.on('progress:updated', (data) => {
+    progressService.on('progress:updated', data => {
       achievementService.checkAchievements(data.userId);
     });
   });
@@ -576,23 +574,23 @@ describe('User Progress Integration', () => {
     // Create user
     const user = await userService.createUser({
       name: 'Test User',
-      email: 'test@example.com'
+      email: 'test@example.com',
     });
-    
+
     // Complete activity
     await progressService.recordActivity(user.id, {
       activityId: 'math-basics',
       score: 80,
-      timeSpent: 300
+      timeSpent: 300,
     });
-    
+
     // Check achievement unlocked
     const achievements = await achievementService.getUserAchievements(user.id);
     expect(achievements).toContainEqual(
       expect.objectContaining({
         id: 'first-steps',
         name: 'First Steps',
-        unlockedAt: expect.any(Date)
+        unlockedAt: expect.any(Date),
       })
     );
   });
@@ -600,31 +598,31 @@ describe('User Progress Integration', () => {
   it('tracks progress across multiple activities', async () => {
     const user = await userService.createUser({
       name: 'Test User',
-      email: 'test@example.com'
+      email: 'test@example.com',
     });
-    
+
     // Complete multiple activities
     const activities = ['math-basics', 'math-advanced', 'science-intro'];
-    
+
     for (const activityId of activities) {
       await progressService.recordActivity(user.id, {
         activityId,
         score: 90,
-        timeSpent: 600
+        timeSpent: 600,
       });
     }
-    
+
     // Get overall progress
     const summary = await progressService.getUserSummary(user.id);
-    
+
     expect(summary).toMatchObject({
       totalActivities: 3,
       averageScore: 90,
       totalTimeSpent: 1800,
       subjectProgress: {
         math: { completed: 2, total: 10 },
-        science: { completed: 1, total: 8 }
-      }
+        science: { completed: 1, total: 8 },
+      },
     });
   });
 });
@@ -643,35 +641,32 @@ export default {
   timeout: 30000,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html'],
-    ['junit', { outputFile: 'test-results/junit.xml' }]
-  ],
+  reporter: [['html'], ['junit', { outputFile: 'test-results/junit.xml' }]],
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] }
+      use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'mobile',
-      use: { ...devices['iPhone 12'] }
-    }
+      use: { ...devices['iPhone 12'] },
+    },
   ],
   webServer: {
     command: 'npm run dev',
     port: 3000,
-    reuseExistingServer: !process.env.CI
-  }
+    reuseExistingServer: !process.env.CI,
+  },
 };
 ```
 
@@ -685,56 +680,56 @@ test.describe('User Journey', () => {
   test('new user completes onboarding and first activity', async ({ page }) => {
     // Navigate to app
     await page.goto('/');
-    
+
     // Check welcome screen
     await expect(page.locator('h1')).toContainText('Welcome to Learnimals');
-    
+
     // Start onboarding
     await page.click('button:has-text("Get Started")');
-    
+
     // Fill user info
     await page.fill('input[name="name"]', 'Test User');
     await page.fill('input[name="age"]', '10');
     await page.click('button:has-text("Next")');
-    
+
     // Select interests
     await page.click('label:has-text("Math")');
     await page.click('label:has-text("Science")');
     await page.click('button:has-text("Continue")');
-    
+
     // Complete onboarding
     await expect(page.locator('.welcome-message')).toContainText('Welcome, Test User!');
     await page.click('button:has-text("Start Learning")');
-    
+
     // Navigate to activities
     await expect(page).toHaveURL('/dashboard');
     await page.click('a:has-text("Activities")');
-    
+
     // Start math activity
     await page.click('.activity-card:has-text("Math Basics")');
     await page.click('button:has-text("Start Activity")');
-    
+
     // Complete activity
     await expect(page.locator('.question')).toBeVisible();
-    
+
     // Answer 5 questions
     for (let i = 0; i < 5; i++) {
       // Wait for question to load
       await page.waitForSelector('.answer-option');
-      
+
       // Select correct answer (marked with data attribute in test mode)
       await page.click('[data-correct="true"]');
-      
+
       // Wait for next question or completion
       if (i < 4) {
         await page.waitForSelector(`.question:has-text("Question ${i + 2}")`);
       }
     }
-    
+
     // Check completion screen
     await expect(page.locator('.completion-message')).toContainText('Great job!');
     await expect(page.locator('.score')).toContainText('100%');
-    
+
     // Verify progress saved
     await page.click('a:has-text("Progress")');
     await expect(page.locator('.progress-item:has-text("Math Basics")')).toContainText('Completed');
@@ -744,23 +739,23 @@ test.describe('User Journey', () => {
     // Load app online
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    
+
     // Go offline
     await context.setOffline(true);
-    
+
     // Navigate should still work
     await page.click('a:has-text("Activities")');
     await expect(page.locator('h1')).toContainText('Activities');
-    
+
     // Offline indicator should show
     await expect(page.locator('.offline-indicator')).toBeVisible();
-    
+
     // Cached content should be available
     await expect(page.locator('.activity-card')).toHaveCount.greaterThan(0);
-    
+
     // Go back online
     await context.setOffline(false);
-    
+
     // Offline indicator should hide
     await expect(page.locator('.offline-indicator')).not.toBeVisible();
   });
@@ -783,7 +778,7 @@ export class UserBuilder {
       email: 'test@example.com',
       age: 10,
       role: 'student',
-      createdAt: new Date()
+      createdAt: new Date(),
     };
   }
 
@@ -836,7 +831,7 @@ export class MockFactory {
       subject: 'math',
       difficulty: 'medium',
       questions: [],
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -850,7 +845,7 @@ export class MockFactory {
       attempts: 0,
       timeSpent: 0,
       lastAttempt: new Date(),
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -859,7 +854,7 @@ export class MockFactory {
       status: 200,
       ok: true,
       data,
-      ...overrides
+      ...overrides,
     };
   }
 
@@ -881,31 +876,30 @@ expect.extend({
     if (pass) {
       return {
         message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
-        pass: true
+        pass: true,
       };
     } else {
       return {
         message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
-        pass: false
+        pass: false,
       };
     }
   },
 
   toHaveBeenCalledWithMatch(received, expected) {
     const calls = received.mock.calls;
-    const pass = calls.some(call => 
-      call.some(arg => 
-        Object.keys(expected).every(key => arg[key] === expected[key])
-      )
+    const pass = calls.some(call =>
+      call.some(arg => Object.keys(expected).every(key => arg[key] === expected[key]))
     );
 
     return {
       pass,
-      message: () => pass
-        ? `expected function not to have been called with matching ${JSON.stringify(expected)}`
-        : `expected function to have been called with matching ${JSON.stringify(expected)}`
+      message: () =>
+        pass
+          ? `expected function not to have been called with matching ${JSON.stringify(expected)}`
+          : `expected function to have been called with matching ${JSON.stringify(expected)}`,
     };
-  }
+  },
 });
 
 // Usage
@@ -930,7 +924,7 @@ describe('LargeList Performance', () => {
     const items = Array.from({ length: 1000 }, (_, i) => ({
       id: i,
       name: `Item ${i}`,
-      value: Math.random()
+      value: Math.random(),
     }));
 
     const { duration, result } = await measureRender(() => {
@@ -948,18 +942,18 @@ describe('LargeList Performance', () => {
     container.appendChild(list.render());
 
     const measurements = [];
-    
+
     // Measure 10 rapid updates
     for (let i = 0; i < 10; i++) {
       const start = performance.now();
-      
+
       list.updateItems(
         Array.from({ length: 100 }, (_, j) => ({
           id: i * 100 + j,
-          name: `Item ${i * 100 + j}`
+          name: `Item ${i * 100 + j}`,
         }))
       );
-      
+
       const duration = performance.now() - start;
       measurements.push(duration);
     }
@@ -967,7 +961,7 @@ describe('LargeList Performance', () => {
     // Average update time should be under 20ms
     const avgDuration = measurements.reduce((a, b) => a + b) / measurements.length;
     expect(avgDuration).toBeLessThan(20);
-    
+
     // No update should take over 50ms
     expect(Math.max(...measurements)).toBeLessThan(50);
   });
@@ -997,9 +991,9 @@ export const debug = {
   // Take screenshot during test (Playwright)
   async screenshot(page, name) {
     if (process.env.DEBUG) {
-      await page.screenshot({ 
+      await page.screenshot({
         path: `test-screenshots/${name}.png`,
-        fullPage: true 
+        fullPage: true,
       });
     }
   },
@@ -1017,7 +1011,7 @@ export const debug = {
       // eslint-disable-next-line no-debugger
       debugger;
     }
-  }
+  },
 };
 
 // Usage in tests
@@ -1025,10 +1019,10 @@ import { debug } from '@test/utils/debug';
 
 test('complex interaction', async () => {
   // ... setup
-  
+
   debug.logDOM();
   await debug.pause(2000); // Pause to inspect
-  
+
   // ... assertions
 });
 ```
@@ -1055,79 +1049,79 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x]
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run unit tests
-      run: npm run test:unit
-    
-    - name: Upload coverage
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage/lcov.info
-        flags: unit
-        name: unit-tests-${{ matrix.node-version }}
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unit
+          name: unit-tests-${{ matrix.node-version }}
 
   integration-tests:
     runs-on: ubuntu-latest
     needs: unit-tests
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run integration tests
-      run: npm run test:integration
-      env:
-        CI: true
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          CI: true
 
   e2e-tests:
     runs-on: ubuntu-latest
     needs: unit-tests
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    
-    - name: Run E2E tests
-      run: npm run test:e2e
-    
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 ```
 
 ---
@@ -1135,6 +1129,7 @@ jobs:
 ## Testing Best Practices
 
 ### Do's
+
 - ✅ Write tests that are independent and can run in any order
 - ✅ Use descriptive test names that explain what is being tested
 - ✅ Follow the AAA pattern: Arrange, Act, Assert
@@ -1146,6 +1141,7 @@ jobs:
 - ✅ Clean up after tests (event listeners, timers, DOM)
 
 ### Don'ts
+
 - ❌ Don't test framework/library code
 - ❌ Don't use random data without seeding
 - ❌ Don't share state between tests
@@ -1160,6 +1156,7 @@ jobs:
 ## Testing Resources
 
 ### Tools
+
 - **Vitest**: Modern test runner
 - **Testing Library**: DOM testing utilities
 - **Playwright**: E2E testing
@@ -1167,16 +1164,18 @@ jobs:
 - **Faker.js**: Test data generation
 
 ### Documentation
+
 - [Vitest Documentation](https://vitest.dev/)
 - [Testing Library](https://testing-library.com/)
 - [Playwright Docs](https://playwright.dev/)
 - [Jest Matchers](https://jestjs.io/docs/expect)
 
 ### Books & Articles
+
 - "Test-Driven Development" by Kent Beck
 - "Growing Object-Oriented Software" by Freeman & Pryce
 - [Testing Best Practices](https://testingjavascript.com/)
 
 ---
 
-*Remember: Tests are not just about catching bugs, they're about designing better software and providing documentation for how your code should work.*
+_Remember: Tests are not just about catching bugs, they're about designing better software and providing documentation for how your code should work._

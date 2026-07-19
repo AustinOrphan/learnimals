@@ -11,6 +11,7 @@ This document provides detailed, actionable key steps for each development phase
 ### Week 1: Development Environment & Build Tools
 
 #### Step 1.1: Initialize Modern Build System
+
 **Priority**: Critical | **Duration**: 4 hours | **Dependencies**: None
 
 ```bash
@@ -21,6 +22,7 @@ npm install -D @vitest/coverage-v8 jsdom happy-dom
 ```
 
 **Key Tasks:**
+
 1. Create `vite.config.js` with proper aliases
 2. Set up development server configuration
 3. Configure build optimization settings
@@ -31,6 +33,7 @@ npm install -D @vitest/coverage-v8 jsdom happy-dom
 ---
 
 #### Step 1.2: Configure Testing Infrastructure
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Step 1.1
 
 ```javascript
@@ -46,25 +49,22 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        ...configDefaults.exclude,
-        'src/test/**',
-        '**/*.config.js'
-      ]
-    }
+      exclude: [...configDefaults.exclude, 'src/test/**', '**/*.config.js'],
+    },
   },
   resolve: {
     alias: {
       '@': '/src',
       '@components': '/src/components',
       '@utils': '/src/utils',
-      '@services': '/src/services'
-    }
-  }
+      '@services': '/src/services',
+    },
+  },
 });
 ```
 
 **Key Tasks:**
+
 1. Create test setup file with global mocks
 2. Configure coverage thresholds
 3. Set up test utilities directory structure
@@ -75,6 +75,7 @@ export default defineConfig({
 ---
 
 #### Step 1.3: Create Mock Factory System
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Step 1.2
 
 ```javascript
@@ -88,6 +89,7 @@ export { createMockActivity } from './activity.js';
 ```
 
 **Key Tasks:**
+
 1. Implement localStorage mock with full API
 2. Create fetch mock with response builder
 3. Build theme system mock
@@ -99,6 +101,7 @@ export { createMockActivity } from './activity.js';
 ---
 
 #### Step 1.4: Establish Code Quality Standards
+
 **Priority**: High | **Duration**: 4 hours | **Dependencies**: Step 1.1
 
 ```json
@@ -122,6 +125,7 @@ export { createMockActivity } from './activity.js';
 ```
 
 **Key Tasks:**
+
 1. Update ESLint configuration
 2. Add Prettier for formatting
 3. Configure husky pre-commit hooks
@@ -135,6 +139,7 @@ export { createMockActivity } from './activity.js';
 ### Week 2: Core Utility Testing
 
 #### Step 2.1: Test Theme System
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Step 1.3
 
 ```javascript
@@ -145,7 +150,7 @@ import { MockLocalStorage } from '@/test/factories';
 
 describe('ThemeManager', () => {
   let themeManager;
-  
+
   beforeEach(() => {
     MockLocalStorage.setup();
     document.body.innerHTML = '';
@@ -155,9 +160,9 @@ describe('ThemeManager', () => {
   test('initializes with system preference', () => {
     window.matchMedia = vi.fn().mockImplementation(query => ({
       matches: query === '(prefers-color-scheme: dark)',
-      addEventListener: vi.fn()
+      addEventListener: vi.fn(),
     }));
-    
+
     themeManager.init();
     expect(document.documentElement.dataset.theme).toBe('dark');
   });
@@ -167,6 +172,7 @@ describe('ThemeManager', () => {
 ```
 
 **Key Tasks:**
+
 1. Test theme initialization
 2. Test theme switching
 3. Test persistence
@@ -178,6 +184,7 @@ describe('ThemeManager', () => {
 ---
 
 #### Step 2.2: Test Template Loader
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 2.1
 
 ```javascript
@@ -186,9 +193,9 @@ describe('SubjectTemplateLoader', () => {
   test('loads and processes templates', async () => {
     const mockTemplate = '<h1>{{subjectName}}</h1>';
     MockFetch.setup({
-      '/src/templates/subject.html': mockTemplate
+      '/src/templates/subject.html': mockTemplate,
     });
-    
+
     const result = await SubjectTemplateLoader.load('math');
     expect(result).toContain('<h1>Math</h1>');
   });
@@ -196,6 +203,7 @@ describe('SubjectTemplateLoader', () => {
 ```
 
 **Key Tasks:**
+
 1. Test template loading
 2. Test placeholder replacement
 3. Test caching mechanism
@@ -207,9 +215,11 @@ describe('SubjectTemplateLoader', () => {
 ---
 
 #### Step 2.3: Test Common Utilities
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 2.1
 
 **Key Tasks:**
+
 1. Test debounce/throttle functions
 2. Test DOM utilities
 3. Test data formatting functions
@@ -221,9 +231,11 @@ describe('SubjectTemplateLoader', () => {
 ---
 
 #### Step 2.4: Test Logger System
+
 **Priority**: Medium | **Duration**: 3 hours | **Dependencies**: Step 2.1
 
 **Key Tasks:**
+
 1. Test log levels
 2. Test log formatting
 3. Test production mode behavior
@@ -237,6 +249,7 @@ describe('SubjectTemplateLoader', () => {
 ### Week 3: Component Testing
 
 #### Step 3.1: Create Component Test Utilities
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Week 2
 
 ```javascript
@@ -247,14 +260,14 @@ export function renderComponent(html, options = {}) {
   const container = document.createElement('div');
   container.innerHTML = html;
   document.body.appendChild(container);
-  
+
   if (options.theme) {
     document.documentElement.dataset.theme = options.theme;
   }
-  
+
   return {
     container,
-    cleanup: () => container.remove()
+    cleanup: () => container.remove(),
   };
 }
 
@@ -265,6 +278,7 @@ export function fireEvent(element, event) {
 ```
 
 **Key Tasks:**
+
 1. Create render utilities
 2. Build event simulation helpers
 3. Add async testing utilities
@@ -276,9 +290,11 @@ export function fireEvent(element, event) {
 ---
 
 #### Step 3.2: Test Card Component
+
 **Priority**: High | **Duration**: 4 hours | **Dependencies**: Step 3.1
 
 **Key Tasks:**
+
 1. Test rendering variations
 2. Test click handling
 3. Test theme integration
@@ -290,9 +306,11 @@ export function fireEvent(element, event) {
 ---
 
 #### Step 3.3: Test Modal Component
+
 **Priority**: High | **Duration**: 4 hours | **Dependencies**: Step 3.1
 
 **Key Tasks:**
+
 1. Test open/close behavior
 2. Test focus management
 3. Test keyboard handling
@@ -304,9 +322,11 @@ export function fireEvent(element, event) {
 ---
 
 #### Step 3.4: Test Form Components
+
 **Priority**: Medium | **Duration**: 6 hours | **Dependencies**: Step 3.1
 
 **Key Tasks:**
+
 1. Test input validation
 2. Test form submission
 3. Test error display
@@ -320,6 +340,7 @@ export function fireEvent(element, event) {
 ### Week 4: CI/CD Pipeline
 
 #### Step 4.1: GitHub Actions Setup
+
 **Priority**: Critical | **Duration**: 4 hours | **Dependencies**: Week 3
 
 ```yaml
@@ -341,21 +362,22 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Lint
         run: npm run lint
-      
+
       - name: Test
         run: npm run test:coverage
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
 ```
 
 **Key Tasks:**
+
 1. Create workflow file
 2. Configure test jobs
 3. Set up coverage reporting
@@ -367,6 +389,7 @@ jobs:
 ---
 
 #### Step 4.2: Performance Monitoring
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 4.1
 
 ```yaml
@@ -389,6 +412,7 @@ jobs:
 ```
 
 **Key Tasks:**
+
 1. Set up Lighthouse CI
 2. Configure performance budgets
 3. Add bundle size tracking
@@ -400,9 +424,11 @@ jobs:
 ---
 
 #### Step 4.3: Documentation Generation
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 4.1
 
 **Key Tasks:**
+
 1. Set up JSDoc generation
 2. Create documentation templates
 3. Add API documentation
@@ -414,9 +440,11 @@ jobs:
 ---
 
 #### Step 4.4: Release Automation
+
 **Priority**: Low | **Duration**: 3 hours | **Dependencies**: Step 4.1
 
 **Key Tasks:**
+
 1. Set up semantic versioning
 2. Create changelog generation
 3. Configure release workflow
@@ -432,6 +460,7 @@ jobs:
 ### Week 5: Progress Tracking Foundation
 
 #### Step 5.1: IndexedDB Service Setup
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Phase 1
 
 ```javascript
@@ -444,7 +473,7 @@ export const STORES = {
   PROGRESS: 'progress',
   ACHIEVEMENTS: 'achievements',
   ACTIVITIES: 'activities',
-  SETTINGS: 'settings'
+  SETTINGS: 'settings',
 };
 
 export const SCHEMAS = {
@@ -452,21 +481,22 @@ export const SCHEMAS = {
     keyPath: 'id',
     indexes: [
       { name: 'email', unique: true },
-      { name: 'createdAt', unique: false }
-    ]
+      { name: 'createdAt', unique: false },
+    ],
   },
   [STORES.PROGRESS]: {
     keyPath: 'id',
     indexes: [
       { name: 'userId', unique: false },
       { name: 'activityId', unique: false },
-      { name: 'timestamp', unique: false }
-    ]
-  }
+      { name: 'timestamp', unique: false },
+    ],
+  },
 };
 ```
 
 **Key Tasks:**
+
 1. Design database schema
 2. Create database initialization
 3. Implement migration system
@@ -478,6 +508,7 @@ export const SCHEMAS = {
 ---
 
 #### Step 5.2: Progress Service Implementation
+
 **Priority**: Critical | **Duration**: 8 hours | **Dependencies**: Step 5.1
 
 ```javascript
@@ -495,9 +526,9 @@ export class ProgressService {
       userId,
       activityId,
       timestamp: new Date(),
-      ...data
+      ...data,
     };
-    
+
     await this.db.add(STORES.PROGRESS, progress);
     this.notifySubscribers('activity_completed', progress);
     return progress;
@@ -506,6 +537,7 @@ export class ProgressService {
 ```
 
 **Key Tasks:**
+
 1. Implement CRUD operations
 2. Add caching layer
 3. Create event system
@@ -517,9 +549,11 @@ export class ProgressService {
 ---
 
 #### Step 5.3: Progress UI Components
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 5.2
 
 **Key Tasks:**
+
 1. Create ProgressBar component
 2. Build ProgressRing component
 3. Design SubjectProgress card
@@ -531,9 +565,11 @@ export class ProgressService {
 ---
 
 #### Step 5.4: Data Synchronization
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 5.2
 
 **Key Tasks:**
+
 1. Implement offline queue
 2. Create sync strategy
 3. Add conflict resolution
@@ -547,6 +583,7 @@ export class ProgressService {
 ### Week 6: Achievement System
 
 #### Step 6.1: Achievement Engine Architecture
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Week 5
 
 ```javascript
@@ -556,19 +593,19 @@ export class AchievementEngine {
     this.progressService = progressService;
     this.rules = new Map();
     this.checkers = new Map();
-    
+
     this.progressService.subscribe(this.checkAchievements.bind(this));
   }
 
   registerAchievement(achievement) {
     this.rules.set(achievement.id, achievement);
-    this.checkers.set(achievement.id, 
-      new AchievementChecker(achievement));
+    this.checkers.set(achievement.id, new AchievementChecker(achievement));
   }
 }
 ```
 
 **Key Tasks:**
+
 1. Design achievement system
 2. Create rule engine
 3. Implement checker system
@@ -580,9 +617,11 @@ export class AchievementEngine {
 ---
 
 #### Step 6.2: Achievement Definitions
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 6.1
 
 **Key Tasks:**
+
 1. Define achievement categories
 2. Create achievement metadata
 3. Design badge artwork
@@ -594,6 +633,7 @@ export class AchievementEngine {
 ---
 
 #### Step 6.3: Notification System
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 6.1
 
 ```javascript
@@ -615,6 +655,7 @@ export class NotificationQueue {
 ```
 
 **Key Tasks:**
+
 1. Create notification queue
 2. Build notification UI
 3. Add animation system
@@ -626,9 +667,11 @@ export class NotificationQueue {
 ---
 
 #### Step 6.4: Gamification Elements
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 6.3
 
 **Key Tasks:**
+
 1. Add experience points
 2. Create level system
 3. Build streaks tracking
@@ -642,9 +685,11 @@ export class NotificationQueue {
 ### Week 7: Accessibility & Performance
 
 #### Step 7.1: Accessibility Audit
+
 **Priority**: Critical | **Duration**: 4 hours | **Dependencies**: Phase 1
 
 **Key Tasks:**
+
 1. Run axe-core audit
 2. Test with screen readers
 3. Verify keyboard navigation
@@ -656,6 +701,7 @@ export class NotificationQueue {
 ---
 
 #### Step 7.2: ARIA Implementation
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Step 7.1
 
 ```javascript
@@ -666,8 +712,7 @@ export class AriaManager {
   }
 
   static makeAnnouncement(message, priority = 'polite') {
-    const announcer = document.getElementById('aria-announcer') || 
-                     this.createAnnouncer();
+    const announcer = document.getElementById('aria-announcer') || this.createAnnouncer();
     announcer.setAttribute('aria-live', priority);
     announcer.textContent = message;
   }
@@ -675,6 +720,7 @@ export class AriaManager {
 ```
 
 **Key Tasks:**
+
 1. Add ARIA labels
 2. Implement live regions
 3. Create skip links
@@ -686,9 +732,11 @@ export class AriaManager {
 ---
 
 #### Step 7.3: Performance Optimization
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Phase 1
 
 **Key Tasks:**
+
 1. Implement code splitting
 2. Add lazy loading
 3. Optimize images
@@ -700,9 +748,11 @@ export class AriaManager {
 ---
 
 #### Step 7.4: Mobile Optimization
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 7.3
 
 **Key Tasks:**
+
 1. Optimize touch targets
 2. Add gesture support
 3. Improve scrolling
@@ -716,9 +766,11 @@ export class AriaManager {
 ### Week 8: User Onboarding
 
 #### Step 8.1: Onboarding Flow Design
+
 **Priority**: High | **Duration**: 4 hours | **Dependencies**: Week 7
 
 **Key Tasks:**
+
 1. Map user journeys
 2. Design flow steps
 3. Create decision points
@@ -730,6 +782,7 @@ export class AriaManager {
 ---
 
 #### Step 8.2: Tutorial System
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Step 8.1
 
 ```javascript
@@ -754,6 +807,7 @@ export class TutorialEngine {
 ```
 
 **Key Tasks:**
+
 1. Build tutorial engine
 2. Create step system
 3. Add highlighting
@@ -765,9 +819,11 @@ export class TutorialEngine {
 ---
 
 #### Step 8.3: Welcome Experience
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 8.2
 
 **Key Tasks:**
+
 1. Create welcome modal
 2. Build user preferences
 3. Add personalization
@@ -779,9 +835,11 @@ export class TutorialEngine {
 ---
 
 #### Step 8.4: Contextual Help
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 8.2
 
 **Key Tasks:**
+
 1. Add help buttons
 2. Create help tooltips
 3. Build help search
@@ -797,6 +855,7 @@ export class TutorialEngine {
 ### Week 9: Activity Plugin Architecture
 
 #### Step 9.1: Activity API Design
+
 **Priority**: Critical | **Duration**: 8 hours | **Dependencies**: Phase 2
 
 ```javascript
@@ -810,20 +869,37 @@ export class Activity {
   }
 
   // Lifecycle methods
-  async load() { throw new Error('Must implement load()'); }
-  async start() { throw new Error('Must implement start()'); }
-  async pause() { throw new Error('Must implement pause()'); }
-  async resume() { throw new Error('Must implement resume()'); }
-  async stop() { throw new Error('Must implement stop()'); }
-  
+  async load() {
+    throw new Error('Must implement load()');
+  }
+  async start() {
+    throw new Error('Must implement start()');
+  }
+  async pause() {
+    throw new Error('Must implement pause()');
+  }
+  async resume() {
+    throw new Error('Must implement resume()');
+  }
+  async stop() {
+    throw new Error('Must implement stop()');
+  }
+
   // Data methods
-  getState() { return this.state; }
-  getProgress() { throw new Error('Must implement getProgress()'); }
-  getResults() { throw new Error('Must implement getResults()'); }
+  getState() {
+    return this.state;
+  }
+  getProgress() {
+    throw new Error('Must implement getProgress()');
+  }
+  getResults() {
+    throw new Error('Must implement getResults()');
+  }
 }
 ```
 
 **Key Tasks:**
+
 1. Define activity interface
 2. Create lifecycle methods
 3. Design event system
@@ -835,9 +911,11 @@ export class Activity {
 ---
 
 #### Step 9.2: Activity Registry
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Step 9.1
 
 **Key Tasks:**
+
 1. Build registry system
 2. Add discovery mechanism
 3. Create loading system
@@ -849,9 +927,11 @@ export class Activity {
 ---
 
 #### Step 9.3: Activity Components
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 9.1
 
 **Key Tasks:**
+
 1. Create ActivityContainer
 2. Build ActivityHeader
 3. Design ActivityControls
@@ -863,9 +943,11 @@ export class Activity {
 ---
 
 #### Step 9.4: Activity Development Kit
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 9.3
 
 **Key Tasks:**
+
 1. Create activity template
 2. Build development guide
 3. Add testing utilities
@@ -879,6 +961,7 @@ export class Activity {
 ### Week 10: Core Educational Activities
 
 #### Step 10.1: Math Manipulatives
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Week 9
 
 ```javascript
@@ -901,6 +984,7 @@ export class BaseManipulative {
 ```
 
 **Key Tasks:**
+
 1. Create base manipulative
 2. Build place value blocks
 3. Add fraction pieces
@@ -912,9 +996,11 @@ export class BaseManipulative {
 ---
 
 #### Step 10.2: Science Simulations
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Week 9
 
 **Key Tasks:**
+
 1. Create simulation engine
 2. Build physics simulator
 3. Add chemistry lab
@@ -926,9 +1012,11 @@ export class BaseManipulative {
 ---
 
 #### Step 10.3: Reading Comprehension
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Week 9
 
 **Key Tasks:**
+
 1. Build text renderer
 2. Add highlighting system
 3. Create question engine
@@ -940,9 +1028,11 @@ export class BaseManipulative {
 ---
 
 #### Step 10.4: Creative Activities
+
 **Priority**: Medium | **Duration**: 6 hours | **Dependencies**: Week 9
 
 **Key Tasks:**
+
 1. Create drawing canvas
 2. Build music composer
 3. Add story builder
@@ -956,6 +1046,7 @@ export class BaseManipulative {
 ### Week 11: Assessment System
 
 #### Step 11.1: Question Bank Architecture
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Phase 2
 
 ```javascript
@@ -979,6 +1070,7 @@ export class QuestionBank {
 ```
 
 **Key Tasks:**
+
 1. Design question schema
 2. Create storage system
 3. Build query engine
@@ -990,9 +1082,11 @@ export class QuestionBank {
 ---
 
 #### Step 11.2: Adaptive Algorithm
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Step 11.1
 
 **Key Tasks:**
+
 1. Research algorithms
 2. Implement difficulty adjustment
 3. Create performance tracking
@@ -1004,9 +1098,11 @@ export class QuestionBank {
 ---
 
 #### Step 11.3: Question Components
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 11.1
 
 **Key Tasks:**
+
 1. Create question renderer
 2. Build input components
 3. Add validation UI
@@ -1018,9 +1114,11 @@ export class QuestionBank {
 ---
 
 #### Step 11.4: Reporting System
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 11.3
 
 **Key Tasks:**
+
 1. Design report templates
 2. Create data aggregation
 3. Build visualizations
@@ -1034,6 +1132,7 @@ export class QuestionBank {
 ### Week 12: Content Expansion
 
 #### Step 12.1: Content Management System
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Week 11
 
 ```javascript
@@ -1055,6 +1154,7 @@ export class ContentCMS {
 ```
 
 **Key Tasks:**
+
 1. Build CMS core
 2. Create content types
 3. Add validation rules
@@ -1066,9 +1166,11 @@ export class ContentCMS {
 ---
 
 #### Step 12.2: Subject Templates
+
 **Priority**: Medium | **Duration**: 6 hours | **Dependencies**: Step 12.1
 
 **Key Tasks:**
+
 1. Create template system
 2. Build character system
 3. Add theme generation
@@ -1080,9 +1182,11 @@ export class ContentCMS {
 ---
 
 #### Step 12.3: Activity Library
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 12.1
 
 **Key Tasks:**
+
 1. Organize activities
 2. Create discovery UI
 3. Add filtering system
@@ -1094,9 +1198,11 @@ export class ContentCMS {
 ---
 
 #### Step 12.4: Curriculum Alignment
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 12.3
 
 **Key Tasks:**
+
 1. Map standards
 2. Tag content
 3. Create pathways
@@ -1112,6 +1218,7 @@ export class ContentCMS {
 ### Week 13: State Management & Multi-User
 
 #### Step 13.1: Global State Architecture
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Phase 3
 
 ```javascript
@@ -1124,28 +1231,30 @@ export const useStore = create(
   devtools(
     subscribeWithSelector(
       persist(
-        immer((set) => ({
+        immer(set => ({
           // State structure
           users: {},
           currentUser: null,
           activities: {},
           progress: {},
-          
+
           // Actions
           actions: {
-            setUser: (user) => set((state) => {
-              state.currentUser = user;
-            }),
-            updateProgress: (userId, progressData) => set((state) => {
-              state.progress[userId] = progressData;
-            })
-          }
+            setUser: user =>
+              set(state => {
+                state.currentUser = user;
+              }),
+            updateProgress: (userId, progressData) =>
+              set(state => {
+                state.progress[userId] = progressData;
+              }),
+          },
         })),
         {
           name: 'learnimals-store',
-          partialize: (state) => ({ 
-            currentUser: state.currentUser 
-          })
+          partialize: state => ({
+            currentUser: state.currentUser,
+          }),
         }
       )
     )
@@ -1154,6 +1263,7 @@ export const useStore = create(
 ```
 
 **Key Tasks:**
+
 1. Install Zustand
 2. Design state structure
 3. Create actions
@@ -1165,9 +1275,11 @@ export const useStore = create(
 ---
 
 #### Step 13.2: User Account System
+
 **Priority**: Critical | **Duration**: 8 hours | **Dependencies**: Step 13.1
 
 **Key Tasks:**
+
 1. Create user schema
 2. Build account creation
 3. Add profile management
@@ -1179,9 +1291,11 @@ export const useStore = create(
 ---
 
 #### Step 13.3: Data Isolation
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 13.2
 
 **Key Tasks:**
+
 1. Implement user scoping
 2. Add data partitioning
 3. Create access control
@@ -1193,9 +1307,11 @@ export const useStore = create(
 ---
 
 #### Step 13.4: Collaboration Features
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 13.3
 
 **Key Tasks:**
+
 1. Add sharing UI
 2. Create permissions
 3. Build notifications
@@ -1209,6 +1325,7 @@ export const useStore = create(
 ### Week 14: Analytics Platform
 
 #### Step 14.1: Analytics Architecture
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Week 13
 
 ```javascript
@@ -1231,6 +1348,7 @@ export class AnalyticsPlatform {
 ```
 
 **Key Tasks:**
+
 1. Design analytics system
 2. Create event schema
 3. Build collectors
@@ -1242,9 +1360,11 @@ export class AnalyticsPlatform {
 ---
 
 #### Step 14.2: Learning Analytics
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 14.1
 
 **Key Tasks:**
+
 1. Define metrics
 2. Create algorithms
 3. Build insights engine
@@ -1256,9 +1376,11 @@ export class AnalyticsPlatform {
 ---
 
 #### Step 14.3: Dashboard Components
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 14.2
 
 **Key Tasks:**
+
 1. Create chart library
 2. Build metric cards
 3. Add filters/controls
@@ -1270,9 +1392,11 @@ export class AnalyticsPlatform {
 ---
 
 #### Step 14.4: Reporting Engine
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 14.3
 
 **Key Tasks:**
+
 1. Create templates
 2. Build scheduler
 3. Add formatting
@@ -1286,6 +1410,7 @@ export class AnalyticsPlatform {
 ### Week 15: Teacher Portal
 
 #### Step 15.1: Portal Architecture
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Week 14
 
 ```javascript
@@ -1307,6 +1432,7 @@ export class TeacherPortal {
 ```
 
 **Key Tasks:**
+
 1. Create portal structure
 2. Build routing system
 3. Add authentication
@@ -1318,9 +1444,11 @@ export class TeacherPortal {
 ---
 
 #### Step 15.2: Classroom Management
+
 **Priority**: High | **Duration**: 8 hours | **Dependencies**: Step 15.1
 
 **Key Tasks:**
+
 1. Create class system
 2. Build roster management
 3. Add grouping tools
@@ -1332,9 +1460,11 @@ export class TeacherPortal {
 ---
 
 #### Step 15.3: Assignment System
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Step 15.2
 
 **Key Tasks:**
+
 1. Build assignment creator
 2. Add scheduling
 3. Create distribution
@@ -1346,9 +1476,11 @@ export class TeacherPortal {
 ---
 
 #### Step 15.4: Parent Communication
+
 **Priority**: Medium | **Duration**: 4 hours | **Dependencies**: Step 15.3
 
 **Key Tasks:**
+
 1. Create messaging system
 2. Build announcements
 3. Add progress sharing
@@ -1362,6 +1494,7 @@ export class TeacherPortal {
 ### Week 16: Platform Launch
 
 #### Step 16.1: PWA Enhancement
+
 **Priority**: High | **Duration**: 6 hours | **Dependencies**: Phase 3
 
 ```javascript
@@ -1370,21 +1503,24 @@ export default {
   globDirectory: 'dist/',
   globPatterns: ['**/*.{html,js,css,png,jpg,svg,woff2}'],
   swDest: 'dist/sw.js',
-  runtimeCaching: [{
-    urlPattern: /^https:\/\/api\.learnimals\.com/,
-    handler: 'NetworkFirst',
-    options: {
-      cacheName: 'api-cache',
-      expiration: {
-        maxEntries: 50,
-        maxAgeSeconds: 300
-      }
-    }
-  }]
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/api\.learnimals\.com/,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'api-cache',
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 300,
+        },
+      },
+    },
+  ],
 };
 ```
 
 **Key Tasks:**
+
 1. Upgrade service worker
 2. Add offline features
 3. Implement sync
@@ -1396,9 +1532,11 @@ export default {
 ---
 
 #### Step 16.2: Performance Optimization
+
 **Priority**: Critical | **Duration**: 8 hours | **Dependencies**: All phases
 
 **Key Tasks:**
+
 1. Audit performance
 2. Optimize bundles
 3. Improve caching
@@ -1410,9 +1548,11 @@ export default {
 ---
 
 #### Step 16.3: Security Hardening
+
 **Priority**: Critical | **Duration**: 6 hours | **Dependencies**: Step 16.2
 
 **Key Tasks:**
+
 1. Add CSP headers
 2. Implement sanitization
 3. Add rate limiting
@@ -1424,9 +1564,11 @@ export default {
 ---
 
 #### Step 16.4: Launch Preparation
+
 **Priority**: Critical | **Duration**: 4 hours | **Dependencies**: Step 16.3
 
 **Key Tasks:**
+
 1. Create launch checklist
 2. Prepare monitoring
 3. Set up support
@@ -1440,6 +1582,7 @@ export default {
 ## Success Criteria for Each Phase
 
 ### Phase 1 Success Metrics
+
 - ✅ Test coverage >80% for all utilities
 - ✅ CI/CD pipeline running on all PRs
 - ✅ Build time <30 seconds
@@ -1447,6 +1590,7 @@ export default {
 - ✅ Component tests for core UI
 
 ### Phase 2 Success Metrics
+
 - ✅ Progress tracking functional
 - ✅ Achievement system active
 - ✅ Accessibility score >95%
@@ -1454,6 +1598,7 @@ export default {
 - ✅ Onboarding completion >80%
 
 ### Phase 3 Success Metrics
+
 - ✅ 20+ interactive activities
 - ✅ Assessment engine operational
 - ✅ Content CMS functional
@@ -1461,6 +1606,7 @@ export default {
 - ✅ Adaptive learning active
 
 ### Phase 4 Success Metrics
+
 - ✅ Multi-user support complete
 - ✅ Analytics providing insights
 - ✅ Teacher portal functional
@@ -1472,11 +1618,13 @@ export default {
 ## Risk Mitigation Checkpoints
 
 ### Weekly Checkpoints
+
 - Monday: Review previous week's progress
 - Wednesday: Identify and address blockers
 - Friday: Validate deliverables and plan ahead
 
 ### Phase Checkpoints
+
 - End of each phase: Full system test
 - User acceptance testing
 - Performance validation
@@ -1485,4 +1633,4 @@ export default {
 
 ---
 
-*This key steps breakdown provides specific, actionable tasks for each phase while maintaining modularity and following modern development practices.*
+_This key steps breakdown provides specific, actionable tasks for each phase while maintaining modularity and following modern development practices._

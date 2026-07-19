@@ -3,8 +3,9 @@
 ## Current Templates
 
 ### 1. **game.html** - Full Game Template
+
 - **Purpose**: Complete game template with full UI infrastructure
-- **Features**: 
+- **Features**:
   - Game header with title, description, character integration
   - Game stats header (score, level, timer)
   - Comprehensive game controls (start, pause, restart, settings, fullscreen, help)
@@ -17,7 +18,8 @@
   - GameSystem integration with event handling
   - Template variable support (Handlebars-style)
 
-### 2. **subject.html** - Subject Page Template  
+### 2. **subject.html** - Subject Page Template
+
 - **Purpose**: Subject pages with feature cards and educational content
 - **Features**:
   - Hero section with character integration
@@ -28,6 +30,7 @@
 ## Template Expansion Opportunities
 
 ### Identified Gaps
+
 1. **No Minimal Template**: Some games need lightweight UI without full controls
 2. **No Fullscreen Template**: Immersive games need distraction-free presentation
 3. **No Mobile-First Template**: Touch-optimized games need specialized mobile UI
@@ -36,6 +39,7 @@
 ### Proposed New Templates
 
 #### 1. **minimal.html** - Lightweight Game Template
+
 - **Target Games**: Simple games that don't need complex UI
 - **Features**:
   - Basic game container
@@ -45,6 +49,7 @@
   - Perfect for bubble-pop style games initially
 
 #### 2. **fullscreen.html** - Immersive Game Template
+
 - **Target Games**: Games requiring full attention/immersion
 - **Features**:
   - Auto-fullscreen capability
@@ -54,6 +59,7 @@
   - Perfect for canvas-heavy games
 
 #### 3. **mobile.html** - Touch-Optimized Template
+
 - **Target Games**: Mobile-first experiences
 - **Features**:
   - Large touch targets
@@ -63,6 +69,7 @@
   - Virtual gamepad support
 
 #### 4. **educational.html** - Learning-Focused Template
+
 - **Target Games**: Educational content with assessment
 - **Features**:
   - Progress tracking with detailed analytics
@@ -74,6 +81,7 @@
 ## Template Variable Standardization
 
 All templates should support consistent variables:
+
 - Game metadata: `{{gameId}}`, `{{gameName}}`, `{{gameDescription}}`
 - Character integration: `{{characterName}}`, `{{characterType}}`
 - Styling: `{{themeClass}}`, `{{gameStyleSheet}}`
@@ -88,7 +96,8 @@ All templates should support consistent variables:
 4. **Priority 4**: Create educational.html for learning games
 
 Each template should integrate seamlessly with:
+
 - GameSystem event architecture
-- BaseGame class hierarchy  
+- BaseGame class hierarchy
 - Theme management system
 - Progress tracking capabilities

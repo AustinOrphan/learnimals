@@ -1,6 +1,7 @@
 # Ocean Adventure Game - Architecture Documentation
 
 ## Overview
+
 Ocean Adventure is an educational marine biology game that deviates from the standard Learnimals game architecture to provide a more immersive, real-time exploration experience. This document outlines the architectural decisions, design patterns, and future roadmap.
 
 ## Architecture Decisions
@@ -10,11 +11,13 @@ Ocean Adventure is an educational marine biology game that deviates from the sta
 **Decision**: Ocean Adventure uses a Canvas-based architecture instead of the standard BaseGame.js DOM-based pattern.
 
 **Rationale**:
+
 - **Performance**: Real-time submarine movement, marine creature animations, and particle effects require high-performance rendering
 - **Immersion**: Canvas provides smooth visual transitions between ocean zones and seamless creature discovery animations
 - **Educational Impact**: The continuous exploration model better simulates actual marine biology research compared to discrete DOM interactions
 
 **Trade-offs**:
+
 - ✅ **Pros**: High performance, smooth animations, immersive experience, unlimited visual creativity
 - ❌ **Cons**: More complex development, accessibility challenges, separate from standard game patterns
 
@@ -23,13 +26,14 @@ Ocean Adventure is an educational marine biology game that deviates from the sta
 **Decision**: OceanAdventureGame class operates as a standalone game engine rather than extending BaseGame.js.
 
 **Current Structure**:
+
 ```javascript
 class OceanAdventureGame {
   constructor(canvasId) {
     // Direct canvas management
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext('2d', { alpha: false });
-    
+
     // Custom game systems
     this.submarine = new Submarine();
     this.marineCreatures = [];
@@ -39,6 +43,7 @@ class OceanAdventureGame {
 ```
 
 **BaseGame.js Standard Pattern**:
+
 ```javascript
 class StandardGame extends BaseGame {
   constructor(containerId, options = {}) {
@@ -52,6 +57,7 @@ class StandardGame extends BaseGame {
 ```
 
 **Implications**:
+
 - Custom implementation of progress tracking, analytics, and feedback systems
 - Manual integration with Learnimals theme system
 - Custom mobile optimization and accessibility features
@@ -61,16 +67,18 @@ class StandardGame extends BaseGame {
 **Decision**: Modular entity system with separate classes for game components.
 
 **Architecture**:
+
 ```
 OceanAdventureGame (Main Engine)
 ├── Submarine.js (Player entity)
-├── MarineLife.js (Creature entities) 
+├── MarineLife.js (Creature entities)
 ├── DiscoverySystem.js (Educational content & progress)
 ├── marineLifeData.js (Educational database)
 └── index.html (UI and integration layer)
 ```
 
 **Benefits**:
+
 - **Separation of Concerns**: Each system handles specific responsibilities
 - **Maintainability**: Easy to modify individual components
 - **Educational Focus**: DiscoverySystem centralizes all learning content
@@ -81,12 +89,14 @@ OceanAdventureGame (Main Engine)
 **Decision**: Centralized educational content system with real-time discovery mechanics.
 
 **Implementation**:
+
 - **Marine Life Database**: Scientifically accurate species data with conservation information
 - **Progressive Discovery**: Players unlock content through exploration rather than answering questions
 - **Achievement System**: Milestone-based learning that rewards ecosystem understanding
 - **Real-time UI**: Discovery panels and achievement notifications provide immediate educational feedback
 
 **Educational Value**:
+
 - **Authentic Learning**: Mimics real marine biology research methodology
 - **Conservation Awareness**: Emphasizes species conservation status and ecosystem roles
 - **Scientific Accuracy**: Uses proper scientific nomenclature and habitat information
@@ -96,13 +106,15 @@ OceanAdventureGame (Main Engine)
 **Decision**: Implement performance optimizations based on Canvas API best practices.
 
 **Current Optimizations**:
+
 - Canvas context with `alpha: false` for better performance
 - Manual debounce utility function for input handling
 - Embedded styles to reduce HTTP requests
 - Simplified modal system to avoid complex dependencies
 
 **Planned Optimizations** (from Context7 research):
-- `requestAnimationFrame` game loop implementation  
+
+- `requestAnimationFrame` game loop implementation
 - Entity pooling for marine creatures
 - Viewport culling for off-screen entities
 - Canvas layer separation for static vs dynamic content
@@ -117,6 +129,7 @@ OceanAdventureGame (Main Engine)
 ### 2. Mobile Responsiveness
 
 **Decision**: Custom responsive design optimized for touch interaction
+
 - Larger touch targets for creature discovery
 - Simplified UI on mobile devices
 - Touch-friendly submarine controls
@@ -124,12 +137,14 @@ OceanAdventureGame (Main Engine)
 ### 3. Accessibility Features
 
 **Current Implementation**:
+
 - ARIA labels for game statistics
 - Skip links for keyboard navigation
 - Screen reader announcements for discoveries
 - Keyboard shortcuts (ESC key support)
 
-**Gaps**: 
+**Gaps**:
+
 - Canvas content not accessible to screen readers
 - No keyboard navigation for submarine movement
 - Limited alternative input methods
@@ -137,11 +152,13 @@ OceanAdventureGame (Main Engine)
 ## Technical Dependencies
 
 ### Resolved Dependencies
+
 - **✅ External Imports**: Removed dependency on missing `utils/common.js`
 - **✅ Modal System**: Replaced complex Modal.js with simplified inline implementation
 - **✅ Service Worker**: Disabled to avoid 404 errors during development
 
 ### Current Dependencies
+
 - **Canvas API**: Core rendering dependency
 - **localStorage**: Progress persistence
 - **CSS Variables**: Theme system integration
@@ -166,6 +183,7 @@ OceanAdventureGame (Main Engine)
 ## Architecture Validation
 
 Based on testing conducted:
+
 - ✅ **Game Launch**: Successfully loads and initializes
 - ✅ **UI System**: All interface elements functional
 - ✅ **Discovery System**: Educational content delivery works perfectly
@@ -184,5 +202,5 @@ Based on testing conducted:
 
 ---
 
-*Architecture documented: August 1, 2025*
-*Next review: After BaseGame.js integration planning*
+_Architecture documented: August 1, 2025_
+_Next review: After BaseGame.js integration planning_

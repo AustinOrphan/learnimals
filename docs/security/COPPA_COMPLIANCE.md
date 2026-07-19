@@ -69,7 +69,7 @@ Privacy-aware educational template that:
 
 - **`session_only`**: Data deleted when browser session ends
 - **`30_days`**: Data deleted after 30 days
-- **`90_days`**: Data deleted after 90 days  
+- **`90_days`**: Data deleted after 90 days
 - **`school_year`**: Data deleted after one year
 
 ### Implementation
@@ -91,12 +91,14 @@ const sanitizedData = privacyManager.sanitizeData(sessionData, gameMetadata);
 ```
 
 **Allowed Data Types** (without consent):
+
 - Basic scores
 - Completion status
 - Time spent (general)
 - Number of attempts
 
 **Removed Data Types**:
+
 - Personal identifiers
 - Detailed learning analytics
 - Behavioral patterns
@@ -109,7 +111,7 @@ Parents have the right to:
 1. **Review**: Access their child's collected data
 2. **Revoke**: Withdraw consent at any time
 3. **Delete**: Request immediate deletion of data
-4. **Contact**: Reach privacy team at privacy@learnimals.com
+4. **Contact**: Reach privacy team at <privacy@learnimals.com>
 
 ## Technical Implementation Details
 
@@ -137,12 +139,12 @@ import { privacyManager } from '../utils/privacyManager.js';
 // In educational template
 async checkPrivacyConsent() {
   const requiresConsent = privacyManager.requiresParentalConsent(this.gameConfig.ageRange);
-  
+
   if (requiresConsent) {
     this.privacyConsent = await privacyManager.requestParentalConsent(this.gameConfig);
     this.dataCollectionPermitted = this.privacyConsent;
   }
-  
+
   if (this.dataCollectionPermitted) {
     privacyManager.applyDataRetentionPolicy(this.gameConfig);
   }
@@ -170,6 +172,7 @@ const policyHTML = privacyManager.getPrivacyPolicy();
 ```
 
 This policy covers:
+
 - Information collection practices
 - Data usage purposes
 - Retention policies

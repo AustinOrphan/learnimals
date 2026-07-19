@@ -7,7 +7,9 @@
 [![codecov](https://codecov.io/gh/AustinOrphan/learnimals/branch/main/graph/badge.svg)](https://codecov.io/gh/AustinOrphan/learnimals)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Learnimals is an interactive educational web application featuring fun games and activities designed to help children learn core subjects through play. Each subject area is represented by a friendly animal character, creating an engaging and memorable learning experience.
+Learnimals is an interactive educational web application featuring fun games and activities
+designed to help children learn core subjects through play. Each subject area is represented by
+a friendly animal character, creating an engaging and memorable learning experience.
 
 ## 🌟 Features
 

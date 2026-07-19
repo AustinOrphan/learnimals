@@ -9,6 +9,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 ### 1. GitHub Actions Workflows
 
 #### Core CI/CD Pipeline (`ci.yml`)
+
 - **Purpose**: Continuous Integration with comprehensive quality gates
 - **Features**:
   - Multi-stage security scanning (CodeQL, dependency audits)
@@ -19,6 +20,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 - **Triggers**: Push to main/develop, Pull Requests, Manual dispatch
 
 #### Rolling Deployment (`deploy-rolling.yml`)
+
 - **Purpose**: Production-ready rolling deployment strategy
 - **Features**:
   - Multi-environment support (dev, staging, production)
@@ -29,6 +31,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 - **Triggers**: Push to main, Releases, Manual dispatch
 
 #### Security Monitoring (`security.yml`)
+
 - **Purpose**: Continuous security assessment and vulnerability management
 - **Features**:
   - SAST (Static Application Security Testing)
@@ -39,6 +42,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 - **Triggers**: Daily scans, Push events, Manual dispatch
 
 #### Observability (`monitoring.yml`)
+
 - **Purpose**: Continuous monitoring and health validation
 - **Features**:
   - Application health checks
@@ -50,12 +54,14 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 ### 2. Containerization
 
 #### Multi-Stage Dockerfile
+
 - **Builder Stage**: Dependencies, testing, asset preparation
 - **Production Stage**: Optimized nginx-based runtime
 - **Security Features**: Non-root user, read-only filesystem, health checks
 - **Performance**: Optimized image size, efficient caching
 
 #### Docker Configuration
+
 - **Base Image**: nginx:alpine (security-hardened)
 - **User**: Non-root (UID 1001)
 - **Health Checks**: Comprehensive application health validation
@@ -64,11 +70,13 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 ### 3. Kubernetes Infrastructure
 
 #### Environment Strategy
+
 - **Development**: Feature testing and rapid iteration
 - **Staging**: Production-like environment for integration testing
 - **Production**: Live application with high availability
 
 #### Kubernetes Resources
+
 - **Deployments**: Rolling update strategy with health probes
 - **Services**: ClusterIP and headless service configurations
 - **Ingress**: NGINX ingress with TLS termination
@@ -76,6 +84,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 - **Service Accounts**: Minimal privilege access
 
 #### Security Configurations
+
 - **Pod Security Context**: Non-root, read-only filesystem
 - **Network Policies**: Ingress/egress traffic restrictions
 - **Resource Limits**: CPU and memory constraints
@@ -84,12 +93,14 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 ### 4. Testing Infrastructure
 
 #### Vitest Configuration
+
 - **Environment**: jsdom for browser simulation
 - **Coverage**: v8 provider with comprehensive reporting
 - **Test Types**: Unit, navigation, integration
 - **Global Setup**: Centralized test environment configuration
 
 #### Lighthouse Configuration
+
 - **Performance**: Core Web Vitals monitoring
 - **Accessibility**: WCAG 2.1 AA compliance validation
 - **Best Practices**: Security and SEO optimization
@@ -98,6 +109,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 ## 🔧 Configuration Files
 
 ### Essential Configuration Files
+
 1. **`.github/workflows/`** - GitHub Actions workflow definitions
 2. **`Dockerfile`** - Multi-stage container build definition
 3. **`docker/`** - Nginx configuration and health check scripts
@@ -107,6 +119,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 7. **`.dockerignore`** - Docker build optimization
 
 ### Package.json Enhancements
+
 ```json
 {
   "scripts": {
@@ -130,6 +143,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 ## 🚀 Deployment Strategy
 
 ### Rolling Deployment Features
+
 - **Zero Downtime**: Gradual instance replacement
 - **Health Monitoring**: Continuous health validation during deployment
 - **Automatic Rollback**: Failure detection and automatic recovery
@@ -137,6 +151,7 @@ This document outlines the infrastructure baseline for the Learnimals educationa
 - **Resource Optimization**: Efficient resource utilization
 
 ### Environment Progression
+
 ```
 Feature Branch → Development → Staging → Production
       ↓              ↓           ↓         ↓
@@ -145,6 +160,7 @@ Feature Branch → Development → Staging → Production
 ```
 
 ### Quality Gates
+
 - **Code Quality**: ESLint compliance
 - **Security**: Vulnerability scans
 - **Performance**: Core Web Vitals benchmarks
@@ -154,6 +170,7 @@ Feature Branch → Development → Staging → Production
 ## 🔒 Security Implementation
 
 ### Multi-Layer Security Approach
+
 1. **Source Code**: SAST scanning with CodeQL and Semgrep
 2. **Dependencies**: NPM audit and Snyk vulnerability scanning
 3. **Containers**: Trivy and Grype container security scanning
@@ -162,6 +179,7 @@ Feature Branch → Development → Staging → Production
 6. **Runtime**: Network policies and security contexts
 
 ### Compliance Features
+
 - **GDPR**: Data protection and privacy controls
 - **COPPA**: Children's online privacy protection
 - **WCAG 2.1 AA**: Accessibility compliance
@@ -170,12 +188,14 @@ Feature Branch → Development → Staging → Production
 ## 📊 Monitoring & Observability
 
 ### Health Monitoring
+
 - **Application**: `/health` endpoint monitoring
 - **Infrastructure**: Kubernetes cluster health
 - **Performance**: Response time and error rate tracking
 - **User Experience**: Core Web Vitals monitoring
 
 ### Alerting Strategy
+
 - **Critical**: Immediate notification for outages
 - **Warning**: Performance degradation alerts
 - **Informational**: Deployment status and metrics
@@ -184,12 +204,14 @@ Feature Branch → Development → Staging → Production
 ## 🎯 Performance Optimization
 
 ### Build Optimization
+
 - **Multi-stage Builds**: Reduced image size
 - **Layer Caching**: Efficient Docker layer caching
 - **Parallel Processing**: Concurrent CI/CD pipeline execution
 - **Resource Efficiency**: Optimized resource allocation
 
 ### Runtime Optimization
+
 - **Nginx Configuration**: Performance-tuned web server
 - **Compression**: Gzip compression for assets
 - **Caching**: Browser and CDN caching strategies
@@ -198,12 +220,14 @@ Feature Branch → Development → Staging → Production
 ## 📈 Metrics & KPIs
 
 ### Deployment Metrics
+
 - **Deployment Frequency**: Deployments per time period
 - **Lead Time**: Code commit to production
 - **Success Rate**: Percentage of successful deployments
 - **MTTR**: Mean time to recovery from incidents
 
 ### Quality Metrics
+
 - **Test Coverage**: Percentage of code covered by tests
 - **Security Findings**: Vulnerability count and severity
 - **Performance Scores**: Lighthouse and Core Web Vitals
@@ -212,12 +236,14 @@ Feature Branch → Development → Staging → Production
 ## 🔄 Continuous Improvement
 
 ### Automation Focus Areas
+
 1. **Testing**: Expand test coverage and automation
 2. **Security**: Enhanced vulnerability detection
 3. **Performance**: Continuous optimization monitoring
 4. **Deployment**: Further automation and safety measures
 
 ### Future Enhancements
+
 - **Advanced Monitoring**: APM and distributed tracing
 - **Chaos Engineering**: Resilience testing automation
 - **Machine Learning**: Predictive incident detection
@@ -226,12 +252,14 @@ Feature Branch → Development → Staging → Production
 ## 📚 Documentation Standards
 
 ### Required Documentation
+
 - **Deployment Guide**: Comprehensive deployment procedures
 - **Security Guidelines**: Security practices and procedures
 - **Performance Guidelines**: Optimization best practices
 - **Incident Response**: Emergency procedures and contacts
 
 ### Maintenance Procedures
+
 - **Regular Updates**: Dependency and security updates
 - **Configuration Reviews**: Infrastructure configuration audits
 - **Performance Monitoring**: Continuous optimization

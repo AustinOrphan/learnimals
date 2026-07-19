@@ -3,11 +3,12 @@
 ## 🚨 **CRITICAL: Infrastructure Broken - Fix First**
 
 ### Current Critical Issues
+
 ```bash
 # Tests don't work
 npm test  # ERROR: Cannot find module 'es-errors/syntax.js'
 
-# Code quality broken  
+# Code quality broken
 npm run lint  # 200+ errors
 
 # CI/CD failing
@@ -15,6 +16,7 @@ npm run lint  # 200+ errors
 ```
 
 ### **URGENT Fix Command Sequence**
+
 ```bash
 # 1. Fix dependencies (5 minutes)
 rm -rf node_modules package-lock.json
@@ -33,6 +35,7 @@ npm run lint  # Should show <50 errors vs 200+
 ## 🏗️ **Technical Architecture**
 
 ### Current Stack
+
 - **Frontend**: Vanilla JavaScript (ES6+)
 - **Styling**: CSS3 with custom properties
 - **Testing**: Vitest + jsdom (currently broken)
@@ -41,6 +44,7 @@ npm run lint  # Should show <50 errors vs 200+
 - **Hosting**: GitHub Pages (currently broken deployment)
 
 ### File Structure
+
 ```
 src/
 ├── components/          # Reusable UI components
@@ -63,6 +67,7 @@ docs/                   # Documentation
 ## 🔧 **Development Commands**
 
 ### **Working Commands**
+
 ```bash
 # Development server
 python3 -m http.server 8080
@@ -75,6 +80,7 @@ npm run list-templates
 ```
 
 ### **Broken Commands (Need Fixing)**
+
 ```bash
 npm test                # ERROR: es-errors missing
 npm run lint            # 200+ errors
@@ -83,6 +89,7 @@ npm run test:ui         # Missing dependencies
 ```
 
 ### **Fix Progress Commands**
+
 ```bash
 # Check dependency status
 npm list es-errors      # Should show version after fix
@@ -98,10 +105,12 @@ curl http://localhost:8080/src/pages/index.html  # Should return HTML
 ## 📦 **Dependencies Status**
 
 ### Critical Missing Dependencies
+
 - `es-errors` - **MISSING** - Required for testing framework
 - Potential other transitive dependency issues
 
 ### Package Management
+
 ```bash
 # Current Node version requirement
 cat .nvmrc  # Node 18
@@ -118,6 +127,7 @@ npm install --save-dev es-errors@latest
 ## 🧪 **Testing Framework**
 
 ### Current Status: **BROKEN**
+
 ```bash
 # Error when running tests
 npm test
@@ -125,6 +135,7 @@ npm test
 ```
 
 ### Test Configuration
+
 ```javascript
 // vitest.config.js - Current configuration
 export default {
@@ -132,13 +143,14 @@ export default {
     environment: 'jsdom',
     globals: true,
     coverage: {
-      provider: '@vitest/coverage-v8'
-    }
-  }
+      provider: '@vitest/coverage-v8',
+    },
+  },
 };
 ```
 
 ### Test Structure
+
 ```
 tests/
 ├── unit/               # Unit tests (broken)
@@ -149,6 +161,7 @@ tests/
 ```
 
 ### Fix Required
+
 1. Install missing `es-errors` dependency
 2. Update Vitest configuration
 3. Create test setup files
@@ -157,34 +170,38 @@ tests/
 ## 🎯 **ESLint Configuration**
 
 ### Current Status: **200+ Errors**
+
 ```bash
 npm run lint
 # ✖ 200 problems (199 errors, 1 warning)
 ```
 
 ### Error Categories
+
 - **~150 errors**: Indentation (6 spaces vs 4 spaces)
 - **~20 errors**: Quote style (double vs single quotes)
 - **~15 errors**: Unused variables
 - **~10 errors**: Various rule violations
 
 ### ESLint Config Location
+
 ```javascript
 // eslint.config.mjs
 export default [
   {
     files: ['src/**/*.js', 'tests/**/*.js'],
     rules: {
-      'indent': ['error', 2],  // 2-space indentation
-      'quotes': ['error', 'single'],  // Single quotes
-      'semi': ['error', 'always'],  // Semicolons required
-      'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }]
-    }
-  }
+      indent: ['error', 2], // 2-space indentation
+      quotes: ['error', 'single'], // Single quotes
+      semi: ['error', 'always'], // Semicolons required
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
 ];
 ```
 
 ### Auto-Fix Command
+
 ```bash
 npm run lint:fix  # Fixes ~178 errors automatically
 ```
@@ -192,17 +209,20 @@ npm run lint:fix  # Fixes ~178 errors automatically
 ## 🚀 **CI/CD Pipeline**
 
 ### Current Status: **BROKEN**
+
 - GitHub Actions workflow exists (`.github/workflows/ci.yml`)
 - Fails due to test and lint issues
 - Deployment to GitHub Pages not working
 
 ### CI Workflow Issues
+
 1. `npm ci` fails due to package-lock.json sync issues
 2. ESLint step fails with 200+ errors
 3. Test step fails due to missing dependencies
 4. Build step may be affected
 
 ### Fix Required
+
 1. Fix dependencies to allow `npm ci` to work
 2. Resolve ESLint errors
 3. Fix test framework
@@ -211,11 +231,13 @@ npm run lint:fix  # Fixes ~178 errors automatically
 ## 🌐 **Deployment**
 
 ### Current Setup
+
 - **Target**: GitHub Pages
 - **Source**: Static files (no build process)
 - **Status**: Broken due to CI issues
 
 ### Deployment Process
+
 ```bash
 # Manual deployment (if needed)
 # 1. Fix all issues first
@@ -227,6 +249,7 @@ npm run lint:fix  # Fixes ~178 errors automatically
 ## 🎮 **Game Architecture**
 
 ### Existing Games
+
 ```javascript
 // Games that exist but may need updates
 src/features/games/
@@ -240,6 +263,7 @@ src/features/games/
 ```
 
 ### Base Game Class
+
 ```javascript
 // src/components/games/BaseGame.js - Base class for all games
 class BaseGame {
@@ -248,23 +272,30 @@ class BaseGame {
     this.config = config;
     this.state = { score: 0, level: 1 };
   }
-  
-  init() { /* Setup game */ }
-  start() { /* Start game loop */ }
-  end() { /* End game, save progress */ }
+
+  init() {
+    /* Setup game */
+  }
+  start() {
+    /* Start game loop */
+  }
+  end() {
+    /* End game, save progress */
+  }
 }
 ```
 
 ## 📊 **Progress Tracking**
 
 ### Current Implementation
+
 ```javascript
 // src/features/progress/ProgressTracker.js - Currently placeholder
 export default class ProgressTracker {
   constructor() {
     this.progress = {};
   }
-  
+
   track(data) {
     // Placeholder method - needs implementation
   }
@@ -272,6 +303,7 @@ export default class ProgressTracker {
 ```
 
 ### Required Implementation
+
 - XP and leveling system
 - Achievement tracking
 - Daily streak monitoring
@@ -281,6 +313,7 @@ export default class ProgressTracker {
 ## 🎨 **Styling System**
 
 ### CSS Architecture
+
 ```
 src/styles/
 ├── base/               # Foundation styles
@@ -294,12 +327,13 @@ src/styles/
 ```
 
 ### Theme Variables
+
 ```css
 /* CSS Custom Properties for theming */
 :root {
   --text-primary: #333;
   --bg-card: #fff;
-  --accent-primary: #4ECDC4;
+  --accent-primary: #4ecdc4;
   /* More theme variables... */
 }
 ```
@@ -307,6 +341,7 @@ src/styles/
 ## 🔍 **Debugging & Troubleshooting**
 
 ### Quick Health Check
+
 ```bash
 # 1. Check Node version
 node --version  # Should be 18+
@@ -322,6 +357,7 @@ curl -I http://localhost:8080/src/pages/index.html  # Should return 200
 ```
 
 ### Common Issues
+
 ```bash
 # Issue: Port 8080 in use
 lsof -ti:8080 | xargs kill -9
@@ -338,12 +374,14 @@ npm install
 ## 📈 **Performance Considerations**
 
 ### Current Performance Status
+
 - **Load Time**: Unknown (needs baseline)
 - **Bundle Size**: Minimal (no bundling)
 - **Mobile Performance**: Untested
 - **Offline Support**: Partial (PWA manifest exists)
 
 ### Performance TODO
+
 1. Establish baseline measurements
 2. Implement lazy loading for games
 3. Optimize image assets
@@ -352,12 +390,14 @@ npm install
 ## 🔐 **Security Considerations**
 
 ### Current Security Status
+
 - **XSS Prevention**: Some utilities exist
 - **COPPA Compliance**: Planned but not implemented
 - **Data Collection**: Minimal (localStorage only)
 - **Authentication**: Not implemented yet
 
 ### Security Files
+
 ```
 src/utils/
 ├── htmlEscape.js       # XSS prevention utilities
@@ -370,6 +410,7 @@ tests/security/
 ## 🚀 **Getting Started (After Fixes)**
 
 ### Setup Process (Post-Stabilization)
+
 ```bash
 # 1. Clone repository
 git clone <repo-url>
@@ -387,6 +428,7 @@ npm run dev  # Start server
 ```
 
 ### Development Workflow (Post-Stabilization)
+
 ```bash
 # 1. Create feature branch
 git checkout -b feature/your-feature
@@ -409,11 +451,13 @@ git push origin feature/your-feature
 ## 📞 **Emergency Contacts**
 
 ### When Things Break
+
 1. **Technical Issues**: Contact technical lead
 2. **Process Issues**: Contact project manager
 3. **Urgent Bugs**: Create GitHub issue with `urgent` label
 
 ### Key Repository Links
+
 - **Main Repo**: [GitHub Repository URL]
 - **Issues**: [GitHub Issues URL]
 - **Actions**: [GitHub Actions URL]

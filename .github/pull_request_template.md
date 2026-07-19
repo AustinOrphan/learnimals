@@ -1,8 +1,11 @@
 ## Description
+
 <!-- Provide a brief description of the changes in this PR -->
 
 ## Type of Change
+
 <!-- Mark the relevant option with an "x" -->
+
 - [ ] 🐛 Bug fix (non-breaking change that fixes an issue)
 - [ ] ✨ New feature (non-breaking change that adds functionality)
 - [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
@@ -13,17 +16,22 @@
 - [ ] ♿ Accessibility improvement
 
 ## Related Issues
+
 <!-- Link any related issues here using #issue-number -->
+
 Closes #
 
 ## Changes Made
-<!-- List the specific changes made in this PR -->
-- 
-- 
-- 
+
+## <!-- List the specific changes made in this PR -->
+
+-
+-
 
 ## Testing
+
 <!-- Describe the tests you ran to verify your changes -->
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] Manual testing completed
@@ -31,10 +39,13 @@ Closes #
 - [ ] Performance impact assessed (if applicable)
 
 ## Screenshots
+
 <!-- If applicable, add screenshots to help explain your changes -->
 
 ## Checklist
+
 <!-- Mark completed items with an "x" -->
+
 - [ ] My code follows the project's coding standards
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -45,20 +56,26 @@ Closes #
 - [ ] Any dependent changes have been merged and published
 
 ## Security Considerations
+
 <!-- If this PR has security implications, describe them here -->
+
 - [ ] This PR has been reviewed for security vulnerabilities
 - [ ] No sensitive data is exposed in logs or error messages
 - [ ] Input validation has been implemented where necessary
 - [ ] No new dependencies with known vulnerabilities have been added
 
 ## Performance Impact
+
 <!-- Describe any performance implications of your changes -->
+
 - [ ] This change has no significant performance impact
 - [ ] Performance testing has been conducted
 - [ ] Lighthouse scores remain within acceptable thresholds
 
 ## Deployment Notes
+
 <!-- Any special instructions for deployment -->
 
 ## Additional Notes
+
 <!-- Any additional information that reviewers should know -->

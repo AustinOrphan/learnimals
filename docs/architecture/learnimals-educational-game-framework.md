@@ -73,7 +73,7 @@ class BaseGame {
   constructor(containerId, options = {}) {
     this.containerId = containerId;
     this.container = document.getElementById(containerId);
-    
+
     // Core configuration
     this.config = {
       useDOMContainer: options.useDOMContainer || false,
@@ -83,18 +83,18 @@ class BaseGame {
       enableProgressTracking: options.enableProgressTracking !== false,
       enableAccessibility: options.enableAccessibility !== false,
       enableAudio: options.enableAudio !== false,
-      ...options
+      ...options,
     };
-    
+
     // Core systems
     this.state = new GameStateManager(this.config);
     this.accessibility = new AccessibilityManager(this.container);
     this.progress = new ProgressTracker(this.config);
     this.eventBus = new EventBus();
-    
+
     this.initialize();
   }
-  
+
   // Core lifecycle methods
   async initialize() {
     this.setupContainer();
@@ -103,14 +103,14 @@ class BaseGame {
     await this.loadAssets();
     this.ready();
   }
-  
+
   setupContainer() {
     if (this.config.useDOMContainer) {
       this.container.setAttribute('role', 'application');
       this.container.setAttribute('aria-label', `${this.config.gameType} educational game`);
     }
   }
-  
+
   setupAccessibility() {
     if (this.config.enableAccessibility) {
       this.accessibility.enable();
@@ -118,15 +118,29 @@ class BaseGame {
       this.setupFocusManagement();
     }
   }
-  
+
   // Game lifecycle hooks (to be implemented by subclasses)
-  async loadAssets() { /* Override in subclass */ }
-  ready() { /* Override in subclass */ }
-  start() { /* Override in subclass */ }
-  pause() { /* Override in subclass */ }
-  resume() { /* Override in subclass */ }
-  end() { /* Override in subclass */ }
-  cleanup() { /* Override in subclass */ }
+  async loadAssets() {
+    /* Override in subclass */
+  }
+  ready() {
+    /* Override in subclass */
+  }
+  start() {
+    /* Override in subclass */
+  }
+  pause() {
+    /* Override in subclass */
+  }
+  resume() {
+    /* Override in subclass */
+  }
+  end() {
+    /* Override in subclass */
+  }
+  cleanup() {
+    /* Override in subclass */
+  }
 }
 ```
 
@@ -140,33 +154,33 @@ class BaseGame {
 class EducationalGame extends BaseGame {
   constructor(containerId, options = {}) {
     super(containerId, options);
-    
+
     // Educational-specific systems
     this.learningObjectives = options.learningObjectives || [];
     this.assessmentEngine = new AssessmentEngine(this.learningObjectives);
     this.vocabularyTracker = new VocabularyTracker();
     this.adaptiveEngine = new AdaptiveEngine(this.config.difficulty);
   }
-  
+
   // Educational game lifecycle extensions
   trackLearningProgress(objective, performance) {
     this.assessmentEngine.recordPerformance(objective, performance);
     this.progress.updateLearningProgress(objective, performance);
     this.adaptiveEngine.adjustDifficulty(performance);
   }
-  
+
   addVocabularyTerm(term, context) {
     this.vocabularyTracker.addTerm(term, context);
     this.eventBus.emit('vocabulary:learned', { term, context });
   }
-  
+
   provideFeedback(type, content) {
     const feedback = {
       type, // 'success', 'encouragement', 'hint', 'correction'
       content,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     this.displayFeedback(feedback);
     this.accessibility.announceFeedback(feedback);
     this.progress.recordFeedback(feedback);
@@ -190,24 +204,24 @@ class AccessibilityManager {
     this.announcer = new ScreenReaderAnnouncer();
     this.keyboardHandler = new KeyboardNavigationHandler();
   }
-  
+
   enable() {
     this.setupARIAAttributes();
     this.focusManager.enable();
     this.keyboardHandler.enable();
     this.announcer.enable();
   }
-  
+
   setupARIAAttributes() {
     // Ensure proper ARIA roles and properties
     if (!this.container.getAttribute('role')) {
       this.container.setAttribute('role', 'application');
     }
-    
+
     // Add live regions for dynamic content
     this.createLiveRegions();
   }
-  
+
   createLiveRegions() {
     // Polite announcements (non-interrupting)
     const politeRegion = document.createElement('div');
@@ -216,7 +230,7 @@ class AccessibilityManager {
     politeRegion.className = 'accessibly-hidden';
     politeRegion.id = 'polite-announcements';
     this.container.appendChild(politeRegion);
-    
+
     // Assertive announcements (interrupting)
     const assertiveRegion = document.createElement('div');
     assertiveRegion.setAttribute('aria-live', 'assertive');
@@ -225,12 +239,12 @@ class AccessibilityManager {
     assertiveRegion.id = 'assertive-announcements';
     this.container.appendChild(assertiveRegion);
   }
-  
+
   announce(message, priority = 'polite') {
     const region = document.getElementById(`${priority}-announcements`);
     if (region) {
       region.textContent = message;
-      
+
       // Clear after announcement to allow repeated messages
       setTimeout(() => {
         region.textContent = '';
@@ -252,15 +266,15 @@ class KeyboardNavigationHandler {
     this.keyHandlers = new Map();
     this.activeElement = null;
   }
-  
+
   enable() {
     document.addEventListener('keydown', this.handleKeyDown.bind(this));
     document.addEventListener('focusin', this.handleFocusIn.bind(this));
   }
-  
+
   handleKeyDown(event) {
     const { key, target } = event;
-    
+
     // Global keyboard shortcuts
     switch (key) {
       case 'Tab':
@@ -281,7 +295,7 @@ class KeyboardNavigationHandler {
         break;
     }
   }
-  
+
   registerNavigationGroup(element, config) {
     // Register keyboard navigation patterns for game elements
     this.keyHandlers.set(element, config);
@@ -306,78 +320,78 @@ class StoryEngine {
     this.choices = [];
     this.vocabularyTerms = new Map();
     this.assessmentPoints = [];
-    
+
     this.config = {
       readingLevel: options.readingLevel || 'grade-3',
       adaptiveContent: options.adaptiveContent !== false,
       vocabularyTracking: options.vocabularyTracking !== false,
-      ...options
+      ...options,
     };
   }
-  
+
   loadScene(sceneId) {
     const scene = this.storyData.scenes[sceneId];
     if (!scene) {
       throw new Error(`Scene ${sceneId} not found`);
     }
-    
+
     this.currentScene = this.adaptSceneContent(scene);
     this.storyHistory.push(sceneId);
-    
+
     // Extract vocabulary terms
     if (scene.vocabulary) {
       scene.vocabulary.forEach(term => {
         this.vocabularyTerms.set(term.word, term);
       });
     }
-    
+
     // Prepare assessment points
     if (scene.comprehensionChallenge) {
       this.assessmentPoints.push(scene.comprehensionChallenge);
     }
-    
+
     return this.currentScene;
   }
-  
+
   adaptSceneContent(scene) {
     if (!this.config.adaptiveContent) {
       return scene;
     }
-    
+
     // Adapt content based on reading level
     const adaptedScene = { ...scene };
-    
+
     if (this.config.readingLevel === 'beginner') {
       adaptedScene.content = this.simplifyText(scene.content);
       adaptedScene.choices = scene.choices.map(choice => ({
         ...choice,
-        text: this.simplifyText(choice.text)
+        text: this.simplifyText(choice.text),
       }));
     }
-    
+
     return adaptedScene;
   }
-  
+
   makeChoice(choiceIndex) {
     if (!this.currentScene || !this.currentScene.choices[choiceIndex]) {
       throw new Error('Invalid choice');
     }
-    
+
     const choice = this.currentScene.choices[choiceIndex];
-    
+
     // Record choice for learning analytics
     this.recordChoice(choice);
-    
+
     // Process choice consequences
     if (choice.consequences) {
       this.processConsequences(choice.consequences);
     }
-    
+
     // Load next scene
     if (choice.nextScene) {
       return this.loadScene(choice.nextScene);
     }
-    
+
     return null; // End of story
   }
 }
@@ -395,10 +409,10 @@ class AssessmentEngine {
     this.objectives = learningObjectives;
     this.performanceData = new Map();
     this.assessmentStrategies = new Map();
-    
+
     this.initializeAssessmentStrategies();
   }
-  
+
   initializeAssessmentStrategies() {
     // Register different assessment approaches
     this.assessmentStrategies.set('choice-quality', this.assessChoiceQuality.bind(this));
@@ -406,52 +420,56 @@ class AssessmentEngine {
     this.assessmentStrategies.set('comprehension', this.assessComprehension.bind(this));
     this.assessmentStrategies.set('engagement', this.assessEngagement.bind(this));
   }
-  
+
   recordPerformance(objective, action, context = {}) {
     if (!this.performanceData.has(objective)) {
       this.performanceData.set(objective, []);
     }
-    
+
     const performance = {
       objective,
       action,
       context,
       timestamp: Date.now(),
-      assessment: this.assessAction(objective, action, context)
+      assessment: this.assessAction(objective, action, context),
     };
-    
+
     this.performanceData.get(objective).push(performance);
     return performance.assessment;
   }
-  
+
   assessAction(objective, action, context) {
     const strategy = this.assessmentStrategies.get(objective.assessmentType);
     if (strategy) {
       return strategy(action, context, this.getHistoricalPerformance(objective));
     }
-    
+
     return { score: 0.5, confidence: 0.1 }; // Default neutral assessment
   }
-  
+
   getProgressSummary() {
     const summary = {};
-    
+
     this.objectives.forEach(objective => {
       const performances = this.performanceData.get(objective) || [];
       const recentPerformances = performances.slice(-5); // Last 5 attempts
-      
-      const avgScore = recentPerformances.reduce((sum, p) => sum + p.assessment.score, 0) / recentPerformances.length || 0;
-      const confidence = recentPerformances.reduce((sum, p) => sum + p.assessment.confidence, 0) / recentPerformances.length || 0;
-      
+
+      const avgScore =
+        recentPerformances.reduce((sum, p) => sum + p.assessment.score, 0) /
+          recentPerformances.length || 0;
+      const confidence =
+        recentPerformances.reduce((sum, p) => sum + p.assessment.confidence, 0) /
+          recentPerformances.length || 0;
+
       summary[objective.id] = {
         objective: objective.name,
         averageScore: avgScore,
         confidence: confidence,
         attempts: performances.length,
-        progress: this.calculateProgress(avgScore, confidence, performances.length)
+        progress: this.calculateProgress(avgScore, confidence, performances.length),
       };
     });
-    
+
     return summary;
   }
 }
@@ -473,66 +491,66 @@ class GameStateManager {
     this.subscribers = new Set();
     this.middleware = [];
     this.stateHistory = [];
-    
+
     this.setupPersistence();
   }
-  
+
   getInitialState() {
     return {
       // Core game state
       gamePhase: 'loading', // loading, ready, playing, paused, completed
       currentScene: null,
       playerChoices: [],
-      
+
       // Educational state
       learningProgress: {},
       vocabularyDiscovered: [],
       achievementsUnlocked: [],
-      
+
       // UI state
       modalOpen: null,
       focusedElement: null,
-      
+
       // Settings
       audioEnabled: true,
       animationsEnabled: true,
-      difficultyLevel: this.config.difficulty
+      difficultyLevel: this.config.difficulty,
     };
   }
-  
+
   setState(updates, source = 'game') {
     const previousState = { ...this.state };
-    
+
     // Apply middleware transformations
     let processedUpdates = updates;
     this.middleware.forEach(middleware => {
       processedUpdates = middleware(processedUpdates, previousState);
     });
-    
+
     // Update state
     this.state = { ...this.state, ...processedUpdates };
-    
+
     // Record state change
     this.stateHistory.push({
       timestamp: Date.now(),
       source,
       updates: processedUpdates,
       previousState,
-      newState: { ...this.state }
+      newState: { ...this.state },
     });
-    
+
     // Notify subscribers
     this.notifySubscribers(processedUpdates, previousState);
-    
+
     // Persist state if necessary
     this.persistState();
   }
-  
+
   subscribe(callback) {
     this.subscribers.add(callback);
     return () => this.subscribers.delete(callback);
   }
-  
+
   addMiddleware(middleware) {
     this.middleware.push(middleware);
   }
@@ -552,7 +570,7 @@ class ProgressTracker {
     this.storageKey = `learnimals_progress_${config.gameType}`;
     this.progress = this.loadProgress();
   }
-  
+
   loadProgress() {
     try {
       const stored = localStorage.getItem(this.storageKey);
@@ -562,7 +580,7 @@ class ProgressTracker {
       return this.getDefaultProgress();
     }
   }
-  
+
   getDefaultProgress() {
     return {
       version: '1.0.0',
@@ -570,36 +588,36 @@ class ProgressTracker {
       subject: this.config.subject,
       startedAt: new Date().toISOString(),
       lastPlayedAt: new Date().toISOString(),
-      
+
       // Learning metrics
       totalPlayTime: 0,
       scenesCompleted: [],
       choicesMade: [],
       vocabularyLearned: [],
       achievementsUnlocked: [],
-      
+
       // Performance tracking
       learningObjectiveProgress: {},
       difficultyAdaptations: [],
-      
+
       // Privacy-safe analytics
       sessionCount: 0,
       averageSessionLength: 0,
       preferredDifficulty: this.config.difficulty
     };
   }
-  
+
   updateProgress(updates) {
     this.progress = {
       ...this.progress,
       ...updates,
       lastPlayedAt: new Date().toISOString()
     };
-    
+
     this.saveProgress();
     return this.progress;
   }
-  
+
   saveProgress() {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.progress));
@@ -607,14 +625,14 @@ class ProgressTracker {
       console.warn('Failed to save progress:', error);
     }
   }
-  
+
   exportProgress() {
     return {
       version: this.progress.version,
       gameType: this.progress.gameType,
       subject: this.progress.subject,
       exportedAt: new Date().toISOString(),
-      
+
       // Anonymized progress data
       totalPlayTime: this.progress.totalPlayTime,
       scenesCompletedCount: this.progress.scenesCompleted.length,
@@ -642,28 +660,28 @@ class EducationalModal extends Modal {
       ...options,
       className: `educational-modal ${options.className || ''}`,
       escapeToClose: options.escapeToClose !== false,
-      focusOnOpen: options.focusOnOpen !== false
+      focusOnOpen: options.focusOnOpen !== false,
     });
-    
+
     this.educationalType = options.educationalType || 'info'; // info, vocabulary, achievement, help
     this.learningObjective = options.learningObjective;
   }
-  
+
   render() {
     const content = super.render();
-    
+
     // Add educational-specific styling and behavior
     content.classList.add(`modal--${this.educationalType}`);
-    
+
     // Add appropriate ARIA attributes for educational content
     if (this.educationalType === 'vocabulary') {
       content.setAttribute('role', 'dialog');
       content.setAttribute('aria-describedby', 'vocabulary-definition');
     }
-    
+
     return content;
   }
-  
+
   showVocabularyDefinition(term, definition, context) {
     this.setTitle(`📚 ${term}`);
     this.setContent(`
@@ -685,7 +703,7 @@ class EducationalModal extends Modal {
         </div>
       </div>
     `);
-    
+
     this.open();
   }
 }
@@ -697,29 +715,29 @@ class EducationalModal extends Modal {
 /* Educational game theme system */
 :root {
   /* Base educational colors */
-  --edu-primary: #4A90E2;
-  --edu-secondary: #87CEEB;
-  --edu-accent: #6B8E5A;
-  --edu-success: #27AE60;
-  --edu-warning: #F39C12;
-  --edu-error: #E74C3C;
-  
+  --edu-primary: #4a90e2;
+  --edu-secondary: #87ceeb;
+  --edu-accent: #6b8e5a;
+  --edu-success: #27ae60;
+  --edu-warning: #f39c12;
+  --edu-error: #e74c3c;
+
   /* Semantic educational colors */
-  --vocab-highlight: #FFE5B4;
+  --vocab-highlight: #ffe5b4;
   --choice-hover: rgba(74, 144, 226, 0.1);
-  --progress-complete: #27AE60;
-  --progress-incomplete: #BDC3C7;
-  
+  --progress-complete: #27ae60;
+  --progress-incomplete: #bdc3c7;
+
   /* Accessibility-compliant text colors */
-  --text-primary: #2C3E50;
-  --text-secondary: #7F8C8D;
-  --text-on-primary: #FFFFFF;
-  --text-on-dark: #FFFFFF;
-  
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --text-on-primary: #ffffff;
+  --text-on-dark: #ffffff;
+
   /* Interactive element colors */
-  --focus-ring: #4A90E2;
+  --focus-ring: #4a90e2;
   --focus-ring-offset: 2px;
-  
+
   /* Educational game spacing */
   --content-padding: 2rem;
   --element-spacing: 1rem;
@@ -818,7 +836,7 @@ class EducationalModal extends Modal {
     --content-padding: 1rem;
     --element-spacing: 0.75rem;
   }
-  
+
   .story-choice {
     padding: 0.75rem;
   }
@@ -839,96 +857,96 @@ class AccessibilityTestSuite {
     this.container = gameContainer;
     this.violations = [];
   }
-  
+
   async runFullAudit() {
     const results = {
       keyboard: await this.testKeyboardNavigation(),
       aria: await this.testAriaCompliance(),
       contrast: await this.testColorContrast(),
       focus: await this.testFocusManagement(),
-      screenReader: await this.testScreenReaderCompatibility()
+      screenReader: await this.testScreenReaderCompatibility(),
     };
-    
+
     return results;
   }
-  
+
   async testKeyboardNavigation() {
     const interactiveElements = this.container.querySelectorAll(
       'button, [role="button"], input, select, textarea, a[href], [tabindex]'
     );
-    
+
     const issues = [];
-    
+
     interactiveElements.forEach((element, index) => {
       // Check if element is focusable
       if (!this.isFocusable(element)) {
         issues.push({
           element,
           issue: 'Interactive element is not focusable',
-          severity: 'high'
+          severity: 'high',
         });
       }
-      
+
       // Check for accessible name
       if (!this.hasAccessibleName(element)) {
         issues.push({
           element,
           issue: 'Interactive element lacks accessible name',
-          severity: 'high'
+          severity: 'high',
         });
       }
     });
-    
+
     return { passed: issues.length === 0, issues };
   }
-  
+
   async testAriaCompliance() {
     const issues = [];
-    
+
     // Check for proper ARIA usage
     const ariaElements = this.container.querySelectorAll('[aria-*]');
-    
+
     ariaElements.forEach(element => {
       const ariaAttributes = this.getAriaAttributes(element);
-      
+
       ariaAttributes.forEach(attr => {
         if (!this.isValidAriaAttribute(attr.name, attr.value)) {
           issues.push({
             element,
             issue: `Invalid ARIA attribute: ${attr.name}="${attr.value}"`,
-            severity: 'medium'
+            severity: 'medium',
           });
         }
       });
     });
-    
+
     return { passed: issues.length === 0, issues };
   }
-  
+
   async testColorContrast() {
     // Test color contrast ratios
     const textElements = this.container.querySelectorAll('*');
     const issues = [];
-    
+
     textElements.forEach(element => {
       const styles = getComputedStyle(element);
       const textColor = styles.color;
       const backgroundColor = this.getEffectiveBackgroundColor(element);
-      
+
       if (textColor && backgroundColor) {
         const contrastRatio = this.calculateContrastRatio(textColor, backgroundColor);
         const minRatio = this.getMinimumContrastRatio(element);
-        
+
         if (contrastRatio < minRatio) {
           issues.push({
             element,
             issue: `Insufficient color contrast: ${contrastRatio.toFixed(2)}:1 (minimum: ${minRatio}:1)`,
-            severity: 'high'
+            severity: 'high',
           });
         }
       }
     });
-    
+
     return { passed: issues.length === 0, issues };
   }
 }
@@ -947,54 +965,54 @@ class EducationalContentValidator {
     this.targetAge = targetAge;
     this.validators = this.initializeValidators();
   }
-  
+
   initializeValidators() {
     return {
       readingLevel: new ReadingLevelValidator(this.targetAge),
       vocabulary: new VocabularyValidator(this.targetAge),
       content: new ContentAppropriateness(this.targetAge),
-      learning: new LearningObjectiveAlignment(this.objectives)
+      learning: new LearningObjectiveAlignment(this.objectives),
     };
   }
-  
+
   validateStoryContent(storyData) {
     const results = {
       overall: 'pass',
       details: {},
-      recommendations: []
+      recommendations: [],
     };
-    
+
     // Validate each scene
     Object.entries(storyData.scenes).forEach(([sceneId, scene]) => {
       results.details[sceneId] = this.validateScene(scene);
-      
+
       if (results.details[sceneId].issues.length > 0) {
         results.overall = 'warning';
       }
     });
-    
+
     // Generate recommendations
     results.recommendations = this.generateRecommendations(results.details);
-    
+
     return results;
   }
-  
+
   validateScene(scene) {
     const sceneResults = {
       readingLevel: this.validators.readingLevel.validate(scene.content),
       vocabulary: this.validators.vocabulary.validate(scene.vocabulary || []),
       appropriateness: this.validators.content.validate(scene.content),
       alignment: this.validators.learning.validate(scene),
-      issues: []
+      issues: [],
     };
-    
+
     // Collect issues
     Object.values(sceneResults).forEach(result => {
       if (result.issues) {
         sceneResults.issues.push(...result.issues);
       }
     });
-    
+
     return sceneResults;
   }
 }
@@ -1017,15 +1035,13 @@ const EDUCATIONAL_ASSETS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(EDUCATIONAL_ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(EDUCATIONAL_ASSETS)));
 });
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
+    caches
+      .match(event.request)
       .then(response => {
         // Return cached version or fetch from network
         return response || fetch(event.request);
@@ -1052,13 +1068,13 @@ class PerformanceOptimizer {
     this.game = game;
     this.performanceObserver = new PerformanceObserver(this.handlePerformanceEntry.bind(this));
     this.memoryUsage = new Map();
-    
+
     this.setupPerformanceMonitoring();
   }
-  
+
   setupPerformanceMonitoring() {
     this.performanceObserver.observe({ entryTypes: ['measure', 'navigation', 'paint'] });
-    
+
     // Monitor memory usage
     if ('memory' in performance) {
       setInterval(() => {
@@ -1066,11 +1082,11 @@ class PerformanceOptimizer {
       }, 10000); // Every 10 seconds
     }
   }
-  
+
   optimizeAssetLoading() {
     // Prioritize critical educational content
     const criticalAssets = this.identifyCriticalAssets();
-    
+
     // Preload critical assets
     criticalAssets.forEach(asset => {
       const link = document.createElement('link');
@@ -1079,11 +1095,11 @@ class PerformanceOptimizer {
       link.as = asset.type;
       document.head.appendChild(link);
     });
-    
+
     // Lazy load non-critical assets
     this.lazyLoadNonCriticalAssets();
   }
-  
+
   identifyCriticalAssets() {
     return [
       { url: '/src/features/games/story-safari/storyData.js', type: 'script' },
@@ -1091,14 +1107,14 @@ class PerformanceOptimizer {
       // Add game-specific critical assets
     ];
   }
-  
+
   optimizeMemoryUsage() {
     // Clean up unused resources
     this.cleanupUnusedAssets();
-    
+
     // Implement object pooling for frequently created objects
     this.setupObjectPooling();
-    
+
     // Monitor and prevent memory leaks
     this.preventMemoryLeaks();
   }
@@ -1121,19 +1137,19 @@ class GamePluginSystem {
     this.hooks = new Map();
     this.apiVersion = '1.0.0';
   }
-  
+
   registerPlugin(pluginId, plugin) {
     if (!this.isCompatiblePlugin(plugin)) {
       throw new Error(`Plugin ${pluginId} is not compatible with API version ${this.apiVersion}`);
     }
-    
+
     this.plugins.set(pluginId, plugin);
-    
+
     // Initialize plugin
     if (plugin.initialize) {
       plugin.initialize(this.createPluginAPI(pluginId));
     }
-    
+
     // Register plugin hooks
     if (plugin.hooks) {
       Object.entries(plugin.hooks).forEach(([hookName, handler]) => {
@@ -1141,27 +1157,27 @@ class GamePluginSystem {
       });
     }
   }
-  
+
   createPluginAPI(pluginId) {
     return {
       // Safe subset of game API for plugins
       emit: this.game.eventBus.emit.bind(this.game.eventBus),
       on: this.game.eventBus.on.bind(this.game.eventBus),
-      
+
       // Educational API
       addVocabularyTerm: this.game.addVocabularyTerm?.bind(this.game),
       trackProgress: this.game.trackLearningProgress?.bind(this.game),
-      
+
       // UI API
-      showModal: (content) => this.game.accessibility?.announce(content),
-      addUIElement: (element) => this.game.container.appendChild(element),
-      
+      showModal: content => this.game.accessibility?.announce(content),
+      addUIElement: element => this.game.container.appendChild(element),
+
       // Storage API
       getPluginStorage: () => this.getPluginStorage(pluginId),
-      setPluginStorage: (data) => this.setPluginStorage(pluginId, data)
+      setPluginStorage: data => this.setPluginStorage(pluginId, data),
     };
   }
-  
+
   // Example plugins that could be developed:
   // - Analytics plugin for learning insights
   // - Voice narration plugin
@@ -1184,48 +1200,42 @@ class ExternalAPIIntegration {
     this.integrations = new Map();
     this.rateLimiter = new RateLimiter();
   }
-  
+
   registerIntegration(name, integration) {
     this.integrations.set(name, integration);
   }
-  
+
   // Example integrations:
-  
+
   async integrateWithLMS(lmsConfig) {
     // Generic LMS integration for progress reporting
     const lmsAPI = new LMSAPIClient(lmsConfig);
-    
+
     return {
       reportProgress: async (studentId, progress) => {
-        await this.rateLimiter.execute(() => 
-          lmsAPI.reportProgress(studentId, progress)
-        );
+        await this.rateLimiter.execute(() => lmsAPI.reportProgress(studentId, progress));
       },
-      
-      getAssignments: async (studentId) => {
-        return await this.rateLimiter.execute(() =>
-          lmsAPI.getAssignments(studentId)
-        );
-      }
+
+      getAssignments: async studentId => {
+        return await this.rateLimiter.execute(() => lmsAPI.getAssignments(studentId));
+      },
     };
   }
-  
+
   async integrateWithAssessmentAPI(assessmentConfig) {
     // External assessment service integration
     const assessmentAPI = new AssessmentAPIClient(assessmentConfig);
-    
+
     return {
-      submitAssessment: async (assessment) => {
-        return await this.rateLimiter.execute(() =>
-          assessmentAPI.submit(assessment)
-        );
+      submitAssessment: async assessment => {
+        return await this.rateLimiter.execute(() => assessmentAPI.submit(assessment));
       },
-      
-      getRecommendations: async (studentProfile) => {
+
+      getRecommendations: async studentProfile => {
         return await this.rateLimiter.execute(() =>
           assessmentAPI.getRecommendations(studentProfile)
         );
-      }
+      },
     };
   }
 }
@@ -1248,4 +1258,4 @@ This framework will continue to evolve based on user feedback, technological adv
 
 ---
 
-*This framework documentation serves as both a technical specification and a guide for developers creating educational games within the Learnimals ecosystem.*
+_This framework documentation serves as both a technical specification and a guide for developers creating educational games within the Learnimals ecosystem._

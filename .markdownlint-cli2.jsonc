@@ -4,6 +4,11 @@
   "ignores": [
     "node_modules/**",
     "docs/**",
+    ".serena/**",
+    "src/features/games/ecosystem-safari/ARCHITECTURE_DECISIONS.md",
+    "src/features/games/ecosystem-safari/DEVELOPMENT_ROADMAP.md",
+    "src/features/games/ecosystem-safari/VALIDATION_REPORT.md",
+    "src/features/games/ecosystem-safari/REUSABLE_PATTERNS.md",
     ".claudeCodeStuffToStashForNow/**",
     ".claude/**",
     "playwright-report/**",

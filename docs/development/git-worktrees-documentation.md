@@ -1,23 +1,28 @@
 # Git Worktrees Documentation
 
 ## Overview
+
 This document contains proposed documentation for Git worktrees, including recommendations for where to place this information in existing documentation files.
 
 ## Recommended Placement
 
 ### Primary Location: CODE_STANDARDS.md
+
 Add this content to `/Users/austinorphan/Library/Mobile Documents/com~apple~CloudDocs/src/dotfiles/CODE_STANDARDS.md` after line 341, expanding the existing "Git Workflow" section.
 
 ### Optional Cross-References
 
 1. **In global CLAUDE.md** (under "Misc" section):
+
    ```markdown
    - For multi-branch development, see Git Worktrees in CODE_STANDARDS.md
    ```
 
 2. **In project-specific CLAUDE.md files** (when applicable):
+
    ```markdown
    ### Development with Worktrees
+
    This project uses git worktrees for parallel development. See CODE_STANDARDS.md for setup.
    ```
 
@@ -28,9 +33,11 @@ Add this content to `/Users/austinorphan/Library/Mobile Documents/com~apple~Clou
 ### Git Worktrees
 
 #### What Are Worktrees?
+
 Git worktrees allow you to have multiple branches checked out simultaneously in separate directories. Each worktree has its own working copy while sharing the same repository data.
 
 #### When to Use Worktrees
+
 - **Parallel feature development**: Work on multiple features without stashing/switching
 - **Quick hotfixes**: Fix production issues while preserving feature work
 - **Code reviews**: Review PRs without disrupting current work
@@ -38,6 +45,7 @@ Git worktrees allow you to have multiple branches checked out simultaneously in 
 - **Long-running builds**: Keep working while another branch compiles/tests
 
 #### Basic Commands
+
 ```bash
 # Add a new worktree
 git worktree add ../project-feature-x feature/x
@@ -56,7 +64,9 @@ git worktree prune
 ```
 
 #### Recommended Workflow
+
 1. **Directory structure**:
+
    ```
    ~/projects/
    ├── myproject/          # Main worktree (usually main/master)
@@ -68,6 +78,7 @@ git worktree prune
 2. **Naming convention**: Use `projectname-purpose` for worktree directories
 
 3. **Setup script** (add to project):
+
    ```bash
    #!/bin/bash
    # scripts/setup-worktrees.sh
@@ -76,6 +87,7 @@ git worktree prune
    ```
 
 #### Best Practices
+
 - **Don't commit in the wrong worktree**: Each worktree tracks its own branch
 - **Keep worktrees focused**: One worktree per major task
 - **Clean up regularly**: Remove worktrees when branches are merged
@@ -84,11 +96,13 @@ git worktree prune
 - **Update git hooks**: Ensure hooks work across all worktrees
 
 #### IDE/Editor Configuration
+
 - **VS Code**: Open each worktree as a separate window
 - **Multiple terminals**: Dedicate terminals to specific worktrees
 - **Environment variables**: Set `WORKTREE_TYPE` to identify context
 
 #### Common Issues & Solutions
+
 - **"branch already checked out"**: Can't checkout same branch in multiple worktrees
 - **Stale worktrees**: Run `git worktree prune` after deleting directories
 - **Submodule confusion**: Each worktree needs `git submodule update`

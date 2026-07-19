@@ -11,6 +11,7 @@ This document establishes coding standards and conventions for the Learnimals pr
 ### ES6+ Features
 
 #### Use Modern JavaScript
+
 ```javascript
 // ✅ GOOD - Use const/let
 const MAX_ATTEMPTS = 3;
@@ -22,6 +23,7 @@ var currentAttempt = 0;
 ```
 
 #### Arrow Functions
+
 ```javascript
 // ✅ GOOD - Arrow functions for callbacks
 const numbers = [1, 2, 3];
@@ -46,6 +48,7 @@ class Component {
 ```
 
 #### Destructuring
+
 ```javascript
 // ✅ GOOD - Object destructuring
 const { name, age, email } = user;
@@ -65,6 +68,7 @@ const email = user.email;
 ```
 
 #### Template Literals
+
 ```javascript
 // ✅ GOOD
 const message = `Welcome ${user.name}! You have ${count} new messages.`;
@@ -82,6 +86,7 @@ const message = 'Welcome ' + user.name + '! You have ' + count + ' new messages.
 ### Naming Conventions
 
 #### Variables and Functions
+
 ```javascript
 // ✅ GOOD - Descriptive names
 const userScore = 100;
@@ -101,22 +106,24 @@ function calc(c, t) {
 ```
 
 #### Constants
+
 ```javascript
 // ✅ GOOD - UPPER_SNAKE_CASE for true constants
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const API_ENDPOINTS = {
   USERS: '/api/users',
-  ACTIVITIES: '/api/activities'
+  ACTIVITIES: '/api/activities',
 };
 
 // Configuration objects can use camelCase
 const config = {
   apiUrl: 'https://api.learnimals.com',
-  timeout: 30000
+  timeout: 30000,
 };
 ```
 
 #### Classes and Constructors
+
 ```javascript
 // ✅ GOOD - PascalCase for classes
 class UserProfile {
@@ -130,11 +137,12 @@ class ActivityManager extends BaseManager {
 }
 
 // Component naming
-class CardComponent { }
-class ProgressBarComponent { }
+class CardComponent {}
+class ProgressBarComponent {}
 ```
 
 #### Private Properties/Methods
+
 ```javascript
 // ✅ GOOD - Underscore prefix for private
 class DataService {
@@ -154,7 +162,7 @@ class DataService {
 // Or use # for true private fields (ES2022)
 class ModernService {
   #privateField = 42;
-  
+
   #privateMethod() {
     return this.#privateField;
   }
@@ -164,6 +172,7 @@ class ModernService {
 ### Code Organization
 
 #### Module Structure
+
 ```javascript
 // ✅ GOOD - Clear module organization
 // userService.js
@@ -197,6 +206,7 @@ export default new UserService(HttpClient);
 ```
 
 #### Import Organization
+
 ```javascript
 // ✅ GOOD - Organized imports
 // 1. External dependencies
@@ -218,6 +228,7 @@ import type { User, Activity } from '@/types';
 ### Functions and Methods
 
 #### Function Guidelines
+
 ```javascript
 // ✅ GOOD - Single responsibility
 function calculateDiscount(price, discountPercent) {
@@ -240,6 +251,7 @@ function processOrder(order) {
 ```
 
 #### Default Parameters
+
 ```javascript
 // ✅ GOOD
 function createUser(name, role = 'student', active = true) {
@@ -252,23 +264,24 @@ function createActivity({
   subject,
   difficulty = 'medium',
   duration = 30,
-  maxAttempts = 3
+  maxAttempts = 3,
 } = {}) {
   return { title, subject, difficulty, duration, maxAttempts };
 }
 ```
 
 #### Async/Await
+
 ```javascript
 // ✅ GOOD - Clean async code
 async function fetchUserData(userId) {
   try {
     const user = await api.getUser(userId);
     const activities = await api.getUserActivities(userId);
-    
+
     return {
       user,
-      activities
+      activities,
     };
   } catch (error) {
     console.error('Failed to fetch user data:', error);
@@ -281,9 +294,9 @@ async function fetchDashboardData(userId) {
   const [user, activities, achievements] = await Promise.all([
     api.getUser(userId),
     api.getUserActivities(userId),
-    api.getUserAchievements(userId)
+    api.getUserAchievements(userId),
   ]);
-  
+
   return { user, activities, achievements };
 }
 ```
@@ -291,6 +304,7 @@ async function fetchDashboardData(userId) {
 ### Error Handling
 
 #### Try-Catch Patterns
+
 ```javascript
 // ✅ GOOD - Specific error handling
 class APIError extends Error {
@@ -304,14 +318,11 @@ class APIError extends Error {
 async function fetchData(endpoint) {
   try {
     const response = await fetch(endpoint);
-    
+
     if (!response.ok) {
-      throw new APIError(
-        `API request failed: ${response.statusText}`,
-        response.status
-      );
+      throw new APIError(`API request failed: ${response.statusText}`, response.status);
     }
-    
+
     return await response.json();
   } catch (error) {
     if (error instanceof APIError) {
@@ -330,6 +341,7 @@ async function fetchData(endpoint) {
 ```
 
 #### Error Boundaries
+
 ```javascript
 // ✅ GOOD - Component error boundaries
 class ErrorBoundary {
@@ -362,29 +374,42 @@ class ErrorBoundary {
 ### Naming Conventions
 
 #### BEM Methodology
+
 ```css
 /* ✅ GOOD - BEM naming */
 /* Block */
-.card { }
+.card {
+}
 
 /* Element */
-.card__header { }
-.card__body { }
-.card__footer { }
+.card__header {
+}
+.card__body {
+}
+.card__footer {
+}
 
 /* Modifier */
-.card--large { }
-.card--highlighted { }
-.card__header--centered { }
+.card--large {
+}
+.card--highlighted {
+}
+.card__header--centered {
+}
 
 /* ❌ BAD - Inconsistent naming */
-.card { }
-.cardHeader { }
-.card-large { }
-.card_highlighted { }
+.card {
+}
+.cardHeader {
+}
+.card-large {
+}
+.card_highlighted {
+}
 ```
 
 #### CSS Custom Properties
+
 ```css
 /* ✅ GOOD - Semantic naming */
 :root {
@@ -392,24 +417,24 @@ class ErrorBoundary {
   --color-primary: #007bff;
   --color-primary-dark: #0056b3;
   --color-secondary: #6c757d;
-  
+
   /* Text */
   --text-primary: #333333;
   --text-secondary: #666666;
   --text-muted: #999999;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Typography */
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.25rem;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -419,38 +444,57 @@ class ErrorBoundary {
 ### Organization
 
 #### File Structure
+
 ```css
 /* ✅ GOOD - Logical organization */
 
 /* 1. CSS Custom Properties */
-:root { }
+:root {
+}
 
 /* 2. Base/Reset Styles */
-* { box-sizing: border-box; }
-body { margin: 0; }
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
 
 /* 3. Typography */
-h1, h2, h3 { }
-p { }
+h1,
+h2,
+h3 {
+}
+p {
+}
 
 /* 4. Layout Components */
-.container { }
-.grid { }
+.container {
+}
+.grid {
+}
 
 /* 5. UI Components */
-.button { }
-.card { }
+.button {
+}
+.card {
+}
 
 /* 6. Utilities */
-.text-center { }
-.mt-1 { }
+.text-center {
+}
+.mt-1 {
+}
 
 /* 7. Media Queries (mobile-first) */
-@media (min-width: 768px) { }
-@media (min-width: 1024px) { }
+@media (min-width: 768px) {
+}
+@media (min-width: 1024px) {
+}
 ```
 
 #### Component Styles
+
 ```css
 /* ✅ GOOD - Component encapsulation */
 .button {
@@ -459,23 +503,23 @@ p { }
   align-items: center;
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: var(--font-size-base);
-  
+
   /* Variants */
   &--primary {
     background-color: var(--color-primary);
     color: white;
   }
-  
+
   &--large {
     padding: var(--spacing-md) var(--spacing-lg);
     font-size: var(--font-size-lg);
   }
-  
+
   /* States */
   &:hover {
     opacity: 0.9;
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -486,6 +530,7 @@ p { }
 ### Responsive Design
 
 #### Mobile-First Approach
+
 ```css
 /* ✅ GOOD - Mobile-first */
 .card {
@@ -511,6 +556,7 @@ p { }
 ```
 
 #### Breakpoint Variables
+
 ```css
 /* ✅ GOOD - Consistent breakpoints */
 :root {
@@ -569,11 +615,7 @@ p { }
 
 ```html
 <!-- ✅ GOOD - Accessible markup -->
-<button 
-  class="button button--primary"
-  aria-label="Start math activity"
-  aria-pressed="false"
->
+<button class="button button--primary" aria-label="Start math activity" aria-pressed="false">
   <svg class="icon" aria-hidden="true">
     <use href="#icon-play"></use>
   </svg>
@@ -582,16 +624,8 @@ p { }
 
 <form>
   <label for="username">Username</label>
-  <input 
-    type="text" 
-    id="username" 
-    name="username"
-    required
-    aria-describedby="username-error"
-  >
-  <span id="username-error" class="error" role="alert">
-    Username is required
-  </span>
+  <input type="text" id="username" name="username" required aria-describedby="username-error" />
+  <span id="username-error" class="error" role="alert"> Username is required </span>
 </form>
 ```
 
@@ -599,7 +633,7 @@ p { }
 
 ```html
 <!-- ✅ GOOD - Data attributes for JavaScript -->
-<div 
+<div
   class="activity-card"
   data-activity-id="math-101"
   data-subject="math"
@@ -608,11 +642,7 @@ p { }
   <!-- Content -->
 </div>
 
-<button
-  class="theme-toggle"
-  data-action="toggle-theme"
-  data-current-theme="light"
->
+<button class="theme-toggle" data-action="toggle-theme" data-current-theme="light">
   Toggle Theme
 </button>
 ```
@@ -664,20 +694,24 @@ BREAKING CHANGE: Activity API now returns nested structure
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Manual testing completed
 - [ ] No console errors
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Comments added for complex logic
@@ -745,16 +779,16 @@ function processActivityData(data) {
   // Sort by timestamp to ensure chronological order
   // Required for progress calculation accuracy
   const sorted = data.sort((a, b) => a.timestamp - b.timestamp);
-  
+
   // Use Map for O(1) lookups instead of repeated array searches
   const activityMap = new Map();
-  
+
   return sorted.reduce((acc, item) => {
     // Skip duplicate entries (data sync issue workaround)
     if (activityMap.has(item.id)) {
       return acc;
     }
-    
+
     activityMap.set(item.id, true);
     acc.push(processItem(item));
     return acc;
@@ -828,12 +862,12 @@ Button/
 // Memoization for expensive operations
 const memoizedCalculation = (() => {
   const cache = new Map();
-  
-  return (input) => {
+
+  return input => {
     if (cache.has(input)) {
       return cache.get(input);
     }
-    
+
     const result = expensiveCalculation(input);
     cache.set(input, result);
     return result;
@@ -850,7 +884,7 @@ function debounce(fn, delay) {
 }
 
 // Event delegation
-document.addEventListener('click', (event) => {
+document.addEventListener('click', event => {
   if (event.target.matches('.button')) {
     handleButtonClick(event.target);
   }
@@ -864,12 +898,12 @@ document.addEventListener('click', (event) => {
 function updateElements(elements, data) {
   // Create document fragment
   const fragment = document.createDocumentFragment();
-  
+
   data.forEach(item => {
     const element = createElement(item);
     fragment.appendChild(element);
   });
-  
+
   // Single DOM update
   container.appendChild(fragment);
 }
@@ -889,6 +923,7 @@ data.forEach(item => {
 
 ```markdown
 ## Code Quality
+
 - [ ] Code follows project style guide
 - [ ] No commented-out code
 - [ ] No console.logs in production code
@@ -896,24 +931,28 @@ data.forEach(item => {
 - [ ] Variable names are descriptive
 
 ## Testing
+
 - [ ] All tests pass
 - [ ] New features have tests
 - [ ] Edge cases are tested
 - [ ] Error scenarios are handled
 
 ## Documentation
+
 - [ ] JSDoc comments for public APIs
 - [ ] Complex logic is commented
 - [ ] README updated if needed
 - [ ] CHANGELOG updated
 
 ## Security
+
 - [ ] No hardcoded secrets
 - [ ] Input validation in place
 - [ ] XSS prevention measures
 - [ ] Dependencies are secure
 
 ## Performance
+
 - [ ] No unnecessary re-renders
 - [ ] Large lists are paginated
 - [ ] Images are optimized
@@ -932,25 +971,25 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true
+    node: true,
   },
   extends: ['eslint:recommended'],
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
-    'indent': ['error', 2],
-    'quotes': ['error', 'single'],
-    'semi': ['error', 'always'],
-    'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+    indent: ['error', 2],
+    quotes: ['error', 'single'],
+    semi: ['error', 'always'],
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'prefer-const': 'error',
     'no-var': 'error',
     'arrow-spacing': 'error',
     'object-curly-spacing': ['error', 'always'],
-    'array-bracket-spacing': ['error', 'never']
-  }
+    'array-bracket-spacing': ['error', 'never'],
+  },
 };
 ```
 
@@ -972,4 +1011,4 @@ module.exports = {
 
 ---
 
-*These standards should be reviewed and updated regularly as the team grows and new best practices emerge.*
+_These standards should be reviewed and updated regularly as the team grows and new best practices emerge._

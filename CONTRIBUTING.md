@@ -1,6 +1,7 @@
 # Contributing to Learnimals
 
-Thank you for your interest in contributing to Learnimals! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Learnimals! This document provides guidelines and
+instructions for contributing to the project.
 
 ## Development Setup
 
@@ -121,7 +122,7 @@ Releases are managed automatically:
 
 ## Project Structure
 
-```
+```text
 learnimals/
 ├── src/                    # Source code
 │   ├── pages/              # HTML pages
@@ -144,4 +145,5 @@ learnimals/
 
 ## Code of Conduct
 
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
+Please note that this project is released with a Contributor Code of Conduct. By participating in
+this project you agree to abide by its terms.

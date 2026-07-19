@@ -11,7 +11,7 @@ Edit `src/config.js` and add your new subject to the `subjects` object:
 ```javascript
 subjects: {
   // ... existing subjects ...
-  
+
   music: {
     name: 'Music',
     character: {
@@ -28,6 +28,7 @@ subjects: {
 ### 2. Add Character Image
 
 Place the character image in `/public/images/` following the naming convention:
+
 - `{subject}-{animal}.png` (e.g., `music-bird.png`)
 
 ### 3. Create Subject Files
@@ -53,45 +54,45 @@ Create `src/features/subjects/shared/music.html`:
 ```html
 <!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music - Learnimals</title>
     <script type="module">
-        import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
-        
-        const musicOptions = {
-            subjectName: 'Music',
-            subjectLower: 'music',
-            subjectDescription: 'Learn music theory and instruments with fun activities',
-            characterName: 'Melody',
-            characterType: 'Bird',
-            heroSubtitle: 'Make beautiful music with Melody!',
-            
-            featureCardsData: [
-                {
-                    title: 'Music Theory Basics',
-                    content: '<p>Learn notes, scales, and rhythm!</p>',
-                    linkUrl: '#',
-                    linkText: 'Start Learning'
-                },
-                {
-                    title: 'Virtual Piano',
-                    content: '<p>Play piano with your keyboard!</p>',
-                    linkUrl: '#',
-                    linkText: 'Play Now'
-                }
-            ]
-        };
-        
-        document.addEventListener('DOMContentLoaded', async () => {
-            await SubjectTemplateLoader.renderTemplate(musicOptions);
-        });
+      import SubjectTemplateLoader from '/src/utils/subjectTemplateLoader.js';
+
+      const musicOptions = {
+        subjectName: 'Music',
+        subjectLower: 'music',
+        subjectDescription: 'Learn music theory and instruments with fun activities',
+        characterName: 'Melody',
+        characterType: 'Bird',
+        heroSubtitle: 'Make beautiful music with Melody!',
+
+        featureCardsData: [
+          {
+            title: 'Music Theory Basics',
+            content: '<p>Learn notes, scales, and rhythm!</p>',
+            linkUrl: '#',
+            linkText: 'Start Learning',
+          },
+          {
+            title: 'Virtual Piano',
+            content: '<p>Play piano with your keyboard!</p>',
+            linkUrl: '#',
+            linkText: 'Play Now',
+          },
+        ],
+      };
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        await SubjectTemplateLoader.renderTemplate(musicOptions);
+      });
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <p>Loading music content...</p>
-</body>
+  </body>
 </html>
 ```
 
@@ -104,16 +105,19 @@ Create a full HTML page in `src/features/subjects/music/music.html` with custom 
 Once you add a subject to `src/config.js`, the following happens automatically:
 
 ### ✅ About Page Updates
+
 - The "Meet Our Animal Educators" section automatically includes your new character
 - Character name, image, and role are pulled from the config
 - No manual HTML editing required
 
 ### ✅ Centralized Management
+
 - All subject data is managed in one location (`src/config.js`)
 - Easy to update character details, descriptions, or add new subjects
 - Consistent naming and structure across the application
 
 ### ✅ Theme Integration
+
 - New subjects automatically inherit the theme system
 - Character images and content adapt to light/dark modes
 - Consistent styling with existing subjects
@@ -134,7 +138,7 @@ music: {
     role: 'Music Teacher'
   },
   description: 'Learn music theory and instruments with fun activities',
-  
+
   // Advanced options
   color: '#9b59b6',          // Subject-specific color
   difficulty: 'beginner',     // Difficulty level

@@ -1,17 +1,22 @@
 # Future Features and Aspirational Architecture
 
-This document contains features and architecture that exist in configuration but are not currently in active use. These represent potential future directions for the project.
+This document contains features and architecture that exist in configuration but are not currently
+in active use. These represent potential future directions for the project.
 
 ## Deployment Infrastructure
 
 ### Kubernetes Deployment
+
 The project includes Kubernetes manifests for future cloud deployment:
+
 - **`k8s/production/`** - Production environment Kubernetes manifests
 - **`k8s/staging/`** - Staging environment Kubernetes manifests
 - Implements rolling deployments with PodDisruptionBudgets
 
 ### Docker Support
+
 Docker configuration exists for containerized deployment:
+
 - **`Dockerfile`** - Multi-stage build with security hardening
 - **`docker-compose.yml`** - Local development with monitoring
 - **`docker/nginx.conf`** - Main nginx configuration with security headers
@@ -19,6 +24,7 @@ Docker configuration exists for containerized deployment:
 - **`docker/healthcheck.sh`** - Container health check script
 
 ### Make Commands for Docker
+
 ```bash
 # Build and run with Docker Compose (includes monitoring)
 make docker-run
@@ -37,6 +43,7 @@ make docker-build
 ```
 
 ### Deployment Commands
+
 ```bash
 # Deploy to staging
 make deploy-staging
@@ -51,11 +58,14 @@ make validate-k8s
 ## CI/CD Workflows
 
 ### Advanced Deployment Workflows
+
 - **`.github/workflows/deploy-rolling.yml`** - Rolling deployment workflow for multiple environments
 - **`.github/workflows/monitoring.yml`** - Production monitoring and alerts
 
 ### Required GitHub Secrets (Future)
+
 For CI/CD to work properly when activated:
+
 - `SNYK_TOKEN` - For dependency vulnerability scanning
 - `GITLEAKS_LICENSE` - For enhanced Gitleaks features (optional)
 - `FOSSA_API_KEY` - For license compliance scanning
@@ -65,6 +75,7 @@ For CI/CD to work properly when activated:
 ## Security Infrastructure
 
 ### Advanced Security Scanning
+
 - Container security scanning with Trivy
 - Infrastructure as Code scanning
 - Network policies for Kubernetes deployments
@@ -73,6 +84,7 @@ For CI/CD to work properly when activated:
 ## Monitoring and Performance
 
 ### Production Monitoring Stack
+
 - Prometheus metrics collection
 - Grafana dashboards
 - Lighthouse CI performance tracking
@@ -80,4 +92,5 @@ For CI/CD to work properly when activated:
 
 ## Notes
 
-These features exist in the codebase but are not currently active. They represent a roadmap for future infrastructure improvements when the project scales beyond static hosting.
+These features exist in the codebase but are not currently active. They represent a roadmap for
+future infrastructure improvements when the project scales beyond static hosting.

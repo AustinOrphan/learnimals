@@ -9,18 +9,21 @@ This document outlines security best practices for the Learnimals educational pl
 ## Core Security Principles
 
 ### 1. Privacy by Design
+
 - Collect minimal data necessary for functionality
 - Store data locally when possible
 - Encrypt sensitive data at rest and in transit
 - Provide clear data retention and deletion policies
 
 ### 2. Defense in Depth
+
 - Multiple layers of security controls
 - Assume any single control might fail
 - Regular security audits and updates
 - Incident response planning
 
 ### 3. Least Privilege
+
 - Components get minimal necessary permissions
 - Users have role-based access controls
 - API endpoints restricted by authentication
@@ -33,6 +36,7 @@ This document outlines security best practices for the Learnimals educational pl
 ### Input Validation and Sanitization
 
 #### Never Trust User Input
+
 ```javascript
 // BAD - Direct innerHTML usage
 element.innerHTML = userInput;
@@ -44,6 +48,7 @@ element.innerHTML = DOMPurify.sanitize(userInput);
 ```
 
 #### Validation Patterns
+
 ```javascript
 // Input Validation Helper
 class InputValidator {
@@ -70,9 +75,12 @@ class InputValidator {
 ### Content Security Policy (CSP)
 
 #### Implementation
+
 ```html
 <!-- Meta tag for development -->
-<meta http-equiv="Content-Security-Policy" content="
+<meta
+  http-equiv="Content-Security-Policy"
+  content="
   default-src 'self';
   script-src 'self' 'nonce-RANDOM_NONCE';
   style-src 'self' 'unsafe-inline';
@@ -83,10 +91,12 @@ class InputValidator {
   base-uri 'self';
   form-action 'self';
   frame-ancestors 'none';
-">
+"
+/>
 ```
 
 #### Nonce Generation
+
 ```javascript
 // Generate nonce for inline scripts
 function generateNonce() {
@@ -103,6 +113,7 @@ script.setAttribute('nonce', nonce);
 ### Secure Storage
 
 #### Local Storage Guidelines
+
 ```javascript
 // NEVER store sensitive data in localStorage
 // BAD
@@ -115,6 +126,7 @@ localStorage.setItem('language', 'en');
 ```
 
 #### IndexedDB Encryption
+
 ```javascript
 // Encrypt sensitive data before storage
 class SecureStorage {
@@ -122,16 +134,12 @@ class SecureStorage {
     const key = await this.getKey();
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const encoded = new TextEncoder().encode(JSON.stringify(data));
-    
-    const encrypted = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv },
-      key,
-      encoded
-    );
-    
+
+    const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+
     return {
       iv: Array.from(iv),
-      data: Array.from(new Uint8Array(encrypted))
+      data: Array.from(new Uint8Array(encrypted)),
     };
   }
 
@@ -142,7 +150,7 @@ class SecureStorage {
       key,
       new Uint8Array(encryptedData.data)
     );
-    
+
     return JSON.parse(new TextDecoder().decode(decrypted));
   }
 }
@@ -151,6 +159,7 @@ class SecureStorage {
 ### XSS Prevention
 
 #### Template Literals Safety
+
 ```javascript
 // DANGEROUS - XSS vulnerable
 const html = `<div>${userInput}</div>`;
@@ -162,11 +171,12 @@ div.textContent = userInput;
 // SAFE - Sanitize if HTML needed
 const sanitized = DOMPurify.sanitize(userInput, {
   ALLOWED_TAGS: ['b', 'i', 'em', 'strong'],
-  ALLOWED_ATTR: []
+  ALLOWED_ATTR: [],
 });
 ```
 
 #### Event Handler Safety
+
 ```javascript
 // BAD - Inline event handlers
 element.innerHTML = `<button onclick="${userCode}">Click</button>`;
@@ -184,6 +194,7 @@ button.addEventListener('click', handleClick);
 ### User Authentication
 
 #### Secure Password Handling
+
 ```javascript
 // NEVER store passwords client-side
 // NEVER log passwords
@@ -197,20 +208,21 @@ class PasswordValidator {
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*]/.test(password);
-    
+
     return {
-      valid: password.length >= minLength && 
-             hasUpperCase && 
-             hasLowerCase && 
-             hasNumbers && 
-             hasSpecialChar,
+      valid:
+        password.length >= minLength &&
+        hasUpperCase &&
+        hasLowerCase &&
+        hasNumbers &&
+        hasSpecialChar,
       errors: {
         length: password.length < minLength,
         uppercase: !hasUpperCase,
         lowercase: !hasLowerCase,
         numbers: !hasNumbers,
-        special: !hasSpecialChar
-      }
+        special: !hasSpecialChar,
+      },
     };
   }
 }
@@ -219,6 +231,7 @@ class PasswordValidator {
 ### Session Management
 
 #### Secure Session Handling
+
 ```javascript
 class SessionManager {
   constructor() {
@@ -235,11 +248,11 @@ class SessionManager {
   resetTimeout() {
     clearTimeout(this.timeoutId);
     clearTimeout(this.warningId);
-    
+
     this.warningId = setTimeout(() => {
       this.showTimeoutWarning();
     }, this.sessionTimeout - this.warningTime);
-    
+
     this.timeoutId = setTimeout(() => {
       this.endSession();
     }, this.sessionTimeout);
@@ -260,7 +273,7 @@ class RBAC {
     this.roles = {
       student: ['view', 'play', 'submit'],
       parent: ['view', 'play', 'submit', 'viewReports'],
-      teacher: ['view', 'play', 'submit', 'viewReports', 'manage']
+      teacher: ['view', 'play', 'submit', 'viewReports', 'manage'],
     };
   }
 
@@ -271,8 +284,8 @@ class RBAC {
   requirePermission(action) {
     return (target, propertyKey, descriptor) => {
       const originalMethod = descriptor.value;
-      
-      descriptor.value = function(...args) {
+
+      descriptor.value = function (...args) {
         if (!this.rbac.can(this.currentUser.role, action)) {
           throw new Error('Insufficient permissions');
         }
@@ -290,6 +303,7 @@ class RBAC {
 ### Request Security
 
 #### CSRF Protection
+
 ```javascript
 class CSRFProtection {
   static getToken() {
@@ -298,20 +312,21 @@ class CSRFProtection {
 
   static async fetchWithCSRF(url, options = {}) {
     const token = this.getToken();
-    
+
     return fetch(url, {
       ...options,
       headers: {
         ...options.headers,
-        'X-CSRF-Token': token
+        'X-CSRF-Token': token,
       },
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     });
   }
 }
 ```
 
 #### API Rate Limiting
+
 ```javascript
 class RateLimiter {
   constructor(maxRequests = 100, windowMs = 60000) {
@@ -323,16 +338,14 @@ class RateLimiter {
   canMakeRequest(endpoint) {
     const now = Date.now();
     const requests = this.requests.get(endpoint) || [];
-    
+
     // Remove old requests
-    const validRequests = requests.filter(
-      time => now - time < this.windowMs
-    );
-    
+    const validRequests = requests.filter(time => now - time < this.windowMs);
+
     if (validRequests.length >= this.maxRequests) {
       return false;
     }
-    
+
     validRequests.push(now);
     this.requests.set(endpoint, validRequests);
     return true;
@@ -343,6 +356,7 @@ class RateLimiter {
 ### Data Transmission
 
 #### Encryption in Transit
+
 ```javascript
 // Always use HTTPS
 if (location.protocol !== 'https:' && !location.hostname.includes('localhost')) {
@@ -356,15 +370,15 @@ class SecureAPI {
     if (!endpoint.startsWith('https://')) {
       throw new Error('Only HTTPS endpoints allowed');
     }
-    
+
     return fetch(endpoint, {
       ...options,
       mode: 'cors',
       credentials: 'include',
       headers: {
         ...options.headers,
-        'Strict-Transport-Security': 'max-age=31536000'
-      }
+        'Strict-Transport-Security': 'max-age=31536000',
+      },
     });
   }
 }
@@ -377,6 +391,7 @@ class SecureAPI {
 ### COPPA Compliance
 
 #### Age Verification
+
 ```javascript
 class AgeVerification {
   static isUnder13(birthDate) {
@@ -393,35 +408,29 @@ class AgeVerification {
     const birth = new Date(birthDate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
-    
+
     return age;
   }
 }
 ```
 
 #### Data Collection Restrictions
+
 ```javascript
 class ChildDataPolicy {
   static canCollectData(dataType, userAge, hasConsent) {
-    const restrictedData = [
-      'location',
-      'photo',
-      'video',
-      'audio',
-      'contact_info',
-      'social_media'
-    ];
-    
+    const restrictedData = ['location', 'photo', 'video', 'audio', 'contact_info', 'social_media'];
+
     if (userAge < 13) {
       if (restrictedData.includes(dataType)) {
         return hasConsent;
       }
     }
-    
+
     return true;
   }
 
@@ -431,11 +440,11 @@ class ChildDataPolicy {
     delete anonymized.email;
     delete anonymized.fullName;
     delete anonymized.address;
-    
+
     if (anonymized.username) {
       anonymized.username = this.hashUsername(anonymized.username);
     }
-    
+
     return anonymized;
   }
 }
@@ -453,31 +462,28 @@ class ContentFilter {
 
   filterUserContent(text) {
     let filtered = text;
-    
+
     // Remove URLs
     filtered = filtered.replace(
       /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi,
       '[link removed]'
     );
-    
+
     // Remove email addresses
     filtered = filtered.replace(
       /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
       '[email removed]'
     );
-    
+
     // Remove phone numbers
-    filtered = filtered.replace(
-      /(\+?1?\d{9,15})/g,
-      '[phone removed]'
-    );
-    
+    filtered = filtered.replace(/(\+?1?\d{9,15})/g, '[phone removed]');
+
     // Check banned words
     this.bannedWords.forEach(word => {
       const regex = new RegExp(word, 'gi');
       filtered = filtered.replace(regex, '*'.repeat(word.length));
     });
-    
+
     return filtered;
   }
 }
@@ -497,9 +503,9 @@ class SecureErrorHandler {
       message: error.message,
       stack: error.stack,
       context,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     // Return generic message to user
     return this.getUserMessage(error);
   }
@@ -507,12 +513,12 @@ class SecureErrorHandler {
   static getUserMessage(error) {
     // Never expose sensitive information
     const errorMap = {
-      'NetworkError': 'Connection error. Please try again.',
-      'ValidationError': 'Please check your input.',
-      'AuthenticationError': 'Please log in again.',
-      'AuthorizationError': 'You don\'t have permission for this action.'
+      NetworkError: 'Connection error. Please try again.',
+      ValidationError: 'Please check your input.',
+      AuthenticationError: 'Please log in again.',
+      AuthorizationError: "You don't have permission for this action.",
     };
-    
+
     return errorMap[error.name] || 'Something went wrong. Please try again.';
   }
 }
@@ -528,21 +534,21 @@ class SecurityLogger {
       event,
       details: this.sanitizeDetails(details),
       userAgent: navigator.userAgent,
-      url: window.location.href
+      url: window.location.href,
     };
-    
+
     // Send to secure logging endpoint
     this.sendLog(logEntry);
   }
 
   static sanitizeDetails(details) {
     const sanitized = { ...details };
-    
+
     // Remove sensitive fields
     delete sanitized.password;
     delete sanitized.token;
     delete sanitized.apiKey;
-    
+
     return sanitized;
   }
 
@@ -553,9 +559,9 @@ class SecurityLogger {
       'login_failure',
       'permission_denied',
       'suspicious_activity',
-      'data_access'
+      'data_access',
     ];
-    
+
     if (securityEvents.includes(eventType)) {
       this.log(eventType, metadata);
     }
@@ -647,7 +653,7 @@ API_KEY=actual_secret_key_here
 const SECURITY_CONTACTS = {
   internal: 'security@learnimals.com',
   emergency: 'emergency@learnimals.com',
-  ciso: 'ciso@learnimals.com'
+  ciso: 'ciso@learnimals.com',
 };
 ```
 
@@ -656,21 +662,25 @@ const SECURITY_CONTACTS = {
 ## Regular Security Tasks
 
 ### Daily
+
 - Monitor security logs
 - Check for failed login attempts
 - Review error logs
 
 ### Weekly
+
 - Run dependency audits
 - Review user permissions
 - Check for security updates
 
 ### Monthly
+
 - Security training review
 - Penetration testing
 - Update security documentation
 
 ### Quarterly
+
 - Full security audit
 - Review and update policies
 - Incident response drill
@@ -680,6 +690,7 @@ const SECURITY_CONTACTS = {
 ## Tools and Resources
 
 ### Recommended Security Tools
+
 - **OWASP ZAP**: Web application security testing
 - **ESLint Security Plugin**: Static code analysis
 - **npm audit**: Dependency vulnerability scanning
@@ -687,6 +698,7 @@ const SECURITY_CONTACTS = {
 - **CSP Evaluator**: Content Security Policy testing
 
 ### Security Resources
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [MDN Web Security](https://developer.mozilla.org/en-US/docs/Web/Security)
 - [COPPA Guidelines](https://www.ftc.gov/tips-advice/business-center/guidance/complying-coppa-frequently-asked-questions)
@@ -694,4 +706,4 @@ const SECURITY_CONTACTS = {
 
 ---
 
-*This security guide is a living document and should be updated regularly as new threats emerge and best practices evolve.*
+_This security guide is a living document and should be updated regularly as new threats emerge and best practices evolve._

@@ -9,15 +9,19 @@ This guide ensures Learnimals is accessible to all users, including those with d
 ## Accessibility Principles
 
 ### 1. Perceivable
+
 Information and UI components must be presentable in ways users can perceive.
 
 ### 2. Operable
+
 UI components and navigation must be operable by all users.
 
 ### 3. Understandable
+
 Information and UI operation must be understandable.
 
 ### 4. Robust
+
 Content must be robust enough to work with various assistive technologies.
 
 ---
@@ -27,6 +31,7 @@ Content must be robust enough to work with various assistive technologies.
 ### Color & Contrast
 
 #### Color Contrast Requirements
+
 ```css
 /* Minimum contrast ratios */
 :root {
@@ -35,21 +40,21 @@ Content must be robust enough to work with various assistive technologies.
    * Large text (18pt+): 3:1
    * UI components: 3:1
    */
-  
+
   /* Light theme - AA compliant */
-  --text-primary: #212529;      /* 15.3:1 on white */
-  --text-secondary: #495057;    /* 8.6:1 on white */
-  --text-muted: #6c757d;        /* 4.5:1 on white */
-  
+  --text-primary: #212529; /* 15.3:1 on white */
+  --text-secondary: #495057; /* 8.6:1 on white */
+  --text-muted: #6c757d; /* 4.5:1 on white */
+
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fa;
   --bg-accent: #e9ecef;
-  
+
   /* Dark theme - AA compliant */
-  --dark-text-primary: #f8f9fa;     /* 15.3:1 on dark */
-  --dark-text-secondary: #dee2e6;   /* 11.9:1 on dark */
-  --dark-text-muted: #adb5bd;       /* 7.0:1 on dark */
-  
+  --dark-text-primary: #f8f9fa; /* 15.3:1 on dark */
+  --dark-text-secondary: #dee2e6; /* 11.9:1 on dark */
+  --dark-text-muted: #adb5bd; /* 7.0:1 on dark */
+
   --dark-bg-primary: #121212;
   --dark-bg-secondary: #1e1e1e;
   --dark-bg-accent: #2d2d2d;
@@ -57,6 +62,7 @@ Content must be robust enough to work with various assistive technologies.
 ```
 
 #### Color Usage Guidelines
+
 ```css
 /* Never use color as the only indicator */
 .error {
@@ -65,13 +71,13 @@ Content must be robust enough to work with various assistive technologies.
 }
 
 .error::before {
-  content: "⚠ "; /* Icon indicator */
+  content: '⚠ '; /* Icon indicator */
 }
 
 /* Provide multiple visual cues */
 .button:disabled {
-  opacity: 0.6;              /* Visual dim */
-  cursor: not-allowed;       /* Cursor change */
+  opacity: 0.6; /* Visual dim */
+  cursor: not-allowed; /* Cursor change */
   text-decoration: line-through; /* Additional indicator */
 }
 ```
@@ -79,6 +85,7 @@ Content must be robust enough to work with various assistive technologies.
 ### Focus Indicators
 
 #### Visible Focus States
+
 ```css
 /* Custom focus styles */
 :focus {
@@ -111,26 +118,27 @@ textarea:focus-visible {
 ```
 
 #### Skip Links
+
 ```html
 <!-- Skip navigation links -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <a href="#main-nav" class="skip-link">Skip to navigation</a>
 
 <style>
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: var(--color-primary);
-  color: white;
-  padding: 8px;
-  text-decoration: none;
-  z-index: 100;
-}
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+  }
 
-.skip-link:focus {
-  top: 0;
-}
+  .skip-link:focus {
+    top: 0;
+  }
 </style>
 ```
 
@@ -141,6 +149,7 @@ textarea:focus-visible {
 ### Navigation Patterns
 
 #### Tab Order
+
 ```javascript
 // Manage tab order programmatically
 class TabManager {
@@ -157,14 +166,14 @@ class TabManager {
       'input:not([disabled])',
       'select:not([disabled])',
       'textarea:not([disabled])',
-      '[tabindex]:not([tabindex="-1"])'
+      '[tabindex]:not([tabindex="-1"])',
     ].join(',');
-    
+
     return Array.from(this.container.querySelectorAll(selector));
   }
 
   handleKeydown(event) {
-    switch(event.key) {
+    switch (event.key) {
       case 'Tab':
         if (event.shiftKey) {
           this.focusPrevious();
@@ -197,6 +206,7 @@ class TabManager {
 ```
 
 #### Arrow Key Navigation
+
 ```javascript
 // Grid/list navigation
 class GridNavigation {
@@ -205,16 +215,16 @@ class GridNavigation {
     this.columns = columns;
     this.cells = Array.from(grid.querySelectorAll('[role="gridcell"]'));
     this.currentIndex = 0;
-    
+
     this.grid.addEventListener('keydown', this.handleKeydown.bind(this));
   }
 
   handleKeydown(event) {
     const movements = {
-      'ArrowUp': -this.columns,
-      'ArrowDown': this.columns,
-      'ArrowLeft': -1,
-      'ArrowRight': 1
+      ArrowUp: -this.columns,
+      ArrowDown: this.columns,
+      ArrowLeft: -1,
+      ArrowRight: 1,
     };
 
     if (movements[event.key]) {
@@ -225,7 +235,7 @@ class GridNavigation {
 
   move(offset) {
     const newIndex = this.currentIndex + offset;
-    
+
     if (newIndex >= 0 && newIndex < this.cells.length) {
       this.cells[this.currentIndex].setAttribute('tabindex', '-1');
       this.currentIndex = newIndex;
@@ -239,6 +249,7 @@ class GridNavigation {
 ### Focus Management
 
 #### Focus Trapping
+
 ```javascript
 // Modal focus trap
 class FocusTrap {
@@ -247,7 +258,7 @@ class FocusTrap {
     this.focusableElements = this.getFocusableElements();
     this.firstElement = this.focusableElements[0];
     this.lastElement = this.focusableElements[this.focusableElements.length - 1];
-    
+
     this.handleKeydown = this.handleKeydown.bind(this);
   }
 
@@ -280,7 +291,7 @@ class FocusTrap {
         }
       }
     }
-    
+
     if (e.key === 'Escape') {
       this.release();
       this.container.dispatchEvent(new Event('close'));
@@ -296,6 +307,7 @@ class FocusTrap {
 ### ARIA Implementation
 
 #### Semantic HTML First
+
 ```html
 <!-- ✅ GOOD - Use semantic HTML -->
 <nav aria-label="Main navigation">
@@ -320,6 +332,7 @@ class FocusTrap {
 ```
 
 #### ARIA Labels and Descriptions
+
 ```html
 <!-- Icon buttons -->
 <button aria-label="Close dialog" class="close-button">
@@ -328,18 +341,18 @@ class FocusTrap {
 
 <!-- Form inputs -->
 <label for="email">Email Address</label>
-<input 
-  type="email" 
-  id="email" 
+<input
+  type="email"
+  id="email"
   aria-describedby="email-help email-error"
   aria-invalid="false"
   required
->
+/>
 <span id="email-help" class="help-text">We'll never share your email</span>
 <span id="email-error" class="error-text" role="alert" aria-live="polite"></span>
 
 <!-- Complex widgets -->
-<div 
+<div
   role="slider"
   aria-label="Volume"
   aria-valuemin="0"
@@ -354,6 +367,7 @@ class FocusTrap {
 ```
 
 #### Live Regions
+
 ```javascript
 // Announcements for screen readers
 class ScreenReaderAnnouncer {
@@ -367,28 +381,28 @@ class ScreenReaderAnnouncer {
     this.polite.setAttribute('aria-live', 'polite');
     this.polite.setAttribute('aria-atomic', 'true');
     this.polite.className = 'sr-only';
-    
+
     // Assertive announcements (interrupt screen reader)
     this.assertive = document.createElement('div');
     this.assertive.setAttribute('aria-live', 'assertive');
     this.assertive.setAttribute('aria-atomic', 'true');
     this.assertive.className = 'sr-only';
-    
+
     document.body.appendChild(this.polite);
     document.body.appendChild(this.assertive);
   }
 
   announce(message, priority = 'polite') {
     const announcer = priority === 'assertive' ? this.assertive : this.polite;
-    
+
     // Clear previous announcement
     announcer.textContent = '';
-    
+
     // Announce after a brief delay to ensure it's picked up
     setTimeout(() => {
       announcer.textContent = message;
     }, 100);
-    
+
     // Clear after announcement
     setTimeout(() => {
       announcer.textContent = '';
@@ -403,6 +417,7 @@ announcer.announce('Error: Please fix the form errors', 'assertive');
 ```
 
 ### Screen Reader CSS
+
 ```css
 /* Visually hidden but screen reader accessible */
 .sr-only {
@@ -437,14 +452,15 @@ announcer.announce('Error: Please fix the form errors', 'assertive');
 ### Accessible Forms
 
 #### Label Association
+
 ```html
 <!-- Explicit labels -->
 <label for="username">Username</label>
-<input type="text" id="username" name="username" required>
+<input type="text" id="username" name="username" required />
 
 <!-- Wrapped labels -->
 <label>
-  <input type="checkbox" name="remember">
+  <input type="checkbox" name="remember" />
   Remember me
 </label>
 
@@ -452,31 +468,32 @@ announcer.announce('Error: Please fix the form errors', 'assertive');
 <fieldset>
   <legend>Preferred Contact Method</legend>
   <label>
-    <input type="radio" name="contact" value="email" checked>
+    <input type="radio" name="contact" value="email" checked />
     Email
   </label>
   <label>
-    <input type="radio" name="contact" value="phone">
+    <input type="radio" name="contact" value="phone" />
     Phone
   </label>
 </fieldset>
 ```
 
 #### Error Handling
+
 ```javascript
 // Accessible form validation
 class AccessibleForm {
   constructor(form) {
     this.form = form;
     this.errors = new Map();
-    
+
     this.form.addEventListener('submit', this.handleSubmit.bind(this));
   }
 
   handleSubmit(event) {
     event.preventDefault();
     this.clearErrors();
-    
+
     if (!this.validate()) {
       this.announceErrors();
       this.focusFirstError();
@@ -488,40 +505,39 @@ class AccessibleForm {
   validate() {
     const inputs = this.form.querySelectorAll('[required]');
     let isValid = true;
-    
+
     inputs.forEach(input => {
       if (!input.value.trim()) {
         this.addError(input, `${this.getLabel(input)} is required`);
         isValid = false;
       }
     });
-    
+
     return isValid;
   }
 
   addError(input, message) {
     this.errors.set(input, message);
-    
+
     // Update ARIA states
     input.setAttribute('aria-invalid', 'true');
-    
+
     // Create/update error message
     let errorId = input.getAttribute('aria-describedby') || '';
     let errorElement = document.getElementById(errorId);
-    
+
     if (!errorElement) {
       errorElement = document.createElement('span');
       errorElement.id = `${input.id}-error`;
       errorElement.className = 'error-message';
       errorElement.setAttribute('role', 'alert');
       input.parentNode.appendChild(errorElement);
-      
+
       // Update aria-describedby
       const describedBy = input.getAttribute('aria-describedby') || '';
-      input.setAttribute('aria-describedby', 
-        `${describedBy} ${errorElement.id}`.trim());
+      input.setAttribute('aria-describedby', `${describedBy} ${errorElement.id}`.trim());
     }
-    
+
     errorElement.textContent = message;
   }
 
@@ -540,14 +556,14 @@ class AccessibleForm {
   announceErrors() {
     const count = this.errors.size;
     const message = `There ${count === 1 ? 'is' : 'are'} ${count} error${count === 1 ? '' : 's'} in the form`;
-    
+
     // Use live region for announcement
     const announcer = document.createElement('div');
     announcer.setAttribute('role', 'alert');
     announcer.setAttribute('aria-live', 'assertive');
     announcer.className = 'sr-only';
     announcer.textContent = message;
-    
+
     document.body.appendChild(announcer);
     setTimeout(() => announcer.remove(), 3000);
   }
@@ -568,20 +584,20 @@ class AccessibleForm {
 ```css
 /* Minimum touch target sizes */
 .touch-target {
-  min-width: 44px;   /* iOS recommendation */
-  min-height: 44px;  /* iOS recommendation */
-  padding: 12px;     /* Additional padding for comfort */
+  min-width: 44px; /* iOS recommendation */
+  min-height: 44px; /* iOS recommendation */
+  padding: 12px; /* Additional padding for comfort */
 }
 
 /* Spacing between targets */
 .button-group > * + * {
-  margin-left: 8px;  /* Minimum 8px between targets */
+  margin-left: 8px; /* Minimum 8px between targets */
 }
 
 /* Larger targets for primary actions */
 .primary-action {
-  min-height: 48px;  /* Material Design recommendation */
-  font-size: 16px;   /* Prevent zoom on iOS */
+  min-height: 48px; /* Material Design recommendation */
+  font-size: 16px; /* Prevent zoom on iOS */
 }
 ```
 
@@ -599,15 +615,15 @@ class AccessibleGestures {
   setupGestures() {
     // Swipe gesture
     let touchStartX = 0;
-    
-    this.element.addEventListener('touchstart', (e) => {
+
+    this.element.addEventListener('touchstart', e => {
       touchStartX = e.touches[0].clientX;
     });
-    
-    this.element.addEventListener('touchend', (e) => {
+
+    this.element.addEventListener('touchend', e => {
       const touchEndX = e.changedTouches[0].clientX;
       const diff = touchStartX - touchEndX;
-      
+
       if (Math.abs(diff) > 50) {
         if (diff > 0) {
           this.handleSwipeLeft();
@@ -620,8 +636,8 @@ class AccessibleGestures {
 
   setupKeyboardAlternatives() {
     // Keyboard alternatives for gestures
-    this.element.addEventListener('keydown', (e) => {
-      switch(e.key) {
+    this.element.addEventListener('keydown', e => {
+      switch (e.key) {
         case 'ArrowLeft':
           this.handleSwipeRight(); // Opposite for intuitive navigation
           break;
@@ -653,10 +669,10 @@ class AccessibleGestures {
 ```javascript
 // Error messages that are helpful
 const ERROR_MESSAGES = {
-  required: (fieldName) => `Please enter your ${fieldName}`,
+  required: fieldName => `Please enter your ${fieldName}`,
   email: 'Please enter a valid email address (example: name@email.com)',
   password: 'Password must be at least 8 characters with a mix of letters and numbers',
-  date: 'Please enter a date in MM/DD/YYYY format'
+  date: 'Please enter a date in MM/DD/YYYY format',
 };
 
 // Progress indicators
@@ -684,12 +700,16 @@ class ClearProgress {
           ></div>
         </div>
         <ol class="progress-steps">
-          ${this.steps.map((step, index) => `
+          ${this.steps
+            .map(
+              (step, index) => `
             <li class="${index <= this.currentStep ? 'completed' : ''} 
                        ${index === this.currentStep ? 'current' : ''}">
               ${step.name}
             </li>
-          `).join('')}
+          `
+            )
+            .join('')}
         </ol>
       </div>
     `;
@@ -707,7 +727,7 @@ class ConsistentNav {
       { name: 'Home', path: '/', icon: 'home' },
       { name: 'Activities', path: '/activities', icon: 'activities' },
       { name: 'Progress', path: '/progress', icon: 'progress' },
-      { name: 'Settings', path: '/settings', icon: 'settings' }
+      { name: 'Settings', path: '/settings', icon: 'settings' },
     ];
   }
 
@@ -715,7 +735,9 @@ class ConsistentNav {
     return `
       <nav class="main-nav" aria-label="Main navigation">
         <ul>
-          ${this.navItems.map(item => `
+          ${this.navItems
+            .map(
+              item => `
             <li>
               <a 
                 href="${item.path}"
@@ -728,7 +750,9 @@ class ConsistentNav {
                 <span>${item.name}</span>
               </a>
             </li>
-          `).join('')}
+          `
+            )
+            .join('')}
         </ul>
       </nav>
     `;
@@ -750,7 +774,7 @@ class ConsistentNav {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   /* Keep essential animations but make them instant */
   .modal {
     transition: opacity 0.01ms;
@@ -769,8 +793,12 @@ class ConsistentNav {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 ```
 
@@ -782,13 +810,13 @@ class AnimationController {
   constructor() {
     this.animationsPaused = false;
     this.animations = new Set();
-    
+
     // Check user preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (prefersReducedMotion.matches) {
       this.pauseAll();
     }
-    
+
     // Create control button
     this.createControl();
   }
@@ -799,7 +827,7 @@ class AnimationController {
     button.setAttribute('aria-label', 'Pause animations');
     button.setAttribute('aria-pressed', 'false');
     button.textContent = '⏸️ Pause animations';
-    
+
     button.addEventListener('click', () => {
       if (this.animationsPaused) {
         this.playAll();
@@ -811,7 +839,7 @@ class AnimationController {
         button.textContent = '▶️ Play animations';
       }
     });
-    
+
     document.body.appendChild(button);
   }
 
@@ -844,6 +872,7 @@ class AnimationController {
 
 ```markdown
 ## Keyboard Testing
+
 - [ ] Can navigate using only keyboard
 - [ ] Tab order is logical
 - [ ] Focus indicators are visible
@@ -852,6 +881,7 @@ class AnimationController {
 - [ ] Skip links work correctly
 
 ## Screen Reader Testing
+
 - [ ] All content is announced
 - [ ] ARIA labels are meaningful
 - [ ] Form errors are announced
@@ -860,6 +890,7 @@ class AnimationController {
 - [ ] Heading structure is logical
 
 ## Visual Testing
+
 - [ ] Text has sufficient contrast
 - [ ] Focus indicators are visible
 - [ ] Information isn't conveyed by color alone
@@ -867,6 +898,7 @@ class AnimationController {
 - [ ] Layout doesn't break when zoomed
 
 ## Mobile Testing
+
 - [ ] Touch targets are large enough
 - [ ] Gestures have alternatives
 - [ ] Pinch-to-zoom works
@@ -884,10 +916,10 @@ class A11yTester {
       console.error('axe-core not loaded');
       return;
     }
-    
+
     try {
       const results = await axe.run();
-      
+
       if (results.violations.length > 0) {
         console.group('Accessibility Violations');
         results.violations.forEach(violation => {
@@ -901,7 +933,7 @@ class A11yTester {
       } else {
         console.log('No accessibility violations found');
       }
-      
+
       return results;
     } catch (error) {
       console.error('Error running axe:', error);
@@ -911,13 +943,13 @@ class A11yTester {
   static checkContrast(foreground, background) {
     // Calculate contrast ratio
     const ratio = this.getContrastRatio(foreground, background);
-    
+
     return {
       ratio: ratio.toFixed(2),
       largeTextAAA: ratio >= 4.5,
       largeTextAA: ratio >= 3,
       normalTextAAA: ratio >= 7,
-      normalTextAA: ratio >= 4.5
+      normalTextAA: ratio >= 4.5,
     };
   }
 
@@ -936,18 +968,21 @@ class A11yTester {
 ## Accessibility Resources
 
 ### Tools
+
 - **Screen Readers**: NVDA (Windows), JAWS (Windows), VoiceOver (Mac/iOS), TalkBack (Android)
 - **Browser Extensions**: axe DevTools, WAVE, Lighthouse
 - **Color Tools**: Contrast Checker, Stark, Color Oracle
 - **Testing Tools**: Pa11y, axe-core, jest-axe
 
 ### Guidelines & Standards
+
 - [WCAG 2.1](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [MDN Accessibility](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
 - [A11y Project](https://www.a11yproject.com/)
 
 ### Learning Resources
+
 - [WebAIM](https://webaim.org/)
 - [Inclusive Design Principles](https://inclusivedesignprinciples.org/)
 - [Accessibility Developer Guide](https://www.accessibility-developer-guide.com/)
@@ -960,12 +995,15 @@ class A11yTester {
 # Learnimals Accessibility Statement
 
 ## Our Commitment
+
 Learnimals is committed to ensuring digital accessibility for people with disabilities. We continually improve the user experience for everyone and apply relevant accessibility standards.
 
 ## Conformance Status
+
 Learnimals aims to conform to WCAG 2.1 Level AA standards.
 
 ## Accessibility Features
+
 - Keyboard navigation throughout the site
 - Screen reader compatibility
 - High contrast mode support
@@ -976,10 +1014,13 @@ Learnimals aims to conform to WCAG 2.1 Level AA standards.
 - Form labels and error messages
 
 ## Known Issues
+
 - [List any known accessibility issues]
 
 ## Contact
+
 If you encounter accessibility barriers, please contact:
+
 - Email: accessibility@learnimals.com
 - Phone: [Phone number]
 
@@ -988,4 +1029,4 @@ Last updated: [Date]
 
 ---
 
-*Accessibility is not a feature, it's a fundamental aspect of good design. Regular testing and user feedback are essential for maintaining an accessible experience.*
+_Accessibility is not a feature, it's a fundamental aspect of good design. Regular testing and user feedback are essential for maintaining an accessible experience._

@@ -11,6 +11,7 @@ Our pre-commit hook runs automatically before each commit and performs several q
 ### Checks Performed
 
 #### 1. Duplicate File Detection
+
 - **Purpose**: Prevents committing iCloud sync conflict files
 - **Patterns Detected**:
   - Files ending with numbers: `file 2.js`, `file 3.html`
@@ -20,6 +21,7 @@ Our pre-commit hook runs automatically before each commit and performs several q
 - **Resolution**: Use provided instructions to merge and clean duplicates
 
 #### 2. Merge Conflict Detection
+
 - **Purpose**: Prevents committing unresolved merge conflicts
 - **Patterns Detected**:
   - Git conflict markers: `<<<<<<<`, `=======`, `>>>>>>>`
@@ -27,12 +29,14 @@ Our pre-commit hook runs automatically before each commit and performs several q
 - **Resolution**: Resolve all conflicts before committing
 
 #### 3. Large File Warning
+
 - **Purpose**: Prevents accidentally committing large files
 - **Threshold**: Files larger than 1MB
 - **Action**: Warns but doesn't block (press Enter to continue)
 - **Resolution**: Consider using Git LFS or excluding the file
 
 #### 4. TODO/FIXME Detection
+
 - **Purpose**: Reminds about unfinished work
 - **Patterns Detected**:
   - TODO comments
@@ -43,6 +47,7 @@ Our pre-commit hook runs automatically before each commit and performs several q
 - **Resolution**: Consider resolving before committing
 
 #### 5. Code Quality Checks (lint-staged)
+
 - **JavaScript Files**: ESLint + Vitest related tests
 - **HTML/CSS Files**: Prettier formatting
 - **Markdown Files**: markdownlint + Prettier
@@ -143,5 +148,5 @@ When adding new hooks:
 
 ---
 
-*Last Updated: [Current Date]*
-*See also: [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md) for general maintenance practices*
+_Last Updated: [Current Date]_
+_See also: [MAINTENANCE_GUIDE.md](./MAINTENANCE_GUIDE.md) for general maintenance practices_

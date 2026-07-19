@@ -1,6 +1,7 @@
 # Detailed Git Rebase Strategy for Character Generation Infrastructure
 
 ## Current Branch Status
+
 - **Current Branch**: `feature/phase-d-character-generator`
 - **Target Branch**: `main`
 - **Major Changes**: Infrastructure updates, character generation system, testing framework, security fixes
@@ -8,6 +9,7 @@
 ## Pre-Rebase Validation Steps
 
 ### 1. Assess Current State
+
 ```bash
 # Check current branch and status
 git status
@@ -23,6 +25,7 @@ git checkout feature/phase-d-character-generator
 ```
 
 ### 2. Run Full Test Suite
+
 ```bash
 # Run linting to identify issues
 npm run lint
@@ -38,6 +41,7 @@ npm test
 ```
 
 ### 3. Create Safety Backup
+
 ```bash
 # Create backup branch
 git checkout -b backup/feature-phase-d-character-generator-$(date +%Y%m%d)
@@ -47,15 +51,18 @@ git checkout feature/phase-d-character-generator
 ## Three-Phase Rebase Strategy
 
 ### Phase 1: Infrastructure Foundation
+
 **Goal**: Establish core infrastructure that other changes depend on
 
-#### Files to Rebase First:
+#### Files to Rebase First
+
 1. `tests/setup.js` - Test environment foundation
 2. `src/components/BaseComponent.js` - Core component updates
 3. `src/components/ui/Modal.js` - XSS security fixes
 4. `src/features/character-generation/schemas/CharacterSchema.js` - Core schema updates
 
-#### Commands:
+#### Commands
+
 ```bash
 # Interactive rebase to reorganize commits
 git rebase -i main
@@ -66,7 +73,8 @@ git rebase -i main
 # 3. Keep security fixes as separate commits for audit trail
 ```
 
-#### Validation After Phase 1:
+#### Validation After Phase 1
+
 ```bash
 # Verify basic infrastructure works
 npm run lint
@@ -75,15 +83,18 @@ node -e "console.log('BaseComponent check:', typeof window !== 'undefined' ? 'br
 ```
 
 ### Phase 2: Character Generation System
+
 **Goal**: Integrate the complete character generation feature
 
-#### Files to Rebase:
+#### Files to Rebase
+
 1. `src/features/character-generation/` (entire directory)
 2. Character generation demo pages
 3. CSS files for character components
 4. Integration points with existing gallery
 
-#### Commands:
+#### Commands
+
 ```bash
 # Continue rebase for feature commits
 # Group commits by logical functionality:
@@ -96,7 +107,8 @@ node -e "console.log('BaseComponent check:', typeof window !== 'undefined' ? 'br
 # Keep separate commits for each major component
 ```
 
-#### Validation After Phase 2:
+#### Validation After Phase 2
+
 ```bash
 # Test character generation system
 npm test -- tests/debug-character.test.js
@@ -113,15 +125,18 @@ node -e "
 ```
 
 ### Phase 3: Testing Infrastructure
+
 **Goal**: Integrate comprehensive test suite
 
-#### Files to Rebase:
+#### Files to Rebase
+
 1. `tests/unit/characterGeneration.test.js`
 2. `tests/unit/characterGenerationRegression.test.js`
 3. `docs/character-generation-bugs.md`
 4. Any test configuration updates
 
-#### Commands:
+#### Commands
+
 ```bash
 # Final rebase phase for testing
 # Group test-related commits:
@@ -131,7 +146,8 @@ node -e "
 # - Test fixes and improvements
 ```
 
-#### Validation After Phase 3:
+#### Validation After Phase 3
+
 ```bash
 # Run complete test suite
 npm test
@@ -146,13 +162,15 @@ npm test -- --reporter=verbose
 
 ## Conflict Resolution Strategy
 
-### Expected Conflicts:
+### Expected Conflicts
+
 1. **BaseComponent.js**: ES6 vs script tag loading
 2. **Modal.js**: XSS prevention changes
 3. **Package.json**: Test script additions
 4. **Index files**: New feature exports
 
-### Resolution Approach:
+### Resolution Approach
+
 ```bash
 # For each conflict:
 git status  # Identify conflicted files
@@ -173,6 +191,7 @@ git rebase --continue
 ## Post-Rebase Validation Checklist
 
 ### 1. Code Quality
+
 ```bash
 # Linting should pass completely
 npm run lint
@@ -182,6 +201,7 @@ npm run lint:fix
 ```
 
 ### 2. Test Suite
+
 ```bash
 # All tests should pass
 npm test
@@ -192,6 +212,7 @@ npm test -- tests/debug-character.test.js
 ```
 
 ### 3. Manual Functionality Testing
+
 - [ ] Character generator demo opens
 - [ ] CustomizationStudio launches successfully
 - [ ] Template creation works
@@ -200,6 +221,7 @@ npm test -- tests/debug-character.test.js
 - [ ] XSS prevention active in Modal
 
 ### 4. Integration Testing
+
 ```bash
 # Test in browser environment
 # Open multiple demo pages
@@ -210,6 +232,7 @@ npm test -- tests/debug-character.test.js
 ## Emergency Rollback Plan
 
 If rebase encounters major issues:
+
 ```bash
 # Abort current rebase
 git rebase --abort
@@ -225,6 +248,7 @@ git reset --hard <pre-rebase-commit-hash>
 ## Final Integration Steps
 
 After successful rebase:
+
 ```bash
 # Final validation
 npm run lint
@@ -241,6 +265,7 @@ gh pr create --title "feat: Character Generation System with Infrastructure Upda
 ## Success Criteria
 
 Rebase is successful when:
+
 - [ ] All commits are cleanly organized by logical phases
 - [ ] No linting errors remain
 - [ ] Complete test suite passes (>95% success rate)

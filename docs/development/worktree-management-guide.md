@@ -7,6 +7,7 @@ This guide provides detailed instructions for managing git worktrees in the Lear
 ## Worktree Architecture
 
 ### Directory Structure
+
 ```
 learnimals/                        # Original repository (main branch)
 ├── scripts/setup-worktrees.sh     # Worktree setup automation
@@ -22,6 +23,7 @@ learnimals-worktrees/              # Worktree directory (created by script)
 ```
 
 ### Branch Strategy
+
 - **main**: Primary integration branch
 - **fix/infrastructure-stabilization**: Critical infrastructure fixes
 - **develop**: Feature development branch
@@ -31,19 +33,25 @@ learnimals-worktrees/              # Worktree directory (created by script)
 ## Setup and Installation
 
 ### Initial Setup
+
 1. Navigate to the project root directory
 2. Run the setup script:
+
    ```bash
    chmod +x scripts/setup-worktrees.sh
    ./scripts/setup-worktrees.sh
    ```
+
 3. Verify worktree creation:
+
    ```bash
    git worktree list
    ```
 
 ### Post-Setup Configuration
+
 Each worktree requires individual dependency installation:
+
 ```bash
 # Install dependencies in each worktree
 cd ../learnimals-worktrees/stabilization && npm install
@@ -56,6 +64,7 @@ cd ../learnimals-worktrees/experimental && npm install
 ## Development Workflows
 
 ### 1. Infrastructure Stabilization (CRITICAL PRIORITY)
+
 **Purpose**: Fix blocking issues preventing MVP development
 **Timeline**: 5 days maximum
 **Branch**: `fix/infrastructure-stabilization`
@@ -73,12 +82,14 @@ npm install
 ```
 
 **Exit Criteria**:
+
 - [ ] All tests pass without dependency errors
 - [ ] ESLint shows zero errors (warnings acceptable)
 - [ ] CI/CD pipeline runs successfully
 - [ ] All critical infrastructure blockers resolved
 
 ### 2. Feature Development
+
 **Purpose**: Implement MVP features and core functionality
 **Branch**: `develop`
 
@@ -94,12 +105,14 @@ git push origin feature/subject-games
 ```
 
 **Feature Categories**:
+
 - Subject-specific games (Math, Science, Reading, Art)
 - Character system and progression
 - User interface components
 - Progress tracking and analytics
 
 ### 3. Emergency Hotfixes
+
 **Purpose**: Critical production issues requiring immediate fixes
 **Branch**: `hotfix/emergency-fixes`
 
@@ -115,12 +128,14 @@ git push origin hotfix/critical-bug-fix
 ```
 
 **Hotfix Criteria**:
+
 - Security vulnerabilities
 - Critical functionality broken
 - Data loss prevention
 - Performance issues affecting user experience
 
 ### 4. Experimental Development
+
 **Purpose**: Research, prototypes, and experimental features
 **Branch**: `experimental/new-features`
 
@@ -135,6 +150,7 @@ git add . && git commit -m "experiment: AI-powered learning adaptation"
 ```
 
 **Experimental Work Types**:
+
 - New technology evaluation
 - Advanced feature prototypes
 - Performance optimization experiments
@@ -143,6 +159,7 @@ git add . && git commit -m "experiment: AI-powered learning adaptation"
 ## Integration and Merge Strategy
 
 ### Development Integration Process
+
 ```bash
 # 1. Complete feature development
 cd ../learnimals-worktrees/feature-development
@@ -163,6 +180,7 @@ git push origin main
 ```
 
 ### Stabilization to Main Integration
+
 ```bash
 # 1. Complete stabilization work
 cd ../learnimals-worktrees/stabilization
@@ -185,6 +203,7 @@ git push origin main
 ```
 
 ### Hotfix Integration
+
 ```bash
 # Hotfixes merge directly to main and develop
 cd ../learnimals-worktrees/hotfix
@@ -206,39 +225,54 @@ git push origin develop
 ## Daily Development Practices
 
 ### Morning Startup Routine
+
 1. Check worktree status:
+
    ```bash
    git worktree list
    ```
+
 2. Navigate to appropriate worktree for the day's work
 3. Pull latest changes:
+
    ```bash
    git pull origin <branch-name>
    ```
+
 4. Install any new dependencies:
+
    ```bash
    npm install
    ```
+
 5. Run tests to ensure clean starting state:
+
    ```bash
    npm test
    ```
 
 ### End of Day Routine
+
 1. Commit current work:
+
    ```bash
    git add .
    git commit -m "wip: describe current progress"
    ```
+
 2. Push to remote branch:
+
    ```bash
    git push origin <branch-name>
    ```
+
 3. Document any blockers or next steps
 4. Clean up any experimental files
 
 ### Code Quality Checks
+
 Run these commands in each worktree before committing:
+
 ```bash
 # Linting
 npm run lint:fix
@@ -256,6 +290,7 @@ npm run test:coverage
 ## Worktree Maintenance
 
 ### Listing Worktrees
+
 ```bash
 # View all worktrees and their status
 git worktree list
@@ -265,6 +300,7 @@ git worktree list --porcelain
 ```
 
 ### Cleaning Up Worktrees
+
 ```bash
 # Remove unused worktree
 git worktree remove <worktree-name>
@@ -277,6 +313,7 @@ git worktree prune
 ```
 
 ### Adding New Worktrees
+
 ```bash
 # Add new worktree for specific purpose
 git worktree add ../learnimals-worktrees/performance-optimization performance/optimization
@@ -288,6 +325,7 @@ git worktree add ../learnimals-worktrees/feature-xyz origin/feature-xyz
 ### Troubleshooting Common Issues
 
 #### Issue: Worktree Won't Start
+
 ```bash
 # Check git status
 cd ../learnimals-worktrees/problematic-worktree
@@ -302,6 +340,7 @@ npm install
 ```
 
 #### Issue: Dependencies Out of Sync
+
 ```bash
 # Update all worktrees with latest package.json
 cd ../learnimals-worktrees/main && npm install
@@ -312,6 +351,7 @@ cd ../learnimals-worktrees/experimental && npm install
 ```
 
 #### Issue: Branch Conflicts
+
 ```bash
 # Check which branches are checked out
 git worktree list
@@ -324,6 +364,7 @@ git checkout -b new-branch-name
 ## Best Practices
 
 ### Development Efficiency
+
 1. **Use appropriate worktree**: Match worktree to task type
 2. **Keep work isolated**: Don't depend on files from other worktrees
 3. **Regular commits**: Commit frequently with descriptive messages
@@ -331,12 +372,14 @@ git checkout -b new-branch-name
 5. **Test in context**: Run tests in the worktree where you're developing
 
 ### Code Organization
+
 1. **Feature branches**: Create feature branches from develop
 2. **Hotfix branches**: Create hotfix branches from main
 3. **Experimental branches**: Keep experiments in experimental worktree
 4. **Documentation**: Update docs in main or dedicated doc branches
 
 ### Communication
+
 1. **Status updates**: Share which worktree you're working in
 2. **Merge notifications**: Announce when merging to shared branches
 3. **Blocker reporting**: Report issues that affect other worktrees
@@ -345,18 +388,21 @@ git checkout -b new-branch-name
 ## Success Metrics
 
 ### Development Velocity
+
 - Parallel development without conflicts
 - Faster context switching between tasks
 - Reduced merge conflicts and integration issues
 - Independent testing and validation
 
 ### Code Quality
+
 - Isolated testing environments
 - Better separation of concerns
 - Reduced cross-contamination of features
 - Cleaner git history and branch management
 
 ### Team Coordination
+
 - Clear work separation by worktree
 - Better understanding of current team focus
 - Reduced blocking between developers
@@ -365,18 +411,25 @@ git checkout -b new-branch-name
 ## Emergency Procedures
 
 ### Critical System Recovery
+
 If the worktree system becomes corrupted:
+
 1. Navigate to original repository
 2. Remove corrupted worktrees:
+
    ```bash
    rm -rf ../learnimals-worktrees
    git worktree prune
    ```
+
 3. Re-run setup script:
+
    ```bash
    ./scripts/setup-worktrees.sh
    ```
+
 4. Restore work from remote branches:
+
    ```bash
    cd ../learnimals-worktrees/stabilization
    git pull origin fix/infrastructure-stabilization
@@ -384,7 +437,9 @@ If the worktree system becomes corrupted:
    ```
 
 ### Data Recovery
+
 If uncommitted work is lost:
+
 1. Check git reflog in affected worktree
 2. Look for backup commits or stashes
 3. Check if work exists in other worktrees

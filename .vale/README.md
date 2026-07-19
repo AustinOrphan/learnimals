@@ -1,10 +1,11 @@
 # Vale Prose Linting Configuration
 
-This directory contains the Vale configuration for the Learnimals project. Vale is a syntax-aware linter for prose that helps maintain consistent documentation style.
+This directory contains the Vale configuration for the Learnimals project. Vale is a syntax-aware
+linter for prose that helps maintain consistent documentation style.
 
 ## Configuration Structure
 
-```
+```text
 .vale/
 ├── README.md                    # This file
 ├── styles/                      # Style guide directory
@@ -67,7 +68,8 @@ To add a new term, simply add it to the appropriate section in `Vocabulary.txt`.
 
 ### External Style Guides
 
-We use Microsoft and Google style guides as a base, with many rules adjusted or disabled for technical documentation:
+We use Microsoft and Google style guides as a base, with many rules adjusted or disabled for
+technical documentation:
 
 - Passive voice: Changed from error to suggestion
 - Contractions: Disabled (we allow them)

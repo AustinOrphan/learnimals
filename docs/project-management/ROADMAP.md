@@ -7,6 +7,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ## Current State Analysis
 
 ### ✅ Completed Features
+
 - **Subject Template System**: Dynamic subject pages with animal characters (Math, Science, Reading, Art, Coding, Music, Geography)
 - **PWA Infrastructure**: Service worker, manifest, and offline capabilities
 - **Theme System**: Light/dark mode with semantic CSS variables
@@ -15,6 +16,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 - **Subject Generation Script**: Automated creation of new subject pages
 
 ### ⚠️ Identified Gaps
+
 - No automated testing framework
 - Limited interactive educational content
 - No user progress tracking
@@ -30,9 +32,11 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ---
 
 ## Phase 1: Foundation & Testing Infrastructure 🧪
+
 **Timeline**: Weeks 1-4 | **Priority**: Critical
 
 ### Goals
+
 - Establish robust testing framework
 - Ensure code quality and reliability
 - Fix existing technical debt
@@ -41,12 +45,15 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ### Key Deliverables
 
 #### Week 1: Build System & Testing Framework Setup
+
 - [ ] **Initialize Vite build system** (Per PHASE_KEY_STEPS.md)
+
   ```bash
   npm create vite@latest . -- --template vanilla
   npm install -D vitest @vitest/ui @testing-library/dom @testing-library/user-event
   npm install -D @vitest/coverage-v8 jsdom happy-dom
   ```
+
   - Configure vite.config.js with proper aliases
   - Set up development server configuration
   - Configure build optimization settings
@@ -59,6 +66,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Configure ESLint for ES6 modules (.eslintrc.js → .eslintrc.cjs)
 
 #### Week 2: Testing Infrastructure & Module Migration
+
 - [ ] **Configure Vitest testing framework**
   - Set up test environment per PHASE_KEY_STEPS.md config
   - Configure testing utilities for DOM manipulation
@@ -73,6 +81,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Create factory functions for common data
 
 #### Week 3: Core Testing & Module Migration Implementation
+
 - [ ] **Module System Migration Phase 1**
   - Convert utility files to ES6 modules
   - Update component files (Card.js, Modal.js, Form.js)
@@ -95,6 +104,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Test both static HTML and dynamic rendering
 
 #### Week 4: CI/CD Pipeline & Code Quality
+
 - [ ] **Integration tests for subject pages**
   - Template loading and rendering (without document.write)
   - Theme switching across pages
@@ -117,6 +127,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Document module migration patterns
 
 ### Success Metrics
+
 - 80%+ test coverage across all components
 - All existing functionality working without regressions
 - ESLint passing with zero errors/warnings
@@ -128,9 +139,11 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ---
 
 ## Phase 2: Enhanced User Experience 🎨
+
 **Timeline**: Weeks 5-8 | **Priority**: High
 
 ### Goals
+
 - Implement user progress tracking
 - Improve accessibility and mobile experience
 - Add gamification elements
@@ -139,6 +152,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ### Key Deliverables
 
 #### Week 5: Progress Tracking Foundation
+
 - [ ] **IndexedDB Service Setup** (Per PHASE_KEY_STEPS.md)
   - Design database schema for scalability
   - Create database initialization with versioning
@@ -153,6 +167,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Secure localStorage operations
 
 #### Week 6: User Progress System Implementation
+
 - [ ] **Progress Service & Tracking**
   - Implement ProgressService class with caching
   - Create CRUD operations for progress data
@@ -169,6 +184,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Achievement display components with animations
 
 #### Week 7: Accessibility & Performance
+
 - [ ] **Accessibility Implementation** (Per existing + enhanced)
   - Comprehensive ARIA labels and roles
   - Keyboard navigation for all interactive elements
@@ -187,6 +203,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Add XSS protection measures
 
 #### Week 8: Mobile & User Onboarding
+
 - [ ] **Mobile Experience Enhancement**
   - Optimize touch targets (minimum 44x44px)
   - Add gesture support for games
@@ -209,6 +226,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Organize styles with CSS modules approach
 
 ### Success Metrics
+
 - User progress tracking functional across all subjects
 - Accessibility audit score >95 (axe-core validated)
 - Mobile performance score >90 (Lighthouse)
@@ -220,9 +238,11 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ---
 
 ## Phase 3: Educational Content Expansion 📚
+
 **Timeline**: Weeks 9-12 | **Priority**: High
 
 ### Goals
+
 - Implement interactive learning activities
 - Replace "coming soon" placeholders
 - Add assessment capabilities
@@ -231,6 +251,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ### Key Deliverables
 
 #### Week 9: Activity Plugin Architecture
+
 - [ ] **Activity API Design** (Per PHASE_KEY_STEPS.md)
   - Define Activity base class with lifecycle methods
   - Create event system for activity communication
@@ -245,6 +266,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Set up incremental adoption path
 
 #### Week 10: Interactive Learning Modules
+
 - [ ] **Math Manipulatives System**
   - Create BaseManipulative class
   - Build place value blocks with drag-drop
@@ -261,6 +283,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Ensure all activities follow Activity API
 
 #### Week 11: Assessment System & Reading Tools
+
 - [ ] **Question Bank Architecture**
   - Design question schema with metadata
   - Create storage system with IndexedDB
@@ -282,6 +305,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Creative writing prompts
 
 #### Week 12: Subject Expansion & Content CMS
+
 - [ ] **Content Management System**
   - Build CMS core with validation
   - Create content type definitions
@@ -303,6 +327,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Integrate with progress tracking
 
 ### Success Metrics
+
 - 5+ interactive activities per subject
 - All "coming soon" features implemented
 - User engagement metrics improved by 40%
@@ -314,9 +339,11 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ---
 
 ## Phase 4: Advanced Features & Scalability 🚀
+
 **Timeline**: Weeks 13-16 | **Priority**: Medium
 
 ### Goals
+
 - Add multi-user support
 - Implement advanced analytics
 - Create teacher/parent dashboards
@@ -325,6 +352,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ### Key Deliverables
 
 #### Week 13: State Management & Multi-User Foundation
+
 - [ ] **Global State Architecture** (Optional: Zustand)
   - Implement centralized state management
   - Design state structure for multi-user
@@ -340,6 +368,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Add security measures (auth tokens)
 
 #### Week 14: Collaboration & Data Management
+
 - [ ] **Data Isolation & Privacy**
   - Implement user-scoped data access
   - Add data partitioning in IndexedDB
@@ -355,6 +384,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Create notification system for updates
 
 #### Week 15: Analytics Platform & Teacher Portal
+
 - [ ] **Analytics Platform Architecture**
   - Design analytics event schema
   - Build collectors for user actions
@@ -376,6 +406,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Progress reports
 
 #### Week 16: Security Hardening & Platform Launch
+
 - [ ] **Security Hardening** (Critical additions)
   - Implement comprehensive CSP headers
   - Add input sanitization throughout
@@ -399,6 +430,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
   - Set up A/B testing framework
 
 ### Success Metrics
+
 - Multi-user support functional with data isolation
 - Offline capability for all features
 - Performance metrics: FCP <1.5s, TTI <3s
@@ -412,6 +444,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ## Technical Architecture Improvements
 
 ### Immediate Technical Debt (Phase 1)
+
 1. **Build System & Module Migration**
    - Vite setup for modern development
    - ES6 module migration from mixed patterns
@@ -437,6 +470,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
    - Component interface documentation
 
 ### Medium-term Improvements (Phase 2-3)
+
 1. **Security Enhancements**
    - Replace all innerHTML usage
    - DOMPurify integration
@@ -459,6 +493,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
    - Git hooks for quality checks
 
 ### Long-term Architecture (Phase 4)
+
 1. **State Management & Data**
    - Zustand for complex state management
    - IndexedDB for offline-first data
@@ -482,12 +517,14 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ## Resource Requirements
 
 ### Development Team
+
 - **Frontend Developer**: Full-time for all phases
 - **UX/UI Designer**: Part-time for Phase 2-3
 - **Educational Content Creator**: Part-time for Phase 3
 - **QA Engineer**: Part-time for Phase 1, 4
 
 ### Tools & Infrastructure
+
 - **Testing**: Jest/Vitest, Testing Library, Cypress
 - **Build Tools**: Webpack/Vite, PostCSS, Babel
 - **CI/CD**: GitHub Actions, Vercel/Netlify
@@ -498,6 +535,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ## Risk Assessment & Mitigation
 
 ### High-Risk Areas
+
 1. **Complex Testing Setup**
    - **Risk**: ES6 module testing complexity
    - **Mitigation**: Start with utility functions, use proven testing patterns
@@ -511,6 +549,7 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
    - **Mitigation**: Implement lazy loading, optimize assets, monitor performance
 
 ### Medium-Risk Areas
+
 1. **Browser Compatibility**
    - **Risk**: Advanced PWA features may not work everywhere
    - **Mitigation**: Progressive enhancement, fallback implementations
@@ -524,11 +563,13 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 ## Success Measurement
 
 ### Key Performance Indicators (KPIs)
+
 - **Technical**: Test coverage >80%, Performance score >90, Accessibility score >95
 - **User Experience**: Loading time <2s, User engagement +40%, Error rate <1%
 - **Educational**: Activity completion rate, Learning progress metrics, User satisfaction >4.5/5
 
 ### Monitoring & Analytics
+
 - **Real-time Monitoring**: Performance metrics, error tracking, user analytics
 - **Educational Metrics**: Learning progress, completion rates, difficulty analysis
 - **Technical Metrics**: Code coverage, build times, deployment success rates
@@ -554,4 +595,4 @@ This roadmap outlines a 16-week development plan to transform Learnimals from a 
 
 ---
 
-*This roadmap is a living document and will be updated based on user feedback, technical discoveries, and changing requirements.*
+_This roadmap is a living document and will be updated based on user feedback, technical discoveries, and changing requirements._

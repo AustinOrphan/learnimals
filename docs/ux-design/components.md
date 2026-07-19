@@ -34,11 +34,11 @@ class MyComponent extends BaseComponent {
   generateHTML() {
     return `<div id="${this.options.id}">My Component</div>`;
   }
-  
+
   attachEventListeners() {
     this.addEventListener('click', this.handleClick);
   }
-  
+
   handleClick(event) {
     console.log('Component clicked');
   }
@@ -46,6 +46,7 @@ class MyComponent extends BaseComponent {
 ```
 
 **Key Features:**
+
 - Auto-generated unique IDs
 - Consistent render lifecycle
 - Event listener management with cleanup
@@ -67,13 +68,14 @@ const card = new Card({
   linkUrl: '/math.html',
   linkText: 'Start Learning',
   theme: 'default',
-  cssClasses: ['subject-card']
+  cssClasses: ['subject-card'],
 });
 
 card.render('#card-container');
 ```
 
 **Options:**
+
 - `title`: Card title text
 - `content`: Card content (supports HTML)
 - `imageUrl`: Optional image URL
@@ -102,13 +104,14 @@ const modal = new Modal({
   },
   onCancel: () => {
     console.log('Action cancelled');
-  }
+  },
 });
 
 modal.create().open();
 ```
 
 **Features:**
+
 - Accessible ARIA attributes
 - Keyboard navigation (Escape to close)
 - Click-outside-to-close
@@ -129,9 +132,9 @@ const form = new FormComponent({
       type: 'text',
       label: 'Username',
       required: true,
-      validate: (value) => {
+      validate: value => {
         return value.length >= 3 || 'Username must be at least 3 characters';
-      }
+      },
     },
     {
       name: 'age',
@@ -139,7 +142,7 @@ const form = new FormComponent({
       label: 'Age',
       min: 1,
       max: 120,
-      required: true
+      required: true,
     },
     {
       name: 'subject',
@@ -148,26 +151,28 @@ const form = new FormComponent({
       options: [
         { value: 'math', label: 'Math' },
         { value: 'science', label: 'Science' },
-        { value: 'reading', label: 'Reading' }
-      ]
-    }
+        { value: 'reading', label: 'Reading' },
+      ],
+    },
   ],
   useLocalStorage: true,
-  onSubmit: (data) => {
+  onSubmit: data => {
     console.log('Form submitted:', data);
-  }
+  },
 });
 
 form.render('#form-container');
 ```
 
 **Field Types:**
+
 - `text`, `email`, `password`, `number`, `tel`, `url`
 - `textarea`
 - `select`
 - `radio`, `checkbox`
 
 **Features:**
+
 - Real-time validation
 - Custom validation functions
 - Local storage integration
@@ -190,10 +195,10 @@ class NewComponent extends BaseComponent {
     super({
       // Default options
       type: 'default',
-      ...options
+      ...options,
     });
   }
-  
+
   generateHTML() {
     const { id, type } = this.options;
     return `
@@ -202,12 +207,12 @@ class NewComponent extends BaseComponent {
       </div>
     `;
   }
-  
+
   attachEventListeners() {
     // Add event listeners
     this.addEventListener('click', this.handleClick);
   }
-  
+
   handleClick(event) {
     // Handle interactions
     this.emit('newComponentClick', { event });
@@ -264,7 +269,7 @@ import { Card, Modal, FormComponent } from './components/index.js';
 // Create and render components
 const card = new Card({
   title: 'Welcome',
-  content: 'Get started with Learnimals!'
+  content: 'Get started with Learnimals!',
 }).render('#main-content');
 
 // Chain methods for fluent API
@@ -280,10 +285,10 @@ class GameComponent extends BaseComponent {
     super({
       gameType: 'memory',
       difficulty: 'easy',
-      ...options
+      ...options,
     });
   }
-  
+
   generateHTML() {
     return `
       <div id="${this.options.id}" class="game-component">
@@ -293,15 +298,15 @@ class GameComponent extends BaseComponent {
       </div>
     `;
   }
-  
+
   attachEventListeners() {
     this.addEventListener('click', this.startGame, '.game-start');
   }
-  
+
   startGame() {
-    this.emit('gameStarted', { 
+    this.emit('gameStarted', {
       type: this.options.gameType,
-      difficulty: this.options.difficulty 
+      difficulty: this.options.difficulty,
     });
   }
 }
@@ -309,11 +314,11 @@ class GameComponent extends BaseComponent {
 // Use the custom component
 const game = new GameComponent({
   gameType: 'math-quiz',
-  difficulty: 'medium'
+  difficulty: 'medium',
 });
 
 game.render('#game-container');
-game.addEventListener('gameStarted', (e) => {
+game.addEventListener('gameStarted', e => {
   console.log('Game started:', e.detail);
 });
 ```

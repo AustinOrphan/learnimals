@@ -27,6 +27,7 @@ npm run coverage:report
 ```
 
 This command will:
+
 1. Run unit tests with coverage enabled
 2. Generate coverage reports in multiple formats
 3. Display a coverage summary in the terminal
@@ -56,22 +57,29 @@ npm run coverage:open
 Coverage reports are generated in multiple formats:
 
 ### 1. Terminal Output
+
 Shows a summary table with coverage percentages for each file.
 
 ### 2. HTML Report
+
 Located at `coverage/index.html`. Provides an interactive interface to:
+
 - View coverage by file
 - See line-by-line coverage
 - Identify uncovered code blocks
 
 ### 3. LCOV Report
+
 Located at `coverage/lcov.info`. Used by:
+
 - CI/CD pipeline
 - Code coverage services (Codecov)
 - IDE extensions
 
 ### 4. JSON Report
+
 Located at `coverage/coverage-summary.json`. Machine-readable format used by:
+
 - CI quality gates
 - Badge generation
 - Automated reporting
@@ -95,6 +103,7 @@ The coverage badge is automatically updated on successful builds to the main bra
 ### GitHub Pages
 
 HTML coverage reports are automatically deployed to GitHub Pages for easy viewing:
+
 - URL: `https://[username].github.io/learnimals/coverage/`
 
 ## Viewing Coverage in Pull Requests
@@ -118,6 +127,7 @@ Each pull request automatically receives:
 ### Writing Tests for Coverage
 
 Focus on:
+
 - **Uncovered Functions**: Add tests for untested functions
 - **Uncovered Branches**: Test all conditional paths
 - **Error Handling**: Test error cases and edge conditions
@@ -185,6 +195,7 @@ coverage: {
 ### Excluding Files
 
 Add files to the `exclude` array in `vitest.config.js` to exclude them from coverage:
+
 - Test files
 - Configuration files
 - Generated code

@@ -9,6 +9,7 @@ This document outlines the design and technical specifications for Phase C: the 
 ## 🎯 Page Objectives
 
 ### Primary Goals
+
 1. **System Demonstration**: Showcase all character generation capabilities
 2. **Interactive Gallery**: Display all default characters with live interactions
 3. **Customization Preview**: Embedded demo of character customization
@@ -16,6 +17,7 @@ This document outlines the design and technical specifications for Phase C: the 
 5. **User Engagement**: Create an exciting, discoverable experience
 
 ### Target Audiences
+
 - **Students & Parents**: Experience character personalities and interactions
 - **Educators**: Understand learning companion capabilities
 - **Developers**: Technical demonstration and API showcase
@@ -26,6 +28,7 @@ This document outlines the design and technical specifications for Phase C: the 
 ## 🏗 Page Architecture
 
 ### URL Structure
+
 ```
 /src/pages/character-showcase.html
 /src/features/character-showcase/
@@ -40,6 +43,7 @@ This document outlines the design and technical specifications for Phase C: the 
 ```
 
 ### Page Sections
+
 ```
 Header & Navigation
 ├── Hero Section
@@ -72,12 +76,14 @@ Header & Navigation
 ## 🎨 Visual Design System
 
 ### Design Philosophy
+
 1. **Playful Professionalism**: Fun for children, impressive for adults
 2. **Interactive First**: Every element invites exploration
 3. **Performance Showcase**: Smooth animations demonstrate technical quality
 4. **Educational Value**: Learn while exploring
 
 ### Color Palette
+
 ```scss
 // Primary Brand Colors
 $primary-blue: #4a90e2;
@@ -98,6 +104,7 @@ $metric-error: #feb2b2;
 ```
 
 ### Typography
+
 ```scss
 // Headings - Playful but professional
 .showcase-title: 3rem, 'Fredoka One', sans-serif, 700
@@ -124,13 +131,15 @@ class CharacterParadeHero extends BaseComponent {
     this.currentCharacterIndex = 0;
     this.animationSpeed = options.animationSpeed || 3000;
   }
-  
+
   generateHTML() {
     return `
       <section class="hero-showcase">
         <div class="parade-container">
           <div class="character-parade">
-            ${this.characters.map((char, index) => `
+            ${this.characters
+              .map(
+                (char, index) => `
               <div class="parade-character ${index === 0 ? 'active' : ''}" 
                    data-character-id="${char.id}">
                 <div id="parade-char-${index}"></div>
@@ -138,7 +147,9 @@ class CharacterParadeHero extends BaseComponent {
                   <p class="character-greeting">${generateCharacterMessage(char, 'greeting')}</p>
                 </div>
               </div>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
         
@@ -163,12 +174,12 @@ class CharacterParadeHero extends BaseComponent {
       </section>
     `;
   }
-  
+
   async afterRender() {
     this.initializeCharacterRenderers();
     this.startParadeAnimation();
   }
-  
+
   initializeCharacterRenderers() {
     this.characters.forEach((character, index) => {
       const renderer = new CharacterRenderer({
@@ -176,28 +187,28 @@ class CharacterParadeHero extends BaseComponent {
         size: 120,
         interactive: true,
         animated: true,
-        container: document.getElementById(`parade-char-${index}`)
+        container: document.getElementById(`parade-char-${index}`),
       });
       renderer.render();
       this.characterRenderers = this.characterRenderers || [];
       this.characterRenderers.push(renderer);
     });
   }
-  
+
   startParadeAnimation() {
     setInterval(() => {
       this.rotateActiveCharacter();
     }, this.animationSpeed);
   }
-  
+
   rotateActiveCharacter() {
     const current = document.querySelector('.parade-character.active');
-    const next = current.nextElementSibling || 
-                 document.querySelector('.parade-character:first-child');
-    
+    const next =
+      current.nextElementSibling || document.querySelector('.parade-character:first-child');
+
     current.classList.remove('active');
     next.classList.add('active');
-    
+
     // Trigger greeting animation
     const nextIndex = Array.from(next.parentNode.children).indexOf(next);
     if (this.characterRenderers[nextIndex]) {
@@ -217,7 +228,7 @@ class CharacterGallery extends BaseComponent {
     this.filterBy = 'all'; // all, subject, species, personality
     this.sortBy = 'name'; // name, subject, popularity
   }
-  
+
   generateHTML() {
     return `
       <section class="character-gallery">
@@ -262,9 +273,11 @@ class CharacterGallery extends BaseComponent {
       </section>
     `;
   }
-  
+
   generateCharacterCards() {
-    return this.characters.map(character => `
+    return this.characters
+      .map(
+        character => `
       <div class="character-card" 
            data-character-id="${character.id}"
            data-subject="${character.personality.favoriteSubject}"
@@ -293,29 +306,35 @@ class CharacterGallery extends BaseComponent {
           </div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   generateTraitBars(traits) {
     const topTraits = Object.entries(traits)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 3);
-    
-    return topTraits.map(([trait, value]) => `
+
+    return topTraits
+      .map(
+        ([trait, value]) => `
       <div class="trait-bar">
         <span class="trait-name">${trait}</span>
         <div class="trait-progress">
           <div class="trait-fill" style="width: ${value}%"></div>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   async afterRender() {
     this.initializeCharacterRenderers();
     this.bindInteractions();
   }
-  
+
   initializeCharacterRenderers() {
     this.characters.forEach(character => {
       const container = document.getElementById(`card-char-${character.id}`);
@@ -325,16 +344,16 @@ class CharacterGallery extends BaseComponent {
           size: 100,
           interactive: true,
           animated: true,
-          container: container
+          container: container,
         });
         renderer.render();
       }
     });
   }
-  
+
   bindInteractions() {
     document.querySelectorAll('.interaction-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         e.stopPropagation();
         const action = btn.dataset.action;
         const card = btn.closest('.character-card');
@@ -343,14 +362,14 @@ class CharacterGallery extends BaseComponent {
       });
     });
   }
-  
+
   triggerCharacterAction(characterId, action) {
     const character = this.characters.find(c => c.id === characterId);
     if (!character) return;
-    
+
     const container = document.getElementById(`card-char-${characterId}`);
     const renderer = container.characterRenderer;
-    
+
     if (renderer) {
       switch (action) {
         case 'greet':
@@ -380,7 +399,7 @@ class CustomizationPreview extends BaseComponent {
     this.previewCharacter = createCharacter();
     this.isInteractive = true;
   }
-  
+
   generateHTML() {
     return `
       <section class="customization-preview">
@@ -454,22 +473,28 @@ class CustomizationPreview extends BaseComponent {
       </section>
     `;
   }
-  
+
   generateSpeciesButtons() {
     const species = ['cat', 'dog', 'panda', 'shark', 'parrot', 'lion'];
-    return species.map(s => `
+    return species
+      .map(
+        s => `
       <button class="species-btn ${s === this.previewCharacter.species.primary ? 'active' : ''}"
               data-species="${s}"
               onclick="updateCharacterSpecies('${s}')">
         <span class="species-icon ${s}-icon"></span>
         ${s.charAt(0).toUpperCase() + s.slice(1)}
       </button>
-    `).join('');
+    `
+      )
+      .join('');
   }
-  
+
   generatePersonalitySliders() {
     const traits = ['enthusiasm', 'patience', 'playfulness'];
-    return traits.map(trait => `
+    return traits
+      .map(
+        trait => `
       <div class="trait-slider-group">
         <label>${trait.charAt(0).toUpperCase() + trait.slice(1)}:</label>
         <input type="range" 
@@ -480,7 +505,9 @@ class CustomizationPreview extends BaseComponent {
                onchange="updatePersonalityTrait('${trait}', this.value)">
         <span class="trait-value">${this.previewCharacter.personality.traits[trait]}</span>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
   }
 }
 ```
@@ -545,11 +572,11 @@ class PerformanceMonitor extends BaseComponent {
       renderTime: 0,
       memoryUsage: 0,
       animationFPS: 0,
-      charactersRendered: 0
+      charactersRendered: 0,
     };
     this.isMonitoring = false;
   }
-  
+
   generateHTML() {
     return `
       <section class="performance-demo">
@@ -624,59 +651,59 @@ class PerformanceMonitor extends BaseComponent {
       </section>
     `;
   }
-  
+
   startMonitoring() {
     this.isMonitoring = true;
     this.monitoringInterval = setInterval(() => {
       this.updateMetrics();
     }, 100);
-    
+
     document.getElementById('monitor-toggle').textContent = 'Stop Monitoring';
     document.getElementById('monitor-toggle').onclick = () => this.stopMonitoring();
   }
-  
+
   updateMetrics() {
     // Measure render performance
     const renderStart = performance.now();
     this.measureRenderTime();
     this.metrics.renderTime = performance.now() - renderStart;
-    
+
     // Measure FPS
     this.measureFPS();
-    
+
     // Measure memory (if available)
     if (performance.memory) {
       this.metrics.memoryUsage = performance.memory.usedJSHeapSize / (1024 * 1024);
     }
-    
+
     // Count active characters
     this.metrics.charactersRendered = document.querySelectorAll('.character-renderer').length;
-    
+
     this.displayMetrics();
   }
-  
+
   displayMetrics() {
-    document.getElementById('render-time').querySelector('.value').textContent = 
+    document.getElementById('render-time').querySelector('.value').textContent =
       this.metrics.renderTime.toFixed(2);
-    document.getElementById('animation-fps').querySelector('.value').textContent = 
+    document.getElementById('animation-fps').querySelector('.value').textContent =
       this.metrics.animationFPS.toFixed(0);
-    document.getElementById('memory-usage').querySelector('.value').textContent = 
+    document.getElementById('memory-usage').querySelector('.value').textContent =
       this.metrics.memoryUsage.toFixed(1);
-    document.getElementById('characters-count').querySelector('.value').textContent = 
+    document.getElementById('characters-count').querySelector('.value').textContent =
       this.metrics.charactersRendered;
-    
+
     // Update progress bars
     this.updateMetricBar('render-time-bar', this.metrics.renderTime, 50); // 50ms max
     this.updateMetricBar('fps-bar', this.metrics.animationFPS, 60); // 60fps max
     this.updateMetricBar('memory-bar', this.metrics.memoryUsage, 100); // 100MB max
     this.updateMetricBar('characters-bar', this.metrics.charactersRendered, 20); // 20 chars max
   }
-  
+
   updateMetricBar(barId, value, maxValue) {
     const bar = document.getElementById(barId);
     const percentage = Math.min(100, (value / maxValue) * 100);
     bar.style.width = `${percentage}%`;
-    
+
     // Color coding
     if (percentage < 50) {
       bar.className = 'metric-fill good';
@@ -694,6 +721,7 @@ class PerformanceMonitor extends BaseComponent {
 ## 📱 Responsive Design
 
 ### Breakpoint Strategy
+
 ```scss
 // Mobile-first responsive design
 .character-showcase {
@@ -702,21 +730,21 @@ class PerformanceMonitor extends BaseComponent {
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
-    
+
     .customization-panel {
       order: 2;
     }
-    
+
     .preview-display {
       order: 1;
     }
   }
-  
+
   @media (max-width: 480px) {
     .gallery-grid {
       grid-template-columns: 1fr;
     }
-    
+
     .character-parade {
       flex-direction: column;
       height: auto;
@@ -730,20 +758,19 @@ class PerformanceMonitor extends BaseComponent {
 ## ♿ Accessibility Features
 
 ### ARIA Implementation
+
 ```html
-<section class="character-gallery" 
-         role="region" 
-         aria-labelledby="gallery-heading">
+<section class="character-gallery" role="region" aria-labelledby="gallery-heading">
   <h2 id="gallery-heading">Character Gallery</h2>
-  
-  <div class="gallery-grid" 
-       role="grid" 
-       aria-label="Interactive character collection">
-    <div class="character-card" 
-         role="gridcell" 
-         tabindex="0"
-         aria-labelledby="char-name-1" 
-         aria-describedby="char-desc-1">
+
+  <div class="gallery-grid" role="grid" aria-label="Interactive character collection">
+    <div
+      class="character-card"
+      role="gridcell"
+      tabindex="0"
+      aria-labelledby="char-name-1"
+      aria-describedby="char-desc-1"
+    >
       <h3 id="char-name-1">Mango the Shark</h3>
       <p id="char-desc-1">Math teacher with high enthusiasm and patience</p>
     </div>
@@ -752,6 +779,7 @@ class PerformanceMonitor extends BaseComponent {
 ```
 
 ### Keyboard Navigation
+
 - Tab through all interactive elements
 - Enter/Space to activate character interactions
 - Arrow keys for gallery navigation
@@ -762,19 +790,20 @@ class PerformanceMonitor extends BaseComponent {
 ## 🚀 Performance Optimization
 
 ### Lazy Loading Strategy
+
 ```javascript
 class LazyCharacterLoader {
   constructor() {
     this.observer = new IntersectionObserver(this.handleIntersection.bind(this));
     this.loadedCharacters = new Set();
   }
-  
+
   observeCharacterCards() {
     document.querySelectorAll('.character-card').forEach(card => {
       this.observer.observe(card);
     });
   }
-  
+
   handleIntersection(entries) {
     entries.forEach(entry => {
       if (entry.isIntersecting && !this.loadedCharacters.has(entry.target)) {
@@ -783,7 +812,7 @@ class LazyCharacterLoader {
       }
     });
   }
-  
+
   loadCharacter(cardElement) {
     const characterId = cardElement.dataset.characterId;
     // Initialize character renderer only when visible
@@ -793,6 +822,7 @@ class LazyCharacterLoader {
 ```
 
 ### Caching Strategy
+
 - Character data cached in localStorage
 - SVG elements cached after first render
 - Animation sequences pre-computed and cached
@@ -802,26 +832,27 @@ class LazyCharacterLoader {
 ## 🧪 Testing Strategy
 
 ### Visual Testing
+
 ```javascript
 describe('Character Showcase Visual Tests', () => {
   test('should display all default characters', async () => {
     await page.goto('/src/pages/character-showcase.html');
-    
+
     const characterCards = await page.$$('.character-card');
     expect(characterCards.length).toBe(8); // All default characters
-    
+
     for (const card of characterCards) {
       const character = await card.$('.character-renderer');
       expect(character).toBeTruthy();
     }
   });
-  
+
   test('should handle character interactions', async () => {
     await page.click('.character-card:first-child .interaction-btn[data-action="greet"]');
-    
+
     const speechBubble = await page.waitForSelector('.speech-bubble');
     expect(speechBubble).toBeTruthy();
-    
+
     const message = await page.$eval('.message-text', el => el.textContent);
     expect(message.length).toBeGreaterThan(0);
   });
@@ -829,21 +860,20 @@ describe('Character Showcase Visual Tests', () => {
 ```
 
 ### Performance Testing
+
 ```javascript
 describe('Performance Tests', () => {
   test('should maintain 60fps with multiple characters', async () => {
     await page.goto('/src/pages/character-showcase.html');
-    
+
     // Start monitoring
     await page.click('#monitor-toggle');
-    
+
     // Wait for metrics to stabilize
     await page.waitForTimeout(2000);
-    
-    const fps = await page.$eval('#animation-fps .value', el => 
-      parseFloat(el.textContent)
-    );
-    
+
+    const fps = await page.$eval('#animation-fps .value', el => parseFloat(el.textContent));
+
     expect(fps).toBeGreaterThanOrEqual(55); // Allow slight variance
   });
 });
@@ -854,30 +884,31 @@ describe('Performance Tests', () => {
 ## 📊 Analytics & Metrics
 
 ### User Interaction Tracking
+
 ```javascript
 class ShowcaseAnalytics {
   trackCharacterInteraction(characterId, action) {
     this.logEvent('character_interaction', {
       character_id: characterId,
       action: action,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
-  
+
   trackCustomizationUsage(changes) {
     this.logEvent('customization_used', {
       changes: changes,
       duration: this.customizationDuration,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
-  
+
   trackPerformanceMetric(metric, value) {
     this.logEvent('performance_metric', {
       metric: metric,
       value: value,
       browser: navigator.userAgent,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 }
@@ -888,13 +919,14 @@ class ShowcaseAnalytics {
 ## 🔗 Integration Points
 
 ### API Endpoints
+
 ```javascript
 // Character data API
 GET /api/characters/default - Get all default characters
 GET /api/characters/{id} - Get specific character
 POST /api/characters/validate - Validate character data
 
-// Customization API  
+// Customization API
 POST /api/characters/create - Create new character
 PUT /api/characters/{id} - Update character
 GET /api/characters/random - Get random character
@@ -905,6 +937,7 @@ GET /api/metrics/stats - Get aggregated stats
 ```
 
 ### External Services
+
 - **Character Storage**: Integration with CharacterStorage service
 - **Performance Monitoring**: Real-time metrics collection
 - **Social Sharing**: Share created characters

@@ -17,6 +17,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ### 1. Subject Coverage
 
 #### Included Subjects (4)
+
 - **Math with Mango the Shark**
   - Number recognition and counting
   - Basic arithmetic (addition/subtraction)
@@ -42,6 +43,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
   - Pattern creation
 
 #### Deferred Subjects
+
 - Coding with Cody the Cat (Phase 2)
 - Music with Melody (Phase 2)
 - Geography, History, Language (Phase 3)
@@ -51,6 +53,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 #### Core Games (2-3 per subject)
 
 **Math Games**
+
 1. **Bubble Pop Math** ✓ (Already implemented)
    - Practice arithmetic through bubble popping
    - Adaptive difficulty
@@ -67,6 +70,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
    - Visual fraction representation
 
 **Science Games**
+
 1. **Element Match** ✓ (Already implemented)
    - Match scientific concepts
    - Memory game mechanics
@@ -78,6 +82,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
    - Data collection basics
 
 **Reading Games**
+
 1. **Word Scramble** ✓ (Already implemented)
    - Vocabulary building
    - Spelling practice
@@ -89,6 +94,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
    - Creative writing prompts
 
 **Art Games**
+
 1. **Color Palette** ✓ (Already implemented)
    - Color mixing
    - Primary/secondary colors
@@ -102,12 +108,14 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ### 3. Character System
 
 #### MVP Implementation
+
 - **4 Main Characters**: One per subject
 - **Basic Customization**: 3-5 appearance options per character
 - **Character Selection**: Choose favorite at start
 - **Simple Animations**: Idle, happy, encouraging
 
 #### Deferred Features
+
 - Advanced customization
 - Character backstories
 - Voice acting
@@ -116,17 +124,20 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ### 4. Progress Tracking
 
 #### Basic Tracking
+
 - **Game Scores**: High scores per game
 - **Completion Tracking**: Games played/completed
 - **Simple XP System**: Points for activities
 - **Basic Levels**: 1-10 per subject
 
 #### Visual Progress
+
 - **Progress Bars**: For each subject
 - **Star Ratings**: 1-3 stars per game
 - **Daily Login Tracker**: Simple calendar
 
 #### Deferred Analytics
+
 - Detailed skill mapping
 - Learning path recommendations
 - Comparative analytics
@@ -135,6 +146,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ### 5. User Experience
 
 #### Core UX Features
+
 - **Simple Navigation**: Clear subject selection
 - **Game Selection**: Visual game cards
 - **Instant Play**: No complex menus
@@ -142,6 +154,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 - **Visual Rewards**: Stars, confetti animations
 
 #### Accessibility MVP
+
 - **Large Touch Targets**: Mobile-friendly
 - **High Contrast Mode**: Basic implementation
 - **Simple Instructions**: Visual + text
@@ -150,12 +163,14 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ### 6. Technical Features
 
 #### Platform Capabilities
+
 - **Progressive Web App**: Installable on devices
 - **Offline Mode**: Core games work offline
 - **Responsive Design**: Tablet and desktop
 - **Local Storage**: Save progress locally
 
 #### Performance Targets
+
 - **Load Time**: <5 seconds initial load
 - **Game Start**: <2 seconds
 - **Smooth Animations**: 30+ FPS
@@ -164,12 +179,14 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ### 7. Parent Features (Minimal)
 
 #### Basic Parent Access
+
 - **Progress Summary**: Simple dashboard
 - **Time Played**: Daily/weekly totals
 - **Email Reports**: Weekly summary
 - **Basic Controls**: Time limits
 
 #### Deferred Parent Features
+
 - Detailed analytics
 - Content filtering
 - Multiple child profiles
@@ -178,6 +195,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ## Features NOT in MVP
 
 ### Educational Features
+
 - Adaptive learning algorithms
 - Comprehensive assessments
 - Curriculum alignment tools
@@ -185,6 +203,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 - Homework integration
 
 ### Social Features
+
 - Friend connections
 - Multiplayer games
 - Leaderboards
@@ -192,6 +211,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 - Chat or messaging
 
 ### Advanced Gamification
+
 - Virtual worlds
 - Character stories/quests
 - Complex reward systems
@@ -199,6 +219,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 - Item collections
 
 ### Monetization Features
+
 - Payment processing
 - Premium content
 - Ad integration
@@ -208,18 +229,21 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ## Technical Requirements
 
 ### Frontend Stack
+
 - **Framework**: Vanilla JavaScript (already in use)
 - **Styling**: CSS3 with animations
 - **Build**: No build process (static files)
 - **Testing**: Vitest (fix dependencies)
 
 ### Infrastructure
+
 - **Hosting**: GitHub Pages (free tier)
 - **CDN**: Cloudflare (free tier)
 - **Analytics**: Google Analytics
 - **Error Tracking**: Sentry (free tier)
 
 ### Browser Support
+
 - Chrome 90+
 - Safari 14+
 - Firefox 88+
@@ -229,6 +253,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ## Success Criteria
 
 ### Launch Criteria
+
 1. All core games functional
 2. Progress saves correctly
 3. Offline mode works
@@ -236,6 +261,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 5. Load time <5 seconds
 
 ### Success Metrics (First 90 Days)
+
 - **Users**: 1,000 registered users
 - **Retention**: 40% week 1 retention
 - **Engagement**: 3+ sessions per week
@@ -243,6 +269,7 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 - **Satisfaction**: 4+ star average rating
 
 ### Learning Validation
+
 - Pre/post game assessments
 - Parent feedback surveys
 - Time-to-completion metrics
@@ -251,18 +278,21 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ## MVP Timeline
 
 ### Month 1: Foundation
+
 - Fix existing bugs
 - Complete progress tracking
 - Polish existing games
 - Basic parent dashboard
 
 ### Month 2: Content & Polish
+
 - Add remaining MVP games
 - Character animations
 - Sound effects
 - Performance optimization
 
 ### Month 3: Launch Preparation
+
 - Beta testing
 - Bug fixes
 - Marketing materials
@@ -271,12 +301,14 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ## Post-MVP Roadmap Preview
 
 ### Phase 2 (Months 4-6)
+
 - Coding & Music subjects
 - Advanced progress tracking
 - Payment integration
 - Teacher tools
 
 ### Phase 3 (Months 7-12)
+
 - Mobile apps
 - Additional subjects
 - Social features
@@ -285,16 +317,19 @@ The Learnimals Minimum Viable Product (MVP) focuses on delivering core education
 ## Risk Mitigation
 
 ### Technical Risks
+
 - **Complexity**: Keep architecture simple
 - **Performance**: Test on low-end devices
 - **Bugs**: Automated testing setup
 
 ### User Risks
+
 - **Engagement**: A/B test game mechanics
 - **Difficulty**: Start very easy
 - **Instructions**: Visual tutorials
 
 ### Business Risks
+
 - **Competition**: Launch quickly
 - **Feedback**: Built-in feedback tools
 - **Iteration**: Weekly update cycle

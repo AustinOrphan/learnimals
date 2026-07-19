@@ -11,12 +11,14 @@ This plan addresses four critical technical infrastructure failures that must be
 ## Problem Analysis
 
 ### Current Critical Issues
+
 1. **Testing Framework Failure**: `es-errors` dependency missing, Vitest crashes
 2. **Code Quality Crisis**: 200+ ESLint errors across codebase
 3. **CI/CD Pipeline Broken**: GitHub Actions failing due to test/lint issues
 4. **Development Environment Unstable**: Inconsistent setup, missing documentation
 
 ### Root Cause Analysis
+
 - **Dependency Drift**: Package versions out of sync, missing peer dependencies
 - **Configuration Mismatch**: ESLint config doesn't match actual code style
 - **Process Breakdown**: No enforcement of quality standards
@@ -27,6 +29,7 @@ This plan addresses four critical technical infrastructure failures that must be
 ### 🎯 **Objective**: Get tests running without errors
 
 #### Step 1.1: Complete Dependency Reset (30 minutes)
+
 ```bash
 # Execute in project root
 cd /path/to/learnimals
@@ -51,6 +54,7 @@ npm install --save-dev @types/node@latest
 ```
 
 #### Step 1.2: Vitest Configuration Audit (45 minutes)
+
 ```javascript
 // vitest.config.js - Review and fix configuration
 import { defineConfig } from 'vitest/config';
@@ -63,21 +67,17 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/**',
-        'tests/**',
-        '**/*.config.js',
-        'docs/**'
-      ]
+      exclude: ['node_modules/**', 'tests/**', '**/*.config.js', 'docs/**'],
     },
     // Add timeout for slow tests
     testTimeout: 10000,
-    hookTimeout: 10000
-  }
+    hookTimeout: 10000,
+  },
 });
 ```
 
 #### Step 1.3: Create Missing Test Setup Files (30 minutes)
+
 ```javascript
 // tests/setup.js - Create comprehensive test setup
 import { vi } from 'vitest';
@@ -115,6 +115,7 @@ global.console = {
 ```
 
 #### Step 1.4: Test Framework Validation (15 minutes)
+
 ```bash
 # Run tests to verify they work
 npm test
@@ -125,6 +126,7 @@ npm test
 ```
 
 ### 📋 **Phase 1 Deliverables**
+
 - [ ] Dependencies cleanly installed with no missing modules
 - [ ] Vitest runs without crashing
 - [ ] Test framework configuration validated
@@ -135,18 +137,20 @@ npm test
 ### 🎯 **Objective**: Achieve zero ESLint errors
 
 #### Step 2.1: ESLint Configuration Analysis (30 minutes)
+
 ```bash
 # Analyze current errors by category
 npm run lint > lint-errors.txt 2>&1
 
 # Review error patterns:
 # - Indentation errors (likely majority)
-# - Quote style inconsistencies 
+# - Quote style inconsistencies
 # - Unused variable warnings
 # - Import/export issues
 ```
 
 #### Step 2.2: Automated Fixes (30 minutes)
+
 ```bash
 # Run auto-fix for all fixable errors
 npm run lint:fix
@@ -159,6 +163,7 @@ npm run lint > remaining-errors.txt 2>&1
 ```
 
 #### Step 2.3: ESLint Configuration Optimization (45 minutes)
+
 ```javascript
 // eslint.config.mjs - Optimize configuration for codebase
 export default [
@@ -171,59 +176,71 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
-        process: 'readonly'
-      }
+        process: 'readonly',
+      },
     },
     rules: {
       // Indentation - match existing code style
-      'indent': ['error', 2, { 
-        SwitchCase: 1,
-        ignoredNodes: ['TemplateLiteral']
-      }],
-      
+      indent: [
+        'error',
+        2,
+        {
+          SwitchCase: 1,
+          ignoredNodes: ['TemplateLiteral'],
+        },
+      ],
+
       // Quotes - enforce single quotes
-      'quotes': ['error', 'single', { 
-        avoidEscape: true,
-        allowTemplateLiterals: true 
-      }],
-      
+      quotes: [
+        'error',
+        'single',
+        {
+          avoidEscape: true,
+          allowTemplateLiterals: true,
+        },
+      ],
+
       // Semicolons
-      'semi': ['error', 'always'],
-      
+      semi: ['error', 'always'],
+
       // Unused variables - be more lenient during development
-      'no-unused-vars': ['error', { 
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        ignoreRestSiblings: true
-      }],
-      
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
+
       // Console - allow in development
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
-      
+
       // Common issues
       'no-prototype-builtins': 'error',
       'prefer-const': 'warn',
-      'no-var': 'error'
-    }
+      'no-var': 'error',
+    },
   },
   {
     // Test files - more lenient rules
     files: ['tests/**/*.js', '**/*.test.js', '**/*.spec.js'],
     rules: {
       'no-unused-vars': 'off', // Test imports often used by framework
-      'no-console': 'off' // Debug output in tests is fine
-    }
-  }
+      'no-console': 'off', // Debug output in tests is fine
+    },
+  },
 ];
 ```
 
 #### Step 2.4: Manual Error Resolution (2-3 hours)
+
 Systematic approach to fix remaining errors:
 
 ```bash
 # Fix errors by file priority:
 # 1. Core utilities (src/utils/)
-# 2. Components (src/components/)  
+# 2. Components (src/components/)
 # 3. Features (src/features/)
 # 4. Tests (tests/)
 
@@ -236,6 +253,7 @@ Systematic approach to fix remaining errors:
 ```
 
 #### Step 2.5: ESLint Integration (30 minutes)
+
 ```json
 // package.json - Ensure proper scripts
 {
@@ -253,6 +271,7 @@ Systematic approach to fix remaining errors:
 ```
 
 ### 📋 **Phase 2 Deliverables**
+
 - [ ] Zero ESLint errors across entire codebase
 - [ ] ESLint configuration optimized for project
 - [ ] Automated fixing integrated into workflow
@@ -263,6 +282,7 @@ Systematic approach to fix remaining errors:
 ### 🎯 **Objective**: Fully functional GitHub Actions pipeline
 
 #### Step 3.1: CI Configuration Analysis (30 minutes)
+
 ```bash
 # Review current GitHub Actions configuration
 cat .github/workflows/ci.yml
@@ -275,6 +295,7 @@ cat .github/workflows/ci.yml
 ```
 
 #### Step 3.2: GitHub Actions Configuration Fix (1 hour)
+
 ```yaml
 # .github/workflows/ci.yml - Robust CI configuration
 name: CI Pipeline
@@ -296,7 +317,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Read Node version
         id: setup
         run: |
@@ -312,13 +333,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           # Use npm install instead of npm ci if package-lock.json issues
@@ -327,15 +348,15 @@ jobs:
           else
             npm install
           fi
-      
+
       - name: Run ESLint
         run: npm run lint
-      
+
       - name: Run tests
         run: npm test -- --reporter=verbose
         env:
           NODE_ENV: test
-      
+
       - name: Upload test coverage
         if: matrix.node-version == 20
         uses: codecov/codecov-action@v3
@@ -350,16 +371,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm install
-      
+
       - name: Build project
         run: |
           # If build script exists
@@ -371,7 +392,7 @@ jobs:
             cp -r src/* dist/
             cp -r public/* dist/
           fi
-      
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -381,6 +402,7 @@ jobs:
 ```
 
 #### Step 3.3: Branch Protection Setup (30 minutes)
+
 ```bash
 # Set up branch protection rules via GitHub CLI or web interface
 # Required settings:
@@ -391,6 +413,7 @@ jobs:
 ```
 
 #### Step 3.4: CI Pipeline Testing (45 minutes)
+
 ```bash
 # Test CI pipeline thoroughly:
 
@@ -402,7 +425,7 @@ echo "# CI Pipeline Test" >> README.md
 git add README.md
 git commit -m "test: verify CI pipeline functionality"
 
-# 3. Push and create PR 
+# 3. Push and create PR
 git push -u origin test/ci-pipeline-fix
 
 # 4. Monitor GitHub Actions for:
@@ -416,6 +439,7 @@ git push -u origin test/ci-pipeline-fix
 ```
 
 ### 📋 **Phase 3 Deliverables**
+
 - [ ] GitHub Actions pipeline passes all checks
 - [ ] Branch protection rules active
 - [ ] Multiple Node version testing working
@@ -426,6 +450,7 @@ git push -u origin test/ci-pipeline-fix
 ### 🎯 **Objective**: Consistent, documented development setup
 
 #### Step 4.1: Environment Documentation Audit (30 minutes)
+
 ```bash
 # Review current setup documentation
 ls -la docs/
@@ -440,6 +465,7 @@ cat CLAUDE.md | grep -A 30 "Development Commands"
 ```
 
 #### Step 4.2: Comprehensive Setup Script Creation (1 hour)
+
 ```bash
 #!/bin/bash
 # scripts/setup-dev-environment.sh - Complete development setup
@@ -515,7 +541,8 @@ echo "❓ Issues? Check docs/troubleshooting.md"
 ```
 
 #### Step 4.3: Troubleshooting Guide Creation (1 hour)
-```markdown
+
+````markdown
 # docs/troubleshooting.md - Comprehensive troubleshooting guide
 
 ## Common Issues and Solutions
@@ -523,7 +550,9 @@ echo "❓ Issues? Check docs/troubleshooting.md"
 ### Dependency Installation Issues
 
 #### Problem: `npm install` fails with permission errors
+
 **Solution:**
+
 ```bash
 # Use npm's default directory for global packages
 mkdir ~/.npm-global
@@ -531,9 +560,12 @@ npm config set prefix '~/.npm-global'
 echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
+````
 
 #### Problem: `es-errors` module not found
+
 **Solution:**
+
 ```bash
 rm -rf node_modules package-lock.json
 npm cache clean --force
@@ -544,7 +576,9 @@ npm install --save-dev es-errors@latest
 ### Testing Issues
 
 #### Problem: Tests timeout or crash
+
 **Solution:**
+
 ```bash
 # Increase test timeout
 npx vitest --reporter=verbose --timeout=15000
@@ -556,7 +590,9 @@ cat tests/setup.js  # Should exist and configure DOM mocks
 ### ESLint Issues
 
 #### Problem: Too many indentation errors
+
 **Solution:**
+
 ```bash
 # Auto-fix most indentation issues
 npm run lint:fix
@@ -568,7 +604,9 @@ npm run lint:fix
 ### Development Server Issues
 
 #### Problem: "Address already in use" error
+
 **Solution:**
+
 ```bash
 # Find and kill process using port 8080
 lsof -ti:8080 | xargs kill -9
@@ -580,17 +618,21 @@ python3 -m http.server 8081
 ### Platform-Specific Issues
 
 #### macOS Issues
+
 - **Problem**: `gyp: No Xcode or CLT version detected`
 - **Solution**: `xcode-select --install`
 
-#### Windows Issues  
+#### Windows Issues
+
 - **Problem**: Script execution policy errors
 - **Solution**: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
 
 #### Linux Issues
+
 - **Problem**: Permission denied on npm global installs
 - **Solution**: Use npm's default directory or nvm for Node.js management
-```
+
+````
 
 #### Step 4.4: Development Workflow Documentation (1 hour)
 ```markdown
@@ -609,9 +651,10 @@ git checkout -b feature/your-feature-name
 
 # Start development server
 npm run dev
-```
+````
 
 ### 2. Development Process
+
 ```bash
 # Run tests in watch mode (separate terminal)
 npm run test:watch
@@ -624,6 +667,7 @@ npm run lint:fix
 ```
 
 ### 3. Before Committing
+
 ```bash
 # Run full test suite
 npm test
@@ -637,6 +681,7 @@ git commit -m "feat: describe your changes"
 ```
 
 ### 4. Creating Pull Requests
+
 ```bash
 # Push feature branch
 git push -u origin feature/your-feature-name
@@ -648,6 +693,7 @@ gh pr create --title "Feature: Your Feature Name" --body "Description of changes
 ## Code Quality Standards
 
 ### Commit Message Format
+
 ```
 type(scope): description
 
@@ -662,13 +708,15 @@ docs(readme): update installation instructions
 ```
 
 ### Code Style Guidelines
+
 - Use 2-space indentation
 - Single quotes for strings
 - Semicolons required
 - Prefer `const` over `let`
 - Use meaningful variable names
 - Add JSDoc comments for public functions
-```
+
+````
 
 ### 📋 **Phase 4 Deliverables**
 - [ ] Automated setup script working on fresh machines
@@ -703,9 +751,10 @@ git add README.md
 git commit -m "test: final validation of CI pipeline"
 git push -u origin test/final-validation
 # Create PR and verify all checks pass
-```
+````
 
 #### Step 5.2: Performance Baseline (1 hour)
+
 ```bash
 # Establish performance baselines:
 
@@ -722,11 +771,12 @@ kill $SERVER_PID
 ```
 
 #### Step 5.3: Developer Experience Testing (1 hour)
+
 ```bash
 # Test common developer workflows:
 
 # 1. New developer onboarding simulation
-# 2. Feature development simulation  
+# 2. Feature development simulation
 # 3. Bug fixing simulation
 # 4. Code review simulation
 # 5. Deployment simulation
@@ -735,6 +785,7 @@ kill $SERVER_PID
 ```
 
 ### 📋 **Phase 5 Deliverables**
+
 - [ ] Clean setup verified on fresh environment
 - [ ] All automated tests passing
 - [ ] CI/CD pipeline fully functional
@@ -744,18 +795,21 @@ kill $SERVER_PID
 ## Success Metrics
 
 ### Technical Metrics
+
 - ✅ **Zero ESLint errors** across entire codebase
 - ✅ **All tests pass** without crashes or timeouts
 - ✅ **CI/CD pipeline green** on all branches
 - ✅ **Setup script success** on fresh environments
 
 ### Process Metrics
+
 - ✅ **Setup time < 10 minutes** for new developers
 - ✅ **PR cycle time < 24 hours** from creation to merge
 - ✅ **Zero manual deployment steps** required
 - ✅ **Documentation completeness** verified by testing
 
 ### Quality Metrics
+
 - ✅ **Code coverage > 70%** for critical paths
 - ✅ **Load time < 3 seconds** for main pages
 - ✅ **Zero critical security vulnerabilities**
@@ -764,6 +818,7 @@ kill $SERVER_PID
 ## Risk Mitigation
 
 ### High-Risk Scenarios
+
 1. **Dependency conflicts persist**
    - Mitigation: Document exact working versions, use npm shrinkwrap
 
@@ -774,6 +829,7 @@ kill $SERVER_PID
    - Mitigation: Optimize test suite, parallelize jobs
 
 ### Rollback Procedures
+
 ```bash
 # If major issues arise:
 git checkout main
@@ -783,13 +839,13 @@ git push --force-with-lease origin main
 
 ## Timeline Summary
 
-| Day | Phase | Key Activities | Deliverables |
-|-----|-------|---------------|--------------|
-| 1 | Dependencies | Fix npm issues, repair Vitest | Working test framework |
-| 2 | Code Quality | ESLint error resolution | Zero lint errors |
-| 3 | CI/CD | GitHub Actions repair | Green pipeline |
-| 4 | Environment | Documentation, setup scripts | Stable dev environment |
-| 5 | Validation | End-to-end testing | Verified stability |
+| Day | Phase        | Key Activities                | Deliverables           |
+| --- | ------------ | ----------------------------- | ---------------------- |
+| 1   | Dependencies | Fix npm issues, repair Vitest | Working test framework |
+| 2   | Code Quality | ESLint error resolution       | Zero lint errors       |
+| 3   | CI/CD        | GitHub Actions repair         | Green pipeline         |
+| 4   | Environment  | Documentation, setup scripts  | Stable dev environment |
+| 5   | Validation   | End-to-end testing            | Verified stability     |
 
 **Total Effort**: 3-5 days with 1-2 experienced developers
 **Outcome**: Stable, professional development environment ready for MVP development
@@ -797,11 +853,13 @@ git push --force-with-lease origin main
 ## Post-Stabilization Actions
 
 ### Immediate (Week 1)
+
 - [ ] Team onboarding using new setup process
 - [ ] First sprint planning with stable environment
 - [ ] Establish code review standards
 
 ### Short-term (Month 1)
+
 - [ ] Performance monitoring implementation
 - [ ] Advanced testing strategies
 - [ ] Continuous improvement feedback loop

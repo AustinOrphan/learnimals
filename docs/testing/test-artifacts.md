@@ -9,21 +9,25 @@ Test artifacts are files generated during test execution that provide detailed i
 ## Types of Test Artifacts
 
 ### 1. Test Results
+
 - **JUnit XML Reports**: Machine-readable test results for each test suite
 - **JSON Reports**: Detailed test execution data
 - **Summary Reports**: Human-readable markdown summaries
 
 ### 2. Coverage Reports
+
 - **HTML Coverage**: Interactive coverage browser
 - **LCOV Data**: Line coverage information
 - **Coverage Summary**: JSON file with coverage percentages
 
 ### 3. Logs and Debug Info
+
 - **Test Logs**: Console output from test execution
 - **Error Logs**: Detailed error messages and stack traces
 - **Debug Screenshots**: For E2E test failures
 
 ### 4. Combined Reports
+
 - **All Test Results**: Aggregated results from all test suites
 - **Test Dashboard**: HTML index for easy navigation
 
@@ -92,6 +96,7 @@ Use the provided script to download artifacts:
 ### 3. GitHub Pages
 
 Test results are automatically published to GitHub Pages:
+
 - URL: `https://[username].github.io/learnimals/test-results/`
 - Updated on every main branch build
 - Includes coverage reports and test dashboard
@@ -138,19 +143,21 @@ cat test-results.xml
 ## Best Practices
 
 ### 1. Screenshots for E2E Tests
+
 Always capture screenshots on failure:
 
 ```javascript
-afterEach(async function() {
+afterEach(async function () {
   if (this.currentTest.state === 'failed') {
-    await page.screenshot({ 
-      path: `screenshots/${this.currentTest.title}.png` 
+    await page.screenshot({
+      path: `screenshots/${this.currentTest.title}.png`,
     });
   }
 });
 ```
 
 ### 2. Meaningful Test Names
+
 Use descriptive test names for better artifact organization:
 
 ```javascript
@@ -162,12 +169,13 @@ describe('User Authentication', () => {
 ```
 
 ### 3. Log Important Information
+
 Add console logs for debugging:
 
 ```javascript
-console.log('Test context:', { 
-  user: testUser.id, 
-  timestamp: Date.now() 
+console.log('Test context:', {
+  user: testUser.id,
+  timestamp: Date.now(),
 });
 ```
 
@@ -201,13 +209,10 @@ Create custom HTML reports:
 const report = {
   summary: testResults,
   timestamp: new Date(),
-  environment: process.env
+  environment: process.env,
 };
 
-fs.writeFileSync(
-  'custom-report.html',
-  generateHTMLReport(report)
-);
+fs.writeFileSync('custom-report.html', generateHTMLReport(report));
 ```
 
 ### Artifact Comparison
@@ -227,6 +232,7 @@ diff test-artifacts-12345/coverage/coverage-summary.json \
 ### Integration with External Services
 
 Artifacts can be sent to external services:
+
 - **Test Management Tools**: Upload JUnit XML
 - **Coverage Services**: Send LCOV data to Codecov
 - **Monitoring**: Push metrics to dashboards
