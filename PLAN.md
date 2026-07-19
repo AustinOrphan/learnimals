@@ -39,8 +39,11 @@ When this plan changes, update this file — do not fork a new one.
 
 ## Milestone 2 — decisions needed (each blocks its own work)
 
-- **License**: README claimed MIT but no LICENSE file exists. Add the
-  MIT LICENSE file, or drop the claim entirely.
+- **License**: RESOLVED 2026-07-19 — split licensing: MIT for code
+  (LICENSE), CC BY-NC-SA 4.0 for creative/educational content
+  (LICENSE-CONTENT.md), "Learnimals" name and logo reserved. Open
+  follow-up: confirm the early contributor (4 commits, May 2025) is OK
+  with the MIT grant and public visibility.
 - **IndexedDB island**: `src/services/{database,progress,achievements}`
   has zero importers (the live progress path is
   `features/progress/ProgressTracker` + `utils/EnhancedProgressTracker`).
@@ -50,10 +53,12 @@ When this plan changes, update this file — do not fork a new one.
   ever existed on abandoned auth branches. The shipped page uses
   `components/ui/GameProgressDashboard.js`. Revive (needs an auth/user
   decision — the app is deliberately serverless) or delete.
-- **Deployment**: Pages is unconfigured and this is a private repo
-  (Pages requires a paid plan). Decide: public repo + Pages, paid plan,
-  or no hosted deployment. Docker/K8s remain aspirational
-  (`FUTURE-FEATURES.md`) — revisit only with a real cluster.
+- **Deployment**: DECIDED 2026-07-19 — going public (both learnimals
+  and e2e-core), which grants unlimited Actions minutes and free Pages.
+  After the flip: drop the E2E_CORE_TOKEN checkout token from
+  workflows, optionally restore the CodeQL job (free on public repos),
+  enable Pages and activate deploy.yml. Full history secrets-audited
+  clean 2026-07-19 before publication. Docker/K8s remain aspirational.
 - **Stranded game work**: `feature/crystal-cave-quest-v2` holds Story
   Safari enhancements and an Ocean Adventure game (game dirs merge
   cleanly; its test fixes are stale). The `experimental` branch holds

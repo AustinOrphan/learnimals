@@ -5,7 +5,8 @@
 [![Security Scan](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/security.yml)
 [![Monitoring](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml/badge.svg)](https://github.com/AustinOrphan/learnimals/actions/workflows/monitoring.yml)
 [![codecov](https://codecov.io/gh/AustinOrphan/learnimals/branch/main/graph/badge.svg)](https://codecov.io/gh/AustinOrphan/learnimals)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code License: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](LICENSE)
+[![Content License: CC BY-NC-SA 4.0](https://img.shields.io/badge/Content-CC_BY--NC--SA_4.0-lightgrey.svg)](LICENSE-CONTENT.md)
 
 Learnimals is an interactive educational web application featuring fun games and activities
 designed to help children learn core subjects through play. Each subject area is represented by
@@ -237,9 +238,29 @@ We welcome contributions! Please follow these steps:
 
 See our [PR template](.github/pull_request_template.md) for more details.
 
-## 📄 License
+## 📄 Licensing
 
-License: MIT intended — no LICENSE file exists yet (tracked in PLAN.md decisions).
+Learnimals uses **split licensing** — the engineering and the creative world
+are licensed separately:
+
+- **Code** — everything that makes the app run (components, game framework,
+  theme system, utilities, tests, build and CI configuration) — is licensed
+  under the **[MIT License](LICENSE)**. Use it freely, including commercially.
+- **Content** — the creative and educational layer (character designs, names
+  and personalities, artwork, story text, lesson content, word lists, and
+  activity designs) — is licensed under
+  **[CC BY-NC-SA 4.0](LICENSE-CONTENT.md)**: share and adapt with
+  attribution for non-commercial purposes; derivatives keep the same
+  license. Commercial use of the content requires separate permission.
+
+The boundary follows the nature of the material, not the file it lives in:
+character definitions inside `src/config.js` are content; the code around
+them is code. See [LICENSE-CONTENT.md](LICENSE-CONTENT.md) for the full
+scope definition.
+
+The **"Learnimals" name and logo are not licensed** — all trademark rights
+reserved. Build on the engine, tell your own stories, but under your own
+name.
 
 ## 🙏 Acknowledgments
 
