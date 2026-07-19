@@ -412,7 +412,7 @@ export class AdaptiveThrottler {
    * @param {string} context - Context for performance tracking
    * @returns {Function} Adaptively throttled function
    */
-  throttle(func, context = 'adaptive') {
+  throttle(func, _context = 'adaptive') {
     return throttle((...args) => {
       const start = performance.now();
       const result = func.apply(this, args);

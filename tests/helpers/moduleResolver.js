@@ -5,6 +5,7 @@
  * Provides utilities for mocking and module resolution
  */
 
+/* global FocusEvent */
 import { vi } from 'vitest';
 
 /**
@@ -428,7 +429,6 @@ export function setupAccessibilityMocks() {
   });
 
   // Enhanced matchMedia mock for accessibility features
-  const originalMatchMedia = window.matchMedia;
   window.matchMedia = vi.fn().mockImplementation(query => {
     const isHighContrast = query.includes('prefers-contrast: high');
     const isReducedMotion = query.includes('prefers-reduced-motion: reduce');

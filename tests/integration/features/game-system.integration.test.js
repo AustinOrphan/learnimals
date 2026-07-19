@@ -47,7 +47,7 @@ describe('Game System Integration', () => {
 
   describe('Game Session Management', () => {
     it('should create and manage complete game session', async () => {
-      const gameSession = GameFactory.createGameSession({
+      const _gameSession = GameFactory.createGameSession({
         gameId: 'bubble-pop',
         characterId: characterData.id,
       });
@@ -144,18 +144,29 @@ describe('Game System Integration', () => {
         }),
       };
 
-      // Test pause
-      const pauseResult = mockGame.pause();
-      expect(pauseResult).toBe(true);
-      expect(mockGame.isPaused).toBe(true);
-      expect(mockGame.state).toBe('paused');
+      // Control the clock so pause duration is deterministic; pause and
+      // resume in the same real millisecond would otherwise record 0
+      const nowSpy = vi
+        .spyOn(Date, 'now')
+        .mockReturnValueOnce(1000) // pause timestamp
+        .mockReturnValueOnce(1050); // resume timestamp
 
-      // Test resume
-      const resumeResult = mockGame.resume();
-      expect(resumeResult).toBe(true);
-      expect(mockGame.isPaused).toBe(false);
-      expect(mockGame.state).toBe('playing');
-      expect(mockGame.totalPauseTime).toBeGreaterThan(0);
+      try {
+        // Test pause
+        const pauseResult = mockGame.pause();
+        expect(pauseResult).toBe(true);
+        expect(mockGame.isPaused).toBe(true);
+        expect(mockGame.state).toBe('paused');
+
+        // Test resume
+        const resumeResult = mockGame.resume();
+        expect(resumeResult).toBe(true);
+        expect(mockGame.isPaused).toBe(false);
+        expect(mockGame.state).toBe('playing');
+        expect(mockGame.totalPauseTime).toBe(50);
+      } finally {
+        nowSpy.mockRestore();
+      }
     });
   });
 

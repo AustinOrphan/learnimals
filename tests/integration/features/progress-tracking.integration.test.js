@@ -6,12 +6,11 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { ProgressFactory, CharacterFactory, GameFactory } from '../../fixtures/testDataFactory.js';
+import { ProgressFactory, CharacterFactory } from '../../fixtures/testDataFactory.js';
 
 describe('Progress Tracking System Integration', () => {
   let mockLocalStorage;
   let progressData;
-  let characterData;
 
   beforeEach(() => {
     // Mock localStorage
@@ -32,7 +31,7 @@ describe('Progress Tracking System Integration', () => {
 
     // Create test data
     progressData = ProgressFactory.create();
-    characterData = CharacterFactory.create();
+    CharacterFactory.create();
   });
 
   afterEach(() => {
@@ -227,7 +226,7 @@ describe('Progress Tracking System Integration', () => {
       ];
 
       playDates.forEach(date => {
-        const result = mockStreakTracker.recordPlay(new Date(date));
+        mockStreakTracker.recordPlay(new Date(date));
       });
 
       const finalStreak = mockStreakTracker.getStreakInfo();
@@ -284,21 +283,21 @@ describe('Progress Tracking System Integration', () => {
             let requirementMet = false;
 
             switch (achievement.requirement.type) {
-            case 'games_completed':
-              requirementMet = progressData.totalGamesPlayed >= achievement.requirement.value;
-              break;
-            case 'level':
-              requirementMet = progressData.overallLevel >= achievement.requirement.value;
-              break;
-            case 'streak':
-              requirementMet = progressData.currentStreak >= achievement.requirement.value;
-              break;
-            case 'subjects_played':
-              requirementMet = progressData.subjectsPlayed >= achievement.requirement.value;
-              break;
-            case 'single_score':
-              requirementMet = progressData.lastGameScore >= achievement.requirement.value;
-              break;
+              case 'games_completed':
+                requirementMet = progressData.totalGamesPlayed >= achievement.requirement.value;
+                break;
+              case 'level':
+                requirementMet = progressData.overallLevel >= achievement.requirement.value;
+                break;
+              case 'streak':
+                requirementMet = progressData.currentStreak >= achievement.requirement.value;
+                break;
+              case 'subjects_played':
+                requirementMet = progressData.subjectsPlayed >= achievement.requirement.value;
+                break;
+              case 'single_score':
+                requirementMet = progressData.lastGameScore >= achievement.requirement.value;
+                break;
             }
 
             if (requirementMet) {
@@ -521,7 +520,7 @@ describe('Progress Tracking System Integration', () => {
           if (report.achievements.completionPercentage > 75) {
             insights.push({
               type: 'positive',
-              message: 'You\'ve unlocked most achievements!',
+              message: "You've unlocked most achievements!",
             });
           }
 
@@ -592,13 +591,6 @@ describe('Progress Tracking System Integration', () => {
 
           localStorage.setItem('learnimals_progress', serialized);
 
-          // Simulate cloud backup
-          const cloudBackup = {
-            userId: progressData.userId,
-            data: serialized,
-            timestamp: new Date().toISOString(),
-          };
-
           return { local: true, cloud: true };
         }),
 
@@ -618,7 +610,7 @@ describe('Progress Tracking System Integration', () => {
         }),
 
         syncProgress: vi.fn(async () => {
-          const localData = await this.loadProgress();
+          await this.loadProgress();
 
           // Simulate sync logic
           return {

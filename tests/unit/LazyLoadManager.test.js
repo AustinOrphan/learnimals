@@ -28,16 +28,16 @@ vi.mock('../../src/utils/performanceUtils.js', () => ({
 describe('LazyLoadManager', () => {
   let manager;
   let mockIntersectionObserver;
-  let observeCallback;
+  let _observeCallback;
 
   beforeEach(() => {
     // Reset DOM
     document.body.innerHTML = '';
 
     // Mock IntersectionObserver
-    observeCallback = null;
+    _observeCallback = null;
     mockIntersectionObserver = vi.fn().mockImplementation((callback, options) => {
-      observeCallback = callback;
+      _observeCallback = callback;
       return {
         observe: vi.fn(),
         unobserve: vi.fn(),

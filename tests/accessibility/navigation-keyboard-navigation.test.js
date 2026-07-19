@@ -11,6 +11,8 @@
  * - Responsive navigation patterns
  */
 
+/* global FocusEvent */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
@@ -147,13 +149,20 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
   describe('Primary Navigation Structure', () => {
     beforeEach(() => {
+      // Skip links come first in the document so they are first in the tab
+      // order (WCAG 2.4.1 Bypass Blocks)
       testContainer.innerHTML = `
+        <div id="skip-links" class="skip-links" role="navigation" aria-label="Skip links">
+          <a href="#main-content" class="skip-link">Skip to main content</a>
+          <a href="#main-navigation" class="skip-link">Skip to navigation</a>
+        </div>
+
         <nav id="main-navigation" role="navigation" aria-label="Main navigation">
           <button id="mobile-menu" class="mobile-menu-toggle" aria-expanded="false" aria-controls="nav-menu">
             <span class="sr-only">Toggle navigation menu</span>
             <span class="hamburger"></span>
           </button>
-          
+
           <ul id="nav-menu" class="nav-menu">
             <li><a href="/index.html" id="nav-home">Home</a></li>
             <li class="has-submenu">
@@ -170,14 +179,12 @@ describe('Navigation System Keyboard Navigation Tests', () => {
             <li><a href="/about" id="nav-about">About</a></li>
           </ul>
         </nav>
-        
-        <div id="skip-links" class="skip-links" role="navigation" aria-label="Skip links">
-          <a href="#main-content" class="skip-link">Skip to main content</a>
-          <a href="#main-navigation" class="skip-link">Skip to navigation</a>
-        </div>
       `;
 
       navigationComponent.init();
+
+      // Bind the standard skip-link focus management from the service
+      accessibilityService.setupSkipLinks(testContainer);
     });
 
     it('should have proper tab order through navigation elements', () => {
@@ -209,7 +216,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     });
 
     it('should handle skip links with proper focus management', () => {
-      const skipToMain = testContainer.querySelector('a[href="#main-content"]');
+      const _skipToMain = testContainer.querySelector('a[href="#main-content"]');
       const skipToNav = testContainer.querySelector('a[href="#main-navigation"]');
 
       // Test skip to navigation
@@ -230,7 +237,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     it('should support keyboard navigation through menu items', () => {
       const homeLink = testContainer.querySelector('#nav-home');
       const subjectsLink = testContainer.querySelector('#nav-subjects');
-      const gamesLink = testContainer.querySelector('#nav-games');
+      const _gamesLink = testContainer.querySelector('#nav-games');
 
       // Test Tab navigation
       homeLink.focus();
@@ -702,6 +709,9 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       `;
 
       navigationComponent.init();
+
+      // Enhance the navigation landmark with screen reader announcements
+      accessibilityService.enhanceNavigation(testContainer.querySelector('#main-navigation'));
     });
 
     it('should announce current page in navigation', () => {
@@ -713,7 +723,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
 
     it('should announce mobile menu state changes', () => {
       const announcements = testContainer.querySelector('#nav-announcements');
-      const mobileMenuButton = testContainer.querySelector('#mobile-menu');
+      const _mobileMenuButton = testContainer.querySelector('#mobile-menu');
 
       // Mock announcement function
       const announceNavState = message => {
@@ -779,7 +789,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
     it('should handle focus when navigation items are removed', () => {
       const navMenu = testContainer.querySelector('#nav-menu');
       const aboutLink = testContainer.querySelector('#nav-about');
-      const contactLink = testContainer.querySelector('#nav-contact');
+      const _contactLink = testContainer.querySelector('#nav-contact');
 
       // Focus the about link
       aboutLink.focus();
@@ -803,8 +813,9 @@ describe('Navigation System Keyboard Navigation Tests', () => {
       const focusableElements = accessibilityTester.getFocusableElements(navMenu);
       expect(focusableElements.length).toBe(0);
 
-      // Navigation should still be keyboard accessible via tabindex
-      expect(navMenu.getAttribute('tabindex')).toBe('0');
+      // Static content must not be force-focusable: the WAI-ARIA APG advises
+      // against adding tabindex to non-interactive elements
+      expect(navMenu.hasAttribute('tabindex')).toBe(false);
     });
 
     it('should handle rapid navigation changes without focus loss', () => {
@@ -878,7 +889,7 @@ describe('Navigation System Keyboard Navigation Tests', () => {
   });
 
   describe('Accessibility Compliance', () => {
-    it('should pass automated accessibility audit for navigation', () => {
+    it('should pass automated accessibility audit for navigation', async () => {
       testContainer.innerHTML = `
         <nav role="navigation" aria-label="Main navigation">
           <ul>
@@ -887,19 +898,24 @@ describe('Navigation System Keyboard Navigation Tests', () => {
             <li><a href="/contact">Contact</a></li>
           </ul>
         </nav>
-        
+
         <nav role="navigation" aria-label="Breadcrumb">
           <ol>
             <li><a href="/">Home</a></li>
             <li aria-current="page">Current Page</li>
           </ol>
         </nav>
+
+        <main id="main-content">
+          <h1>Learnimals</h1>
+        </main>
       `;
 
-      const auditResults = accessibilityTester.runAudit(testContainer);
+      const auditResults = await accessibilityTester.runAudit(testContainer);
 
-      expect(auditResults.passed).toBe(true);
-      expect(auditResults.errors.length).toBe(0);
+      // Warnings are advisory only (touch target sizes cannot be measured
+      // in jsdom); violations must be empty
+      expect(auditResults.violations).toEqual([]);
     });
 
     it('should have proper ARIA labeling for navigation landmarks', () => {

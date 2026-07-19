@@ -367,18 +367,18 @@ class ProfileManager {
 
     // Specific level rewards
     switch (level) {
-    case 5:
-      rewards.avatarItems.push('glasses', 'hat');
-      break;
-    case 10:
-      rewards.avatarItems.push('crown', 'cape');
-      break;
-    case 15:
-      rewards.avatarItems.push('wings', 'sparkles');
-      break;
-    case 20:
-      rewards.avatarItems.push('rainbow-aura', 'golden-badge');
-      break;
+      case 5:
+        rewards.avatarItems.push('glasses', 'hat');
+        break;
+      case 10:
+        rewards.avatarItems.push('crown', 'cape');
+        break;
+      case 15:
+        rewards.avatarItems.push('wings', 'sparkles');
+        break;
+      case 20:
+        rewards.avatarItems.push('rainbow-aura', 'golden-badge');
+        break;
     }
 
     return rewards;

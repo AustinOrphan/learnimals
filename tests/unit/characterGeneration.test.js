@@ -251,13 +251,15 @@ describe('Character Generation System', () => {
     it('should handle rapid character generation', async () => {
       const promises = [];
       const subjects = CharacterUtils.getAvailableSubjects();
+      // Character names must match the schema pattern (letters and spaces only)
+      const nameSuffixes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
       // Generate 10 characters rapidly
       for (let i = 0; i < 10; i++) {
         const subject = subjects[i % subjects.length];
         promises.push(
           CharacterGenerationAPI.createCharacter({
-            name: `Perf Test ${i}`,
+            name: `Perf Test ${nameSuffixes[i]}`,
             subject: subject,
             autoSave: false,
           })
@@ -267,17 +269,19 @@ describe('Character Generation System', () => {
       const results = await Promise.all(promises);
       const successCount = results.filter(r => r.success).length;
 
-      expect(successCount).toBeGreaterThanOrEqual(5); // Allow some failures in test environment
+      expect(successCount).toBe(10);
       expect(results.length).toBe(10);
     });
 
-    it('should generate unique timestamps for rapid creation', async () => {
+    it('should generate valid timestamps and unique ids for rapid creation', async () => {
       const characters = [];
+      // Character names must match the schema pattern (letters and spaces only)
+      const nameSuffixes = ['A', 'B', 'C', 'D', 'E'];
 
       // Generate 5 characters rapidly
       for (let i = 0; i < 5; i++) {
         const result = await CharacterGenerationAPI.createCharacter({
-          name: `Timestamp Test ${i}`,
+          name: `Timestamp Test ${nameSuffixes[i]}`,
           subject: 'math',
           autoSave: false,
         });
@@ -287,24 +291,26 @@ describe('Character Generation System', () => {
         }
       }
 
-      expect(characters.length).toBeGreaterThan(0);
+      expect(characters.length).toBe(5);
 
-      // Check timestamp uniqueness
-      const timestamps = new Set();
-      characters.forEach(char => {
-        timestamps.add(char.metadata.created);
-        timestamps.add(char.metadata.modified);
-      });
-
-      // All timestamps should be unique
-      expect(timestamps.size).toBe(characters.length * 2);
-
-      // All timestamps should be recent (within last minute)
+      // Timestamps should be valid and consistent. Rapid creation can land in
+      // the same millisecond, so equality across characters is allowed; ids
+      // (which embed random entropy) are the uniqueness guarantee.
       const now = Date.now();
       characters.forEach(char => {
         const created = new Date(char.metadata.created).getTime();
+        const modified = new Date(char.metadata.modified).getTime();
+
+        expect(Number.isNaN(created)).toBe(false);
+        expect(Number.isNaN(modified)).toBe(false);
+        expect(modified).toBeGreaterThanOrEqual(created);
+
+        // All timestamps should be recent (within last minute)
         expect(now - created).toBeLessThan(60000);
       });
+
+      const ids = new Set(characters.map(char => char.id));
+      expect(ids.size).toBe(characters.length);
     });
   });
 });

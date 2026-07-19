@@ -14,13 +14,13 @@ class ComponentLoader {
       basePath: options.basePath || '',
       enableModuleRegistry: options.enableModuleRegistry !== false,
       debugMode: options.debugMode || false,
-      ...options
+      ...options,
     };
 
     this.loadedComponents = new Set();
     this.loadPromises = {};
     this.moduleRegistry = null;
-    
+
     // Initialize module registry integration
     if (this.options.enableModuleRegistry) {
       this.initializeModuleRegistry();
@@ -34,7 +34,7 @@ class ComponentLoader {
     try {
       // Get or create global module registry
       this.moduleRegistry = this.getModuleRegistry();
-      
+
       // Register this component loader as a service
       if (this.moduleRegistry) {
         this.moduleRegistry.register('ComponentLoader', this, {
@@ -44,12 +44,16 @@ class ComponentLoader {
           metadata: {
             className: 'ComponentLoader',
             description: 'Dynamic component loading service with module integration',
-            capabilities: ['html-loading', 'script-loading', 'stylesheet-loading', 'module-integration'],
-            timestamp: new Date().toISOString()
-          }
+            capabilities: [
+              'html-loading',
+              'script-loading',
+              'stylesheet-loading',
+              'module-integration',
+            ],
+            timestamp: new Date().toISOString(),
+          },
         });
       }
-      
     } catch (error) {
       if (this.options.debugMode) {
         console.warn('Module registry initialization failed for ComponentLoader:', error);
@@ -67,18 +71,18 @@ class ComponentLoader {
     if (typeof window !== 'undefined' && window.LearnimalsModuleRegistry) {
       return window.LearnimalsModuleRegistry;
     }
-    
+
     // Create new registry if none exists
     const registry = new ModuleRegistry({
       debugMode: this.options.debugMode,
-      strictMode: false // Allow flexible registration during migration
+      strictMode: false, // Allow flexible registration during migration
     });
-    
+
     // Store globally for sharing across components
     if (typeof window !== 'undefined') {
       window.LearnimalsModuleRegistry = registry;
     }
-    
+
     return registry;
   }
 
@@ -255,18 +259,21 @@ class ComponentLoader {
       try {
         this.loadPromises[fullPath] = import(fullPath);
         const module = await this.loadPromises[fullPath];
-        
+
         // Register module in registry if available
         if (this.moduleRegistry && module.default) {
-          const moduleName = path.split('/').pop().replace(/\.(m)?js$/, '');
+          const moduleName = path
+            .split('/')
+            .pop()
+            .replace(/\.(m)?js$/, '');
           this.moduleRegistry.register(moduleName, module.default, {
             type: 'dynamically-loaded',
             source: 'ComponentLoader',
             path: fullPath,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
-        
+
         return module;
       } catch (error) {
         console.error(`Error importing module ${path}:`, error);
@@ -300,21 +307,21 @@ class ComponentLoader {
     if (!this.moduleRegistry) {
       throw new Error('Module registry not available');
     }
-    
+
     const componentInfo = this.moduleRegistry.get(componentName);
     if (!componentInfo) {
       throw new Error(`Component '${componentName}' not found in registry`);
     }
-    
+
     const ComponentClass = componentInfo.module;
-    
+
     // Create and render component instance
     const instance = new ComponentClass(options);
-    
+
     if (typeof instance.render === 'function') {
       await instance.render(container);
     }
-    
+
     return instance;
   }
 

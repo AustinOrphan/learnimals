@@ -186,28 +186,28 @@ export function formatDate(date, options = {}) {
 
   try {
     switch (format) {
-    case 'short':
-      return dateObj.toLocaleDateString();
-    case 'long':
-      return dateObj.toLocaleDateString(undefined, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    case 'time':
-      return dateObj.toLocaleTimeString();
-    case 'full':
-      return dateObj.toLocaleDateString(undefined, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    default:
-      return dateObj.toLocaleDateString();
+      case 'short':
+        return dateObj.toLocaleDateString();
+      case 'long':
+        return dateObj.toLocaleDateString(undefined, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      case 'time':
+        return dateObj.toLocaleTimeString();
+      case 'full':
+        return dateObj.toLocaleDateString(undefined, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      default:
+        return dateObj.toLocaleDateString();
     }
   } catch (error) {
     console.error('Date formatting error:', error);
@@ -284,20 +284,20 @@ export function createTabs(container, options = {}) {
       let newIndex;
 
       switch (e.key) {
-      case 'ArrowRight':
-        newIndex = (activeIndex + 1) % tabs.length;
-        break;
-      case 'ArrowLeft':
-        newIndex = (activeIndex - 1 + tabs.length) % tabs.length;
-        break;
-      case 'Home':
-        newIndex = 0;
-        break;
-      case 'End':
-        newIndex = tabs.length - 1;
-        break;
-      default:
-        return;
+        case 'ArrowRight':
+          newIndex = (activeIndex + 1) % tabs.length;
+          break;
+        case 'ArrowLeft':
+          newIndex = (activeIndex - 1 + tabs.length) % tabs.length;
+          break;
+        case 'Home':
+          newIndex = 0;
+          break;
+        case 'End':
+          newIndex = tabs.length - 1;
+          break;
+        default:
+          return;
       }
 
       activateTab(newIndex);

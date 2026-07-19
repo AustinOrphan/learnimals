@@ -5,11 +5,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+import '../../src/components/AccessibleComponent.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -322,7 +319,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate article structure
       const article = testContainer.querySelector('article');
       const sections = testContainer.querySelectorAll('section');
-      const headings = testContainer.querySelectorAll('h1, h2, h3');
+      testContainer.querySelectorAll('h1, h2, h3');
 
       expect(article.getAttribute('aria-labelledby')).toBe('lesson-title');
 
@@ -790,7 +787,7 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate form structure
       const form = testContainer.querySelector('form');
       const fieldsets = testContainer.querySelectorAll('fieldset');
-      const labels = testContainer.querySelectorAll('label');
+      testContainer.querySelectorAll('label');
       const inputs = testContainer.querySelectorAll('input, select, textarea');
       const requiredFields = testContainer.querySelectorAll('[required]');
       const errorContainers = testContainer.querySelectorAll('[role="alert"]');
@@ -1313,9 +1310,9 @@ describe('WCAG Semantic Markup Validation Tests', () => {
       // Validate table structure
       const table = testContainer.querySelector('table');
       const caption = testContainer.querySelector('caption');
-      const thead = testContainer.querySelector('thead');
-      const tbody = testContainer.querySelector('tbody');
-      const tfoot = testContainer.querySelector('tfoot');
+      testContainer.querySelector('thead');
+      testContainer.querySelector('tbody');
+      testContainer.querySelector('tfoot');
 
       expect(table.getAttribute('role')).toBe('table');
       expect(table.getAttribute('aria-labelledby')).toBe('grade-report-title');

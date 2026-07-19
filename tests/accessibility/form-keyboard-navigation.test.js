@@ -12,6 +12,8 @@
  * - Form state announcements for screen readers
  */
 
+/* global FocusEvent, HTMLFormElement, HTMLInputElement */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import FormComponent from '../../src/components/forms/FormComponent.js';
 import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
@@ -83,6 +85,7 @@ describe('Form Keyboard Navigation Tests', () => {
       formComponent.destroy();
       formComponent = null;
     }
+    accessibilityService.destroy();
     document.body.innerHTML = '';
     vi.clearAllMocks();
   });
@@ -158,7 +161,11 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(firstNameField.focus).toHaveBeenCalled();
     });
 
-    it('should handle Enter key appropriately in different field types', () => {
+    it('should handle Enter key appropriately in different field types', async () => {
+      // The accessibility service provides the document-level form keyboard
+      // management (Enter moves between fields and activates submit controls)
+      await accessibilityService.initialize();
+
       const form = testContainer.querySelector('#basic-form');
       const textField = form.querySelector('[name="firstName"]');
       const textareaField = form.querySelector('[name="comments"]');
@@ -238,6 +245,10 @@ describe('Form Keyboard Navigation Tests', () => {
       });
 
       formComponent.render(testContainer);
+
+      // Apply the accessibility enhancement layer, which sets up the APG
+      // roving tabindex pattern for radio groups
+      accessibilityService.enhanceForm(testContainer.querySelector('#choice-form'));
     });
 
     it('should implement roving tabindex for radio button groups', () => {
@@ -317,7 +328,11 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(radioButtons[radioButtons.length - 1].focus).toHaveBeenCalled();
     });
 
-    it('should handle Space key for selecting radio buttons and checkboxes', () => {
+    it('should handle Space key for selecting radio buttons and checkboxes', async () => {
+      // The accessibility service handles Space key selection for radio
+      // buttons and checkboxes at the document level
+      await accessibilityService.initialize();
+
       const form = testContainer.querySelector('#choice-form');
       const firstRadio = form.querySelector('[name="experience"]');
       const firstCheckbox = form.querySelector('[name="interests"]');
@@ -588,6 +603,10 @@ describe('Form Keyboard Navigation Tests', () => {
       });
 
       formComponent.render(testContainer);
+
+      // Apply the accessibility enhancement layer, which associates error
+      // containers with their fields and keeps aria-invalid in sync
+      accessibilityService.enhanceForm(testContainer.querySelector('#validation-form'));
     });
 
     it('should associate error messages with form fields using aria-describedby', () => {
@@ -599,9 +618,10 @@ describe('Form Keyboard Navigation Tests', () => {
         'validation-form-username-error'
       );
 
-      // Trigger validation error
+      // Trigger validation error; a bubbling blur reaches the form-level
+      // validation listeners (browsers deliver this via focusout)
       usernameField.value = 'ab'; // Too short
-      usernameField.dispatchEvent(new Event('blur'));
+      usernameField.dispatchEvent(new Event('blur', { bubbles: true }));
 
       const errorElement = form.querySelector('#validation-form-username-error');
       expect(errorElement.textContent).toContain('at least 3 characters');
@@ -917,9 +937,9 @@ describe('Form Keyboard Navigation Tests', () => {
 
     it('should handle keyboard navigation in time picker', () => {
       const hoursInput = testContainer.querySelector('#hours');
-      const minutesInput = testContainer.querySelector('#minutes');
-      const amRadio = testContainer.querySelector('[value="am"]');
-      const pmRadio = testContainer.querySelector('[value="pm"]');
+      const _minutesInput = testContainer.querySelector('#minutes');
+      const _amRadio = testContainer.querySelector('[value="am"]');
+      const _pmRadio = testContainer.querySelector('[value="pm"]');
 
       // Test Tab navigation through time components
       hoursInput.focus();
@@ -947,7 +967,8 @@ describe('Form Keyboard Navigation Tests', () => {
       hoursInput.dispatchEvent(arrowUpEvent);
 
       expect(arrowUpEvent.preventDefault).toHaveBeenCalled();
-      expect(parseInt(hoursInput.value)).toBeGreaterThan(12);
+      // A 12-hour clock wraps from 12 back to 1 on ArrowUp
+      expect(parseInt(hoursInput.value)).toBe(1);
     });
   });
 
@@ -974,6 +995,10 @@ describe('Form Keyboard Navigation Tests', () => {
       });
 
       formComponent.render(testContainer);
+
+      // Apply the accessibility enhancement layer, which adds aria-required
+      // and error container associations for assistive technology
+      accessibilityService.enhanceForm(testContainer.querySelector('#accessible-form'));
     });
 
     it('should have proper label associations', () => {
@@ -1038,12 +1063,19 @@ describe('Form Keyboard Navigation Tests', () => {
       expect(statusRegion.getAttribute('aria-live')).toBe('polite');
     });
 
-    it('should pass automated accessibility audit', () => {
+    it('should pass automated accessibility audit', async () => {
       const form = testContainer.querySelector('#accessible-form');
-      const auditResults = accessibilityTester.runAudit(form);
 
-      expect(auditResults.passed).toBe(true);
-      expect(auditResults.errors.length).toBe(0);
+      // Audit a page-like container: forms live inside a main landmark
+      const main = document.createElement('main');
+      testContainer.appendChild(main);
+      main.appendChild(form);
+
+      const auditResults = await accessibilityTester.runAudit(testContainer);
+
+      // Warnings are advisory only (touch target sizes cannot be measured
+      // in jsdom); violations must be empty
+      expect(auditResults.violations).toEqual([]);
     });
   });
 });

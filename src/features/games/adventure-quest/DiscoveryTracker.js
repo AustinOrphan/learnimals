@@ -264,50 +264,50 @@ export default class DiscoveryTracker {
    */
   checkAchievementCondition(condition) {
     switch (condition.type) {
-    case 'challenge_count':
-      return (
-        this.discoveries.filter(d => d.type === 'challenge_complete').length >= condition.value
-      );
+      case 'challenge_count':
+        return (
+          this.discoveries.filter(d => d.type === 'challenge_complete').length >= condition.value
+        );
 
-    case 'islands_visited': {
-      const visitedTypes = new Set(
-        this.discoveries.filter(d => d.type === 'exploration').map(d => d.metadata.islandType)
-      );
-      return visitedTypes.size >= condition.value;
-    }
+      case 'islands_visited': {
+        const visitedTypes = new Set(
+          this.discoveries.filter(d => d.type === 'exploration').map(d => d.metadata.islandType)
+        );
+        return visitedTypes.size >= condition.value;
+      }
 
-    case 'subject_challenges':
-      return (
-        this.discoveries.filter(
-          d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
-        ).length >= condition.value
-      );
+      case 'subject_challenges':
+        return (
+          this.discoveries.filter(
+            d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
+          ).length >= condition.value
+        );
 
-    case 'perfect_challenge':
-      return this.discoveries.some(
-        d => d.type === 'challenge_complete' && d.metadata.accuracy === 1.0
-      );
+      case 'perfect_challenge':
+        return this.discoveries.some(
+          d => d.type === 'challenge_complete' && d.metadata.accuracy === 1.0
+        );
 
-    case 'fast_completion':
-      return this.discoveries.some(
-        d => d.type === 'challenge_complete' && d.metadata.completionTime < condition.value
-      );
+      case 'fast_completion':
+        return this.discoveries.some(
+          d => d.type === 'challenge_complete' && d.metadata.completionTime < condition.value
+        );
 
-    case 'answer_streak':
-      return this.discoveries.some(
-        d => d.type === 'streak' && d.metadata.streakLength >= condition.value
-      );
+      case 'answer_streak':
+        return this.discoveries.some(
+          d => d.type === 'streak' && d.metadata.streakLength >= condition.value
+        );
 
-    case 'journal_entries':
-      return this.scientificJournal.length >= condition.value;
+      case 'journal_entries':
+        return this.scientificJournal.length >= condition.value;
 
-    case 'total_points': {
-      const totalPoints = this.discoveries.reduce((sum, d) => sum + d.points, 0);
-      return totalPoints >= condition.value;
-    }
+      case 'total_points': {
+        const totalPoints = this.discoveries.reduce((sum, d) => sum + d.points, 0);
+        return totalPoints >= condition.value;
+      }
 
-    default:
-      return false;
+      default:
+        return false;
     }
   }
 

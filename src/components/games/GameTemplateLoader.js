@@ -508,28 +508,28 @@ export default class GameTemplateLoader {
    */
   handleKeyboard(e) {
     switch (e.code) {
-    case 'Space':
-      e.preventDefault();
-      this.togglePause();
-      break;
-    case 'Escape':
-      e.preventDefault();
-      if (document.querySelector('.game-modal[aria-hidden="false"]')) {
-        this.hideAllModals();
-      } else {
-        this.pauseGame();
-      }
-      break;
-    case 'KeyR':
-      if (e.ctrlKey || e.metaKey) {
+      case 'Space':
         e.preventDefault();
-        this.restartGame();
-      }
-      break;
-    case 'F11':
-      e.preventDefault();
-      this.toggleFullscreen();
-      break;
+        this.togglePause();
+        break;
+      case 'Escape':
+        e.preventDefault();
+        if (document.querySelector('.game-modal[aria-hidden="false"]')) {
+          this.hideAllModals();
+        } else {
+          this.pauseGame();
+        }
+        break;
+      case 'KeyR':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.restartGame();
+        }
+        break;
+      case 'F11':
+        e.preventDefault();
+        this.toggleFullscreen();
+        break;
     }
   }
 

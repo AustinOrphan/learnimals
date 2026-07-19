@@ -3,6 +3,8 @@
  * Tests the core functionality and structure of the ecosystem simulation game
  */
 
+/* global global */
+
 // Mock DOM and browser environment for testing
 const mockDOM = {
   document: {
@@ -138,9 +140,9 @@ runTest('Utility Functions Import', () => {
     }
 
     // Test debounce
-    let called = false;
+    let _called = false;
     const debouncedFn = mockUtils.debounce(() => {
-      called = true;
+      _called = true;
     }, 100);
     debouncedFn();
 
@@ -405,7 +407,7 @@ runTest('DiscoveryJournal Class Structure', () => {
 
       checkDiscoveries(triggerEvent) {
         const newDiscoveries = [];
-        for (const [id, discovery] of this.discoveries) {
+        for (const [_id, discovery] of this.discoveries) {
           if (!discovery.discovered && discovery.trigger === triggerEvent) {
             discovery.discovered = true;
             newDiscoveries.push(discovery);
@@ -557,7 +559,7 @@ runTest('HTML Structure Validation', () => {
     const missingElements = [];
 
     // Mock element check
-    requiredElements.forEach(elementId => {
+    requiredElements.forEach(_elementId => {
       // In real implementation: if (!document.getElementById(elementId))
       // For mock: assume elements exist
     });
@@ -574,25 +576,12 @@ runTest('HTML Structure Validation', () => {
 
 // CSS Structure Tests
 runTest('CSS Structure Validation', () => {
-  try {
-    // Mock CSS validation - check for key class definitions
-    const requiredCSSClasses = [
-      '.ecosystem-safari-game',
-      '.ecosystem-canvas',
-      '.ecosystem-toolbar',
-      '.ecosystem-side-panel',
-      '.species-palette',
-      '.habitat-options',
-      '.ecosystem-health',
-    ];
-
-    // In a real test, we would parse the CSS file and check for these classes
-    // For this mock test, we'll assume they exist
-
-    return true;
-  } catch (error) {
-    return error.message;
-  }
+  // Mock CSS validation - check for key class definitions:
+  // .ecosystem-safari-game, .ecosystem-canvas, .ecosystem-toolbar, .ecosystem-side-panel,
+  // .species-palette, .habitat-options, .ecosystem-health
+  // In a real test, we would parse the CSS file and check for these classes.
+  // For this mock test, we'll assume they exist.
+  return true;
 });
 
 // Performance Tests

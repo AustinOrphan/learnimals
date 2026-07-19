@@ -10,7 +10,7 @@ import { vi } from 'vitest';
  */
 export function mockCreateLogger() {
   if (!window.createLogger) {
-    window.createLogger = vi.fn(prefix => ({
+    window.createLogger = vi.fn(_prefix => ({
       debug: vi.fn(),
       error: vi.fn(),
       warn: vi.fn(),

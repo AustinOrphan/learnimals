@@ -7,10 +7,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+import '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -1263,9 +1260,8 @@ describe('Comprehensive ARIA Testing Suite', () => {
       const focusableElements = ['button', 'input[type="text"]', 'a[href="#"]', '[tabindex="0"]'];
 
       focusableElements.forEach(selector => {
-        const element = selector.includes('[')
-          ? document.createElement(selector.split('[')[0])
-          : document.createElement(selector);
+        const tagName = selector.split('[')[0] || 'div';
+        const element = document.createElement(tagName);
 
         if (selector.includes('href')) {
           element.href = '#';

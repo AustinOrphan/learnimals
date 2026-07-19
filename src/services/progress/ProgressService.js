@@ -20,15 +20,15 @@ export class ProgressService {
    */
   async initialize() {
     await dbService.initialize();
-    
+
     // Subscribe to database changes
-    this.unsubscribeDb = dbService.subscribe((event) => {
+    this.unsubscribeDb = dbService.subscribe(event => {
       if (event.storeName === STORES.PROGRESS) {
         this._invalidateCache(event.data?.userId);
         this._notifySubscribers(event);
       }
     });
-    
+
     logger.info('ProgressService initialized');
   }
 
@@ -49,22 +49,22 @@ export class ProgressService {
       userId,
       startTime: new Date(),
       activities: [],
-      ...sessionData
+      ...sessionData,
     };
-    
+
     this.sessionStartTime = Date.now();
-    
+
     // Store session in database
     await dbService.add(STORES.SESSIONS, this.currentSession);
-    
+
     logger.info(`Started session ${sessionId} for user ${userId}`);
     this._notifySubscribers({
       type: 'session:started',
       sessionId,
       userId,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     return sessionId;
   }
 
@@ -79,32 +79,35 @@ export class ProgressService {
 
     const endTime = new Date();
     const duration = Date.now() - this.sessionStartTime;
-    
+
     const sessionSummary = {
       ...this.currentSession,
       endTime,
       duration,
       activitiesCompleted: this.currentSession.activities.length,
-      totalScore: this.currentSession.activities.reduce((sum, activity) => sum + (activity.score || 0), 0)
+      totalScore: this.currentSession.activities.reduce(
+        (sum, activity) => sum + (activity.score || 0),
+        0
+      ),
     };
-    
+
     // Update session in database
     await dbService.update(STORES.SESSIONS, sessionSummary);
-    
+
     logger.info(`Ended session ${this.currentSession.id}, duration: ${duration}ms`);
-    
+
     this._notifySubscribers({
       type: 'session:ended',
       sessionId: this.currentSession.id,
       userId: this.currentSession.userId,
       summary: sessionSummary,
-      timestamp: endTime
+      timestamp: endTime,
     });
-    
+
     const result = { ...sessionSummary };
     this.currentSession = null;
     this.sessionStartTime = null;
-    
+
     return result;
   }
 
@@ -129,40 +132,41 @@ export class ProgressService {
       attempts: 1,
       data: {
         ...metadata,
-        sessionId: this.currentSession?.id
-      }
+        sessionId: this.currentSession?.id,
+      },
     };
 
     // Validate data
-    const errors = VALIDATION_SCHEMAS.PROGRESS ? 
-      // eslint-disable-next-line no-undef
-      require('../database/schema.js').validateData(progressData, VALIDATION_SCHEMAS.PROGRESS) : [];
-    
+    const errors = VALIDATION_SCHEMAS.PROGRESS
+      ? // eslint-disable-next-line no-undef
+        require('../database/schema.js').validateData(progressData, VALIDATION_SCHEMAS.PROGRESS)
+      : [];
+
     if (errors.length > 0) {
       throw new Error(`Validation errors: ${errors.join(', ')}`);
     }
 
     await dbService.add(STORES.PROGRESS, progressData);
-    
+
     // Add to current session if active
     if (this.currentSession) {
       this.currentSession.activities.push({
         activityId,
         startTime: progressData.startTime,
-        progressId: progressData.id
+        progressId: progressData.id,
       });
     }
-    
+
     logger.debug(`Started tracking activity ${activityId} for user ${userId}`);
-    
+
     this._notifySubscribers({
-      type: 'activity:started', 
+      type: 'activity:started',
       userId,
       activityId,
       progressId: progressData.id,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     return progressData.id;
   }
 
@@ -174,7 +178,7 @@ export class ProgressService {
    */
   async updateActivityProgress(progressId, updates) {
     const currentProgress = await dbService.get(STORES.PROGRESS, progressId);
-    
+
     if (!currentProgress) {
       throw new Error(`Progress record ${progressId} not found`);
     }
@@ -183,7 +187,7 @@ export class ProgressService {
       ...currentProgress,
       ...updates,
       lastUpdated: new Date(),
-      timeSpent: updates.timeSpent || currentProgress.timeSpent
+      timeSpent: updates.timeSpent || currentProgress.timeSpent,
     };
 
     // Ensure completion is between 0 and 100
@@ -192,20 +196,20 @@ export class ProgressService {
     }
 
     await dbService.update(STORES.PROGRESS, updatedProgress);
-    
+
     this._invalidateCache(currentProgress.userId);
-    
+
     logger.debug(`Updated progress ${progressId}:`, updates);
-    
+
     this._notifySubscribers({
       type: 'activity:progress',
       progressId,
       userId: currentProgress.userId,
       activityId: currentProgress.activityId,
       updates,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
-    
+
     return true;
   }
 
@@ -217,14 +221,14 @@ export class ProgressService {
    */
   async completeActivity(progressId, completionData = {}) {
     const currentProgress = await dbService.get(STORES.PROGRESS, progressId);
-    
+
     if (!currentProgress) {
       throw new Error(`Progress record ${progressId} not found`);
     }
 
     const completionTime = new Date();
     const totalTime = completionTime - new Date(currentProgress.startTime);
-    
+
     const completedProgress = {
       ...currentProgress,
       ...completionData,
@@ -232,43 +236,43 @@ export class ProgressService {
       completion: 100,
       endTime: completionTime,
       timeSpent: totalTime,
-      timestamp: completionTime
+      timestamp: completionTime,
     };
 
     await dbService.update(STORES.PROGRESS, completedProgress);
-    
+
     // Update current session activity
     if (this.currentSession) {
-      const sessionActivity = this.currentSession.activities.find(
-        a => a.progressId === progressId
-      );
+      const sessionActivity = this.currentSession.activities.find(a => a.progressId === progressId);
       if (sessionActivity) {
         sessionActivity.endTime = completionTime;
         sessionActivity.score = completedProgress.score;
         sessionActivity.timeSpent = totalTime;
       }
     }
-    
+
     this._invalidateCache(currentProgress.userId);
-    
+
     const summary = {
       userId: currentProgress.userId,
       activityId: currentProgress.activityId,
       subject: currentProgress.subject,
       score: completedProgress.score,
       timeSpent: totalTime,
-      completedAt: completionTime
+      completedAt: completionTime,
     };
-    
-    logger.info(`Completed activity ${currentProgress.activityId} for user ${currentProgress.userId}`);
-    
+
+    logger.info(
+      `Completed activity ${currentProgress.activityId} for user ${currentProgress.userId}`
+    );
+
     this._notifySubscribers({
       type: 'activity:completed',
       progressId,
       ...summary,
-      timestamp: completionTime
+      timestamp: completionTime,
     });
-    
+
     return summary;
   }
 
@@ -280,27 +284,27 @@ export class ProgressService {
    */
   async getSubjectProgress(userId, subject) {
     const cacheKey = `${userId}_${subject}`;
-    
+
     if (this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
-      if (Date.now() - cached.timestamp < 60000) { // 1 minute cache
+      if (Date.now() - cached.timestamp < 60000) {
+        // 1 minute cache
         return cached.data;
       }
     }
 
-    const progressRecords = await dbService.queryByIndex(
-      STORES.PROGRESS, 
-      'userActivity', 
-      [userId, subject]
-    );
+    const progressRecords = await dbService.queryByIndex(STORES.PROGRESS, 'userActivity', [
+      userId,
+      subject,
+    ]);
 
     const completedActivities = progressRecords.filter(p => p.status === 'completed');
     const inProgressActivities = progressRecords.filter(p => p.status === 'started');
-    
+
     const totalScore = completedActivities.reduce((sum, p) => sum + (p.score || 0), 0);
     const totalTime = progressRecords.reduce((sum, p) => sum + (p.timeSpent || 0), 0);
-    const averageScore = completedActivities.length > 0 ? 
-      totalScore / completedActivities.length : 0;
+    const averageScore =
+      completedActivities.length > 0 ? totalScore / completedActivities.length : 0;
 
     const progressSummary = {
       userId,
@@ -311,19 +315,23 @@ export class ProgressService {
       totalScore,
       averageScore: Math.round(averageScore * 100) / 100,
       totalTimeSpent: totalTime,
-      completionRate: progressRecords.length > 0 ? 
-        (completedActivities.length / progressRecords.length) * 100 : 0,
-      lastActivity: progressRecords.length > 0 ? 
-        Math.max(...progressRecords.map(p => new Date(p.timestamp).getTime())) : null,
+      completionRate:
+        progressRecords.length > 0
+          ? (completedActivities.length / progressRecords.length) * 100
+          : 0,
+      lastActivity:
+        progressRecords.length > 0
+          ? Math.max(...progressRecords.map(p => new Date(p.timestamp).getTime()))
+          : null,
       recentActivities: progressRecords
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-        .slice(0, 5)
+        .slice(0, 5),
     };
 
     // Cache the result
     this.cache.set(cacheKey, {
       data: progressSummary,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     return progressSummary;
@@ -336,7 +344,7 @@ export class ProgressService {
    */
   async getUserProgress(userId) {
     const allProgress = await dbService.queryByIndex(STORES.PROGRESS, 'userId', userId);
-    
+
     if (allProgress.length === 0) {
       return {
         userId,
@@ -347,8 +355,8 @@ export class ProgressService {
           completion: 0,
           averageScore: 0,
           totalTime: 0,
-          streak: 0
-        }
+          streak: 0,
+        },
       };
     }
 
@@ -370,9 +378,11 @@ export class ProgressService {
         total: records.length,
         completed: completed.length,
         completion: records.length > 0 ? (completed.length / records.length) * 100 : 0,
-        averageScore: completed.length > 0 ? 
-          completed.reduce((sum, r) => sum + (r.score || 0), 0) / completed.length : 0,
-        totalTime: records.reduce((sum, r) => sum + (r.timeSpent || 0), 0)
+        averageScore:
+          completed.length > 0
+            ? completed.reduce((sum, r) => sum + (r.score || 0), 0) / completed.length
+            : 0,
+        totalTime: records.reduce((sum, r) => sum + (r.timeSpent || 0), 0),
       };
     }
 
@@ -393,10 +403,12 @@ export class ProgressService {
         completion: allProgress.length > 0 ? (completedTotal.length / allProgress.length) * 100 : 0,
         averageScore: completedTotal.length > 0 ? totalScore / completedTotal.length : 0,
         totalTime,
-        streak
+        streak,
       },
-      lastActivity: allProgress.length > 0 ? 
-        Math.max(...allProgress.map(p => new Date(p.timestamp).getTime())) : null
+      lastActivity:
+        allProgress.length > 0
+          ? Math.max(...allProgress.map(p => new Date(p.timestamp).getTime()))
+          : null,
     };
   }
 
@@ -425,17 +437,19 @@ export class ProgressService {
     let currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
-    const activityDates = [...new Set(
-      completedActivities.map(p => {
-        const date = new Date(p.timestamp);
-        date.setHours(0, 0, 0, 0);
-        return date.getTime();
-      })
-    )].sort((a, b) => b - a);
+    const activityDates = [
+      ...new Set(
+        completedActivities.map(p => {
+          const date = new Date(p.timestamp);
+          date.setHours(0, 0, 0, 0);
+          return date.getTime();
+        })
+      ),
+    ].sort((a, b) => b - a);
 
     for (const activityDate of activityDates) {
       const daysDiff = Math.floor((currentDate.getTime() - activityDate) / (1000 * 60 * 60 * 24));
-      
+
       if (daysDiff === streak || (streak === 0 && daysDiff <= 1)) {
         streak++;
         currentDate = new Date(activityDate);
@@ -477,7 +491,7 @@ export class ProgressService {
    */
   _invalidateCache(userId) {
     if (!userId) return;
-    
+
     for (const key of this.cache.keys()) {
       if (key.startsWith(`${userId}_`)) {
         this.cache.delete(key);
@@ -493,13 +507,13 @@ export class ProgressService {
    */
   async getAnalytics(userId, options = {}) {
     const { timeRange = 30, groupBy = 'day' } = options;
-    
+
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - timeRange);
-    
+
     const progressRecords = await dbService.queryByIndex(STORES.PROGRESS, 'userId', userId);
-    
+
     const filteredRecords = progressRecords.filter(p => {
       const recordDate = new Date(p.timestamp);
       return recordDate >= startDate && recordDate <= endDate;
@@ -507,14 +521,14 @@ export class ProgressService {
 
     // Group data by time period
     const grouped = this._groupProgressByTime(filteredRecords, groupBy);
-    
+
     return {
       userId,
       timeRange,
       groupBy,
       totalRecords: filteredRecords.length,
       analytics: grouped,
-      trends: this._calculateTrends(grouped)
+      trends: this._calculateTrends(grouped),
     };
   }
 
@@ -524,28 +538,28 @@ export class ProgressService {
    */
   _groupProgressByTime(records, groupBy) {
     const groups = {};
-    
+
     records.forEach(record => {
       const date = new Date(record.timestamp);
       let key;
-      
+
       switch (groupBy) {
-      case 'day':
-        key = date.toISOString().split('T')[0];
-        break;
-      case 'week': {
-        const weekStart = new Date(date);
-        weekStart.setDate(date.getDate() - date.getDay());
-        key = weekStart.toISOString().split('T')[0];
-        break;
+        case 'day':
+          key = date.toISOString().split('T')[0];
+          break;
+        case 'week': {
+          const weekStart = new Date(date);
+          weekStart.setDate(date.getDate() - date.getDay());
+          key = weekStart.toISOString().split('T')[0];
+          break;
+        }
+        case 'month':
+          key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+          break;
+        default:
+          key = date.toISOString().split('T')[0];
       }
-      case 'month':
-        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        break;
-      default:
-        key = date.toISOString().split('T')[0];
-      }
-      
+
       if (!groups[key]) {
         groups[key] = {
           date: key,
@@ -553,26 +567,26 @@ export class ProgressService {
           completed: 0,
           totalScore: 0,
           totalTime: 0,
-          subjects: {}
+          subjects: {},
         };
       }
-      
+
       const group = groups[key];
       group.activities++;
-      
+
       if (record.status === 'completed') {
         group.completed++;
         group.totalScore += record.score || 0;
       }
-      
+
       group.totalTime += record.timeSpent || 0;
-      
+
       if (!group.subjects[record.subject]) {
         group.subjects[record.subject] = 0;
       }
       group.subjects[record.subject]++;
     });
-    
+
     return Object.values(groups).sort((a, b) => a.date.localeCompare(b.date));
   }
 
@@ -584,26 +598,29 @@ export class ProgressService {
     if (groupedData.length < 2) {
       return { activities: 0, completion: 0, score: 0 };
     }
-    
+
     const recent = groupedData.slice(-7); // Last 7 periods
     const previous = groupedData.slice(-14, -7); // Previous 7 periods
-    
+
     const recentAvg = {
       activities: recent.reduce((sum, g) => sum + g.activities, 0) / recent.length,
-      completion: recent.reduce((sum, g) => sum + (g.completed / g.activities || 0), 0) / recent.length,
-      score: recent.reduce((sum, g) => sum + (g.totalScore / g.completed || 0), 0) / recent.length
+      completion:
+        recent.reduce((sum, g) => sum + (g.completed / g.activities || 0), 0) / recent.length,
+      score: recent.reduce((sum, g) => sum + (g.totalScore / g.completed || 0), 0) / recent.length,
     };
-    
+
     const previousAvg = {
       activities: previous.reduce((sum, g) => sum + g.activities, 0) / previous.length,
-      completion: previous.reduce((sum, g) => sum + (g.completed / g.activities || 0), 0) / previous.length,
-      score: previous.reduce((sum, g) => sum + (g.totalScore / g.completed || 0), 0) / previous.length
+      completion:
+        previous.reduce((sum, g) => sum + (g.completed / g.activities || 0), 0) / previous.length,
+      score:
+        previous.reduce((sum, g) => sum + (g.totalScore / g.completed || 0), 0) / previous.length,
     };
-    
+
     return {
       activities: ((recentAvg.activities - previousAvg.activities) / previousAvg.activities) * 100,
       completion: ((recentAvg.completion - previousAvg.completion) / previousAvg.completion) * 100,
-      score: ((recentAvg.score - previousAvg.score) / previousAvg.score) * 100
+      score: ((recentAvg.score - previousAvg.score) / previousAvg.score) * 100,
     };
   }
 
@@ -615,15 +632,15 @@ export class ProgressService {
   async exportUserProgress(userId) {
     const [progress, sessions] = await Promise.all([
       dbService.queryByIndex(STORES.PROGRESS, 'userId', userId),
-      dbService.queryByIndex(STORES.SESSIONS, 'userId', userId)
+      dbService.queryByIndex(STORES.SESSIONS, 'userId', userId),
     ]);
-    
+
     return {
       userId,
       exportedAt: new Date(),
       progress,
       sessions,
-      summary: await this.getUserProgress(userId)
+      summary: await this.getUserProgress(userId),
     };
   }
 
@@ -635,16 +652,16 @@ export class ProgressService {
   async cleanupOldData(daysToKeep = 365) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
-    
+
     const allProgress = await dbService.getAll(STORES.PROGRESS);
     const oldProgress = allProgress.filter(p => new Date(p.timestamp) < cutoffDate);
-    
+
     let deletedCount = 0;
     for (const progress of oldProgress) {
       await dbService.delete(STORES.PROGRESS, progress.id);
       deletedCount++;
     }
-    
+
     logger.info(`Cleaned up ${deletedCount} old progress records`);
     return deletedCount;
   }

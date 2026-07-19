@@ -9,7 +9,6 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 vi.unmock('../../src/utils/logger.js');
 
 describe('Logger Utility', () => {
-  let Logger;
   let originalWindow;
 
   beforeEach(async () => {
@@ -19,8 +18,7 @@ describe('Logger Utility', () => {
     // Clear module cache and reimport
     vi.resetModules();
     vi.unmock('../../src/utils/logger.js'); // Ensure logger is not mocked
-    const module = await import('../../src/utils/logger.js');
-    Logger = module.default;
+    await import('../../src/utils/logger.js');
   });
 
   afterEach(() => {

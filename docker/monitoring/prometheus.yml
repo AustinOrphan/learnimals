@@ -13,7 +13,7 @@ alerting:
 
 # Load rules once and periodically evaluate them
 rule_files:
-  - "alerts/*.yml"
+  - 'alerts/*.yml'
 
 # Scrape configurations
 scrape_configs:

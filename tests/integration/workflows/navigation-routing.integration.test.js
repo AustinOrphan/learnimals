@@ -5,6 +5,7 @@
  * Verifies that navigation system works correctly with other components
  */
 
+/* global PopStateEvent, URLSearchParams, history */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   mockComponentDependencies,
@@ -157,8 +158,8 @@ describe('Navigation and Routing Integration', () => {
             </div>
             <ul class="navbar__menu">
               ${this.navItems
-    .map(
-      item => `
+                .map(
+                  item => `
                 <li class="navbar__item ${this.currentPage === item.path ? 'active' : ''}">
                   <a href="${item.path}" data-route="${item.path}" class="navbar__link">
                     <i class="icon icon-${item.icon}"></i>
@@ -166,8 +167,8 @@ describe('Navigation and Routing Integration', () => {
                   </a>
                 </li>
               `
-    )
-    .join('')}
+                )
+                .join('')}
             </ul>
             <button class="navbar__toggle" aria-label="Toggle menu">
               <span></span><span></span><span></span>
@@ -660,9 +661,9 @@ describe('Navigation and Routing Integration', () => {
     it('should handle deep links correctly', () => {
       const mockDeepLinkHandler = {
         patterns: [
-          { pattern: /^\/game\/([^\/]+)$/, handler: 'gameHandler' },
-          { pattern: /^\/profile\/([^\/]+)$/, handler: 'profileHandler' },
-          { pattern: /^\/share\/([^\/]+)$/, handler: 'shareHandler' },
+          { pattern: /^\/game\/([^/]+)$/, handler: 'gameHandler' },
+          { pattern: /^\/profile\/([^/]+)$/, handler: 'profileHandler' },
+          { pattern: /^\/share\/([^/]+)$/, handler: 'shareHandler' },
         ],
 
         handleDeepLink: vi.fn(function (url) {
@@ -792,7 +793,7 @@ describe('Navigation and Routing Integration', () => {
       };
 
       // Register authentication guard
-      mockNavigationGuard.register(async (to, from) => {
+      mockNavigationGuard.register(async (to, _from) => {
         const protectedRoutes = ['/profile', '/settings', '/achievements'];
         const isProtected = protectedRoutes.some(route => to.startsWith(route));
 
@@ -807,7 +808,7 @@ describe('Navigation and Routing Integration', () => {
       });
 
       // Register progress guard
-      mockNavigationGuard.register(async (to, from) => {
+      mockNavigationGuard.register(async (to, _from) => {
         if (to.startsWith('/advanced-games')) {
           const userLevel = parseInt(window.localStorage.getItem('user_level') || '1');
           if (userLevel < 5) {

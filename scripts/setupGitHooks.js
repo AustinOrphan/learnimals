@@ -2,7 +2,7 @@
 
 /**
  * Setup or update Git hooks for the Learnimals project
- * 
+ *
  * This script ensures all developers have the latest hooks installed
  * and configured correctly.
  */
@@ -21,7 +21,7 @@ const colors = {
   green: '\x1b[32m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 };
 
 /**
@@ -55,7 +55,7 @@ function checkHook(hookName) {
   if (!fs.existsSync(hookPath)) {
     return { exists: false, executable: false };
   }
-  
+
   try {
     fs.accessSync(hookPath, fs.constants.X_OK);
     return { exists: true, executable: true };
@@ -85,24 +85,26 @@ function makeExecutable(hookName) {
 function verifyHookContent(hookName) {
   const hookPath = path.join(process.cwd(), '.husky', hookName);
   const content = fs.readFileSync(hookPath, 'utf8');
-  
+
   const requiredChecks = [
     'duplicate files',
     'conflict markers',
     'large files',
     'TODO/FIXME',
-    'lint-staged'
+    'lint-staged',
   ];
-  
-  const missingChecks = requiredChecks.filter(check => 
-    !content.toLowerCase().includes(check.toLowerCase())
+
+  const missingChecks = requiredChecks.filter(
+    check => !content.toLowerCase().includes(check.toLowerCase())
   );
-  
+
   if (missingChecks.length > 0) {
-    console.log(`${colors.yellow}⚠️  ${hookName} is missing checks for: ${missingChecks.join(', ')}${colors.reset}`);
+    console.log(
+      `${colors.yellow}⚠️  ${hookName} is missing checks for: ${missingChecks.join(', ')}${colors.reset}`
+    );
     return false;
   }
-  
+
   return true;
 }
 
@@ -128,9 +130,9 @@ function checkGitConfig() {
  */
 async function main() {
   console.log(`${colors.blue}🔧 Setting up Git hooks for Learnimals...${colors.reset}\n`);
-  
+
   let success = true;
-  
+
   // Check if we're in a git repository
   try {
     execSync('git rev-parse --git-dir', { stdio: 'pipe' });
@@ -138,13 +140,15 @@ async function main() {
     console.error(`${colors.red}❌ Not in a Git repository!${colors.reset}`);
     process.exit(1);
   }
-  
+
   // Check Git configuration
   console.log(`${colors.blue}1️⃣  Checking Git configuration...${colors.reset}`);
   if (!checkGitConfig()) {
-    console.log(`${colors.yellow}   Consider running: git config --unset core.hooksPath${colors.reset}`);
+    console.log(
+      `${colors.yellow}   Consider running: git config --unset core.hooksPath${colors.reset}`
+    );
   }
-  
+
   // Check/Install Husky
   console.log(`\n${colors.blue}2️⃣  Checking Husky installation...${colors.reset}`);
   if (!checkHusky()) {
@@ -154,31 +158,35 @@ async function main() {
   } else {
     console.log(`${colors.green}✅ Husky is installed${colors.reset}`);
   }
-  
+
   // Check pre-commit hook
   console.log(`\n${colors.blue}3️⃣  Checking pre-commit hook...${colors.reset}`);
   const preCommit = checkHook('pre-commit');
-  
+
   if (!preCommit.exists) {
     console.log(`${colors.red}❌ pre-commit hook not found${colors.reset}`);
-    console.log(`${colors.yellow}   Run: npx husky add .husky/pre-commit "npm run pre-commit"${colors.reset}`);
+    console.log(
+      `${colors.yellow}   Run: npx husky add .husky/pre-commit "npm run pre-commit"${colors.reset}`
+    );
     success = false;
   } else {
     console.log(`${colors.green}✅ pre-commit hook exists${colors.reset}`);
-    
+
     if (!preCommit.executable) {
       makeExecutable('pre-commit');
     }
-    
+
     if (!verifyHookContent('pre-commit')) {
-      console.log(`${colors.yellow}   Consider updating the pre-commit hook with latest checks${colors.reset}`);
+      console.log(
+        `${colors.yellow}   Consider updating the pre-commit hook with latest checks${colors.reset}`
+      );
     }
   }
-  
+
   // Check for required scripts
   console.log(`\n${colors.blue}4️⃣  Checking required scripts...${colors.reset}`);
   const requiredScripts = ['scripts/checkDuplicates.js'];
-  
+
   requiredScripts.forEach(script => {
     if (fs.existsSync(script)) {
       console.log(`${colors.green}✅ ${script} exists${colors.reset}`);
@@ -187,12 +195,12 @@ async function main() {
       success = false;
     }
   });
-  
+
   // Check package.json scripts
   console.log(`\n${colors.blue}5️⃣  Checking package.json scripts...${colors.reset}`);
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   const requiredNpmScripts = ['prepare', 'pre-commit'];
-  
+
   requiredNpmScripts.forEach(script => {
     if (packageJson.scripts && packageJson.scripts[script]) {
       console.log(`${colors.green}✅ npm script '${script}' is defined${colors.reset}`);
@@ -201,7 +209,7 @@ async function main() {
       success = false;
     }
   });
-  
+
   // Summary
   console.log(`\n${colors.blue}📊 Summary:${colors.reset}`);
   if (success) {
@@ -219,8 +227,10 @@ async function main() {
     console.log('2. Run: npm run prepare');
     console.log('3. Run this script again to verify');
   }
-  
-  console.log(`\n${colors.blue}For more information, see: docs/development/GIT_HOOKS.md${colors.reset}`);
+
+  console.log(
+    `\n${colors.blue}For more information, see: docs/development/GIT_HOOKS.md${colors.reset}`
+  );
 }
 
 // Run the script

@@ -77,14 +77,14 @@ class FeedbackToast extends BaseComponent {
         
         <div class="feedback-toast-content">
           ${
-  showIcon
-    ? `
+            showIcon
+              ? `
             <div class="feedback-toast-icon">
               ${typeIcon}
             </div>
           `
-    : ''
-}
+              : ''
+          }
           
           <div class="feedback-toast-main">
             <div class="feedback-toast-message">${message}</div>
@@ -92,26 +92,26 @@ class FeedbackToast extends BaseComponent {
           </div>
           
           ${
-  showCloseButton
-    ? `
+            showCloseButton
+              ? `
             <button class="feedback-toast-close component-button component-button--ghost" 
                     aria-label="Dismiss notification" type="button">
               <span aria-hidden="true">&times;</span>
             </button>
           `
-    : ''
-}
+              : ''
+          }
         </div>
         
         ${
-  showProgress && duration > 0
-    ? `
+          showProgress && duration > 0
+            ? `
           <div class="feedback-toast-progress">
             <div class="feedback-toast-progress-bar" data-duration="${duration}"></div>
           </div>
         `
-    : ''
-}
+            : ''
+        }
       </div>
     `;
   }
@@ -215,12 +215,12 @@ class FeedbackToast extends BaseComponent {
         success: 'Great reading!',
         error: 'Keep trying!',
         hint: 'Think it through...',
-        progress: 'You\'re improving!',
+        progress: "You're improving!",
         achievement: 'Reading star!',
       },
       max: {
         success: 'Math magic!',
-        error: 'Let\'s solve this!',
+        error: "Let's solve this!",
         hint: 'Count carefully...',
         progress: 'Numbers growing!',
         achievement: 'Math wizard!',

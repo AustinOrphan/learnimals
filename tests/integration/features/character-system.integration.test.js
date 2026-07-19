@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { CharacterFactory, TestDataUtils } from '../../fixtures/testDataFactory.js';
+import { CharacterFactory } from '../../fixtures/testDataFactory.js';
 
 describe('Character System Integration', () => {
   let container;
@@ -50,11 +50,6 @@ describe('Character System Integration', () => {
         show: vi.fn(),
         onComplete: null,
         steps: ['species', 'appearance', 'personality', 'review'],
-      };
-
-      const mockRenderer = {
-        render: vi.fn(),
-        updateCharacter: vi.fn(),
       };
 
       const mockStorage = {

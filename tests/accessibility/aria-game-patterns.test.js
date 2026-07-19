@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BaseGame } from '../../src/components/games/BaseGame.js';
+import '../../src/components/games/BaseGame.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -24,7 +24,6 @@ vi.mock('../../src/utils/logger.js', () => ({
 
 describe('ARIA Game-Specific Patterns', () => {
   let testContainer;
-  let mockGameInstance;
 
   beforeEach(() => {
     document.body.innerHTML = '';
@@ -371,7 +370,7 @@ describe('ARIA Game-Specific Patterns', () => {
 
       // Create draggable animals
       const animals = ['Lion', 'Fish', 'Bird'];
-      animals.forEach((animal, index) => {
+      animals.forEach((animal, _index) => {
         const draggable = document.createElement('div');
         draggable.setAttribute('role', 'button');
         draggable.setAttribute('draggable', 'true');

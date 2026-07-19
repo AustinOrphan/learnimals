@@ -14,27 +14,30 @@ export class MobileOptimizationService {
     this.touchSupport = this.detectTouchSupport();
     this.devicePixelRatio = window.devicePixelRatio || 1;
     this.networkInfo = this.getNetworkInfo();
+    this.isLowEndDevice = this.detectLowEndDevice();
+    this.memoryLevel = this.getMemoryLevel();
+    this.deviceInfo = this.getDeviceInfo();
     this.performanceMetrics = new Map();
-    
+
     // Configuration
     this.config = {
       imageOptimization: {
         lazyLoadingEnabled: true,
         webpSupport: this.supportsWebP(),
         retinaSuffix: '@2x',
-        compressionQuality: 0.8
+        compressionQuality: 0.8,
       },
       touchOptimization: {
         minTouchTarget: 44, // iOS HIG minimum
         comfortableTouchTarget: 48,
         scrollThreshold: 10,
-        swipeThreshold: 50
+        swipeThreshold: 50,
       },
       performance: {
         fpsTarget: 60,
         budgetWarningThreshold: 16, // ms per frame
         memoryWarningThreshold: 50 * 1024 * 1024, // 50MB
-        networkTimeout: 5000
+        networkTimeout: 5000,
       },
       responsive: {
         breakpoints: {
@@ -43,15 +46,15 @@ export class MobileOptimizationService {
           md: 768,
           lg: 1024,
           xl: 1280,
-          '2xl': 1536
+          '2xl': 1536,
         },
         containerMaxWidths: {
           sm: '100%',
           md: '100%',
           lg: '1024px',
-          xl: '1280px'
-        }
-      }
+          xl: '1280px',
+        },
+      },
     };
 
     // Event listeners and observers
@@ -59,7 +62,7 @@ export class MobileOptimizationService {
     this.eventListeners = new Map();
     this.optimizedImages = new Set();
     this.lazyLoadQueue = new Set();
-    
+
     // Bind methods
     this.handleResize = this.handleResize.bind(this);
     this.handleOrientationChange = this.handleOrientationChange.bind(this);
@@ -75,6 +78,17 @@ export class MobileOptimizationService {
 
     try {
       logger.info('Initializing mobile optimization service...');
+
+      // Refresh device detection so environment changes since construction
+      // (viewport, user agent, network, hardware hints) are captured
+      this.isMobile = this.detectMobile();
+      this.isTablet = this.detectTablet();
+      this.touchSupport = this.detectTouchSupport();
+      this.devicePixelRatio = window.devicePixelRatio || 1;
+      this.networkInfo = this.getNetworkInfo();
+      this.isLowEndDevice = this.detectLowEndDevice();
+      this.memoryLevel = this.getMemoryLevel();
+      this.deviceInfo = this.getDeviceInfo();
 
       // Start performance monitoring
       this.startPerformanceMonitoring();
@@ -105,7 +119,6 @@ export class MobileOptimizationService {
 
       // Log device and performance info
       this.logDeviceInfo();
-
     } catch (error) {
       logger.error('❌ Failed to initialize mobile optimization service:', error);
       throw error;
@@ -119,7 +132,7 @@ export class MobileOptimizationService {
     if (this.isMobile || this.isTablet) {
       // Start FPS monitoring for mobile devices
       fpsMonitor.start();
-      
+
       // Take initial memory snapshot
       memoryMonitor.snapshot('mobile-init');
 
@@ -148,11 +161,11 @@ export class MobileOptimizationService {
       }
 
       // Schedule next check
-      setTimeout(checkMetrics, 5000); // Check every 5 seconds
+      this.metricsTimeout = setTimeout(checkMetrics, 5000); // Check every 5 seconds
     };
 
     // Start monitoring after a delay
-    setTimeout(checkMetrics, 2000);
+    this.metricsTimeout = setTimeout(checkMetrics, 2000);
   }
 
   /**
@@ -160,14 +173,14 @@ export class MobileOptimizationService {
    */
   handleLowPerformance(type, value) {
     switch (type) {
-    case 'fps':
-      // Reduce animation complexity
-      this.reduceAnimationComplexity();
-      break;
-    case 'memory':
-      // Trigger garbage collection hints
-      this.optimizeMemoryUsage();
-      break;
+      case 'fps':
+        // Reduce animation complexity
+        this.reduceAnimationComplexity();
+        break;
+      case 'memory':
+        // Trigger garbage collection hints
+        this.optimizeMemoryUsage();
+        break;
     }
 
     // Emit performance warning event
@@ -179,7 +192,7 @@ export class MobileOptimizationService {
    */
   reduceAnimationComplexity() {
     document.body.classList.add('reduced-animations');
-    
+
     // Disable complex animations
     const style = document.createElement('style');
     style.textContent = `
@@ -202,10 +215,10 @@ export class MobileOptimizationService {
   optimizeMemoryUsage() {
     // Clean up unused DOM elements
     this.cleanupUnusedElements();
-    
+
     // Clear image caches
     this.clearImageCaches();
-    
+
     // Force garbage collection if available
     if (window.gc) {
       window.gc();
@@ -220,13 +233,13 @@ export class MobileOptimizationService {
   initializeResponsiveDesign() {
     // Set up responsive breakpoint detection
     this.setupBreakpointDetection();
-    
+
     // Initialize fluid typography
     this.initializeFluidTypography();
-    
+
     // Set up responsive images
     this.setupResponsiveImages();
-    
+
     // Initialize container queries fallback
     this.initializeContainerQueries();
   }
@@ -242,13 +255,20 @@ export class MobileOptimizationService {
     Object.entries(breakpoints).forEach(([_name, width]) => {
       if (width > 0) {
         const mediaQuery = window.matchMedia(`(min-width: ${width}px)`);
-        mediaQuery.addListener(() => {
+        const handleChange = () => {
           const newBreakpoint = this.getCurrentBreakpoint();
           if (newBreakpoint !== this.currentBreakpoint) {
             this.handleBreakpointChange(this.currentBreakpoint, newBreakpoint);
             this.currentBreakpoint = newBreakpoint;
           }
-        });
+        };
+
+        // Prefer the modern MediaQueryList API; fall back for older Safari
+        if (typeof mediaQuery.addEventListener === 'function') {
+          mediaQuery.addEventListener('change', handleChange);
+        } else if (typeof mediaQuery.addListener === 'function') {
+          mediaQuery.addListener(handleChange);
+        }
       }
     });
   }
@@ -316,6 +336,30 @@ export class MobileOptimizationService {
   }
 
   /**
+   * Apply declared responsive sources to images that are not lazy loaded
+   */
+  setupResponsiveImages() {
+    const responsiveImages = document.querySelectorAll('img[data-srcset]:not([data-src])');
+    responsiveImages.forEach(img => {
+      img.srcset = img.dataset.srcset;
+      if (img.dataset.sizes) {
+        img.sizes = img.dataset.sizes;
+      }
+    });
+  }
+
+  /**
+   * Container queries fallback: tag the document when native support is missing
+   */
+  initializeContainerQueries() {
+    const supportsContainerQueries =
+      typeof window.CSS !== 'undefined' &&
+      typeof window.CSS.supports === 'function' &&
+      window.CSS.supports('container-type: inline-size');
+    document.documentElement.classList.toggle('no-container-queries', !supportsContainerQueries);
+  }
+
+  /**
    * Initialize touch optimizations
    */
   initializeTouchOptimizations() {
@@ -323,13 +367,13 @@ export class MobileOptimizationService {
 
     // Enhance touch targets
     this.enhanceTouchTargets();
-    
+
     // Initialize gesture support
     this.initializeGestureSupport();
-    
+
     // Optimize scroll behavior
     this.optimizeScrollBehavior();
-    
+
     // Set up touch feedback
     this.setupTouchFeedback();
   }
@@ -350,7 +394,7 @@ export class MobileOptimizationService {
       const rect = element.getBoundingClientRect();
       if (rect.width < minSize || rect.height < minSize) {
         element.classList.add('enhanced-touch-target');
-        
+
         // Apply minimum touch target size
         if (rect.width < minSize) {
           element.style.setProperty('--touch-width', `${minSize}px`);
@@ -404,19 +448,63 @@ export class MobileOptimizationService {
   initializeGestureSupport() {
     let touchStartX = 0;
     let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
 
-    document.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
+    this.gestureTouchStart = e => {
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) return;
+      touchStartX = touch.screenX;
+      touchStartY = touch.screenY;
+    };
 
-    document.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      touchEndY = e.changedTouches[0].screenY;
-      this.handleGesture(touchStartX, touchStartY, touchEndX, touchEndY);
-    }, { passive: true });
+    this.gestureTouchEnd = e => {
+      const touch = e.changedTouches && e.changedTouches[0];
+      if (!touch) return;
+      this.handleGesture(touchStartX, touchStartY, touch.screenX, touch.screenY);
+    };
+
+    document.addEventListener('touchstart', this.gestureTouchStart, { passive: true });
+    document.addEventListener('touchend', this.gestureTouchEnd, { passive: true });
+  }
+
+  /**
+   * Optimize scroll behavior for touch devices
+   */
+  optimizeScrollBehavior() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .touch-device {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  /**
+   * Set up visual touch feedback on interactive elements
+   */
+  setupTouchFeedback() {
+    const interactiveSelector = 'button, a, [role="button"], [data-touch-optimized]';
+
+    this.touchFeedbackStart = event => {
+      const target =
+        event.target && event.target.closest ? event.target.closest(interactiveSelector) : null;
+      if (target) {
+        target.classList.add('touch-active');
+      }
+    };
+
+    this.touchFeedbackEnd = event => {
+      const target =
+        event.target && event.target.closest ? event.target.closest(interactiveSelector) : null;
+      if (target) {
+        target.classList.remove('touch-active');
+      }
+    };
+
+    document.addEventListener('touchstart', this.touchFeedbackStart, { passive: true });
+    document.addEventListener('touchend', this.touchFeedbackEnd, { passive: true });
+    document.addEventListener('touchcancel', this.touchFeedbackEnd, { passive: true });
   }
 
   /**
@@ -430,7 +518,7 @@ export class MobileOptimizationService {
     // Detect swipe gestures
     if (Math.abs(deltaX) > threshold || Math.abs(deltaY) > threshold) {
       let direction;
-      
+
       if (Math.abs(deltaX) > Math.abs(deltaY)) {
         direction = deltaX > 0 ? 'right' : 'left';
       } else {
@@ -449,10 +537,10 @@ export class MobileOptimizationService {
 
     // Set up intersection observer for lazy loading
     this.setupLazyLoading();
-    
+
     // Optimize existing images
     this.optimizeExistingImages();
-    
+
     // Set up responsive image loading
     this.setupResponsiveImageLoading();
   }
@@ -470,11 +558,11 @@ export class MobileOptimizationService {
     const options = {
       root: null,
       rootMargin: '50px',
-      threshold: 0.1
+      threshold: 0.1,
     };
 
     // eslint-disable-next-line no-undef
-    const lazyImageObserver = new IntersectionObserver((entries) => {
+    const lazyImageObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const img = entry.target;
@@ -487,6 +575,49 @@ export class MobileOptimizationService {
     // Observe all lazy images
     this.observeLazyImages(lazyImageObserver);
     this.observers.set('lazyImages', lazyImageObserver);
+  }
+
+  /**
+   * Fallback lazy loading for browsers without IntersectionObserver
+   */
+  setupLazyLoadingFallback() {
+    const loadVisibleImages = () => {
+      const lazyImages = document.querySelectorAll('img[data-src]');
+      lazyImages.forEach(img => {
+        const rect = img.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 50 && rect.bottom > -50) {
+          this.loadImage(img).catch(() => {});
+        }
+      });
+    };
+
+    this.lazyFallbackHandler = loadVisibleImages;
+    window.addEventListener('scroll', this.lazyFallbackHandler, { passive: true });
+    window.addEventListener('resize', this.lazyFallbackHandler);
+    loadVisibleImages();
+  }
+
+  /**
+   * Optimize images that already have a source
+   */
+  optimizeExistingImages() {
+    const images = document.querySelectorAll('img:not([data-src])');
+    images.forEach(img => {
+      if (!img.hasAttribute('decoding')) {
+        img.setAttribute('decoding', 'async');
+      }
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+    });
+  }
+
+  /**
+   * Re-apply responsive image sources whenever the breakpoint changes
+   */
+  setupResponsiveImageLoading() {
+    this.responsiveImageHandler = () => this.setupResponsiveImages();
+    this.on('breakpointChange', this.responsiveImageHandler);
   }
 
   /**
@@ -513,7 +644,7 @@ export class MobileOptimizationService {
 
       // Create optimized source URL
       const optimizedSrc = this.getOptimizedImageSrc(src);
-      
+
       const tempImg = new Image();
       tempImg.onload = () => {
         // Use RAF to avoid layout thrashing
@@ -525,13 +656,13 @@ export class MobileOptimizationService {
           resolve(img);
         });
       };
-      
+
       tempImg.onerror = () => {
         // Fallback to original source
         img.src = src;
         reject(new Error(`Failed to load optimized image: ${optimizedSrc}`));
       };
-      
+
       tempImg.src = optimizedSrc;
     });
   }
@@ -545,7 +676,7 @@ export class MobileOptimizationService {
       const extension = originalSrc.split('.').pop();
       const baseName = originalSrc.replace(`.${extension}`, '');
       const retinaVersion = `${baseName}${this.config.imageOptimization.retinaSuffix}.${extension}`;
-      
+
       // Check if retina version exists (this would need server-side support)
       return retinaVersion;
     }
@@ -559,10 +690,10 @@ export class MobileOptimizationService {
   initializeNetworkOptimization() {
     // Set up connection monitoring
     this.monitorNetworkConnection();
-    
+
     // Implement adaptive loading based on connection
     this.setupAdaptiveLoading();
-    
+
     // Prefetch critical resources
     this.prefetchCriticalResources();
   }
@@ -577,12 +708,49 @@ export class MobileOptimizationService {
         effectiveType: connection.effectiveType,
         downlink: connection.downlink,
         rtt: connection.rtt,
-        saveData: connection.saveData
+        saveData: connection.saveData,
       };
 
       connection.addEventListener('change', this.handleNetworkChange);
-      this.eventListeners.set('networkChange', connection);
+      this.eventListeners.set('networkChange', this.handleNetworkChange);
     }
+  }
+
+  /**
+   * Apply adaptive loading behavior for the current connection
+   */
+  setupAdaptiveLoading() {
+    this.adaptToNetworkConditions(this.networkInfo, this.networkInfo);
+  }
+
+  /**
+   * Prefetch critical resources on fast connections
+   */
+  prefetchCriticalResources() {
+    const { effectiveType, saveData } = this.networkInfo || {};
+    if (saveData || effectiveType === '2g' || effectiveType === 'slow-2g') return;
+
+    const criticalImages = document.querySelectorAll('img.critical[data-src]');
+    criticalImages.forEach(img => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = img.dataset.src;
+      document.head.appendChild(link);
+    });
+  }
+
+  /**
+   * Adjust the lazy loading root margin for the connection speed
+   */
+  adjustLazyLoadingThreshold(effectiveType) {
+    const margins = {
+      'slow-2g': '20px',
+      '2g': '20px',
+      '3g': '50px',
+      '4g': '100px',
+    };
+    this.lazyLoadRootMargin = margins[effectiveType] || '50px';
   }
 
   /**
@@ -591,17 +759,17 @@ export class MobileOptimizationService {
   handleNetworkChange() {
     const connection = navigator.connection;
     const oldInfo = { ...this.networkInfo };
-    
+
     this.networkInfo = {
       effectiveType: connection.effectiveType,
       downlink: connection.downlink,
       rtt: connection.rtt,
-      saveData: connection.saveData
+      saveData: connection.saveData,
     };
 
     // Adapt based on connection quality
     this.adaptToNetworkConditions(oldInfo, this.networkInfo);
-    
+
     this.emit('networkChange', { from: oldInfo, to: this.networkInfo });
   }
 
@@ -625,14 +793,27 @@ export class MobileOptimizationService {
    */
   enableDataSaverMode() {
     document.body.classList.add('data-saver-mode');
-    
+
     // Pause non-essential animations
     document.body.classList.add('reduced-animations');
-    
+
     // Reduce image quality
     this.config.imageOptimization.compressionQuality = 0.6;
-    
+
     logger.info('Enabled data saver mode due to slow connection');
+  }
+
+  /**
+   * Disable data saver mode
+   */
+  disableDataSaverMode() {
+    document.body.classList.remove('data-saver-mode');
+    document.body.classList.remove('reduced-animations');
+
+    // Restore default image quality
+    this.config.imageOptimization.compressionQuality = 0.8;
+
+    logger.info('Disabled data saver mode');
   }
 
   /**
@@ -641,10 +822,10 @@ export class MobileOptimizationService {
   initializeViewportOptimizations() {
     // Set optimal viewport meta tag
     this.setOptimalViewport();
-    
+
     // Prevent zoom on form inputs (iOS)
     this.preventFormZoom();
-    
+
     // Handle safe area insets
     this.handleSafeAreaInsets();
   }
@@ -661,11 +842,7 @@ export class MobileOptimizationService {
     }
 
     // Optimal viewport for mobile web apps
-    const viewportContent = [
-      'width=device-width',
-      'initial-scale=1.0',
-      'viewport-fit=cover'
-    ];
+    const viewportContent = ['width=device-width', 'initial-scale=1.0', 'viewport-fit=cover'];
 
     // Prevent zoom on iOS for better UX
     if (this.isMobile) {
@@ -753,6 +930,7 @@ export class MobileOptimizationService {
     };
 
     fixViewportHeight();
+    this.iosViewportFix = fixViewportHeight;
     window.addEventListener('resize', fixViewportHeight);
     window.addEventListener('orientationchange', fixViewportHeight);
 
@@ -810,8 +988,13 @@ export class MobileOptimizationService {
    */
   handleOrientationChange() {
     setTimeout(() => {
-      const orientation = screen.orientation?.angle === 0 || screen.orientation?.angle === 180 ? 'portrait' : 'landscape';
-      document.body.className = document.body.className.replace(/\b(portrait|landscape)\b/g, '').trim();
+      const orientation =
+        screen.orientation?.angle === 0 || screen.orientation?.angle === 180
+          ? 'portrait'
+          : 'landscape';
+      document.body.className = document.body.className
+        .replace(/\b(portrait|landscape)\b/g, '')
+        .trim();
       document.body.classList.add(orientation);
 
       this.emit('orientationChange', { orientation });
@@ -839,17 +1022,78 @@ export class MobileOptimizationService {
    * Device detection methods
    */
   detectMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-           (window.innerWidth <= 768 && 'ontouchstart' in window);
+    // Below the md breakpoint (768px) counts as mobile; 768px and up is tablet
+    return (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (window.innerWidth < 768 && 'ontouchstart' in window)
+    );
   }
 
   detectTablet() {
-    return /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent) ||
-           (window.innerWidth > 768 && window.innerWidth <= 1024 && 'ontouchstart' in window);
+    return (
+      /iPad|Android(?=.*Mobile)/i.test(navigator.userAgent) ||
+      (window.innerWidth >= 768 && window.innerWidth <= 1024 && 'ontouchstart' in window)
+    );
   }
 
   detectTouchSupport() {
     return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  }
+
+  /**
+   * Detect low-end devices from hardware hints
+   */
+  detectLowEndDevice() {
+    const cores = navigator.hardwareConcurrency;
+    const memory = navigator.deviceMemory;
+    return (
+      (typeof cores === 'number' && cores > 0 && cores <= 2) ||
+      (typeof memory === 'number' && memory > 0 && memory <= 2)
+    );
+  }
+
+  /**
+   * Classify available device memory
+   */
+  getMemoryLevel() {
+    const memory = navigator.deviceMemory;
+    if (typeof memory !== 'number') return 'unknown';
+    if (memory <= 1) return 'low';
+    if (memory <= 4) return 'medium';
+    return 'high';
+  }
+
+  /**
+   * Get device OS and browser information from the user agent
+   */
+  getDeviceInfo() {
+    const ua = navigator.userAgent || '';
+
+    let os = 'Unknown';
+    if (/iPad|iPhone|iPod/.test(ua)) {
+      os = 'iOS';
+    } else if (/Android/.test(ua)) {
+      os = 'Android';
+    } else if (/Windows/.test(ua)) {
+      os = 'Windows';
+    } else if (/Mac OS X|Macintosh/.test(ua)) {
+      os = 'macOS';
+    } else if (/Linux/.test(ua)) {
+      os = 'Linux';
+    }
+
+    let browser = 'Unknown';
+    if (/Edg\//.test(ua)) {
+      browser = 'Edge';
+    } else if (/Chrome\//.test(ua)) {
+      browser = 'Chrome';
+    } else if (/Firefox\//.test(ua)) {
+      browser = 'Firefox';
+    } else if (/Safari\//.test(ua)) {
+      browser = 'Safari';
+    }
+
+    return { os, browser, userAgent: ua };
   }
 
   isIOS() {
@@ -879,7 +1123,7 @@ export class MobileOptimizationService {
         effectiveType: connection.effectiveType,
         downlink: connection.downlink,
         rtt: connection.rtt,
-        saveData: connection.saveData
+        saveData: connection.saveData,
       };
     }
     return { effectiveType: '4g', downlink: 10, rtt: 100, saveData: false };
@@ -916,9 +1160,9 @@ export class MobileOptimizationService {
         isMobile: this.isMobile,
         isTablet: this.isTablet,
         touchSupport: this.touchSupport,
-        devicePixelRatio: this.devicePixelRatio
+        devicePixelRatio: this.devicePixelRatio,
       },
-      currentBreakpoint: this.currentBreakpoint
+      currentBreakpoint: this.currentBreakpoint,
     };
   }
 
@@ -932,7 +1176,7 @@ export class MobileOptimizationService {
       devicePixelRatio: this.devicePixelRatio,
       viewportSize: `${window.innerWidth}x${window.innerHeight}`,
       currentBreakpoint: this.currentBreakpoint,
-      networkInfo: this.networkInfo
+      networkInfo: this.networkInfo,
     };
 
     logger.info('📱 Device Information:', info);
@@ -967,17 +1211,48 @@ export class MobileOptimizationService {
 
     // Remove event listeners
     this.eventListeners.forEach((listener, event) => {
-      if (event === 'networkChange' && 'connection' in navigator) {
-        navigator.connection.removeEventListener('change', listener);
+      if (event === 'networkChange') {
+        if ('connection' in navigator) {
+          navigator.connection.removeEventListener('change', listener);
+        }
+      } else if (event === 'visibilitychange') {
+        document.removeEventListener(event, listener);
       } else {
         window.removeEventListener(event, listener);
       }
     });
     this.eventListeners.clear();
 
+    // Remove document-level touch handlers
+    if (this.touchFeedbackStart) {
+      document.removeEventListener('touchstart', this.touchFeedbackStart);
+      document.removeEventListener('touchend', this.touchFeedbackEnd);
+      document.removeEventListener('touchcancel', this.touchFeedbackEnd);
+    }
+    if (this.gestureTouchStart) {
+      document.removeEventListener('touchstart', this.gestureTouchStart);
+      document.removeEventListener('touchend', this.gestureTouchEnd);
+    }
+
+    // Remove auxiliary handlers
+    if (this.responsiveImageHandler) {
+      this.off('breakpointChange', this.responsiveImageHandler);
+    }
+    if (this.lazyFallbackHandler) {
+      window.removeEventListener('scroll', this.lazyFallbackHandler);
+      window.removeEventListener('resize', this.lazyFallbackHandler);
+    }
+    if (this.iosViewportFix) {
+      window.removeEventListener('resize', this.iosViewportFix);
+      window.removeEventListener('orientationchange', this.iosViewportFix);
+    }
+
     // Clear timeouts
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
+    }
+    if (this.metricsTimeout) {
+      clearTimeout(this.metricsTimeout);
     }
 
     // Clear caches

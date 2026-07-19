@@ -219,8 +219,8 @@ class TestReportGenerator {
         <h3>Test Type Breakdown</h3>
         <div class="breakdown-grid">
           ${Object.entries(summary.byType)
-    .map(
-      ([type, data]) => `
+            .map(
+              ([type, data]) => `
             <div class="breakdown-item">
               <h4>${type.charAt(0).toUpperCase() + type.slice(1)} Tests</h4>
               <div class="breakdown-bar">
@@ -229,8 +229,8 @@ class TestReportGenerator {
               <div class="breakdown-numbers">${data.passed}/${data.total} passed</div>
             </div>
           `
-    )
-    .join('')}
+            )
+            .join('')}
         </div>
       </div>
     </section>`;
@@ -338,15 +338,15 @@ class TestReportGenerator {
         <span>⏱️ ${result.testExecTime || 0}ms</span>
       </div>
       ${
-  result.failureMessages && result.failureMessages.length > 0
-    ? `
+        result.failureMessages && result.failureMessages.length > 0
+          ? `
         <details class="failure-details">
           <summary>View Failures (${result.failureMessages.length})</summary>
           <pre>${result.failureMessages.join('\n\n')}</pre>
         </details>
       `
-    : ''
-}
+          : ''
+      }
     </div>`;
   }
 
@@ -569,7 +569,6 @@ class TestReportGenerator {
       }
 
       if (result.keyboardNavigation) {
-        const passed = result.keyboardNavigation.passed || 0;
         const failed = result.keyboardNavigation.failed || 0;
         metrics.keyboard.status = failed === 0 ? 'passed' : 'failed';
         metrics.keyboard.message =

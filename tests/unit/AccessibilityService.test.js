@@ -3,6 +3,7 @@
  * Tests comprehensive accessibility features and WCAG compliance
  */
 
+/* global FocusEvent */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { DOMUtils } from '../fixtures/testDataFactory.js';

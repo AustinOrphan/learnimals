@@ -308,7 +308,7 @@ describe('BundleOptimizer Performance Budgets', () => {
         startTime: 100,
       };
 
-      const eventSpy = vi.spyOn(bundleOptimizer, 'emit');
+      vi.spyOn(bundleOptimizer, 'emit');
 
       bundleOptimizer.trackResourcePerformance(resource);
 
@@ -583,7 +583,7 @@ describe('BundleOptimizer Performance Budgets', () => {
     });
 
     it('should provide actionable budget recommendations', () => {
-      const metrics = bundleOptimizer.getMetrics();
+      bundleOptimizer.getMetrics();
 
       // Simulate metrics that exceed budgets
       bundleOptimizer.performanceMetrics.set('/large-app.js', {

@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { TestDataUtils } from '../fixtures/testDataFactory.js';
+import '../fixtures/testDataFactory.js';
 
 describe('XSS Prevention Security Tests', () => {
   let securityTester;
@@ -75,10 +75,10 @@ describe('XSS Prevention Security Tests', () => {
           blocked: isBlocked,
           sanitized: isBlocked
             ? payload
-              .replace(/<[^>]*>/g, '')
-              .replace(/onerror="[^"]*"/gi, '')
-              .replace(/javascript:/gi, '')
-              .replace(/"/g, '')
+                .replace(/<[^>]*>/g, '')
+                .replace(/onerror="[^"]*"/gi, '')
+                .replace(/javascript:/gi, '')
+                .replace(/"/g, '')
             : payload,
           dangerous,
         };
@@ -123,7 +123,7 @@ describe('XSS Prevention Security Tests', () => {
         return element;
       }),
 
-      querySelector: vi.fn().mockImplementation(selector => {
+      querySelector: vi.fn().mockImplementation(_selector => {
         // Return mock element
         return mockDOM.createElement('div');
       }),
@@ -242,7 +242,7 @@ describe('XSS Prevention Security Tests', () => {
     });
 
     it('should escape single quotes', () => {
-      const input = '\'; alert(\'XSS\'); //';
+      const input = "'; alert('XSS'); //";
       const escaped = inputSanitizer.escapeHTML(input);
       expect(escaped).toBe('&#x27;; alert(&#x27;XSS&#x27;); &#x2F;&#x2F;');
     });
@@ -341,7 +341,7 @@ describe('XSS Prevention Security Tests', () => {
       ];
 
       urlParams.forEach(param => {
-        const [key, value] = param.split('=');
+        const [_key, value] = param.split('=');
         const decodedValue = decodeURIComponent(value);
         const sanitizedValue = inputSanitizer.sanitizeHTML(decodedValue);
 
@@ -463,7 +463,7 @@ describe('XSS Prevention Security Tests', () => {
       };
 
       redirectParams.forEach(param => {
-        const [key, value] = param.split('=');
+        const [_key, value] = param.split('=');
         const isValid = isValidRedirect(value);
 
         if (value.includes('javascript:') || value.includes('//evil.com')) {
@@ -476,13 +476,13 @@ describe('XSS Prevention Security Tests', () => {
   describe('Content Security Policy (CSP) Compliance', () => {
     it('should enforce CSP directives', () => {
       const cspDirectives = {
-        'script-src': ['\'self\'', '\'unsafe-inline\''],
-        'style-src': ['\'self\'', '\'unsafe-inline\''],
-        'img-src': ['\'self\'', 'data:', 'https:'],
-        'font-src': ['\'self\''],
-        'connect-src': ['\'self\''],
-        'object-src': ['\'none\''],
-        'frame-src': ['\'none\''],
+        'script-src': ["'self'", "'unsafe-inline'"],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'img-src': ["'self'", 'data:', 'https:'],
+        'font-src': ["'self'"],
+        'connect-src': ["'self'"],
+        'object-src': ["'none'"],
+        'frame-src': ["'none'"],
       };
 
       // Test resources against CSP
@@ -507,7 +507,7 @@ describe('XSS Prevention Security Tests', () => {
         const allowedSources = cspDirectives[directive];
 
         if (resource.allowed) {
-          expect(allowedSources).not.toContain('\'none\'');
+          expect(allowedSources).not.toContain("'none'");
         } else {
           // Should be blocked by CSP
           expect(true).toBe(true); // Test passes if resource should be blocked
@@ -520,10 +520,10 @@ describe('XSS Prevention Security Tests', () => {
     it('should prevent SQL injection in API calls', () => {
       // Mock API request data
       const apiRequests = [
-        { query: '\'; DROP TABLE users; --', safe: false },
-        { query: '1\' OR \'1\'=\'1', safe: false },
+        { query: "'; DROP TABLE users; --", safe: false },
+        { query: "1' OR '1'='1", safe: false },
         { query: 'normal search term', safe: true },
-        { query: 'SELECT * FROM characters WHERE name=\'\'; DROP TABLE users; --\'', safe: false },
+        { query: "SELECT * FROM characters WHERE name=''; DROP TABLE users; --'", safe: false },
       ];
 
       // Mock API sanitization
@@ -540,7 +540,7 @@ describe('XSS Prevention Security Tests', () => {
         if (!request.safe) {
           expect(sanitized).not.toContain('DROP');
           expect(sanitized).not.toContain('DELETE');
-          expect(sanitized).not.toContain('\'');
+          expect(sanitized).not.toContain("'");
           expect(sanitized).not.toContain(';');
         }
       });
@@ -640,7 +640,7 @@ describe('XSS Prevention Security Tests', () => {
         { input: 'Cat < Dog', expected: 'Cat &lt; Dog' },
         { input: 'Dog > Cat', expected: 'Dog &gt; Cat' },
         { input: 'Say "Hello"', expected: 'Say &quot;Hello&quot;' },
-        { input: 'Don\'t worry', expected: 'Don&#x27;t worry' },
+        { input: "Don't worry", expected: 'Don&#x27;t worry' },
       ];
 
       specialInputs.forEach(test => {

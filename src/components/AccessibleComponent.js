@@ -195,9 +195,11 @@ export class AccessibleComponent extends BaseComponent {
     switch (e.key) {
       case 'Enter':
       case ' ': // Space
-        if (this.isActivatable()) {
+        // Activate the focused element (event target) when it is activatable,
+        // falling back to the component element itself
+        if (this.isActivatable(e.target)) {
           e.preventDefault();
-          this.activate();
+          this.activate(e.target);
         }
         break;
 
@@ -285,6 +287,11 @@ export class AccessibleComponent extends BaseComponent {
   setupRovingTabindex() {
     const items = this.getNavigableItems();
     if (items.length <= 1) return;
+
+    // Roving tabindex implies arrow-key navigation per the WAI-ARIA APG, so make
+    // sure the keydown handler is attached even when this method is called directly.
+    // addEventListener is idempotent for the same bound handler reference.
+    this.element.addEventListener('keydown', this.handleAccessibleKeydown);
 
     // Initialize roving tabindex
     items.forEach((item, index) => {
@@ -416,9 +423,17 @@ export class AccessibleComponent extends BaseComponent {
     const lists = this.element.querySelectorAll('ul, ol');
 
     lists.forEach(list => {
-      // If list has no list-style, add role="list" to ensure screen reader recognition
+      // If list has no list-style, add role="list" to ensure screen reader recognition.
+      // Check inline styles as well as computed styles so the detection still works
+      // in environments where getComputedStyle is unavailable or stubbed.
       const style = window.getComputedStyle(list);
-      if (style.listStyle === 'none' || style.listStyleType === 'none') {
+      const inline = list.style;
+      if (
+        style.listStyle === 'none' ||
+        style.listStyleType === 'none' ||
+        inline.listStyle === 'none' ||
+        inline.listStyleType === 'none'
+      ) {
         list.setAttribute('role', 'list');
 
         const items = list.querySelectorAll('li');
@@ -576,10 +591,11 @@ export class AccessibleComponent extends BaseComponent {
     );
   }
 
-  isActivatable() {
+  isActivatable(target) {
+    const element = target && target.getAttribute ? target : this.element;
     return (
-      this.element.hasAttribute('role') &&
-      ['button', 'link', 'menuitem', 'tab'].includes(this.element.getAttribute('role'))
+      element.hasAttribute('role') &&
+      ['button', 'link', 'menuitem', 'tab'].includes(element.getAttribute('role'))
     );
   }
 
@@ -594,7 +610,18 @@ export class AccessibleComponent extends BaseComponent {
   }
 
   hasDirectionalNavigation() {
-    const directionalRoles = ['tablist', 'menubar', 'toolbar', 'grid'];
+    // Composite widget roles that use arrow-key navigation per the WAI-ARIA APG
+    const directionalRoles = [
+      'tablist',
+      'menubar',
+      'toolbar',
+      'grid',
+      'menu',
+      'listbox',
+      'radiogroup',
+      'tree',
+      'treegrid',
+    ];
     return (
       directionalRoles.includes(this.element.getAttribute('role')) ||
       this.element.classList.contains('directional-nav')
@@ -602,7 +629,18 @@ export class AccessibleComponent extends BaseComponent {
   }
 
   hasListNavigation() {
-    const listRoles = ['listbox', 'menu', 'tablist', 'grid'];
+    // Roles where Home/End move focus to the first/last item per the WAI-ARIA APG
+    const listRoles = [
+      'listbox',
+      'menu',
+      'menubar',
+      'tablist',
+      'grid',
+      'toolbar',
+      'radiogroup',
+      'tree',
+      'treegrid',
+    ];
     return (
       listRoles.includes(this.element.getAttribute('role')) ||
       this.element.tagName.toLowerCase() === 'ul' ||
@@ -621,7 +659,15 @@ export class AccessibleComponent extends BaseComponent {
       '[role="button"]:not([aria-disabled="true"])',
       '[role="link"]:not([aria-disabled="true"])',
       '[role="menuitem"]:not([aria-disabled="true"])',
+      '[role="menuitemcheckbox"]:not([aria-disabled="true"])',
+      '[role="menuitemradio"]:not([aria-disabled="true"])',
       '[role="tab"]:not([aria-disabled="true"])',
+      '[role="option"]:not([aria-disabled="true"])',
+      '[role="radio"]:not([aria-disabled="true"])',
+      '[role="treeitem"]:not([aria-disabled="true"])',
+      '[role="gridcell"]:not([aria-disabled="true"])',
+      '[role="columnheader"]:not([aria-disabled="true"])',
+      '[role="rowheader"]:not([aria-disabled="true"])',
     ].join(', ');
 
     return Array.from(this.element.querySelectorAll(selectors));

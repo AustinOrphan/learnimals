@@ -5,11 +5,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+/* global FocusEvent */
+import '../../src/components/AccessibleComponent.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -137,9 +135,10 @@ describe('Form Accessibility Tests', () => {
       expect(submitButton.getAttribute('aria-label')).toBe('Submit search');
       expect(usernameInput.getAttribute('aria-labelledby')).toBe('username-label');
 
-      expect(accessibilityTester.hasLabel(searchInput)).toBe(true);
-      expect(accessibilityTester.hasLabel(submitButton)).toBe(false); // buttons need accessible name differently
-      expect(accessibilityTester.hasLabel(usernameInput)).toBe(true);
+      // hasLabel returns the label source (truthy); aria-label counts for any control
+      expect(accessibilityTester.hasLabel(searchInput)).toBeTruthy();
+      expect(accessibilityTester.hasLabel(submitButton)).toBeTruthy();
+      expect(accessibilityTester.hasLabel(usernameInput)).toBeTruthy();
     });
 
     it('should group related form controls with fieldset and legend', () => {
@@ -381,7 +380,7 @@ describe('Form Accessibility Tests', () => {
       expect(accessibleForm.form).toBe(form);
 
       // Test form validation
-      const requiredInput = form.querySelector('#required-field');
+      form.querySelector('#required-field');
       const emailInput = form.querySelector('#email-field');
 
       // Set invalid email
@@ -410,7 +409,7 @@ describe('Form Accessibility Tests', () => {
         </form>
       `;
 
-      const form = testContainer.querySelector('#submission-form');
+      testContainer.querySelector('#submission-form');
       const statusDiv = testContainer.querySelector('#form-status');
 
       // Simulate successful submission
@@ -664,7 +663,7 @@ describe('Form Accessibility Tests', () => {
         </form>
       `;
 
-      const form = testContainer.querySelector('#async-form');
+      testContainer.querySelector('#async-form');
       const submitButton = testContainer.querySelector('#submit-btn');
       const buttonText = testContainer.querySelector('.btn-text');
       const spinner = testContainer.querySelector('.spinner');
@@ -804,7 +803,7 @@ describe('Form Accessibility Tests', () => {
 
       const saveStatus = testContainer.querySelector('#save-status');
       const titleInput = testContainer.querySelector('#draft-title');
-      const contentTextarea = testContainer.querySelector('#draft-content');
+      testContainer.querySelector('#draft-content');
       const saveButton = testContainer.querySelector('#save-draft');
       const savedIcon = testContainer.querySelector('.saved-icon');
       const savingIcon = testContainer.querySelector('.saving-icon');

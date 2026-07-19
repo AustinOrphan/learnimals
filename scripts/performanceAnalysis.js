@@ -19,10 +19,11 @@ class PerformanceAnalyzer {
   constructor(options = {}) {
     this.options = {
       projectRoot: options.projectRoot || path.join(__dirname, '..'),
-      outputPath: options.outputPath || path.join(__dirname, '..', 'docs', 'PERFORMANCE_ANALYSIS.md'),
+      outputPath:
+        options.outputPath || path.join(__dirname, '..', 'docs', 'PERFORMANCE_ANALYSIS.md'),
       verbose: options.verbose || false,
       includeDetails: options.includeDetails !== false,
-      ...options
+      ...options,
     };
 
     this.analysis = {
@@ -31,7 +32,7 @@ class PerformanceAnalyzer {
       moduleAnalysis: {},
       performanceMetrics: {},
       optimizationOpportunities: [],
-      comparison: {}
+      comparison: {},
     };
   }
 
@@ -40,18 +41,18 @@ class PerformanceAnalyzer {
    */
   async analyzePerformance() {
     console.log('🔍 Starting performance analysis...');
-    
+
     await this.analyzeBundleSize();
     await this.analyzeModuleStructure();
     await this.analyzeLoadingPerformance();
     await this.identifyOptimizationOpportunities();
     await this.compareBeforeAfter();
-    
+
     console.log('📝 Writing performance report...');
     const reportContent = await this.buildPerformanceReport();
-    
+
     await this.writeReport(reportContent);
-    
+
     console.log(`✅ Performance analysis complete: ${this.options.outputPath}`);
     return this.analysis;
   }
@@ -61,10 +62,10 @@ class PerformanceAnalyzer {
    */
   async analyzeBundleSize() {
     const srcPath = path.join(this.options.projectRoot, 'src');
-    
+
     // Analyze file sizes
     const fileStats = await this.getDirectoryStats(srcPath);
-    
+
     this.analysis.bundleAnalysis = {
       totalFiles: fileStats.totalFiles,
       totalSize: fileStats.totalSize,
@@ -74,9 +75,9 @@ class PerformanceAnalyzer {
       moduleTypes: {
         es6Modules: await this.countES6Modules(),
         legacyPatterns: 0, // Should be 0 after migration
-        newComponents: await this.countNewComponents()
+        newComponents: await this.countNewComponents(),
       },
-      treeshakingPotential: await this.estimateTreeShakingBenefit()
+      treeshakingPotential: await this.estimateTreeShakingBenefit(),
     };
   }
 
@@ -88,40 +89,39 @@ class PerformanceAnalyzer {
       totalFiles: 0,
       totalSize: 0,
       directories: {},
-      largestFiles: []
+      largestFiles: [],
     };
 
     try {
       const entries = await fs.readdir(dirPath, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dirPath, entry.name);
-        
+
         if (entry.isDirectory()) {
           const subStats = await this.getDirectoryStats(fullPath);
           stats.totalFiles += subStats.totalFiles;
           stats.totalSize += subStats.totalSize;
           stats.directories[entry.name] = {
             files: subStats.totalFiles,
-            size: subStats.totalSize
+            size: subStats.totalSize,
           };
         } else if (entry.isFile() && entry.name.endsWith('.js')) {
           const fileStat = await fs.stat(fullPath);
           stats.totalFiles++;
           stats.totalSize += fileStat.size;
-          
+
           // Track largest files
           stats.largestFiles.push({
             path: path.relative(this.options.projectRoot, fullPath),
-            size: fileStat.size
+            size: fileStat.size,
           });
         }
       }
-      
+
       // Sort and limit largest files
       stats.largestFiles.sort((a, b) => b.size - a.size);
       stats.largestFiles = stats.largestFiles.slice(0, 10);
-      
     } catch (error) {
       if (this.options.verbose) {
         console.warn(`Could not analyze directory ${dirPath}:`, error.message);
@@ -147,7 +147,7 @@ class PerformanceAnalyzer {
       'src/utils/ModuleRegistry.js',
       'src/components/EnhancedBaseComponent.js',
       'src/utils/ModularThemeManager.js',
-      'src/utils/ModularGameLoader.js'
+      'src/utils/ModularGameLoader.js',
     ];
 
     let count = 0;
@@ -167,13 +167,13 @@ class PerformanceAnalyzer {
    */
   async countFilesWithPattern(dirPath, pattern) {
     let count = 0;
-    
+
     try {
       const entries = await fs.readdir(dirPath, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dirPath, entry.name);
-        
+
         if (entry.isDirectory()) {
           count += await this.countFilesWithPattern(fullPath, pattern);
         } else if (entry.isFile() && entry.name.endsWith('.js')) {
@@ -202,19 +202,19 @@ class PerformanceAnalyzer {
       beforeMigration: {
         mixedPatterns: 12, // Files that had mixed patterns
         globalAssignments: 8,
-        estimatedDeadCode: '15-20%'
+        estimatedDeadCode: '15-20%',
       },
       afterMigration: {
         cleanES6Modules: await this.countES6Modules(),
         treeShakingEnabled: true,
-        estimatedReduction: '22%'
+        estimatedReduction: '22%',
       },
       benefits: [
         'Unused exports can be eliminated',
         'Dead code removal during bundling',
         'Smaller production bundles',
-        'Faster loading times'
-      ]
+        'Faster loading times',
+      ],
     };
 
     return analysis;
@@ -229,7 +229,7 @@ class PerformanceAnalyzer {
       componentHierarchy: await this.analyzeComponentHierarchy(),
       dependencyGraph: await this.analyzeDependencies(),
       circularDependencies: 'None detected (registry prevents them)',
-      moduleTypes: await this.categorizeModules()
+      moduleTypes: await this.categorizeModules(),
     };
   }
 
@@ -244,19 +244,19 @@ class PerformanceAnalyzer {
         'Dependency injection system',
         'Circular dependency detection',
         'Runtime type validation',
-        'Performance monitoring'
+        'Performance monitoring',
       ],
       performanceCharacteristics: {
         registration: 'O(1) - constant time',
         lookup: 'O(1) - Map-based lookup',
         dependencyResolution: 'O(n) - where n is dependency depth',
-        memoryUsage: 'Minimal - stores references only'
+        memoryUsage: 'Minimal - stores references only',
       },
       scalability: {
         components: 'Scales to 1000+ components',
         memoryOverhead: '<1KB per component',
-        lookupTime: '<1ms for any component'
-      }
+        lookupTime: '<1ms for any component',
+      },
     };
   }
 
@@ -265,20 +265,17 @@ class PerformanceAnalyzer {
    */
   async analyzeComponentHierarchy() {
     return {
-      baseComponents: [
-        'BaseComponent.js',
-        'EnhancedBaseComponent.js'
-      ],
+      baseComponents: ['BaseComponent.js', 'EnhancedBaseComponent.js'],
       uiComponents: await this.countComponentsInDir('src/components/ui'),
       formComponents: await this.countComponentsInDir('src/components/forms'),
       gameComponents: await this.countComponentsInDir('src/features/games'),
       utilityComponents: await this.countComponentsInDir('src/utils'),
-      
+
       hierarchy: {
         depth: 'Maximum 3 levels deep',
         complexity: 'Low - clean inheritance',
-        coupling: 'Loose - registry-mediated'
-      }
+        coupling: 'Loose - registry-mediated',
+      },
     };
   }
 
@@ -302,20 +299,20 @@ class PerformanceAnalyzer {
     return {
       coreModules: [
         'ModuleRegistry',
-        'ComponentLoader', 
+        'ComponentLoader',
         'ModularGameLoader',
-        'ModularThemeManager'
+        'ModularThemeManager',
       ],
       dependencyTypes: {
         internal: 'Project modules and components',
         external: 'Third-party libraries (minimal)',
-        circular: 'None (prevented by registry)'
+        circular: 'None (prevented by registry)',
       },
       loadingStrategy: {
         synchronous: 'Core system components',
         asynchronous: 'Game components and themes',
-        lazy: 'Subject-specific modules'
-      }
+        lazy: 'Subject-specific modules',
+      },
     };
   }
 
@@ -329,7 +326,7 @@ class PerformanceAnalyzer {
       utilities: 'htmlEscape, ThemeManager, logger',
       games: 'BubblePop, WordScramble components',
       subjects: 'Math, Science, Reading handlers',
-      tests: 'Unit tests, integration tests, e2e tests'
+      tests: 'Unit tests, integration tests, e2e tests',
     };
   }
 
@@ -342,29 +339,29 @@ class PerformanceAnalyzer {
         registryInitialization: '<5ms',
         componentRegistration: '<1ms per component',
         dynamicImports: '10-50ms depending on size',
-        gameLoading: '20-100ms with caching'
+        gameLoading: '20-100ms with caching',
       },
-      
+
       memoryUsage: {
         registryOverhead: '<10KB',
         componentCaching: 'Configurable (default: enabled)',
         gameInstances: 'Cleaned up automatically',
-        totalFootprint: 'Reduced ~15% vs mixed patterns'
+        totalFootprint: 'Reduced ~15% vs mixed patterns',
       },
-      
+
       networkOptimization: {
         bundleSplitting: 'Enabled via ES6 modules',
         treeshaking: 'Enabled for production builds',
         compression: 'Standard gzip/brotli compatible',
-        caching: 'Browser and CDN friendly'
+        caching: 'Browser and CDN friendly',
       },
 
       runtimePerformance: {
         componentResolution: 'O(1) lookup time',
         dependencyInjection: 'Lazy evaluation',
         circularDependencyCheck: 'Compile-time prevention',
-        errorHandling: 'Graceful degradation'
-      }
+        errorHandling: 'Graceful degradation',
+      },
     };
   }
 
@@ -380,23 +377,23 @@ class PerformanceAnalyzer {
           'Enable tree-shaking in build process',
           'Use dynamic imports for game components',
           'Implement code splitting for subject modules',
-          'Optimize image and asset loading'
+          'Optimize image and asset loading',
         ],
-        estimatedImpact: '20-30% bundle size reduction'
+        estimatedImpact: '20-30% bundle size reduction',
       },
-      
+
       {
         category: 'Loading Performance',
-        priority: 'High', 
+        priority: 'High',
         opportunities: [
           'Preload critical components',
           'Implement service worker caching',
           'Use module preloading hints',
-          'Optimize font loading strategy'
+          'Optimize font loading strategy',
         ],
-        estimatedImpact: '15-25% faster initial load'
+        estimatedImpact: '15-25% faster initial load',
       },
-      
+
       {
         category: 'Runtime Performance',
         priority: 'Medium',
@@ -404,11 +401,11 @@ class PerformanceAnalyzer {
           'Component instance pooling for games',
           'Optimize theme switching transitions',
           'Implement virtual scrolling for large lists',
-          'Use requestIdleCallback for non-critical tasks'
+          'Use requestIdleCallback for non-critical tasks',
         ],
-        estimatedImpact: '10-20% runtime performance improvement'
+        estimatedImpact: '10-20% runtime performance improvement',
       },
-      
+
       {
         category: 'Memory Optimization',
         priority: 'Medium',
@@ -416,11 +413,11 @@ class PerformanceAnalyzer {
           'Implement component cleanup in registry',
           'Use WeakMap for temporary references',
           'Optimize game asset disposal',
-          'Implement memory pressure monitoring'
+          'Implement memory pressure monitoring',
         ],
-        estimatedImpact: '10-15% memory usage reduction'
+        estimatedImpact: '10-15% memory usage reduction',
       },
-      
+
       {
         category: 'Developer Experience',
         priority: 'Low',
@@ -428,10 +425,10 @@ class PerformanceAnalyzer {
           'Add performance monitoring dashboard',
           'Implement bundle analysis in CI',
           'Create performance regression tests',
-          'Add load time budgets'
+          'Add load time budgets',
         ],
-        estimatedImpact: 'Better visibility and prevention of regressions'
-      }
+        estimatedImpact: 'Better visibility and prevention of regressions',
+      },
     ];
   }
 
@@ -448,10 +445,10 @@ class PerformanceAnalyzer {
           'Eliminated mixed module patterns',
           'Enabled tree-shaking',
           'Removed global namespace pollution',
-          'Cleaner dependency graph'
-        ]
+          'Cleaner dependency graph',
+        ],
       },
-      
+
       loadTime: {
         before: 'Slower due to mixed patterns and global assignments',
         after: 'Faster with clean ES6 imports and registry system',
@@ -460,10 +457,10 @@ class PerformanceAnalyzer {
           'O(1) component lookup',
           'Eliminated circular dependencies',
           'Optimized import statements',
-          'Better browser caching'
-        ]
+          'Better browser caching',
+        ],
       },
-      
+
       maintainability: {
         before: 'Mixed patterns made code harder to follow',
         after: 'Consistent ES6 patterns throughout',
@@ -472,10 +469,10 @@ class PerformanceAnalyzer {
           'Standardized module patterns',
           'Clear dependency injection',
           'Better tooling support',
-          'Enhanced debugging'
-        ]
+          'Enhanced debugging',
+        ],
       },
-      
+
       scalability: {
         before: 'Global namespace collisions limited growth',
         after: 'Registry system supports unlimited components',
@@ -484,9 +481,9 @@ class PerformanceAnalyzer {
           'No namespace collisions',
           'Modular architecture',
           'Clean separation of concerns',
-          'Lazy loading support'
-        ]
-      }
+          'Lazy loading support',
+        ],
+      },
     };
   }
 
@@ -495,7 +492,7 @@ class PerformanceAnalyzer {
    */
   async buildPerformanceReport() {
     const data = this.analysis;
-    
+
     return `# Learnimals Performance Analysis Report
 
 Generated on: ${new Date(data.timestamp).toLocaleString()}
@@ -523,13 +520,15 @@ This report analyzes the performance impact of the Learnimals modularization mig
 
 ### Size by Directory
 
-${Object.entries(data.bundleAnalysis.directories || {}).map(([dir, stats]) => 
-    `- **${dir}**: ${stats.files} files, ${Math.round(stats.size / 1024)} KB`).join('\n')}
+${Object.entries(data.bundleAnalysis.directories || {})
+  .map(([dir, stats]) => `- **${dir}**: ${stats.files} files, ${Math.round(stats.size / 1024)} KB`)
+  .join('\n')}
 
 ### Largest Files
 
-${data.bundleAnalysis.largestFiles?.map((file, index) => 
-    `${index + 1}. ${file.path} - ${Math.round(file.size / 1024)} KB`).join('\n')}
+${data.bundleAnalysis.largestFiles
+  ?.map((file, index) => `${index + 1}. ${file.path} - ${Math.round(file.size / 1024)} KB`)
+  .join('\n')}
 
 ### Tree-Shaking Analysis
 
@@ -547,13 +546,15 @@ ${data.bundleAnalysis.largestFiles?.map((file, index) =>
 
 ### Registry System Performance
 
-${Object.entries(data.moduleAnalysis.registrySystem?.performanceCharacteristics || {}).map(([metric, value]) => 
-    `- **${metric}**: ${value}`).join('\n')}
+${Object.entries(data.moduleAnalysis.registrySystem?.performanceCharacteristics || {})
+  .map(([metric, value]) => `- **${metric}**: ${value}`)
+  .join('\n')}
 
 ### Scalability Metrics
 
-${Object.entries(data.moduleAnalysis.registrySystem?.scalability || {}).map(([metric, value]) => 
-    `- **${metric}**: ${value}`).join('\n')}
+${Object.entries(data.moduleAnalysis.registrySystem?.scalability || {})
+  .map(([metric, value]) => `- **${metric}**: ${value}`)
+  .join('\n')}
 
 ### Component Distribution
 
@@ -566,18 +567,21 @@ ${Object.entries(data.moduleAnalysis.registrySystem?.scalability || {}).map(([me
 
 ### Module Loading Performance
 
-${Object.entries(data.performanceMetrics.moduleLoading || {}).map(([metric, value]) => 
-    `- **${metric}**: ${value}`).join('\n')}
+${Object.entries(data.performanceMetrics.moduleLoading || {})
+  .map(([metric, value]) => `- **${metric}**: ${value}`)
+  .join('\n')}
 
 ### Memory Usage
 
-${Object.entries(data.performanceMetrics.memoryUsage || {}).map(([metric, value]) => 
-    `- **${metric}**: ${value}`).join('\n')}
+${Object.entries(data.performanceMetrics.memoryUsage || {})
+  .map(([metric, value]) => `- **${metric}**: ${value}`)
+  .join('\n')}
 
 ### Runtime Performance
 
-${Object.entries(data.performanceMetrics.runtimePerformance || {}).map(([metric, value]) => 
-    `- **${metric}**: ${value}`).join('\n')}
+${Object.entries(data.performanceMetrics.runtimePerformance || {})
+  .map(([metric, value]) => `- **${metric}**: ${value}`)
+  .join('\n')}
 
 ## Before vs After Comparison
 
@@ -607,14 +611,18 @@ ${data.comparison.loadTime.factors?.map(factor => `- ${factor}`).join('\n')}
 
 ## Optimization Opportunities
 
-${data.optimizationOpportunities.map(opp => `
+${data.optimizationOpportunities
+  .map(
+    opp => `
 ### ${opp.category} (Priority: ${opp.priority})
 
 **Estimated Impact**: ${opp.estimatedImpact}
 
 **Opportunities:**
 ${opp.opportunities.map(item => `- ${item}`).join('\n')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Performance Recommendations
 
@@ -685,7 +693,7 @@ The new architecture provides a solid foundation for future performance optimiza
    */
   async writeReport(content) {
     const outputDir = path.dirname(this.options.outputPath);
-    
+
     try {
       await fs.mkdir(outputDir, { recursive: true });
       await fs.writeFile(this.options.outputPath, content, 'utf8');
@@ -702,9 +710,9 @@ The new architecture provides a solid foundation for future performance optimiza
 async function main() {
   const analyzer = new PerformanceAnalyzer({
     verbose: process.argv.includes('--verbose'),
-    includeDetails: !process.argv.includes('--no-details')
+    includeDetails: !process.argv.includes('--no-details'),
   });
-  
+
   try {
     await analyzer.analyzePerformance();
     process.exit(0);
@@ -715,7 +723,10 @@ async function main() {
 }
 
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}` || process.argv[1].endsWith('performanceAnalysis.js')) {
+if (
+  import.meta.url === `file://${process.argv[1]}` ||
+  process.argv[1].endsWith('performanceAnalysis.js')
+) {
   main();
 }
 

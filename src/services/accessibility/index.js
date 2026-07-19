@@ -19,18 +19,18 @@ if (document.readyState === 'loading') {
 async function initializeAccessibility() {
   try {
     await accessibilityService.initialize();
-    
+
     // Add accessibility styles to page
     addAccessibilityStyles();
-    
+
     // Set up global accessibility shortcuts
     setupGlobalShortcuts();
-    
+
     // Run initial accessibility audit in development
     if (isDevelopment()) {
       setTimeout(() => runAccessibilityAudit(), 2000);
     }
-    
+
     console.log('✅ Accessibility services initialized');
   } catch (error) {
     console.error('❌ Failed to initialize accessibility services:', error);
@@ -52,7 +52,7 @@ function addAccessibilityStyles() {
   link.onerror = () => {
     console.warn('Could not load accessibility.css - styles may not be available');
   };
-  
+
   document.head.appendChild(link);
 }
 
@@ -60,25 +60,25 @@ function addAccessibilityStyles() {
  * Set up global accessibility shortcuts
  */
 function setupGlobalShortcuts() {
-  document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', e => {
     // Alt + A: Toggle accessibility panel
     if (e.altKey && e.key === 'a') {
       e.preventDefault();
       toggleAccessibilityPanel();
     }
-    
+
     // Alt + T: Run accessibility test
     if (e.altKey && e.key === 't') {
       e.preventDefault();
       runAccessibilityAudit();
     }
-    
+
     // Alt + M: Toggle reduced motion
     if (e.altKey && e.key === 'm') {
       e.preventDefault();
       toggleReducedMotion();
     }
-    
+
     // Alt + C: Toggle high contrast
     if (e.altKey && e.key === 'c') {
       e.preventDefault();
@@ -92,15 +92,15 @@ function setupGlobalShortcuts() {
  */
 function toggleAccessibilityPanel() {
   let panel = document.getElementById('accessibility-panel');
-  
+
   if (!panel) {
     panel = createAccessibilityPanel();
     document.body.appendChild(panel);
   }
-  
+
   const isVisible = panel.style.display !== 'none';
   panel.style.display = isVisible ? 'none' : 'block';
-  
+
   if (!isVisible) {
     panel.querySelector('button').focus();
     accessibilityService.announce('Accessibility panel opened', 'polite');
@@ -119,9 +119,9 @@ function createAccessibilityPanel() {
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-labelledby', 'accessibility-panel-title');
   panel.setAttribute('aria-modal', 'false');
-  
+
   const preferences = accessibilityService.getPreferences();
-  
+
   panel.innerHTML = `
     <div class="accessibility-panel-content">
       <div class="accessibility-panel-header">
@@ -171,10 +171,10 @@ function createAccessibilityPanel() {
       </div>
     </div>
   `;
-  
+
   // Add event listeners
   setupPanelEventListeners(panel);
-  
+
   return panel;
 }
 
@@ -186,31 +186,31 @@ function setupPanelEventListeners(panel) {
   panel.querySelector('.accessibility-panel-close').addEventListener('click', () => {
     panel.style.display = 'none';
   });
-  
+
   // Preference checkboxes
   const checkboxes = panel.querySelectorAll('input[type="checkbox"]');
   checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', (e) => {
+    checkbox.addEventListener('change', e => {
       const preference = e.target.id.replace('-', '');
       const camelCase = preference.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
       accessibilityService.updatePreference(camelCase, e.target.checked);
     });
   });
-  
+
   // Test accessibility button
   panel.querySelector('#test-accessibility').addEventListener('click', () => {
     runAccessibilityAudit();
   });
-  
+
   // Save preferences button
   panel.querySelector('#save-preferences').addEventListener('click', () => {
     accessibilityService.savePreferences();
     accessibilityService.announce('Accessibility preferences saved', 'polite');
     panel.style.display = 'none';
   });
-  
+
   // Keyboard navigation
-  panel.addEventListener('keydown', (e) => {
+  panel.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       panel.style.display = 'none';
     }
@@ -234,7 +234,10 @@ function toggleHighContrast() {
   const preferences = accessibilityService.getPreferences();
   const newValue = !preferences.highContrast;
   accessibilityService.updatePreference('highContrast', newValue);
-  accessibilityService.announce(`High contrast mode ${newValue ? 'enabled' : 'disabled'}`, 'polite');
+  accessibilityService.announce(
+    `High contrast mode ${newValue ? 'enabled' : 'disabled'}`,
+    'polite'
+  );
 }
 
 /**
@@ -242,11 +245,11 @@ function toggleHighContrast() {
  */
 async function runAccessibilityAudit() {
   accessibilityService.announce('Running accessibility audit...', 'polite');
-  
+
   try {
     const report = await accessibilityTester.runAudit();
     displayAuditResults(report);
-    
+
     // Also run axe-core if available
     const axeResults = await accessibilityTester.runAxe();
     if (axeResults) {
@@ -266,15 +269,15 @@ function displayAuditResults(report) {
   if (existingResults) {
     existingResults.remove();
   }
-  
+
   const resultsPanel = document.createElement('div');
   resultsPanel.id = 'accessibility-results';
   resultsPanel.className = 'accessibility-results-panel';
   resultsPanel.setAttribute('role', 'dialog');
   resultsPanel.setAttribute('aria-labelledby', 'audit-results-title');
-  
+
   const scoreColor = report.score >= 80 ? 'green' : report.score >= 60 ? 'orange' : 'red';
-  
+
   resultsPanel.innerHTML = `
     <div class="results-panel-content">
       <div class="results-panel-header">
@@ -306,29 +309,45 @@ function displayAuditResults(report) {
         </div>
       </div>
       
-      ${report.violations.length > 0 ? `
+      ${
+        report.violations.length > 0
+          ? `
         <div class="results-section">
           <h3>Issues Found</h3>
           <ul class="issues-list">
-            ${report.violations.map(violation => `
+            ${report.violations
+              .map(
+                violation => `
               <li class="issue-item violation">
                 <strong>${violation.test}:</strong> ${violation.error}
               </li>
-            `).join('')}
+            `
+              )
+              .join('')}
           </ul>
         </div>
-      ` : ''}
+      `
+          : ''
+      }
       
-      ${report.warnings.length > 0 ? `
+      ${
+        report.warnings.length > 0
+          ? `
         <div class="results-section">
           <h3>Warnings</h3>
           <ul class="issues-list">
-            ${report.warnings.map(warning => `
+            ${report.warnings
+              .map(
+                warning => `
               <li class="issue-item warning">${warning}</li>
-            `).join('')}
+            `
+              )
+              .join('')}
           </ul>
         </div>
-      ` : ''}
+      `
+          : ''
+      }
       
       <div class="results-actions">
         <button class="btn btn-secondary" id="export-results">Export Report</button>
@@ -336,39 +355,44 @@ function displayAuditResults(report) {
       </div>
     </div>
   `;
-  
+
   // Add event listeners
   resultsPanel.querySelector('.results-panel-close').addEventListener('click', () => {
     resultsPanel.remove();
   });
-  
+
   resultsPanel.querySelector('#close-results').addEventListener('click', () => {
     resultsPanel.remove();
   });
-  
+
   resultsPanel.querySelector('#export-results').addEventListener('click', () => {
     accessibilityTester.exportReport(report);
   });
-  
-  resultsPanel.addEventListener('keydown', (e) => {
+
+  resultsPanel.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       resultsPanel.remove();
     }
   });
-  
+
   document.body.appendChild(resultsPanel);
   resultsPanel.querySelector('#close-results').focus();
-  
-  accessibilityService.announce(`Accessibility audit complete. Score: ${report.score} out of 100`, 'polite');
+
+  accessibilityService.announce(
+    `Accessibility audit complete. Score: ${report.score} out of 100`,
+    'polite'
+  );
 }
 
 /**
  * Check if running in development mode
  */
 function isDevelopment() {
-  return window.location.hostname === 'localhost' || 
-         window.location.hostname === '127.0.0.1' ||
-         window.location.hostname.includes('dev');
+  return (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.includes('dev')
+  );
 }
 
 /**
@@ -380,7 +404,7 @@ window.Accessibility = {
   togglePanel: toggleAccessibilityPanel,
   runAudit: runAccessibilityAudit,
   toggleReducedMotion,
-  toggleHighContrast
+  toggleHighContrast,
 };
 
 // Export for module usage
@@ -390,5 +414,5 @@ export {
   toggleAccessibilityPanel,
   runAccessibilityAudit,
   toggleReducedMotion,
-  toggleHighContrast
+  toggleHighContrast,
 };

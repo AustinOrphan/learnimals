@@ -87,7 +87,7 @@ export const elementDatabase = {
         'Magnetic metal',
         'Rusts when exposed to air and water',
         'Strong and durable',
-        'Fourth most abundant element in Earth\'s crust',
+        "Fourth most abundant element in Earth's crust",
       ],
       uses: [
         'Making steel for buildings',
@@ -117,7 +117,7 @@ export const elementDatabase = {
       ],
       funFacts: [
         'All the gold ever mined could fit in a swimming pool!',
-        'Gold doesn\'t rust, even after thousands of years',
+        "Gold doesn't rust, even after thousands of years",
       ],
     },
     {
@@ -154,7 +154,7 @@ export const elementDatabase = {
       type: 'nonmetal',
       color: '#9B59B6', // Purple for nitrogen
       properties: [
-        'Makes up 78% of Earth\'s atmosphere',
+        "Makes up 78% of Earth's atmosphere",
         'Colorless and odorless gas',
         'Relatively unreactive',
         'Essential for proteins and DNA',
@@ -203,7 +203,7 @@ export const elementDatabase = {
         'Lightweight and strong',
         'Does not rust',
         'Good conductor of heat',
-        'Most abundant metal in Earth\'s crust',
+        "Most abundant metal in Earth's crust",
       ],
       uses: ['Soda cans and foil', 'Airplane parts', 'Kitchen cookware', 'Building materials'],
       funFacts: [
@@ -271,14 +271,14 @@ export const elementDatabase = {
  */
 export function getElementsForDifficulty(difficulty) {
   switch (difficulty) {
-  case 'easy':
-    return [...elementDatabase.easy];
-  case 'medium':
-    return [...elementDatabase.easy, ...elementDatabase.medium];
-  case 'hard':
-    return [...elementDatabase.easy, ...elementDatabase.medium, ...elementDatabase.hard];
-  default:
-    return [...elementDatabase.easy];
+    case 'easy':
+      return [...elementDatabase.easy];
+    case 'medium':
+      return [...elementDatabase.easy, ...elementDatabase.medium];
+    case 'hard':
+      return [...elementDatabase.easy, ...elementDatabase.medium, ...elementDatabase.hard];
+    default:
+      return [...elementDatabase.easy];
   }
 }
 

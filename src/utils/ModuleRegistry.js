@@ -14,7 +14,7 @@ class ModuleRegistry {
     this.options = {
       strictMode: options.strictMode !== false,
       debugMode: options.debugMode || false,
-      ...options
+      ...options,
     };
 
     // Core storage for registered modules
@@ -33,7 +33,7 @@ class ModuleRegistry {
       component: new Set(),
       game: new Set(),
       theme: new Set(),
-      utility: new Set()
+      utility: new Set(),
     };
   }
 
@@ -54,12 +54,16 @@ class ModuleRegistry {
    */
   register(name, module, options = {}) {
     if (!name || typeof name !== 'string') {
-      console.warn('[ModuleRegistry] Registration rejected: module name must be a non-empty string');
+      console.warn(
+        '[ModuleRegistry] Registration rejected: module name must be a non-empty string'
+      );
       return false;
     }
 
     if (!module) {
-      console.warn(`[ModuleRegistry] Registration rejected for '${name}': module cannot be null or undefined`);
+      console.warn(
+        `[ModuleRegistry] Registration rejected for '${name}': module cannot be null or undefined`
+      );
       return false;
     }
 
@@ -67,7 +71,9 @@ class ModuleRegistry {
     const isDuplicate = this.modules.has(name);
     if (isDuplicate) {
       if (this.options.strictMode) {
-        console.warn(`[ModuleRegistry] Registration rejected: module '${name}' is already registered`);
+        console.warn(
+          `[ModuleRegistry] Registration rejected: module '${name}' is already registered`
+        );
         return false;
       }
       this.log(`Warning: Overwriting existing module '${name}'`);
@@ -93,7 +99,7 @@ class ModuleRegistry {
       dependencies: options.dependencies || [],
       version: options.version || '1.0.0',
       metadata: options.metadata || {},
-      registeredAt: new Date().toISOString()
+      registeredAt: new Date().toISOString(),
     };
 
     // Missing dependencies are surfaced by resolveDependencies()/validate();
@@ -128,7 +134,7 @@ class ModuleRegistry {
       name,
       module,
       options: { ...options, type: moduleDefinition.type },
-      definition: moduleDefinition
+      definition: moduleDefinition,
     });
 
     return true;
@@ -183,7 +189,7 @@ class ModuleRegistry {
         resolved: false,
         missingDependencies: [name],
         circularDependency: false,
-        resolvedDependencies: {}
+        resolvedDependencies: {},
       };
     }
 
@@ -194,7 +200,7 @@ class ModuleRegistry {
         resolved: false,
         missingDependencies: [],
         circularDependency: true,
-        resolvedDependencies: {}
+        resolvedDependencies: {},
       };
     }
 
@@ -227,7 +233,7 @@ class ModuleRegistry {
         resolved: missingDependencies.length === 0 && !circularDependency,
         missingDependencies,
         circularDependency,
-        resolvedDependencies
+        resolvedDependencies,
       };
     } finally {
       this.resolutionStack.delete(name);
@@ -257,7 +263,7 @@ class ModuleRegistry {
         name: mod.name,
         type: mod.type,
         version: mod.version,
-        dependencies: mod.dependencies
+        dependencies: mod.dependencies,
       }));
     }
   }
@@ -277,7 +283,9 @@ class ModuleRegistry {
     // Check if other modules depend on this one
     const dependents = this.findDependents(name);
     if (dependents.length > 0 && this.options.strictMode) {
-      throw new Error(`Cannot unregister '${name}': modules depend on it: ${dependents.join(', ')}`);
+      throw new Error(
+        `Cannot unregister '${name}': modules depend on it: ${dependents.join(', ')}`
+      );
     }
 
     // Remove from all tracking structures
@@ -295,7 +303,7 @@ class ModuleRegistry {
     this.emit('moduleUnregistered', {
       moduleName: name,
       name,
-      definition: moduleDefinition
+      definition: moduleDefinition,
     });
 
     return true;
@@ -399,7 +407,7 @@ class ModuleRegistry {
       modulesByType: {},
       averageDependencies: 0,
       maxDependencies: 0,
-      modulesWithNoDependencies: 0
+      modulesWithNoDependencies: 0,
     };
 
     // Calculate type distribution
@@ -434,7 +442,7 @@ class ModuleRegistry {
     const results = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     // Check for missing dependencies
@@ -473,7 +481,7 @@ class ModuleRegistry {
     const results = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     const moduleDefinition = this.modules.get(name);

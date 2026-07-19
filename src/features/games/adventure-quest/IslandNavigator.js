@@ -48,7 +48,7 @@ export default class IslandNavigator {
   initializeIslandData() {
     return {
       starting_dock: {
-        name: 'Sky\'s Observatory',
+        name: "Sky's Observatory",
         type: 'hub',
         position: { x: 400, y: 300 },
         description:
@@ -227,25 +227,26 @@ export default class IslandNavigator {
     if (!condition) return true;
 
     switch (condition.type) {
-    case 'story_progress':
-      const completedChapters = this.game.storyProgression.getCompletedChapters();
-      return completedChapters.includes(condition.value);
+      case 'story_progress': {
+        const completedChapters = this.game.storyProgression.getCompletedChapters();
+        return completedChapters.includes(condition.value);
+      }
 
-    case 'challenges_completed':
-      const challengeProgress = this.game.challengeManager.getProgress();
-      const subjectChallenges = this.game.discoveryTracker.discoveries.filter(
-        d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
-      );
-      return subjectChallenges.length >= condition.value;
+      case 'challenges_completed': {
+        const subjectChallenges = this.game.discoveryTracker.discoveries.filter(
+          d => d.type === 'challenge_complete' && d.metadata.challengeType === condition.subject
+        );
+        return subjectChallenges.length >= condition.value;
+      }
 
-    case 'discoveries':
-      return this.game.gameState.totalDiscoveries >= condition.value;
+      case 'discoveries':
+        return this.game.gameState.totalDiscoveries >= condition.value;
 
-    case 'score':
-      return this.game.gameState.score >= condition.value;
+      case 'score':
+        return this.game.gameState.score >= condition.value;
 
-    default:
-      return false;
+      default:
+        return false;
     }
   }
 
@@ -274,7 +275,7 @@ export default class IslandNavigator {
    * @param {Object} challenge - Completed challenge
    * @param {string} challengeType - Type of challenge
    */
-  handleChallengeCompletion(challenge, challengeType) {
+  handleChallengeCompletion(_challenge, _challengeType) {
     // Mark visit to current island type
     this.visitedIslands.add(this.currentIsland);
 
@@ -286,7 +287,7 @@ export default class IslandNavigator {
    * Handle story completion rewards
    * @param {Object} chapter - Completed story chapter
    */
-  handleStoryCompletion(chapter) {
+  handleStoryCompletion(_chapter) {
     // Story completion may unlock new areas
     this.updateUnlockedIslands();
   }
@@ -384,10 +385,6 @@ export default class IslandNavigator {
    * @returns {boolean} True if click was handled
    */
   handleClick(x, y) {
-    // Convert screen coordinates to world coordinates
-    const worldX = x + this.cameraX;
-    const worldY = y + this.cameraY;
-
     // Check clickable islands
     for (const bounds of this.clickableBounds) {
       if (
@@ -628,7 +625,6 @@ export default class IslandNavigator {
    */
   renderIsland(ctx, islandId, island, screenX, screenY) {
     const isUnlocked = this.unlockedIslands.has(islandId);
-    const isVisited = this.visitedIslands.has(islandId);
     const isCurrent = islandId === this.currentIsland;
     const isHovered = islandId === this.hoveredIsland;
 
@@ -848,7 +844,7 @@ export default class IslandNavigator {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderMiniMap(ctx, canvasWidth, canvasHeight) {
+  renderMiniMap(ctx, canvasWidth, _canvasHeight) {
     const mapSize = 120;
     const mapX = canvasWidth - mapSize - 20;
     const mapY = 20;

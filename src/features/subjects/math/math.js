@@ -13,9 +13,43 @@ function convertNumber() {
 
   const formattedNumber = Number(numStr).toLocaleString();
   const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-  const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-  const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-  const scales = ['', 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion'];
+  const teens = [
+    'ten',
+    'eleven',
+    'twelve',
+    'thirteen',
+    'fourteen',
+    'fifteen',
+    'sixteen',
+    'seventeen',
+    'eighteen',
+    'nineteen',
+  ];
+  const tens = [
+    '',
+    '',
+    'twenty',
+    'thirty',
+    'forty',
+    'fifty',
+    'sixty',
+    'seventy',
+    'eighty',
+    'ninety',
+  ];
+  const scales = [
+    '',
+    'thousand',
+    'million',
+    'billion',
+    'trillion',
+    'quadrillion',
+    'quintillion',
+    'sextillion',
+    'septillion',
+    'octillion',
+    'nonillion',
+  ];
 
   function chunkToWords(chunk) {
     let word = '';
@@ -62,22 +96,55 @@ function convertNumber() {
 
 // Educational tools and games for children
 export const mathDifficulty = [
-  'easy', 'medium', 'hard',
-  'very-easy', 'basic', 'beginner',
-  'intermediate', 'advanced',
-  'expert', 'graduate-level'
+  'easy',
+  'medium',
+  'hard',
+  'very-easy',
+  'basic',
+  'beginner',
+  'intermediate',
+  'advanced',
+  'expert',
+  'graduate-level',
 ];
 
-export const mathBasicLevels = ['Place Value', 'Counting', 'Addition', 'Subtraction', 'Multiplication', 'Division'];
+export const mathBasicLevels = [
+  'Place Value',
+  'Counting',
+  'Addition',
+  'Subtraction',
+  'Multiplication',
+  'Division',
+];
 
-export const mathIntermediateLevels = ['Fractions', 'Decimals', 'Percentages', 'Algebra Basics', 'Geometry Basics'];
+export const mathIntermediateLevels = [
+  'Fractions',
+  'Decimals',
+  'Percentages',
+  'Algebra Basics',
+  'Geometry Basics',
+];
 
 export const mathAdvancedLevels = ['Algebra', 'Geometry', 'Trigonometry', 'Statistics', 'Calculus'];
 
-export const mathExpertLevels = ['Advanced Calculus', 'Complex Analysis', 'Linear Algebra', 'Differential Equations'];
+export const mathExpertLevels = [
+  'Advanced Calculus',
+  'Complex Analysis',
+  'Linear Algebra',
+  'Differential Equations',
+];
 
 // TODO: Game features to be implemented
-export const mathWords = ['Addition', 'Subtraction', 'Multiplication', 'Division', 'Fractions', 'Decimals', 'Percentages', 'Exponents'];
+export const mathWords = [
+  'Addition',
+  'Subtraction',
+  'Multiplication',
+  'Division',
+  'Fractions',
+  'Decimals',
+  'Percentages',
+  'Exponents',
+];
 
 // Log math games loaded
 console.log('Math games loaded');
@@ -98,5 +165,5 @@ export default {
   intermediateLevels: mathIntermediateLevels,
   advancedLevels: mathAdvancedLevels,
   expertLevels: mathExpertLevels,
-  words: mathWords
+  words: mathWords,
 };

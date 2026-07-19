@@ -186,70 +186,70 @@ export default class BubblePopGameTemplate extends BaseGame {
     const max = this.settings.maxNumber;
 
     switch (this.difficulty) {
-    case 'easy': {
-      // Simple addition
-      const a = getRandomInt(1, max);
-      const b = getRandomInt(1, max);
-      this.currentQuestion = {
-        text: `${a} + ${b}`,
-        answer: a + b,
-        type: 'addition',
-      };
-      break;
-    }
-
-    case 'medium': {
-      // Addition and subtraction
-      if (Math.random() < 0.6) {
-        const x = getRandomInt(1, max);
-        const y = getRandomInt(1, max);
+      case 'easy': {
+        // Simple addition
+        const a = getRandomInt(1, max);
+        const b = getRandomInt(1, max);
         this.currentQuestion = {
-          text: `${x} + ${y}`,
-          answer: x + y,
+          text: `${a} + ${b}`,
+          answer: a + b,
           type: 'addition',
         };
-      } else {
-        const x = getRandomInt(10, max);
-        const y = getRandomInt(1, x);
-        this.currentQuestion = {
-          text: `${x} - ${y}`,
-          answer: x - y,
-          type: 'subtraction',
-        };
+        break;
       }
-      break;
-    }
 
-    case 'hard': {
-      // Addition, subtraction, and simple multiplication
-      const operation = Math.random();
-      if (operation < 0.4) {
-        const x = getRandomInt(1, max);
-        const y = getRandomInt(1, max);
-        this.currentQuestion = {
-          text: `${x} + ${y}`,
-          answer: x + y,
-          type: 'addition',
-        };
-      } else if (operation < 0.7) {
-        const x = getRandomInt(10, max);
-        const y = getRandomInt(1, x);
-        this.currentQuestion = {
-          text: `${x} - ${y}`,
-          answer: x - y,
-          type: 'subtraction',
-        };
-      } else {
-        const x = getRandomInt(2, 9);
-        const y = getRandomInt(2, 9);
-        this.currentQuestion = {
-          text: `${x} × ${y}`,
-          answer: x * y,
-          type: 'multiplication',
-        };
+      case 'medium': {
+        // Addition and subtraction
+        if (Math.random() < 0.6) {
+          const x = getRandomInt(1, max);
+          const y = getRandomInt(1, max);
+          this.currentQuestion = {
+            text: `${x} + ${y}`,
+            answer: x + y,
+            type: 'addition',
+          };
+        } else {
+          const x = getRandomInt(10, max);
+          const y = getRandomInt(1, x);
+          this.currentQuestion = {
+            text: `${x} - ${y}`,
+            answer: x - y,
+            type: 'subtraction',
+          };
+        }
+        break;
       }
-      break;
-    }
+
+      case 'hard': {
+        // Addition, subtraction, and simple multiplication
+        const operation = Math.random();
+        if (operation < 0.4) {
+          const x = getRandomInt(1, max);
+          const y = getRandomInt(1, max);
+          this.currentQuestion = {
+            text: `${x} + ${y}`,
+            answer: x + y,
+            type: 'addition',
+          };
+        } else if (operation < 0.7) {
+          const x = getRandomInt(10, max);
+          const y = getRandomInt(1, x);
+          this.currentQuestion = {
+            text: `${x} - ${y}`,
+            answer: x - y,
+            type: 'subtraction',
+          };
+        } else {
+          const x = getRandomInt(2, 9);
+          const y = getRandomInt(2, 9);
+          this.currentQuestion = {
+            text: `${x} × ${y}`,
+            answer: x * y,
+            type: 'multiplication',
+          };
+        }
+        break;
+      }
     }
   }
 
@@ -636,7 +636,7 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.roundEnding = true;
 
     this.streakCount = 0;
-    this.addMessage('Time\'s up!', this.themeColors.danger);
+    this.addMessage("Time's up!", this.themeColors.danger);
     this.playSound(147, 500, 'square'); // D3 note
 
     // Check if we should end the game or continue

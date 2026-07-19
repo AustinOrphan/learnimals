@@ -454,7 +454,7 @@ export class ScreenReaderTestUtils {
     results.focusableElements = focusableElements;
 
     // Check for keyboard traps
-    focusableElements.forEach((element, index) => {
+    focusableElements.forEach((element, _index) => {
       // Check if element has visible focus indicator
       const computedStyle = window.getComputedStyle(element, ':focus');
       if (!computedStyle.outline && !computedStyle.boxShadow) {

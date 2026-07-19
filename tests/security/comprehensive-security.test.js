@@ -86,10 +86,11 @@ describe('Comprehensive Security Tests', () => {
       const sanitized = mockInputSanitizer.sanitizeHTML(input);
 
       expect(sanitized).toBe(expectedSanitized[index]);
+      // Escaped output may still contain attribute names like "onerror=" as
+      // inert text; what matters is that no raw tag survives so nothing can
+      // execute. Assert no unescaped element start remains.
       expect(sanitized).not.toContain('<script');
-      expect(sanitized).not.toContain('onerror=');
-      expect(sanitized).not.toContain('onclick=');
-      expect(sanitized).not.toContain('onload=');
+      expect(sanitized).not.toMatch(/<[a-zA-Z]/);
 
       console.log(`   ✓ XSS input ${index + 1} properly sanitized`);
     });
@@ -189,7 +190,8 @@ describe('Comprehensive Security Tests', () => {
 
       expect(generatedToken).toBe(token);
       expect(generatedToken).toMatch(/^csrf_token_[a-z0-9]{12}$/);
-      expect(generatedToken.length).toBe(24);
+      // 'csrf_token_' prefix (11 chars) + 12-char random suffix = 23 chars
+      expect(generatedToken.length).toBe(23);
 
       console.log(`   ✓ CSRF token ${index + 1} generated: ${token.substring(0, 20)}...`);
     });
@@ -266,8 +268,8 @@ describe('Comprehensive Security Tests', () => {
       'https://trusted.com',
       'https://cdn.learnimals.com',
       'data:',
-      '\'self\'',
-      '\'unsafe-inline\'', // Only for development
+      "'self'",
+      "'unsafe-inline'", // Only for development
     ];
 
     // Test source validation
@@ -329,16 +331,16 @@ describe('Comprehensive Security Tests', () => {
   test('SQL injection prevention', async () => {
     // Even though this is a static site, test SQL injection patterns that could affect backend APIs
     const sqlInjectionAttempts = [
-      '\'; DROP TABLE users; --',
-      '1\' OR \'1\'=\'1',
-      '\'; UNION SELECT * FROM sensitive_data; --',
-      '1\'; UPDATE users SET password=\'hacked\' WHERE id=1; --',
-      '\' OR 1=1 LIMIT 1 OFFSET 1 --',
-      '\'; INSERT INTO admin (user) VALUES (\'hacker\'); --',
-      '1\' AND (SELECT COUNT(*) FROM information_schema.tables)>0 --',
-      '\'; EXEC xp_cmdshell(\'format c:\'); --',
-      '1\' OR SLEEP(5) --',
-      '\'; SELECT password FROM users WHERE username=\'admin\' --',
+      "'; DROP TABLE users; --",
+      "1' OR '1'='1",
+      "'; UNION SELECT * FROM sensitive_data; --",
+      "1'; UPDATE users SET password='hacked' WHERE id=1; --",
+      "' OR 1=1 LIMIT 1 OFFSET 1 --",
+      "'; INSERT INTO admin (user) VALUES ('hacker'); --",
+      "1' AND (SELECT COUNT(*) FROM information_schema.tables)>0 --",
+      "'; EXEC xp_cmdshell('format c:'); --",
+      "1' OR SLEEP(5) --",
+      "'; SELECT password FROM users WHERE username='admin' --",
     ];
 
     const mockSQLValidator = {
@@ -649,7 +651,7 @@ describe('Comprehensive Security Tests', () => {
   });
 
   test('API request security and rate limiting', async () => {
-    const apiRequests = [
+    const _apiRequests = [
       {
         endpoint: '/api/progress',
         method: 'GET',

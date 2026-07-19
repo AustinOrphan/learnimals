@@ -140,7 +140,12 @@ const mockModal = createMockModule({
       this.element.setAttribute('tabindex', '-1');
 
       if (this.options.className) {
-        this.element.classList.add(this.options.className);
+        // Support space-separated class name lists; classList.add rejects
+        // tokens containing spaces
+        this.options.className
+          .split(/\s+/)
+          .filter(Boolean)
+          .forEach(cls => this.element.classList.add(cls));
       }
 
       // Create modal content structure
@@ -343,16 +348,16 @@ const mockModal = createMockModule({
       if (!this.isOpen) return;
 
       switch (e.key) {
-      case 'Escape':
-        if (this.options.closeOnEscape) {
-          e.preventDefault();
-          this.close();
-        }
-        break;
+        case 'Escape':
+          if (this.options.closeOnEscape) {
+            e.preventDefault();
+            this.close();
+          }
+          break;
 
-      case 'Tab':
-        this.handleTabNavigation(e);
-        break;
+        case 'Tab':
+          this.handleTabNavigation(e);
+          break;
       }
     }
 
@@ -492,6 +497,18 @@ const mockModal = createMockModule({
       if (this.isOpen) {
         this.close();
       }
+
+      // Remove elements from the DOM immediately - destroy must not wait
+      // for the close animation, otherwise nulled references below would
+      // prevent the delayed cleanup from ever removing them
+      if (this.backdrop && this.backdrop.parentNode) {
+        this.backdrop.parentNode.removeChild(this.backdrop);
+      }
+      if (this.element && this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+      }
+      document.body.style.overflow = '';
+      this.isOpen = false;
 
       // Remove event listeners
       if (this.options.closeOnBackdrop && this.backdrop) {
@@ -807,7 +824,7 @@ describe('Modal Component Enhanced Tests', () => {
       expect(modal.isOpen).toBe(false);
     });
 
-    it('should trigger open and close events', () => {
+    it('should trigger open and close events', async () => {
       const openHandler = vi.fn();
       const closeHandler = vi.fn();
 
@@ -818,10 +835,9 @@ describe('Modal Component Enhanced Tests', () => {
       expect(openHandler).toHaveBeenCalledTimes(1);
 
       modal.close();
-      // Events are triggered after animation, reduced timeout for testing
-      setTimeout(() => {
-        expect(closeHandler).toHaveBeenCalledTimes(1);
-      }, 50);
+      // Events are triggered after the (shortened) close animation
+      await waitForAnimation(50);
+      expect(closeHandler).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -850,17 +866,24 @@ describe('Modal Component Enhanced Tests', () => {
       // Wait for focus to be set after requestAnimationFrame
       await new Promise(resolve => requestAnimationFrame(resolve));
 
-      const firstInput = modal.element.querySelector('#input1');
-      expect(document.activeElement).toBe(firstInput);
+      // The close button in the header is the first focusable element in DOM
+      // order; per the WAI-ARIA APG dialog pattern, focus moves to the first
+      // focusable element inside the dialog
+      const firstFocusable = modal.getFocusableElements()[0];
+      expect(firstFocusable.classList.contains('modal-close')).toBe(true);
+      expect(document.activeElement).toBe(firstFocusable);
     });
 
     it('should identify focusable elements correctly', () => {
       modal.open();
 
       const focusableElements = modal.getFocusableElements();
-      expect(focusableElements).toHaveLength(4); // input, button1, button2, close button
-      expect(focusableElements[0].id).toBe('input1');
-      expect(focusableElements[1].id).toBe('button1');
+      expect(focusableElements).toHaveLength(4); // close button, input, button1, button2
+      // DOM order: the header close button precedes the body content
+      expect(focusableElements[0].classList.contains('modal-close')).toBe(true);
+      expect(focusableElements[1].id).toBe('input1');
+      expect(focusableElements[2].id).toBe('button1');
+      expect(focusableElements[3].id).toBe('button2');
     });
 
     it('should trap focus within modal', () => {
@@ -944,13 +967,14 @@ describe('Modal Component Enhanced Tests', () => {
       });
     });
 
-    it('should close on Escape key', () => {
+    it('should close on Escape key', async () => {
       modal.open();
 
       // Use utility to trigger keyboard event
       triggerKeyboardEvent('Escape');
 
-      // Check that close was initiated
+      // Close completes after the (shortened) close animation
+      await waitForAnimation(50);
       expect(modal.isOpen).toBe(false);
     });
 
@@ -1261,8 +1285,10 @@ describe('Modal Component Enhanced Tests', () => {
 
       modal.open();
 
-      // Test querySelector returns valid enhanced element
-      const container = modal.element.querySelector('#test-container');
+      // The enhanced query helpers patch the document-level methods
+      // (querySelector/querySelectorAll/getElementById), so query through
+      // document to receive enhanced elements
+      const container = document.querySelector('#test-container');
       expect(container).toBeTruthy();
       expect(container.tagName).toBe('DIV');
       expect(container._enhanced).toBe(true);
@@ -1275,7 +1301,7 @@ describe('Modal Component Enhanced Tests', () => {
       expect(typeof input.focus).toBe('function');
 
       // Test querySelectorAll returns valid enhanced elements
-      const buttons = modal.element.querySelectorAll('.btn');
+      const buttons = document.querySelectorAll('.btn');
       expect(buttons).toHaveLength(2);
       buttons.forEach(btn => {
         expect(btn.tagName).toBe('BUTTON');
@@ -1307,7 +1333,7 @@ describe('Modal Component Enhanced Tests', () => {
       expect(removeEventListenerSpy).toHaveBeenCalledWith('click', modal.boundBackdropClick);
     });
 
-    it('should handle rapid open/close cycles', () => {
+    it('should handle rapid open/close cycles', async () => {
       modal = new Modal();
 
       for (let i = 0; i < 5; i++) {
@@ -1315,6 +1341,8 @@ describe('Modal Component Enhanced Tests', () => {
         expect(modal.isOpen).toBe(true);
 
         modal.close();
+        // Close completes after the (shortened) close animation
+        await waitForAnimation(50);
         expect(modal.isOpen).toBe(false);
       }
     });

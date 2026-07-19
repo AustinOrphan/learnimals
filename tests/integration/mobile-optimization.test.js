@@ -6,6 +6,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { MobileOptimizationService } from '../../src/services/mobile/MobileOptimizationService.js';
 import { LazyLoadManager } from '../../src/utils/LazyLoadManager.js';
+import { performanceMonitor } from '../../src/utils/performanceUtils.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -27,11 +28,12 @@ vi.mock('../../src/utils/performanceUtils.js', () => ({
   fpsMonitor: {
     start: vi.fn(),
     stop: vi.fn(),
-    getCurrentFPS: vi.fn(() => 60),
+    getFPS: vi.fn(() => 60),
     getAverageFPS: vi.fn(() => 58),
   },
   memoryMonitor: {
     snapshot: vi.fn(),
+    getSnapshots: vi.fn(() => []),
     getCurrentMemoryUsage: vi.fn(() => ({ used: 25000000, total: 100000000 })),
     getMemoryTrend: vi.fn(() => 'stable'),
   },
@@ -54,9 +56,21 @@ describe('Mobile Optimization Integration', () => {
       width: 375,
       height: 667,
     };
-    Object.defineProperty(window, 'innerWidth', { value: mockViewport.width, writable: true });
-    Object.defineProperty(window, 'innerHeight', { value: mockViewport.height, writable: true });
-    Object.defineProperty(window, 'devicePixelRatio', { value: 2, writable: true });
+    Object.defineProperty(window, 'innerWidth', {
+      value: mockViewport.width,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, 'innerHeight', {
+      value: mockViewport.height,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, 'devicePixelRatio', {
+      value: 2,
+      writable: true,
+      configurable: true,
+    });
 
     // Mock connection API
     mockConnection = {
@@ -74,7 +88,7 @@ describe('Mobile Optimization Integration', () => {
     });
 
     // Mock touch events
-    Object.defineProperty(window, 'ontouchstart', { value: null });
+    Object.defineProperty(window, 'ontouchstart', { value: null, configurable: true });
 
     // Mock ResizeObserver
     global.ResizeObserver = vi.fn().mockImplementation(callback => ({
@@ -107,13 +121,21 @@ describe('Mobile Optimization Integration', () => {
       return 1;
     });
 
-    // Mock Image constructor
-    global.Image = vi.fn().mockImplementation(() => ({
-      onload: null,
-      onerror: null,
-      src: '',
-      crossOrigin: null,
-    }));
+    // Mock Image constructor; fires onload asynchronously when src is set so
+    // image loading promises resolve
+    global.Image = vi.fn().mockImplementation(() => {
+      const img = { onload: null, onerror: null, crossOrigin: null };
+      let currentSrc = '';
+      Object.defineProperty(img, 'src', {
+        get: () => currentSrc,
+        set: value => {
+          currentSrc = value;
+          setTimeout(() => img.onload && img.onload(), 0);
+        },
+        configurable: true,
+      });
+      return img;
+    });
 
     // Create service instances
     mobileService = new MobileOptimizationService();
@@ -188,7 +210,6 @@ describe('Mobile Optimization Integration', () => {
       await lazyLoadManager.initialize();
 
       const button = document.querySelector('[data-touch-optimized]');
-      const image = document.querySelector('[data-lazy-load-on-touch]');
 
       // Simulate touch start
       const touchEvent = new TouchEvent('touchstart', {
@@ -274,18 +295,6 @@ describe('Mobile Optimization Integration', () => {
 
   describe('Performance Integration', () => {
     it('should monitor mobile performance metrics', async () => {
-      const performanceStartSpy = vi.fn();
-      const performanceEndSpy = vi.fn();
-
-      // Mock performance monitoring
-      vi.doMock('../../src/utils/performanceUtils.js', () => ({
-        performanceMonitor: {
-          start: performanceStartSpy,
-          end: performanceEndSpy,
-          measure: vi.fn(),
-        },
-      }));
-
       document.body.innerHTML = `
         <div class="mobile-content">
           <img data-src="perf-image.jpg" alt="Performance Image">
@@ -299,13 +308,14 @@ describe('Mobile Optimization Integration', () => {
       const img = document.querySelector('img');
       await lazyLoadManager.loadImage(img).catch(() => {}); // Ignore errors
 
-      expect(performanceStartSpy).toHaveBeenCalled();
+      expect(performanceMonitor.start).toHaveBeenCalled();
     });
 
     it('should throttle operations on low-end mobile devices', async () => {
-      // Simulate low-end device
-      Object.defineProperty(navigator, 'hardwareConcurrency', { value: 2 });
-      Object.defineProperty(navigator, 'deviceMemory', { value: 1 });
+      // Simulate low-end device on a constrained network
+      Object.defineProperty(navigator, 'hardwareConcurrency', { value: 2, configurable: true });
+      Object.defineProperty(navigator, 'deviceMemory', { value: 1, configurable: true });
+      mockConnection.effectiveType = '3g';
 
       await mobileService.initialize();
       await lazyLoadManager.initialize();
@@ -352,44 +362,19 @@ describe('Mobile Optimization Integration', () => {
         </div>
       `;
 
-      // Mock dynamic imports
-      const MockMobileMenu = vi.fn().mockImplementation(() => ({
-        render: vi.fn().mockResolvedValue(),
-        initialize: vi.fn().mockResolvedValue(),
-      }));
-
-      const MockTouchCarousel = vi.fn().mockImplementation(() => ({
-        render: vi.fn().mockResolvedValue(),
-        initialize: vi.fn().mockResolvedValue(),
-      }));
-
-      vi.stubGlobal(
-        'import',
-        vi
-          .fn()
-          .mockResolvedValueOnce({ default: MockMobileMenu })
-          .mockResolvedValueOnce({ default: MockTouchCarousel })
-      );
-
       await mobileService.initialize();
       await lazyLoadManager.initialize();
 
       const components = document.querySelectorAll('[data-lazy-component]');
       expect(components.length).toBe(2);
 
-      // Simulate component intersection
-      const intersectionCallback = IntersectionObserver.mock.calls.find(call =>
-        call[0].toString().includes('component')
-      )?.[0];
+      // Simulate component intersection through the real handler
+      lazyLoadManager.handleComponentIntersection([
+        { isIntersecting: true, target: components[0] },
+        { isIntersecting: true, target: components[1] },
+      ]);
 
-      if (intersectionCallback) {
-        intersectionCallback([
-          { isIntersecting: true, target: components[0] },
-          { isIntersecting: true, target: components[1] },
-        ]);
-      }
-
-      // Wait for components to load
+      // Components enter the loading queue
       await vi.waitFor(() => {
         expect(lazyLoadManager.loadingQueue.size).toBeGreaterThan(0);
       });
@@ -398,7 +383,7 @@ describe('Mobile Optimization Integration', () => {
     it('should adapt component loading based on mobile capabilities', async () => {
       // Simulate limited mobile device
       mockConnection.effectiveType = '3g';
-      Object.defineProperty(navigator, 'hardwareConcurrency', { value: 2 });
+      Object.defineProperty(navigator, 'hardwareConcurrency', { value: 2, configurable: true });
 
       document.body.innerHTML = `
         <div data-lazy-component="HeavyComponent" 
@@ -466,16 +451,17 @@ describe('Mobile Optimization Integration', () => {
 
   describe('Memory and Resource Management', () => {
     it('should manage memory efficiently on mobile devices', async () => {
-      // Simulate memory-constrained device
-      Object.defineProperty(navigator, 'deviceMemory', { value: 1 }); // 1GB RAM
+      // Simulate memory-constrained device on a constrained network
+      Object.defineProperty(navigator, 'deviceMemory', { value: 1, configurable: true }); // 1GB RAM
+      mockConnection.effectiveType = '3g';
+
+      const galleryItems = Array.from(
+        { length: 20 },
+        (_, i) => `<img data-src="gallery-${i}.jpg" alt="Gallery ${i}" class="gallery-item">`
+      ).join('');
 
       document.body.innerHTML = `
-        <div class="image-gallery">
-          ${Array.from(
-            { length: 20 },
-            (_, i) => `<img data-src="gallery-${i}.jpg" alt="Gallery ${i}" class="gallery-item">`
-          ).join('')}
-        </div>
+        <div class="image-gallery">${galleryItems}</div>
       `;
 
       await mobileService.initialize();
@@ -537,11 +523,14 @@ describe('Mobile Optimization Integration', () => {
       await mobileService.initialize();
       await lazyLoadManager.initialize();
 
+      // Keep retries fast so the test completes quickly
+      lazyLoadManager.options.retryDelay = 10;
+
       const img = document.querySelector('img');
 
       try {
         await lazyLoadManager.loadImage(img);
-      } catch (error) {
+      } catch (_error) {
         // Should attempt fallback
         expect(img.dataset.fallback).toBe('offline-placeholder.jpg');
       }
@@ -554,10 +543,11 @@ describe('Mobile Optimization Integration', () => {
           register: vi.fn().mockResolvedValue({}),
           ready: Promise.resolve({}),
         },
+        configurable: true,
       });
 
       // Simulate offline mode
-      Object.defineProperty(navigator, 'onLine', { value: false });
+      Object.defineProperty(navigator, 'onLine', { value: false, configurable: true });
 
       document.body.innerHTML = `
         <img data-src="cached-image.jpg" alt="Cached Image">
@@ -576,6 +566,7 @@ describe('Mobile Optimization Integration', () => {
       // Mock iOS Safari user agent
       Object.defineProperty(navigator, 'userAgent', {
         value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
+        configurable: true,
       });
 
       await mobileService.initialize();
@@ -589,6 +580,7 @@ describe('Mobile Optimization Integration', () => {
       // Mock Android Chrome user agent
       Object.defineProperty(navigator, 'userAgent', {
         value: 'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 Chrome/91.0.4472.120',
+        configurable: true,
       });
 
       await mobileService.initialize();
@@ -635,6 +627,7 @@ describe('Mobile Optimization Integration', () => {
           removeEventListener: vi.fn(),
           dispatchEvent: vi.fn(),
         })),
+        configurable: true,
       });
 
       await mobileService.initialize();

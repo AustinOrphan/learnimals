@@ -347,7 +347,7 @@ describe('BaseGame Feedback System', () => {
       rafCallbacks.set(id, callback);
 
       // Schedule callback with setTimeout to work with fake timers
-      const timerId = setTimeout(() => {
+      setTimeout(() => {
         const cb = rafCallbacks.get(id);
         if (cb) {
           rafCallbacks.delete(id);
@@ -600,8 +600,6 @@ describe('BaseGame Feedback System', () => {
     });
 
     it('should cleanup event listeners and prevent memory leaks', () => {
-      const initialListenerCount = document._listeners?.length || 0;
-
       // Create game and add event listeners
       const testGame = new MockBaseGame('listener-test');
 
@@ -664,7 +662,7 @@ describe('BaseGame Feedback System', () => {
       vi.useFakeTimers();
 
       // Create feedback
-      const feedbackId = await game.showFeedback('success', 'Timer test');
+      await game.showFeedback('success', 'Timer test');
       expect(game.getActiveFeedbackCount()).toBe(1);
 
       // Should not cleanup immediately
@@ -793,7 +791,7 @@ describe('BaseGame Feedback System', () => {
       vi.useFakeTimers();
 
       // Create RAF call
-      const rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         frameExecuted = true;
       });
 

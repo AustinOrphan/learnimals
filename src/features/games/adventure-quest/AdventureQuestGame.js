@@ -1,5 +1,5 @@
 import config from '../../../config.js';
-import { getRandomInt, debounce } from '../../../utils/common.js';
+import { debounce } from '../../../utils/common.js';
 import StoryProgression from './StoryProgression.js';
 import ChallengeManager from './ChallengeManager.js';
 import DiscoveryTracker from './DiscoveryTracker.js';
@@ -194,21 +194,21 @@ export default class AdventureQuestGame {
     if (!this.gameState.isPlaying && !this.gameState.isPaused) return;
 
     switch (event.code) {
-    case 'Space':
-      event.preventDefault();
-      this.togglePause();
-      break;
-    case 'Escape':
-      event.preventDefault();
-      this.showPauseMenu();
-      break;
-    case 'KeyH':
-      event.preventDefault();
-      this.showHelp();
-      break;
-    default:
-      // Route other keys to current scene
-      this.routeKeyPress(event);
+      case 'Space':
+        event.preventDefault();
+        this.togglePause();
+        break;
+      case 'Escape':
+        event.preventDefault();
+        this.showPauseMenu();
+        break;
+      case 'KeyH':
+        event.preventDefault();
+        this.showHelp();
+        break;
+      default:
+        // Route other keys to current scene
+        this.routeKeyPress(event);
     }
   }
 
@@ -229,16 +229,16 @@ export default class AdventureQuestGame {
    */
   getCurrentSystem() {
     switch (this.gameState.currentScene) {
-    case 'story':
-      return this.storyProgression;
-    case 'challenge':
-      return this.challengeManager;
-    case 'navigation':
-      return this.islandNavigator;
-    case 'discovery':
-      return this.discoveryTracker;
-    default:
-      return null;
+      case 'story':
+        return this.storyProgression;
+      case 'challenge':
+        return this.challengeManager;
+      case 'navigation':
+        return this.islandNavigator;
+      case 'discovery':
+        return this.discoveryTracker;
+      default:
+        return null;
     }
   }
 
@@ -259,23 +259,23 @@ export default class AdventureQuestGame {
     this.gameState.currentScene = sceneName;
 
     switch (sceneName) {
-    case 'intro':
-      this.loadIntroScene(data);
-      break;
-    case 'story':
-      this.storyProgression.loadStory(data);
-      break;
-    case 'challenge':
-      this.challengeManager.loadChallenge(data);
-      break;
-    case 'navigation':
-      this.islandNavigator.loadNavigation(data);
-      break;
-    case 'discovery':
-      this.discoveryTracker.loadDiscovery(data);
-      break;
-    default:
-      console.warn(`Unknown scene: ${sceneName}`);
+      case 'intro':
+        this.loadIntroScene(data);
+        break;
+      case 'story':
+        this.storyProgression.loadStory(data);
+        break;
+      case 'challenge':
+        this.challengeManager.loadChallenge(data);
+        break;
+      case 'navigation':
+        this.islandNavigator.loadNavigation(data);
+        break;
+      case 'discovery':
+        this.discoveryTracker.loadDiscovery(data);
+        break;
+      default:
+        console.warn(`Unknown scene: ${sceneName}`);
     }
 
     this.render();
@@ -285,7 +285,7 @@ export default class AdventureQuestGame {
    * Load the intro scene
    * @param {Object} data - Scene data
    */
-  loadIntroScene(data) {
+  loadIntroScene(_data) {
     this.gameState.isPlaying = false;
     // Intro scene will be rendered in render() method
   }
@@ -405,21 +405,21 @@ export default class AdventureQuestGame {
 
     // Render current scene
     switch (this.gameState.currentScene) {
-    case 'intro':
-      this.renderIntroScene();
-      break;
-    case 'story':
-      this.storyProgression.render(this.ctx);
-      break;
-    case 'challenge':
-      this.challengeManager.render(this.ctx);
-      break;
-    case 'navigation':
-      this.islandNavigator.render(this.ctx);
-      break;
-    case 'discovery':
-      this.discoveryTracker.render(this.ctx);
-      break;
+      case 'intro':
+        this.renderIntroScene();
+        break;
+      case 'story':
+        this.storyProgression.render(this.ctx);
+        break;
+      case 'challenge':
+        this.challengeManager.render(this.ctx);
+        break;
+      case 'navigation':
+        this.islandNavigator.render(this.ctx);
+        break;
+      case 'discovery':
+        this.discoveryTracker.render(this.ctx);
+        break;
     }
 
     // Always render UI overlay
@@ -442,7 +442,7 @@ export default class AdventureQuestGame {
     this.ctx.fillStyle = this.themeColors.primary;
     this.ctx.font = 'bold 48px Arial';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText('Sky\'s Scientific Expedition', centerX, centerY - 100);
+    this.ctx.fillText("Sky's Scientific Expedition", centerX, centerY - 100);
 
     // Subtitle
     this.ctx.fillStyle = this.themeColors.text;

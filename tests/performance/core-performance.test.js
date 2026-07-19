@@ -214,7 +214,7 @@ describe('Core Performance Tests', () => {
         'theme-switch',
       ];
 
-      for (const interaction of interactions) {
+      for (const _interaction of interactions) {
         const renderMeasure = renderProfiler.measureRenderTime();
 
         // Simulate interaction processing
@@ -374,7 +374,7 @@ describe('Core Performance Tests', () => {
 
   describe('Game Performance', () => {
     it('should maintain stable framerate during gameplay', () => {
-      const gameData = GameFactory.create({
+      GameFactory.create({
         type: 'bubble-pop',
         difficulty: 'medium',
       });
@@ -385,12 +385,12 @@ describe('Core Performance Tests', () => {
       const gameLoop = {
         frames: 0,
         update: vi.fn().mockImplementation(() => {
-          const frameStart = Date.now();
+          Date.now();
 
           // Simulate game logic
           const updateTime = 5; // 5ms update time
 
-          const renderStart = Date.now();
+          Date.now();
           renderProfiler.recordFrame(updateTime + 5); // 5ms render time
 
           gameLoop.frames++;

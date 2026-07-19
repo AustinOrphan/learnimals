@@ -68,14 +68,14 @@ class ElementMatchGame extends BaseGame {
    */
   getElementsPerRound() {
     switch (this.difficulty) {
-    case 'easy':
-      return 4;
-    case 'medium':
-      return 6;
-    case 'hard':
-      return 8;
-    default:
-      return 4;
+      case 'easy':
+        return 4;
+      case 'medium':
+        return 6;
+      case 'hard':
+        return 8;
+      default:
+        return 4;
     }
   }
 
@@ -84,14 +84,14 @@ class ElementMatchGame extends BaseGame {
    */
   getMatchTypesForDifficulty() {
     switch (this.difficulty) {
-    case 'easy':
-      return ['symbol', 'property'];
-    case 'medium':
-      return ['symbol', 'property', 'use', 'atomicNumber'];
-    case 'hard':
-      return ['symbol', 'property', 'use', 'atomicNumber', 'type'];
-    default:
-      return ['symbol', 'property'];
+      case 'easy':
+        return ['symbol', 'property'];
+      case 'medium':
+        return ['symbol', 'property', 'use', 'atomicNumber'];
+      case 'hard':
+        return ['symbol', 'property', 'use', 'atomicNumber', 'type'];
+      default:
+        return ['symbol', 'property'];
     }
   }
 

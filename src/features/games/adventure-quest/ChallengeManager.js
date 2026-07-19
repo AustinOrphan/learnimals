@@ -82,7 +82,7 @@ export default class ChallengeManager {
               ],
               correct: 1,
               explanation:
-                'Astronauts are in constant free fall around Earth! They\'re falling toward Earth but moving so fast sideways that they keep missing it.',
+                "Astronauts are in constant free fall around Earth! They're falling toward Earth but moving so fast sideways that they keep missing it.",
             },
           ],
         },
@@ -113,7 +113,7 @@ export default class ChallengeManager {
               options: ['Nothing', 'It gets hot', 'It bubbles and fizzes', 'It changes color'],
               correct: 2,
               explanation:
-                'Baking soda and vinegar create an acid-base reaction that produces carbon dioxide gas - that\'s the bubbling!',
+                "Baking soda and vinegar create an acid-base reaction that produces carbon dioxide gas - that's the bubbling!",
               visualization: 'fizzing_reaction',
             },
             {
@@ -271,31 +271,31 @@ export default class ChallengeManager {
     if (!this.currentQuestion) return;
 
     switch (this.difficultyLevel) {
-    case 1: // Easy
-      // Provide more obvious hints
-      if (this.currentQuestion.options) {
-        // Could highlight obviously wrong answers
-      }
-      break;
+      case 1: // Easy
+        // Provide more obvious hints
+        if (this.currentQuestion.options) {
+          // Could highlight obviously wrong answers
+        }
+        break;
 
-    case 2: // Normal
-      // Standard question as-is
-      break;
+      case 2: // Normal
+        // Standard question as-is
+        break;
 
-    case 3: // Challenging
-      // Add time pressure or require more precision
-      this.currentQuestion.timeLimit = 30000; // 30 seconds
-      break;
+      case 3: // Challenging
+        // Add time pressure or require more precision
+        this.currentQuestion.timeLimit = 30000; // 30 seconds
+        break;
 
-    case 4: // Hard
-      // Multiple concepts or require deeper thinking
-      this.currentQuestion.requireExplanation = true;
-      break;
+      case 4: // Hard
+        // Multiple concepts or require deeper thinking
+        this.currentQuestion.requireExplanation = true;
+        break;
 
-    case 5: // Expert
-      // Open-ended questions or complex scenarios
-      this.currentQuestion.openEnded = true;
-      break;
+      case 5: // Expert
+        // Open-ended questions or complex scenarios
+        this.currentQuestion.openEnded = true;
+        break;
     }
   }
 
@@ -326,26 +326,26 @@ export default class ChallengeManager {
     if (!this.currentQuestion) return false;
 
     switch (this.currentQuestion.type) {
-    case 'prediction':
-    case 'application':
-    case 'scenario':
-      return answer === this.currentQuestion.correct;
+      case 'prediction':
+      case 'application':
+      case 'scenario':
+        return answer === this.currentQuestion.correct;
 
-    case 'mixing':
-      // For mixing experiments, check if they selected the right combination
-      return this.checkMixingAnswer(answer);
+      case 'mixing':
+        // For mixing experiments, check if they selected the right combination
+        return this.checkMixingAnswer(answer);
 
-    case 'observation':
-      return this.checkObservationAnswer(answer);
+      case 'observation':
+        return this.checkObservationAnswer(answer);
 
-    case 'matching':
-      return this.checkMatchingAnswer(answer);
+      case 'matching':
+        return this.checkMatchingAnswer(answer);
 
-    case 'experiment':
-      return this.checkExperimentAnswer(answer);
+      case 'experiment':
+        return this.checkExperimentAnswer(answer);
 
-    default:
-      return false;
+      default:
+        return false;
     }
   }
 
@@ -569,15 +569,15 @@ export default class ChallengeManager {
    */
   handleExperimentClick(bounds) {
     switch (this.currentQuestion.type) {
-    case 'experiment':
-      this.handleDragDropExperiment(bounds);
-      break;
-    case 'mixing':
-      this.handleMixingExperiment(bounds);
-      break;
-    case 'matching':
-      this.handleMatchingExperiment(bounds);
-      break;
+      case 'experiment':
+        this.handleDragDropExperiment(bounds);
+        break;
+      case 'mixing':
+        this.handleMixingExperiment(bounds);
+        break;
+      case 'matching':
+        this.handleMatchingExperiment(bounds);
+        break;
     }
   }
 
@@ -624,7 +624,7 @@ export default class ChallengeManager {
    * Update particle animations
    * @param {number} deltaTime - Time since last update
    */
-  updateParticles(deltaTime) {
+  updateParticles(_deltaTime) {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
 
@@ -678,7 +678,7 @@ export default class ChallengeManager {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderChallengeHeader(ctx, canvasWidth, canvasHeight) {
+  renderChallengeHeader(ctx, canvasWidth, _canvasHeight) {
     // Challenge title
     ctx.fillStyle = this.game.themeColors.primary;
     ctx.font = 'bold 28px Arial';
@@ -743,23 +743,23 @@ export default class ChallengeManager {
    */
   renderAnswerInterface(ctx, canvasWidth, canvasHeight) {
     switch (this.currentQuestion.type) {
-    case 'prediction':
-    case 'application':
-    case 'scenario':
-      this.renderMultipleChoice(ctx, canvasWidth, canvasHeight);
-      break;
-    case 'mixing':
-      this.renderMixingInterface(ctx, canvasWidth, canvasHeight);
-      break;
-    case 'experiment':
-      this.renderExperimentInterface(ctx, canvasWidth, canvasHeight);
-      break;
-    case 'matching':
-      this.renderMatchingInterface(ctx, canvasWidth, canvasHeight);
-      break;
-    case 'observation':
-      this.renderObservationInterface(ctx, canvasWidth, canvasHeight);
-      break;
+      case 'prediction':
+      case 'application':
+      case 'scenario':
+        this.renderMultipleChoice(ctx, canvasWidth, canvasHeight);
+        break;
+      case 'mixing':
+        this.renderMixingInterface(ctx, canvasWidth, canvasHeight);
+        break;
+      case 'experiment':
+        this.renderExperimentInterface(ctx, canvasWidth, canvasHeight);
+        break;
+      case 'matching':
+        this.renderMatchingInterface(ctx, canvasWidth, canvasHeight);
+        break;
+      case 'observation':
+        this.renderObservationInterface(ctx, canvasWidth, canvasHeight);
+        break;
     }
   }
 
@@ -934,12 +934,12 @@ export default class ChallengeManager {
     const visualizationType = this.currentQuestion.visualization;
 
     switch (visualizationType) {
-    case 'falling_objects':
-      this.renderFallingObjectsVisualization(ctx, canvasWidth, canvasHeight);
-      break;
-    case 'fizzing_reaction':
-      this.renderFizzingReactionVisualization(ctx, canvasWidth, canvasHeight);
-      break;
+      case 'falling_objects':
+        this.renderFallingObjectsVisualization(ctx, canvasWidth, canvasHeight);
+        break;
+      case 'fizzing_reaction':
+        this.renderFizzingReactionVisualization(ctx, canvasWidth, canvasHeight);
+        break;
     }
   }
 
@@ -949,7 +949,7 @@ export default class ChallengeManager {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderFallingObjectsVisualization(ctx, canvasWidth, canvasHeight) {
+  renderFallingObjectsVisualization(ctx, canvasWidth, _canvasHeight) {
     const centerX = canvasWidth / 2;
     const startY = 180;
     const dropHeight = Math.sin(this.animationTime * 0.002) * 50 + 100;
@@ -978,7 +978,7 @@ export default class ChallengeManager {
    * @param {number} canvasWidth - Canvas width
    * @param {number} canvasHeight - Canvas height
    */
-  renderFizzingReactionVisualization(ctx, canvasWidth, canvasHeight) {
+  renderFizzingReactionVisualization(ctx, canvasWidth, _canvasHeight) {
     const centerX = canvasWidth / 2;
     const centerY = 200;
 
@@ -1003,19 +1003,19 @@ export default class ChallengeManager {
   }
 
   // Additional rendering methods for other experiment types would go here...
-  renderMixingInterface(ctx, canvasWidth, canvasHeight) {
+  renderMixingInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for mixing experiments
   }
 
-  renderExperimentInterface(ctx, canvasWidth, canvasHeight) {
+  renderExperimentInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for interactive experiment interfaces
   }
 
-  renderMatchingInterface(ctx, canvasWidth, canvasHeight) {
+  renderMatchingInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for matching exercises
   }
 
-  renderObservationInterface(ctx, canvasWidth, canvasHeight) {
+  renderObservationInterface(_ctx, _canvasWidth, _canvasHeight) {
     // Implementation for observation exercises
   }
 

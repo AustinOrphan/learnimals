@@ -5,9 +5,11 @@
  * Part of Phase G: Character Customization Studio
  */
 
+/* global FileReader */
+
 // Use global BaseComponent (loaded via script tag in demo page)
 const BaseComponent = window.BaseComponent;
-import { CharacterGenerationAPI, CharacterUtils, characterEvents } from '../index.js';
+import { characterEvents } from '../index.js';
 
 export default class CustomizationPresets extends BaseComponent {
   constructor(options = {}) {
@@ -367,15 +369,15 @@ export default class CustomizationPresets extends BaseComponent {
           <span class="category-label">All Presets</span>
         </button>
         ${Array.from(this.categories.entries())
-    .map(
-      ([id, category]) => `
+          .map(
+            ([id, category]) => `
           <button class="category-tab" data-category="${id}">
             <span class="category-icon">${category.icon}</span>
             <span class="category-label">${category.name}</span>
           </button>
         `
-    )
-    .join('')}
+          )
+          .join('')}
       </div>
     `;
   }
@@ -481,8 +483,8 @@ export default class CustomizationPresets extends BaseComponent {
             Preview
           </button>
           ${
-  !preset.builtIn
-    ? `
+            !preset.builtIn
+              ? `
             <button class="btn-small btn-edit" data-action="edit" data-preset-id="${preset.id}">
               <span>✏️</span>
               Edit
@@ -492,8 +494,8 @@ export default class CustomizationPresets extends BaseComponent {
               Delete
             </button>
           `
-    : ''
-}
+              : ''
+          }
         </div>
       </div>
     `;
@@ -504,8 +506,6 @@ export default class CustomizationPresets extends BaseComponent {
    */
   renderPresetPreview(preset) {
     const customization = preset.customization;
-    const theme = customization.theme || 'educational';
-    const colorScheme = customization.colorScheme || 'primary';
 
     // Generate preview based on customization
     const previewStyle = this.generatePreviewStyle(customization);
@@ -659,20 +659,20 @@ export default class CustomizationPresets extends BaseComponent {
   /**
    * Handle preset actions
    */
-  handleAction(action, presetId, target) {
+  handleAction(action, presetId, _target) {
     switch (action) {
-    case 'apply':
-      this.applyPreset(presetId);
-      break;
-    case 'preview':
-      this.previewPreset(presetId);
-      break;
-    case 'edit':
-      this.editPreset(presetId);
-      break;
-    case 'delete':
-      this.deletePreset(presetId);
-      break;
+      case 'apply':
+        this.applyPreset(presetId);
+        break;
+      case 'preview':
+        this.previewPreset(presetId);
+        break;
+      case 'edit':
+        this.editPreset(presetId);
+        break;
+      case 'delete':
+        this.deletePreset(presetId);
+        break;
     }
   }
 
@@ -943,7 +943,7 @@ export default class CustomizationPresets extends BaseComponent {
   /**
    * Handle customization change
    */
-  handleCustomizationChange(data) {
+  handleCustomizationChange(_data) {
     // Could update UI based on current customization
   }
 
@@ -968,7 +968,7 @@ export default class CustomizationPresets extends BaseComponent {
       stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
     }
 
-    for (const preset of this.customPresets.values()) {
+    for (const _preset of this.customPresets.values()) {
       stats.byCategory.custom = (stats.byCategory.custom || 0) + 1;
     }
 

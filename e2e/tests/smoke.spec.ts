@@ -9,7 +9,7 @@ createSmokeTests({
   customChecks: [
     {
       name: 'heading is visible',
-      check: async (page) => {
+      check: async page => {
         const heading = page.locator('h1').first();
         await page.waitForSelector('h1', { timeout: 5000 });
       },

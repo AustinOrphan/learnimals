@@ -1,82 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test Imports</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Testing Character Generation System Imports</h1>
     <div id="output"></div>
 
     <script type="module">
-        const output = document.getElementById('output');
-        
-        try {
-            output.innerHTML += '<p>Testing basic import...</p>';
-            
-            // Test basic import
-            import { CharacterGenerationAPI, CharacterUtils, characterEvents } from './src/features/character-generation/index.js';
-            
-            output.innerHTML += '<p>✅ Basic import successful</p>';
-            
-            // Test CharacterUtils
-            const subjects = CharacterUtils.getAvailableSubjects();
-            output.innerHTML += `<p>✅ Available subjects: ${subjects.join(', ')}</p>`;
-            
-            // Test ID generation
-            const id = CharacterUtils.generateId();
-            output.innerHTML += `<p>✅ Generated ID: ${id}</p>`;
-            
-            // Test API
-            const stats = CharacterGenerationAPI.getStorageStats();
-            output.innerHTML += `<p>✅ Storage stats: ${JSON.stringify(stats)}</p>`;
-            
-        } catch (error) {
-            output.innerHTML += `<p>❌ Error: ${error.message}</p>`;
-            console.error('Import test failed:', error);
-        }
-        
-        try {
-            output.innerHTML += '<p>Testing component imports...</p>';
-            
-            // Test component imports
-            import('./src/components/BaseComponent.js').then(() => {
-                output.innerHTML += '<p>✅ BaseComponent import successful</p>';
-                
-                return import('./src/features/character-generation/ui/CustomizationStudio.js');
-            }).then(() => {
-                output.innerHTML += '<p>✅ CustomizationStudio import successful</p>';
-                
-                return import('./src/features/character-generation/ui/CharacterCustomizer.js');
-            }).then(() => {
-                output.innerHTML += '<p>✅ CharacterCustomizer import successful</p>';
-                
-                return import('./src/features/character-generation/ui/CustomizationPreview.js');
-            }).then(() => {
-                output.innerHTML += '<p>✅ CustomizationPreview import successful</p>';
-                
-                return import('./src/features/character-generation/ui/CustomizationPresets.js');
-            }).then(() => {
-                output.innerHTML += '<p>✅ CustomizationPresets import successful</p>';
-                
-                return import('./src/features/character-generation/ui/ExportImportDialog.js');
-            }).then(() => {
-                output.innerHTML += '<p>✅ ExportImportDialog import successful</p>';
-                
-                return import('./src/features/character-generation/utils/CustomizationExporter.js');
-            }).then(() => {
-                output.innerHTML += '<p>✅ CustomizationExporter import successful</p>';
-                output.innerHTML += '<p>🎉 All imports successful!</p>';
-            }).catch(error => {
-                output.innerHTML += `<p>❌ Component import error: ${error.message}</p>`;
-                console.error('Component import test failed:', error);
-            });
-            
-        } catch (error) {
-            output.innerHTML += `<p>❌ Component test error: ${error.message}</p>`;
-            console.error('Component test failed:', error);
-        }
+      const output = document.getElementById('output');
+
+      try {
+        output.innerHTML += '<p>Testing basic import...</p>';
+
+        // Test basic import
+        import {
+          CharacterGenerationAPI,
+          CharacterUtils,
+          characterEvents,
+        } from './src/features/character-generation/index.js';
+
+        output.innerHTML += '<p>✅ Basic import successful</p>';
+
+        // Test CharacterUtils
+        const subjects = CharacterUtils.getAvailableSubjects();
+        output.innerHTML += `<p>✅ Available subjects: ${subjects.join(', ')}</p>`;
+
+        // Test ID generation
+        const id = CharacterUtils.generateId();
+        output.innerHTML += `<p>✅ Generated ID: ${id}</p>`;
+
+        // Test API
+        const stats = CharacterGenerationAPI.getStorageStats();
+        output.innerHTML += `<p>✅ Storage stats: ${JSON.stringify(stats)}</p>`;
+      } catch (error) {
+        output.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+        console.error('Import test failed:', error);
+      }
+
+      try {
+        output.innerHTML += '<p>Testing component imports...</p>';
+
+        // Test component imports
+        import('./src/components/BaseComponent.js')
+          .then(() => {
+            output.innerHTML += '<p>✅ BaseComponent import successful</p>';
+
+            return import('./src/features/character-generation/ui/CustomizationStudio.js');
+          })
+          .then(() => {
+            output.innerHTML += '<p>✅ CustomizationStudio import successful</p>';
+
+            return import('./src/features/character-generation/ui/CharacterCustomizer.js');
+          })
+          .then(() => {
+            output.innerHTML += '<p>✅ CharacterCustomizer import successful</p>';
+
+            return import('./src/features/character-generation/ui/CustomizationPreview.js');
+          })
+          .then(() => {
+            output.innerHTML += '<p>✅ CustomizationPreview import successful</p>';
+
+            return import('./src/features/character-generation/ui/CustomizationPresets.js');
+          })
+          .then(() => {
+            output.innerHTML += '<p>✅ CustomizationPresets import successful</p>';
+
+            return import('./src/features/character-generation/ui/ExportImportDialog.js');
+          })
+          .then(() => {
+            output.innerHTML += '<p>✅ ExportImportDialog import successful</p>';
+
+            return import('./src/features/character-generation/utils/CustomizationExporter.js');
+          })
+          .then(() => {
+            output.innerHTML += '<p>✅ CustomizationExporter import successful</p>';
+            output.innerHTML += '<p>🎉 All imports successful!</p>';
+          })
+          .catch(error => {
+            output.innerHTML += `<p>❌ Component import error: ${error.message}</p>`;
+            console.error('Component import test failed:', error);
+          });
+      } catch (error) {
+        output.innerHTML += `<p>❌ Component test error: ${error.message}</p>`;
+        console.error('Component test failed:', error);
+      }
     </script>
-</body>
+  </body>
 </html>

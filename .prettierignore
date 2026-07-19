@@ -38,3 +38,10 @@ Thumbs.db
 # Git files
 .git/
 .gitignore
+# Local parking lot and archives
+.claudeCodeStuffToStashForNow/
+docs/
+.serena/
+playwright-report/
+test-results/
+dedupe-archive/

@@ -188,11 +188,7 @@ class Modal extends BaseComponent {
 
     // Close on Escape key - handled globally, but only for the topmost open modal
     this.escapeHandler = e => {
-      if (
-        e.key === 'Escape' &&
-        this.isOpen &&
-        openModalStack[openModalStack.length - 1] === this
-      ) {
+      if (e.key === 'Escape' && this.isOpen && openModalStack[openModalStack.length - 1] === this) {
         this.close();
       }
     };
@@ -280,7 +276,7 @@ class Modal extends BaseComponent {
   open() {
     // Store reference to currently focused element
     this.previouslyFocused = document.activeElement;
-    
+
     const modal = document.getElementById(this.options.id);
     if (!modal) {
       this.create();
@@ -477,18 +473,18 @@ class Modal extends BaseComponent {
       element:
         this.eventListeners && this.eventListeners.entries
           ? Array.from(this.eventListeners.entries()).map(([key, handlers]) => ({
-            key,
-            eventName: key.split('-')[0],
-            selector: key.split('-')[1] || 'root',
-            count: handlers ? handlers.length : 0,
-          }))
+              key,
+              eventName: key.split('-')[0],
+              selector: key.split('-')[1] || 'root',
+              count: handlers ? handlers.length : 0,
+            }))
           : [],
       document:
         this.documentListeners && this.documentListeners.entries
           ? Array.from(this.documentListeners.entries()).map(([event, handlers]) => ({
-            event,
-            count: handlers ? handlers.length : 0,
-          }))
+              event,
+              count: handlers ? handlers.length : 0,
+            }))
           : [],
     };
   }

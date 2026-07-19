@@ -166,43 +166,43 @@ class GoalTracker extends BaseComponent {
     const startDate = new Date(goal.startDate);
 
     switch (goal.category) {
-    case 'xp':
-      if (goal.type === 'daily') {
-        // Calculate XP earned today
-        return this.calculateDailyXP();
-      } else if (goal.type === 'weekly') {
-        return this.calculateWeeklyXP(startDate);
-      } else if (goal.type === 'monthly') {
-        return this.calculateMonthlyXP(startDate);
-      }
-      return this.progressData.totalXP || 0;
+      case 'xp':
+        if (goal.type === 'daily') {
+          // Calculate XP earned today
+          return this.calculateDailyXP();
+        } else if (goal.type === 'weekly') {
+          return this.calculateWeeklyXP(startDate);
+        } else if (goal.type === 'monthly') {
+          return this.calculateMonthlyXP(startDate);
+        }
+        return this.progressData.totalXP || 0;
 
-    case 'activities':
-      if (goal.type === 'daily') {
-        return this.calculateDailyActivities();
-      } else if (goal.type === 'weekly') {
-        return this.calculateWeeklyActivities(startDate);
-      } else if (goal.type === 'monthly') {
-        return this.calculateMonthlyActivities(startDate);
-      }
-      return this.getTotalActivities();
+      case 'activities':
+        if (goal.type === 'daily') {
+          return this.calculateDailyActivities();
+        } else if (goal.type === 'weekly') {
+          return this.calculateWeeklyActivities(startDate);
+        } else if (goal.type === 'monthly') {
+          return this.calculateMonthlyActivities(startDate);
+        }
+        return this.getTotalActivities();
 
-    case 'streak':
-      return this.progressData.streakDays || 0;
+      case 'streak':
+        return this.progressData.streakDays || 0;
 
-    case 'time':
-      if (goal.type === 'daily') {
-        return this.calculateDailyTime();
-      } else if (goal.type === 'weekly') {
-        return this.calculateWeeklyTime(startDate);
-      }
-      return this.progressData.totalTimeSpent || 0;
+      case 'time':
+        if (goal.type === 'daily') {
+          return this.calculateDailyTime();
+        } else if (goal.type === 'weekly') {
+          return this.calculateWeeklyTime(startDate);
+        }
+        return this.progressData.totalTimeSpent || 0;
 
-    case 'subject':
-      return this.progressData.subjects?.[goal.subject]?.level || 0;
+      case 'subject':
+        return this.progressData.subjects?.[goal.subject]?.level || 0;
 
-    default:
-      return goal.current || 0;
+      default:
+        return goal.current || 0;
     }
   }
 
@@ -373,25 +373,25 @@ class GoalTracker extends BaseComponent {
         <div class="active-goals">
           <h4>Current Goals</h4>
           ${
-  this.activeGoals.length > 0
-    ? `
+            this.activeGoals.length > 0
+              ? `
             <div class="goals-list">
               ${this.activeGoals.map(goal => this.generateGoalCardHTML(goal)).join('')}
             </div>
           `
-    : `
+              : `
             <div class="no-goals">
               <p>No active goals yet!</p>
               <p>Set your first learning goal to get started.</p>
             </div>
           `
-}
+          }
         </div>
 
         <!-- Goal Recommendations -->
         ${
-  this.options.showRecommendations
-    ? `
+          this.options.showRecommendations
+            ? `
           <div class="goal-recommendations">
             <h4>Recommended Goals</h4>
             <div class="recommendations-list">
@@ -399,8 +399,8 @@ class GoalTracker extends BaseComponent {
             </div>
           </div>
         `
-    : ''
-}
+            : ''
+        }
       </div>
     `;
   }
@@ -705,19 +705,19 @@ class GoalTracker extends BaseComponent {
     let endDate;
 
     switch (data.type) {
-    case 'daily':
-      endDate = this.getEndOfDay(now);
-      break;
-    case 'weekly':
-      endDate = new Date(now);
-      endDate.setDate(now.getDate() + 7);
-      break;
-    case 'monthly':
-      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      break;
-    default:
-      endDate = new Date(now);
-      endDate.setDate(now.getDate() + 30); // Default to 30 days
+      case 'daily':
+        endDate = this.getEndOfDay(now);
+        break;
+      case 'weekly':
+        endDate = new Date(now);
+        endDate.setDate(now.getDate() + 7);
+        break;
+      case 'monthly':
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        break;
+      default:
+        endDate = new Date(now);
+        endDate.setDate(now.getDate() + 30); // Default to 30 days
     }
 
     return {

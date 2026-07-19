@@ -78,14 +78,14 @@ class GeographySubject {
 
     // Here you can add specific functionality for each feature
     switch (feature.toLowerCase()) {
-    case 'world map':
-      this.startFirstFeature();
-      break;
-    case 'country explorer':
-      this.startSecondFeature();
-      break;
-    default:
-      this.showComingSoon(feature);
+      case 'world map':
+        this.startFirstFeature();
+        break;
+      case 'country explorer':
+        this.startSecondFeature();
+        break;
+      default:
+        this.showComingSoon(feature);
     }
   }
 
@@ -110,7 +110,7 @@ class GeographySubject {
     const defaultMessages = [
       `Hi! I'm ${this.character.name} the ${this.character.type}!`,
       `Ready to learn some amazing ${this.subjectName.toLowerCase()}?`,
-      'Let\'s explore and have fun together!',
+      "Let's explore and have fun together!",
       'Click on any activity to get started!',
     ];
 

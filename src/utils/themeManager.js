@@ -32,9 +32,16 @@ export class ThemeManager {
   }
 
   init() {
-    // Check if user has saved theme preferences
-    const savedThemeName = localStorage.getItem('learnimals-theme-name');
-    const savedThemeMode = localStorage.getItem('learnimals-theme-mode');
+    // Check if user has saved theme preferences. localStorage can throw
+    // (private browsing, blocked storage) — treat that as no preference.
+    let savedThemeName = null;
+    let savedThemeMode = null;
+    try {
+      savedThemeName = localStorage.getItem('learnimals-theme-name');
+      savedThemeMode = localStorage.getItem('learnimals-theme-mode');
+    } catch {
+      // fall through with defaults
+    }
 
     // Set initial theme based on saved preferences or system preferences
     if (savedThemeName && this.themeColors[savedThemeName]) {
@@ -94,9 +101,13 @@ export class ThemeManager {
     // Set data-theme attribute for compatibility with existing CSS
     document.documentElement.setAttribute('data-theme', mode === 'dark' ? 'night' : name);
 
-    // Save preferences to localStorage
-    localStorage.setItem('learnimals-theme-name', name);
-    localStorage.setItem('learnimals-theme-mode', mode);
+    // Save preferences to localStorage (best-effort; storage can throw)
+    try {
+      localStorage.setItem('learnimals-theme-name', name);
+      localStorage.setItem('learnimals-theme-mode', mode);
+    } catch {
+      // preferences simply do not persist
+    }
 
     // Dispatch event for other components that need to react
     const event = new CustomEvent('themeChanged', {
@@ -139,6 +150,39 @@ export class ThemeManager {
   }
 
   // Get current theme information
+  // Get theme definition
+  getThemeDefinition(themeName) {
+    return this.themeDefinitions[themeName] || null;
+  }
+
+  // Check if current mode is dark
+  isDarkMode() {
+    return this.currentTheme.mode === 'dark';
+  }
+
+  // Get theme colors for a specific theme
+  getThemeColors(themeName) {
+    return this.themeColors[themeName] || null;
+  }
+
+  // Get base colors for a specific mode
+  getBaseColors(mode) {
+    return this.themeBaseColors[mode] || null;
+  }
+
+  // Reset theme to default
+  resetTheme() {
+    this.currentTheme.name = 'default';
+    this.currentTheme.mode = 'light';
+    try {
+      localStorage.removeItem('learnimals-theme-name');
+      localStorage.removeItem('learnimals-theme-mode');
+    } catch {
+      // storage unavailable; in-memory reset still applies
+    }
+    this.applyCurrentTheme();
+  }
+
   getCurrentTheme() {
     return { ...this.currentTheme };
   }

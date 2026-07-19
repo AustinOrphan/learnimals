@@ -47,7 +47,7 @@ const config = {
           learningStyle: 'analytical',
           teachingApproach: 'step-by-step',
           favoriteActivities: ['problem-solving', 'pattern-recognition', 'calculation-games'],
-          catchphrase: 'Let\'s dive into numbers!',
+          catchphrase: "Let's dive into numbers!",
           voiceStyle: 'confident',
         },
         colors: {
@@ -78,7 +78,7 @@ const config = {
           learningStyle: 'experimental',
           teachingApproach: 'hands-on',
           favoriteActivities: ['experiments', 'discovery', 'exploration'],
-          catchphrase: 'Let\'s explore and discover!',
+          catchphrase: "Let's explore and discover!",
           voiceStyle: 'excited',
         },
         colors: {
@@ -171,7 +171,7 @@ const config = {
           learningStyle: 'logical',
           teachingApproach: 'methodical',
           favoriteActivities: ['problem-solving', 'debugging', 'creating'],
-          catchphrase: 'Code is like a puzzle - let\'s solve it together!',
+          catchphrase: "Code is like a puzzle - let's solve it together!",
           voiceStyle: 'thoughtful',
         },
         colors: {

@@ -9,7 +9,7 @@ import { CharacterSchema } from '../schemas/CharacterSchema.js';
 // Inline escapeHTML function to avoid import issues in test environment
 function escapeHTML(input) {
   if (typeof input !== 'string') return input;
-  
+
   return input
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

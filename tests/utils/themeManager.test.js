@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { JSDOM } from 'jsdom';
 
 // Mock theme registry
 const mockThemeRegistry = {
@@ -20,12 +19,12 @@ const mockThemeRegistry = {
   },
   THEME_COLORS: {
     default: {
-      primary: '#007bff',
-      secondary: '#6c757d',
+      light: { primary: '#007bff', secondary: '#6c757d' },
+      dark: { primary: '#0d6efd', secondary: '#495057' },
     },
     nature: {
-      primary: '#28a745',
-      secondary: '#20c997',
+      light: { primary: '#28a745', secondary: '#20c997' },
+      dark: { primary: '#198754', secondary: '#0f5132' },
     },
   },
   THEME_DEFINITIONS: {
@@ -51,11 +50,8 @@ const mockThemeManagerUtils = {
 vi.mock('../../src/utils/themeRegistry.js', () => mockThemeRegistry);
 vi.mock('../../src/utils/themeManagerUtils.js', () => mockThemeManagerUtils);
 
-// Mock DOM
-const dom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>');
-global.document = dom.window.document;
-global.window = dom.window;
-global.matchMedia = vi.fn().mockImplementation(query => ({
+// Ambient vitest jsdom provides document/window; stub matchMedia only
+const matchMediaMock = vi.fn().mockImplementation(query => ({
   matches: false,
   media: query,
   onchange: null,
@@ -65,26 +61,46 @@ global.matchMedia = vi.fn().mockImplementation(query => ({
   removeEventListener: vi.fn(),
   dispatchEvent: vi.fn(),
 }));
+vi.stubGlobal('matchMedia', matchMediaMock);
 
 // Mock localStorage
+const localStorageStore = {};
 const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
+  getItem: vi.fn(key => (key in localStorageStore ? localStorageStore[key] : null)),
+  setItem: vi.fn((key, value) => {
+    localStorageStore[key] = String(value);
+  }),
+  removeItem: vi.fn(key => {
+    delete localStorageStore[key];
+  }),
+  clear: vi.fn(() => {
+    Object.keys(localStorageStore).forEach(k => delete localStorageStore[k]);
+  }),
 };
-global.localStorage = localStorageMock;
-
-// Mock CustomEvent
-global.CustomEvent = dom.window.CustomEvent;
+vi.stubGlobal('localStorage', localStorageMock);
 
 describe('ThemeManager', () => {
   let ThemeManager;
   let themeManager;
 
   beforeEach(async () => {
-    // Reset mocks
+    // Reset mocks and module cache so the singleton constructor
+    // re-executes against fresh spies on every import
     vi.clearAllMocks();
+    vi.resetModules();
+
+    // Re-prime default mock behavior (clearAllMocks keeps overridden
+    // return values, which would leak between tests)
+    mockThemeManagerUtils.getPreferredColorScheme.mockReturnValue('light');
+    vi.stubGlobal('localStorage', localStorageMock);
+    vi.stubGlobal('matchMedia', matchMediaMock);
+    Object.keys(localStorageStore).forEach(k => delete localStorageStore[k]);
+    localStorageMock.getItem.mockImplementation(key =>
+      key in localStorageStore ? localStorageStore[key] : null
+    );
+    localStorageMock.setItem.mockImplementation((key, value) => {
+      localStorageStore[key] = String(value);
+    });
 
     // Reset DOM
     document.body.innerHTML = '';
@@ -162,7 +178,7 @@ describe('ThemeManager', () => {
     it('should apply theme when switched', () => {
       vi.clearAllMocks();
 
-      themeManager.switchTheme('nature');
+      themeManager.setTheme('nature');
 
       expect(mockThemeManagerUtils.applyColors).toHaveBeenCalled();
       expect(mockThemeManagerUtils.setSemanticVariables).toHaveBeenCalled();
@@ -176,7 +192,7 @@ describe('ThemeManager', () => {
     });
 
     it('should switch to valid theme', () => {
-      themeManager.switchTheme('nature');
+      themeManager.setTheme('nature');
 
       expect(themeManager.currentTheme.name).toBe('nature');
       expect(localStorage.setItem).toHaveBeenCalledWith('learnimals-theme-name', 'nature');
@@ -185,7 +201,7 @@ describe('ThemeManager', () => {
     it('should not switch to invalid theme', () => {
       const originalTheme = themeManager.currentTheme.name;
 
-      themeManager.switchTheme('invalid-theme');
+      themeManager.setTheme('invalid-theme');
 
       expect(themeManager.currentTheme.name).toBe(originalTheme);
       expect(localStorage.setItem).not.toHaveBeenCalledWith(
@@ -195,7 +211,7 @@ describe('ThemeManager', () => {
     });
 
     it('should switch theme mode', () => {
-      themeManager.switchMode('dark');
+      themeManager.setMode('dark');
 
       expect(themeManager.currentTheme.mode).toBe('dark');
       expect(localStorage.setItem).toHaveBeenCalledWith('learnimals-theme-mode', 'dark');
@@ -204,7 +220,7 @@ describe('ThemeManager', () => {
     it('should not switch to invalid mode', () => {
       const originalMode = themeManager.currentTheme.mode;
 
-      themeManager.switchMode('invalid-mode');
+      themeManager.setMode('invalid-mode');
 
       expect(themeManager.currentTheme.mode).toBe(originalMode);
       expect(localStorage.setItem).not.toHaveBeenCalledWith(
@@ -332,20 +348,22 @@ describe('ThemeManager', () => {
       const eventListener = vi.fn();
       document.addEventListener('themeChanged', eventListener);
 
-      themeManager.switchTheme('nature');
+      themeManager.setTheme('nature');
 
       expect(eventListener).toHaveBeenCalled();
-      expect(eventListener.mock.calls[0][0].detail.theme).toEqual(themeManager.currentTheme);
+      expect(eventListener.mock.calls[0][0].detail.theme).toBe('nature');
+      expect(eventListener.mock.calls[0][0].detail.mode).toBe('light');
     });
 
     it('should emit themeChanged event on mode switch', () => {
       const eventListener = vi.fn();
       document.addEventListener('themeChanged', eventListener);
 
-      themeManager.switchMode('dark');
+      themeManager.setMode('dark');
 
       expect(eventListener).toHaveBeenCalled();
-      expect(eventListener.mock.calls[0][0].detail.theme).toEqual(themeManager.currentTheme);
+      expect(eventListener.mock.calls[0][0].detail.theme).toBe('default');
+      expect(eventListener.mock.calls[0][0].detail.mode).toBe('dark');
     });
 
     it('should emit themeChanged event on mode toggle', () => {
@@ -425,8 +443,8 @@ describe('ThemeManager', () => {
     });
 
     it('should reset theme to default', () => {
-      themeManager.switchTheme('nature');
-      themeManager.switchMode('dark');
+      themeManager.setTheme('nature');
+      themeManager.setMode('dark');
 
       themeManager.resetTheme();
 

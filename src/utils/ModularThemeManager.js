@@ -7,20 +7,20 @@ import ModuleRegistry from './ModuleRegistry.js';
 class ModularThemeManager extends ThemeManager {
   constructor(options = {}) {
     super();
-    
+
     // Module-specific options
     this.moduleOptions = {
       autoRegisterThemes: options.autoRegisterThemes !== false,
       enableModuleIntegration: options.enableModuleIntegration !== false,
       debugMode: options.debugMode || false,
-      ...options
+      ...options,
     };
-    
+
     // Module registry integration
     this.moduleRegistry = null;
     this.moduleThemes = new Map();
     this.themeModules = new Map();
-    
+
     // Initialize module system
     if (this.moduleOptions.enableModuleIntegration) {
       this.initializeModuleSystem();
@@ -34,19 +34,18 @@ class ModularThemeManager extends ThemeManager {
     try {
       // Get or create global module registry
       this.moduleRegistry = this.getModuleRegistry();
-      
+
       // Register this theme manager as a module
       if (this.moduleOptions.autoRegisterThemes) {
         this.registerAsModule();
       }
-      
+
       // Listen for theme-related module registrations
       if (this.moduleRegistry && typeof this.moduleRegistry.on === 'function') {
-        this.moduleRegistry.on('moduleRegistered', (event) => {
+        this.moduleRegistry.on('moduleRegistered', event => {
           this.handleModuleRegistration(event);
         });
       }
-      
     } catch (error) {
       if (this.moduleOptions.debugMode) {
         console.warn('Module system initialization failed for ModularThemeManager:', error);
@@ -64,18 +63,18 @@ class ModularThemeManager extends ThemeManager {
     if (typeof window !== 'undefined' && window.LearnimalsModuleRegistry) {
       return window.LearnimalsModuleRegistry;
     }
-    
+
     // Create new registry if none exists
     const registry = new ModuleRegistry({
       debugMode: this.moduleOptions.debugMode,
-      strictMode: false // Allow flexible registration during migration
+      strictMode: false, // Allow flexible registration during migration
     });
-    
+
     // Store globally for sharing across components
     if (typeof window !== 'undefined') {
       window.LearnimalsModuleRegistry = registry;
     }
-    
+
     return registry;
   }
 
@@ -84,7 +83,7 @@ class ModularThemeManager extends ThemeManager {
    */
   registerAsModule() {
     if (!this.moduleRegistry) return false;
-    
+
     try {
       return this.moduleRegistry.register('ModularThemeManager', this, {
         type: 'service',
@@ -94,8 +93,8 @@ class ModularThemeManager extends ThemeManager {
           className: 'ModularThemeManager',
           description: 'Modular theme management system',
           capabilities: ['theme-switching', 'module-theme-registration', 'persistence'],
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       });
     } catch (error) {
       if (this.moduleOptions.debugMode) {
@@ -110,13 +109,13 @@ class ModularThemeManager extends ThemeManager {
    * @param {Object} event - Module registration event
    */
   handleModuleRegistration(event) {
-    const { moduleName, module, options } = event;
-    
+    const { moduleName, module: _module, options } = event;
+
     // Check if this module provides themes
     if (options && options.type === 'theme' && options.themes) {
       this.registerModuleThemes(moduleName, options.themes);
     }
-    
+
     // Check if module has theme requirements
     if (options && options.themeRequirements) {
       this.handleThemeRequirements(moduleName, options.themeRequirements);
@@ -135,11 +134,11 @@ class ModularThemeManager extends ThemeManager {
     if (themeModule.light && themeModule.dark && !themeModule.module) {
       return super.registerTheme(name, themeModule);
     }
-    
+
     // Handle module-based theme registration
     try {
       let colorSet;
-      
+
       if (typeof themeModule === 'function') {
         // Theme module is a function that returns color set
         colorSet = themeModule();
@@ -153,19 +152,19 @@ class ModularThemeManager extends ThemeManager {
         // Try to use module directly as color set
         colorSet = themeModule;
       }
-      
+
       if (!colorSet || !colorSet.light || !colorSet.dark) {
         throw new Error('Invalid theme color set: must have light and dark modes');
       }
-      
+
       // Register the theme
       const success = super.registerTheme(name, colorSet);
-      
+
       if (success) {
         // Store module reference
         this.moduleThemes.set(name, themeModule);
         this.themeModules.set(themeModule, name);
-        
+
         // Register in module registry if available
         if (this.moduleRegistry && options.registerInModuleRegistry !== false) {
           this.moduleRegistry.register(`theme-${name}`, themeModule, {
@@ -175,18 +174,17 @@ class ModularThemeManager extends ThemeManager {
               themeName: name,
               autoGenerated: true,
               timestamp: new Date().toISOString(),
-              ...options.metadata
-            }
+              ...options.metadata,
+            },
           });
         }
-        
+
         if (this.moduleOptions.debugMode) {
           console.log(`Successfully registered module theme: ${name}`);
         }
       }
-      
+
       return success;
-      
     } catch (error) {
       if (this.moduleOptions.debugMode) {
         console.error(`Failed to register module theme ${name}:`, error);
@@ -204,7 +202,7 @@ class ModularThemeManager extends ThemeManager {
     Object.entries(themes).forEach(([themeName, themeData]) => {
       const fullThemeName = `${moduleName}-${themeName}`;
       this.registerTheme(fullThemeName, themeData, {
-        metadata: { sourceModule: moduleName }
+        metadata: { sourceModule: moduleName },
       });
     });
   }
@@ -220,11 +218,10 @@ class ModularThemeManager extends ThemeManager {
       const themeModule = await import(themePath);
       const theme = themeModule.default || themeModule;
       const name = themeName || theme.name || themePath.split('/').pop().replace('.js', '');
-      
+
       return this.registerTheme(name, theme, {
-        metadata: { importPath: themePath }
+        metadata: { importPath: themePath },
       });
-      
     } catch (error) {
       if (this.moduleOptions.debugMode) {
         console.error(`Failed to import theme from ${themePath}:`, error);
@@ -247,7 +244,7 @@ class ModularThemeManager extends ThemeManager {
         }
       });
     }
-    
+
     // Apply theme preferences if specified
     if (requirements.preferredTheme && this.themeColors[requirements.preferredTheme]) {
       // Could auto-switch to preferred theme, but this might be too intrusive
@@ -281,16 +278,16 @@ class ModularThemeManager extends ThemeManager {
    */
   getModuleThemes() {
     const moduleThemes = [];
-    
+
     this.moduleThemes.forEach((module, name) => {
       moduleThemes.push({
         name,
         module,
         colors: this.themeColors[name],
-        isModuleTheme: true
+        isModuleTheme: true,
       });
     });
-    
+
     return moduleThemes;
   }
 
@@ -300,16 +297,16 @@ class ModularThemeManager extends ThemeManager {
   applyCurrentTheme() {
     // Call parent implementation
     super.applyCurrentTheme();
-    
+
     // Notify module registry of theme change
     if (this.moduleRegistry && typeof this.moduleRegistry.emit === 'function') {
       this.moduleRegistry.emit('themeChanged', {
         theme: this.currentTheme.name,
         mode: this.currentTheme.mode,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
+
     // Notify theme modules of the change
     const currentThemeModule = this.moduleThemes.get(this.currentTheme.name);
     if (currentThemeModule && typeof currentThemeModule.onThemeApplied === 'function') {
@@ -332,27 +329,27 @@ class ModularThemeManager extends ThemeManager {
     if (!this.themeColors[themeName]) {
       return false;
     }
-    
+
     // Remove from parent theme colors
     delete this.themeColors[themeName];
-    
+
     // Remove module references
     const themeModule = this.moduleThemes.get(themeName);
     if (themeModule) {
       this.moduleThemes.delete(themeName);
       this.themeModules.delete(themeModule);
     }
-    
+
     // Remove from module registry
     if (this.moduleRegistry) {
       this.moduleRegistry.unregister(`theme-${themeName}`);
     }
-    
+
     // Switch to default theme if current theme was unregistered
     if (this.currentTheme.name === themeName) {
       this.setTheme('default');
     }
-    
+
     return true;
   }
 
@@ -363,13 +360,13 @@ class ModularThemeManager extends ThemeManager {
   getCurrentThemeInfo() {
     const baseInfo = super.getCurrentTheme();
     const themeModule = this.moduleThemes.get(baseInfo.name);
-    
+
     return {
       ...baseInfo,
       isModuleTheme: !!themeModule,
       module: themeModule,
       moduleRegistry: !!this.moduleRegistry,
-      availableModuleThemes: this.getModuleThemes().length
+      availableModuleThemes: this.getModuleThemes().length,
     };
   }
 
@@ -382,12 +379,12 @@ class ModularThemeManager extends ThemeManager {
     const results = {
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
-    
+
     try {
       let colorSet;
-      
+
       if (typeof themeModule === 'function') {
         colorSet = themeModule();
       } else if (themeModule.getThemeColors) {
@@ -397,7 +394,7 @@ class ModularThemeManager extends ThemeManager {
       } else {
         colorSet = themeModule;
       }
-      
+
       if (!colorSet) {
         results.errors.push('Theme module does not provide color set');
         results.valid = false;
@@ -406,12 +403,12 @@ class ModularThemeManager extends ThemeManager {
           results.errors.push('Theme module missing light mode colors');
           results.valid = false;
         }
-        
+
         if (!colorSet.dark) {
           results.errors.push('Theme module missing dark mode colors');
           results.valid = false;
         }
-        
+
         // Check for required color properties
         const requiredColors = ['primary', 'background', 'text'];
         ['light', 'dark'].forEach(mode => {
@@ -424,12 +421,11 @@ class ModularThemeManager extends ThemeManager {
           }
         });
       }
-      
     } catch (error) {
       results.errors.push(`Theme validation error: ${error.message}`);
       results.valid = false;
     }
-    
+
     return results;
   }
 

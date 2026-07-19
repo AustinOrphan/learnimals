@@ -223,15 +223,15 @@ class ProgressDashboard extends BaseComponent {
           <div class="dashboard-left">
             <!-- Progress Charts -->
             ${
-  this.options.showCharts
-    ? `
+              this.options.showCharts
+                ? `
               <div class="dashboard-section">
                 <h2>Progress Overview</h2>
                 <div id="progress-charts-container"></div>
               </div>
             `
-    : ''
-}
+                : ''
+            }
 
             <!-- Subject Progress -->
             <div class="dashboard-section">
@@ -246,20 +246,20 @@ class ProgressDashboard extends BaseComponent {
           <div class="dashboard-right">
             <!-- Streak Tracker -->
             ${
-  this.options.showStreaks
-    ? `
+              this.options.showStreaks
+                ? `
               <div class="dashboard-section">
                 <h2>Learning Streak</h2>
                 <div id="streak-tracker-container"></div>
               </div>
             `
-    : ''
-}
+                : ''
+            }
 
             <!-- Recent Achievements -->
             ${
-  this.options.showAchievements
-    ? `
+              this.options.showAchievements
+                ? `
               <div class="dashboard-section">
                 <h2>Recent Achievements</h2>
                 <div id="achievements-container"></div>
@@ -268,20 +268,20 @@ class ProgressDashboard extends BaseComponent {
                 </button>
               </div>
             `
-    : ''
-}
+                : ''
+            }
 
             <!-- Current Goals -->
             ${
-  this.options.showGoals
-    ? `
+              this.options.showGoals
+                ? `
               <div class="dashboard-section">
                 <h2>Current Goals</h2>
                 <div id="goals-container"></div>
               </div>
             `
-    : ''
-}
+                : ''
+            }
           </div>
         </div>
 

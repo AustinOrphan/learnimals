@@ -12,6 +12,6 @@
     ".claudeCodeStuffToStashForNow/**",
     ".claude/**",
     "playwright-report/**",
-    "test-results/**"
-  ]
+    "test-results/**",
+  ],
 }

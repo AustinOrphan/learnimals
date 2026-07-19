@@ -1,25 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minimal Studio Test</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .log { margin: 5px 0; padding: 8px; background: #f5f5f5; border-left: 3px solid #007bff; font-family: monospace; }
-        .error { border-left-color: #dc3545; background: #f8d7da; }
-        .success { border-left-color: #28a745; background: #d4edda; }
-        button { margin: 10px; padding: 10px 20px; }
-        #container { border: 2px solid #ccc; padding: 20px; margin: 20px 0; min-height: 300px; }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .log {
+        margin: 5px 0;
+        padding: 8px;
+        background: #f5f5f5;
+        border-left: 3px solid #007bff;
+        font-family: monospace;
+      }
+      .error {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+      }
+      .success {
+        border-left-color: #28a745;
+        background: #d4edda;
+      }
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+      }
+      #container {
+        border: 2px solid #ccc;
+        padding: 20px;
+        margin: 20px 0;
+        min-height: 300px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Minimal CustomizationStudio Test</h1>
-    
+
     <button id="test-imports">Test Imports</button>
     <button id="test-basecomponent">Test BaseComponent</button>
     <button id="test-studio-minimal">Test Studio (Minimal)</button>
-    
+
     <div id="logs"></div>
     <div id="container"></div>
 
@@ -27,117 +50,117 @@
     <script src="./src/components/BaseComponent.js"></script>
 
     <script type="module">
-        const logs = document.getElementById('logs');
-        const container = document.getElementById('container');
-        
-        function log(message, type = 'log') {
-            const div = document.createElement('div');
-            div.className = `log ${type}`;
-            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
-            logs.appendChild(div);
-            console.log(message);
+      const logs = document.getElementById('logs');
+      const container = document.getElementById('container');
+
+      function log(message, type = 'log') {
+        const div = document.createElement('div');
+        div.className = `log ${type}`;
+        div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+        logs.appendChild(div);
+        console.log(message);
+      }
+
+      document.getElementById('test-imports').addEventListener('click', async () => {
+        log('🔍 Testing import modules...');
+
+        try {
+          // Test individual modules
+          log('Importing CharacterGenerationAPI...');
+          const indexModule = await import('./src/features/character-generation/index.js');
+          log(`✅ Index module: ${Object.keys(indexModule).join(', ')}`, 'success');
+
+          log('Importing CharacterPreviewRenderer...');
+          const rendererModule = await import('./src/features/character-generation/ui/CharacterPreviewRenderer.js');
+          log('✅ CharacterPreviewRenderer imported', 'success');
+
+          log('Importing CharacterCustomizer...');
+          const customizerModule = await import('./src/features/character-generation/ui/CharacterCustomizer.js');
+          log('✅ CharacterCustomizer imported', 'success');
+        } catch (error) {
+          log(`❌ Import error: ${error.message}`, 'error');
+          console.error('Full error:', error);
         }
+      });
 
-        document.getElementById('test-imports').addEventListener('click', async () => {
-            log('🔍 Testing import modules...');
-            
-            try {
-                // Test individual modules
-                log('Importing CharacterGenerationAPI...');
-                const indexModule = await import('./src/features/character-generation/index.js');
-                log(`✅ Index module: ${Object.keys(indexModule).join(', ')}`, 'success');
-                
-                log('Importing CharacterPreviewRenderer...');
-                const rendererModule = await import('./src/features/character-generation/ui/CharacterPreviewRenderer.js');
-                log('✅ CharacterPreviewRenderer imported', 'success');
-                
-                log('Importing CharacterCustomizer...');
-                const customizerModule = await import('./src/features/character-generation/ui/CharacterCustomizer.js');
-                log('✅ CharacterCustomizer imported', 'success');
-                
-            } catch (error) {
-                log(`❌ Import error: ${error.message}`, 'error');
-                console.error('Full error:', error);
-            }
-        });
+      document.getElementById('test-basecomponent').addEventListener('click', () => {
+        log('🔍 Testing BaseComponent...');
 
-        document.getElementById('test-basecomponent').addEventListener('click', () => {
-            log('🔍 Testing BaseComponent...');
-            
-            if (typeof window.BaseComponent !== 'undefined') {
-                log('✅ BaseComponent is available globally', 'success');
-                
-                try {
-                    const testComponent = new window.BaseComponent({
-                        tagName: 'div',
-                        className: 'test-base',
-                        innerHTML: '<p>BaseComponent test works!</p>'
-                    });
-                    
-                    // Check if element is properly created
-                    if (testComponent.element && testComponent.element.tagName) {
-                        log('✅ BaseComponent creates valid DOM elements', 'success');
-                    } else {
-                        log('❌ BaseComponent element is invalid', 'error');
-                    }
-                } catch (error) {
-                    log(`❌ BaseComponent error: ${error.message}`, 'error');
-                }
+        if (typeof window.BaseComponent !== 'undefined') {
+          log('✅ BaseComponent is available globally', 'success');
+
+          try {
+            const testComponent = new window.BaseComponent({
+              tagName: 'div',
+              className: 'test-base',
+              innerHTML: '<p>BaseComponent test works!</p>',
+            });
+
+            // Check if element is properly created
+            if (testComponent.element && testComponent.element.tagName) {
+              log('✅ BaseComponent creates valid DOM elements', 'success');
             } else {
-                log('❌ BaseComponent not available', 'error');
+              log('❌ BaseComponent element is invalid', 'error');
             }
-        });
+          } catch (error) {
+            log(`❌ BaseComponent error: ${error.message}`, 'error');
+          }
+        } else {
+          log('❌ BaseComponent not available', 'error');
+        }
+      });
 
-        document.getElementById('test-studio-minimal').addEventListener('click', async () => {
-            log('🎨 Testing CustomizationStudio (minimal)...');
-            
-            try {
-                if (!window.BaseComponent) {
-                    log('❌ BaseComponent not available for CustomizationStudio', 'error');
-                    return;
-                }
-                
-                log('Step 1: Importing CustomizationStudio...');
-                const { default: CustomizationStudio } = await import('./src/features/character-generation/ui/CustomizationStudio.js');
-                log('✅ CustomizationStudio imported successfully', 'success');
-                
-                log('Step 2: Creating minimal instance...');
-                // Create with minimal options to avoid complex dependencies
-                const studio = new CustomizationStudio({
-                    container: container,
-                    characters: [], // Empty characters list
-                    presets: new Map(),
-                    onCustomizationApplied: (data) => {
-                        log('🎨 Customization applied callback fired', 'success');
-                    },
-                    onClose: () => {
-                        log('✕ Studio closed callback fired');
-                    }
-                });
-                log('✅ CustomizationStudio instance created', 'success');
-                
-                log('Step 3: Testing render method...');
-                studio.render();
-                log('✅ CustomizationStudio rendered without errors', 'success');
-                
-                // Check if content was actually added
-                setTimeout(() => {
-                    if (container.children.length > 0) {
-                        log('✅ Studio content is visible in container', 'success');
-                        log(`Container has ${container.children.length} child elements`);
-                    } else {
-                        log('❌ No content visible in container', 'error');
-                    }
-                }, 100);
-                
-            } catch (error) {
-                log(`❌ CustomizationStudio error: ${error.message}`, 'error');
-                console.error('Full error:', error);
-                console.error('Stack trace:', error.stack);
+      document.getElementById('test-studio-minimal').addEventListener('click', async () => {
+        log('🎨 Testing CustomizationStudio (minimal)...');
+
+        try {
+          if (!window.BaseComponent) {
+            log('❌ BaseComponent not available for CustomizationStudio', 'error');
+            return;
+          }
+
+          log('Step 1: Importing CustomizationStudio...');
+          const { default: CustomizationStudio } = await import(
+            './src/features/character-generation/ui/CustomizationStudio.js'
+          );
+          log('✅ CustomizationStudio imported successfully', 'success');
+
+          log('Step 2: Creating minimal instance...');
+          // Create with minimal options to avoid complex dependencies
+          const studio = new CustomizationStudio({
+            container: container,
+            characters: [], // Empty characters list
+            presets: new Map(),
+            onCustomizationApplied: data => {
+              log('🎨 Customization applied callback fired', 'success');
+            },
+            onClose: () => {
+              log('✕ Studio closed callback fired');
+            },
+          });
+          log('✅ CustomizationStudio instance created', 'success');
+
+          log('Step 3: Testing render method...');
+          studio.render();
+          log('✅ CustomizationStudio rendered without errors', 'success');
+
+          // Check if content was actually added
+          setTimeout(() => {
+            if (container.children.length > 0) {
+              log('✅ Studio content is visible in container', 'success');
+              log(`Container has ${container.children.length} child elements`);
+            } else {
+              log('❌ No content visible in container', 'error');
             }
-        });
+          }, 100);
+        } catch (error) {
+          log(`❌ CustomizationStudio error: ${error.message}`, 'error');
+          console.error('Full error:', error);
+          console.error('Stack trace:', error.stack);
+        }
+      });
 
-        log('🚀 Minimal studio test page loaded. Click buttons to test imports and components.');
+      log('🚀 Minimal studio test page loaded. Click buttons to test imports and components.');
     </script>
-</body>
+  </body>
 </html>

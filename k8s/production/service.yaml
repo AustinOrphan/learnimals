@@ -12,10 +12,10 @@ spec:
     app: learnimals-app
     environment: production
   ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-    protocol: TCP
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
   type: ClusterIP
   sessionAffinity: None
 ---
@@ -32,9 +32,9 @@ spec:
     app: learnimals-app
     environment: production
   ports:
-  - name: http
-    port: 8080
-    targetPort: 8080
-    protocol: TCP
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
   type: ClusterIP
   clusterIP: None

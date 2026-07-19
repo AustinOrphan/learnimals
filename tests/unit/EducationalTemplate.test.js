@@ -4,6 +4,19 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { EducationalTemplate } from '../../src/templates/educational.js';
+import { domBatcher } from '../../src/utils/performanceUtils.js';
+
+// Mock the privacy manager so initialize() does not block on the parental
+// consent modal and data collection is permitted in tests
+vi.mock('../../src/utils/privacyManager.js', () => ({
+  privacyManager: {
+    requiresParentalConsent: vi.fn(() => false),
+    requestParentalConsent: vi.fn(async () => true),
+    isDataCollectionPermitted: vi.fn(() => true),
+    applyDataRetentionPolicy: vi.fn(),
+    sanitizeData: vi.fn(data => data),
+  },
+}));
 
 // Mock console.log for testing
 const originalConsoleLog = console.log;
@@ -102,6 +115,12 @@ describe('EducationalTemplate', () => {
     if (template && template.progressInterval) {
       clearInterval(template.progressInterval);
     }
+    if (template && template.timeInterval) {
+      clearInterval(template.timeInterval);
+    }
+
+    // Drop any batched DOM updates scheduled by the template
+    domBatcher.clear();
 
     // Restore console.log
     console.log = originalConsoleLog;
@@ -120,9 +139,9 @@ describe('EducationalTemplate', () => {
       expect(template.sidebarOpen).toBe(false);
     });
 
-    it('should initialize DOM elements and event listeners', () => {
+    it('should initialize DOM elements and event listeners', async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
 
       expect(template.elements).toBeDefined();
       expect(template.elements.objectivesList).toBeDefined();
@@ -132,9 +151,9 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Learning Objectives', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should render learning objectives', () => {
@@ -153,9 +172,9 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Progress Tracking', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should update session progress', () => {
@@ -163,6 +182,8 @@ describe('EducationalTemplate', () => {
       template.sessionData.correctAnswers = 4;
 
       template.updateProgress();
+      // DOM updates are batched via requestAnimationFrame; flush synchronously
+      domBatcher.flush();
 
       const accuracyValue = document.getElementById('accuracy-value');
       expect(accuracyValue.textContent).toBe('80%');
@@ -179,6 +200,8 @@ describe('EducationalTemplate', () => {
       template.sessionData.correctAnswers = 9;
 
       template.updateProgress();
+      // DOM updates are batched via requestAnimationFrame; flush synchronously
+      domBatcher.flush();
 
       const skillLevel = document.getElementById('skill-level');
       expect(skillLevel.textContent).toBe('Advanced');
@@ -196,9 +219,9 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Sidebar Functionality', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should toggle sidebar visibility', () => {
@@ -220,9 +243,9 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Assessment System', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should show assessment modal', () => {
@@ -242,9 +265,9 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Game Integration', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should set game and listen to events', () => {
@@ -259,9 +282,9 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Educational Features', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should show adaptive feedback', () => {
@@ -292,20 +315,22 @@ describe('EducationalTemplate', () => {
   });
 
   describe('Cleanup', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       template = new EducationalTemplate(gameConfig);
-      template.initialize();
+      await template.initialize();
     });
 
     it('should cleanup properly', () => {
-      const intervalId = template.progressInterval;
+      expect(template.progressInterval).toBeTruthy();
 
       template.destroy();
 
       // Check that interval is cleared (we can't directly test clearInterval,
       // but we can verify the method calls saveSessionData)
       expect(localStorage.setItem).toHaveBeenCalled();
-      expect(console.log).toHaveBeenCalledWith('Educational template destroyed');
+      expect(console.log).toHaveBeenCalledWith(
+        'Educational template destroyed with privacy compliance'
+      );
     });
   });
 });

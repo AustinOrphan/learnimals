@@ -1,4 +1,4 @@
-import { getRandomInt, debounce } from '../../../utils/common.js';
+import { debounce } from '../../../utils/common.js';
 import EcosystemEngine from './EcosystemEngine.js';
 import SpeciesManager from './SpeciesManager.js';
 import HabitatBuilder from './HabitatBuilder.js';
@@ -166,16 +166,16 @@ export default class EcosystemSafariGame {
     const y = event.clientY - rect.top;
 
     switch (event.type) {
-    case 'pointerdown':
-      this.handlePointerDown(x, y, event);
-      break;
-    case 'pointermove':
-      this.handlePointerMove(x, y, event);
-      break;
-    case 'pointerup':
-    case 'pointercancel':
-      this.handlePointerUp(x, y, event);
-      break;
+      case 'pointerdown':
+        this.handlePointerDown(x, y, event);
+        break;
+      case 'pointermove':
+        this.handlePointerMove(x, y, event);
+        break;
+      case 'pointerup':
+      case 'pointercancel':
+        this.handlePointerUp(x, y, event);
+        break;
     }
   }
 
@@ -206,7 +206,7 @@ export default class EcosystemSafariGame {
   /**
    * Handle pointer move events
    */
-  handlePointerMove(x, y, event) {
+  handlePointerMove(x, y, _event) {
     if (this.dragState.isDragging && this.dragState.draggedItem) {
       // Update dragged item position
       this.dragState.draggedItem.x = x - this.dragState.dragOffset.x;
@@ -346,7 +346,7 @@ export default class EcosystemSafariGame {
 
     // Integration point with existing Modal system
     if (window.Modal) {
-      window.Modal.show('Sky\'s Science Safari', message);
+      window.Modal.show("Sky's Science Safari", message);
     }
   }
 
@@ -408,21 +408,21 @@ export default class EcosystemSafariGame {
   }
 
   // Placeholder methods that will be implemented as we build out the subsystems
-  getItemAtPosition(x, y) {
+  getItemAtPosition(_x, _y) {
     return null;
   }
-  updateDropZones(x, y) {}
-  getDropZoneAtPosition(x, y) {
+  updateDropZones(_x, _y) {}
+  getDropZoneAtPosition(_x, _y) {
     return null;
   }
-  isValidDrop(item, zone) {
+  isValidDrop(_item, _zone) {
     return false;
   }
-  handleSuccessfulDrop(item, zone) {}
-  handleFailedDrop(item) {}
+  handleSuccessfulDrop(_item, _zone) {}
+  handleFailedDrop(_item) {}
   updateEcosystem() {}
-  updateParticles(deltaTime) {}
-  updateSpeciesAnimations(deltaTime) {}
+  updateParticles(_deltaTime) {}
+  updateSpeciesAnimations(_deltaTime) {}
   updateEcosystemConnections() {}
   checkLevelCompletion() {}
   renderBackground() {}

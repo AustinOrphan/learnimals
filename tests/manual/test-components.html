@@ -1,26 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test Components</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-        button { margin: 10px; padding: 10px 20px; }
-        #test-container { border: 1px solid #ccc; padding: 20px; margin: 20px 0; min-height: 200px; }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+      }
+      #test-container {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 20px 0;
+        min-height: 200px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Component Test</h1>
     <div id="output"></div>
-    
+
     <button id="test-base">Test BaseComponent</button>
     <button id="test-studio">Test CustomizationStudio</button>
     <button id="test-customizer">Test CharacterCustomizer</button>
-    
+
     <div id="test-container"></div>
 
     <!-- Load BaseComponent globally first -->
@@ -28,78 +49,80 @@
     <script src="./src/components/ui/Modal.js"></script>
 
     <script type="module">
-        const output = document.getElementById('output');
-        const container = document.getElementById('test-container');
-        
-        function addResult(message, type = 'success') {
-            const div = document.createElement('div');
-            div.className = `result ${type}`;
-            div.textContent = message;
-            output.appendChild(div);
+      const output = document.getElementById('output');
+      const container = document.getElementById('test-container');
+
+      function addResult(message, type = 'success') {
+        const div = document.createElement('div');
+        div.className = `result ${type}`;
+        div.textContent = message;
+        output.appendChild(div);
+      }
+
+      // Test BaseComponent
+      document.getElementById('test-base').addEventListener('click', () => {
+        try {
+          if (typeof BaseComponent !== 'undefined') {
+            const testComponent = new BaseComponent({
+              tagName: 'div',
+              className: 'test-component',
+              innerHTML: '<p>BaseComponent works!</p>',
+            });
+            container.innerHTML = '';
+            container.appendChild(testComponent.element);
+            addResult('✅ BaseComponent test passed');
+          } else {
+            addResult('❌ BaseComponent not available', 'error');
+          }
+        } catch (error) {
+          addResult(`❌ BaseComponent error: ${error.message}`, 'error');
         }
+      });
 
-        // Test BaseComponent
-        document.getElementById('test-base').addEventListener('click', () => {
-            try {
-                if (typeof BaseComponent !== 'undefined') {
-                    const testComponent = new BaseComponent({
-                        tagName: 'div',
-                        className: 'test-component',
-                        innerHTML: '<p>BaseComponent works!</p>'
-                    });
-                    container.innerHTML = '';
-                    container.appendChild(testComponent.element);
-                    addResult('✅ BaseComponent test passed');
-                } else {
-                    addResult('❌ BaseComponent not available', 'error');
-                }
-            } catch (error) {
-                addResult(`❌ BaseComponent error: ${error.message}`, 'error');
-            }
-        });
+      // Test CustomizationStudio import
+      document.getElementById('test-studio').addEventListener('click', async () => {
+        try {
+          const { default: CustomizationStudio } = await import(
+            './src/features/character-generation/ui/CustomizationStudio.js'
+          );
+          addResult('✅ CustomizationStudio imported successfully');
 
-        // Test CustomizationStudio import
-        document.getElementById('test-studio').addEventListener('click', async () => {
-            try {
-                const { default: CustomizationStudio } = await import('./src/features/character-generation/ui/CustomizationStudio.js');
-                addResult('✅ CustomizationStudio imported successfully');
-                
-                const studio = new CustomizationStudio({
-                    container: container
-                });
-                addResult('✅ CustomizationStudio instantiated successfully');
-                
-                studio.render();
-                addResult('✅ CustomizationStudio rendered successfully');
-                
-            } catch (error) {
-                addResult(`❌ CustomizationStudio error: ${error.message}`, 'error');
-                console.error('Studio test error:', error);
-            }
-        });
+          const studio = new CustomizationStudio({
+            container: container,
+          });
+          addResult('✅ CustomizationStudio instantiated successfully');
 
-        // Test CharacterCustomizer import
-        document.getElementById('test-customizer').addEventListener('click', async () => {
-            try {
-                const { default: CharacterCustomizer } = await import('./src/features/character-generation/ui/CharacterCustomizer.js');
-                addResult('✅ CharacterCustomizer imported successfully');
-                
-                const customizer = new CharacterCustomizer({
-                    container: container
-                });
-                addResult('✅ CharacterCustomizer instantiated successfully');
-                
-                customizer.render();
-                addResult('✅ CharacterCustomizer rendered successfully');
-                
-            } catch (error) {
-                addResult(`❌ CharacterCustomizer error: ${error.message}`, 'error');
-                console.error('Customizer test error:', error);
-            }
-        });
+          studio.render();
+          addResult('✅ CustomizationStudio rendered successfully');
+        } catch (error) {
+          addResult(`❌ CustomizationStudio error: ${error.message}`, 'error');
+          console.error('Studio test error:', error);
+        }
+      });
 
-        // Initial test
-        addResult('🧪 Component testing page loaded. Click buttons to test components.');
+      // Test CharacterCustomizer import
+      document.getElementById('test-customizer').addEventListener('click', async () => {
+        try {
+          const { default: CharacterCustomizer } = await import(
+            './src/features/character-generation/ui/CharacterCustomizer.js'
+          );
+          addResult('✅ CharacterCustomizer imported successfully');
+
+          const customizer = new CharacterCustomizer({
+            container: container,
+          });
+          addResult('✅ CharacterCustomizer instantiated successfully');
+
+          customizer.render();
+          addResult('✅ CharacterCustomizer rendered successfully');
+        } catch (error) {
+          addResult(`❌ CharacterCustomizer error: ${error.message}`, 'error');
+          console.error('Customizer test error:', error);
+        }
+      });
+
+      // Initial test
+      addResult('🧪 Component testing page loaded. Click buttons to test components.');
     </script>
-</body>
+  </body>
 </html>

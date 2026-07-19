@@ -11,12 +11,12 @@ services:
     image: learnimals:latest
     container_name: learnimals-app
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - NODE_ENV=development
       - APP_VERSION=local
     healthcheck:
-      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      test: ['CMD', '/usr/local/bin/healthcheck.sh']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -30,10 +30,10 @@ services:
       - ./public:/usr/share/nginx/html/public:ro
       - ./index.html:/usr/share/nginx/html/index.html:ro
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   # Local development database (if needed in future)
   # postgres:
@@ -66,7 +66,7 @@ services:
       - ./docker/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
     ports:
-      - "9090:9090"
+      - '9090:9090'
     networks:
       - learnimals-network
     restart: unless-stopped
@@ -82,7 +82,7 @@ services:
       - ./docker/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./docker/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
     ports:
-      - "3000:3000"
+      - '3000:3000'
     networks:
       - learnimals-network
     restart: unless-stopped

@@ -61,40 +61,40 @@ export function trackGameEvent(session, eventData) {
   const { type, correct, score, skillType } = eventData;
 
   switch (type) {
-  case 'answer':
-    session.sessionData.questionsAnswered++;
-    if (correct) {
-      session.sessionData.correctAnswers++;
-    } else {
-      session.sessionData.mistakes++;
-    }
-    session.sessionData.accuracy =
+    case 'answer':
+      session.sessionData.questionsAnswered++;
+      if (correct) {
+        session.sessionData.correctAnswers++;
+      } else {
+        session.sessionData.mistakes++;
+      }
+      session.sessionData.accuracy =
         (session.sessionData.correctAnswers / session.sessionData.questionsAnswered) * 100;
-    break;
+      break;
 
-  case 'hint':
-    session.sessionData.hintsUsed++;
-    break;
+    case 'hint':
+      session.sessionData.hintsUsed++;
+      break;
 
-  case 'score':
-    session.sessionData.score += score || 0;
-    break;
+    case 'score':
+      session.sessionData.score += score || 0;
+      break;
 
-  case 'skill':
-    if (!session.sessionData.skills) {
-      session.sessionData.skills = {};
-    }
-    if (!session.sessionData.skills[skillType]) {
-      session.sessionData.skills[skillType] = {
-        attempts: 0,
-        correct: 0,
-      };
-    }
-    session.sessionData.skills[skillType].attempts++;
-    if (correct) {
-      session.sessionData.skills[skillType].correct++;
-    }
-    break;
+    case 'skill':
+      if (!session.sessionData.skills) {
+        session.sessionData.skills = {};
+      }
+      if (!session.sessionData.skills[skillType]) {
+        session.sessionData.skills[skillType] = {
+          attempts: 0,
+          correct: 0,
+        };
+      }
+      session.sessionData.skills[skillType].attempts++;
+      if (correct) {
+        session.sessionData.skills[skillType].correct++;
+      }
+      break;
   }
 
   // Check for achievements after each event
@@ -195,60 +195,60 @@ function checkGameSpecificEventAchievements(gameId, session, eventData) {
   const { tracker, sessionData } = session;
 
   switch (gameId) {
-  case 'word-scramble':
-    // Long word achievements
-    if (eventData.wordLength >= 7 && eventData.correct) {
-      tracker.checkAchievement('word-scramble-word-wizard');
-    }
-    break;
+    case 'word-scramble':
+      // Long word achievements
+      if (eventData.wordLength >= 7 && eventData.correct) {
+        tracker.checkAchievement('word-scramble-word-wizard');
+      }
+      break;
 
-  case 'number-line-jump':
-    // Complex equation achievements
-    if (eventData.equationType === 'complex' && eventData.correct) {
-      const complexCorrect = (sessionData.complexCorrect || 0) + 1;
-      session.sessionData.complexCorrect = complexCorrect;
-      if (complexCorrect >= 10) {
-        tracker.checkAchievement('number-line-jump-equation-expert');
+    case 'number-line-jump':
+      // Complex equation achievements
+      if (eventData.equationType === 'complex' && eventData.correct) {
+        const complexCorrect = (sessionData.complexCorrect || 0) + 1;
+        session.sessionData.complexCorrect = complexCorrect;
+        if (complexCorrect >= 10) {
+          tracker.checkAchievement('number-line-jump-equation-expert');
+        }
       }
-    }
-    break;
+      break;
 
-  case 'element-match':
-    // Multiple match type achievements
-    if (eventData.matchType && eventData.correct) {
-      if (!sessionData.matchTypes) {
-        session.sessionData.matchTypes = new Set();
+    case 'element-match':
+      // Multiple match type achievements
+      if (eventData.matchType && eventData.correct) {
+        if (!sessionData.matchTypes) {
+          session.sessionData.matchTypes = new Set();
+        }
+        session.sessionData.matchTypes.add(eventData.matchType);
+        if (session.sessionData.matchTypes.size >= 5) {
+          tracker.checkAchievement('element-match-chemistry-champion');
+        }
       }
-      session.sessionData.matchTypes.add(eventData.matchType);
-      if (session.sessionData.matchTypes.size >= 5) {
-        tracker.checkAchievement('element-match-chemistry-champion');
-      }
-    }
-    break;
+      break;
 
-  case 'sentence-builder':
-    // Complex sentence achievements
-    if (eventData.sentenceComplexity === 'complex' && eventData.correct) {
-      const complexSentences = (sessionData.complexSentences || 0) + 1;
-      session.sessionData.complexSentences = complexSentences;
-      if (complexSentences >= 5) {
-        tracker.checkAchievement('sentence-builder-sentence-sculptor');
+    case 'sentence-builder':
+      // Complex sentence achievements
+      if (eventData.sentenceComplexity === 'complex' && eventData.correct) {
+        const complexSentences = (sessionData.complexSentences || 0) + 1;
+        session.sessionData.complexSentences = complexSentences;
+        if (complexSentences >= 5) {
+          tracker.checkAchievement('sentence-builder-sentence-sculptor');
+        }
       }
-    }
-    break;
+      break;
 
-  case 'color-palette':
-    // Color harmony achievements
-    if (eventData.harmonyType && eventData.correct) {
-      if (!sessionData.harmonies) {
-        session.sessionData.harmonies = new Set();
+    case 'color-palette':
+      // Color harmony achievements
+      if (eventData.harmonyType && eventData.correct) {
+        if (!sessionData.harmonies) {
+          session.sessionData.harmonies = new Set();
+        }
+        session.sessionData.harmonies.add(eventData.harmonyType);
+        if (session.sessionData.harmonies.size >= 4) {
+          tracker.checkAchievement('color-palette-harmony-hero');
+        }
       }
-      session.sessionData.harmonies.add(eventData.harmonyType);
-      if (session.sessionData.harmonies.size >= 4) {
-        tracker.checkAchievement('color-palette-harmony-hero');
-      }
-    }
-    break;
+      break;
   }
 }
 
@@ -307,24 +307,24 @@ export function createProgressDisplay(gameId) {
       </div>
     </div>
     ${
-  summary.achievements.recent.length > 0
-    ? `
+      summary.achievements.recent.length > 0
+        ? `
       <div class="recent-achievements">
         <h4>Recent Achievements</h4>
         ${summary.achievements.recent
-    .map(
-      a => `
+          .map(
+            a => `
           <div class="achievement-badge">
             <span class="badge-icon">${a.icon}</span>
             <span class="badge-name">${a.name}</span>
           </div>
         `
-    )
-    .join('')}
+          )
+          .join('')}
       </div>
     `
-    : ''
-}
+        : ''
+    }
   `;
 
   return display;

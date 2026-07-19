@@ -18,20 +18,20 @@ export default [
         fetch: 'readonly',
         performance: 'readonly',
         getComputedStyle: 'readonly',
-        
+
         // Canvas/WebGL globals
         CanvasRenderingContext2D: 'readonly',
         HTMLCanvasElement: 'readonly',
         Image: 'readonly',
-        
+
         // Animation globals
         requestAnimationFrame: 'readonly',
         cancelAnimationFrame: 'readonly',
-        
+
         // Audio globals
         AudioContext: 'readonly',
         webkitAudioContext: 'readonly',
-        
+
         // DOM Events and Elements
         Element: 'readonly',
         HTMLElement: 'readonly',
@@ -40,20 +40,20 @@ export default [
         MouseEvent: 'readonly',
         TouchEvent: 'readonly',
         KeyboardEvent: 'readonly',
-        
+
         // Timing functions
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
-        
+
         // Math and utility globals
         Math: 'readonly',
         parseInt: 'readonly',
         parseFloat: 'readonly',
         isNaN: 'readonly',
         isFinite: 'readonly',
-        
+
         // Additional browser globals
         FormData: 'readonly',
         screen: 'readonly',
@@ -64,58 +64,51 @@ export default [
         Intl: 'readonly',
         Blob: 'readonly',
         URL: 'readonly',
-        
+
         // Observer APIs
         ResizeObserver: 'readonly',
         PerformanceObserver: 'readonly',
         MutationObserver: 'readonly',
         IntersectionObserver: 'readonly',
-        
+
         // Speech API
         SpeechSynthesisUtterance: 'readonly',
         speechSynthesis: 'readonly',
-        
+
         // Module system (for ES modules)
         module: 'readonly',
-        
+
         // Component classes (project-specific)
         BaseComponent: 'readonly',
         createCharacter: 'readonly',
-        
+
         // Additional browser APIs
         indexedDB: 'readonly',
         confirm: 'readonly',
-        Event: 'readonly'
-      }
+        Event: 'readonly',
+      },
     },
     rules: {
       ...js.configs.recommended.rules,
-      
+
       // Allow console.log for development/debugging
       'no-console': 'off',
-      
+
       // Allow unused variables starting with underscore
-      'no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
-      
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+
       // Prefer const for variables that are never reassigned
       'prefer-const': 'warn',
-      
-      // Require semicolons
-      'semi': ['error', 'always'],
-      
-      // Enforce consistent indentation (2 spaces to match existing codebase)
-      'indent': ['error', 2],
-      
-      // Enforce consistent quotes (single quotes)
-      'quotes': ['error', 'single'],
-      
-      // Allow trailing commas in multiline
-      'comma-dangle': ['error', 'only-multiline'],
-      
+
+      // Formatting (semicolons, indentation, quotes, trailing commas) is
+      // owned by Prettier (.prettierrc.json) — stylistic ESLint rules were
+      // removed 2026-07-19 because the two fought over edge cases (3,400+
+      // false errors after a full prettier pass). ESLint owns correctness.
+
       // Enable strict undef checking
       'no-undef': 'error',
-      'no-redeclare': 'warn'
-    }
+      'no-redeclare': 'warn',
+    },
   },
   {
     // Node.js specific configuration for scripts
@@ -130,41 +123,41 @@ export default [
         __filename: 'readonly',
         require: 'readonly',
         module: 'writable',
-        exports: 'writable'
-      }
-    }
+        exports: 'writable',
+      },
+    },
   },
   {
     // Test-specific configuration
     files: ['tests/**/*.js'],
     languageOptions: {
-    globals: {
-    // Vitest globals
-    describe: 'readonly',
-    it: 'readonly',
-    expect: 'readonly',
-    beforeEach: 'readonly',
-    afterEach: 'readonly',
-    beforeAll: 'readonly',
-    afterAll: 'readonly',
-    vi: 'readonly',
-    test: 'readonly',
-    
-    // JSDOM globals for testing
-    global: 'readonly',
-    
-    // Node.js globals for tests
-    process: 'readonly',
-    Buffer: 'readonly',
-    __dirname: 'readonly',
-      __filename: 'readonly',
+      globals: {
+        // Vitest globals
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        vi: 'readonly',
+        test: 'readonly',
+
+        // JSDOM globals for testing
+        global: 'readonly',
+
+        // Node.js globals for tests
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
         require: 'readonly',
-        
+
         // Test utilities
         testUtils: 'readonly',
-        TestDataUtils: 'readonly'
-      }
-    }
+        TestDataUtils: 'readonly',
+      },
+    },
   },
   {
     // Special configuration for character generation test file
@@ -172,8 +165,8 @@ export default [
     languageOptions: {
       globals: {
         process: 'readonly',
-        require: 'readonly'
-      }
-    }
-  }
+        require: 'readonly',
+      },
+    },
+  },
 ];

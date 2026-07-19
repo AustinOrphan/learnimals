@@ -13,9 +13,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+/* global FocusEvent */
+import '../../src/components/AccessibleComponent.js';
+import '../../src/services/accessibility/AccessibilityService.js';
+import '../../src/utils/accessibilityTester.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -155,7 +156,7 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
         { key: 'd', expectedX: 100, direction: 'right' },
       ];
 
-      testMoves.forEach(({ key, expectedX, expectedY, direction }) => {
+      testMoves.forEach(({ key, expectedX, expectedY, direction: _direction }) => {
         const keyEvent = new KeyboardEvent('keydown', {
           key,
           bubbles: true,
@@ -174,7 +175,7 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
           expect(gameState.player.y).toBe(expectedY);
         }
 
-        expect(gameState.actions).toContain(
+        expect(gameState.actions).toContainEqual(
           expect.stringContaining(`moved to (${gameState.player.x}, ${gameState.player.y})`)
         );
       });
@@ -313,7 +314,7 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
 
       expect(spaceEvent.preventDefault).toHaveBeenCalled();
       expect(gameState.score).toBeGreaterThan(0);
-      expect(gameState.actions).toContain(expect.stringContaining('popped bubble worth'));
+      expect(gameState.actions).toContainEqual(expect.stringContaining('popped bubble worth'));
 
       const remainingBubbles = gameContainer.querySelectorAll('.bubble.active').length;
       expect(remainingBubbles).toBe(initialBubbles - 1);
@@ -427,7 +428,7 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
 
         expect(keyEvent.preventDefault).toHaveBeenCalled();
         expect(gameState.selectedAnswer).toBe(expectedAnswer);
-        expect(gameState.actions).toContain(expect.stringContaining(`selected answer ${key}`));
+        expect(gameState.actions).toContainEqual(expect.stringContaining(`selected answer ${key}`));
 
         // Check ARIA state
         const selectedOption = gameContainer.querySelector(`[data-key="${key}"]`);
@@ -969,7 +970,7 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
       gameContainer = testContainer.querySelector('#performance-game');
       let keyCount = 0;
 
-      gameContainer.addEventListener('keydown', e => {
+      gameContainer.addEventListener('keydown', _e => {
         keyCount++;
         const countElement = gameContainer.querySelector('#key-count');
         countElement.textContent = `Keys pressed: ${keyCount}`;

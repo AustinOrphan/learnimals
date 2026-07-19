@@ -6,10 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -126,9 +123,10 @@ describe('ARIA Compliance Tests', () => {
       const buttonWithoutName = document.createElement('button');
       testContainer.appendChild(buttonWithoutName);
 
-      expect(accessibilityTester.hasAccessibleName(buttonWithText)).toBe(true);
-      expect(accessibilityTester.hasAccessibleName(buttonWithLabel)).toBe(true);
-      expect(accessibilityTester.hasAccessibleName(buttonWithoutName)).toBe(false);
+      // hasAccessibleName returns the accessible name (truthy) or a falsy value
+      expect(accessibilityTester.hasAccessibleName(buttonWithText)).toBeTruthy();
+      expect(accessibilityTester.hasAccessibleName(buttonWithLabel)).toBeTruthy();
+      expect(accessibilityTester.hasAccessibleName(buttonWithoutName)).toBeFalsy();
     });
 
     it('should validate form input labels', () => {
@@ -158,9 +156,10 @@ describe('ARIA Compliance Tests', () => {
         get: () => [label],
       });
 
-      expect(accessibilityTester.hasLabel(inputWithLabel)).toBe(true);
-      expect(accessibilityTester.hasLabel(inputWithAriaLabel)).toBe(true);
-      expect(accessibilityTester.hasLabel(inputWithoutLabel)).toBe(false);
+      // hasLabel returns the label source (truthy) or a falsy value
+      expect(accessibilityTester.hasLabel(inputWithLabel)).toBeTruthy();
+      expect(accessibilityTester.hasLabel(inputWithAriaLabel)).toBeTruthy();
+      expect(accessibilityTester.hasLabel(inputWithoutLabel)).toBeFalsy();
     });
 
     it('should validate image alt text', () => {

@@ -233,34 +233,34 @@ class StreakTracker extends BaseComponent {
           <div class="motivation-content">
             <p class="motivation-text">${motivationMessage.text}</p>
             ${
-  nextMilestone
-    ? `
+              nextMilestone
+                ? `
               <p class="next-milestone">
                 ${nextMilestone.daysToGo} more day${nextMilestone.daysToGo !== 1 ? 's' : ''} to reach ${nextMilestone.name}!
               </p>
             `
-    : ''
-}
+                : ''
+            }
           </div>
         </div>
         
         ${
-  this.currentStreak > 0
-    ? `
+          this.currentStreak > 0
+            ? `
           <div class="streak-actions">
             <button class="btn btn--primary btn--sm" id="continue-streak">
               Keep the streak going! ${this.options.emojis.fire}
             </button>
           </div>
         `
-    : `
+            : `
           <div class="streak-actions">
             <button class="btn btn--primary btn--sm" id="start-streak">
               Start your learning streak today!
             </button>
           </div>
         `
-}
+        }
       </div>
     `;
   }
@@ -387,15 +387,15 @@ class StreakTracker extends BaseComponent {
       <div class="tooltip-content">
         <h5>${this.formatDate(entry.date)}</h5>
         ${
-  entry.hasActivity
-    ? `
+          entry.hasActivity
+            ? `
           <p>${entry.activityCount} activities completed</p>
           <p>${entry.timeSpent} minutes spent learning</p>
         `
-    : `
+            : `
           <p>No learning activity</p>
         `
-}
+        }
       </div>
     `;
 
@@ -517,13 +517,13 @@ class StreakTracker extends BaseComponent {
       </div>
       <div class="streak-mini-calendar">
         ${Array.from(this.activityCalendar.values())
-    .slice(-7)
-    .map(
-      entry => `
+          .slice(-7)
+          .map(
+            entry => `
             <div class="mini-day ${this.getActivityLevel(entry)}"></div>
           `
-    )
-    .join('')}
+          )
+          .join('')}
       </div>
     `;
   }

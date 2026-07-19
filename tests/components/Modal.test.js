@@ -655,7 +655,6 @@ describe('Modal Component', () => {
 
       modal.open();
 
-      const escapeHandler = modal.escapeHandler;
       modal.destroy();
 
       // Create new modal to test that old handler is removed

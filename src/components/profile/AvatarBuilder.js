@@ -185,24 +185,24 @@ class AvatarBuilder {
     grid.innerHTML = '';
 
     switch (category) {
-    case 'base':
-      this.loadBases(grid);
-      break;
-    case 'color':
-      this.loadColors(grid);
-      break;
-    case 'eyes':
-      this.loadEyes(grid);
-      break;
-    case 'mouth':
-      this.loadMouths(grid);
-      break;
-    case 'accessories':
-      this.loadAccessories(grid);
-      break;
-    case 'background':
-      this.loadBackgrounds(grid);
-      break;
+      case 'base':
+        this.loadBases(grid);
+        break;
+      case 'color':
+        this.loadColors(grid);
+        break;
+      case 'eyes':
+        this.loadEyes(grid);
+        break;
+      case 'mouth':
+        this.loadMouths(grid);
+        break;
+      case 'accessories':
+        this.loadAccessories(grid);
+        break;
+      case 'background':
+        this.loadBackgrounds(grid);
+        break;
     }
   }
 

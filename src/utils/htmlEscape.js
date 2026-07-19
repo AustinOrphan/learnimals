@@ -10,7 +10,7 @@
  */
 export function escapeHTML(input) {
   if (typeof input !== 'string') return input;
-  
+
   return input
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -28,14 +28,12 @@ export function escapeHTML(input) {
  */
 export function escapeHTMLAttribute(input) {
   if (typeof input !== 'string') return input;
-  
+
   // First do standard HTML escaping
   const escaped = escapeHTML(input);
-  
+
   // Additionally escape backticks and equals signs for attributes
-  return escaped
-    .replace(/`/g, '&#x60;')
-    .replace(/=/g, '&#x3D;');
+  return escaped.replace(/`/g, '&#x60;').replace(/=/g, '&#x3D;');
 }
 
 // ES module export

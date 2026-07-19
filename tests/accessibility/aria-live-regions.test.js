@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
+import '../../src/services/accessibility/AccessibilityService.js';
+import '../../src/components/AccessibleComponent.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({

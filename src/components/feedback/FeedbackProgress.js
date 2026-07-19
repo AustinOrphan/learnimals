@@ -65,8 +65,8 @@ class FeedbackProgress extends BaseComponent {
            data-progress-type="${type}" data-character="${character}">
         
         ${
-  showCharacter
-    ? `
+          showCharacter
+            ? `
           <div class="progress-character">
             <img src="${characterInfo.avatar}" alt="${characterInfo.name}" 
                  class="progress-character-avatar" loading="lazy">
@@ -76,23 +76,23 @@ class FeedbackProgress extends BaseComponent {
             </div>
           </div>
         `
-    : ''
-}
+            : ''
+        }
         
         <div class="progress-content">
           <div class="progress-header">
             <span class="progress-label">${label}</span>
             ${
-  showValue
-    ? `
+              showValue
+                ? `
               <span class="progress-value">
                 <span class="progress-current">${value}</span>
                 <span class="progress-separator">/</span>
                 <span class="progress-max">${max}</span>
               </span>
             `
-    : ''
-}
+                : ''
+            }
           </div>
           
           <div class="progress-bar-container">
@@ -118,36 +118,36 @@ class FeedbackProgress extends BaseComponent {
           </div>
           
           ${
-  type === 'level-up'
-    ? `
+            type === 'level-up'
+              ? `
             <div class="progress-level-indicator">
               <span class="level-badge">Level ${Math.floor(value / (max / 10)) + 1}</span>
             </div>
           `
-    : ''
-}
+              : ''
+          }
           
           ${
-  type === 'streak'
-    ? `
+            type === 'streak'
+              ? `
             <div class="progress-streak-indicator">
               <span class="streak-flame">🔥</span>
               <span class="streak-count">${value} day streak!</span>
             </div>
           `
-    : ''
-}
+              : ''
+          }
           
           ${
-  type === 'achievement'
-    ? `
+            type === 'achievement'
+              ? `
             <div class="progress-achievement-badge">
               <span class="achievement-icon">🏆</span>
               <span class="achievement-text">Achievement Progress</span>
             </div>
           `
-    : ''
-}
+              : ''
+          }
         </div>
       </div>
     `;

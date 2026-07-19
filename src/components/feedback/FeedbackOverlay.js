@@ -74,8 +74,8 @@ class FeedbackOverlay extends BaseComponent {
         <div class="${overlayClass}"></div>
         <div class="feedback-overlay-content">
           ${
-  showCharacter
-    ? `
+            showCharacter
+              ? `
             <div class="feedback-overlay-character" data-character="${character}">
               <div class="character-avatar character-avatar--${character}">
                 <img src="${characterInfo.avatar}" alt="${characterInfo.name}" 
@@ -89,8 +89,8 @@ class FeedbackOverlay extends BaseComponent {
               </div>
             </div>
           `
-    : ''
-}
+              : ''
+          }
           
           <div class="feedback-overlay-main">
             <div class="feedback-overlay-icon">
@@ -102,26 +102,26 @@ class FeedbackOverlay extends BaseComponent {
             </div>
             
             ${
-  type === 'achievement'
-    ? `
+              type === 'achievement'
+                ? `
               <div class="feedback-overlay-achievement">
                 <div class="achievement-badge"></div>
                 <div class="achievement-sparkles"></div>
               </div>
             `
-    : ''
-}
+                : ''
+            }
             
             ${
-  showCloseButton
-    ? `
+              showCloseButton
+                ? `
               <button class="feedback-overlay-close component-button component-button--ghost" 
                       aria-label="Dismiss feedback" type="button">
                 <span aria-hidden="true">&times;</span>
               </button>
             `
-    : ''
-}
+                : ''
+            }
           </div>
         </div>
       </div>
@@ -193,13 +193,13 @@ class FeedbackOverlay extends BaseComponent {
       bella: {
         success: [
           'Wonderful reading! 📚',
-          'You\'re becoming a great reader! 🌟',
+          "You're becoming a great reader! 🌟",
           'Perfect pronunciation! 🎭',
         ],
         error: [
-          'Let\'s try that again together! 💪',
+          "Let's try that again together! 💪",
           'Reading takes practice! 📖',
-          'We\'ll get it next time! 🤗',
+          "We'll get it next time! 🤗",
         ],
         hint: [
           'Think about the sound... 🔤',
@@ -207,20 +207,20 @@ class FeedbackOverlay extends BaseComponent {
           'Sound it out slowly! 🗣️',
         ],
         progress: [
-          'You\'re improving so much! 📈',
+          "You're improving so much! 📈",
           'Great progress, reader! 🚀',
           'Keep up the reading! 📚',
         ],
         achievement: [
           'Amazing reading milestone! 🎉',
-          'You\'re a reading star! ⭐',
+          "You're a reading star! ⭐",
           'Outstanding achievement! 🏆',
         ],
       },
       max: {
         success: ['Math magic! 🎩', 'Numbers are your friend! 🔢', 'Calculating success! 📊'],
         error: [
-          'Let\'s solve this together! 🤔',
+          "Let's solve this together! 🤔",
           'Math needs patience! ⏱️',
           'Try a different approach! 🔄',
         ],
@@ -241,7 +241,7 @@ class FeedbackOverlay extends BaseComponent {
         error: [
           'Science means trying again! 🔬',
           'Every mistake teaches us! 📚',
-          'Let\'s investigate more! 🕵️',
+          "Let's investigate more! 🕵️",
         ],
         hint: ['Observe carefully... 👁️', 'What do you notice? 🤔', 'Form a hypothesis! 💭'],
         progress: [
@@ -256,7 +256,7 @@ class FeedbackOverlay extends BaseComponent {
         error: [
           'Art is about experimenting! 🎭',
           'Every artist makes mistakes! 🖌️',
-          'Let\'s try another way! 🎨',
+          "Let's try another way! 🎨",
         ],
         hint: ['Feel the creativity... 💫', 'What colors speak to you? 🌈', 'Express yourself! 🎨'],
         progress: [
@@ -268,8 +268,8 @@ class FeedbackOverlay extends BaseComponent {
       },
       codecat: {
         success: ['Code compiled! 💻', 'Logic perfect! 🤖', 'Program successful! ⚡'],
-        error: ['Debugging time! 🐛', 'Code needs tweaking! 🔧', 'Let\'s fix this bug! 🛠️'],
-        hint: ['Check your syntax... 📝', 'What\'s the logic? 🤔', 'Step through the code! 👣'],
+        error: ['Debugging time! 🐛', 'Code needs tweaking! 🔧', "Let's fix this bug! 🛠️"],
+        hint: ['Check your syntax... 📝', "What's the logic? 🤔", 'Step through the code! 👣'],
         progress: [
           'Coding skills leveling up! 📈',
           'Programming progress! 💾',

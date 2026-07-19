@@ -7,18 +7,17 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import ariaTestConfig from './aria-test-suite.config.js';
 
-const { validators, utils, matchers, factory, setup } = ariaTestConfig;
+const { validators: _validators, utils, matchers, factory, setup } = ariaTestConfig;
 
 // Extend expect with custom ARIA matchers
 expect.extend(matchers);
 
 describe('Comprehensive ARIA Implementation Tests', () => {
   let testContainer;
-  let liveRegions;
 
   beforeAll(() => {
     testContainer = setup.setupAccessibleDOM();
-    liveRegions = setup.setupLiveRegions();
+    setup.setupLiveRegions();
   });
 
   afterAll(() => {
@@ -240,7 +239,7 @@ describe('Comprehensive ARIA Implementation Tests', () => {
 
       const {
         container: fieldContainer,
-        label,
+        label: _label,
         input,
       } = utils.createAccessibleField('email', {
         label: 'Email Address',

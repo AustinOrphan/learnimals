@@ -496,7 +496,7 @@ export function createKeyboardEventMock() {
       // Simulate default browser behavior for common keys
       if (!keydownEvent.defaultPrevented) {
         switch (key) {
-          case 'Tab':
+          case 'Tab': {
             // Focus next/previous element
             const focusableElements = document.querySelectorAll(
               'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -508,6 +508,7 @@ export function createKeyboardEventMock() {
               nextElement.focus();
             }
             break;
+          }
           case 'Enter':
           case ' ':
             // Activate element
@@ -515,7 +516,7 @@ export function createKeyboardEventMock() {
               element.click();
             }
             break;
-          case 'Escape':
+          case 'Escape': {
             // Close modals, clear focus traps, etc.
             const modal = document.querySelector('[role="dialog"]:not([aria-hidden="true"])');
             if (modal) {
@@ -523,6 +524,7 @@ export function createKeyboardEventMock() {
               modal.setAttribute('aria-hidden', 'true');
             }
             break;
+          }
         }
       }
 

@@ -70,46 +70,35 @@ npm run lint:md         # markdownlint-cli2
 npm run prose:check     # Vale (Microsoft + Google styles)
 
 # Tests (Vitest, jsdom)
-npx vitest run                        # full one-shot run (npm test = watch mode in a TTY)
-npm run test:unit                     # tests/unit/
-npm run test:components               # tests/components/
-npm run test:integration              # tests/integration/
-npm run test:e2e                      # tests/e2e/ — Vitest jsdom "journeys", NOT browser tests
+npm run test:all                      # full one-shot run (npm test = watch mode in a TTY)
+npm run test:unit | test:components | test:integration
+npm run test:accessibility            # the 22-file tests/accessibility suite
 npm run test:performance | test:security
 npx vitest run tests/unit/logger.test.js   # single file
 npm run test:watch | test:ui
 npm run test:coverage                 # v8, 80% thresholds on all four metrics
-npm run test:shard                    # scripts/test-sharding.js (SHARD_COUNT/SHARD_INDEX)
+
+# Browser e2e (Playwright — 30 tests across 5 browser projects)
+npm run test:e2e                      # full matrix; auto-starts npm run serve via webServer
+npm run test:e2e:headed | test:e2e:ui
+npx playwright test --config e2e/playwright.config.ts --project=chromium   # one browser
+npx playwright install                # download browser binaries after Playwright upgrades
 
 # Scaffolding
 npm run generate-subjects -- --subjects=music,geography
 npm run list-templates                # built-ins: music, geography, history, language,
                                       # physics, cooking, environment
 npm run check:duplicates              # iCloud-conflict detector (see Gotchas)
-
-# Browser e2e (Playwright; fixed 2026-07-17 — 30 tests across 5 browser projects)
-npm run test:e2e:playwright           # full matrix; auto-starts npm run serve via webServer
-npm run test:e2e:playwright:headed | :ui
-npx playwright test --config e2e/playwright.config.ts --project=chromium   # one browser
-npx playwright install                # download browser binaries after Playwright upgrades
 ```
 
-### Broken commands — do not assume these work
+Note: `npm test` alone is watch mode; use `npm run test:all` for one-shot.
 
-Verified broken as of 2026-07-17:
+### Current test health (verified 2026-07-18)
 
-- **`npm run test:visual`** — `tests/visual/` does not exist; exits 1. This also hard-fails the
-  visual-regression job in `comprehensive-testing.yml` on every run.
-- **`npm test` alone** is watch mode; use `npx vitest run` for one-shot.
-
-### Current test health (measured 2026-07-17)
-
-Playwright browser suite: 30/30 green (all five browser projects, verified 2026-07-17).
-`npm run test:unit`: 10 of 25 files failing, 118 of 856 tests failing. The suite cannot meet its
-own 80% coverage gates right now. `tests/accessibility/` (22 files, the largest category) has
-**no npm script**; `test:accessibility` misleadingly runs a single jsdom journey file instead.
-`test:all` covers only 5 of ~10 test directories. The committed `coverage-report.json` is a
-year-stale test-results dump (409 failures, paths from the old iCloud checkout) — ignore it.
+**Fully green.** Vitest: 1,928/1,928 across all 73 files (~10s). Playwright: 30/30 across
+chromium, firefox, webkit, mobile-chrome, mobile-safari. The 2026-07 repair effort fixed 401
+failures via fifteen root-cause clusters (see CHANGELOG). Coverage thresholds (80%) are
+configured in `vitest.config.js` but not yet gated in CI — calibrate and enable per PLAN.md.
 
 ## Architecture
 
@@ -195,7 +184,7 @@ _main/
 │   ├── main.js            # homepage confetti only
 │   └── themeInitializer.js # import-free FOUC guard
 ├── public/                # manifest.json, serviceWorker.js, images/
-├── tests/                 # Vitest suites (see Testing) — tests/e2e/ is jsdom, NOT browser
+├── tests/                 # Vitest jsdom suites (unit/components/integration/accessibility/…)
 ├── e2e/                   # Playwright browser tests (spec in e2e/tests/, config sets testDir)
 ├── scripts/               # generateSubjects, checkDuplicates, test-sharding, coverage-report…
 ├── docs/                  # ~126 md files in 12 categories; components doc: docs/ux-design/components.md
@@ -255,38 +244,33 @@ them up automatically.
 
 ## Pre-commit & CI
 
-`.husky/pre-commit`: iCloud-duplicate check (only scans `src/ docs/ tests/`), merge-marker check,
+`.husky/pre-commit`: iCloud-duplicate check (only scans `src/ docs/ tests/`), merge-marker
+check, >1MB warning (contains an **interactive `read -r` prompt** — can hang non-TTY commits),
+TODO scan, `checkDuplicates.js`, then lint-staged (`eslint --fix` + `vitest related --run` on
+src JS; prettier on HTML/CSS; markdownlint + prettier on md).
 
-> 1MB warning (contains an **interactive `read -r` prompt** — can hang non-TTY commits), TODO
-> scan, `checkDuplicates.js`, then lint-staged (`eslint --fix` + `vitest related --run` on src JS;
-> prettier on HTML/CSS; markdownlint + prettier on md). Beware: `vitest related` on a currently
-> red suite can block commits for pre-existing failures.
-
-14 workflows in `.github/workflows/`. The load-bearing ones: `ci.yml` (lint, 4-way sharded
-tests, coverage gates; Node matrix [20, 22, 23] from `.nvmrc`), `e2e.yml` (checks out the
-private `AustinOrphan/e2e-core` repo as the `file:` sibling and builds it; the
-`E2E_CORE_TOKEN` secret holds a fine-grained PAT with Contents: Read on that repo — verified
-green across all three browsers 2026-07-17),
-`comprehensive-testing.yml` (daily cron; pins Node 18; visual job always fails),
-`accessibility.yml`, `lighthouse.yml`, `security.yml` (CodeQL, ZAP, child-safety scans),
-`deploy.yml` (GitHub Pages), `deploy-rolling.yml` (K8s, aspirational), `monitoring.yml` (cron
-**every 15 minutes**). Secrets actually referenced by workflows: `GITHUB_TOKEN`, `SNYK_TOKEN`,
-`SLACK_WEBHOOK_URL`, `LHCI_GITHUB_APP_TOKEN`, `STAGING_KUBECONFIG`, `PRODUCTION_KUBECONFIG` —
-older docs listing FOSSA/DOCKER/GITLEAKS secrets are wrong.
+10 workflows in `.github/workflows/` (overhauled 2026-07-17; four dead ones deleted). Gates:
+`ci.yml` (lint + full Vitest on the `.nvmrc` Node) and `e2e.yml` (Playwright 3-browser matrix).
+Both check out the private `AustinOrphan/e2e-core` repo as the `file:` sibling and build it —
+the `E2E_CORE_TOKEN` secret holds a fine-grained PAT with Contents: Read on that repo, and
+every workflow that runs `npm ci` needs that checkout block. Diagnostic: `security.yml` (ZAP,
+content/child-safety scans), `accessibility.yml`, `lighthouse.yml`, `pr-checks.yml`.
+Dispatch-only until their infrastructure exists: `deploy.yml` (Pages unconfigured),
+`deploy-rolling.yml` (no K8s), `monitoring.yml` (no production domain). `release.yml`
+self-skips without [release] in the commit message.
 
 ## Hidden Context & Gotchas
 
-1. **Two unrelated "e2e" suites.** `npm run test:e2e` = Vitest jsdom journey tests in
-   `tests/e2e/`. Real browser e2e = Playwright in `e2e/` via `test:e2e:playwright` (fixed
-   2026-07-17; 30 tests × 5 browser projects, verified green). Never conflate them.
+1. **"e2e" means Playwright, full stop.** `npm run test:e2e` runs the browser suite in
+   `e2e/`. The old Vitest-jsdom "e2e" suite (`tests/e2e/`) was never runnable (it imported a
+   package that was never installed) and was deleted 2026-07-18.
 2. **iCloud duplicate files are a chronic, first-class problem.** The repo once lived in iCloud
    Drive; sync conflicts created `name 2.ext`-style duplicates. Tooling exists
    (`scripts/checkDuplicates.js`, pre-commit check, `docs/development/MAINTENANCE_GUIDE.md`),
-   yet **55 duplicates are git-tracked right now** (`Dockerfile 2–4`, `Makefile 2–4`,
-   `.nvmrc 2–4`, `.husky/pre-commit 3–4`, dirs `tests/e2e/user-journeys 2/` — whose tests
-   actually execute under `test:e2e` — and `docs/strategic/completed 2/`). The guards miss them
-   because they only scan `src/ docs/ tests/` filenames with extensions. Never create files with
-   spaces/digits suffixes; treat any `name 2.ext`-style filename as a conflict artifact.
+   and the 55 git-tracked duplicates were purged 2026-07-18 — but the guards still only scan
+   `src/ docs/ tests/` filenames with extensions, so root-level and directory-name dupes can
+   slip through again. Never create files with spaces/digits suffixes; treat any
+   `name 2.ext`-style filename as a conflict artifact.
 3. **Docker/K8s/monitoring are aspirational.** `FUTURE-FEATURES.md` explicitly labels them "not
    currently in active use" (older docs presented them as live). K8s is plain manifests in
    `k8s/{staging,production}/` with `envsubst` — **no Kustomize**. The nginx CSP
@@ -297,30 +281,31 @@ older docs listing FOSSA/DOCKER/GITLEAKS secrets are wrong.
    bubblepop and `*-example` pages). Until 2026-07-17 the navbar, homepage CTA, manifest
    shortcuts, and service-worker precache all pointed at the dead `shared/` paths; all fixed,
    but old habits in docs/examples may still show the wrong pattern.
-5. **Known broken imports**: `src/features/progress/{progressReports,progressDashboard,
-goalTracker}.js` import `getRepository` from `../../config/storage.js`, which doesn't exist;
-   `src/components/index.js` barrel fails on FormComponent's missing ES export.
-6. **Vite never happened.** `vite.config.js`, `VITE_SETUP_GUIDE.md`, `vite-demo.html`, and the
-   `@` aliases describe a migration that was never completed — `vite` isn't a dependency and
-   `npm run build` is an echo. Only the Vitest copy of the aliases is live.
+5. **`src/features/progress/` is dead code pending an M2 decision** (see PLAN.md): nothing
+   imports it, `progressDashboard.js` still imports an `authService` that only existed on
+   abandoned auth branches, and the shipped dashboard is `components/ui/GameProgressDashboard`.
+   Its `config/storage.js` dependency was reconstructed 2026-07-18 as a localStorage adapter.
+6. **Vite never happened and its artifacts were deleted 2026-07-18.** `npm run build` remains
+   an intentional no-op (static site). The `@/…` aliases live only in `vitest.config.js` —
+   browser code cannot use them.
 7. **Duplicate/parallel implementations to not "fix" blindly**: two `AchievementSystem.js`
-   (BaseGame imports the `features/progress` one, not `services/achievements`),
-   `utils/progressService.js` vs `services/progress/ProgressService.js`, two `escapeHTML`
-   (`utils/htmlEscape.js` is the security-blessed one), `themeManager` vs `ModularThemeManager`,
-   plus kept `*-old`/`*-original` files. Near-duplicate test files run twice under `test:unit`
-   (e.g. `tests/unit/Card.test.js` vs `tests/unit/components/Card.test.js`).
-8. **An unfinished cleanup is parked in the working tree**: ~107 uncommitted deletions of
-   analysis reports and `multi_agent_system_docs/`, with the same files moved into untracked
-   `.claudeCodeStuffToStashForNow/`. Don't "restore" these deletions or commit them as a side
-   effect of other work.
+   (BaseGame imports the `features/progress` one; the `services/achievements` IndexedDB island
+   has zero importers — deletion candidate in PLAN.md), two `escapeHTML` (`utils/htmlEscape.js`
+   is the security-blessed one), `themeManager` vs `ModularThemeManager`. Same-basename test
+   files (`tests/unit/X.enhanced.test.js` vs `tests/unit/components/X.enhanced.test.js`) are
+   DIFFERENT suites, not copies — consolidation candidates, not deletions.
+8. **`.claudeCodeStuffToStashForNow/` is an untracked local parking lot** holding copies of
+   analysis artifacts whose deletions were committed 2026-07-18. Leave it untracked; never
+   sweep it into a commit.
 9. **History quirks**: a repository-corruption event (~2025-07-28) left orphan-rooted
    `develop`/`hotfix` branches; a single 366-file/+118k-line commit (`ecf3ea7`) introduced most
    of the root debris; a backend/auth direction (remote `feature/phase-0.1-user-authentication`…)
    was abandoned — the app is intentionally serverless.
-10. **Stale docs to distrust**: `CHANGELOG.md` (frozen at 1.0.0/2024), `COVERAGE_TARGET_PLAN.md`,
-    `E2E.md`'s CI claims (no nightly schedule or mobile matrix exists), README's Happy-DOM and
-    `test:navigation` references, and the MIT badge (no LICENSE file exists). `docs/` strategy
-    files exist in triplicate. Trust `package.json`, the configs, and this file's verified notes.
+10. **Doc trust order**: README, CHANGELOG, CONTRIBUTING, E2E.md, and PLAN.md were made
+    truthful 2026-07-18 — PLAN.md is the single current plan and decision log. The `docs/`
+    tree remains a historical archive (excluded from markdownlint); treat its contents as
+    period pieces, not current guidance. When in doubt: `package.json`, the configs, PLAN.md,
+    and this file's verified notes win.
 11. **Security posture**: this is a children's app — `docs/security/COPPA_COMPLIANCE.md` applies;
     XSS prevention via `src/utils/htmlEscape.js` with a dedicated `tests/security/` suite; never
     interpolate unescaped user input into template HTML.

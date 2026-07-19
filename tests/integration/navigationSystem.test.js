@@ -46,9 +46,6 @@ const TimerUtils = {
   },
 };
 
-// Legacy alias for backward compatibility
-const delayWithFakeTimers = TimerUtils.delay;
-
 describe('Navigation System Integration', () => {
   let mockFetch;
   let restoreFetch;

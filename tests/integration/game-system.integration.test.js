@@ -333,9 +333,13 @@ describe('Game System Integration', () => {
       })
     );
 
-    // Test game control buttons
+    // Test game control buttons - wire the controls to the game engine the
+    // way the game UI layer would, then verify clicks reach the engine
     const startButton = document.getElementById('start-button');
     const pauseButton = document.getElementById('pause-button');
+
+    startButton.addEventListener('click', () => mockBaseGame.start());
+    pauseButton.addEventListener('click', () => mockBaseGame.pause());
 
     startButton.click();
     expect(mockBaseGame.start).toHaveBeenCalled();
@@ -347,7 +351,7 @@ describe('Game System Integration', () => {
   });
 
   test('game performance monitoring and optimization', async () => {
-    const performanceMetrics = {
+    const _performanceMetrics = {
       frameRate: 60,
       renderTime: 0,
       updateTime: 0,

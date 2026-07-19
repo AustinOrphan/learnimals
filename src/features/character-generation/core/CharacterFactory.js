@@ -5,10 +5,7 @@
  * Part of Phase D: Character Generator Core
  */
 
-import {
-  DefaultCharacterTemplate,
-  SubjectTemplates,
-} from '../schemas/CharacterSchema.js';
+import { DefaultCharacterTemplate, SubjectTemplates } from '../schemas/CharacterSchema.js';
 import { CharacterValidator } from '../validation/CharacterValidator.js';
 import { CharacterStorage } from '../storage/CharacterStorage.js';
 
@@ -452,7 +449,7 @@ export class CharacterFactory {
     if (!character.personality.traits || character.personality.traits.length === 0) {
       character.personality.traits = ['friendly'];
     }
-    
+
     if (!character.personality.primaryTrait) {
       character.personality.primaryTrait = character.personality.traits[0];
     }
@@ -520,21 +517,21 @@ export class CharacterFactory {
   generateRandomInteractions(character) {
     const subjectPhrases = {
       math: {
-        greetings: ['Let\'s solve some equations!', 'Ready for number fun?', 'Math magic time!'],
+        greetings: ["Let's solve some equations!", 'Ready for number fun?', 'Math magic time!'],
         encouragements: [
-          'You\'re calculating perfectly!',
+          "You're calculating perfectly!",
           'Great problem solving!',
           'Mathematical genius!',
         ],
       },
       science: {
-        greetings: ['Time for discovery!', 'Let\'s experiment!', 'Science adventure awaits!'],
+        greetings: ['Time for discovery!', "Let's experiment!", 'Science adventure awaits!'],
         encouragements: ['Excellent hypothesis!', 'Great observation!', 'Scientific thinking!'],
       },
     };
 
     const phrases = subjectPhrases[character.subject] || {
-      greetings: ['Hello! Ready to learn?', 'Let\'s explore together!', 'Learning time!'],
+      greetings: ['Hello! Ready to learn?', "Let's explore together!", 'Learning time!'],
       encouragements: ['Great work!', 'Keep it up!', 'Excellent effort!'],
     };
 
@@ -679,17 +676,19 @@ export class CharacterFactory {
   }
 
   initializePersonalityTraits() {
+    // Every trait here must be present in the CharacterSchema personality
+    // traits enum, otherwise randomly generated characters fail validation
     return [
       ['friendly', 'encouraging'],
       ['wise', 'patient'],
       ['energetic', 'playful'],
       ['curious', 'methodical'],
       ['creative', 'inspiring'],
-      ['logical', 'systematic'],
+      ['logical', 'methodical'],
       ['adventurous', 'enthusiastic'],
       ['calm', 'helpful'],
-      ['cheerful', 'optimistic'],
-      ['thoughtful', 'caring'],
+      ['playful', 'enthusiastic'],
+      ['patient', 'caring'],
     ];
   }
 

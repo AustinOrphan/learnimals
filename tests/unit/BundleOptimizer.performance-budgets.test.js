@@ -63,7 +63,7 @@ global.document = {
   },
   styleSheets: [],
   readyState: 'complete',
-  dispatchEvent: vi.fn((event) => {
+  dispatchEvent: vi.fn(event => {
     const listeners = global.eventListeners?.get(event.type) || [];
     listeners.forEach(listener => listener(event));
     return true;
@@ -204,7 +204,7 @@ describe('BundleOptimizer - Performance Budgets', () => {
         memory: { max: 50 * 1024 * 1024, unit: 'bytes' },
       };
 
-      Object.entries(budgetTypes).forEach(([type, config]) => {
+      Object.entries(budgetTypes).forEach(([_type, config]) => {
         expect(config).toHaveProperty('unit');
         expect(typeof config.max === 'number' || typeof config.min === 'number').toBe(true);
       });

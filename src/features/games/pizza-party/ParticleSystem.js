@@ -251,29 +251,29 @@ class Particle {
     const lifeRatio = this.life / this.maxLife;
 
     switch (this.type) {
-    case 'burst':
-      this.alpha = lifeRatio;
-      this.scale = 1 + (1 - lifeRatio) * 0.5;
-      break;
+      case 'burst':
+        this.alpha = lifeRatio;
+        this.scale = 1 + (1 - lifeRatio) * 0.5;
+        break;
 
-    case 'confetti':
-      this.alpha = lifeRatio;
-      break;
+      case 'confetti':
+        this.alpha = lifeRatio;
+        break;
 
-    case 'sparkle':
-      this.alpha = Math.sin(lifeRatio * Math.PI);
-      this.scale = 0.5 + Math.sin(lifeRatio * Math.PI * 4) * 0.5;
-      break;
+      case 'sparkle':
+        this.alpha = Math.sin(lifeRatio * Math.PI);
+        this.scale = 0.5 + Math.sin(lifeRatio * Math.PI * 4) * 0.5;
+        break;
 
-    case 'text':
-      this.alpha = lifeRatio;
-      this.scale = 1 + (1 - lifeRatio) * 0.2;
-      break;
+      case 'text':
+        this.alpha = lifeRatio;
+        this.scale = 1 + (1 - lifeRatio) * 0.2;
+        break;
 
-    case 'steam':
-      this.alpha = lifeRatio * 0.6;
-      this.scale = 1 + (1 - lifeRatio) * 2;
-      break;
+      case 'steam':
+        this.alpha = lifeRatio * 0.6;
+        this.scale = 1 + (1 - lifeRatio) * 2;
+        break;
     }
   }
 
@@ -301,25 +301,25 @@ class Particle {
 
     // Draw based on type
     switch (this.type) {
-    case 'burst':
-    case 'sparkle':
-      this.drawCircle(ctx);
-      break;
+      case 'burst':
+      case 'sparkle':
+        this.drawCircle(ctx);
+        break;
 
-    case 'confetti':
-      this.drawConfetti(ctx);
-      break;
+      case 'confetti':
+        this.drawConfetti(ctx);
+        break;
 
-    case 'text':
-      this.drawText(ctx);
-      break;
+      case 'text':
+        this.drawText(ctx);
+        break;
 
-    case 'steam':
-      this.drawSteam(ctx);
-      break;
+      case 'steam':
+        this.drawSteam(ctx);
+        break;
 
-    default:
-      this.drawCircle(ctx);
+      default:
+        this.drawCircle(ctx);
     }
 
     ctx.restore();

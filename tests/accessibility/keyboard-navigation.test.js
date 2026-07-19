@@ -6,10 +6,8 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+/* global FocusEvent */
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -161,7 +159,7 @@ describe('Keyboard Navigation Tests', () => {
         <div id="role-button" role="button" tabindex="0">Role button</div>
       `;
 
-      const elements = testContainer.querySelectorAll('*');
+      testContainer.querySelectorAll('*');
 
       expect(accessibilityTester.isKeyboardAccessible(testContainer.querySelector('#button'))).toBe(
         true

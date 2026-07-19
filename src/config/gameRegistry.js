@@ -228,7 +228,7 @@ export const gameRegistry = [
   {
     id: 'element-match',
     name: 'Element Match Lab',
-    description: 'Match chemical elements with their properties in Sage\'s laboratory!',
+    description: "Match chemical elements with their properties in Sage's laboratory!",
     gameClass: 'ElementMatchGame',
     scriptPath: '/src/features/games/element-match/elementMatch.js',
     styleSheet: '/src/features/games/element-match/elementMatch.css',
@@ -1012,14 +1012,14 @@ export class GameRegistryUtil {
 
       return requiredPlatforms.every(platform => {
         switch (platform) {
-        case 'mobile':
-          return game.features.includes('mobile');
-        case 'desktop':
-          return true; // All games support desktop
-        case 'tablet':
-          return game.features.includes('mobile') || game.features.includes('responsive');
-        default:
-          return false;
+          case 'mobile':
+            return game.features.includes('mobile');
+          case 'desktop':
+            return true; // All games support desktop
+          case 'tablet':
+            return game.features.includes('mobile') || game.features.includes('responsive');
+          default:
+            return false;
         }
       });
     });
@@ -1065,31 +1065,31 @@ export class GameRegistryUtil {
       let aValue, bValue;
 
       switch (sortBy) {
-      case 'name':
-        aValue = a.name.toLowerCase();
-        bValue = b.name.toLowerCase();
-        break;
-      case 'subject':
-        aValue = a.subject.toLowerCase();
-        bValue = b.subject.toLowerCase();
-        break;
-      case 'character':
-        aValue = (a.character || '').toLowerCase();
-        bValue = (b.character || '').toLowerCase();
-        break;
-      case 'features':
-        aValue = a.features ? a.features.length : 0;
-        bValue = b.features ? b.features.length : 0;
-        break;
-      case 'difficulty': {
-        const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
-        aValue = a.difficulty ? Math.min(...a.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
-        bValue = b.difficulty ? Math.min(...b.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
-        break;
-      }
-      default:
-        aValue = a[sortBy] || '';
-        bValue = b[sortBy] || '';
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'subject':
+          aValue = a.subject.toLowerCase();
+          bValue = b.subject.toLowerCase();
+          break;
+        case 'character':
+          aValue = (a.character || '').toLowerCase();
+          bValue = (b.character || '').toLowerCase();
+          break;
+        case 'features':
+          aValue = a.features ? a.features.length : 0;
+          bValue = b.features ? b.features.length : 0;
+          break;
+        case 'difficulty': {
+          const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
+          aValue = a.difficulty ? Math.min(...a.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
+          bValue = b.difficulty ? Math.min(...b.difficulty.map(d => difficultyOrder[d] || 0)) : 0;
+          break;
+        }
+        default:
+          aValue = a[sortBy] || '';
+          bValue = b[sortBy] || '';
       }
 
       if (order === 'desc') {
@@ -1114,40 +1114,40 @@ export class GameRegistryUtil {
       let groupKey;
 
       switch (groupBy) {
-      case 'subject':
-        groupKey = game.subject;
-        break;
-      case 'character':
-        groupKey = game.character || 'Unknown';
-        break;
-      case 'template':
-        groupKey = game.template || 'default';
-        break;
-      case 'difficulty':
-        // Group by primary difficulty (first in array)
-        groupKey = game.difficulty ? game.difficulty[0] : 'Unknown';
-        break;
-      case 'metadata.gameType':
-        groupKey = game.metadata?.gameType || 'Unknown';
-        break;
-      case 'metadata.competencyLevel':
-        groupKey = game.metadata?.competencyLevel || 'Unknown';
-        break;
-      case 'metadata.ageRange':
-        groupKey = game.metadata?.ageRange || 'Unknown';
-        break;
-      default:
-        // Handle nested properties with dot notation
-        if (groupBy.includes('.')) {
-          const keys = groupBy.split('.');
-          let value = game;
-          for (const key of keys) {
-            value = value?.[key];
+        case 'subject':
+          groupKey = game.subject;
+          break;
+        case 'character':
+          groupKey = game.character || 'Unknown';
+          break;
+        case 'template':
+          groupKey = game.template || 'default';
+          break;
+        case 'difficulty':
+          // Group by primary difficulty (first in array)
+          groupKey = game.difficulty ? game.difficulty[0] : 'Unknown';
+          break;
+        case 'metadata.gameType':
+          groupKey = game.metadata?.gameType || 'Unknown';
+          break;
+        case 'metadata.competencyLevel':
+          groupKey = game.metadata?.competencyLevel || 'Unknown';
+          break;
+        case 'metadata.ageRange':
+          groupKey = game.metadata?.ageRange || 'Unknown';
+          break;
+        default:
+          // Handle nested properties with dot notation
+          if (groupBy.includes('.')) {
+            const keys = groupBy.split('.');
+            let value = game;
+            for (const key of keys) {
+              value = value?.[key];
+            }
+            groupKey = value || 'Unknown';
+          } else {
+            groupKey = game[groupBy] || 'Unknown';
           }
-          groupKey = value || 'Unknown';
-        } else {
-          groupKey = game[groupBy] || 'Unknown';
-        }
       }
 
       if (!grouped[groupKey]) {
@@ -1323,23 +1323,6 @@ export class GameRegistryUtil {
   }
 
   /**
-   * Get games by learning objectives
-   * @param {Array|string} objectives - Learning objectives to filter by
-   * @returns {Array} Games with matching learning objectives
-   */
-  static getGamesByLearningObjectives(objectives) {
-    const targetObjectives = Array.isArray(objectives) ? objectives : [objectives];
-
-    return gameRegistry.filter(game => {
-      if (!game.metadata || !game.metadata.learningObjectives) return false;
-
-      return targetObjectives.some(objective =>
-        game.metadata.learningObjectives.includes(objective)
-      );
-    });
-  }
-
-  /**
    * Get games by tags
    * @param {Array|string} tags - Tags to filter by
    * @returns {Array} Games with matching tags
@@ -1351,19 +1334,6 @@ export class GameRegistryUtil {
       if (!game.metadata || !game.metadata.tags) return false;
 
       return targetTags.some(tag => game.metadata.tags.includes(tag));
-    });
-  }
-
-  /**
-   * Get games by age range
-   * @param {string} ageRange - Age range (e.g., '8-10')
-   * @returns {Array} Games suitable for the age range
-   */
-  static getGamesByAgeRange(ageRange) {
-    return gameRegistry.filter(game => {
-      if (!game.metadata || !game.metadata.ageRange) return false;
-
-      return this.isAgeRangeMatch(game.metadata.ageRange, ageRange);
     });
   }
 
@@ -1507,34 +1477,34 @@ export class GameRegistryUtil {
    */
   static exportRegistry(format = 'json') {
     switch (format) {
-    case 'json':
-      return JSON.stringify(gameRegistry, null, 2);
+      case 'json':
+        return JSON.stringify(gameRegistry, null, 2);
 
-    case 'csv': {
-      const headers = [
-        'id',
-        'name',
-        'subject',
-        'character',
-        'difficulty',
-        'features',
-        'template',
-      ];
-      const rows = gameRegistry.map(game => [
-        game.id,
-        game.name,
-        game.subject,
-        game.character,
-        game.difficulty ? game.difficulty.join(';') : '',
-        game.features ? game.features.join(';') : '',
-        game.template,
-      ]);
+      case 'csv': {
+        const headers = [
+          'id',
+          'name',
+          'subject',
+          'character',
+          'difficulty',
+          'features',
+          'template',
+        ];
+        const rows = gameRegistry.map(game => [
+          game.id,
+          game.name,
+          game.subject,
+          game.character,
+          game.difficulty ? game.difficulty.join(';') : '',
+          game.features ? game.features.join(';') : '',
+          game.template,
+        ]);
 
-      return [headers, ...rows].map(row => row.join(',')).join('\n');
-    }
+        return [headers, ...rows].map(row => row.join(',')).join('\n');
+      }
 
-    default:
-      throw new Error(`Unsupported export format: ${format}`);
+      default:
+        throw new Error(`Unsupported export format: ${format}`);
     }
   }
 
@@ -1828,7 +1798,7 @@ export class GameRegistryUtil {
    * @returns {Object} Lesson plan with recommended games
    */
   static generateLessonPlan(criteria) {
-    const { subject, ageRange, objectives, duration = 30 } = criteria;
+    const { subject, ageRange, objectives, duration: _duration = 30 } = criteria;
 
     // Filter games based on criteria
     let recommendedGames = gameRegistry.filter(game => {

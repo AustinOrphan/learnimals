@@ -3,6 +3,8 @@
  * This utility processes templates with URL parameters or provided data
  */
 
+/* global URLSearchParams, NodeFilter */
+
 export default class TemplateProcessor {
   /**
    * Process template variables in HTML content

@@ -19,13 +19,6 @@ const mockLogger = {
   debug: vi.fn(),
 };
 
-// Mock performance utils
-const mockPerformanceMonitor = {
-  startTimer: vi.fn(),
-  endTimer: vi.fn(),
-  logMetric: vi.fn(),
-};
-
 // Define BundleOptimizer class inline to avoid import issues
 class TestBundleOptimizer {
   constructor(options = {}) {
@@ -307,7 +300,7 @@ describe('BundleOptimizer Performance Budgets', () => {
         invalid: { max: 'string', unit: 'bytes', valid: false },
       };
 
-      Object.entries(budgetTypes).forEach(([type, budget]) => {
+      Object.entries(budgetTypes).forEach(([_type, budget]) => {
         const isValid = typeof budget.max === 'number' && budget.max > 0;
         expect(isValid).toBe(budget.valid);
       });

@@ -86,7 +86,7 @@ beforeAll(() => {
   }
 
   // Mock IntersectionObserver
-  global.IntersectionObserver = vi.fn().mockImplementation((callback, options) => ({
+  global.IntersectionObserver = vi.fn().mockImplementation((_callback, _options) => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
     disconnect: vi.fn(),
@@ -94,21 +94,21 @@ beforeAll(() => {
   }));
 
   // Mock ResizeObserver
-  global.ResizeObserver = vi.fn().mockImplementation(callback => ({
+  global.ResizeObserver = vi.fn().mockImplementation(_callback => ({
     observe: vi.fn(),
     unobserve: vi.fn(),
     disconnect: vi.fn(),
   }));
 
   // Mock MutationObserver
-  global.MutationObserver = vi.fn().mockImplementation(callback => ({
+  global.MutationObserver = vi.fn().mockImplementation(_callback => ({
     observe: vi.fn(),
     disconnect: vi.fn(),
     takeRecords: vi.fn(),
   }));
 
   // Mock PerformanceObserver
-  global.PerformanceObserver = vi.fn().mockImplementation(callback => ({
+  global.PerformanceObserver = vi.fn().mockImplementation(_callback => ({
     observe: vi.fn(),
     disconnect: vi.fn(),
     takeRecords: vi.fn(),

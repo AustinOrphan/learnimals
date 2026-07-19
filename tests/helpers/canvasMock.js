@@ -243,22 +243,22 @@ export function createGameCanvasMock(gameType) {
   const baseMock = createCanvas2DMock();
 
   switch (gameType) {
-  case 'ecosystem':
-    baseMock.drawSpecies = vi.fn();
-    baseMock.drawGrid = vi.fn();
-    baseMock.drawConnections = vi.fn();
-    break;
+    case 'ecosystem':
+      baseMock.drawSpecies = vi.fn();
+      baseMock.drawGrid = vi.fn();
+      baseMock.drawConnections = vi.fn();
+      break;
 
-  case 'bubble-pop':
-    baseMock.drawBubble = vi.fn();
-    baseMock.drawExplosion = vi.fn();
-    baseMock.drawParticles = vi.fn();
-    break;
+    case 'bubble-pop':
+      baseMock.drawBubble = vi.fn();
+      baseMock.drawExplosion = vi.fn();
+      baseMock.drawParticles = vi.fn();
+      break;
 
-  case 'word-scramble':
-    baseMock.drawLetterTile = vi.fn();
-    baseMock.drawWordSlot = vi.fn();
-    break;
+    case 'word-scramble':
+      baseMock.drawLetterTile = vi.fn();
+      baseMock.drawWordSlot = vi.fn();
+      break;
   }
 
   return baseMock;

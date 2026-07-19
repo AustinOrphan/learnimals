@@ -447,13 +447,16 @@ export class AccessibilityTester {
       'summary',
     ].join(', ');
 
-    return Array.from(container.querySelectorAll(focusableSelectors));
+    return Array.from(container.querySelectorAll(focusableSelectors)).filter(
+      el => el.getAttribute('tabindex') !== '-1' && !el.closest('[hidden]')
+    );
   }
 
   isKeyboardAccessible(element) {
     // Check if element can receive focus
     const tabIndex = element.getAttribute('tabindex');
     if (tabIndex === '-1') return false;
+    if (element.disabled) return false;
 
     // Check if element is visible
     try {
@@ -560,6 +563,8 @@ export class AccessibilityTester {
     // Simplified check for modals without escape mechanism
     const modals = container.querySelectorAll('[role="dialog"], .modal');
     return Array.from(modals).some(modal => {
+      // Inline style is authoritative and survives mocked getComputedStyle.
+      if (modal.style && modal.style.display === 'none') return false;
       try {
         const style = window.getComputedStyle(modal);
         if (style.display === 'none') return false;
@@ -570,12 +575,13 @@ export class AccessibilityTester {
         }
       }
 
-      // Check for escape mechanisms
-      const closeButton = modal.querySelector('[data-dismiss], .close, .modal-close');
+      // Check for escape mechanisms. Note: `modal.addEventListener` is a
+      // function reference (always truthy) — never use it as a signal.
+      const closeButton = modal.querySelector(
+        '[data-dismiss], .close, .modal-close, #modal-close, [aria-label*="close" i]'
+      );
       const hasEscapeListener =
-        modal.hasAttribute('data-keyboard') ||
-        modal.addEventListener ||
-        window.getEventListeners?.(modal)?.keydown;
+        modal.hasAttribute('data-keyboard') || Boolean(window.getEventListeners?.(modal)?.keydown);
 
       return !closeButton && !hasEscapeListener;
     });
@@ -891,7 +897,10 @@ export class AccessibilityTester {
       { category: 'Focus Management', test: () => this.testFocusManagement(container) },
       { category: 'Color Contrast', test: () => this.testColorContrast(container) },
       { category: 'Form Accessibility', test: () => this.testFormAccessibility(container) },
-      { category: 'Modal/Dialog Accessibility', test: () => this.testModalAccessibility(container) },
+      {
+        category: 'Modal/Dialog Accessibility',
+        test: () => this.testModalAccessibility(container),
+      },
       { category: 'Navigation Accessibility', test: () => this.testLandmarks(container) },
     ];
 

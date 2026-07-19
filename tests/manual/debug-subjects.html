@@ -1,23 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Debug Subjects</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Subject Debug</h1>
     <div id="output"></div>
 
     <script type="module">
-        async function debugSubjects() {
-            const output = document.getElementById('output');
-            
-            try {
-                const { CharacterUtils, SubjectTemplates } = await import('./src/features/character-generation/index.js');
-                
-                const availableSubjects = CharacterUtils.getAvailableSubjects();
-                const subjectKeys = Object.keys(SubjectTemplates);
-                
-                output.innerHTML = `
+      async function debugSubjects() {
+        const output = document.getElementById('output');
+
+        try {
+          const { CharacterUtils, SubjectTemplates } = await import('./src/features/character-generation/index.js');
+
+          const availableSubjects = CharacterUtils.getAvailableSubjects();
+          const subjectKeys = Object.keys(SubjectTemplates);
+
+          output.innerHTML = `
                     <h2>Available Subjects (${availableSubjects.length}):</h2>
                     <ul>${availableSubjects.map(s => `<li>${s}</li>`).join('')}</ul>
                     
@@ -40,14 +40,13 @@
                         <li>environment</li>
                     </ul>
                 `;
-                
-            } catch (error) {
-                output.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-                console.error('Debug error:', error);
-            }
+        } catch (error) {
+          output.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+          console.error('Debug error:', error);
         }
-        
-        debugSubjects();
+      }
+
+      debugSubjects();
     </script>
-</body>
+  </body>
 </html>

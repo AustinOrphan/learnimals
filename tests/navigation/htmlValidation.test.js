@@ -370,7 +370,7 @@ describe('HTML Navigation Validation', () => {
           // Check for aria-label on mobile menu button
           if (
             !content.includes('aria-label="Toggle mobile menu"') &&
-            !content.includes('aria-label=\'Toggle mobile menu\'')
+            !content.includes("aria-label='Toggle mobile menu'")
           ) {
             issues.push({
               file: file.relativePath,
@@ -382,7 +382,7 @@ describe('HTML Navigation Validation', () => {
           // Check for aria-label on nav element
           if (
             !content.includes('aria-label="Main navigation"') &&
-            !content.includes('aria-label=\'Main navigation\'')
+            !content.includes("aria-label='Main navigation'")
           ) {
             issues.push({
               file: file.relativePath,

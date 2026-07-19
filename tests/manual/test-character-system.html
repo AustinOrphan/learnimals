@@ -1,72 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test Character System</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-        .info { background-color: #cce7ff; color: #004085; }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #cce7ff;
+        color: #004085;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Character Generation System Test</h1>
     <div id="output"></div>
 
     <script type="module">
-        const output = document.getElementById('output');
-        
-        function addResult(message, type = 'info') {
-            const div = document.createElement('div');
-            div.className = `result ${type}`;
-            div.textContent = message;
-            output.appendChild(div);
-        }
+      const output = document.getElementById('output');
 
-        async function testCharacterSystem() {
-            try {
-                addResult('Starting character system test...');
-                
-                // Test basic imports
-                const { CharacterGenerationAPI, CharacterUtils } = await import('./src/features/character-generation/index.js');
-                addResult('✅ Successfully imported CharacterGenerationAPI and CharacterUtils', 'success');
-                
-                // Test utility functions
-                const id = CharacterUtils.generateId();
-                addResult(`✅ Generated ID: ${id}`, 'success');
-                
-                const subjects = CharacterUtils.getAvailableSubjects();
-                addResult(`✅ Available subjects: ${subjects.join(', ')}`, 'success');
-                
-                // Test storage stats
-                const stats = CharacterGenerationAPI.getStorageStats();
-                addResult(`✅ Storage stats retrieved: ${stats ? 'Success' : 'Failed'}`, stats ? 'success' : 'error');
-                
-                // Test character creation
-                const result = await CharacterGenerationAPI.createCharacter({
-                    name: 'Test Character',
-                    subject: 'math',
-                    autoSave: false
-                });
-                
-                if (result.success) {
-                    addResult(`✅ Character created successfully: ${result.character.name}`, 'success');
-                } else {
-                    addResult(`❌ Character creation failed: ${result.error}`, 'error');
-                }
-                
-                addResult('🎉 All basic tests passed!', 'success');
-                
-            } catch (error) {
-                addResult(`❌ Test failed: ${error.message}`, 'error');
-                console.error('Character system test error:', error);
-            }
-        }
+      function addResult(message, type = 'info') {
+        const div = document.createElement('div');
+        div.className = `result ${type}`;
+        div.textContent = message;
+        output.appendChild(div);
+      }
 
-        testCharacterSystem();
+      async function testCharacterSystem() {
+        try {
+          addResult('Starting character system test...');
+
+          // Test basic imports
+          const { CharacterGenerationAPI, CharacterUtils } = await import(
+            './src/features/character-generation/index.js'
+          );
+          addResult('✅ Successfully imported CharacterGenerationAPI and CharacterUtils', 'success');
+
+          // Test utility functions
+          const id = CharacterUtils.generateId();
+          addResult(`✅ Generated ID: ${id}`, 'success');
+
+          const subjects = CharacterUtils.getAvailableSubjects();
+          addResult(`✅ Available subjects: ${subjects.join(', ')}`, 'success');
+
+          // Test storage stats
+          const stats = CharacterGenerationAPI.getStorageStats();
+          addResult(`✅ Storage stats retrieved: ${stats ? 'Success' : 'Failed'}`, stats ? 'success' : 'error');
+
+          // Test character creation
+          const result = await CharacterGenerationAPI.createCharacter({
+            name: 'Test Character',
+            subject: 'math',
+            autoSave: false,
+          });
+
+          if (result.success) {
+            addResult(`✅ Character created successfully: ${result.character.name}`, 'success');
+          } else {
+            addResult(`❌ Character creation failed: ${result.error}`, 'error');
+          }
+
+          addResult('🎉 All basic tests passed!', 'success');
+        } catch (error) {
+          addResult(`❌ Test failed: ${error.message}`, 'error');
+          console.error('Character system test error:', error);
+        }
+      }
+
+      testCharacterSystem();
     </script>
-</body>
+  </body>
 </html>

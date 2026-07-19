@@ -25,7 +25,7 @@ class ModularGameLoader {
       gameDefaults: options.gameDefaults || {},
       cacheGames: options.cacheGames !== false,
       maxConcurrentLoads: options.maxConcurrentLoads || 3,
-      ...options
+      ...options,
     };
 
     // Game management
@@ -33,17 +33,17 @@ class ModularGameLoader {
     this.gameInstances = new Map();
     this.loadPromises = new Map();
     this.gameConfigs = new Map();
-    
+
     // Registry integration
     this.moduleRegistry = null;
     this.componentLoader = null;
-    
+
     // Performance tracking
     this.loadTimes = new Map();
     this.gameStats = {
       totalLoaded: 0,
       totalFailed: 0,
-      averageLoadTime: 0
+      averageLoadTime: 0,
     };
 
     this.init();
@@ -56,10 +56,10 @@ class ModularGameLoader {
     if (this.options.enableModuleRegistry) {
       this.initializeModuleRegistry();
     }
-    
+
     this.initializeComponentLoader();
     this.registerBuiltInGames();
-    
+
     if (this.options.debugMode) {
       console.log('ModularGameLoader initialized with options:', this.options);
     }
@@ -72,7 +72,7 @@ class ModularGameLoader {
     try {
       // Get or create global module registry
       this.moduleRegistry = this.getModuleRegistry();
-      
+
       // Register this game loader as a service
       if (this.moduleRegistry) {
         this.moduleRegistry.register('ModularGameLoader', this, {
@@ -83,14 +83,17 @@ class ModularGameLoader {
             className: 'ModularGameLoader',
             description: 'Advanced game loading system with module registry integration',
             capabilities: [
-              'game-loading', 'lifecycle-management', 'performance-tracking',
-              'module-integration', 'concurrent-loading', 'game-caching'
+              'game-loading',
+              'lifecycle-management',
+              'performance-tracking',
+              'module-integration',
+              'concurrent-loading',
+              'game-caching',
             ],
-            timestamp: new Date().toISOString()
-          }
+            timestamp: new Date().toISOString(),
+          },
         });
       }
-      
     } catch (error) {
       if (this.options.debugMode) {
         console.warn('Module registry initialization failed for ModularGameLoader:', error);
@@ -107,18 +110,18 @@ class ModularGameLoader {
     if (typeof window !== 'undefined' && window.LearnimalsModuleRegistry) {
       return window.LearnimalsModuleRegistry;
     }
-    
+
     // Create new registry if none exists
     const registry = new ModuleRegistry({
       debugMode: this.options.debugMode,
-      strictMode: false
+      strictMode: false,
     });
-    
+
     // Store globally for sharing across components
     if (typeof window !== 'undefined') {
       window.LearnimalsModuleRegistry = registry;
     }
-    
+
     return registry;
   }
 
@@ -130,7 +133,7 @@ class ModularGameLoader {
       this.componentLoader = new ComponentLoader({
         basePath: this.options.basePath,
         enableModuleRegistry: this.options.enableModuleRegistry,
-        debugMode: this.options.debugMode
+        debugMode: this.options.debugMode,
       });
     } catch (error) {
       if (this.options.debugMode) {
@@ -153,7 +156,7 @@ class ModularGameLoader {
         difficulty: 'easy',
         path: 'bubble-pop/BubblePop.js',
         cssPath: 'bubble-pop/bubble-pop.css',
-        configPath: 'bubble-pop/config.json'
+        configPath: 'bubble-pop/config.json',
       },
       {
         name: 'word-scramble',
@@ -164,8 +167,8 @@ class ModularGameLoader {
         difficulty: 'medium',
         path: 'word-scramble/WordScramble.js',
         cssPath: 'word-scramble/word-scramble.css',
-        configPath: 'word-scramble/config.json'
-      }
+        configPath: 'word-scramble/config.json',
+      },
     ];
 
     builtInGames.forEach(game => {
@@ -181,7 +184,7 @@ class ModularGameLoader {
   registerGame(gameName, gameConfig) {
     this.gameConfigs.set(gameName, {
       ...gameConfig,
-      registeredAt: new Date().toISOString()
+      registeredAt: new Date().toISOString(),
     });
 
     if (this.options.debugMode) {
@@ -198,7 +201,7 @@ class ModularGameLoader {
    */
   async loadGame(gameName, container, options = {}) {
     const startTime = performance.now();
-    
+
     try {
       // Check if game is already loaded and cached
       if (this.options.cacheGames && this.loadedGames.has(gameName)) {
@@ -225,13 +228,12 @@ class ModularGameLoader {
 
       // Create and return game instance
       const instance = await this.createGameInstance(gameName, container, options);
-      
+
       // Track performance
       const loadTime = performance.now() - startTime;
       this.trackLoadTime(gameName, loadTime);
-      
-      return instance;
 
+      return instance;
     } catch (error) {
       this.gameStats.totalFailed++;
       if (this.options.debugMode) {
@@ -273,7 +275,7 @@ class ModularGameLoader {
     // Mark as loaded
     this.loadedGames.set(gameName, {
       config: gameConfig,
-      loadedAt: new Date().toISOString()
+      loadedAt: new Date().toISOString(),
     });
 
     this.gameStats.totalLoaded++;
@@ -300,7 +302,7 @@ class ModularGameLoader {
         source: 'ModularGameLoader',
         category: this.gameConfigs.get(gameName)?.category || 'unknown',
         path: fullPath,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -332,7 +334,7 @@ class ModularGameLoader {
     try {
       const fullPath = `${this.options.basePath}/${configPath}`;
       const response = await fetch(fullPath);
-      
+
       if (!response.ok) {
         if (this.options.debugMode) {
           console.warn(`Config file not found for ${gameName}: ${fullPath}`);
@@ -341,11 +343,11 @@ class ModularGameLoader {
       }
 
       const config = await response.json();
-      
+
       // Merge with existing game config
       const existingConfig = this.gameConfigs.get(gameName) || {};
       this.gameConfigs.set(gameName, { ...existingConfig, ...config });
-      
+
       return config;
     } catch (error) {
       if (this.options.debugMode) {
@@ -369,15 +371,15 @@ class ModularGameLoader {
       if (gameInfo) {
         const GameClass = gameInfo.module;
         const gameConfig = this.gameConfigs.get(gameName) || {};
-        
+
         const instanceOptions = {
           ...this.options.gameDefaults,
           ...gameConfig,
-          ...options
+          ...options,
         };
 
         const instance = new GameClass(instanceOptions);
-        
+
         // Initialize game in container
         if (typeof instance.init === 'function') {
           await instance.init(container);
@@ -391,7 +393,7 @@ class ModularGameLoader {
           game: instance,
           gameName,
           container,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
         });
 
         return instance;
@@ -433,7 +435,7 @@ class ModularGameLoader {
   getRegisteredGames() {
     return Array.from(this.gameConfigs.entries()).map(([name, config]) => ({
       name,
-      ...config
+      ...config,
     }));
   }
 
@@ -447,7 +449,7 @@ class ModularGameLoader {
       loadedGames: this.loadedGames.size,
       activeInstances: this.gameInstances.size,
       registeredGames: this.gameConfigs.size,
-      averageLoadTime: this.calculateAverageLoadTime()
+      averageLoadTime: this.calculateAverageLoadTime(),
     };
   }
 
@@ -486,7 +488,7 @@ class ModularGameLoader {
     this.loadedGames.clear();
     this.loadPromises.clear();
     this.loadTimes.clear();
-    
+
     // Destroy all active instances
     for (const [_instanceId, instanceData] of this.gameInstances.entries()) {
       if (typeof instanceData.game.destroy === 'function') {
@@ -499,7 +501,7 @@ class ModularGameLoader {
     this.gameStats = {
       totalLoaded: 0,
       totalFailed: 0,
-      averageLoadTime: 0
+      averageLoadTime: 0,
     };
 
     if (this.options.debugMode) {

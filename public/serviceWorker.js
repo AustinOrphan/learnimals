@@ -5,7 +5,7 @@ const ASSETS_TO_CACHE = [
   '/src/pages/index.html',
   '/src/features/subjects/math/math.html',
   '/src/features/subjects/shared/bubblepop.html',
-  
+
   // CSS files (only cache existing CSS)
   '/src/styles/base/styles.css',
   '/src/styles/components/navbar.css',
@@ -14,7 +14,7 @@ const ASSETS_TO_CACHE = [
   '/src/features/subjects/science/science.css',
   '/src/features/subjects/reading/reading.css',
   '/src/features/subjects/art/art.css',
-  
+
   // JavaScript files (only cache existing JS)
   '/src/config.js',
   '/src/main.js',
@@ -34,7 +34,7 @@ const ASSETS_TO_CACHE = [
   '/src/components/layout/themeSwitcher.js',
   '/src/components/ui/Card.js',
   '/src/components/ui/Modal.js',
-  
+
   // Images (core images only)
   './images/logo.png',
   './images/math-shark.png',
@@ -45,18 +45,19 @@ const ASSETS_TO_CACHE = [
   './images/mango-swimming.png',
   './images/rocket.png',
   './images/cody-cat2.png',
-  
+
   // Components
-  '/src/components/layout/navbar.html'
+  '/src/components/layout/navbar.html',
 ];
 
 // Install event - Cache essential assets
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then(cache => {
         console.log('Caching app assets');
-        
+
         // Cache files individually to handle failures gracefully
         const cachePromises = ASSETS_TO_CACHE.map(url => {
           return cache.add(url).catch(error => {
@@ -65,7 +66,7 @@ self.addEventListener('install', event => {
             return null;
           });
         });
-        
+
         return Promise.all(cachePromises);
       })
       .then(() => {
@@ -82,13 +83,19 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   const currentCaches = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
-    }).then(cachesToDelete => {
-      return Promise.all(cachesToDelete.map(cacheToDelete => {
-        return caches.delete(cacheToDelete);
-      }));
-    }).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then(cacheNames => {
+        return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
+      })
+      .then(cachesToDelete => {
+        return Promise.all(
+          cachesToDelete.map(cacheToDelete => {
+            return caches.delete(cacheToDelete);
+          })
+        );
+      })
+      .then(() => self.clients.claim())
   );
 });
 
@@ -115,10 +122,9 @@ self.addEventListener('fetch', event => {
           // Clone the response as it can only be consumed once
           const responseToCache = response.clone();
 
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
 
           return response;
         })
@@ -127,7 +133,7 @@ self.addEventListener('fetch', event => {
           if (event.request.headers.get('accept').includes('text/html')) {
             return caches.match('./offline.html');
           }
-          
+
           console.error('Fetching failed:', error);
           throw error;
         });
@@ -146,18 +152,18 @@ self.addEventListener('sync', event => {
 async function syncContactForm() {
   const db = await openDB();
   const pendingForms = await db.getAll('pending-forms');
-  
+
   // Send each pending form data
-  const sendPromises = pendingForms.map(async (formData) => {
+  const sendPromises = pendingForms.map(async formData => {
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
-      
+
       if (response.ok) {
         await db.delete('pending-forms', formData.id);
       }
@@ -165,7 +171,7 @@ async function syncContactForm() {
       console.error('Form sync failed:', error);
     }
   });
-  
+
   await Promise.all(sendPromises);
 }
 
@@ -173,12 +179,12 @@ async function syncContactForm() {
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('learnimals-offline-db', 1);
-    
+
     request.onupgradeneeded = event => {
       const db = event.target.result;
       db.createObjectStore('pending-forms', { keyPath: 'id', autoIncrement: true });
     };
-    
+
     request.onsuccess = event => resolve(event.target.result);
     request.onerror = event => reject(event.target.error);
   });

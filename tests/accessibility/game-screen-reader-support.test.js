@@ -5,11 +5,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+import '../../src/components/AccessibleComponent.js';
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -41,7 +38,6 @@ vi.mock('../../src/utils/logger.js', () => ({
 describe('Game Screen Reader Support Tests', () => {
   let testContainer;
   let service;
-  let mockTimer;
 
   beforeEach(() => {
     // Set up clean DOM
@@ -51,7 +47,7 @@ describe('Game Screen Reader Support Tests', () => {
     document.body.appendChild(testContainer);
 
     // Mock timers for announcement testing
-    mockTimer = vi.useFakeTimers();
+    vi.useFakeTimers();
 
     // Mock getBoundingClientRect
     Element.prototype.getBoundingClientRect = vi.fn(() => ({
@@ -340,7 +336,7 @@ describe('Game Screen Reader Support Tests', () => {
       const scrambledDisplay = testContainer.querySelector('.scrambled-word');
       const hintButton = testContainer.querySelector('.hint-button');
       const hintContent = testContainer.querySelector('#current-hint');
-      const wordInput = testContainer.querySelector('#word-input');
+      testContainer.querySelector('#word-input');
       const answerStatus = testContainer.querySelector('#answer-status');
       const gameFeedback = testContainer.querySelector('.game-feedback');
       const wordProgress = testContainer.querySelector('.word-progress');
@@ -655,7 +651,7 @@ describe('Game Screen Reader Support Tests', () => {
         </div>
       `;
 
-      const currentPlayer = testContainer.querySelector('.current-player');
+      testContainer.querySelector('.current-player');
       const turnAnnouncements = testContainer.querySelector('.turn-announcements');
       const playerActionFeed = testContainer.querySelector('.player-action-feed');
       const chatAnnouncements = testContainer.querySelector('.chat-announcements');

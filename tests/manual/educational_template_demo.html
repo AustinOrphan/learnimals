@@ -1,442 +1,441 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Educational Template Demo - Math Assessment</title>
-  
-  <!-- Core Learnimals Styles -->
-  <link rel="stylesheet" href="/src/styles/base/variables.css">
-  <link rel="stylesheet" href="/src/styles/base/reset.css">
-  <link rel="stylesheet" href="/src/styles/base/typography.css">
-  <link rel="stylesheet" href="/src/styles/components/buttons.css">
-  <link rel="stylesheet" href="/src/styles/components/cards.css">
-  <link rel="stylesheet" href="/src/styles/components/modals.css">
-  <link rel="stylesheet" href="/src/styles/components/forms.css">
-  <link rel="stylesheet" href="/src/styles/themes/theme-manager.css">
-  
-  <!-- Educational Template Styles -->
-  <link rel="stylesheet" href="/src/templates/educational.css">
-  
-  <style>
-    /* Demo-specific styles */
-    .demo-header {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    
-    .demo-game-area {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      margin: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .math-problem {
-      font-size: 2rem;
-      text-align: center;
-      margin: 2rem 0;
-      padding: 1rem;
-      background: var(--bg-secondary);
-      border-radius: 8px;
-      border-left: 4px solid var(--accent-primary);
-    }
-    
-    .answer-options {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin: 2rem 0;
-    }
-    
-    .answer-btn {
-      padding: 1rem;
-      font-size: 1.2rem;
-      border: 2px solid var(--border-color);
-      background: var(--bg-card);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    .answer-btn:hover {
-      border-color: var(--accent-primary);
-      background: var(--accent-light);
-    }
-    
-    .answer-btn.correct {
-      background: var(--success-light);
-      border-color: var(--success-color);
-    }
-    
-    .answer-btn.incorrect {
-      background: var(--error-light);
-      border-color: var(--error-color);
-    }
-    
-    .problem-status {
-      text-align: center;
-      margin: 1rem 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-  </style>
-</head>
-<body class="educational-template">
-  <!-- Educational Header -->
-  <header class="educational-header" id="educational-header">
-    <div class="header-main">
-      <div class="lesson-context">
-        <h1 class="game-title">Math Assessment - Addition & Subtraction</h1>
-        <div class="learning-objectives">
-          <h3>Learning Objectives</h3>
-          <ul id="objectives-list">
-            <li>Master basic addition facts</li>
-            <li>Practice subtraction skills</li>
-            <li>Build number sense</li>
-            <li>Develop mental math strategies</li>
-          </ul>
-        </div>
-      </div>
-      
-      <div class="progress-overview">
-        <div class="session-progress">
-          <label>Session Progress</label>
-          <div class="progress-bar">
-            <div class="progress-fill" id="session-progress-fill"></div>
-            <span class="progress-text" id="session-progress-text">0%</span>
-          </div>
-        </div>
-        
-        <div class="mastery-indicators">
-          <div class="mastery-item" id="accuracy-indicator">
-            <span class="label">Accuracy</span>
-            <span class="value" id="accuracy-value">-</span>
-          </div>
-          <div class="mastery-item" id="time-indicator">
-            <span class="label">Avg Time</span>
-            <span class="value" id="time-value">-</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="header-controls">
-        <button class="btn btn-secondary" id="toggle-sidebar">
-          <span id="sidebar-toggle-text">Teacher Panel</span>
-        </button>
-        <button class="btn btn-primary" id="assessment-btn">Assessment</button>
-      </div>
-    </div>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Educational Template Demo - Math Assessment</title>
 
-  <!-- Demo Header -->
-  <div class="demo-header">
-    <h1>🎓 Educational Template Demo</h1>
-    <p>Interactive Math Assessment with Learning Analytics</p>
-  </div>
+    <!-- Core Learnimals Styles -->
+    <link rel="stylesheet" href="/src/styles/base/variables.css" />
+    <link rel="stylesheet" href="/src/styles/base/reset.css" />
+    <link rel="stylesheet" href="/src/styles/base/typography.css" />
+    <link rel="stylesheet" href="/src/styles/components/buttons.css" />
+    <link rel="stylesheet" href="/src/styles/components/cards.css" />
+    <link rel="stylesheet" href="/src/styles/components/modals.css" />
+    <link rel="stylesheet" href="/src/styles/components/forms.css" />
+    <link rel="stylesheet" href="/src/styles/themes/theme-manager.css" />
 
-  <!-- Main Content Area -->
-  <div class="educational-main">
-    <!-- Educational Sidebar -->
-    <aside class="educational-sidebar" id="educational-sidebar">
-      <div class="sidebar-content">
-        <div class="sidebar-section">
-          <h3>Standards Alignment</h3>
-          <div id="standards-list">
-            <div class="standard-item">Common Core K.OA.5 - Add and subtract within 5</div>
-            <div class="standard-item">Common Core 1.OA.6 - Add and subtract within 20</div>
-            <div class="standard-item">State Standard MA.1.1 - Mental math strategies</div>
-          </div>
-        </div>
-        
-        <div class="sidebar-section">
-          <h3>Student Progress</h3>
-          <div class="student-metrics">
-            <div class="metric-item">
-              <label>Questions Attempted</label>
-              <span id="questions-attempted">0</span>
-            </div>
-            <div class="metric-item">
-              <label>Correct Answers</label>
-              <span id="correct-answers">0</span>
-            </div>
-            <div class="metric-item">
-              <label>Time Spent</label>
-              <span id="time-spent">0:00</span>
-            </div>
-            <div class="metric-item">
-              <label>Skill Level</label>
-              <span id="skill-level">Beginner</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="sidebar-section">
-          <h3>Teacher Notes</h3>
-          <textarea id="teacher-notes" placeholder="Student shows good understanding of addition facts. May need more practice with subtraction..."></textarea>
-          <button class="btn btn-sm btn-secondary" id="save-notes">Save Notes</button>
-        </div>
-        
-        <div class="sidebar-section">
-          <h3>Quick Actions</h3>
-          <button class="btn btn-sm btn-outline" id="generate-report">Generate Report</button>
-          <button class="btn btn-sm btn-outline" id="export-data">Export Data</button>
-          <button class="btn btn-sm btn-outline" id="reset-session">Reset Session</button>
-        </div>
-      </div>
-    </aside>
+    <!-- Educational Template Styles -->
+    <link rel="stylesheet" href="/src/templates/educational.css" />
 
-    <!-- Game Content Area -->
-    <main class="game-content" id="game-content">
-      <!-- Learning Scaffolding -->
-      <div class="learning-scaffold" id="learning-scaffold">
-        <div class="hint-system">
-          <button class="hint-btn" id="hint-btn">💡 Need a hint?</button>
-          <div class="hint-content" id="hint-content" style="display: none;">
-            Try counting on your fingers or using mental visualization!
-          </div>
-        </div>
-        
-        <div class="progress-indicator">
-          <span class="current-objective" id="current-objective">Practice addition and subtraction</span>
-        </div>
-      </div>
-      
-      <!-- Demo Game Container -->
-      <div class="demo-game-area">
-        <div class="math-problem" id="math-problem">
-          3 + 4 = ?
-        </div>
-        
-        <div class="problem-status" id="problem-status">
-          Choose the correct answer:
-        </div>
-        
-        <div class="answer-options" id="answer-options">
-          <button class="answer-btn" data-answer="6">6</button>
-          <button class="answer-btn" data-answer="7">7</button>
-          <button class="answer-btn" data-answer="8">8</button>
-          <button class="answer-btn" data-answer="5">5</button>
-        </div>
-        
-        <div style="text-align: center; margin-top: 2rem;">
-          <button class="btn btn-primary" id="next-problem" style="display: none;">Next Problem</button>
-        </div>
-      </div>
-      
-      <!-- Educational Controls -->
-      <div class="educational-controls">
-        <div class="session-controls">
-          <button class="btn btn-secondary" id="pause-btn">⏸️ Pause</button>
-          <button class="btn btn-secondary" id="skip-btn">⏭️ Skip Question</button>
-          <button class="btn btn-primary" id="check-understanding">Check Understanding</button>
-        </div>
-        
-        <div class="adaptive-feedback" id="adaptive-feedback">
-          Welcome! Let's practice some math problems together.
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- Educational Footer -->
-  <footer class="educational-footer">
-    <div class="session-summary">
-      <div class="summary-stats">
-        <span id="questions-completed">0 questions completed</span>
-        <span id="session-time">Session time: 0:00</span>
-      </div>
-      
-      <div class="next-steps">
-        <span id="next-recommendation">Continue practicing to improve mastery!</span>
-      </div>
-    </div>
-    
-    <div class="footer-actions">
-      <button class="btn btn-outline" id="save-session">💾 Save Progress</button>
-      <button class="btn btn-outline" id="share-progress">📤 Share with Teacher</button>
-      <button class="btn btn-primary" id="continue-learning">Continue Learning</button>
-    </div>
-  </footer>
-
-  <!-- Assessment Modal -->
-  <div class="modal" id="assessment-modal">
-    <div class="modal-content educational-modal">
-      <div class="modal-header">
-        <h2>Learning Assessment</h2>
-        <button class="modal-close" id="close-assessment">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="assessment-content" id="assessment-content">
-          <!-- Assessment questions will be populated here -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="cancel-assessment">Cancel</button>
-        <button class="btn btn-primary" id="submit-assessment">Submit Assessment</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Progress Report Modal -->
-  <div class="modal" id="report-modal">
-    <div class="modal-content educational-modal large">
-      <div class="modal-header">
-        <h2>Progress Report</h2>
-        <button class="modal-close" id="close-report">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="report-content" id="report-content">
-          <!-- Report content will be populated here -->
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="print-report">🖨️ Print</button>
-        <button class="btn btn-primary" id="email-report">📧 Email Report</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="/src/templates/educational.js" type="module"></script>
-  
-  <script type="module">
-    import { EducationalTemplate } from '/src/templates/educational.js';
-    
-    // Demo Math Assessment Game
-    class DemoMathGame {
-      constructor() {
-        this.problems = [
-          { question: '3 + 4', answer: 7, options: [6, 7, 8, 5] },
-          { question: '8 - 3', answer: 5, options: [4, 5, 6, 3] },
-          { question: '2 + 6', answer: 8, options: [7, 8, 9, 6] },
-          { question: '9 - 4', answer: 5, options: [4, 5, 6, 7] },
-          { question: '5 + 3', answer: 8, options: [7, 8, 9, 6] },
-          { question: '10 - 6', answer: 4, options: [3, 4, 5, 6] },
-          { question: '4 + 5', answer: 9, options: [8, 9, 10, 7] },
-          { question: '7 - 2', answer: 5, options: [4, 5, 6, 3] }
-        ];
-        
-        this.currentProblem = 0;
-        this.score = 0;
-        this.startTime = Date.now();
-        this.problemStartTime = Date.now();
-        this.answerTimes = [];
-        
-        this.initializeElements();
-        this.setupEventListeners();
-        this.showProblem();
+    <style>
+      /* Demo-specific styles */
+      .demo-header {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
       }
-      
-      initializeElements() {
-        this.mathProblem = document.getElementById('math-problem');
-        this.problemStatus = document.getElementById('problem-status');
-        this.answerOptions = document.getElementById('answer-options');
-        this.nextButton = document.getElementById('next-problem');
+
+      .demo-game-area {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
-      
-      setupEventListeners() {
-        this.answerOptions.addEventListener('click', (e) => {
-          if (e.target.classList.contains('answer-btn')) {
-            this.handleAnswer(parseInt(e.target.dataset.answer));
-          }
-        });
-        
-        this.nextButton.addEventListener('click', () => {
-          this.nextProblem();
-        });
+
+      .math-problem {
+        font-size: 2rem;
+        text-align: center;
+        margin: 2rem 0;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: 8px;
+        border-left: 4px solid var(--accent-primary);
       }
-      
-      showProblem() {
-        if (this.currentProblem >= this.problems.length) {
-          this.endGame();
-          return;
+
+      .answer-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+
+      .answer-btn {
+        padding: 1rem;
+        font-size: 1.2rem;
+        border: 2px solid var(--border-color);
+        background: var(--bg-card);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .answer-btn:hover {
+        border-color: var(--accent-primary);
+        background: var(--accent-light);
+      }
+
+      .answer-btn.correct {
+        background: var(--success-light);
+        border-color: var(--success-color);
+      }
+
+      .answer-btn.incorrect {
+        background: var(--error-light);
+        border-color: var(--error-color);
+      }
+
+      .problem-status {
+        text-align: center;
+        margin: 1rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body class="educational-template">
+    <!-- Educational Header -->
+    <header class="educational-header" id="educational-header">
+      <div class="header-main">
+        <div class="lesson-context">
+          <h1 class="game-title">Math Assessment - Addition & Subtraction</h1>
+          <div class="learning-objectives">
+            <h3>Learning Objectives</h3>
+            <ul id="objectives-list">
+              <li>Master basic addition facts</li>
+              <li>Practice subtraction skills</li>
+              <li>Build number sense</li>
+              <li>Develop mental math strategies</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="progress-overview">
+          <div class="session-progress">
+            <label>Session Progress</label>
+            <div class="progress-bar">
+              <div class="progress-fill" id="session-progress-fill"></div>
+              <span class="progress-text" id="session-progress-text">0%</span>
+            </div>
+          </div>
+
+          <div class="mastery-indicators">
+            <div class="mastery-item" id="accuracy-indicator">
+              <span class="label">Accuracy</span>
+              <span class="value" id="accuracy-value">-</span>
+            </div>
+            <div class="mastery-item" id="time-indicator">
+              <span class="label">Avg Time</span>
+              <span class="value" id="time-value">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="header-controls">
+          <button class="btn btn-secondary" id="toggle-sidebar">
+            <span id="sidebar-toggle-text">Teacher Panel</span>
+          </button>
+          <button class="btn btn-primary" id="assessment-btn">Assessment</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Demo Header -->
+    <div class="demo-header">
+      <h1>🎓 Educational Template Demo</h1>
+      <p>Interactive Math Assessment with Learning Analytics</p>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="educational-main">
+      <!-- Educational Sidebar -->
+      <aside class="educational-sidebar" id="educational-sidebar">
+        <div class="sidebar-content">
+          <div class="sidebar-section">
+            <h3>Standards Alignment</h3>
+            <div id="standards-list">
+              <div class="standard-item">Common Core K.OA.5 - Add and subtract within 5</div>
+              <div class="standard-item">Common Core 1.OA.6 - Add and subtract within 20</div>
+              <div class="standard-item">State Standard MA.1.1 - Mental math strategies</div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>Student Progress</h3>
+            <div class="student-metrics">
+              <div class="metric-item">
+                <label>Questions Attempted</label>
+                <span id="questions-attempted">0</span>
+              </div>
+              <div class="metric-item">
+                <label>Correct Answers</label>
+                <span id="correct-answers">0</span>
+              </div>
+              <div class="metric-item">
+                <label>Time Spent</label>
+                <span id="time-spent">0:00</span>
+              </div>
+              <div class="metric-item">
+                <label>Skill Level</label>
+                <span id="skill-level">Beginner</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>Teacher Notes</h3>
+            <textarea
+              id="teacher-notes"
+              placeholder="Student shows good understanding of addition facts. May need more practice with subtraction..."
+            ></textarea>
+            <button class="btn btn-sm btn-secondary" id="save-notes">Save Notes</button>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>Quick Actions</h3>
+            <button class="btn btn-sm btn-outline" id="generate-report">Generate Report</button>
+            <button class="btn btn-sm btn-outline" id="export-data">Export Data</button>
+            <button class="btn btn-sm btn-outline" id="reset-session">Reset Session</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Game Content Area -->
+      <main class="game-content" id="game-content">
+        <!-- Learning Scaffolding -->
+        <div class="learning-scaffold" id="learning-scaffold">
+          <div class="hint-system">
+            <button class="hint-btn" id="hint-btn">💡 Need a hint?</button>
+            <div class="hint-content" id="hint-content" style="display: none">
+              Try counting on your fingers or using mental visualization!
+            </div>
+          </div>
+
+          <div class="progress-indicator">
+            <span class="current-objective" id="current-objective">Practice addition and subtraction</span>
+          </div>
+        </div>
+
+        <!-- Demo Game Container -->
+        <div class="demo-game-area">
+          <div class="math-problem" id="math-problem">3 + 4 = ?</div>
+
+          <div class="problem-status" id="problem-status">Choose the correct answer:</div>
+
+          <div class="answer-options" id="answer-options">
+            <button class="answer-btn" data-answer="6">6</button>
+            <button class="answer-btn" data-answer="7">7</button>
+            <button class="answer-btn" data-answer="8">8</button>
+            <button class="answer-btn" data-answer="5">5</button>
+          </div>
+
+          <div style="text-align: center; margin-top: 2rem">
+            <button class="btn btn-primary" id="next-problem" style="display: none">Next Problem</button>
+          </div>
+        </div>
+
+        <!-- Educational Controls -->
+        <div class="educational-controls">
+          <div class="session-controls">
+            <button class="btn btn-secondary" id="pause-btn">⏸️ Pause</button>
+            <button class="btn btn-secondary" id="skip-btn">⏭️ Skip Question</button>
+            <button class="btn btn-primary" id="check-understanding">Check Understanding</button>
+          </div>
+
+          <div class="adaptive-feedback" id="adaptive-feedback">
+            Welcome! Let's practice some math problems together.
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Educational Footer -->
+    <footer class="educational-footer">
+      <div class="session-summary">
+        <div class="summary-stats">
+          <span id="questions-completed">0 questions completed</span>
+          <span id="session-time">Session time: 0:00</span>
+        </div>
+
+        <div class="next-steps">
+          <span id="next-recommendation">Continue practicing to improve mastery!</span>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <button class="btn btn-outline" id="save-session">💾 Save Progress</button>
+        <button class="btn btn-outline" id="share-progress">📤 Share with Teacher</button>
+        <button class="btn btn-primary" id="continue-learning">Continue Learning</button>
+      </div>
+    </footer>
+
+    <!-- Assessment Modal -->
+    <div class="modal" id="assessment-modal">
+      <div class="modal-content educational-modal">
+        <div class="modal-header">
+          <h2>Learning Assessment</h2>
+          <button class="modal-close" id="close-assessment">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="assessment-content" id="assessment-content">
+            <!-- Assessment questions will be populated here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancel-assessment">Cancel</button>
+          <button class="btn btn-primary" id="submit-assessment">Submit Assessment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Report Modal -->
+    <div class="modal" id="report-modal">
+      <div class="modal-content educational-modal large">
+        <div class="modal-header">
+          <h2>Progress Report</h2>
+          <button class="modal-close" id="close-report">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="report-content" id="report-content">
+            <!-- Report content will be populated here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="print-report">🖨️ Print</button>
+          <button class="btn btn-primary" id="email-report">📧 Email Report</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/src/templates/educational.js" type="module"></script>
+
+    <script type="module">
+      import { EducationalTemplate } from '/src/templates/educational.js';
+
+      // Demo Math Assessment Game
+      class DemoMathGame {
+        constructor() {
+          this.problems = [
+            { question: '3 + 4', answer: 7, options: [6, 7, 8, 5] },
+            { question: '8 - 3', answer: 5, options: [4, 5, 6, 3] },
+            { question: '2 + 6', answer: 8, options: [7, 8, 9, 6] },
+            { question: '9 - 4', answer: 5, options: [4, 5, 6, 7] },
+            { question: '5 + 3', answer: 8, options: [7, 8, 9, 6] },
+            { question: '10 - 6', answer: 4, options: [3, 4, 5, 6] },
+            { question: '4 + 5', answer: 9, options: [8, 9, 10, 7] },
+            { question: '7 - 2', answer: 5, options: [4, 5, 6, 3] },
+          ];
+
+          this.currentProblem = 0;
+          this.score = 0;
+          this.startTime = Date.now();
+          this.problemStartTime = Date.now();
+          this.answerTimes = [];
+
+          this.initializeElements();
+          this.setupEventListeners();
+          this.showProblem();
         }
-        
-        const problem = this.problems[this.currentProblem];
-        this.mathProblem.textContent = `${problem.question} = ?`;
-        this.problemStatus.textContent = 'Choose the correct answer:';
-        this.problemStartTime = Date.now();
-        
-        // Reset answer buttons
-        const buttons = this.answerOptions.querySelectorAll('.answer-btn');
-        buttons.forEach((btn, index) => {
-          btn.textContent = problem.options[index];
-          btn.dataset.answer = problem.options[index];
-          btn.className = 'answer-btn';
-          btn.disabled = false;
-        });
-        
-        this.nextButton.style.display = 'none';
-        
-        // Trigger game event for educational template
-        if (window.educationalTemplate) {
-          window.educationalTemplate.onQuestionStarted({
-            objective: `Solve: ${problem.question}`
+
+        initializeElements() {
+          this.mathProblem = document.getElementById('math-problem');
+          this.problemStatus = document.getElementById('problem-status');
+          this.answerOptions = document.getElementById('answer-options');
+          this.nextButton = document.getElementById('next-problem');
+        }
+
+        setupEventListeners() {
+          this.answerOptions.addEventListener('click', e => {
+            if (e.target.classList.contains('answer-btn')) {
+              this.handleAnswer(parseInt(e.target.dataset.answer));
+            }
+          });
+
+          this.nextButton.addEventListener('click', () => {
+            this.nextProblem();
           });
         }
-      }
-      
-      handleAnswer(selectedAnswer) {
-        const problem = this.problems[this.currentProblem];
-        const isCorrect = selectedAnswer === problem.answer;
-        const responseTime = Date.now() - this.problemStartTime;
-        
-        this.answerTimes.push(responseTime);
-        
-        // Update UI
-        const buttons = this.answerOptions.querySelectorAll('.answer-btn');
-        buttons.forEach(btn => {
-          btn.disabled = true;
-          const btnAnswer = parseInt(btn.dataset.answer);
-          
-          if (btnAnswer === problem.answer) {
-            btn.classList.add('correct');
-          } else if (btnAnswer === selectedAnswer && !isCorrect) {
-            btn.classList.add('incorrect');
+
+        showProblem() {
+          if (this.currentProblem >= this.problems.length) {
+            this.endGame();
+            return;
           }
-        });
-        
-        if (isCorrect) {
-          this.score++;
-          this.problemStatus.textContent = '🎉 Correct! Well done!';
-          this.problemStatus.style.color = 'var(--success-color)';
-        } else {
-          this.problemStatus.textContent = `❌ Not quite. The answer is ${problem.answer}.`;
-          this.problemStatus.style.color = 'var(--error-color)';
-        }
-        
-        this.nextButton.style.display = 'block';
-        
-        // Trigger game event for educational template
-        if (window.educationalTemplate) {
-          window.educationalTemplate.onQuestionAnswered({
-            correct: isCorrect,
-            responseTime,
-            question: problem.question,
-            selectedAnswer,
-            correctAnswer: problem.answer
+
+          const problem = this.problems[this.currentProblem];
+          this.mathProblem.textContent = `${problem.question} = ?`;
+          this.problemStatus.textContent = 'Choose the correct answer:';
+          this.problemStartTime = Date.now();
+
+          // Reset answer buttons
+          const buttons = this.answerOptions.querySelectorAll('.answer-btn');
+          buttons.forEach((btn, index) => {
+            btn.textContent = problem.options[index];
+            btn.dataset.answer = problem.options[index];
+            btn.className = 'answer-btn';
+            btn.disabled = false;
           });
+
+          this.nextButton.style.display = 'none';
+
+          // Trigger game event for educational template
+          if (window.educationalTemplate) {
+            window.educationalTemplate.onQuestionStarted({
+              objective: `Solve: ${problem.question}`,
+            });
+          }
         }
-      }
-      
-      nextProblem() {
-        this.currentProblem++;
-        this.problemStatus.style.color = 'var(--text-primary)';
-        this.showProblem();
-      }
-      
-      endGame() {
-        const totalTime = Date.now() - this.startTime;
-        const avgTime = this.answerTimes.reduce((a, b) => a + b, 0) / this.answerTimes.length;
-        
-        this.mathProblem.textContent = '🎯 Session Complete!';
-        this.problemStatus.textContent = `You scored ${this.score} out of ${this.problems.length}`;
-        this.answerOptions.innerHTML = `
+
+        handleAnswer(selectedAnswer) {
+          const problem = this.problems[this.currentProblem];
+          const isCorrect = selectedAnswer === problem.answer;
+          const responseTime = Date.now() - this.problemStartTime;
+
+          this.answerTimes.push(responseTime);
+
+          // Update UI
+          const buttons = this.answerOptions.querySelectorAll('.answer-btn');
+          buttons.forEach(btn => {
+            btn.disabled = true;
+            const btnAnswer = parseInt(btn.dataset.answer);
+
+            if (btnAnswer === problem.answer) {
+              btn.classList.add('correct');
+            } else if (btnAnswer === selectedAnswer && !isCorrect) {
+              btn.classList.add('incorrect');
+            }
+          });
+
+          if (isCorrect) {
+            this.score++;
+            this.problemStatus.textContent = '🎉 Correct! Well done!';
+            this.problemStatus.style.color = 'var(--success-color)';
+          } else {
+            this.problemStatus.textContent = `❌ Not quite. The answer is ${problem.answer}.`;
+            this.problemStatus.style.color = 'var(--error-color)';
+          }
+
+          this.nextButton.style.display = 'block';
+
+          // Trigger game event for educational template
+          if (window.educationalTemplate) {
+            window.educationalTemplate.onQuestionAnswered({
+              correct: isCorrect,
+              responseTime,
+              question: problem.question,
+              selectedAnswer,
+              correctAnswer: problem.answer,
+            });
+          }
+        }
+
+        nextProblem() {
+          this.currentProblem++;
+          this.problemStatus.style.color = 'var(--text-primary)';
+          this.showProblem();
+        }
+
+        endGame() {
+          const totalTime = Date.now() - this.startTime;
+          const avgTime = this.answerTimes.reduce((a, b) => a + b, 0) / this.answerTimes.length;
+
+          this.mathProblem.textContent = '🎯 Session Complete!';
+          this.problemStatus.textContent = `You scored ${this.score} out of ${this.problems.length}`;
+          this.answerOptions.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
             <h3>Great job! 🌟</h3>
             <p>You've completed the math assessment.</p>
@@ -444,64 +443,69 @@
             <p><strong>Average time per problem:</strong> ${Math.round(avgTime / 1000)}s</p>
           </div>
         `;
-        
-        if (window.educationalTemplate) {
-          window.educationalTemplate.onGameCompleted({
-            score: this.score,
-            totalQuestions: this.problems.length,
-            totalTime,
-            avgTime
-          });
+
+          if (window.educationalTemplate) {
+            window.educationalTemplate.onGameCompleted({
+              score: this.score,
+              totalQuestions: this.problems.length,
+              totalTime,
+              avgTime,
+            });
+          }
+        }
+
+        // Methods for educational template integration
+        pause() {
+          console.log('Game paused');
+        }
+
+        skipQuestion() {
+          this.nextProblem();
+        }
+
+        // Event system for educational template
+        on(event, callback) {
+          if (!this.eventListeners) this.eventListeners = {};
+          if (!this.eventListeners[event]) this.eventListeners[event] = [];
+          this.eventListeners[event].push(callback);
+        }
+
+        emit(event, data) {
+          if (this.eventListeners && this.eventListeners[event]) {
+            this.eventListeners[event].forEach(callback => callback(data));
+          }
         }
       }
-      
-      // Methods for educational template integration
-      pause() {
-        console.log('Game paused');
-      }
-      
-      skipQuestion() {
-        this.nextProblem();
-      }
-      
-      // Event system for educational template
-      on(event, callback) {
-        if (!this.eventListeners) this.eventListeners = {};
-        if (!this.eventListeners[event]) this.eventListeners[event] = [];
-        this.eventListeners[event].push(callback);
-      }
-      
-      emit(event, data) {
-        if (this.eventListeners && this.eventListeners[event]) {
-          this.eventListeners[event].forEach(callback => callback(data));
-        }
-      }
-    }
-    
-    // Initialize educational template
-    const gameConfig = {
-      id: 'demo-math-assessment',
-      name: 'Math Assessment Demo',
-      learningObjectives: ['Master basic addition facts', 'Practice subtraction skills', 'Build number sense', 'Develop mental math strategies'],
-      standards: ['Common Core K.OA.5', 'Common Core 1.OA.6', 'State Standard MA.1.1'],
-      assessmentType: 'formative',
-      metadata: {
-        gameType: 'math-assessment',
-        ageRange: '6-9',
-        estimatedPlayTime: 10,
-        learningObjectives: ['addition', 'subtraction', 'mental math', 'number sense'],
-        tags: ['educational', 'assessment', 'math', 'demo']
-      }
-    };
-    
-    window.educationalTemplate = new EducationalTemplate(gameConfig);
-    window.educationalTemplate.initialize();
-    
-    // Initialize demo game
-    const demoGame = new DemoMathGame();
-    window.educationalTemplate.setGame(demoGame);
-    
-    console.log('✅ Educational template demo loaded successfully');
-  </script>
-</body>
+
+      // Initialize educational template
+      const gameConfig = {
+        id: 'demo-math-assessment',
+        name: 'Math Assessment Demo',
+        learningObjectives: [
+          'Master basic addition facts',
+          'Practice subtraction skills',
+          'Build number sense',
+          'Develop mental math strategies',
+        ],
+        standards: ['Common Core K.OA.5', 'Common Core 1.OA.6', 'State Standard MA.1.1'],
+        assessmentType: 'formative',
+        metadata: {
+          gameType: 'math-assessment',
+          ageRange: '6-9',
+          estimatedPlayTime: 10,
+          learningObjectives: ['addition', 'subtraction', 'mental math', 'number sense'],
+          tags: ['educational', 'assessment', 'math', 'demo'],
+        },
+      };
+
+      window.educationalTemplate = new EducationalTemplate(gameConfig);
+      window.educationalTemplate.initialize();
+
+      // Initialize demo game
+      const demoGame = new DemoMathGame();
+      window.educationalTemplate.setGame(demoGame);
+
+      console.log('✅ Educational template demo loaded successfully');
+    </script>
+  </body>
 </html>

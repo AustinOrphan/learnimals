@@ -1,63 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simple Button Test</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        button { margin: 10px; padding: 10px 20px; }
-        .log { margin: 5px 0; padding: 5px; background: #f0f0f0; }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+      }
+      .log {
+        margin: 5px 0;
+        padding: 5px;
+        background: #f0f0f0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Simple Button Test</h1>
     <button id="test-btn">Test Button</button>
     <div id="output"></div>
 
     <script type="module">
-        const output = document.getElementById('output');
-        
-        function log(message) {
-            const div = document.createElement('div');
-            div.className = 'log';
-            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
-            output.appendChild(div);
-        }
+      const output = document.getElementById('output');
 
-        document.getElementById('test-btn').addEventListener('click', () => {
-            log('Button clicked! Basic event handling works.');
-        });
+      function log(message) {
+        const div = document.createElement('div');
+        div.className = 'log';
+        div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+        output.appendChild(div);
+      }
 
-        // Test the character generation imports
-        try {
-            import('./src/features/character-generation/index.js').then(module => {
-                log('✅ Character generation module imported successfully');
-                
-                const { CharacterGenerationAPI, CharacterUtils } = module;
-                
-                if (CharacterUtils && typeof CharacterUtils.generateId === 'function') {
-                    const id = CharacterUtils.generateId();
-                    log(`✅ Generated ID: ${id}`);
-                } else {
-                    log('❌ CharacterUtils.generateId not available');
-                }
+      document.getElementById('test-btn').addEventListener('click', () => {
+        log('Button clicked! Basic event handling works.');
+      });
 
-                if (CharacterGenerationAPI && typeof CharacterGenerationAPI.getStorageStats === 'function') {
-                    const stats = CharacterGenerationAPI.getStorageStats();
-                    log(`✅ Storage stats: ${stats ? 'available' : 'null'}`);
-                } else {
-                    log('❌ CharacterGenerationAPI.getStorageStats not available');
-                }
-            }).catch(error => {
-                log(`❌ Import error: ${error.message}`);
-                console.error('Import error:', error);
-            });
-        } catch (error) {
+      // Test the character generation imports
+      try {
+        import('./src/features/character-generation/index.js')
+          .then(module => {
+            log('✅ Character generation module imported successfully');
+
+            const { CharacterGenerationAPI, CharacterUtils } = module;
+
+            if (CharacterUtils && typeof CharacterUtils.generateId === 'function') {
+              const id = CharacterUtils.generateId();
+              log(`✅ Generated ID: ${id}`);
+            } else {
+              log('❌ CharacterUtils.generateId not available');
+            }
+
+            if (CharacterGenerationAPI && typeof CharacterGenerationAPI.getStorageStats === 'function') {
+              const stats = CharacterGenerationAPI.getStorageStats();
+              log(`✅ Storage stats: ${stats ? 'available' : 'null'}`);
+            } else {
+              log('❌ CharacterGenerationAPI.getStorageStats not available');
+            }
+          })
+          .catch(error => {
             log(`❌ Import error: ${error.message}`);
-        }
+            console.error('Import error:', error);
+          });
+      } catch (error) {
+        log(`❌ Import error: ${error.message}`);
+      }
 
-        log('Page loaded - click button to test');
+      log('Page loaded - click button to test');
     </script>
-</body>
+  </body>
 </html>

@@ -150,18 +150,18 @@ export default class PizzaPartyGame {
     // Keyboard shortcuts
     const keydownHandler = e => {
       switch (e.key) {
-      case 'h':
-      case 'H':
-        this.showHint();
-        break;
-      case 'r':
-      case 'R':
-        this.resetLevel();
-        break;
-      case ' ':
-        e.preventDefault();
-        this.gameState.gameActive ? this.pauseGame() : this.resumeGame();
-        break;
+        case 'h':
+        case 'H':
+          this.showHint();
+          break;
+        case 'r':
+        case 'R':
+          this.resetLevel();
+          break;
+        case ' ':
+          e.preventDefault();
+          this.gameState.gameActive ? this.pauseGame() : this.resumeGame();
+          break;
       }
     };
     document.addEventListener('keydown', keydownHandler);
@@ -345,33 +345,33 @@ export default class PizzaPartyGame {
         const now = audioContext.currentTime;
 
         switch (type) {
-        case 'place':
-          oscillator.frequency.setValueAtTime(800, now);
-          oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-          gainNode.gain.setValueAtTime(0.3, now);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-          oscillator.start(now);
-          oscillator.stop(now + 0.1);
-          break;
+          case 'place':
+            oscillator.frequency.setValueAtTime(800, now);
+            oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+            oscillator.start(now);
+            oscillator.stop(now + 0.1);
+            break;
 
-        case 'success':
-          oscillator.frequency.setValueAtTime(523, now); // C5
-          oscillator.frequency.setValueAtTime(659, now + 0.1); // E5
-          oscillator.frequency.setValueAtTime(784, now + 0.2); // G5
-          gainNode.gain.setValueAtTime(0.4, now);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-          oscillator.start(now);
-          oscillator.stop(now + 0.3);
-          break;
+          case 'success':
+            oscillator.frequency.setValueAtTime(523, now); // C5
+            oscillator.frequency.setValueAtTime(659, now + 0.1); // E5
+            oscillator.frequency.setValueAtTime(784, now + 0.2); // G5
+            gainNode.gain.setValueAtTime(0.4, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            oscillator.start(now);
+            oscillator.stop(now + 0.3);
+            break;
 
-        case 'error':
-          oscillator.frequency.setValueAtTime(200, now);
-          oscillator.frequency.exponentialRampToValueAtTime(150, now + 0.2);
-          gainNode.gain.setValueAtTime(0.4, now);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-          oscillator.start(now);
-          oscillator.stop(now + 0.2);
-          break;
+          case 'error':
+            oscillator.frequency.setValueAtTime(200, now);
+            oscillator.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+            gainNode.gain.setValueAtTime(0.4, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            oscillator.start(now);
+            oscillator.stop(now + 0.2);
+            break;
         }
       },
     };

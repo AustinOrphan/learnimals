@@ -1,48 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Quick Test Validation</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Quick Character Generation Test</h1>
     <div id="output"></div>
 
     <script type="module">
-        async function runQuickTest() {
-            const output = document.getElementById('output');
-            
-            try {
-                // Import the full test module
-                const testModule = await import('./src/features/character-generation/test-character-system.js');
-                
-                // Run the complete test suite
-                console.log('Starting complete test suite...');
-                const results = await testModule.default();
-                
-                output.innerHTML = `
+      async function runQuickTest() {
+        const output = document.getElementById('output');
+
+        try {
+          // Import the full test module
+          const testModule = await import('./src/features/character-generation/test-character-system.js');
+
+          // Run the complete test suite
+          console.log('Starting complete test suite...');
+          const results = await testModule.default();
+
+          output.innerHTML = `
                     <h2>Test Results:</h2>
                     <p><strong>Total Tests:</strong> ${results.tests}</p>
                     <p><strong>Passed:</strong> ${results.passed}</p>
                     <p><strong>Failed:</strong> ${results.failed}</p>
                     <p><strong>Success Rate:</strong> ${((results.passed / results.tests) * 100).toFixed(1)}%</p>
-                    ${results.failed > 0 ? `
+                    ${
+                      results.failed > 0
+                        ? `
                         <h3>Errors:</h3>
                         <ul>
                             ${results.errors.map(error => `<li>${error}</li>`).join('')}
                         </ul>
-                    ` : '<p style="color: green;"><strong>🎉 All tests passed!</strong></p>'}
+                    `
+                        : '<p style="color: green;"><strong>🎉 All tests passed!</strong></p>'
+                    }
                 `;
-                
-                return results;
-                
-            } catch (error) {
-                output.innerHTML = `<p style="color: red;"><strong>Error:</strong> ${error.message}</p>`;
-                console.error('Test error:', error);
-            }
+
+          return results;
+        } catch (error) {
+          output.innerHTML = `<p style="color: red;"><strong>Error:</strong> ${error.message}</p>`;
+          console.error('Test error:', error);
         }
-        
-        // Auto-run the test
-        runQuickTest();
+      }
+
+      // Auto-run the test
+      runQuickTest();
     </script>
-</body>
+  </body>
 </html>

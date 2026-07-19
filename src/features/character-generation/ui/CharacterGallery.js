@@ -12,8 +12,7 @@
  * Part of Phase C: Character Demo & Showcase (Issue #253)
  */
 
-/* global BaseComponent */
-// CharacterGallery class extends globally available BaseComponent
+// CharacterGallery class extends globally available BaseComponent (declared in eslint globals)
 class CharacterGallery extends BaseComponent {
   constructor(options = {}) {
     super({
@@ -395,27 +394,27 @@ class CharacterGallery extends BaseComponent {
     const columns = this.getGridColumns();
 
     switch (event.key) {
-    case 'ArrowRight':
-      nextIndex = Math.min(currentIndex + 1, cards.length - 1);
-      break;
-    case 'ArrowLeft':
-      nextIndex = Math.max(currentIndex - 1, 0);
-      break;
-    case 'ArrowDown':
-      nextIndex = Math.min(currentIndex + columns, cards.length - 1);
-      break;
-    case 'ArrowUp':
-      nextIndex = Math.max(currentIndex - columns, 0);
-      break;
-    case 'Enter':
-    case ' ':
-      if (currentIndex >= 0) {
-        cards[currentIndex].click();
-        event.preventDefault();
-      }
-      return;
-    default:
-      return;
+      case 'ArrowRight':
+        nextIndex = Math.min(currentIndex + 1, cards.length - 1);
+        break;
+      case 'ArrowLeft':
+        nextIndex = Math.max(currentIndex - 1, 0);
+        break;
+      case 'ArrowDown':
+        nextIndex = Math.min(currentIndex + columns, cards.length - 1);
+        break;
+      case 'ArrowUp':
+        nextIndex = Math.max(currentIndex - columns, 0);
+        break;
+      case 'Enter':
+      case ' ':
+        if (currentIndex >= 0) {
+          cards[currentIndex].click();
+          event.preventDefault();
+        }
+        return;
+      default:
+        return;
     }
 
     if (nextIndex !== currentIndex && cards[nextIndex]) {
@@ -464,17 +463,17 @@ class CharacterGallery extends BaseComponent {
     // Sort characters
     filtered.sort((a, b) => {
       switch (this.currentSort) {
-      case 'name':
-        return a.name.localeCompare(b.name);
+        case 'name':
+          return a.name.localeCompare(b.name);
 
-      case 'subject':
-        return a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name);
+        case 'subject':
+          return a.subject.localeCompare(b.subject) || a.name.localeCompare(b.name);
 
-      case 'popularity':
-        return (b.popularity || 0) - (a.popularity || 0);
+        case 'popularity':
+          return (b.popularity || 0) - (a.popularity || 0);
 
-      default:
-        return a.name.localeCompare(b.name);
+        default:
+          return a.name.localeCompare(b.name);
       }
     });
 
@@ -549,12 +548,12 @@ class CharacterGallery extends BaseComponent {
         <div class="character-traits">
           <span class="trait-tag">${character.personality}</span>
           ${
-  character.specialties
-    ? character.specialties
-      .map(specialty => `<span class="specialty-tag">${specialty}</span>`)
-      .join('')
-    : ''
-}
+            character.specialties
+              ? character.specialties
+                  .map(specialty => `<span class="specialty-tag">${specialty}</span>`)
+                  .join('')
+              : ''
+          }
         </div>
       </div>
       
@@ -693,13 +692,13 @@ class CharacterGallery extends BaseComponent {
         `Hey! I'm excited to learn ${character.subject} with you!`,
       ],
       celebrate: [
-        'Fantastic work! You\'re doing amazing!',
-        'Woohoo! That\'s excellent progress!',
+        "Fantastic work! You're doing amazing!",
+        "Woohoo! That's excellent progress!",
         'Amazing! Keep up the great work!',
       ],
       encourage: [
-        'You\'ve got this! Don\'t give up!',
-        'Believe in yourself! You\'re capable of great things!',
+        "You've got this! Don't give up!",
+        "Believe in yourself! You're capable of great things!",
         'Every challenge is a chance to grow stronger!',
       ],
     };

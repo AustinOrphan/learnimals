@@ -6,10 +6,8 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
+/* global FocusEvent */
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
 import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
 
 // Mock logger
@@ -73,7 +71,6 @@ describe('Modal and Dialog Accessibility Tests', () => {
     });
 
     Element.prototype.blur = vi.fn(function () {
-      const previousElement = this;
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
         configurable: true,
@@ -198,8 +195,8 @@ describe('Modal and Dialog Accessibility Tests', () => {
       `;
 
       const backdrop = testContainer.querySelector('#modal-backdrop');
-      const pageContent = testContainer.querySelector('.page-content');
-      const modal = testContainer.querySelector('#modal');
+      testContainer.querySelector('.page-content');
+      testContainer.querySelector('#modal');
 
       expect(backdrop.getAttribute('aria-hidden')).toBe('true');
       expect(backdrop.classList.contains('modal-backdrop')).toBe(true);
@@ -361,8 +358,8 @@ describe('Modal and Dialog Accessibility Tests', () => {
         </div>
       `;
 
-      const trigger = testContainer.querySelector('#trigger');
-      const modal = testContainer.querySelector('#modal');
+      testContainer.querySelector('#trigger');
+      testContainer.querySelector('#modal');
       const closeButton = testContainer.querySelector('#close-button');
 
       const clickSpy = vi.fn();
@@ -464,7 +461,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
         </div>
       `;
 
-      const modal = testContainer.querySelector('#modal');
+      testContainer.querySelector('#modal');
       const menu = testContainer.querySelector('#modal-menu');
       const options = menu.querySelectorAll('[role="menuitem"]');
 
@@ -607,7 +604,7 @@ describe('Modal and Dialog Accessibility Tests', () => {
         </div>
       `;
 
-      const form = testContainer.querySelector('#modal-form');
+      testContainer.querySelector('#modal-form');
       const submitButton = testContainer.querySelector('#submit-btn');
       const buttonText = testContainer.querySelector('.btn-text');
       const buttonSpinner = testContainer.querySelector('.btn-spinner');

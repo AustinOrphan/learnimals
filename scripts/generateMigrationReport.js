@@ -24,7 +24,7 @@ class MigrationReportGenerator {
       includeFileList: options.includeFileList !== false,
       includeCodeExamples: options.includeCodeExamples !== false,
       verbose: options.verbose || false,
-      ...options
+      ...options,
     };
 
     this.migrationData = {
@@ -34,14 +34,14 @@ class MigrationReportGenerator {
         migratedFiles: 0,
         newFiles: 0,
         testsUpdated: 0,
-        patternsRemoved: 0
+        patternsRemoved: 0,
       },
       phases: [],
       fileChanges: [],
       newComponents: [],
       testResults: [],
       performanceMetrics: {},
-      recommendations: []
+      recommendations: [],
     };
   }
 
@@ -50,18 +50,18 @@ class MigrationReportGenerator {
    */
   async generateReport() {
     console.log('🔍 Analyzing migration changes...');
-    
+
     await this.analyzeMigrationData();
     await this.collectFileChanges();
     await this.analyzePhasedImplementation();
     await this.collectPerformanceMetrics();
     await this.generateRecommendations();
-    
+
     console.log('📝 Writing migration report...');
     const reportContent = await this.buildReportContent();
-    
+
     await this.writeReport(reportContent);
-    
+
     console.log(`✅ Migration report generated: ${this.options.outputPath}`);
     return this.migrationData;
   }
@@ -72,11 +72,11 @@ class MigrationReportGenerator {
   async analyzeMigrationData() {
     const srcPath = path.join(this.options.projectRoot, 'src');
     const testsPath = path.join(this.options.projectRoot, 'tests');
-    
+
     // Count files in project
     this.migrationData.summary.totalFiles = await this.countFiles(srcPath, '.js');
     this.migrationData.summary.totalFiles += await this.countFiles(testsPath, '.js');
-    
+
     // Analyze specific migration patterns
     const migratedFiles = [
       'src/utils/ModuleRegistry.js',
@@ -90,11 +90,11 @@ class MigrationReportGenerator {
       'src/components/ui/Card.js',
       'src/components/forms/FormComponent.js',
       'src/features/character-generation/ui/CharacterPreviewRenderer.js',
-      'src/components/ui/PlaceValueManipulative.js'
+      'src/components/ui/PlaceValueManipulative.js',
     ];
-    
+
     this.migrationData.summary.migratedFiles = migratedFiles.length;
-    
+
     // New files created
     const newFiles = [
       'src/utils/ModuleRegistry.js',
@@ -103,19 +103,16 @@ class MigrationReportGenerator {
       'src/utils/ModularGameLoader.js',
       'scripts/detectMixedPatterns.js',
       'scripts/migrateMixedPatterns.js',
-      'scripts/generateMigrationReport.js'
+      'scripts/generateMigrationReport.js',
     ];
-    
+
     this.migrationData.summary.newFiles = newFiles.length;
-    
+
     // Tests updated
-    const testFiles = [
-      'tests/unit/ModuleRegistry.test.js',
-      'tests/unit/migration.test.js'
-    ];
-    
+    const testFiles = ['tests/unit/ModuleRegistry.test.js', 'tests/unit/migration.test.js'];
+
     this.migrationData.summary.testsUpdated = testFiles.length;
-    
+
     // Patterns removed count
     this.migrationData.summary.patternsRemoved = await this.countRemovedPatterns();
   }
@@ -142,7 +139,7 @@ class MigrationReportGenerator {
     // Patterns that were removed during migration:
     // - typeof module checks, module.exports assignments,
     // - window global assignments, mixed CommonJS/ES6 exports
-    
+
     // Estimate based on files migrated (each file had ~2-3 patterns on average)
     return this.migrationData.summary.migratedFiles * 2.5;
   }
@@ -155,30 +152,49 @@ class MigrationReportGenerator {
       {
         file: 'src/utils/ModuleRegistry.js',
         type: 'created',
-        description: 'Central registry for ES6 module component registration with dependency injection',
+        description:
+          'Central registry for ES6 module component registration with dependency injection',
         linesAdded: 350,
-        features: ['Component registration', 'Dependency resolution', 'Circular dependency detection', 'Module lifecycle management']
+        features: [
+          'Component registration',
+          'Dependency resolution',
+          'Circular dependency detection',
+          'Module lifecycle management',
+        ],
       },
       {
         file: 'src/components/EnhancedBaseComponent.js',
         type: 'created',
         description: 'Extended BaseComponent with module registry integration',
         linesAdded: 120,
-        features: ['Module registration capabilities', 'Dependency management', 'Enhanced lifecycle hooks']
+        features: [
+          'Module registration capabilities',
+          'Dependency management',
+          'Enhanced lifecycle hooks',
+        ],
       },
       {
-        file: 'src/utils/ModularThemeManager.js',  
+        file: 'src/utils/ModularThemeManager.js',
         type: 'created',
         description: 'Theme manager with module integration capabilities',
         linesAdded: 180,
-        features: ['Module-based theme registration', 'Dynamic theme import', 'Enhanced integration']
+        features: [
+          'Module-based theme registration',
+          'Dynamic theme import',
+          'Enhanced integration',
+        ],
       },
       {
         file: 'src/utils/ModularGameLoader.js',
-        type: 'created', 
+        type: 'created',
         description: 'Advanced game loading system with module registry integration',
         linesAdded: 450,
-        features: ['Concurrent loading', 'Performance tracking', 'Game caching', 'Lifecycle management']
+        features: [
+          'Concurrent loading',
+          'Performance tracking',
+          'Game caching',
+          'Lifecycle management',
+        ],
       },
       {
         file: 'src/utils/ComponentLoader.js',
@@ -186,23 +202,27 @@ class MigrationReportGenerator {
         description: 'Added ModuleRegistry integration to existing component loader',
         linesChanged: 45,
         patternsRemoved: ['Mixed module export'],
-        featuresAdded: ['Registry-based loading', 'Module registration on dynamic load']
+        featuresAdded: ['Registry-based loading', 'Module registration on dynamic load'],
       },
       {
-        file: 'src/utils/htmlEscape.js', 
+        file: 'src/utils/htmlEscape.js',
         type: 'migrated',
         description: 'Removed CommonJS compatibility, clean ES6 exports',
         linesChanged: 3,
         patternsRemoved: ['CommonJS conditional export'],
-        featuresPreserved: ['XSS prevention', 'HTML escaping', 'Attribute escaping']
+        featuresPreserved: ['XSS prevention', 'HTML escaping', 'Attribute escaping'],
       },
       {
         file: 'src/features/subjects/math/math.js',
-        type: 'migrated', 
+        type: 'migrated',
         description: 'Removed global namespace pollution, clean ES6 module structure',
         linesChanged: 25,
         patternsRemoved: ['Global variable assignments', 'Mixed module patterns'],
-        featuresPreserved: ['Number-to-words conversion', 'Math educational data', 'HTML onclick compatibility']
+        featuresPreserved: [
+          'Number-to-words conversion',
+          'Math educational data',
+          'HTML onclick compatibility',
+        ],
       },
       {
         file: 'src/themeInitializer.js',
@@ -210,7 +230,7 @@ class MigrationReportGenerator {
         description: 'Updated to use ModularThemeManager with clean exports',
         linesChanged: 12,
         patternsRemoved: ['Mixed module export'],
-        featuresPreserved: ['FOUC prevention', 'Theme initialization', 'Backward compatibility']
+        featuresPreserved: ['FOUC prevention', 'Theme initialization', 'Backward compatibility'],
       },
       {
         file: 'src/components/ui/Card.js',
@@ -218,15 +238,15 @@ class MigrationReportGenerator {
         description: 'Removed mixed module pattern, clean ES6 export only',
         linesChanged: 6,
         patternsRemoved: ['Mixed CommonJS/ES6 export'],
-        featuresPreserved: ['Card rendering', 'Event handling', 'Responsive design']
+        featuresPreserved: ['Card rendering', 'Event handling', 'Responsive design'],
       },
       {
-        file: 'src/components/forms/FormComponent.js', 
+        file: 'src/components/forms/FormComponent.js',
         type: 'migrated',
         description: 'Removed mixed module pattern, added clean ES6 export',
         linesChanged: 6,
         patternsRemoved: ['Mixed CommonJS/ES6 export'],
-        featuresPreserved: ['Form validation', 'localStorage integration', 'Event handling']
+        featuresPreserved: ['Form validation', 'localStorage integration', 'Event handling'],
       },
       {
         file: 'src/features/character-generation/ui/CharacterPreviewRenderer.js',
@@ -234,15 +254,15 @@ class MigrationReportGenerator {
         description: 'Removed global namespace pollution, clean ES6 export',
         linesChanged: 3,
         patternsRemoved: ['Global window assignment'],
-        featuresPreserved: ['Character rendering', 'Preview generation', 'Animation support']
+        featuresPreserved: ['Character rendering', 'Preview generation', 'Animation support'],
       },
       {
         file: 'src/components/ui/PlaceValueManipulative.js',
-        type: 'migrated', 
+        type: 'migrated',
         description: 'Removed mixed module pattern, added ES6 export',
         linesChanged: 6,
         patternsRemoved: ['Mixed CommonJS/ES6 export'],
-        featuresPreserved: ['Educational interactions', 'Drag-and-drop', 'Place value learning']
+        featuresPreserved: ['Educational interactions', 'Drag-and-drop', 'Place value learning'],
       },
       {
         file: 'tests/unit/migration.test.js',
@@ -250,10 +270,10 @@ class MigrationReportGenerator {
         description: 'Updated test fixtures to use clean ES6 patterns',
         linesChanged: 15,
         patternsRemoved: ['Mixed module patterns in test fixtures'],
-        featuresPreserved: ['Migration testing', 'Pattern detection tests', 'Validation tests']
-      }
+        featuresPreserved: ['Migration testing', 'Pattern detection tests', 'Validation tests'],
+      },
     ];
-    
+
     this.migrationData.fileChanges = changes;
   }
 
@@ -267,11 +287,11 @@ class MigrationReportGenerator {
         description: 'Core infrastructure and registry system',
         tasks: [
           'Task 1: Create ModuleRegistry class',
-          'Task 2: Create mixed pattern detection script', 
+          'Task 2: Create mixed pattern detection script',
           'Task 3: Create migration automation script',
           'Task 4: Create EnhancedBaseComponent',
           'Task 5: Create ModuleRegistry unit tests',
-          'Task 6: Create migration validation tests'
+          'Task 6: Create migration validation tests',
         ],
         status: 'completed',
         duration: 'Tasks 1-6',
@@ -279,25 +299,25 @@ class MigrationReportGenerator {
           'Established central module registry system',
           'Built automated migration tooling',
           'Created enhanced component foundation',
-          'Implemented comprehensive testing'
-        ]
+          'Implemented comprehensive testing',
+        ],
       },
       {
-        name: 'Phase 2: Core Component Migration', 
+        name: 'Phase 2: Core Component Migration',
         description: 'Migration of essential UI and system components',
         tasks: [
           'Task 7-10: Migrate Card, FormComponent, CharacterPreviewRenderer, PlaceValueManipulative',
           'Task 11: Create ModularThemeManager',
-          'Task 12: Update theme initializer'
+          'Task 12: Update theme initializer',
         ],
         status: 'completed',
         duration: 'Tasks 7-12',
         keyAchievements: [
           'Migrated core UI components to clean ES6',
-          'Enhanced theme management with module integration', 
+          'Enhanced theme management with module integration',
           'Preserved all existing functionality',
-          'Eliminated mixed module patterns'
-        ]
+          'Eliminated mixed module patterns',
+        ],
       },
       {
         name: 'Phase 3: Game and Utility Migration',
@@ -307,34 +327,34 @@ class MigrationReportGenerator {
           'Task 14: Migrate htmlEscape security utility',
           'Task 15: Migrate math subject handler',
           'Task 16: Create ModularGameLoader',
-          'Task 17: Migrate character generation test fixtures'
+          'Task 17: Migrate character generation test fixtures',
         ],
-        status: 'completed', 
+        status: 'completed',
         duration: 'Tasks 13-17',
         keyAchievements: [
           'Enhanced component loading with registry integration',
           'Secured utility functions with clean exports',
           'Modernized subject-specific handlers',
           'Created advanced game loading system',
-          'Updated test patterns for consistency'
-        ]
+          'Updated test patterns for consistency',
+        ],
       },
       {
         name: 'Phase 4: Documentation and Validation',
         description: 'Final validation, testing, and documentation',
         tasks: [
           'Task 18: Create migration report generator',
-          'Task 19-24: Integration tests, performance validation, ESLint updates'
+          'Task 19-24: Integration tests, performance validation, ESLint updates',
         ],
         status: 'in_progress',
-        duration: 'Tasks 18-24', 
+        duration: 'Tasks 18-24',
         keyAchievements: [
           'Comprehensive migration documentation',
           'Performance validation and optimization',
           'Code quality enforcement',
-          'Integration testing completion'
-        ]
-      }
+          'Integration testing completion',
+        ],
+      },
     ];
   }
 
@@ -346,23 +366,23 @@ class MigrationReportGenerator {
       bundleSize: {
         before: 'Estimated ~2.3MB (with unused code)',
         after: 'Estimated ~1.8MB (tree-shaking enabled)',
-        improvement: '~22% reduction'
+        improvement: '~22% reduction',
       },
       loadTime: {
         moduleResolution: 'Improved with registry-based resolution',
         circularDependencies: 'Eliminated through registry validation',
-        codeElimination: 'Enhanced via clean ES6 exports'
+        codeElimination: 'Enhanced via clean ES6 exports',
       },
       maintainability: {
         codeComplexity: 'Reduced through standardized patterns',
-        namespaceCollisions: 'Eliminated via module encapsulation', 
-        dependencyTracking: 'Enhanced through registry system'
+        namespaceCollisions: 'Eliminated via module encapsulation',
+        dependencyTracking: 'Enhanced through registry system',
       },
       testCoverage: {
         newComponents: '95%+ coverage for registry and loaders',
         migratedComponents: 'Existing coverage preserved',
-        integrationTests: 'Comprehensive end-to-end scenarios'
-      }
+        integrationTests: 'Comprehensive end-to-end scenarios',
+      },
     };
   }
 
@@ -378,18 +398,18 @@ class MigrationReportGenerator {
           'Always use ES6 import/export syntax for new modules',
           'Register components with ModuleRegistry for enhanced integration',
           'Use ModularGameLoader for all new game components',
-          'Follow the established component naming conventions'
-        ]
+          'Follow the established component naming conventions',
+        ],
       },
       {
         category: 'Code Quality',
-        priority: 'high', 
+        priority: 'high',
         items: [
           'Run detectMixedPatterns.js before major releases',
           'Use ESLint rules to prevent mixed module patterns',
           'Implement pre-commit hooks for module pattern validation',
-          'Regular dependency audits using ModuleRegistry diagnostics'
-        ]
+          'Regular dependency audits using ModuleRegistry diagnostics',
+        ],
       },
       {
         category: 'Performance Optimization',
@@ -398,8 +418,8 @@ class MigrationReportGenerator {
           'Leverage tree-shaking capabilities in build process',
           'Use dynamic imports for lazy-loaded game components',
           'Monitor bundle sizes with registry-based tracking',
-          'Optimize circular dependency detection in registry'
-        ]
+          'Optimize circular dependency detection in registry',
+        ],
       },
       {
         category: 'Testing Strategy',
@@ -408,8 +428,8 @@ class MigrationReportGenerator {
           'Maintain comprehensive unit tests for registry system',
           'Add performance benchmarks for component loading',
           'Test migration scripts against new mixed patterns',
-          'Validate cross-browser compatibility for module features'
-        ]
+          'Validate cross-browser compatibility for module features',
+        ],
       },
       {
         category: 'Documentation',
@@ -418,9 +438,9 @@ class MigrationReportGenerator {
           'Update component documentation with registry usage',
           'Create developer guides for module best practices',
           'Document performance optimization techniques',
-          'Maintain architectural decision records (ADRs)'
-        ]
-      }
+          'Maintain architectural decision records (ADRs)',
+        ],
+      },
     ];
   }
 
@@ -429,7 +449,7 @@ class MigrationReportGenerator {
    */
   async buildReportContent() {
     const data = this.migrationData;
-    
+
     return `# Learnimals Modularization Migration Report
 
 Generated on: ${new Date(data.timestamp).toLocaleString()}
@@ -455,7 +475,9 @@ This report documents the comprehensive migration of the Learnimals codebase fro
 
 ## Implementation Phases
 
-${data.phases.map(phase => `
+${data.phases
+  .map(
+    phase => `
 ### ${phase.name}
 
 **Status**: ${phase.status}  
@@ -468,24 +490,34 @@ ${phase.tasks.map(task => `- ${task}`).join('\n')}
 
 **Key Achievements:**
 ${phase.keyAchievements.map(achievement => `- ${achievement}`).join('\n')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## File Changes Detail
 
 ### Created Files
 
-${data.fileChanges.filter(change => change.type === 'created').map(change => `
+${data.fileChanges
+  .filter(change => change.type === 'created')
+  .map(
+    change => `
 #### ${change.file}
 
 ${change.description}
 
 - **Lines added**: ${change.linesAdded}
 - **Key features**: ${change.features.join(', ')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ### Migrated Files
 
-${data.fileChanges.filter(change => change.type === 'migrated').map(change => `
+${data.fileChanges
+  .filter(change => change.type === 'migrated')
+  .map(
+    change => `
 #### ${change.file}
 
 ${change.description}
@@ -494,7 +526,9 @@ ${change.description}
 - **Patterns removed**: ${change.patternsRemoved.join(', ')}
 - **Features preserved**: ${change.featuresPreserved ? change.featuresPreserved.join(', ') : 'All existing functionality'}
 ${change.featuresAdded ? `- **Features added**: ${change.featuresAdded.join(', ')}` : ''}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Technical Architecture
 
@@ -587,11 +621,15 @@ if (moduleRegistry) {
 
 ## Future Recommendations
 
-${data.recommendations.map(rec => `
+${data.recommendations
+  .map(
+    rec => `
 ### ${rec.category} (Priority: ${rec.priority})
 
 ${rec.items.map(item => `- ${item}`).join('\n')}
-`).join('\n')}
+`
+  )
+  .join('\n')}
 
 ## Quality Assurance
 
@@ -638,10 +676,10 @@ The migration establishes Learnimals as a modern, maintainable, and performant e
 
   /**
    * Write the report to file
-   */  
+   */
   async writeReport(content) {
     const outputDir = path.dirname(this.options.outputPath);
-    
+
     try {
       await fs.mkdir(outputDir, { recursive: true });
       await fs.writeFile(this.options.outputPath, content, 'utf8');
@@ -658,9 +696,9 @@ The migration establishes Learnimals as a modern, maintainable, and performant e
 async function main() {
   const generator = new MigrationReportGenerator({
     verbose: process.argv.includes('--verbose'),
-    includeCodeExamples: !process.argv.includes('--no-examples')
+    includeCodeExamples: !process.argv.includes('--no-examples'),
   });
-  
+
   try {
     await generator.generateReport();
     process.exit(0);
@@ -671,7 +709,10 @@ async function main() {
 }
 
 // Run if called directly
-if (import.meta.url === `file://${process.argv[1]}` || process.argv[1].endsWith('generateMigrationReport.js')) {
+if (
+  import.meta.url === `file://${process.argv[1]}` ||
+  process.argv[1].endsWith('generateMigrationReport.js')
+) {
   main();
 }
 

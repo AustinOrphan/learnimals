@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { ComponentMockData, TestDataUtils } from '../../fixtures/testDataFactory.js';
+import { CharacterFactory } from '../../fixtures/testDataFactory.js';
 
 // Mock Card component
 let Card;
@@ -501,10 +501,10 @@ describe('Card Component', () => {
     });
 
     it('should work with character data from factory', () => {
-      const characterData = ComponentMockData.formData.character;
+      const characterData = CharacterFactory.create();
       const cardData = {
         title: characterData.name,
-        description: `Species: ${characterData.species}`,
+        description: `Species: ${characterData.species.primary}`,
         variant: 'character',
       };
 

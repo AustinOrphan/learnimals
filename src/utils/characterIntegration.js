@@ -203,9 +203,9 @@ export function generateCharacterMessage(character, context = 'greeting') {
         `${name} thinks you're doing great! Let's keep trying.`,
       ],
       low_patience: [
-        'Let\'s focus and try again.',
+        "Let's focus and try again.",
         `${name} knows you can get this right.`,
-        'One more time - you\'ve got this!',
+        "One more time - you've got this!",
       ],
     },
     celebration: {
@@ -305,20 +305,20 @@ export function getCharacterAnimationState(character, context) {
   const personality = character.personality;
 
   switch (context) {
-  case 'correct_answer':
-    return personality.traits.playfulness > 70 ? 'celebrating' : 'happy';
+    case 'correct_answer':
+      return personality.traits.playfulness > 70 ? 'celebrating' : 'happy';
 
-  case 'wrong_answer':
-    return personality.traits.empathy > 80 ? 'encouraging' : 'thinking';
+    case 'wrong_answer':
+      return personality.traits.empathy > 80 ? 'encouraging' : 'thinking';
 
-  case 'waiting':
-    return personality.traits.patience > 80 ? 'calm' : 'idle';
+    case 'waiting':
+      return personality.traits.patience > 80 ? 'calm' : 'idle';
 
-  case 'teaching':
-    return personality.traits.enthusiasm > 80 ? 'excited' : 'focused';
+    case 'teaching':
+      return personality.traits.enthusiasm > 80 ? 'excited' : 'focused';
 
-  default:
-    return 'idle';
+    default:
+      return 'idle';
   }
 }
 

@@ -1,17 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Debug Customizer</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        #container { border: 2px solid #333; padding: 20px; margin: 20px 0; min-height: 300px; }
-        .log { margin: 5px 0; padding: 5px; background: #f0f0f0; border-radius: 3px; }
-        button { margin: 10px; padding: 10px 20px; }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      #container {
+        border: 2px solid #333;
+        padding: 20px;
+        margin: 20px 0;
+        min-height: 300px;
+      }
+      .log {
+        margin: 5px 0;
+        padding: 5px;
+        background: #f0f0f0;
+        border-radius: 3px;
+      }
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Debug CharacterCustomizer</h1>
     <button id="test-btn">Create and Render Customizer</button>
     <div id="logs"></div>
@@ -22,84 +38,85 @@
     <script src="./src/components/ui/Modal.js"></script>
 
     <script type="module">
-        const logs = document.getElementById('logs');
-        const container = document.getElementById('container');
-        
-        function log(message) {
-            const div = document.createElement('div');
-            div.className = 'log';
-            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
-            logs.appendChild(div);
-            console.log(message);
-        }
+      const logs = document.getElementById('logs');
+      const container = document.getElementById('container');
 
-        document.getElementById('test-btn').addEventListener('click', async () => {
-            try {
-                log('Starting customizer test...');
-                
-                // Test BaseComponent availability
-                if (typeof BaseComponent === 'undefined') {
-                    log('❌ BaseComponent not available globally');
-                    return;
-                }
-                log('✅ BaseComponent is available');
+      function log(message) {
+        const div = document.createElement('div');
+        div.className = 'log';
+        div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+        logs.appendChild(div);
+        console.log(message);
+      }
 
-                // Import CharacterCustomizer
-                log('Importing CharacterCustomizer...');
-                const { default: CharacterCustomizer } = await import('./src/features/character-generation/ui/CharacterCustomizer.js');
-                log('✅ CharacterCustomizer imported successfully');
+      document.getElementById('test-btn').addEventListener('click', async () => {
+        try {
+          log('Starting customizer test...');
 
-                // Create instance
-                log('Creating CharacterCustomizer instance...');
-                const customizer = new CharacterCustomizer({
-                    container: container,
-                    onCustomizationChange: (customization) => {
-                        log('🔄 Customization changed');
-                    },
-                    onSave: (customization) => {
-                        log('💾 Customization saved');
-                    },
-                    onCancel: () => {
-                        log('❌ Customizer cancelled');
-                    }
-                });
-                log('✅ CharacterCustomizer instance created');
+          // Test BaseComponent availability
+          if (typeof BaseComponent === 'undefined') {
+            log('❌ BaseComponent not available globally');
+            return;
+          }
+          log('✅ BaseComponent is available');
 
-                // Check if render method exists
-                if (typeof customizer.render === 'function') {
-                    log('✅ Render method exists');
-                } else {
-                    log('❌ Render method not found');
-                    return;
-                }
+          // Import CharacterCustomizer
+          log('Importing CharacterCustomizer...');
+          const { default: CharacterCustomizer } = await import(
+            './src/features/character-generation/ui/CharacterCustomizer.js'
+          );
+          log('✅ CharacterCustomizer imported successfully');
 
-                // Try to render
-                log('Attempting to render...');
-                customizer.render();
-                log('✅ Render method called successfully');
+          // Create instance
+          log('Creating CharacterCustomizer instance...');
+          const customizer = new CharacterCustomizer({
+            container: container,
+            onCustomizationChange: customization => {
+              log('🔄 Customization changed');
+            },
+            onSave: customization => {
+              log('💾 Customization saved');
+            },
+            onCancel: () => {
+              log('❌ Customizer cancelled');
+            },
+          });
+          log('✅ CharacterCustomizer instance created');
 
-                // Check if element was created
-                setTimeout(() => {
-                    if (customizer.element) {
-                        log('✅ Component element created and found');
-                    } else {
-                        log('❌ Component element not found after render');
-                    }
-                    
-                    if (container.children.length > 0) {
-                        log(`✅ Container has ${container.children.length} child elements`);
-                    } else {
-                        log('❌ Container is still empty');
-                    }
-                }, 100);
+          // Check if render method exists
+          if (typeof customizer.render === 'function') {
+            log('✅ Render method exists');
+          } else {
+            log('❌ Render method not found');
+            return;
+          }
 
-            } catch (error) {
-                log(`❌ Error: ${error.message}`);
-                console.error('Full error:', error);
+          // Try to render
+          log('Attempting to render...');
+          customizer.render();
+          log('✅ Render method called successfully');
+
+          // Check if element was created
+          setTimeout(() => {
+            if (customizer.element) {
+              log('✅ Component element created and found');
+            } else {
+              log('❌ Component element not found after render');
             }
-        });
 
-        log('Debug page loaded. Click button to test.');
+            if (container.children.length > 0) {
+              log(`✅ Container has ${container.children.length} child elements`);
+            } else {
+              log('❌ Container is still empty');
+            }
+          }, 100);
+        } catch (error) {
+          log(`❌ Error: ${error.message}`);
+          console.error('Full error:', error);
+        }
+      });
+
+      log('Debug page loaded. Click button to test.');
     </script>
-</body>
+  </body>
 </html>

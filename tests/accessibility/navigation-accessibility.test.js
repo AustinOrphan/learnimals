@@ -6,11 +6,9 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import {
-  accessibilityService,
-  AccessibilityService,
-} from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+/* global FocusEvent */
+import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import '../../src/utils/accessibilityTester.js';
 
 // Mock logger
 vi.mock('../../src/utils/logger.js', () => ({
@@ -73,7 +71,6 @@ describe('Navigation Accessibility Tests', () => {
     });
 
     Element.prototype.blur = vi.fn(function () {
-      const previousElement = this;
       Object.defineProperty(document, 'activeElement', {
         value: document.body,
         configurable: true,
@@ -929,7 +926,7 @@ describe('Navigation Accessibility Tests', () => {
 
       const drawerToggle = testContainer.querySelector('.nav-drawer-toggle');
       const navDrawer = testContainer.querySelector('#nav-drawer');
-      const drawerClose = testContainer.querySelector('.nav-drawer-close');
+      testContainer.querySelector('.nav-drawer-close');
       const overlay = testContainer.querySelector('.nav-overlay');
 
       expect(drawerToggle.getAttribute('aria-expanded')).toBe('false');

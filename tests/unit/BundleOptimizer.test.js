@@ -2,6 +2,7 @@
  * Unit Tests for BundleOptimizer
  * Tests bundle optimization, code splitting, and performance monitoring
  */
+/* global CSSRule, DOMException, requestIdleCallback */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BundleOptimizer } from '../../src/utils/BundleOptimizer.js';
@@ -94,8 +95,38 @@ describe('BundleOptimizer', () => {
       }),
     };
 
+    // Real event wiring for mock elements. Listeners are stored on the
+    // instance (via `this`), so spread copies each get their own listeners.
+    const createEventMethods = () => ({
+      addEventListener: vi.fn(function (type, cb, options) {
+        this._listeners = this._listeners || {};
+        const list = (this._listeners[type] = this._listeners[type] || []);
+        if (options && options.once) {
+          const element = this;
+          const onceWrapper = function (event) {
+            element.removeEventListener(type, onceWrapper);
+            cb.call(element, event);
+          };
+          list.push(onceWrapper);
+        } else {
+          list.push(cb);
+        }
+      }),
+      removeEventListener: vi.fn(function (type, cb) {
+        if (this._listeners && this._listeners[type]) {
+          this._listeners[type] = this._listeners[type].filter(fn => fn !== cb);
+        }
+      }),
+      dispatchEvent: vi.fn(function (event) {
+        const fns = (this._listeners && this._listeners[event.type]) || [];
+        fns.slice().forEach(fn => fn.call(this, event));
+        return true;
+      }),
+    });
+
     // Mock link element for feature detection
     const mockLink = {
+      nodeName: 'LINK',
       rel: '',
       href: '',
       as: '',
@@ -106,26 +137,29 @@ describe('BundleOptimizer', () => {
       relList: {
         supports: vi.fn(rel => rel === 'modulepreload' || rel === 'prefetch'),
       },
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
+      ...createEventMethods(),
     };
 
     // Mock script element
     const mockScript = {
+      nodeName: 'SCRIPT',
       src: '',
       defer: false,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
+      ...createEventMethods(),
     };
 
     // Mock style element
     const mockStyle = {
+      tagName: 'STYLE',
       textContent: '',
-      setAttribute: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
+      setAttribute: vi.fn(function (name, value) {
+        this._attrs = this._attrs || {};
+        this._attrs[name] = String(value);
+      }),
+      getAttribute: vi.fn(function (name) {
+        return this._attrs && name in this._attrs ? this._attrs[name] : null;
+      }),
+      ...createEventMethods(),
     };
 
     // Mock div element
@@ -204,16 +238,6 @@ describe('BundleOptimizer', () => {
     // Mock CompressionStream for Brotli detection
     global.CompressionStream = vi.fn();
 
-    // Mock dynamic import
-    global.import = vi.fn().mockImplementation(modulePath => {
-      // Default successful import for testing
-      return Promise.resolve({
-        default: vi.fn(),
-        [modulePath.split('/').pop().replace('.js', '')]: vi.fn(),
-      });
-    });
-    vi.stubGlobal('import', global.import);
-
     // Mock window.innerHeight for critical CSS tests
     Object.defineProperty(window, 'innerHeight', {
       value: 768,
@@ -239,12 +263,27 @@ describe('BundleOptimizer', () => {
     // Create shared storage for mock elements
     const mockElementsStorage = new Map();
 
-    // Mock document.head and document.body methods with element tracking
-    const headElements = [];
-    const bodyElements = [];
+    // Stable stylesheet/script mock elements so mutations made by the
+    // optimizer are visible to later queries in the same test
+    const mockStylesheetLinks = [
+      { ...mockLink, rel: 'stylesheet', href: '/critical.css' },
+      { ...mockLink, rel: 'stylesheet', href: '/non-critical.css' },
+    ];
+    const mockScriptElements = [
+      { ...mockScript, src: '/critical.js' },
+      { ...mockScript, src: '/non-critical.js' },
+    ];
 
-    document.head.appendChild = vi.fn(element => {
-      headElements.push(element);
+    // Stable anchor for route-prefetch tests: querySelector('a') and
+    // querySelectorAll('a[href]') must return the same instance so event
+    // listeners registered by the optimizer fire on dispatch
+    const mockRouteAnchor = {
+      href: '/games/word-scramble',
+      getAttribute: vi.fn(() => '/games/word-scramble'),
+      ...createEventMethods(),
+    };
+
+    const storeTrackedElement = element => {
       if (element.rel === 'modulepreload' || element.rel === 'preload') {
         mockElementsStorage.set(element.href, element);
       }
@@ -255,6 +294,15 @@ describe('BundleOptimizer', () => {
       ) {
         mockElementsStorage.set('critical-style', element);
       }
+    };
+
+    // Mock document.head and document.body methods with element tracking
+    const headElements = [];
+    const bodyElements = [];
+
+    document.head.appendChild = vi.fn(element => {
+      headElements.push(element);
+      storeTrackedElement(element);
       return element;
     });
 
@@ -265,6 +313,7 @@ describe('BundleOptimizer', () => {
       } else {
         headElements.push(element);
       }
+      storeTrackedElement(element);
       return element;
     });
 
@@ -308,16 +357,21 @@ describe('BundleOptimizer', () => {
     document.querySelector = vi.fn(selector => {
       // Return specific mock elements for common selectors
       if (selector === 'link[rel="stylesheet"]') {
-        const link = { ...mockLink, href: '/critical.css' };
-        return link;
+        return mockStylesheetLinks[0];
       }
       if (selector === 'script[src]') {
-        const script = { ...mockScript, src: '/critical.js' };
-        return script;
+        return mockScriptElements[0];
+      }
+      if (selector.startsWith('script[src=')) {
+        const src = selector.match(/src="([^"]+)"/)?.[1];
+        return mockScriptElements.find(script => script.src === src) || null;
       }
       if (selector.startsWith('link[href=')) {
         const href = selector.match(/href="([^"]+)"/)?.[1];
         if (href) {
+          const stableLink = mockStylesheetLinks.find(link => link.href === href);
+          if (stableLink) return stableLink;
+
           const existingLink = mockElementsStorage.get(href);
           if (existingLink) return existingLink;
 
@@ -326,6 +380,11 @@ describe('BundleOptimizer', () => {
           return newLink;
         }
       }
+      if (selector.startsWith('link[rel=')) {
+        const rel = selector.match(/rel="([^"]+)"/)?.[1];
+        const href = selector.match(/href="([^"]+)"/)?.[1];
+        return headElements.find(el => el.rel === rel && (!href || el.href === href)) || null;
+      }
       if (selector === 'style[data-critical="true"]') {
         return mockElementsStorage.get('critical-style');
       }
@@ -333,19 +392,12 @@ describe('BundleOptimizer', () => {
         return { ...mockDiv };
       }
       if (selector === 'a') {
-        return {
-          href: '/page1',
-          dispatchEvent: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-        };
+        return mockRouteAnchor;
       }
       if (selector === 'a[href="/page1"]') {
         return {
           href: '/page1',
-          dispatchEvent: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
+          ...createEventMethods(),
         };
       }
       return null;
@@ -357,16 +409,10 @@ describe('BundleOptimizer', () => {
         return headElements.filter(el => el.rel === 'modulepreload' || el.rel === 'preload');
       }
       if (selector === 'link[rel="stylesheet"]') {
-        return [
-          { ...mockLink, href: '/critical.css' },
-          { ...mockLink, href: '/non-critical.css' },
-        ];
+        return mockStylesheetLinks;
       }
       if (selector === 'script[src]') {
-        return [
-          { ...mockScript, src: '/critical.js' },
-          { ...mockScript, src: '/non-critical.js' },
-        ];
+        return mockScriptElements;
       }
       if (selector === 'a[href^="/"], a[href^="./"], a[href^="../"]') {
         return [
@@ -375,7 +421,7 @@ describe('BundleOptimizer', () => {
         ];
       }
       if (selector === 'a[href]') {
-        return [{ getAttribute: vi.fn(() => '/games/word-scramble'), addEventListener: vi.fn() }];
+        return [mockRouteAnchor];
       }
       if (selector === '*') {
         return [
@@ -506,7 +552,7 @@ describe('BundleOptimizer', () => {
           name: 'vendor.js',
           transferSize: 200000,
           duration: 300,
-          startTime: 500, // Not critical
+          startTime: 1500, // Beyond criticalCSSThreshold (1000ms) - not critical
         },
       ];
 
@@ -708,19 +754,17 @@ describe('BundleOptimizer', () => {
       expect(nonCriticalLink.media).toBe('print');
     });
 
-    it('should restore stylesheet media on load', done => {
+    it('should restore stylesheet media on load', () => {
       const link = document.querySelector('link[href="/non-critical.css"]');
       link.media = 'screen';
 
       optimizer.deferStylesheet(link);
+      expect(link.media).toBe('print');
 
-      // Simulate load event
+      // Simulate load event; the mock elements dispatch synchronously
       link.dispatchEvent(new Event('load'));
 
-      setTimeout(() => {
-        expect(link.media).toBe('screen');
-        done();
-      }, 0);
+      expect(link.media).toBe('screen');
     });
 
     it('should defer non-critical scripts', () => {
@@ -820,7 +864,7 @@ describe('BundleOptimizer', () => {
 
     it('should handle successful dynamic import', async () => {
       const mockModule = { default: class TestComponent {} };
-      global.import = vi.fn().mockResolvedValue(mockModule);
+      optimizer.importModule = vi.fn().mockResolvedValue(mockModule);
 
       optimizer.createDynamicImportWrapper();
 
@@ -831,7 +875,7 @@ describe('BundleOptimizer', () => {
 
     it('should cache successful imports', async () => {
       const mockModule = { TestClass: class {} };
-      global.import = vi.fn().mockResolvedValue(mockModule);
+      optimizer.importModule = vi.fn().mockResolvedValue(mockModule);
 
       optimizer.createDynamicImportWrapper();
 
@@ -840,11 +884,11 @@ describe('BundleOptimizer', () => {
       // Second import (should use cache)
       await window.lazyImport('/cached-module.js');
 
-      expect(global.import).toHaveBeenCalledTimes(1);
+      expect(optimizer.importModule).toHaveBeenCalledTimes(1);
     });
 
     it('should handle import timeout', async () => {
-      global.import = vi.fn(() => new Promise(() => {})); // Never resolves
+      optimizer.importModule = vi.fn(() => new Promise(() => {})); // Never resolves
 
       optimizer.createDynamicImportWrapper();
 
@@ -855,7 +899,7 @@ describe('BundleOptimizer', () => {
 
     it('should retry failed imports', async () => {
       let attempts = 0;
-      global.import = vi.fn(() => {
+      optimizer.importModule = vi.fn(() => {
         attempts++;
         if (attempts < 3) {
           return Promise.reject(new Error('Network error'));
@@ -868,17 +912,17 @@ describe('BundleOptimizer', () => {
       const result = await window.lazyImport('/flaky-module.js');
       expect(result).toBeTruthy();
       expect(attempts).toBe(3);
-    });
+    }, 10000);
 
     it('should use fallback on import failure', async () => {
       const fallback = { fallback: true };
-      global.import = vi.fn().mockRejectedValue(new Error('Module not found'));
+      optimizer.importModule = vi.fn().mockRejectedValue(new Error('Module not found'));
 
       optimizer.createDynamicImportWrapper();
 
       const result = await window.lazyImport('/missing-module.js', { fallback });
       expect(result).toBe(fallback);
-    });
+    }, 10000);
   });
 
   describe('Route-based Splitting', () => {

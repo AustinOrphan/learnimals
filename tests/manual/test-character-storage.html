@@ -1,305 +1,299 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Character Storage Integration Test</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        
-        .test-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .test-header {
-            background: #4a90e2;
-            color: white;
-            padding: 15px;
-            border-radius: 8px 8px 0 0;
-            margin: -20px -20px 20px -20px;
-        }
-        
-        .test-btn {
-            padding: 8px 16px;
-            margin: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            background: #4a90e2;
-            color: white;
-        }
-        
-        .test-btn:hover {
-            background: #357abd;
-        }
-        
-        .test-results {
-            margin-top: 15px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 14px;
-            white-space: pre-wrap;
-        }
-        
-        .success {
-            color: #4caf50;
-            font-weight: bold;
-        }
-        
-        .error {
-            color: #f44336;
-            font-weight: bold;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+
+      .test-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .test-header {
+        background: #4a90e2;
+        color: white;
+        padding: 15px;
+        border-radius: 8px 8px 0 0;
+        margin: -20px -20px 20px -20px;
+      }
+
+      .test-btn {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        background: #4a90e2;
+        color: white;
+      }
+
+      .test-btn:hover {
+        background: #357abd;
+      }
+
+      .test-results {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 14px;
+        white-space: pre-wrap;
+      }
+
+      .success {
+        color: #4caf50;
+        font-weight: bold;
+      }
+
+      .error {
+        color: #f44336;
+        font-weight: bold;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>🧪 Character Storage Integration Test</h1>
     <p>Testing the integration between CharacterCustomizationWizard and CharacterStorage service.</p>
 
     <div class="test-container">
-        <div class="test-header">
-            <h2>Storage System Test</h2>
-        </div>
-        
-        <button class="test-btn" onclick="testStorageInit()">Initialize Storage</button>
-        <button class="test-btn" onclick="testCreateCharacter()">Create Test Character</button>
-        <button class="test-btn" onclick="testSaveCharacter()">Save Character</button>
-        <button class="test-btn" onclick="testLoadCharacter()">Load Character</button>
-        <button class="test-btn" onclick="testListCharacters()">List All Characters</button>
-        <button class="test-btn" onclick="testDeleteCharacter()">Delete Test Character</button>
-        <button class="test-btn" onclick="clearResults()">Clear Results</button>
-        
-        <div class="test-results" id="test-results">
-Ready to test character storage integration...
-        </div>
+      <div class="test-header">
+        <h2>Storage System Test</h2>
+      </div>
+
+      <button class="test-btn" onclick="testStorageInit()">Initialize Storage</button>
+      <button class="test-btn" onclick="testCreateCharacter()">Create Test Character</button>
+      <button class="test-btn" onclick="testSaveCharacter()">Save Character</button>
+      <button class="test-btn" onclick="testLoadCharacter()">Load Character</button>
+      <button class="test-btn" onclick="testListCharacters()">List All Characters</button>
+      <button class="test-btn" onclick="testDeleteCharacter()">Delete Test Character</button>
+      <button class="test-btn" onclick="clearResults()">Clear Results</button>
+
+      <div class="test-results" id="test-results">Ready to test character storage integration...</div>
     </div>
 
     <script type="module">
-        import { CharacterStorage } from '/src/services/character/CharacterStorage.js';
-        import { createCharacter, validateCharacter } from '/src/data/characterSchema.js';
+      import { CharacterStorage } from '/src/services/character/CharacterStorage.js';
+      import { createCharacter, validateCharacter } from '/src/data/characterSchema.js';
 
-        class CharacterStorageTest {
-            constructor() {
-                this.storage = new CharacterStorage();
-                this.testCharacter = null;
-                this.testCharacterId = null;
-                this.resultsElement = document.getElementById('test-results');
-            }
-
-            log(message, type = 'info') {
-                const timestamp = new Date().toLocaleTimeString();
-                const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
-                const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
-                
-                const logLine = document.createElement('div');
-                logLine.className = className;
-                logLine.textContent = `[${timestamp}] ${prefix} ${message}`;
-                
-                this.resultsElement.appendChild(logLine);
-                this.resultsElement.scrollTop = this.resultsElement.scrollHeight;
-            }
-
-            async testStorageInit() {
-                try {
-                    this.log('Initializing character storage...');
-                    await this.storage.init();
-                    this.log('Storage initialized successfully', 'success');
-                    
-                    // Check database info
-                    this.log(`Database: ${this.storage.dbName} v${this.storage.version}`);
-                    this.log(`Available stores: ${Object.values(this.storage.stores).join(', ')}`);
-                    
-                } catch (error) {
-                    this.log(`Storage initialization failed: ${error.message}`, 'error');
-                }
-            }
-
-            async testCreateCharacter() {
-                try {
-                    this.log('Creating test character...');
-                    
-                    this.testCharacter = createCharacter({
-                        name: 'Test Character',
-                        species: {
-                            primary: 'panda',
-                            category: 'mammal'
-                        },
-                        appearance: {
-                            colors: {
-                                primary: '#ff6b6b',
-                                secondary: '#4ecdc4',
-                                accent: '#ffe66d'
-                            }
-                        },
-                        personality: {
-                            traits: {
-                                enthusiasm: 80,
-                                patience: 90,
-                                curiosity: 70,
-                                playfulness: 85,
-                                confidence: 75,
-                                empathy: 95
-                            },
-                            learningStyle: 'visual'
-                        }
-                    });
-
-                    this.log('Test character created successfully', 'success');
-                    this.log(`Character name: ${this.testCharacter.name}`);
-                    this.log(`Species: ${this.testCharacter.species.primary}`);
-                    this.log(`Primary color: ${this.testCharacter.appearance.colors.primary}`);
-                    
-                    // Validate character
-                    const validation = validateCharacter(this.testCharacter);
-                    if (validation.valid) {
-                        this.log('Character validation passed', 'success');
-                    } else {
-                        this.log(`Character validation failed: ${validation.errors.join(', ')}`, 'error');
-                    }
-                    
-                } catch (error) {
-                    this.log(`Character creation failed: ${error.message}`, 'error');
-                }
-            }
-
-            async testSaveCharacter() {
-                if (!this.testCharacter) {
-                    this.log('No test character available. Create one first.', 'error');
-                    return;
-                }
-
-                try {
-                    this.log('Saving test character...');
-                    
-                    // Ensure storage is initialized
-                    if (!this.storage.isInitialized) {
-                        await this.storage.init();
-                    }
-                    
-                    this.testCharacterId = await this.storage.saveCharacter(this.testCharacter);
-                    this.log(`Character saved with ID: ${this.testCharacterId}`, 'success');
-                    
-                    // Update character with ID
-                    this.testCharacter.id = this.testCharacterId;
-                    
-                } catch (error) {
-                    this.log(`Character save failed: ${error.message}`, 'error');
-                }
-            }
-
-            async testLoadCharacter() {
-                if (!this.testCharacterId) {
-                    this.log('No saved character ID available. Save a character first.', 'error');
-                    return;
-                }
-
-                try {
-                    this.log(`Loading character with ID: ${this.testCharacterId}...`);
-                    
-                    const loadedCharacter = await this.storage.loadCharacter(this.testCharacterId);
-                    
-                    if (loadedCharacter) {
-                        this.log('Character loaded successfully', 'success');
-                        this.log(`Loaded character name: ${loadedCharacter.name}`);
-                        this.log(`Loaded species: ${loadedCharacter.species.primary}`);
-                        this.log(`Loaded personality traits: ${JSON.stringify(loadedCharacter.personality.traits)}`);
-                        
-                        // Verify data integrity
-                        if (loadedCharacter.name === this.testCharacter.name && 
-                            loadedCharacter.species.primary === this.testCharacter.species.primary) {
-                            this.log('Data integrity verified', 'success');
-                        } else {
-                            this.log('Data integrity check failed', 'error');
-                        }
-                    } else {
-                        this.log('Character not found', 'error');
-                    }
-                    
-                } catch (error) {
-                    this.log(`Character load failed: ${error.message}`, 'error');
-                }
-            }
-
-            async testListCharacters() {
-                try {
-                    this.log('Listing all characters...');
-                    
-                    const characters = await this.storage.getAllCharacters();
-                    
-                    this.log(`Found ${characters.length} characters`, 'success');
-                    
-                    characters.forEach((char, index) => {
-                        this.log(`${index + 1}. ${char.name} (${char.species.primary}) - ID: ${char.id}`);
-                    });
-                    
-                    if (characters.length === 0) {
-                        this.log('No characters found in storage');
-                    }
-                    
-                } catch (error) {
-                    this.log(`List characters failed: ${error.message}`, 'error');
-                }
-            }
-
-            async testDeleteCharacter() {
-                if (!this.testCharacterId) {
-                    this.log('No saved character ID available. Save a character first.', 'error');
-                    return;
-                }
-
-                try {
-                    this.log(`Deleting character with ID: ${this.testCharacterId}...`);
-                    
-                    const success = await this.storage.deleteCharacter(this.testCharacterId);
-                    
-                    if (success) {
-                        this.log('Character deleted successfully', 'success');
-                        this.testCharacterId = null;
-                        this.testCharacter = null;
-                    } else {
-                        this.log('Character deletion failed', 'error');
-                    }
-                    
-                } catch (error) {
-                    this.log(`Character deletion failed: ${error.message}`, 'error');
-                }
-            }
-
-            clearResults() {
-                this.resultsElement.innerHTML = 'Results cleared. Ready for new tests...';
-            }
+      class CharacterStorageTest {
+        constructor() {
+          this.storage = new CharacterStorage();
+          this.testCharacter = null;
+          this.testCharacterId = null;
+          this.resultsElement = document.getElementById('test-results');
         }
 
-        // Initialize test instance
-        const storageTest = new CharacterStorageTest();
+        log(message, type = 'info') {
+          const timestamp = new Date().toLocaleTimeString();
+          const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+          const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
 
-        // Make test functions globally available
-        window.testStorageInit = () => storageTest.testStorageInit();
-        window.testCreateCharacter = () => storageTest.testCreateCharacter();
-        window.testSaveCharacter = () => storageTest.testSaveCharacter();
-        window.testLoadCharacter = () => storageTest.testLoadCharacter();
-        window.testListCharacters = () => storageTest.testListCharacters();
-        window.testDeleteCharacter = () => storageTest.testDeleteCharacter();
-        window.clearResults = () => storageTest.clearResults();
+          const logLine = document.createElement('div');
+          logLine.className = className;
+          logLine.textContent = `[${timestamp}] ${prefix} ${message}`;
 
-        // Auto-run initialization test
-        document.addEventListener('DOMContentLoaded', () => {
-            storageTest.log('Character Storage Integration Test loaded');
-            storageTest.log('Click buttons above to run tests');
-        });
+          this.resultsElement.appendChild(logLine);
+          this.resultsElement.scrollTop = this.resultsElement.scrollHeight;
+        }
+
+        async testStorageInit() {
+          try {
+            this.log('Initializing character storage...');
+            await this.storage.init();
+            this.log('Storage initialized successfully', 'success');
+
+            // Check database info
+            this.log(`Database: ${this.storage.dbName} v${this.storage.version}`);
+            this.log(`Available stores: ${Object.values(this.storage.stores).join(', ')}`);
+          } catch (error) {
+            this.log(`Storage initialization failed: ${error.message}`, 'error');
+          }
+        }
+
+        async testCreateCharacter() {
+          try {
+            this.log('Creating test character...');
+
+            this.testCharacter = createCharacter({
+              name: 'Test Character',
+              species: {
+                primary: 'panda',
+                category: 'mammal',
+              },
+              appearance: {
+                colors: {
+                  primary: '#ff6b6b',
+                  secondary: '#4ecdc4',
+                  accent: '#ffe66d',
+                },
+              },
+              personality: {
+                traits: {
+                  enthusiasm: 80,
+                  patience: 90,
+                  curiosity: 70,
+                  playfulness: 85,
+                  confidence: 75,
+                  empathy: 95,
+                },
+                learningStyle: 'visual',
+              },
+            });
+
+            this.log('Test character created successfully', 'success');
+            this.log(`Character name: ${this.testCharacter.name}`);
+            this.log(`Species: ${this.testCharacter.species.primary}`);
+            this.log(`Primary color: ${this.testCharacter.appearance.colors.primary}`);
+
+            // Validate character
+            const validation = validateCharacter(this.testCharacter);
+            if (validation.valid) {
+              this.log('Character validation passed', 'success');
+            } else {
+              this.log(`Character validation failed: ${validation.errors.join(', ')}`, 'error');
+            }
+          } catch (error) {
+            this.log(`Character creation failed: ${error.message}`, 'error');
+          }
+        }
+
+        async testSaveCharacter() {
+          if (!this.testCharacter) {
+            this.log('No test character available. Create one first.', 'error');
+            return;
+          }
+
+          try {
+            this.log('Saving test character...');
+
+            // Ensure storage is initialized
+            if (!this.storage.isInitialized) {
+              await this.storage.init();
+            }
+
+            this.testCharacterId = await this.storage.saveCharacter(this.testCharacter);
+            this.log(`Character saved with ID: ${this.testCharacterId}`, 'success');
+
+            // Update character with ID
+            this.testCharacter.id = this.testCharacterId;
+          } catch (error) {
+            this.log(`Character save failed: ${error.message}`, 'error');
+          }
+        }
+
+        async testLoadCharacter() {
+          if (!this.testCharacterId) {
+            this.log('No saved character ID available. Save a character first.', 'error');
+            return;
+          }
+
+          try {
+            this.log(`Loading character with ID: ${this.testCharacterId}...`);
+
+            const loadedCharacter = await this.storage.loadCharacter(this.testCharacterId);
+
+            if (loadedCharacter) {
+              this.log('Character loaded successfully', 'success');
+              this.log(`Loaded character name: ${loadedCharacter.name}`);
+              this.log(`Loaded species: ${loadedCharacter.species.primary}`);
+              this.log(`Loaded personality traits: ${JSON.stringify(loadedCharacter.personality.traits)}`);
+
+              // Verify data integrity
+              if (
+                loadedCharacter.name === this.testCharacter.name &&
+                loadedCharacter.species.primary === this.testCharacter.species.primary
+              ) {
+                this.log('Data integrity verified', 'success');
+              } else {
+                this.log('Data integrity check failed', 'error');
+              }
+            } else {
+              this.log('Character not found', 'error');
+            }
+          } catch (error) {
+            this.log(`Character load failed: ${error.message}`, 'error');
+          }
+        }
+
+        async testListCharacters() {
+          try {
+            this.log('Listing all characters...');
+
+            const characters = await this.storage.getAllCharacters();
+
+            this.log(`Found ${characters.length} characters`, 'success');
+
+            characters.forEach((char, index) => {
+              this.log(`${index + 1}. ${char.name} (${char.species.primary}) - ID: ${char.id}`);
+            });
+
+            if (characters.length === 0) {
+              this.log('No characters found in storage');
+            }
+          } catch (error) {
+            this.log(`List characters failed: ${error.message}`, 'error');
+          }
+        }
+
+        async testDeleteCharacter() {
+          if (!this.testCharacterId) {
+            this.log('No saved character ID available. Save a character first.', 'error');
+            return;
+          }
+
+          try {
+            this.log(`Deleting character with ID: ${this.testCharacterId}...`);
+
+            const success = await this.storage.deleteCharacter(this.testCharacterId);
+
+            if (success) {
+              this.log('Character deleted successfully', 'success');
+              this.testCharacterId = null;
+              this.testCharacter = null;
+            } else {
+              this.log('Character deletion failed', 'error');
+            }
+          } catch (error) {
+            this.log(`Character deletion failed: ${error.message}`, 'error');
+          }
+        }
+
+        clearResults() {
+          this.resultsElement.innerHTML = 'Results cleared. Ready for new tests...';
+        }
+      }
+
+      // Initialize test instance
+      const storageTest = new CharacterStorageTest();
+
+      // Make test functions globally available
+      window.testStorageInit = () => storageTest.testStorageInit();
+      window.testCreateCharacter = () => storageTest.testCreateCharacter();
+      window.testSaveCharacter = () => storageTest.testSaveCharacter();
+      window.testLoadCharacter = () => storageTest.testLoadCharacter();
+      window.testListCharacters = () => storageTest.testListCharacters();
+      window.testDeleteCharacter = () => storageTest.testDeleteCharacter();
+      window.clearResults = () => storageTest.clearResults();
+
+      // Auto-run initialization test
+      document.addEventListener('DOMContentLoaded', () => {
+        storageTest.log('Character Storage Integration Test loaded');
+        storageTest.log('Click buttons above to run tests');
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -542,6 +542,14 @@ export class BundleOptimizer {
   }
 
   /**
+   * Perform a dynamic module import.
+   * Kept as an instance method so tests and callers can inject a custom importer.
+   */
+  importModule(modulePath) {
+    return import(/* @vite-ignore */ modulePath);
+  }
+
+  /**
    * Import with retry logic
    */
   async importWithRetry(modulePath, maxRetries = 3) {
@@ -549,7 +557,7 @@ export class BundleOptimizer {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        return await import(modulePath);
+        return await this.importModule(modulePath);
       } catch (error) {
         lastError = error;
 
@@ -585,8 +593,8 @@ export class BundleOptimizer {
     const routeMap = {
       // eslint-disable-next-line no-undef
       '/games/bubble-pop': () => lazyImport('/src/features/games/bubble-pop/BubblePopGame.js'),
-      // eslint-disable-next-line no-undef
       '/games/word-scramble': () =>
+        // eslint-disable-next-line no-undef
         lazyImport('/src/features/games/word-scramble/WordScrambleGame.js'),
       // eslint-disable-next-line no-undef
       '/profile': () => lazyImport('/src/features/user/Profile.js'),
@@ -688,17 +696,18 @@ export class BundleOptimizer {
    * Monitor bundle performance
    */
   monitorBundlePerformance() {
-    // Monitor resource loading
-    // eslint-disable-next-line no-undef
-    const observer = new PerformanceObserver(list => {
-      list.getEntries().forEach(entry => {
-        if (entry.name.endsWith('.js') || entry.name.endsWith('.css')) {
-          this.trackResourcePerformance(entry);
-        }
-      });
-    });
-
+    // Monitor resource loading. Both constructing the observer and calling
+    // observe() can throw in older browsers, so guard the whole setup.
     try {
+      // eslint-disable-next-line no-undef
+      const observer = new PerformanceObserver(list => {
+        list.getEntries().forEach(entry => {
+          if (entry.name.endsWith('.js') || entry.name.endsWith('.css')) {
+            this.trackResourcePerformance(entry);
+          }
+        });
+      });
+
       observer.observe({ entryTypes: ['resource'] });
     } catch (e) {
       // Fallback for older browsers
@@ -710,6 +719,12 @@ export class BundleOptimizer {
    * Track resource performance
    */
   trackResourcePerformance(entry) {
+    // Ignore malformed entries (e.g. missing or non-string name)
+    if (!entry || typeof entry.name !== 'string') {
+      logger.warn('Ignoring malformed resource entry:', entry);
+      return;
+    }
+
     const size = entry.transferSize || entry.encodedBodySize || 0;
     const loadTime = entry.duration;
 
