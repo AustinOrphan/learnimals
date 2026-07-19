@@ -297,10 +297,10 @@ describe('Navigation System Integration', () => {
       // Navigation should still load without errors
       expect(async () => {
         // navigation.js initializes at module evaluation with a once:true
-      // listener; a cached module can never wire a navbar injected by a
-      // later describe. Fresh module per setup makes init deterministic.
-      vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+        // listener; a cached module can never wire a navbar injected by a
+        // later describe. Fresh module per setup makes init deterministic.
+        vi.resetModules();
+        await import('../../src/components/layout/navigation.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
     });
@@ -315,10 +315,10 @@ describe('Navigation System Integration', () => {
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // navigation.js initializes at module evaluation with a once:true
-      // listener; a cached module can never wire a navbar injected by a
-      // later describe. Fresh module per setup makes init deterministic.
-      vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+        // listener; a cached module can never wire a navbar injected by a
+        // later describe. Fresh module per setup makes init deterministic.
+        vi.resetModules();
+        await import('../../src/components/layout/navigation.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
     });
@@ -336,10 +336,10 @@ describe('Navigation System Integration', () => {
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // navigation.js initializes at module evaluation with a once:true
-      // listener; a cached module can never wire a navbar injected by a
-      // later describe. Fresh module per setup makes init deterministic.
-      vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+        // listener; a cached module can never wire a navbar injected by a
+        // later describe. Fresh module per setup makes init deterministic.
+        vi.resetModules();
+        await import('../../src/components/layout/navigation.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
     });
@@ -433,10 +433,10 @@ describe('Navigation System Integration', () => {
             await import('../../src/utils/navigationHelper.js');
           } else if (script === 'navigation') {
             // navigation.js initializes at module evaluation with a once:true
-      // listener; a cached module can never wire a navbar injected by a
-      // later describe. Fresh module per setup makes init deterministic.
-      vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+            // listener; a cached module can never wire a navbar injected by a
+            // later describe. Fresh module per setup makes init deterministic.
+            vi.resetModules();
+            await import('../../src/components/layout/navigation.js');
           }
 
           // Small delay between loads
