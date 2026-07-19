@@ -52,7 +52,7 @@ jobs:
             tests/**/*.js
 
       - name: Comment PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         if: github.event.action == 'opened'
         with:
           script: |
