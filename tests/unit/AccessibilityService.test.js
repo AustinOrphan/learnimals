@@ -202,40 +202,36 @@ describe('AccessibilityService', () => {
       await accessibilityService.initialize();
     });
 
-    it('should announce polite messages', done => {
+    const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    it('should announce polite messages', async () => {
       const message = 'Test polite message';
 
       accessibilityService.announce(message, 'polite');
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-polite');
-        expect(announcer.textContent).toBe(message);
-        done();
-      }, 150);
+      await wait(150);
+      const announcer = document.getElementById('accessibility-announcer-polite');
+      expect(announcer.textContent).toBe(message);
     });
 
-    it('should announce assertive messages', done => {
+    it('should announce assertive messages', async () => {
       const message = 'Test assertive message';
 
       accessibilityService.announce(message, 'assertive');
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-assertive');
-        expect(announcer.textContent).toBe(message);
-        done();
-      }, 150);
+      await wait(150);
+      const announcer = document.getElementById('accessibility-announcer-assertive');
+      expect(announcer.textContent).toBe(message);
     });
 
-    it('should clear messages after timeout', done => {
+    it('should clear messages after timeout', async () => {
       const message = 'Test timeout message';
 
       accessibilityService.announce(message, 'polite', 500);
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-polite');
-        expect(announcer.textContent).toBe('');
-        done();
-      }, 600);
+      await wait(600);
+      const announcer = document.getElementById('accessibility-announcer-polite');
+      expect(announcer.textContent).toBe('');
     });
 
     it('should not announce empty messages', () => {
