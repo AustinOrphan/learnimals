@@ -101,7 +101,12 @@ class Card extends BaseComponent {
    * @returns {string} - HTML for linked card
    */
   static createLinkedCard(options, linkUrl) {
-    const card = new Card(options);
+    // The wrapper anchor must not contain the card's own inner link —
+    // nested anchors are illegal HTML and the parser splits them into
+    // empty, nameless links (WCAG 4.1.2). The card body (title text)
+    // gives the wrapper its accessible name.
+    const { linkUrl: _inner, linkText: _innerText, ...cardOptions } = options;
+    const card = new Card(cardOptions);
     return `
       <a href="${linkUrl}" class="feature-card-link">
         ${card.generateHTML()}

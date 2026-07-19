@@ -32,7 +32,7 @@ export const THEME_BASE_COLORS = {
     '--default-color-8': 'rgb(137, 103, 154)' /* Light Purple */,
     '--default-color-light': 'rgb(253, 246, 227)' /* Light bg */,
     '--default-color-light-alt': 'rgb(255, 253, 246)' /* Light bg alt */,
-    '--default-color-dark': 'rgb(85, 108, 131)' /* Dark bg */,
+    '--default-color-dark': 'rgb(61, 81, 101)' /* Dark bg */,
     '--default-color-dark-alt': 'rgb(20, 34, 51)' /* Dark bg alt */,
   },
   ocean: {

@@ -195,7 +195,7 @@ button:hover {
   --default-color-8: rgb(137, 103, 154); /* Light Purple */
   --default-color-light: rgb(253, 246, 227); /* Light bg */
   --default-color-light-alt: rgb(255, 253, 246); /* Light bg alt */
-  --default-color-dark: rgb(85, 108, 131); /* Dark bg */
+  --default-color-dark: rgb(61, 81, 101); /* Dark text/bg — >=4.5:1 on the yellow tint */
   --default-color-dark-alt: rgb(20, 34, 51); /* Dark bg alt */
 
   /* Ocean Theme Colors */
@@ -661,7 +661,7 @@ nav a:hover {
 .cta-button {
   padding: 10px 20px;
   background-color: var(--primary-color);
-  color: var(--background-color-alt);
+  color: var(--text-on-accent, var(--default-color-dark-alt));
   border-radius: 25px;
   font-size: 1.1rem;
   transition:
@@ -1228,5 +1228,21 @@ footer {
   button {
     -webkit-appearance: none;
     -webkit-touch-callout: none;
+  }
+}
+
+/* Universal reduced-motion coverage (WCAG 2.3.3). The two element-scoped
+   blocks above predate this and drifted out of sync with new animations
+   (.fade-in, .fade-in-delay were never added). Universal rules cannot
+   drift. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

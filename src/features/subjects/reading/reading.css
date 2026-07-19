@@ -120,17 +120,18 @@ footer {
 }
 
 .reading-level.beginner {
-  background-color: var(--success-color, #c8fcea);
+  /* pale tint + dark text: the saturated status colors fail WCAG with any text */
+  background-color: #c8fcea;
   color: var(--text-primary);
 }
 
 .reading-level.intermediate {
-  background-color: var(--warning-color, #ffeaa7);
+  background-color: #ffeaa7;
   color: var(--text-primary);
 }
 
 .reading-level.advanced {
-  background-color: var(--error-color, #fab1a0);
+  background-color: #fab1a0;
   color: var(--text-primary);
 }
 

@@ -240,7 +240,10 @@
     }
 
     static createLinkedCard(options, linkUrl) {
-      const card = new Card(options);
+      // Nested anchors are illegal HTML — strip the card's inner link so
+      // the wrapper anchor is the only link (see ui/Card.js).
+      const { linkUrl: _inner, linkText: _innerText, ...cardOptions } = options;
+      const card = new Card(cardOptions);
       return `
         <a href="${linkUrl}" class="feature-card-link">
           ${card.generateHTML()}

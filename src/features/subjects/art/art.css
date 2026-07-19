@@ -69,7 +69,8 @@ nav a {
 }
 
 .games-list a {
-  color: var(--accent-primary);
+  /* accent mint is a background color, not a text color (1.9:1 on cream) */
+  color: #00664e;
   font-weight: bold;
 }
 
@@ -92,8 +93,9 @@ nav a {
   margin: 5px;
   border-radius: 8px;
   border: none;
-  background: var(--accent-secondary);
-  color: var(--text-on-accent);
+  /* darkened from the mid-luminance accent blue so white text passes AA */
+  background: #0f5c9e;
+  color: #ffffff;
   cursor: pointer;
 }
 

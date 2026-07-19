@@ -23,7 +23,11 @@ export function setSemanticVariables(mode) {
     // Text colors
     '--text-primary': 'var(--text-color)',
     '--text-secondary': 'var(--text-color-secondary)',
-    '--text-on-accent': mode === 'dark' ? 'var(--color-black)' : 'var(--color-white)',
+    // Accents are mid-luminance (mint/teal): white text fails WCAG at ~1.9:1;
+    // deep navy ink passes AA/AAA on every theme accent in light mode.
+    '--text-on-accent': mode === 'dark' ? 'var(--color-black)' : 'var(--default-color-dark-alt)',
+    // Used by base-component/themeSwitcher CSS but was never defined anywhere.
+    '--text-inverse': mode === 'dark' ? 'var(--color-black)' : 'var(--default-color-dark-alt)',
     '--text-heading': 'var(--accent-color-opp)',
 
     // Background colors
