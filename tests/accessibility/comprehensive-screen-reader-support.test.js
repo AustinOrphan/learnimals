@@ -177,19 +177,17 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       await service.initialize();
     });
 
-    it('should announce content changes with proper timing', done => {
+    it('should announce content changes with proper timing', async () => {
       const message = 'New content has loaded';
 
       service.announce(message, 'polite', 500);
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-polite');
-        expect(announcer.textContent).toBe(message);
-        done();
-      }, 150);
+      await vi.advanceTimersByTimeAsync(150);
+      const announcer = document.getElementById('accessibility-announcer-polite');
+      expect(announcer.textContent).toBe(message);
     });
 
-    it('should prioritize urgent announcements', done => {
+    it('should prioritize urgent announcements', async () => {
       const urgentMessage = 'Error: Form submission failed';
       const normalMessage = 'Loading complete';
 
@@ -199,11 +197,9 @@ describe('Comprehensive Screen Reader Support Tests', () => {
       // Then urgent message should override
       service.announce(urgentMessage, 'assertive');
 
-      setTimeout(() => {
-        const assertiveAnnouncer = document.getElementById('accessibility-announcer-assertive');
-        expect(assertiveAnnouncer.textContent).toBe(urgentMessage);
-        done();
-      }, 150);
+      await vi.advanceTimersByTimeAsync(150);
+      const assertiveAnnouncer = document.getElementById('accessibility-announcer-assertive');
+      expect(assertiveAnnouncer.textContent).toBe(urgentMessage);
     });
 
     it('should announce page navigation changes', () => {

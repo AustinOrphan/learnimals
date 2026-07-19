@@ -161,52 +161,44 @@ describe('Screen Reader Support Tests', () => {
       expect(assertiveRegion.className).toContain('sr-only');
     });
 
-    it('should announce polite messages', done => {
+    it('should announce polite messages', async () => {
       const message = 'Form saved successfully';
 
       service.announce(message, 'polite', 500);
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-polite');
-        expect(announcer.textContent).toBe(message);
-        done();
-      }, 150);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      const announcer = document.getElementById('accessibility-announcer-polite');
+      expect(announcer.textContent).toBe(message);
     });
 
-    it('should announce assertive messages', done => {
+    it('should announce assertive messages', async () => {
       const message = 'Error: Please correct the highlighted fields';
 
       service.announce(message, 'assertive', 500);
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-assertive');
-        expect(announcer.textContent).toBe(message);
-        done();
-      }, 150);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      const announcer = document.getElementById('accessibility-announcer-assertive');
+      expect(announcer.textContent).toBe(message);
     });
 
-    it('should clear announcements after timeout', done => {
+    it('should clear announcements after timeout', async () => {
       const message = 'Temporary message';
 
       service.announce(message, 'polite', 300);
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-polite');
-        expect(announcer.textContent).toBe('');
-        done();
-      }, 400);
+      await new Promise(resolve => setTimeout(resolve, 400));
+      const announcer = document.getElementById('accessibility-announcer-polite');
+      expect(announcer.textContent).toBe('');
     });
 
-    it('should handle multiple rapid announcements', done => {
-      service.announce('First message', 'polite', 100);
-      service.announce('Second message', 'polite', 100);
-      service.announce('Third message', 'polite', 100);
+    it('should handle multiple rapid announcements', async () => {
+      service.announce('First message', 'polite', 1000);
+      service.announce('Second message', 'polite', 1000);
+      service.announce('Third message', 'polite', 1000);
 
-      setTimeout(() => {
-        const announcer = document.getElementById('accessibility-announcer-polite');
-        expect(announcer.textContent).toBe('Third message');
-        done();
-      }, 150);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      const announcer = document.getElementById('accessibility-announcer-polite');
+      expect(announcer.textContent).toBe('Third message');
     });
 
     it('should not announce empty or null messages', () => {

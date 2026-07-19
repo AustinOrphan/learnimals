@@ -688,7 +688,7 @@ describe('Focus Management Tests', () => {
       expect(focusableElements[1]).toBe(newButton);
     });
 
-    it('should handle focus management during animations', done => {
+    it('should handle focus management during animations', async () => {
       testContainer.innerHTML = `
         <button id="trigger">Trigger Animation</button>
         <div id="animated-content" style="opacity: 0; transition: opacity 0.3s;">
@@ -706,11 +706,9 @@ describe('Focus Management Tests', () => {
       content.style.opacity = '1';
 
       // Focus should wait for animation to complete
-      setTimeout(() => {
-        animatedButton.focus();
-        expect(document.activeElement).toBe(animatedButton);
-        done();
-      }, 350);
+      await new Promise(resolve => setTimeout(resolve, 350));
+      animatedButton.focus();
+      expect(document.activeElement).toBe(animatedButton);
     });
   });
 
