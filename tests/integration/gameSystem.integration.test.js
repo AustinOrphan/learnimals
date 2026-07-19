@@ -3,7 +3,6 @@
  * Tests the full pipeline of GameSystem with templates and games
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { JSDOM } from 'jsdom';
 import gameSystem from '../../src/utils/GameSystem.js';
 
 // Mock modules
@@ -17,41 +16,16 @@ vi.mock('../../src/utils/logger.js', () => ({
 }));
 
 describe('GameSystem Integration', () => {
-  let dom;
-  let document;
-  let window;
-
   beforeEach(() => {
-    // Set up DOM environment with proper JSDOM configuration
-    dom = new JSDOM(
-      `
-      <!DOCTYPE html>
-      <html>
-        <body>
-          <div id="game-container"></div>
-          <div id="header-score">0</div>
-          <div id="header-level">1</div>
-          <div id="progress-fill" style="width: 0%"></div>
-        </body>
-      </html>
-    `,
-      {
-        url: 'http://localhost:3000/',
-        pretendToBeVisual: true,
-        resources: 'usable',
-        runScripts: 'dangerously',
-      }
-    );
-
-    document = dom.window.document;
-    window = dom.window;
-
-    // Set globals with proper JSDOM window
-    global.document = document;
-    global.window = window;
-    global.navigator = window.navigator;
-    global.localStorage = window.localStorage;
-    global.sessionStorage = window.sessionStorage;
+    // Ambient vitest jsdom environment; build the fixture in the real DOM.
+    // (A nested JSDOM with dom.window.close() here poisoned the shared
+    // document for later files under the CI forks pool.)
+    document.body.innerHTML = `
+      <div id="game-container"></div>
+      <div id="header-score">0</div>
+      <div id="header-level">1</div>
+      <div id="progress-fill" style="width: 0%"></div>
+    `;
 
     // Mock fetch for template loading
     global.fetch = vi.fn(url => {
@@ -76,7 +50,7 @@ describe('GameSystem Integration', () => {
       await gameSystem.destroy();
     }
     vi.clearAllMocks();
-    dom.window.close();
+    document.body.innerHTML = '';
   });
 
   describe('Full Pipeline Test', () => {

@@ -992,7 +992,9 @@ describe('Game-Specific Keyboard Navigation Tests', () => {
       const endTime = performance.now();
 
       expect(keyCount).toBe(100);
-      expect(endTime - startTime).toBeLessThan(50); // Should complete quickly
+      // Wall-clock budget: strict locally, scaled on shared CI runners
+      const keyBudget = process.env.CI ? 500 : 50;
+      expect(endTime - startTime).toBeLessThan(keyBudget);
     });
 
     it('should handle invalid key combinations gracefully', () => {

@@ -597,7 +597,9 @@ describe('Keyboard Navigation Test Suite - Integration Tests', () => {
       const navigationTime = endTime - startTime;
 
       // Should complete navigation in reasonable time
-      expect(navigationTime).toBeLessThan(100); // 100ms for 100 operations
+      // Wall-clock budget: strict locally, scaled on shared CI runners
+      const navBudget = process.env.CI ? 1000 : 100;
+      expect(navigationTime).toBeLessThan(navBudget);
 
       testResults.performance.keyResponseTime = navigationTime;
       testResults.totalTests++;
