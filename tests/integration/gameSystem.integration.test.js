@@ -4,6 +4,7 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import gameSystem from '../../src/utils/GameSystem.js';
+import { GameRegistryUtil } from '../../src/config/gameRegistry.js';
 
 // Mock modules
 vi.mock('../../src/utils/logger.js', () => ({
@@ -272,8 +273,6 @@ describe('GameSystem Integration', () => {
 
   describe('Game Registry Utilities', () => {
     it('should validate game configurations', () => {
-      const { GameRegistryUtil } = require('../../src/config/gameRegistry.js');
-
       const validConfig = {
         id: 'valid-game',
         name: 'Valid Game',
@@ -290,8 +289,6 @@ describe('GameSystem Integration', () => {
     });
 
     it('should detect configuration errors', () => {
-      const { GameRegistryUtil } = require('../../src/config/gameRegistry.js');
-
       const invalidConfig = {
         id: 'Invalid Game!',
         name: 'Test',

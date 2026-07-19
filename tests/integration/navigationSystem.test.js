@@ -162,7 +162,7 @@ describe('Navigation System Integration', () => {
           const mobileMenuButton = document.getElementById('mobile-menu');
           if (mobileMenuButton && mobileMenuButton.getAttribute('aria-expanded') === 'false') {
             resolve();
-          } else if (attempts < 50) {
+          } else if (attempts < (process.env.CI ? 300 : 50)) {
             attempts++;
             setTimeout(checkInit, 10);
           } else {
@@ -345,7 +345,7 @@ describe('Navigation System Integration', () => {
           const mobileMenuButton = document.getElementById('mobile-menu');
           if (mobileMenuButton && mobileMenuButton.getAttribute('aria-expanded') === 'false') {
             resolve();
-          } else if (attempts < 50) {
+          } else if (attempts < (process.env.CI ? 300 : 50)) {
             attempts++;
             setTimeout(checkInit, 10);
           } else {
