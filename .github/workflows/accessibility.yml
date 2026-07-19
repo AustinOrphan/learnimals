@@ -20,11 +20,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -191,11 +190,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -314,11 +312,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -538,11 +535,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency

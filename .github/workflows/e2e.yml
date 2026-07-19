@@ -29,14 +29,12 @@ jobs:
           cache: 'npm'
 
       # The @austinorphan/e2e-core dependency is file:../../e2e-core, so the
-      # sibling repo must exist two levels above the package root. It is a
-      # private repo: the E2E_CORE_TOKEN secret must hold a fine-grained PAT
-      # with read access to AustinOrphan/e2e-core.
-      - name: Checkout e2e-core (private sibling dependency)
+      # public sibling repo must be checked out two levels above the package
+      # root and built before npm ci.
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency

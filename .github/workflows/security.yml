@@ -20,11 +20,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -70,9 +69,27 @@ jobs:
           path: audit-report.json
           retention-days: 30
 
-  # codeql-analysis job removed 2026-07-17: code scanning is not enabled on
-  # this private repo (requires Advanced Security), so the analysis ran for
-  # ~5 minutes per push and then failed at upload, every time.
+  # Restored 2026-07-19: code scanning is free on public repos.
+  codeql-analysis:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-extended
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 
   owasp-zap-scan:
     runs-on: ubuntu-latest
@@ -85,11 +102,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -149,11 +165,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -229,11 +244,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
@@ -290,11 +304,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Checkout e2e-core (private sibling dependency)
+      - name: Checkout e2e-core (public sibling dependency)
         uses: actions/checkout@v4
         with:
           repository: AustinOrphan/e2e-core
-          token: ${{ secrets.E2E_CORE_TOKEN }}
           path: .e2e-core-checkout
 
       - name: Place and build e2e-core sibling dependency
