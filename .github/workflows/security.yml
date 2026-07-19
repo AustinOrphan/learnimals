@@ -138,11 +138,7 @@ jobs:
         with:
           target: 'http://localhost:3000'
           rules_file_name: '.zap/rules.tsv'
-          cmd_options: |
-            -a
-            -j
-            -m 5
-            -T 60
+          cmd_options: '-a -j -m 5 -T 60'
 
       - name: Upload ZAP results
         if: always()

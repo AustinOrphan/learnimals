@@ -174,7 +174,7 @@ _main/
 │   │   ├── games/         # 12 game dirs (kebab-case)
 │   │   ├── character-generation/, character-showcase/, discovery/, profile/, progress/, user/
 │   ├── services/          # accessibility/ achievements/ character/ database/ mobile/ progress/
-│   ├── utils/             # 33 modules: logger, htmlEscape, common, subjectTemplateLoader, theme*, GameSystem…
+│   ├── utils/             # 33 modules: logger, htmlEscape, subjectTemplateLoader, theme*…
 │   ├── styles/            # base/ + components/ (semantic CSS variables; NO themes/ dir)
 │   ├── templates/         # subject.html + game shells (minimal/game/fullscreen/mobile/educational)
 │   ├── pages/             # index.html (real homepage), about, contact, profile, games/, demo pages
