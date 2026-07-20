@@ -123,20 +123,14 @@ describe('HTML Navigation Validation', () => {
 
         if (helperMatches) {
           helperMatches.forEach(match => {
-            // CRITICAL: Must NOT be loaded as module
-            if (match.includes('type="module"')) {
+            // navigationHelper.js is an ES module (it has `export default` and
+            // is imported by the navigation tests); it MUST be loaded as a
+            // module or a classic <script> throws "Unexpected token 'export'".
+            // Modules are deferred automatically, so no defer attribute needed.
+            if (!match.includes('type="module"')) {
               issues.push({
                 file: file.relativePath,
-                issue: 'navigationHelper.js loaded as module (should be regular script)',
-                line: match,
-              });
-            }
-
-            // Should have defer attribute
-            if (!match.includes('defer')) {
-              issues.push({
-                file: file.relativePath,
-                issue: 'navigationHelper.js missing defer attribute',
+                issue: 'navigationHelper.js must be loaded as type="module" (it is an ES module)',
                 line: match,
               });
             }

@@ -5,8 +5,7 @@
  * Integrates with EnhancedProgressTracker to show comprehensive stats
  */
 
-import EnhancedProgressTracker from '../../utils/EnhancedProgressTracker.js';
-import Card from './Card.js';
+import { EnhancedProgressTracker } from '../../utils/EnhancedProgressTracker.js';
 
 class GameProgressDashboard {
   constructor(containerId) {
@@ -170,20 +169,27 @@ class GameProgressDashboard {
       const analytics =
         this.progressTracker.gameAnalytics[game.id] ||
         this.progressTracker.getDefaultGameAnalytics();
-      const cardData = {
-        title: game.name,
-        subtitle: game.subject,
-        icon: game.icon,
-        content: this.createGameCardContent(game.id, analytics),
-        onclick: () => {
-          this.selectedGame = game.id;
-          this.currentView = 'detailed-stats';
-          this.render();
-        },
-      };
-
-      const card = new Card(cardData);
-      cardsContainer.appendChild(card.render());
+      // Built natively (like the rest of this file). The shared Card
+      // component has no render()->Node method or subtitle/icon/onclick
+      // support, so using it here threw appendChild(undefined).
+      const card = document.createElement('div');
+      card.className = 'game-progress-card';
+      card.innerHTML = `
+        <div class="game-card-header">
+          <span class="game-card-icon">${game.icon}</span>
+          <div>
+            <h3 class="game-card-title">${game.name}</h3>
+            <p class="game-card-subject">${game.subject}</p>
+          </div>
+        </div>
+        ${this.createGameCardContent(game.id, analytics)}
+      `;
+      card.addEventListener('click', () => {
+        this.selectedGame = game.id;
+        this.currentView = 'detailed-stats';
+        this.render();
+      });
+      cardsContainer.appendChild(card);
     });
 
     section.appendChild(cardsContainer);

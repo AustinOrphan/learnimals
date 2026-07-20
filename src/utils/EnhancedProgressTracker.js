@@ -652,6 +652,80 @@ export class EnhancedProgressTracker {
    * Get comprehensive progress summary
    * @returns {Object} Progress summary
    */
+  /**
+   * Mark a game as played (registers it in cross-game progress + analytics).
+   * @param {string} gameId
+   */
+  markGamePlayed(gameId) {
+    if (!gameId) return;
+    this.crossGameProgress.gamesPlayed.add(gameId);
+    if (!this.gameAnalytics[gameId]) {
+      this.gameAnalytics[gameId] = this.getDefaultGameAnalytics();
+    }
+    this.saveProgressData();
+  }
+
+  /**
+   * Update a game's progress from a completed session. Routes through the
+   * full session pipeline (analytics, achievements, persistence, events).
+   * @param {string} gameId
+   * @param {Object} sessionResult
+   */
+  updateGameProgress(gameId, sessionResult = {}) {
+    this.trackGameSession({ gameType: gameId, ...sessionResult });
+  }
+
+  /**
+   * Check (and unlock if defined) a single achievement by id. Game-specific
+   * dynamic ids that aren't in the achievement catalog are a safe no-op —
+   * progressIntegration calls this speculatively after each session.
+   * @param {string} achievementId
+   * @returns {Object|null}
+   */
+  checkAchievement(achievementId) {
+    if (!achievementId || !this.achievements || !this.achievements[achievementId]) {
+      return null;
+    }
+    const progress = this.achievementProgress.get(achievementId);
+    if (progress && progress.unlocked) {
+      return null;
+    }
+    return this.unlockAchievement(achievementId);
+  }
+
+  /**
+   * Evaluate every cross-game achievement against current progress.
+   * @returns {void}
+   */
+  checkAllCrossGameAchievements() {
+    const crossGameTypes = new Set([
+      'games_played',
+      'achievements_earned',
+      'total_challenges',
+      'overall_accuracy',
+      'consecutive_days',
+    ]);
+    Object.values(this.achievements || {}).forEach(achievement => {
+      if (achievement && achievement.criteria && crossGameTypes.has(achievement.criteria.type)) {
+        this.checkCrossGameAchievement(achievement);
+      }
+    });
+  }
+
+  /**
+   * Default per-game analytics shape used as a fallback.
+   * @returns {Object}
+   */
+  getDefaultGameAnalytics() {
+    return {
+      sessions: [],
+      totalScore: 0,
+      bestScore: 0,
+      averageAccuracy: 0,
+      timesPlayed: 0,
+    };
+  }
+
   getProgressSummary() {
     const unlockedAchievements = Array.from(this.achievementProgress.values()).filter(
       p => p.unlocked

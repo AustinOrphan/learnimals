@@ -148,10 +148,11 @@ if (typeof window !== 'undefined') {
   }
 }
 
-// Export for ES6 modules and testing
+// Dual-use: ES module (imported by tests + available for dynamic import) and
+// browser global. It MUST be loaded via <script type="module"> in HTML — a
+// classic <script> cannot parse the export below.
 export default NavigationHelper;
 
-// Make available for dynamic imports and browser compatibility
 if (typeof window !== 'undefined') {
   window.NavigationHelper = NavigationHelper;
 }

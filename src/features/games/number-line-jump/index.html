@@ -81,10 +81,24 @@
         },
       };
 
+      // BaseGame runs an async initialize() from its constructor, so a freshly
+      // constructed game is still in the 'loading' state. start() only proceeds from
+      // 'ready' (or 'game-over'), so wait for initialization to finish first.
+      async function waitForGameReady(game, timeoutMs = 8000) {
+        const deadline = performance.now() + timeoutMs;
+        while (game.state !== 'ready' && game.state !== 'game-over') {
+          if (game.state === 'error' || performance.now() > deadline) {
+            return false;
+          }
+          await new Promise(resolve => setTimeout(resolve, 16));
+        }
+        return true;
+      }
+
       // Initialize game when DOM is loaded
       document.addEventListener('DOMContentLoaded', () => {
         // Hide instructions and start game
-        document.getElementById('start-game').addEventListener('click', () => {
+        document.getElementById('start-game').addEventListener('click', async () => {
           document.getElementById('game-instructions').style.display = 'none';
 
           // Initialize the game
@@ -104,11 +118,12 @@
             },
           });
 
-          // Start the game
-          game.start();
-
           // Make game instance available for debugging
           window.gameInstance = game;
+
+          // Wait for async initialization to reach the 'ready' state, then start.
+          await waitForGameReady(game);
+          game.start();
         });
 
         // Add difficulty selector (could be expanded)

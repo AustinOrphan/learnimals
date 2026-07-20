@@ -111,8 +111,8 @@
     <script defer src="/src/components/layout/navbarLoader.js"></script>
     <script defer src="/src/components/component-loader.js"></script>
 
-    <!-- Subject-specific JavaScript -->
-    <script src="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.js"></script>
+    <!-- Subject-specific JavaScript (ES module: files use `export`) -->
+    <script type="module" src="/src/features/subjects/{{subjectLower}}/{{subjectLower}}.js"></script>
 
     <!-- Script to ensure all functions are available -->
     <script>

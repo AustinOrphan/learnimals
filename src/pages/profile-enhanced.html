@@ -414,7 +414,10 @@
         }
 
         init() {
-          this.loadProfile();
+          // Stop if there is no active profile — loadProfile() triggers a
+          // redirect, and running setupAvatar()/setupEventListeners() against
+          // a null profile threw "Cannot read properties of null (avatar)".
+          if (!this.loadProfile()) return;
           this.setupEventListeners();
           this.setupAvatar();
         }
@@ -424,11 +427,12 @@
           if (!this.currentProfile) {
             // Redirect to profile creation or login
             window.location.href = 'profile.html';
-            return;
+            return false;
           }
 
           this.updateProfileDisplay();
           this.loadTabContent(this.currentTab);
+          return true;
         }
 
         setupEventListeners() {
@@ -738,7 +742,11 @@
           const subjects = ['math', 'science', 'reading', 'art', 'coding'];
           container.innerHTML = subjects
             .map(subject => {
-              const subjectData = progressSummary.subjects[subject] || { gamesPlayed: 0, totalScore: 0, accuracy: 0 };
+              const subjectData = progressSummary.subjects?.[subject] || {
+                gamesPlayed: 0,
+                totalScore: 0,
+                accuracy: 0,
+              };
               const icon = this.getSubjectIcon(subject);
 
               return `
@@ -952,7 +960,7 @@
           const gameTypes = ['word-scramble', 'number-line-jump', 'element-match', 'sentence-builder', 'color-palette'];
           container.innerHTML = gameTypes
             .map(gameType => {
-              const gameData = progressSummary.games[gameType] || {
+              const gameData = progressSummary.games?.[gameType] || {
                 gamesPlayed: 0,
                 totalScore: 0,
                 bestScore: 0,

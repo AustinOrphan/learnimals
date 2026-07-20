@@ -63,17 +63,14 @@
     <link rel="stylesheet" href="/src/features/subjects/music/music.css" />
   </head>
   <body>
-    <!-- Navigation -->
-    <div id="navbar-placeholder"></div>
-
     <p>Loading Music content...</p>
 
-    <!-- JS -->
-    <script defer type="module" src="/src/themeInitializer.js"></script>
-    <script type="module" src="/src/utils/themeManager.js"></script>
-    <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
-    <script defer src="/src/components/layout/navbarLoader.js"></script>
-    <script defer src="/src/components/component-loader.js"></script>
-    <script defer src="/src/features/subjects/music/music.js"></script>
+    <!--
+      No page-level scripts here: SubjectTemplateLoader.renderTemplate() rewrites the
+      whole document with /src/templates/subject.html, which loads the theme scripts,
+      navbar, component-loader, and music.js (as a module) in the correct order.
+      Loading them here too fired them against the soon-discarded document and caused
+      duplicate-declaration / parse errors.
+    -->
   </body>
 </html>

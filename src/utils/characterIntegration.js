@@ -6,7 +6,7 @@
  */
 
 import config from '../config.js';
-import { createCharacterFromTemplate } from '../data/characterSchema.js';
+import { createCharacter, createCharacterFromTemplate } from '../data/characterSchema.js';
 
 /**
  * Convert config character to character schema format

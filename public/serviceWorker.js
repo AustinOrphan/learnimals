@@ -1,8 +1,14 @@
 // Service Worker for Learnimals PWA
-const CACHE_NAME = 'learnimals-cache-v5';
+// Served at the site root (see /serviceWorker.js shim) so its scope is '/',
+// which covers the whole app (pages live under /src/). All asset paths below
+// are root-absolute so they resolve correctly regardless of where this script
+// is loaded from.
+const CACHE_NAME = 'learnimals-cache-v6';
+const OFFLINE_URL = '/src/pages/offline.html';
 const ASSETS_TO_CACHE = [
   // HTML pages (only cache existing pages)
   '/src/pages/index.html',
+  OFFLINE_URL,
   '/src/features/subjects/math/math.html',
   '/src/features/subjects/shared/bubblepop.html',
 
@@ -36,15 +42,15 @@ const ASSETS_TO_CACHE = [
   '/src/components/ui/Modal.js',
 
   // Images (core images only)
-  './images/logo.png',
-  './images/math-shark.png',
-  './images/science-parrot.png',
-  './images/science-parrot2.png',
-  './images/reading-panda.png',
-  './images/art-lion.png',
-  './images/mango-swimming.png',
-  './images/rocket.png',
-  './images/cody-cat2.png',
+  '/public/images/logo.png',
+  '/public/images/math-shark.png',
+  '/public/images/science-parrot.png',
+  '/public/images/science-parrot2.png',
+  '/public/images/reading-panda.png',
+  '/public/images/art-lion.png',
+  '/public/images/mango-swimming.png',
+  '/public/images/rocket.png',
+  '/public/images/cody-cat2.png',
 
   // Components
   '/src/components/layout/navbar.html',
@@ -129,9 +135,10 @@ self.addEventListener('fetch', event => {
           return response;
         })
         .catch(error => {
-          // If offline and requesting an HTML page, show offline page
-          if (event.request.headers.get('accept').includes('text/html')) {
-            return caches.match('./offline.html');
+          // If offline and requesting an HTML page, show the offline page.
+          const accept = event.request.headers.get('accept') || '';
+          if (event.request.mode === 'navigate' || accept.includes('text/html')) {
+            return caches.match(OFFLINE_URL);
           }
 
           console.error('Fetching failed:', error);

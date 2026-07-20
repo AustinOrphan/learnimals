@@ -709,6 +709,25 @@ export default class CharacterPreviewRenderer {
   /**
    * Update character and re-render
    */
+  /**
+   * Set the character's animation/expression state (e.g. 'happy',
+   * 'celebrating', 'encouraging'). Called by the subject-page template.
+   * Applies the state to the rendered SVG; a safe no-op if nothing is
+   * rendered yet.
+   * @param {string} state
+   * @returns {string} the applied state
+   */
+  setAnimationState(state) {
+    this.animationState = state;
+    const container = this.container || (this.options && this.options.container) || null;
+    const svg = container && container.querySelector ? container.querySelector('svg') : null;
+    if (svg) {
+      svg.setAttribute('data-animation-state', state);
+      svg.classList.add(`character-${state}`);
+    }
+    return state;
+  }
+
   updateCharacter(character) {
     this.character = character;
     if (this.container) {

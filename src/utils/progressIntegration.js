@@ -5,7 +5,7 @@
  * Provides standardized methods for tracking game events and progress
  */
 
-import EnhancedProgressTracker from './EnhancedProgressTracker.js';
+import { EnhancedProgressTracker } from './EnhancedProgressTracker.js';
 
 // Singleton instance
 let progressTracker = null;

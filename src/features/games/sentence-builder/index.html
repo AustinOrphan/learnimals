@@ -139,6 +139,20 @@
         },
       };
 
+      // BaseGame runs an async initialize() from its constructor, so a freshly
+      // constructed game is still in the 'loading' state. start() only proceeds from
+      // 'ready' (or 'game-over'), so wait for initialization to finish first.
+      async function waitForGameReady(game, timeoutMs = 8000) {
+        const deadline = performance.now() + timeoutMs;
+        while (game.state !== 'ready' && game.state !== 'game-over') {
+          if (game.state === 'error' || performance.now() > deadline) {
+            return false;
+          }
+          await new Promise(resolve => setTimeout(resolve, 16));
+        }
+        return true;
+      }
+
       // Initialize game when DOM is loaded
       document.addEventListener('DOMContentLoaded', () => {
         let gameInstance = null;
@@ -159,7 +173,7 @@
           document.getElementById('game-loading').classList.remove('hidden');
 
           // Initialize the game with a slight delay for loading animation
-          setTimeout(() => {
+          setTimeout(async () => {
             document.getElementById('game-loading').classList.add('hidden');
 
             gameInstance = new SentenceBuilderGame('game-content', {
@@ -179,11 +193,12 @@
               },
             });
 
-            // Start the game
-            gameInstance.start();
-
             // Make game instance available for debugging
             window.gameInstance = gameInstance;
+
+            // Wait for async initialization to reach the 'ready' state, then start.
+            await waitForGameReady(gameInstance);
+            gameInstance.start();
           }, 1500);
         });
 

@@ -159,8 +159,17 @@ class SentenceBuilderGame extends BaseGame {
    * Setup event listeners for game interactions
    */
   setupEventListeners() {
+    // BaseGame.initialize() calls setupEventListeners() BEFORE onInitialized() runs
+    // setupGameLayout(), so the control buttons do not exist on that first call.
+    // setupGameLayout() invokes this method again once the DOM is built, so bail out
+    // safely until the layout (and the #hint-btn control) is present.
+    const hintButton = this.container?.querySelector('#hint-btn');
+    if (!hintButton) {
+      return;
+    }
+
     // Button controls
-    this.container.querySelector('#hint-btn').addEventListener('click', () => this.showHint());
+    hintButton.addEventListener('click', () => this.showHint());
     this.container
       .querySelector('#check-btn')
       .addEventListener('click', () => this.checkSentence());

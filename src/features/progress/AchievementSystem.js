@@ -141,6 +141,26 @@ export default class AchievementSystem {
   }
 
   /**
+   * Check and possibly unlock a single achievement by id. BaseGame calls
+   * this after it has already detected the triggering condition (e.g. a
+   * streak of 5). Unlocks only if the achievement is defined and its
+   * requirements are satisfied by the context — otherwise a safe no-op.
+   * @param {string} achievementId
+   * @param {Object} context
+   * @returns {Object|null} the newly-unlocked achievement, or null
+   */
+  checkAchievement(achievementId, context = {}) {
+    const achievement = this.achievements.get(achievementId);
+    if (!achievement || this.hasAchievement(achievementId)) {
+      return null;
+    }
+    if (this.meetsRequirements(achievement, context)) {
+      return this.unlock(achievementId);
+    }
+    return null;
+  }
+
+  /**
    * Check achievements against game data
    * @param {Object} gameData - Game completion data
    * @returns {Array} Newly unlocked achievements

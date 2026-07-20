@@ -698,4 +698,11 @@ class UserProgress {
 
 // Create and export singleton instance
 const userProgress = new UserProgress();
+
+// Pages gate their dynamic data / save paths on window.userProgress; without
+// this assignment those blocks silently no-op (profile save did nothing).
+if (typeof window !== 'undefined') {
+  window.userProgress = userProgress;
+}
+
 export default userProgress;

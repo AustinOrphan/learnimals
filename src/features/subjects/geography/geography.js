@@ -34,14 +34,38 @@ class GeographySubject {
   setupEventListeners() {
     // Add interactive features here
     this.setupFeatureCards();
+    this.watchForFeatureCards();
     this.setupCharacterInteraction();
     this.setupThemeIntegration();
+  }
+
+  watchForFeatureCards() {
+    // SubjectTemplateLoader rewrites the whole document and renders the feature
+    // cards via Card.js asynchronously, which can finish AFTER this deferred ES
+    // module runs. It can even render them twice (once on `componentsLoaded`, once
+    // on a DOMContentLoaded timeout), replacing #feature-cards-container each time.
+    // A one-shot readyState/componentsLoaded check races that render and loses, and
+    // disconnecting after the first wire loses the cards the second render creates.
+    // So keep a lightweight observer live and (re)wire cards whenever they appear.
+    // (setupFeatureCards only sets an attribute + click handler, which does not add
+    // DOM nodes, so it never retriggers this childList observer.)
+    if (this.cardObserver) {
+      return;
+    }
+    this.cardObserver = new MutationObserver(() => this.setupFeatureCards());
+    this.cardObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   setupFeatureCards() {
     const featureCards = document.querySelectorAll('.feature-card');
 
     featureCards.forEach((card, index) => {
+      // Idempotent: setup can run more than once (initial call + observer callbacks),
+      // so skip any card already wired. Index stays aligned with `this.features`
+      // because we iterate the full card list every time.
+      if (card.hasAttribute('data-feature')) {
+        return;
+      }
       const feature = this.features[index];
       if (feature) {
         card.addEventListener('click', () => this.handleFeatureClick(feature));
@@ -134,9 +158,11 @@ class GeographySubject {
       confirmButtonText: 'Understood!',
       showClose: true,
       size: 'medium',
-      onConfirm: () => modal.hide(),
+      onConfirm: () => modal.close(),
     });
-    modal.show();
+    // Modal (ui/Modal.js) displays via open()/close(); the inherited show()/hide()
+    // are no-ops until the element is created, so a card click showed nothing.
+    modal.open();
   }
 
   onThemeChange(theme) {

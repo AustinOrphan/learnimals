@@ -155,11 +155,12 @@
       script.text = JSON.stringify(structuredData);
       document.head.appendChild(script);
 
-      // Register the service worker
+      // Register the service worker at the site root so its scope is '/',
+      // which controls the whole app (pages live under /src/).
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
           navigator.serviceWorker
-            .register('../../public/serviceWorker.js')
+            .register('/serviceWorker.js')
             .then(function (registration) {
               console.log('ServiceWorker registration successful with scope: ', registration.scope);
             })
@@ -173,8 +174,8 @@
     <!-- ✅ Load universal navbar component -->
     <script src="../components/layout/navbarLoader.js" defer></script>
 
-    <!-- Navigation helper -->
-    <script src="../utils/navigationHelper.js" defer></script>
+    <!-- Navigation helper (ES module: exports default) -->
+    <script type="module" src="../utils/navigationHelper.js"></script>
 
     <!-- PWA Mobile Enhancements -->
     <script type="module" src="../components/ui/PWAInstaller.js"></script>

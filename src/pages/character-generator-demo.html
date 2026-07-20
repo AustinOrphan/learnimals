@@ -380,8 +380,8 @@
     <script type="module" src="../components/layout/themeSwitcher.js"></script>
     <script defer src="../components/layout/navbarLoader.js"></script>
 
-    <!-- Load base components -->
-    <script src="../components/BaseComponent.js"></script>
+    <!-- Load base components (ES module: exports default) -->
+    <script type="module" src="../components/BaseComponent.js"></script>
     <script type="module">
       // Load Modal.js as module to make it globally available
       import Modal from '../components/ui/Modal.js';
