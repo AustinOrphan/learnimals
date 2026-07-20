@@ -17,6 +17,20 @@ class WordScrambleGame extends BaseGame {
     });
 
     this.difficultyLevel = this.difficulty; // For backward compatibility
+  }
+
+  /**
+   * Initialize word lists and game state.
+   *
+   * This runs from setupDOMContainer (i.e. during BaseGame's constructor-time
+   * initialize()) BEFORE createGameUI, NOT in the subclass constructor body.
+   * BaseGame's constructor calls initialize() itself, so anything assigned in
+   * the subclass constructor body runs too late — after the UI is already built
+   * and after setupWordScrambleEventListeners has cached DOM element references.
+   * Assigning this.elements = {} in the constructor was wiping that cache, which
+   * left the game unable to find its letter tiles when the player pressed Start.
+   */
+  initGameState() {
     // Word lists organized by difficulty
     this.words = {
       easy: [
@@ -51,7 +65,7 @@ class WordScrambleGame extends BaseGame {
     this.timeLimit = 60; // seconds per game
     this.roundStartTime = null;
 
-    // DOM elements cache
+    // DOM elements cache (populated by setupWordScrambleEventListeners below)
     this.elements = {};
   }
 
@@ -60,6 +74,7 @@ class WordScrambleGame extends BaseGame {
    */
   setupDOMContainer() {
     super.setupDOMContainer();
+    this.initGameState();
     this.createGameUI();
     this.setupWordScrambleEventListeners();
     this.setupDragAndDrop();
