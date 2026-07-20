@@ -127,15 +127,33 @@ absent. Verdicts:
 
 ### Milestone 3 — remediation, then features
 
-Sequence: (A) land the 7 shared root-cause fixes — highest leverage,
-revives ~10 features at once, each verified by re-driving the app. (B)
-Individual bug fixes for the revivable games/pages. (C) PRODUCT DECISIONS
-(user's call): delete-or-build Story Safari & Ecosystem Safari skeletons;
-generate-or-drop the 5 subject-less pages (the generator works); build-or-
-label Coding; reconcile Bubble Pop not using BaseGame (it works — leave?).
-(D) Only then the character-progress ecosystem feature work. Every fix must
-be re-driven in a browser, not just unit-tested — that is how this rot
-accumulated.
+(A) DONE 2026-07-20 (commit ab97ea7) — the 7 shared root-cause fixes, all
+browser-verified. (B) DONE — individual fixes they surfaced (sentence-builder
+init order, pizza-maker import, setAnimationState, GameProgressDashboard +
+EnhancedProgressTracker API completion, profile-enhanced null guard).
+NOW WORKING (driven): games — bubble-pop, ecosystem-explorer, element-match,
+number-line-jump, sentence-builder, color-palette, word-scramble, pizza-party
+(core loop); subjects — math, science, reading, music, geography (art
+partial); pages — home, about, contact, profile (save persists),
+profile-enhanced, progress-dashboard; systems — theme, navigation, PWA
+(now controlled/offline), persistence.
+
+(C) STILL PENDING — PRODUCT DECISIONS (user's call), not bugs:
+
+- Story Safari: game modules don't exist (only a test harness) — build or delete.
+- Ecosystem Safari: engine is empty placeholder methods — build or delete.
+- 5 subject-less pages (cooking/environment/history/language/physics): no HTML
+  exists; the generator works — generate or drop from scope.
+- Coding: static "coming soon" stub — build lessons or keep labeled.
+- adventure-quest: click-handler deadlock (start gated on isPlaying which only
+  Start sets) — fixable game bug, deferred (unlinked, direct-URL only).
+- art page: 3 game links are dead href="#", "Clear" was fixed elsewhere.
+- Bubble Pop doesn't extend BaseGame (works anyway) — reconcile or leave.
+- Cosmetic: avatar PNGs and several base/theme CSS files 404 (never existed).
+
+(D) Then the character-progress ecosystem feature work — now on a foundation
+that actually runs. Every fix must be re-driven in a browser, not just
+unit-tested — that is how this rot accumulated.
 
 ## Standing rules
 
