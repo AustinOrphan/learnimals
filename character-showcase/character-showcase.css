@@ -117,7 +117,7 @@
 }
 
 .showcase-title {
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Fredoka One', 'Comic Sans MS', 'Chalkboard SE', system-ui, sans-serif;
   font-size: 3.5rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);

@@ -5,7 +5,7 @@ body {
 }
 
 body {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', system-ui, sans-serif;
   background-color: var(--bg-body);
   margin: 0;
   color: var(--text-primary);
