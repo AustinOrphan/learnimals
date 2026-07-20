@@ -47,8 +47,8 @@ const mockThemeManagerUtils = {
 };
 
 // Mock modules
-vi.mock('../../src/utils/themeRegistry.js', () => mockThemeRegistry);
-vi.mock('../../src/utils/themeManagerUtils.js', () => mockThemeManagerUtils);
+vi.mock('../../utils/themeRegistry.js', () => mockThemeRegistry);
+vi.mock('../../utils/themeManagerUtils.js', () => mockThemeManagerUtils);
 
 // Ambient vitest jsdom provides document/window; stub matchMedia only
 const matchMediaMock = vi.fn().mockImplementation(query => ({
@@ -107,7 +107,7 @@ describe('ThemeManager', () => {
     document.head.innerHTML = '';
 
     // Import ThemeManager after setting up mocks
-    const module = await import('../../src/utils/themeManager.js');
+    const module = await import('../../utils/themeManager.js');
     ThemeManager = module.ThemeManager;
   });
 

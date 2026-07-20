@@ -87,7 +87,7 @@ check_static_files() {
     # Check if main application files exist
     files_to_check="
         /usr/share/nginx/html/index.html
-        /usr/share/nginx/html/src/main.js
+        /usr/share/nginx/html/main.js
         /usr/share/nginx/html/public/manifest.json
     "
     

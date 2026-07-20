@@ -80,3 +80,6 @@ coverage-report.json
 
 # Pages build output
 _site/
+
+# Local scratch/stash area — never commit
+.claudeCodeStuffToStashForNow/

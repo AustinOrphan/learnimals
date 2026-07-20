@@ -21,7 +21,7 @@ describe('Debug Character Generation', () => {
     try {
       // Import the character generation system
       console.log('Attempting to import character generation system...');
-      const characterSystem = await import('../src/features/character-generation/index.js');
+      const characterSystem = await import('../character-generation/index.js');
       console.log('Import successful, available exports:', Object.keys(characterSystem));
 
       CharacterGenerationAPI = characterSystem.CharacterGenerationAPI;

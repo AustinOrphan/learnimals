@@ -104,7 +104,7 @@ describe('Navigation System Integration', () => {
   describe('Complete Navigation Loading Flow', () => {
     it('should load complete navigation system without ES6 import errors', async () => {
       // Step 1: Load navbarLoader (should fetch and inject navbar)
-      await import('../../src/components/layout/navbarLoader.js');
+      await import('../../components/layout/navbarLoader.js');
 
       // Wait for navbar loading using enhanced timer control
       await TimerUtils.delay(100);
@@ -115,14 +115,14 @@ describe('Navigation System Integration', () => {
       expect(placeholder.innerHTML).toContain('nav-menu');
 
       // Step 3: Load navigationHelper
-      await import('../../src/utils/navigationHelper.js');
+      await import('../../utils/navigationHelper.js');
 
       // Step 4: Load navigation component (should initialize mobile menu)
       // navigation.js initializes at module evaluation with a once:true
       // listener; a cached module can never wire a navbar injected by a
       // later describe. Fresh module per setup makes init deterministic.
       vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+      await import('../../components/layout/navigation.js');
 
       // Wait for navigation initialization with immediate timer execution
       TimerUtils.runAllTimers();
@@ -150,7 +150,7 @@ describe('Navigation System Integration', () => {
       placeholder.innerHTML = global.createMockNavbar();
 
       // Step 2: Load navigation in parallel with event dispatch
-      const navigationPromise = import('../../src/components/layout/navigation.js');
+      const navigationPromise = import('../../components/layout/navigation.js');
 
       // Dispatch the navbarLoaded event
       const navbarLoadedEvent = new CustomEvent('navbarLoaded');
@@ -204,7 +204,7 @@ describe('Navigation System Integration', () => {
       // listener; a cached module can never wire a navbar injected by a
       // later describe. Fresh module per setup makes init deterministic.
       vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+      await import('../../components/layout/navigation.js');
 
       // Should wait for navbarLoaded event since no mobile-menu exists
       expect(eventListenerAdded).toBe(true);
@@ -249,7 +249,7 @@ describe('Navigation System Integration', () => {
       const placeholder = document.getElementById('navbar-placeholder');
       placeholder.innerHTML = global.createMockNavbar();
 
-      const NavigationHelperModule = await import('../../src/utils/navigationHelper.js');
+      const NavigationHelperModule = await import('../../utils/navigationHelper.js');
       const NavigationHelper = NavigationHelperModule.default;
 
       // Create navigation helper
@@ -271,7 +271,7 @@ describe('Navigation System Integration', () => {
       placeholder.innerHTML = global.createMockNavbar();
 
       // Load navigation helper
-      await import('../../src/utils/navigationHelper.js');
+      await import('../../utils/navigationHelper.js');
 
       // Check if navigationHelper is available globally (as some code expects)
       if (window.navigationHelper) {
@@ -290,7 +290,7 @@ describe('Navigation System Integration', () => {
 
       // Should not throw when navbar fails to load
       expect(async () => {
-        await import('../../src/components/layout/navbarLoader.js');
+        await import('../../components/layout/navbarLoader.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
 
@@ -300,7 +300,7 @@ describe('Navigation System Integration', () => {
         // listener; a cached module can never wire a navbar injected by a
         // later describe. Fresh module per setup makes init deterministic.
         vi.resetModules();
-        await import('../../src/components/layout/navigation.js');
+        await import('../../components/layout/navigation.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
     });
@@ -311,14 +311,14 @@ describe('Navigation System Integration', () => {
 
       // Should not throw
       expect(async () => {
-        await import('../../src/components/layout/navbarLoader.js');
+        await import('../../components/layout/navbarLoader.js');
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // navigation.js initializes at module evaluation with a once:true
         // listener; a cached module can never wire a navbar injected by a
         // later describe. Fresh module per setup makes init deterministic.
         vi.resetModules();
-        await import('../../src/components/layout/navigation.js');
+        await import('../../components/layout/navigation.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
     });
@@ -332,14 +332,14 @@ describe('Navigation System Integration', () => {
 
       // Should not throw even with malformed HTML
       expect(async () => {
-        await import('../../src/components/layout/navbarLoader.js');
+        await import('../../components/layout/navbarLoader.js');
         await new Promise(resolve => setTimeout(resolve, 100));
 
         // navigation.js initializes at module evaluation with a once:true
         // listener; a cached module can never wire a navbar injected by a
         // later describe. Fresh module per setup makes init deterministic.
         vi.resetModules();
-        await import('../../src/components/layout/navigation.js');
+        await import('../../components/layout/navigation.js');
         await new Promise(resolve => setTimeout(resolve, 100));
       }).not.toThrow();
     });
@@ -356,7 +356,7 @@ describe('Navigation System Integration', () => {
       // listener; a cached module can never wire a navbar injected by a
       // later describe. Fresh module per setup makes init deterministic.
       vi.resetModules();
-      await import('../../src/components/layout/navigation.js');
+      await import('../../components/layout/navigation.js');
 
       // Dispatch navbarLoaded event to initialize navigation
       const navbarLoadedEvent = new CustomEvent('navbarLoaded');
@@ -430,13 +430,13 @@ describe('Navigation System Integration', () => {
         // Load modules in specified order
         for (const script of order) {
           if (script === 'navigationHelper') {
-            await import('../../src/utils/navigationHelper.js');
+            await import('../../utils/navigationHelper.js');
           } else if (script === 'navigation') {
             // navigation.js initializes at module evaluation with a once:true
             // listener; a cached module can never wire a navbar injected by a
             // later describe. Fresh module per setup makes init deterministic.
             vi.resetModules();
-            await import('../../src/components/layout/navigation.js');
+            await import('../../components/layout/navigation.js');
           }
 
           // Small delay between loads
@@ -481,9 +481,9 @@ describe('Navigation System Integration', () => {
   describe('ES6 Import Prevention (Critical Regression Test)', () => {
     it('should verify NO navigation files use ES6 imports', async () => {
       const navigationFiles = [
-        '/src/components/layout/navbarLoader.js',
-        '/src/utils/navigationHelper.js',
-        '/src/components/layout/navigation.js',
+        '/components/layout/navbarLoader.js',
+        '/utils/navigationHelper.js',
+        '/components/layout/navigation.js',
       ];
 
       for (const file of navigationFiles) {
@@ -502,9 +502,9 @@ describe('Navigation System Integration', () => {
 
     it('should verify all navigation files are loadable as regular scripts', () => {
       const navigationFiles = [
-        '/src/components/layout/navbarLoader.js',
-        '/src/utils/navigationHelper.js',
-        '/src/components/layout/navigation.js',
+        '/components/layout/navbarLoader.js',
+        '/utils/navigationHelper.js',
+        '/components/layout/navigation.js',
       ];
 
       navigationFiles.forEach(file => {

@@ -2,7 +2,7 @@
 //
 // A service worker can only control pages at or below the path it is served
 // from (unless the server sends a Service-Worker-Allowed header, which the
-// static dev server does not). The app's pages live under /src/, so the worker
+// static dev server does not). The app's pages live under /, so the worker
 // must be served from the site root to obtain scope '/' and control them.
 //
 // The actual worker logic lives in /public/serviceWorker.js and is loaded here

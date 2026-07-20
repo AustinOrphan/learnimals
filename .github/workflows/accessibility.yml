@@ -58,12 +58,12 @@ jobs:
           import { chromium } from '@playwright/test';
 
           const pages = [
-            '/src/pages/index.html',
-            '/src/features/subjects/math/math.html',
-            '/src/features/subjects/science/science.html',
-            '/src/features/subjects/reading/reading.html',
-            '/src/features/subjects/art/art.html',
-            '/src/features/subjects/coding/coding.html',
+            '/pages/index.html',
+            '/subjects/math/math.html',
+            '/subjects/science/science.html',
+            '/subjects/reading/reading.html',
+            '/subjects/art/art.html',
+            '/subjects/coding/coding.html',
           ];
 
           const browser = await chromium.launch();
@@ -152,12 +152,12 @@ jobs:
           EOF
 
           PAGES=(
-            "http://localhost:3000/src/pages/index.html"
-            "http://localhost:3000/src/features/subjects/math/math.html"
-            "http://localhost:3000/src/features/subjects/science/science.html"
-            "http://localhost:3000/src/features/subjects/reading/reading.html"
-            "http://localhost:3000/src/features/subjects/art/art.html"
-            "http://localhost:3000/src/features/subjects/coding/coding.html"
+            "http://localhost:3000/pages/index.html"
+            "http://localhost:3000/subjects/math/math.html"
+            "http://localhost:3000/subjects/science/science.html"
+            "http://localhost:3000/subjects/reading/reading.html"
+            "http://localhost:3000/subjects/art/art.html"
+            "http://localhost:3000/subjects/coding/coding.html"
           )
 
           echo "# Pa11y Test Results" > pa11y-results.txt
@@ -243,7 +243,7 @@ jobs:
 
           const browser = await chromium.launch();
           const page = await browser.newPage();
-          await page.goto('http://localhost:3000/src/pages/index.html', {
+          await page.goto('http://localhost:3000/pages/index.html', {
             waitUntil: 'networkidle',
           });
           await page.waitForSelector('#nav-menu a', { timeout: 10000 });

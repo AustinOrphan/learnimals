@@ -486,7 +486,7 @@ const mockThemeManager = createMockModule({
 });
 
 // Mock the module
-vi.mock('../../src/features/themes/ThemeManager.js', () => mockThemeManager);
+vi.mock('../../themes/ThemeManager.js', () => mockThemeManager);
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

@@ -42,7 +42,7 @@ describe('NavbarLoader', () => {
   describe('ES6 Import Compatibility', () => {
     it('should NOT use ES6 import statements (regression test)', async () => {
       // Read the actual navbarLoader.js file content
-      const response = await fetch('/src/components/layout/navbarLoader.js');
+      const response = await fetch('/components/layout/navbarLoader.js');
       const content = await response.text();
 
       // CRITICAL: Ensure no ES6 imports that would break regular script loading
@@ -54,7 +54,7 @@ describe('NavbarLoader', () => {
     it('should be loadable as a regular script (not module)', async () => {
       // Simulate loading as regular script by creating script element without type="module"
       const script = document.createElement('script');
-      script.src = '/src/components/layout/navbarLoader.js';
+      script.src = '/components/layout/navbarLoader.js';
       // Intentionally NOT setting type="module"
 
       document.head.appendChild(script);
@@ -68,7 +68,7 @@ describe('NavbarLoader', () => {
 
     it('should have inline logger fallback instead of import', async () => {
       // Import the module to check its structure
-      const navbarLoaderModule = await import('../../src/components/layout/navbarLoader.js');
+      const navbarLoaderModule = await import('../../components/layout/navbarLoader.js');
 
       // Should not have logger import dependency
       expect(typeof navbarLoaderModule.default).toBe('undefined'); // Should be regular script, not module
@@ -86,7 +86,7 @@ describe('NavbarLoader', () => {
       });
 
       // Import and execute navbarLoader
-      await import('../../src/components/layout/navbarLoader.js');
+      await import('../../components/layout/navbarLoader.js');
 
       // Wait for async operations
       await delayWithFakeTimers(100);
@@ -101,7 +101,7 @@ describe('NavbarLoader', () => {
       const placeholder = document.getElementById('navbar-placeholder');
 
       // Import navbarLoader
-      await import('../../src/components/layout/navbarLoader.js');
+      await import('../../components/layout/navbarLoader.js');
 
       // Wait for async operations
       await delayWithFakeTimers(100);
@@ -119,7 +119,7 @@ describe('NavbarLoader', () => {
       });
 
       // Import navbarLoader
-      await import('../../src/components/layout/navbarLoader.js');
+      await import('../../components/layout/navbarLoader.js');
 
       // Wait for async operations
       await delayWithFakeTimers(100);
@@ -133,7 +133,7 @@ describe('NavbarLoader', () => {
 
       // Should not throw when import fails
       expect(async () => {
-        await import('../../src/components/layout/navbarLoader.js');
+        await import('../../components/layout/navbarLoader.js');
         await delayWithFakeTimers(100);
       }).not.toThrow();
     });
@@ -145,7 +145,7 @@ describe('NavbarLoader', () => {
 
       // Should not throw when placeholder missing
       expect(async () => {
-        await import('../../src/components/layout/navbarLoader.js');
+        await import('../../components/layout/navbarLoader.js');
         await delayWithFakeTimers(100);
       }).not.toThrow();
     });
@@ -154,7 +154,7 @@ describe('NavbarLoader', () => {
   describe('Logger Integration', () => {
     it('should have fallback logger that works without import', async () => {
       // Import navbarLoader
-      await import('../../src/components/layout/navbarLoader.js');
+      await import('../../components/layout/navbarLoader.js');
 
       // Wait for execution
       await delayWithFakeTimers(100);
@@ -207,7 +207,7 @@ describe('NavbarLoader', () => {
         });
 
         // Import navbarLoader
-        await import('../../src/components/layout/navbarLoader.js');
+        await import('../../components/layout/navbarLoader.js');
 
         // Wait for execution
         await delayWithFakeTimers(50);

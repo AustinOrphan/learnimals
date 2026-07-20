@@ -12,6 +12,7 @@ RUN npm ci --no-audit --no-fund
 
 # Copy source code
 COPY . .
+RUN PAGES_BASE= node scripts/build-pages.mjs
 
 # Run linting and tests
 RUN npm run lint
@@ -34,9 +35,7 @@ RUN addgroup -g 1001 -S appgroup && \
     adduser -S appuser -u 1001 -G appgroup
 
 # Copy application files
-COPY --from=builder /app/src /usr/share/nginx/html/src
-COPY --from=builder /app/public /usr/share/nginx/html/public
-COPY --from=builder /app/index.html /usr/share/nginx/html/
+COPY --from=builder /app/_site /usr/share/nginx/html/
 COPY --from=builder /app/package.json /usr/share/nginx/html/
 
 # Copy nginx configuration

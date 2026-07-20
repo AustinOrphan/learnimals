@@ -45,9 +45,9 @@ jobs:
         uses: tj-actions/changed-files@v46
         with:
           files: |
-            src/**/*.js
-            src/**/*.html
-            src/**/*.css
+            **/*.js
+            **/*.html
+            **/*.css
             tests/**/*.js
 
       - name: Comment PR
@@ -97,7 +97,7 @@ jobs:
       - name: Size Check
         run: |
           # Check bundle size impact
-          SIZE_BEFORE=$(find src -name "*.js" -o -name "*.css" | xargs wc -c | tail -1 | awk '{print $1}')
+          SIZE_BEFORE=$(find . -name "*.js" -o -name "*.css" | xargs wc -c | tail -1 | awk '{print $1}')
           echo "Total size: $((SIZE_BEFORE / 1024))KB"
 
           if [ $SIZE_BEFORE -gt 5242880 ]; then # 5MB

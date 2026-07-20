@@ -33,7 +33,7 @@ related` crash and blocked every pre-commit
   export, missing fixture constant, announce()/supportsWebP guards, named
   class exports for ThemeManager and EnhancedProgressTracker, FormComponent
   ES export, component barrel restricted to real ES modules
-- `src/config/storage.js` reconstructed (was imported by the progress
+- `config/storage.js` reconstructed (was imported by the progress
   feature but existed only on abandoned branches); case-mismatched
   AchievementSystem import fixed (broke on Linux)
 

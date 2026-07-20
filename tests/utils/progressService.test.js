@@ -72,7 +72,7 @@ const mockEnhancedTracker = {
 // Import the class to test
 // Note: progressService.js imports userProgress and EnhancedProgressTracker directly,
 // so the mocks above are injected via constructor options rather than globals.
-import ProgressService from '../../src/utils/progressService.js';
+import ProgressService from '../../utils/progressService.js';
 
 describe('ProgressService', () => {
   let progressService;

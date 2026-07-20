@@ -3,11 +3,11 @@
  * Tests the core functionality of the GameSystem
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { GameSystem } from '../../src/utils/GameSystem.js';
-import { GameRegistryUtil } from '../../src/config/gameRegistry.js';
+import { GameSystem } from '../../utils/GameSystem.js';
+import { GameRegistryUtil } from '../../config/gameRegistry.js';
 
 // Mock logger with inline mock to avoid hoisting issues
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

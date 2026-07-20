@@ -12,11 +12,11 @@
 /* global FocusEvent */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import Modal from '../../src/components/ui/Modal.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import Modal from '../../components/ui/Modal.js';
+import { accessibilityTester } from '../../utils/accessibilityTester.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

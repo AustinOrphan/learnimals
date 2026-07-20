@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Learnimals - Fun Educational Games for Kids</title>
+    <meta
+      name="description"
+      content="Learnimals offers fun educational games with animal friends for children to learn math, science, reading and art through interactive play"
+    />
+    <meta
+      name="keywords"
+      content="kids education, educational games, math games, science for kids, reading games, learning animals"
+    />
+    <meta name="author" content="Learnimals Team" />
+    <meta property="og:title" content="Learnimals - Fun Educational Games for Kids" />
+    <meta property="og:description" content="Learn and play with animal friends in math, science, reading and art!" />
+    <meta property="og:image" content="../../public/images/logo.png" />
+    <meta property="og:url" content="https://learnimals.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="../public/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="../public/images/apple-touch-icon.png" />
+    <link rel="manifest" href="../public/manifest.json" />
+    <meta name="theme-color" content="#ffeaa7" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- Critical resource hints for performance -->
+    <link rel="preconnect" href="/" />
+    <link rel="dns-prefetch" href="/" />
+
+    <!-- CSS with performance optimizations -->
+    <link rel="preload" href="../styles/base/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="../styles/base/styles.css" /></noscript>
+    <link rel="stylesheet" href="../styles/components/navbar.css" />
+    <link rel="stylesheet" href="../styles/components/components.css" />
+
+    <!-- Only preload above-the-fold critical images -->
+    <link rel="preload" href="/public/images/logo.png" as="image" fetchpriority="high" />
+    <link rel="preload" href="/public/images/math-shark.png" as="image" fetchpriority="high" />
+
+    <!-- Prefetch below-the-fold images for faster loading -->
+    <link rel="prefetch" href="/public/images/science-parrot2.png" as="image" />
+    <link rel="prefetch" href="/public/images/cody-cat2.png" as="image" />
+    <link rel="prefetch" href="/public/images/reading-panda.png" as="image" />
+    <link rel="prefetch" href="/public/images/art-lion.png" as="image" />
+  </head>
+
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <main>
+      <section class="hero">
+        <h1 class="fade-in">Welcome to Learnimals!</h1>
+        <p class="fade-in-delay">Explore fun learning adventures with your favorite animal friends.</p>
+        <a href="/subjects/math/math.html" class="cta-button bounce" aria-label="Start learning with math games"
+          >Start Learning</a
+        >
+      </section>
+
+      <section class="features">
+        <a
+          href="/subjects/math/math.html"
+          class="feature-card-link"
+          aria-label="Math with Mango - Master numbers, puzzles, and math games"
+        >
+          <div class="feature-card hover-glow alt">
+            <img src="/public/images/math-shark.png" alt="Math Shark" />
+            <h3>Math with Mango</h3>
+            <p>Master numbers, puzzles, and math games!</p>
+          </div>
+        </a>
+
+        <a
+          href="/subjects/science/science.html"
+          class="feature-card-link"
+          aria-label="Science with Sky - Explore fun experiments and amazing facts"
+        >
+          <div class="feature-card hover-glow">
+            <img src="/public/images/science-parrot2.png" alt="Science Parrot" loading="lazy" decoding="async" />
+            <h3>Science with Sky</h3>
+            <p>Explore fun experiments and amazing facts.</p>
+          </div>
+        </a>
+
+        <a
+          href="/subjects/coding/coding.html"
+          class="feature-card-link"
+          aria-label="Code with Cody - Learn coding and master programming skills"
+        >
+          <div class="feature-card hover-glow">
+            <img src="/public/images/cody-cat2.png" alt="Coding Cat" loading="lazy" decoding="async" />
+            <h3>Code with Cody</h3>
+            <p>Code, Learn, and master your skills!</p>
+          </div>
+        </a>
+
+        <a
+          href="/subjects/reading/reading.html"
+          class="feature-card-link"
+          aria-label="Reading with Ruby - Follow stories and learn to love reading"
+        >
+          <div class="feature-card hover-glow alt">
+            <img src="/public/images/reading-panda.png" alt="Reading Panda" loading="lazy" decoding="async" />
+            <h3>Reading with Ruby</h3>
+            <p>Follow along with stories and learn to love reading!</p>
+          </div>
+        </a>
+
+        <a
+          href="/subjects/art/art.html"
+          class="feature-card-link"
+          aria-label="Art with Leo - Paint, color, and craft your creativity"
+        >
+          <div class="feature-card hover-glow">
+            <img src="/public/images/art-lion.png" alt="Art Lion" loading="lazy" decoding="async" />
+            <h3>Art with Leo</h3>
+            <p>Paint, color, and craft your creativity!</p>
+          </div>
+        </a>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Learnimals. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="profile.html">My Profile</a>
+      </div>
+    </footer>
+
+    <script>
+      // Add structured data for SEO
+      const structuredData = {
+        '@context': 'https://schema.org',
+        '@type': 'EducationalOrganization',
+        name: 'Learnimals',
+        description: 'Fun educational games with animal friends for children',
+        url: 'https://learnimals.com',
+        logo: 'https://learnimals.com/public/images/logo.png',
+        offers: {
+          '@type': 'Offer',
+          availability: 'https://schema.org/InStock',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+      };
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.text = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+
+      // Register the service worker at the site root so its scope is '/',
+      // which controls the whole app (pages live under /).
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker
+            .register('/serviceWorker.js')
+            .then(function (registration) {
+              console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(function (error) {
+              console.log('ServiceWorker registration failed: ', error);
+            });
+        });
+      }
+    </script>
+
+    <!-- ✅ Load universal navbar component -->
+    <script src="../components/layout/navbarLoader.js" defer></script>
+
+    <!-- Navigation helper (ES module: exports default) -->
+    <script type="module" src="../utils/navigationHelper.js"></script>
+
+    <!-- PWA Mobile Enhancements -->
+    <script type="module" src="../components/ui/PWAInstaller.js"></script>
+
+    <!-- Other scripts -->
+    <script src="../main.js"></script>
+    <script src="../components/layout/navigation.js" defer></script>
+    <script type="module" src="../utils/themeManager.js"></script>
+    <script type="module" src="../components/layout/themeSwitcher.js"></script>
+  </body>
+</html>

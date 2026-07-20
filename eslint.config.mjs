@@ -2,8 +2,19 @@ import js from '@eslint/js';
 
 export default [
   {
+    ignores: [
+      'node_modules/**',
+      '_site/**',
+      'coverage/**',
+      'playwright-report/**',
+      'test-results/**',
+      '.claudeCodeStuffToStashForNow/**',
+      'dedupe-archive/**',
+    ],
+  },
+  {
     // Apply to all JS files
-    files: ['src/**/*.js', 'scripts/**/*.js', 'tests/**/*.js'],
+    files: ['**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -161,10 +172,36 @@ export default [
   },
   {
     // Special configuration for character generation test file
-    files: ['src/features/character-generation/test-character-system.js'],
+    files: ['character-generation/test-character-system.js'],
     languageOptions: {
       globals: {
         process: 'readonly',
+        require: 'readonly',
+      },
+    },
+  },
+  {
+    // Service worker context (root shim + public worker)
+    files: ['**/serviceWorker.js'],
+    languageOptions: {
+      globals: {
+        self: 'readonly',
+        caches: 'readonly',
+        clients: 'readonly',
+        importScripts: 'readonly',
+        skipWaiting: 'readonly',
+        registration: 'readonly',
+      },
+    },
+  },
+  {
+    // Node-run config + build scripts at the repo root
+    files: ['*.config.js', '*.config.mjs', 'vitest.config.js'],
+    languageOptions: {
+      globals: {
+        __dirname: 'readonly',
+        process: 'readonly',
+        module: 'readonly',
         require: 'readonly',
       },
     },

@@ -10,10 +10,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { BundleOptimizer } from '../../src/utils/BundleOptimizer.js';
+import { BundleOptimizer } from '../../utils/BundleOptimizer.js';
 
 // Mock dependencies
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -22,7 +22,7 @@ vi.mock('../../src/utils/logger.js', () => ({
   },
 }));
 
-vi.mock('../../src/utils/performanceUtils.js', () => ({
+vi.mock('../../utils/performanceUtils.js', () => ({
   performanceMonitor: {
     startTimer: vi.fn(),
     endTimer: vi.fn(),
@@ -216,21 +216,21 @@ describe('BundleOptimizer - Performance Budgets', () => {
       // Mock performance.getEntriesByType to return test resources
       window.performance.getEntriesByType.mockReturnValue([
         {
-          name: '/src/app.js',
+          name: '/app.js',
           transferSize: 150 * 1024, // 150KB
           encodedBodySize: 140 * 1024,
           duration: 250,
           startTime: 100,
         },
         {
-          name: '/src/styles.css',
+          name: '/styles.css',
           transferSize: 80 * 1024, // 80KB
           encodedBodySize: 75 * 1024,
           duration: 150,
           startTime: 200,
         },
         {
-          name: '/src/vendor.js',
+          name: '/vendor.js',
           transferSize: 200 * 1024, // 200KB
           encodedBodySize: 190 * 1024,
           duration: 400,

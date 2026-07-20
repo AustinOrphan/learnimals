@@ -21,7 +21,7 @@ describe('ModuleRegistry', () => {
 
     // Clear module cache and reimport
     vi.resetModules();
-    const module = await import('../../src/utils/ModuleRegistry.js');
+    const module = await import('../../utils/ModuleRegistry.js');
     ModuleRegistry = module.default;
 
     // Create fresh registry instance

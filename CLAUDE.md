@@ -9,13 +9,13 @@ verified against the actual files or by running the commands.
 Learnimals is a static educational web app for children. Each school subject (13 subject dirs:
 art, coding, cooking, environment, geography, history, language, math, music, physics, reading,
 science, + shared) is fronted by an animal character, and 12 games live under
-`src/features/games/`. Plain HTML/CSS/JS with ES modules — **no build step, no framework, no
+`games/`. Plain HTML/CSS/JS with ES modules — **no build step, no framework, no
 backend**. All persistence is client-side (localStorage + IndexedDB). Solo project by Austin
 Orphan (~203 of 217 commits); started May 2025, bursty activity with multi-month dormancies.
 
 ### Worktree hub layout (important)
 
-`/Users/austinorphan/src/learnimals/` is a **git worktree hub**, not a normal checkout:
+`/Users/austinorphan/learnimals/` is a **git worktree hub**, not a normal checkout:
 
 - `.bare/` — the bare repository (`.git` at hub root is a pointer to it)
 - `_main/` — **the main checkout; work here.** This file lives at `_main/CLAUDE.md`.
@@ -34,23 +34,23 @@ The hub root has its own stray `package.json`/`pnpm-lock.yaml` (the project itse
 
 Prerequisites: Node **20.15.1** (`.nvmrc` is canonical — ignore the conflicting 18/24 pins in
 `comprehensive-testing.yml` and the Dockerfile), Python 3 for the dev server, and the sibling
-checkout `/Users/austinorphan/src/e2e-core` (required by the `file:../../e2e-core` dependency —
+checkout `/Users/austinorphan/e2e-core` (required by the `file:../../e2e-core` dependency —
 `npm ci` fails without it).
 
 ```bash
-cd /Users/austinorphan/src/learnimals/_main
+cd /Users/austinorphan/learnimals/_main
 npm ci
 
 # Serve the repo root on port 3000, then open the real homepage:
 npm run serve
-# → http://localhost:3000/src/pages/index.html
+# → http://localhost:3000/pages/index.html
 ```
 
 `npm run serve` runs `python3 -m http.server 3000` from the repo root, matching CI (`e2e.yml`)
-and the Playwright BASE_URL default. (Fixed 2026-07-17 — it previously served `src/pages` as
-the docroot, breaking every root-absolute `/src/...` and `/public/...` URL, and used `python`
-instead of `python3`.) Pages must always be served from the repo root. The root `index.html`
-redirects to the app homepage `src/pages/index.html` (until 2026-07-17 it was a stale
+and the Playwright BASE_URL default. (Fixed 2026-07-17 — it previously served the old
+`src/pages` layout as the docroot, breaking every root-absolute `/...` and `/public/...` URL,
+and used `python` instead of `python3`.) Pages must always be served from the repo root. The root `index.html`
+redirects to the app homepage `pages/index.html` (until 2026-07-17 it was a stale
 "migration complete" launcher page with no nav and dead links).
 
 The `@austinorphan/e2e-core` dependency installs as a **copy**, not a symlink
@@ -62,7 +62,7 @@ re-copy while the version number is unchanged).
 ## Essential Commands (verified)
 
 ```bash
-# Lint / format (scope: src/ scripts/ tests/)
+# Lint / format (scope: whole repo via eslint .)
 npm run lint            # eslint (flat config: eslint.config.mjs — the legacy .eslintrc.js is dead)
 npm run lint:fix
 npm run format          # prettier --write .
@@ -104,60 +104,60 @@ configured in `vitest.config.js` but not yet gated in CI — calibrate and enabl
 
 ### Component system (no framework)
 
-Class-based components. `src/components/BaseComponent.js` is the root (options, id,
+Class-based components. `components/BaseComponent.js` is the root (options, id,
 `addEventListener`/`emit`); `EnhancedBaseComponent.js` and `AccessibleComponent.js` extend it.
 Concrete components live in typed subdirs: `ui/` (Card, Modal, PWAInstaller, …), `layout/`
 (navbarLoader, navigation, themeSwitcher, mobileMenuHandler), `forms/` (FormComponent),
 `feedback/` (Toast/Overlay/Progress + ToastManager), `games/` (BaseGame, GameTemplateLoader),
-`profile/` (Avatar, AvatarBuilder). `src/components/index.js` is a barrel — **currently broken in
+`profile/` (Avatar, AvatarBuilder). `components/index.js` is a barrel — **currently broken in
 browsers** because `FormComponent.js` has no ES export (only a CJS guard + `window.FormComponent`).
 
 ### Subject template system
 
-`src/utils/subjectTemplateLoader.js` fetches `/src/templates/subject.html` at runtime and
+`utils/subjectTemplateLoader.js` fetches `/templates/subject.html` at runtime and
 replaces `{{subjectName}}`, `{{subjectLower}}`, `{{subjectDescription}}`, `{{characterName}}`,
 `{{characterType}}`, `{{heroSubtitle}}`, `{{featureCards}}` — all escaped via
-`src/utils/htmlEscape.js` except `featureCards`. Subject pages are thin HTML shells at
-`src/features/subjects/<subject>/<subject>.html` whose inline module script builds an options
+`utils/htmlEscape.js` except `featureCards`. Subject pages are thin HTML shells at
+`subjects/<subject>/<subject>.html` whose inline module script builds an options
 object and calls `SubjectTemplateLoader.renderTemplate(options)` (see `music/music.html`).
 `scripts/generateSubjects.js` scaffolds all of this and regex-patches the `subjects:` block of
-`src/config.js`.
+`config.js`.
 
 ### Games
 
-Registry-driven: `src/config/gameRegistry.js` holds an array of game metadata (id, gameClass,
+Registry-driven: `config/gameRegistry.js` holds an array of game metadata (id, gameClass,
 scriptPath, styleSheet, subject, template, options). Games are self-contained modules in
-`src/features/games/<game-id>/` (kebab-case) whose main class `extends BaseGame`
-(`src/components/games/BaseGame.js` — state machine, score/lives, ProgressTracker +
-AchievementSystem integration). Game shell templates: `src/templates/{minimal,game,fullscreen,
-mobile,educational}.html`. Page-side entry is `src/utils/GameSystem.js`. Game tuning constants go
-in `src/config.js` `games:` — note only bubblePop and wordScramble have entries there today.
+`games/<game-id>/` (kebab-case) whose main class `extends BaseGame`
+(`components/games/BaseGame.js` — state machine, score/lives, ProgressTracker +
+AchievementSystem integration). Game shell templates: `templates/{minimal,game,fullscreen,
+mobile,educational}.html`. Page-side entry is `utils/GameSystem.js`. Game tuning constants go
+in `config.js` `games:` — note only bubblePop and wordScramble have entries there today.
 
 ### Theme system
 
-`src/utils/themeRegistry.js` (COMMON_COLORS, THEME_COLORS, THEME_DEFINITIONS) →
-`src/utils/themeManager.js` (singleton; persists `learnimals-theme-name` /
+`utils/themeRegistry.js` (COMMON_COLORS, THEME_COLORS, THEME_DEFINITIONS) →
+`utils/themeManager.js` (singleton; persists `learnimals-theme-name` /
 `learnimals-theme-mode` in localStorage; follows `prefers-color-scheme`) →
-`src/components/layout/themeSwitcher.js` (self-initializing UI). `src/themeInitializer.js` is a
+`components/layout/themeSwitcher.js` (self-initializing UI). `themeInitializer.js` is a
 deliberately import-free IIFE loaded early to prevent theme flash — keep it dependency-free.
 `ModularThemeManager.js` is a newer extension. Style exclusively with semantic CSS variables
-(`--text-primary`, `--bg-card`, `--accent-primary`). There is **no `src/styles/themes/`** dir;
-theme CSS lives in `src/styles/base/` and `src/styles/components/`.
+(`--text-primary`, `--bg-card`, `--accent-primary`). There is **no `styles/themes/`** dir;
+theme CSS lives in `styles/base/` and `styles/components/`.
 
 ### Services & storage
 
-`src/services/`: `database/IndexedDBService.js` (singleton `dbService`; DB `learnimals` v1,
+`services/`: `database/IndexedDBService.js` (singleton `dbService`; DB `learnimals` v1,
 schema in `database/schema.js`), `progress/ProgressService.js`, `character/CharacterStorage.js`,
 `achievements/AchievementSystem.js`, `accessibility/`, `mobile/`. localStorage via
-`src/utils/common.js` `get/setLocalStorage` (JSON-wrapped). `src/config.js` (default-export app
+`utils/common.js` `get/setLocalStorage` (JSON-wrapped). `config.js` (default-export app
 config: game tuning, theme, rich per-subject character definitions) is distinct from
-`src/config/` (gameRegistry, educationalMetadataSchema). The `api:` block in config.js
+`config/` (gameRegistry, educationalMetadataSchema). The `api:` block in config.js
 (`/api/progress`, `/api/scores`) and the service worker's `/api/contact` sync have **no server —
 nothing serves /api**.
 
 ### Page bootstrap
 
-`src/pages/index.html` load order: inline script (JSON-LD + service-worker registration) →
+`pages/index.html` load order: inline script (JSON-LD + service-worker registration) →
 `navbarLoader.js` (fetches `layout/navbar.html` into `#navbar-placeholder`, fires
 `navbarLoaded`) → `navigationHelper.js` → `PWAInstaller.js` → `main.js` (confetti only) →
 `navigation.js` → `themeManager.js` → `themeSwitcher.js`. PWA: `public/serviceWorker.js`
@@ -166,23 +166,21 @@ nothing serves /api**.
 ## Project Structure
 
 ```text
-_main/
-├── src/
-│   ├── components/        # BaseComponent + ui/ layout/ forms/ feedback/ games/ profile/ examples/
-│   ├── features/
-│   │   ├── subjects/      # 13 subject dirs + shared/; files: <subject>.{html,css,js}
-│   │   ├── games/         # 12 game dirs (kebab-case)
-│   │   ├── character-generation/, character-showcase/, discovery/, profile/, progress/, user/
-│   ├── services/          # accessibility/ achievements/ character/ database/ mobile/ progress/
-│   ├── utils/             # 33 modules: logger, htmlEscape, subjectTemplateLoader, theme*…
-│   ├── styles/            # base/ + components/ (semantic CSS variables; NO themes/ dir)
-│   ├── templates/         # subject.html + game shells (minimal/game/fullscreen/mobile/educational)
-│   ├── pages/             # index.html (real homepage), about, contact, profile, games/, demo pages
-│   ├── config.js          # app config (subjects/games/theme); generateSubjects rewrites it
-│   ├── config/            # gameRegistry.js, educationalMetadataSchema.js
-│   ├── data/characterSchema.js
-│   ├── main.js            # homepage confetti only
-│   └── themeInitializer.js # import-free FOUC guard
+_main/                     # Served directly from the repo root — no build step
+├── components/            # BaseComponent + ui/ layout/ forms/ feedback/ games/ profile/ examples/
+├── subjects/             # 13 subject dirs + shared/; files: <subject>.{html,css,js}
+├── games/                # 12 game dirs (kebab-case)
+├── character-generation/, character-showcase/, discovery/, profile/, progress/, user/
+├── services/             # accessibility/ achievements/ character/ database/ mobile/ progress/
+├── utils/                # 33 modules: logger, htmlEscape, subjectTemplateLoader, theme*…
+├── styles/               # base/ + components/ (semantic CSS variables; NO themes/ dir)
+├── templates/            # subject.html + game shells (minimal/game/fullscreen/mobile/educational)
+├── pages/                # index.html (real homepage), about, contact, profile, games/, demo pages
+├── config.js             # app config (subjects/games/theme); generateSubjects rewrites it
+├── config/               # gameRegistry.js, educationalMetadataSchema.js
+├── data/characterSchema.js
+├── main.js               # homepage confetti only
+├── themeInitializer.js   # import-free FOUC guard
 ├── public/                # manifest.json, serviceWorker.js, images/
 ├── tests/                 # Vitest jsdom suites (unit/components/integration/accessibility/…)
 ├── e2e/                   # Playwright browser tests (spec in e2e/tests/, config sets testDir)
@@ -213,7 +211,7 @@ and iCloud duplicates (below). Don't take these as patterns to follow.
   convention despite older docs (~50 of ~2,700 selectors are BEM). Use semantic theme variables,
   never raw colors.
 - **Imports**: ES modules everywhere (`"type": "module"`); relative imports always include the
-  `.js` extension; HTML module scripts use root-absolute `/src/...` paths. Default-export
+  `.js` extension; HTML module scripts use root-absolute `/...` paths. Default-export
   singletons are the norm (`logger`, `themeManager`, `dbService`). The `@/…` aliases work
   **only in Vitest** (`vitest.config.js`) — browser code cannot use them.
 - **Commits**: Conventional Commits **with scope**, no emoji — the style of the most recent
@@ -225,26 +223,26 @@ and iCloud duplicates (below). Don't take these as patterns to follow.
 **Add a subject**: prefer `npm run generate-subjects -- --subjects=<name>` for the 7 built-in
 templates; otherwise copy the `music/` pattern: shell HTML with inline module script calling
 `SubjectTemplateLoader.renderTemplate()`, plus `<subject>.css`/`<subject>.js`, register in
-`src/config.js` `subjects:`, add character image `public/images/<subject>-<animal>.png`, add
-navbar link in `src/components/layout/navbar.html` + mapping in `src/utils/navigationHelper.js`
+`config.js` `subjects:`, add character image `public/images/<subject>-<animal>.png`, add
+navbar link in `components/layout/navbar.html` + mapping in `utils/navigationHelper.js`
 (note: existing navbar entries point at dead `shared/` paths — see Gotchas; link the real
 `<subject>/<subject>.html` pages).
 
-**Add a component**: `src/components/<type>/ComponentName.js` extending `BaseComponent`,
-`export default`, matching stylesheet in `src/styles/components/`, re-export from
-`src/components/index.js`, test in both light and dark modes.
+**Add a component**: `components/<type>/ComponentName.js` extending `BaseComponent`,
+`export default`, matching stylesheet in `styles/components/`, re-export from
+`components/index.js`, test in both light and dark modes.
 
-**Add a game**: `src/features/games/<game-id>/` with a class extending `BaseGame`, register in
-`src/config/gameRegistry.js` (id, gameClass, scriptPath, styleSheet, subject, template,
-metadata), pick a shell template from `src/templates/`, optional demo page under
-`src/pages/games/`, tuning constants in `src/config.js`.
+**Add a game**: `games/<game-id>/` with a class extending `BaseGame`, register in
+`config/gameRegistry.js` (id, gameClass, scriptPath, styleSheet, subject, template,
+metadata), pick a shell template from `templates/`, optional demo page under
+`pages/games/`, tuning constants in `config.js`.
 
-**Extend themes**: add definitions in `src/utils/themeRegistry.js`; the manager and switcher pick
+**Extend themes**: add definitions in `utils/themeRegistry.js`; the manager and switcher pick
 them up automatically.
 
 ## Pre-commit & CI
 
-`.husky/pre-commit`: iCloud-duplicate check (only scans `src/ docs/ tests/`), merge-marker
+`.husky/pre-commit`: iCloud-duplicate check (only scans `docs/ tests/` and the app dirs), merge-marker
 check, >1MB warning (contains an **interactive `read -r` prompt** — can hang non-TTY commits),
 TODO scan, `checkDuplicates.js`, then lint-staged (`eslint --fix` + `vitest related --run` on
 src JS; prettier on HTML/CSS; markdownlint + prettier on md).
@@ -267,21 +265,21 @@ self-skips without [release] in the commit message.
 2. **iCloud duplicate files are a chronic, first-class problem.** The repo once lived in iCloud
    Drive; sync conflicts created `name 2.ext`-style duplicates. Tooling exists
    (`scripts/checkDuplicates.js`, pre-commit check, `docs/development/MAINTENANCE_GUIDE.md`),
-   and the 55 git-tracked duplicates were purged 2026-07-18 — but the guards still only scan
-   `src/ docs/ tests/` filenames with extensions, so root-level and directory-name dupes can
+   and the 55 git-tracked duplicates were purged 2026-07-18 — but the guards scan a fixed set
+   of app/content/test dirs by filename+extension, so root-level and directory-name dupes can
    slip through again. Never create files with spaces/digits suffixes; treat any
    `name 2.ext`-style filename as a conflict artifact.
 3. **Docker/K8s/monitoring are aspirational.** `FUTURE-FEATURES.md` explicitly labels them "not
    currently in active use" (older docs presented them as live). K8s is plain manifests in
    `k8s/{staging,production}/` with `envsubst` — **no Kustomize**. The nginx CSP
-   (`script-src 'self'`) would block the inline scripts in `src/pages/index.html` if the Docker
+   (`script-src 'self'`) would block the inline scripts in `pages/index.html` if the Docker
    path were ever used seriously.
-4. **Subject-page URLs**: real pages live at `src/features/subjects/<subject>/<subject>.html`
+4. **Subject-page URLs**: real pages live at `subjects/<subject>/<subject>.html`
    — never link `shared/<subject>.html` (those pages don't exist; `shared/` holds only
    bubblepop and `*-example` pages). Until 2026-07-17 the navbar, homepage CTA, manifest
    shortcuts, and service-worker precache all pointed at the dead `shared/` paths; all fixed,
    but old habits in docs/examples may still show the wrong pattern.
-5. **`src/features/progress/` is dead code pending an M2 decision** (see PLAN.md): nothing
+5. **`progress/` is dead code pending an M2 decision** (see PLAN.md): nothing
    imports it, `progressDashboard.js` still imports an `authService` that only existed on
    abandoned auth branches, and the shipped dashboard is `components/ui/GameProgressDashboard`.
    Its `config/storage.js` dependency was reconstructed 2026-07-18 as a localStorage adapter.
@@ -307,8 +305,8 @@ self-skips without [release] in the commit message.
     period pieces, not current guidance. When in doubt: `package.json`, the configs, PLAN.md,
     and this file's verified notes win.
 11. **Security posture**: this is a children's app — `docs/security/COPPA_COMPLIANCE.md` applies;
-    XSS prevention via `src/utils/htmlEscape.js` with a dedicated `tests/security/` suite; never
+    XSS prevention via `utils/htmlEscape.js` with a dedicated `tests/security/` suite; never
     interpolate unescaped user input into template HTML.
-12. `src/utils/logger.js` enables DEBUG only on exact hostnames `localhost`/`127.0.0.1`
+12. `utils/logger.js` enables DEBUG only on exact hostnames `localhost`/`127.0.0.1`
     (override with `window.LEARNIMALS_LOG_LEVEL`). Use it instead of bare `console.log` in new
     code.

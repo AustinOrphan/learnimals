@@ -28,7 +28,7 @@ global.HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
 });
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -38,7 +38,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 }));
 
 // Mock performance utilities
-vi.mock('../../src/utils/performanceUtils.js', () => ({
+vi.mock('../../utils/performanceUtils.js', () => ({
   performanceMonitor: {
     start: vi.fn(),
     end: vi.fn(),
@@ -66,7 +66,7 @@ vi.mock('../../src/utils/performanceUtils.js', () => ({
 }));
 
 // Mock the actual MobileOptimizationService module
-vi.mock('../../src/services/mobile/MobileOptimizationService.js', () => {
+vi.mock('../../services/mobile/MobileOptimizationService.js', () => {
   const mockService = {
     deviceInfo: {
       isMobile: true,
@@ -186,7 +186,7 @@ vi.mock('../../src/services/mobile/MobileOptimizationService.js', () => {
 });
 
 import { DOMUtils } from '../fixtures/testDataFactory.js';
-import { mobileOptimizationService } from '../../src/services/mobile/MobileOptimizationService.js';
+import { mobileOptimizationService } from '../../services/mobile/MobileOptimizationService.js';
 
 describe('MobileOptimizationService', () => {
   let service;

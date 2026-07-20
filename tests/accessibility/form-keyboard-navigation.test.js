@@ -15,12 +15,12 @@
 /* global FocusEvent, HTMLFormElement, HTMLInputElement */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import FormComponent from '../../src/components/forms/FormComponent.js';
-import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import FormComponent from '../../components/forms/FormComponent.js';
+import { accessibilityService } from '../../services/accessibility/AccessibilityService.js';
+import { accessibilityTester } from '../../utils/accessibilityTester.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

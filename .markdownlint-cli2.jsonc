@@ -3,12 +3,13 @@
   // archive (plans/reports); node_modules is third-party.
   "ignores": [
     "node_modules/**",
+    "_site/**",
     "docs/**",
     ".serena/**",
-    "src/features/games/ecosystem-safari/ARCHITECTURE_DECISIONS.md",
-    "src/features/games/ecosystem-safari/DEVELOPMENT_ROADMAP.md",
-    "src/features/games/ecosystem-safari/VALIDATION_REPORT.md",
-    "src/features/games/ecosystem-safari/REUSABLE_PATTERNS.md",
+    "games/ecosystem-safari/ARCHITECTURE_DECISIONS.md",
+    "games/ecosystem-safari/DEVELOPMENT_ROADMAP.md",
+    "games/ecosystem-safari/VALIDATION_REPORT.md",
+    "games/ecosystem-safari/REUSABLE_PATTERNS.md",
     ".claudeCodeStuffToStashForNow/**",
     ".claude/**",
     "playwright-report/**",

@@ -305,7 +305,7 @@ beforeAll(() => {
           text: () => Promise.resolve('<nav id="navbar">Mock Navbar</nav>'),
         });
       }
-      if (url.includes('navigation.js') || url.includes('/src/components/layout/navigation.js')) {
+      if (url.includes('navigation.js') || url.includes('/components/layout/navigation.js')) {
         return Promise.resolve({
           ok: true,
           text: () =>
@@ -314,7 +314,7 @@ beforeAll(() => {
             ),
         });
       }
-      if (url.includes('navigationHelper.js') || url.includes('/src/utils/navigationHelper.js')) {
+      if (url.includes('navigationHelper.js') || url.includes('/utils/navigationHelper.js')) {
         return Promise.resolve({
           ok: true,
           text: () =>
@@ -349,10 +349,7 @@ if (typeof window !== 'undefined') {
 }`),
         });
       }
-      if (
-        url.includes('navbarLoader.js') ||
-        url.includes('/src/components/layout/navbarLoader.js')
-      ) {
+      if (url.includes('navbarLoader.js') || url.includes('/components/layout/navbarLoader.js')) {
         return Promise.resolve({
           ok: true,
           text: () =>
@@ -375,7 +372,7 @@ if (typeof window !== 'undefined') {
         json: () => Promise.resolve({ success: true }),
       });
     }
-    if (url.includes('navigation.js') || url.includes('/src/components/layout/navigation.js')) {
+    if (url.includes('navigation.js') || url.includes('/components/layout/navigation.js')) {
       return Promise.resolve({
         ok: true,
         text: () =>
@@ -385,7 +382,7 @@ if (typeof window !== 'undefined') {
         json: () => Promise.resolve({ module: 'navigation' }),
       });
     }
-    if (url.includes('navigationHelper.js') || url.includes('/src/utils/navigationHelper.js')) {
+    if (url.includes('navigationHelper.js') || url.includes('/utils/navigationHelper.js')) {
       return Promise.resolve({
         ok: true,
         text: () =>
@@ -421,7 +418,7 @@ if (typeof window !== 'undefined') {
         json: () => Promise.resolve({ module: 'navigationHelper' }),
       });
     }
-    if (url.includes('navbarLoader.js') || url.includes('/src/components/layout/navbarLoader.js')) {
+    if (url.includes('navbarLoader.js') || url.includes('/components/layout/navbarLoader.js')) {
       return Promise.resolve({
         ok: true,
         text: () =>
@@ -764,7 +761,7 @@ expect.extend({
 });
 
 // Mock specific modules that commonly cause issues
-vi.mock('../../src/features/progress/AchievementSystem.js', () => ({
+vi.mock('../../progress/AchievementSystem.js', () => ({
   default: vi.fn().mockImplementation(() => ({
     unlock: vi.fn(),
     check: vi.fn(),
@@ -772,7 +769,7 @@ vi.mock('../../src/features/progress/AchievementSystem.js', () => ({
   })),
 }));
 
-vi.mock('../../src/features/progress/ProgressTracker.js', () => ({
+vi.mock('../../progress/ProgressTracker.js', () => ({
   default: vi.fn().mockImplementation(() => ({
     track: vi.fn(),
     getProgress: vi.fn().mockReturnValue({}),
@@ -780,7 +777,7 @@ vi.mock('../../src/features/progress/ProgressTracker.js', () => ({
   })),
 }));
 
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2, // INFO level
     enabled: true,

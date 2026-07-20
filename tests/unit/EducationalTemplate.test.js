@@ -3,12 +3,12 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { EducationalTemplate } from '../../src/templates/educational.js';
-import { domBatcher } from '../../src/utils/performanceUtils.js';
+import { EducationalTemplate } from '../../templates/educational.js';
+import { domBatcher } from '../../utils/performanceUtils.js';
 
 // Mock the privacy manager so initialize() does not block on the parental
 // consent modal and data collection is permitted in tests
-vi.mock('../../src/utils/privacyManager.js', () => ({
+vi.mock('../../utils/privacyManager.js', () => ({
   privacyManager: {
     requiresParentalConsent: vi.fn(() => false),
     requestParentalConsent: vi.fn(async () => true),

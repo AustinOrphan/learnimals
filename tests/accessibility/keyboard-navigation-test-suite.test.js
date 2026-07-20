@@ -17,8 +17,8 @@
 /* global FocusEvent */
 
 import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import { accessibilityService } from '../../services/accessibility/AccessibilityService.js';
+import { accessibilityTester } from '../../utils/accessibilityTester.js';
 
 // Import individual test modules (these would run their own describe blocks)
 import './comprehensive-keyboard-navigation.test.js';
@@ -28,7 +28,7 @@ import './navigation-keyboard-navigation.test.js';
 import './form-keyboard-navigation.test.js';
 
 // Mock logger for the master suite
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

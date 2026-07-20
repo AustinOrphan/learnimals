@@ -3,11 +3,11 @@
  * Tests the full pipeline of GameSystem with templates and games
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import gameSystem from '../../src/utils/GameSystem.js';
-import { GameRegistryUtil } from '../../src/config/gameRegistry.js';
+import gameSystem from '../../utils/GameSystem.js';
+import { GameRegistryUtil } from '../../config/gameRegistry.js';
 
 // Mock modules
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -133,7 +133,7 @@ describe('GameSystem Integration', () => {
 
     it('should filter games by subject', async () => {
       // Create a fresh GameSystem instance for this test
-      const { GameSystem } = await import('../../src/utils/GameSystem.js');
+      const { GameSystem } = await import('../../utils/GameSystem.js');
       const testGameSystem = new GameSystem();
 
       // Don't load the actual registry

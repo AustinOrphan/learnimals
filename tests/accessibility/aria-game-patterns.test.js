@@ -9,10 +9,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import '../../src/components/games/BaseGame.js';
+import '../../components/games/BaseGame.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),

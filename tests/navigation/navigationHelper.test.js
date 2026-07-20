@@ -25,7 +25,7 @@ describe('NavigationHelper', () => {
   describe('ES6 Import Compatibility', () => {
     it('should NOT use ES6 import statements (regression test)', async () => {
       // Read the actual navigationHelper.js file content to verify no imports
-      const response = await fetch('/src/utils/navigationHelper.js');
+      const response = await fetch('/utils/navigationHelper.js');
       const content = await response.text();
 
       // CRITICAL: Ensure no ES6 imports that would break regular script loading
@@ -37,7 +37,7 @@ describe('NavigationHelper', () => {
     it('should be loadable as a regular script (not module)', () => {
       // Simulate loading as regular script
       const script = document.createElement('script');
-      script.src = '/src/utils/navigationHelper.js';
+      script.src = '/utils/navigationHelper.js';
       // Intentionally NOT setting type="module"
 
       document.head.appendChild(script);
@@ -51,7 +51,7 @@ describe('NavigationHelper', () => {
 
     it('should have inline logger fallback instead of import', async () => {
       // Import the module to check its structure
-      const module = await import('../../src/utils/navigationHelper.js');
+      const module = await import('../../utils/navigationHelper.js');
 
       // Should export NavigationHelper class
       expect(typeof module.default).toBe('function'); // Constructor function
@@ -63,7 +63,7 @@ describe('NavigationHelper', () => {
 
     beforeEach(async () => {
       // Import fresh module
-      const module = await import('../../src/utils/navigationHelper.js');
+      const module = await import('../../utils/navigationHelper.js');
       NavigationHelper = module.default;
     });
 
@@ -168,7 +168,7 @@ describe('NavigationHelper', () => {
 
   describe('Logger Integration', () => {
     it('should have fallback logger that works without import', async () => {
-      const module = await import('../../src/utils/navigationHelper.js');
+      const module = await import('../../utils/navigationHelper.js');
       const NavigationHelper = module.default;
 
       // Should not throw when creating instance (logger should work)
@@ -216,7 +216,7 @@ describe('NavigationHelper', () => {
     let helper;
 
     beforeEach(async () => {
-      const module = await import('../../src/utils/navigationHelper.js');
+      const module = await import('../../utils/navigationHelper.js');
       NavigationHelper = module.default;
       helper = new NavigationHelper();
 
@@ -226,7 +226,7 @@ describe('NavigationHelper', () => {
           <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="../features/subjects/math.html">Math</a></li>
-            <li><a href="/src/pages/about.html">About</a></li>
+            <li><a href="/pages/about.html">About</a></li>
           </ul>
         </nav>
       `;

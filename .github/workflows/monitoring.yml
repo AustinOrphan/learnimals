@@ -54,8 +54,8 @@ jobs:
 
           endpoints=(
             "${{ steps.env.outputs.url }}/"
-            "${{ steps.env.outputs.url }}/src/pages/about.html"
-            "${{ steps.env.outputs.url }}/src/features/subjects/math/math.html"
+            "${{ steps.env.outputs.url }}/pages/about.html"
+            "${{ steps.env.outputs.url }}/subjects/math/math.html"
           )
 
           failed_endpoints=0
@@ -242,8 +242,8 @@ jobs:
 
           urls=(
             "${{ steps.env.outputs.url }}/"
-            "${{ steps.env.outputs.url }}/src/pages/about.html"
-            "${{ steps.env.outputs.url }}/src/features/subjects/math/math.html"
+            "${{ steps.env.outputs.url }}/pages/about.html"
+            "${{ steps.env.outputs.url }}/subjects/math/math.html"
           )
 
           total_violations=0
@@ -327,19 +327,19 @@ jobs:
               
               // Test 2: Navigation to Math section
               console.log('Testing navigation to Math section...');
-              await page.goto(baseUrl + '/src/features/subjects/math/math.html', { waitUntil: 'networkidle' });
+              await page.goto(baseUrl + '/subjects/math/math.html', { waitUntil: 'networkidle' });
               await page.waitForSelector('h1', { timeout: 10000 });
               console.log('✅ Math section loaded successfully');
               
               // Test 3: Navigation to Science section
               console.log('Testing navigation to Science section...');
-              await page.goto(baseUrl + '/src/features/subjects/science/science.html', { waitUntil: 'networkidle' });
+              await page.goto(baseUrl + '/subjects/science/science.html', { waitUntil: 'networkidle' });
               await page.waitForSelector('h1', { timeout: 10000 });
               console.log('✅ Science section loaded successfully');
               
               // Test 4: About page
               console.log('Testing About page...');
-              await page.goto(baseUrl + '/src/pages/about.html', { waitUntil: 'networkidle' });
+              await page.goto(baseUrl + '/pages/about.html', { waitUntil: 'networkidle' });
               await page.waitForSelector('h1', { timeout: 10000 });
               console.log('✅ About page loaded successfully');
               

@@ -3,7 +3,7 @@
  * Comprehensive tests for the enhanced GameRegistryUtil functionality
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { GameRegistryUtil, gameRegistry } from '../../src/config/gameRegistry.js';
+import { GameRegistryUtil, gameRegistry } from '../../config/gameRegistry.js';
 
 describe('GameRegistryUtil - Enhanced Methods', () => {
   beforeEach(() => {

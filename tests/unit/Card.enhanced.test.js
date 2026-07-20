@@ -196,7 +196,7 @@ const mockCard = createMockModule({
 });
 
 // Mock the module
-vi.mock('../../src/components/ui/Card.js', () => mockCard);
+vi.mock('../../components/ui/Card.js', () => mockCard);
 
 describe('Card Component Enhanced Tests', () => {
   let container;

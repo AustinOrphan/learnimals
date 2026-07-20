@@ -11,7 +11,7 @@ echo "🔍 Running pre-commit checks..."
 
 # Check for duplicate files (iCloud sync conflicts)
 echo "📋 Checking for duplicate files..."
-duplicates=$(find ./src ./docs ./tests -name "* [0-9].*" -type f 2>/dev/null | grep -E '\.(js|html|css|md)$' | grep -v node_modules || true)
+duplicates=$(find ./subjects ./games ./components ./pages ./styles ./utils ./services ./templates ./config ./data ./character-generation ./character-showcase ./discovery ./profile ./progress ./user ./docs ./tests ./scripts -name "* [0-9].*" -type f 2>/dev/null | grep -E '\.(js|html|css|md)$' | grep -v node_modules || true)
 
 if [ ! -z "$duplicates" ]; then
   echo "${RED}❌ Error: Duplicate files detected!${NC}"
@@ -34,7 +34,7 @@ echo "${GREEN}✅ No duplicate files found${NC}"
 
 # Check for common conflict markers
 echo "📋 Checking for merge conflict markers..."
-conflict_files=$(grep -r "^<<<<<<< \|^======= \|^>>>>>>> " ./src ./docs ./tests --include="*.js" --include="*.html" --include="*.css" --include="*.md" 2>/dev/null | cut -d: -f1 | sort -u || true)
+conflict_files=$(grep -r "^<<<<<<< \|^======= \|^>>>>>>> " ./subjects ./games ./components ./pages ./styles ./utils ./services ./templates ./config ./data ./character-generation ./character-showcase ./discovery ./profile ./progress ./user ./docs ./tests ./scripts --include="*.js" --include="*.html" --include="*.css" --include="*.md" 2>/dev/null | cut -d: -f1 | sort -u || true)
 
 if [ ! -z "$conflict_files" ]; then
   echo "${RED}❌ Error: Merge conflict markers detected!${NC}"
@@ -51,7 +51,7 @@ echo "${GREEN}✅ No conflict markers found${NC}"
 
 # Check for large files (> 1MB)
 echo "📋 Checking for large files..."
-large_files=$(find ./src ./docs ./tests -type f -size +1M 2>/dev/null | grep -v node_modules | grep -v coverage | grep -v ".git" || true)
+large_files=$(find ./subjects ./games ./components ./pages ./styles ./utils ./services ./templates ./config ./data ./character-generation ./character-showcase ./discovery ./profile ./progress ./user ./docs ./tests ./scripts -type f -size +1M 2>/dev/null | grep -v node_modules | grep -v coverage | grep -v ".git" || true)
 
 if [ ! -z "$large_files" ]; then
   echo "${YELLOW}⚠️  Warning: Large files detected (>1MB):${NC}"

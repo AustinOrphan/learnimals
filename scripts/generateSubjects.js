@@ -249,7 +249,7 @@ class SubjectGenerator {
         <meta name="description" content="${subject.description}" />
         <title>${subject.name} with ${subject.character.name} - Learnimals</title>
         <script type="module">
-            import SubjectTemplateLoader from '../src/utils/subjectTemplateLoader.js';
+            import SubjectTemplateLoader from '../utils/subjectTemplateLoader.js';
             
             // Define content for ${subjectKey} page
             const ${subjectKey}Options = {
@@ -271,22 +271,22 @@ class SubjectGenerator {
         </script>
         
         <!-- CSS -->
-        <link rel="stylesheet" href="/src/styles/base/styles.css" />
-        <link rel="stylesheet" href="/src/styles/components/navbar.css" />
-        <link rel="stylesheet" href="/src/styles/components/components.css" />
-        <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css" />
-        <link rel="stylesheet" href="/src/features/subjects/${subjectKey}/${subjectKey}.css" />
+        <link rel="stylesheet" href="/styles/base/styles.css" />
+        <link rel="stylesheet" href="/styles/components/navbar.css" />
+        <link rel="stylesheet" href="/styles/components/components.css" />
+        <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
+        <link rel="stylesheet" href="/subjects/${subjectKey}/${subjectKey}.css" />
     </head>
     <body>
         <p>Loading ${subject.name} content...</p>
         
         <!-- JS -->
-        <script defer type="module" src="/src/themeInitializer.js"></script>
-        <script type="module" src="/src/utils/themeManager.js"></script>
-        <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
-        <script defer src="/src/components/layout/navbarLoader.js"></script>
-        <script defer src="/src/components/component-loader.js"></script>
-        <script defer src="/src/features/subjects/${subjectKey}/${subjectKey}.js"></script>
+        <script defer type="module" src="/themeInitializer.js"></script>
+        <script type="module" src="/utils/themeManager.js"></script>
+        <script type="module" src="/components/layout/themeSwitcher.js"></script>
+        <script defer src="/components/layout/navbarLoader.js"></script>
+        <script defer src="/components/component-loader.js"></script>
+        <script defer src="/subjects/${subjectKey}/${subjectKey}.js"></script>
     </body>
 </html>`;
   }
@@ -312,11 +312,11 @@ class SubjectGenerator {
     <title>${subject.name} - Learnimals</title>
     
     <!-- CSS -->
-    <link rel="stylesheet" href="/src/styles/base/styles.css">
-    <link rel="stylesheet" href="/src/styles/components/navbar.css">
-    <link rel="stylesheet" href="/src/styles/components/components.css">
-    <link rel="stylesheet" href="/src/styles/components/themeSwitcher.css">
-    <link rel="stylesheet" href="/src/features/subjects/${subjectKey}/${subjectKey}.css">
+    <link rel="stylesheet" href="/styles/base/styles.css">
+    <link rel="stylesheet" href="/styles/components/navbar.css">
+    <link rel="stylesheet" href="/styles/components/components.css">
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css">
+    <link rel="stylesheet" href="/subjects/${subjectKey}/${subjectKey}.css">
 </head>
 <body>
     <!-- Navbar -->
@@ -342,20 +342,20 @@ class SubjectGenerator {
     <footer>
         <p>&copy; 2025 Learnimals. All rights reserved.</p>
         <div class="footer-links">
-            <a href="/src/pages/about.html">About Us</a>
-            <a href="/src/pages/contact.html">Contact</a>
+            <a href="/pages/about.html">About Us</a>
+            <a href="/pages/contact.html">Contact</a>
             <a href="#">Privacy Policy</a>
-            <a href="/src/pages/profile.html">My Profile</a>
+            <a href="/pages/profile.html">My Profile</a>
         </div>
     </footer>
 
     <!-- JS -->
-    <script defer type="module" src="/src/themeInitializer.js"></script>
-    <script type="module" src="/src/utils/themeManager.js"></script>
-    <script type="module" src="/src/components/layout/themeSwitcher.js"></script>
-    <script defer src="/src/components/layout/navbarLoader.js"></script>
-    <script defer src="/src/components/component-loader.js"></script>
-    <script defer src="/src/features/subjects/${subjectKey}/${subjectKey}.js"></script>
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
+    <script defer src="/components/component-loader.js"></script>
+    <script defer src="/subjects/${subjectKey}/${subjectKey}.js"></script>
 </body>
 </html>`;
   }
@@ -489,8 +489,8 @@ class SubjectGenerator {
  * ${subject.name} Subject JavaScript
  * Interactive features for ${subject.character.name} the ${subject.character.type}
  */
-import Modal from '../../../components/ui/Modal.js';
-import { escapeHTML } from '../../../utils/common.js';
+import Modal from '../../components/ui/Modal.js';
+import { escapeHTML } from '../../utils/common.js';
 
 class ${subject.name.replace(/\s+/g, '')}Subject {
     constructor() {
@@ -898,7 +898,7 @@ async function main() {
     }
 
     console.log('\n🚀 Next Steps:');
-    console.log('   1. Check the generated files in src/features/subjects/');
+    console.log('   1. Check the generated files in subjects/');
     console.log('   2. Review the updated config.js file');
     console.log('   3. Test the new subjects in your browser');
     console.log('   4. Customize the generated templates as needed');

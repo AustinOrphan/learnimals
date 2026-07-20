@@ -4,10 +4,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { LazyLoadManager } from '../../src/utils/LazyLoadManager.js';
+import { LazyLoadManager } from '../../utils/LazyLoadManager.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 }));
 
 // Mock performance utilities
-vi.mock('../../src/utils/performanceUtils.js', () => ({
+vi.mock('../../utils/performanceUtils.js', () => ({
   performanceMonitor: {
     start: vi.fn(),
     end: vi.fn(),

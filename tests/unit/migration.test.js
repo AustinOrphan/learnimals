@@ -294,7 +294,7 @@ describe('Migration System', () => {
 
         const fileInfo = {
           path: 'components/ui/Card.js',
-          fullPath: '/src/components/ui/Card.js',
+          fullPath: '/components/ui/Card.js',
         };
 
         const originalContent = 'class Card {}';
@@ -320,7 +320,7 @@ describe('Migration System', () => {
 
         const fileInfo = {
           path: 'components/ui/forms/FormComponent.js',
-          fullPath: '/src/components/ui/forms/FormComponent.js',
+          fullPath: '/components/ui/forms/FormComponent.js',
         };
 
         await migrator.createBackup(fileInfo, 'test content');
@@ -337,7 +337,7 @@ describe('Migration System', () => {
 
         const fileInfo = {
           path: 'components/ui/Card.js',
-          fullPath: '/src/components/ui/Card.js',
+          fullPath: '/components/ui/Card.js',
         };
 
         const migrationResult = {
@@ -358,7 +358,7 @@ describe('Migration System', () => {
 
         const fileInfo = {
           path: 'components/ui/Card.js',
-          fullPath: '/src/components/ui/Card.js',
+          fullPath: '/components/ui/Card.js',
         };
 
         const migrationResult = {
@@ -388,7 +388,7 @@ describe('Migration System', () => {
 
         const fileInfo = {
           path: 'components/ui/Card.js',
-          fullPath: '/src/components/ui/Card.js',
+          fullPath: '/components/ui/Card.js',
         };
 
         const migrationResult = {
@@ -420,7 +420,7 @@ describe('Migration System', () => {
         migrator.results.migrations = [
           {
             filePath: 'components/ui/Card.js',
-            fullPath: '/src/components/ui/Card.js',
+            fullPath: '/components/ui/Card.js',
             backupPath: '/backups/components/ui/Card.js.backup-123',
           },
         ];
@@ -432,7 +432,7 @@ describe('Migration System', () => {
           'utf8'
         );
         expect(fs.writeFile).toHaveBeenCalledWith(
-          '/src/components/ui/Card.js',
+          '/components/ui/Card.js',
           'original content',
           'utf8'
         );
@@ -444,12 +444,12 @@ describe('Migration System', () => {
         migrator.results.migrations = [
           {
             filePath: 'components/ui/Card.js',
-            fullPath: '/src/components/ui/Card.js',
+            fullPath: '/components/ui/Card.js',
             backupPath: '/backups/Card.js.backup-123',
           },
           {
             filePath: 'components/forms/FormComponent.js',
-            fullPath: '/src/components/forms/FormComponent.js',
+            fullPath: '/components/forms/FormComponent.js',
             backupPath: '/backups/FormComponent.js.backup-123',
           },
         ];
@@ -469,7 +469,7 @@ describe('Migration System', () => {
         migrator.results.migrations = [
           {
             filePath: 'components/ui/Card.js',
-            fullPath: '/src/components/ui/Card.js',
+            fullPath: '/components/ui/Card.js',
             backupPath: '/nonexistent/backup.js',
           },
         ];

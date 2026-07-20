@@ -354,9 +354,9 @@ export const createDOMMocks = () => ({
 export const applyCommonMocks = () => {
   // Apply to vitest global scope if available
   if (typeof vi !== 'undefined') {
-    vi.mock('../../src/utils/logger.js', createLoggerMock);
-    vi.mock('../../src/features/progress/ProgressTracker.js', createProgressTrackerMock);
-    vi.mock('../../src/features/progress/AchievementSystem.js', createAchievementSystemMock);
+    vi.mock('../../utils/logger.js', createLoggerMock);
+    vi.mock('../../progress/ProgressTracker.js', createProgressTrackerMock);
+    vi.mock('../../progress/AchievementSystem.js', createAchievementSystemMock);
   }
 };
 

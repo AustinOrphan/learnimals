@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
-import FormComponent from '../../src/components/forms/FormComponent.js';
+import FormComponent from '../../components/forms/FormComponent.js';
 
 // Mock DOM
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');

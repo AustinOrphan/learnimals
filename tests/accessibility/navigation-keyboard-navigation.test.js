@@ -14,8 +14,8 @@
 /* global FocusEvent */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { accessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import { accessibilityService } from '../../services/accessibility/AccessibilityService.js';
+import { accessibilityTester } from '../../utils/accessibilityTester.js';
 
 // Mock the navigation module
 const mockNavigationComponent = {
@@ -79,7 +79,7 @@ const mockNavigationComponent = {
 };
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

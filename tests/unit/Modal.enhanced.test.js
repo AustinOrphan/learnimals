@@ -591,7 +591,7 @@ const mockModal = createMockModule({
 });
 
 // Mock the module
-vi.mock('../../src/components/ui/Modal.js', () => mockModal);
+vi.mock('../../components/ui/Modal.js', () => mockModal);
 
 describe('Modal Component Enhanced Tests', () => {
   let modal;

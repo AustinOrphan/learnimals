@@ -62,10 +62,10 @@ a friendly animal character, creating an engaging and memorable learning experie
    # or use the Makefile
    make dev-server
    # or
-   npx serve src/pages
+   npx serve .
    ```
 
-5. Open `http://localhost:3000/src/pages/index.html` in your browser
+5. Open `http://localhost:3000/pages/index.html` in your browser
 
 ### CI/CD Pipeline
 
@@ -112,17 +112,20 @@ make docker-run      # Run with Docker
 ### Project Structure
 
 ```text
-learnimals/
-├── src/                    # Source code
-│   ├── components/         # Reusable UI components
-│   ├── features/           # Feature-specific code
-│   │   ├── subjects/       # Subject pages (math, science, etc.)
-│   │   └── games/          # Game implementations
-│   ├── styles/             # CSS organization
-│   ├── utils/              # Utility functions
-│   └── pages/              # Main application pages
+learnimals/                 # Served directly from the repo root — no build step
+├── pages/                  # Main application pages (homepage at pages/index.html)
+├── subjects/               # Subject pages (math, science, reading, …)
+├── games/                  # Game implementations (bubble-pop, pizza-maker, …)
+├── components/             # Reusable UI components
+├── styles/                 # CSS organization
+├── utils/                  # Utility functions
+├── services/               # App services (storage, audio, etc.)
+├── templates/              # Page/activity templates
+├── data/                   # Static content data
+├── config.js               # App + character configuration
 ├── public/                 # Static assets
 ├── tests/                  # Test files
+├── scripts/                # Build-pages and generator scripts
 ├── .github/workflows/      # CI/CD pipelines
 ├── docker/                 # Docker configurations
 └── k8s/                    # Kubernetes manifests
@@ -254,7 +257,7 @@ are licensed separately:
   license. Commercial use of the content requires separate permission.
 
 The boundary follows the nature of the material, not the file it lives in:
-character definitions inside `src/config.js` are content; the code around
+character definitions inside `config.js` are content; the code around
 them is code. See [LICENSE-CONTENT.md](LICENSE-CONTENT.md) for the full
 scope definition.
 

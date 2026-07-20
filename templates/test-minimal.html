@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-template="gameName">Game</title>
+
+    <!-- Core styles -->
+    <link rel="stylesheet" href="/styles/base/reset.css" />
+    <link rel="stylesheet" href="/styles/base/variables.css" />
+    <link rel="stylesheet" href="/styles/base/base.css" />
+    <link rel="stylesheet" href="/styles/components/game-ui.css" />
+
+    <!-- Game-specific styles will be loaded by script -->
+
+    <!-- Minimal template styles -->
+    <style>
+      .minimal-game-layout {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: var(--bg-body, #f8f9fa);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .minimal-game-header {
+        background: linear-gradient(135deg, var(--primary-color, #007bff), var(--secondary-color, #6c757d));
+        color: white;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .minimal-game-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .minimal-game-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .minimal-stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .minimal-stat-label {
+        font-size: 0.7rem;
+        opacity: 0.9;
+      }
+
+      .minimal-stat-value {
+        font-weight: bold;
+        margin-top: 0.2rem;
+      }
+
+      .minimal-game-controls {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: var(--bg-card, #fff);
+        border-bottom: 1px solid var(--border-color, #dee2e6);
+      }
+
+      .minimal-control-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.25rem;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .minimal-control-btn.primary {
+        background: var(--primary-color, #007bff);
+        color: white;
+      }
+
+      .minimal-control-btn.secondary {
+        background: var(--secondary-color, #6c757d);
+        color: white;
+      }
+
+      .minimal-control-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .minimal-game-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-card, #fff);
+        position: relative;
+        padding: 1rem;
+      }
+
+      .game-container {
+        width: 100%;
+        height: 100%;
+        max-width: 800px;
+        max-height: 600px;
+      }
+
+      .minimal-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-secondary, #6c757d);
+      }
+
+      .minimal-spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid var(--bg-secondary, #e9ecef);
+        border-top: 3px solid var(--primary-color, #007bff);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="minimal-game-page">
+    <main class="minimal-game-layout">
+      <header class="minimal-game-header">
+        <h1 class="minimal-game-title" data-template="gameName">Loading Game...</h1>
+
+        <div class="minimal-game-stats" id="minimal-stats" style="display: none">
+          <div class="minimal-stat-item">
+            <span class="minimal-stat-label">Score</span>
+            <span class="minimal-stat-value" id="minimal-score">0</span>
+          </div>
+          <div class="minimal-stat-item">
+            <span class="minimal-stat-label">Level</span>
+            <span class="minimal-stat-value" id="minimal-level">1</span>
+          </div>
+          <div class="minimal-stat-item" id="minimal-timer-container" style="display: none">
+            <span class="minimal-stat-label">Time</span>
+            <span class="minimal-stat-value" id="minimal-timer">60</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="minimal-game-controls" id="minimal-controls" style="display: none">
+        <button id="minimal-start" class="minimal-control-btn primary">▶️ Start</button>
+        <button id="minimal-pause" class="minimal-control-btn secondary" style="display: none">⏸️ Pause</button>
+        <button id="minimal-restart" class="minimal-control-btn">🔄 Restart</button>
+      </div>
+
+      <div class="minimal-game-container">
+        <div id="game-container" class="game-container">
+          <div class="minimal-loading" id="minimal-loading">
+            <div class="minimal-spinner"></div>
+            <p>Loading <span data-template="gameName">game</span>...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Core scripts -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/utils/GameSystem.js"></script>
+    <script type="module" src="/utils/TemplateProcessor.js"></script>
+
+    <!-- Minimal template integration -->
+    <script type="module">
+      import gameSystem from '/utils/GameSystem.js';
+      import TemplateProcessor from '/utils/TemplateProcessor.js';
+
+      let gameInstance = null;
+
+      // Initialize template and game
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          // Process template variables from URL
+          TemplateProcessor.initializeTemplatePage();
+          const templateData = TemplateProcessor.getTemplateDataFromURL();
+
+          // Load game-specific stylesheet if provided
+          if (templateData.gameStyleSheet) {
+            const styleLink = document.createElement('link');
+            styleLink.rel = 'stylesheet';
+            styleLink.href = templateData.gameStyleSheet;
+            document.head.appendChild(styleLink);
+          }
+
+          // Initialize game system
+          if (!gameSystem.initialized) {
+            await gameSystem.init();
+          }
+
+          setupMinimalEventHandlers(templateData);
+
+          // Show controls and stats if configured
+          if (templateData.showControls) {
+            document.getElementById('minimal-controls').style.display = 'flex';
+          }
+          if (templateData.showStats) {
+            document.getElementById('minimal-stats').style.display = 'flex';
+          }
+          if (templateData.timeLimit) {
+            document.getElementById('minimal-timer-container').style.display = 'flex';
+            document.getElementById('minimal-timer').textContent = templateData.timeLimit;
+          }
+
+          // Load game script and create instance
+          if (templateData.gameScriptPath) {
+            await loadAndCreateGame(templateData);
+          } else {
+            showError('No game script specified');
+          }
+        } catch (error) {
+          console.error('Failed to load minimal template:', error);
+          showError('Failed to load game: ' + error.message);
+        }
+      });
+
+      async function loadAndCreateGame(templateData) {
+        try {
+          // Dynamic import of game script
+          const gameModule = await import(templateData.gameScriptPath);
+          const GameClass = gameModule.default;
+
+          if (!GameClass) {
+            throw new Error('Game class not found in module');
+          }
+
+          // Create game instance
+          const gameOptions = JSON.parse(templateData.gameOptions || '{}');
+          gameInstance = new GameClass(templateData.containerId, gameOptions);
+
+          // Hide loading indicator
+          document.getElementById('minimal-loading').style.display = 'none';
+
+          console.log('✅ Minimal template game loaded:', templateData.gameName);
+        } catch (error) {
+          console.error('Failed to load game:', error);
+          showError('Failed to load game: ' + error.message);
+        }
+      }
+
+      function setupMinimalEventHandlers(templateData) {
+        const startBtn = document.getElementById('minimal-start');
+        const pauseBtn = document.getElementById('minimal-pause');
+        const restartBtn = document.getElementById('minimal-restart');
+
+        if (startBtn) {
+          startBtn.addEventListener('click', () => {
+            if (gameInstance && typeof gameInstance.start === 'function') {
+              gameInstance.start();
+              startBtn.style.display = 'none';
+              if (pauseBtn) pauseBtn.style.display = 'inline-block';
+            }
+          });
+        }
+
+        if (pauseBtn) {
+          pauseBtn.addEventListener('click', () => {
+            if (gameInstance && typeof gameInstance.pause === 'function') {
+              gameInstance.pause();
+              startBtn.style.display = 'inline-block';
+              pauseBtn.style.display = 'none';
+            }
+          });
+        }
+
+        if (restartBtn) {
+          restartBtn.addEventListener('click', () => {
+            if (confirm('Restart game?')) {
+              if (gameInstance && typeof gameInstance.restart === 'function') {
+                gameInstance.restart();
+                startBtn.style.display = 'inline-block';
+                pauseBtn.style.display = 'none';
+              }
+            }
+          });
+        }
+      }
+
+      function showError(message) {
+        const loadingDiv = document.getElementById('minimal-loading');
+        loadingDiv.innerHTML = `
+                <div style="color: #dc3545; text-align: center;">
+                    <h3>⚠️ Error</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+      }
+
+      // Expose for debugging
+      window.minimalTemplate = {
+        gameInstance,
+        templateData: TemplateProcessor.getTemplateDataFromURL(),
+      };
+    </script>
+  </body>
+</html>

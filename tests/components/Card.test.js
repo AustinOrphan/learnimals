@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
-import Card from '../../src/components/ui/Card.js';
+import Card from '../../components/ui/Card.js';
 
 // Mock DOM
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');

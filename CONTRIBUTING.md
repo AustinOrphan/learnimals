@@ -123,16 +123,17 @@ Releases are managed automatically:
 ## Project Structure
 
 ```text
-learnimals/
-├── src/                    # Source code
-│   ├── pages/              # HTML pages
-│   ├── components/         # Reusable components
-│   ├── features/           # Feature modules
-│   ├── styles/             # CSS files
-│   └── utils/              # Utilities
+learnimals/                 # Served directly from the repo root — no build step
+├── pages/                  # HTML pages (homepage at pages/index.html)
+├── subjects/               # Subject pages (math, science, reading, …)
+├── games/                  # Game implementations
+├── components/             # Reusable components
+├── styles/                 # CSS files
+├── utils/                  # Utilities
+├── services/               # App services
 ├── tests/                  # Test files
 ├── public/                 # Static assets
-├── scripts/                # Build scripts
+├── scripts/                # Build/generator scripts
 └── .github/                # GitHub Actions
 ```
 

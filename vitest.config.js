@@ -18,7 +18,7 @@ export default defineConfig({
     setupFiles: ['./tests/setup/enhanced-setup.js'],
 
     // Test file patterns
-    include: ['tests/**/*.{test,spec}.{js,mjs,ts}', 'src/**/*.{test,spec}.{js,mjs,ts}'],
+    include: ['tests/**/*.{test,spec}.{js,mjs,ts}'],
 
     // Test pool configuration for parallel execution
     pool: process.env.CI ? 'forks' : 'threads',
@@ -74,15 +74,15 @@ export default defineConfig({
   // Resolve configuration for imports
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      '@components': resolve(__dirname, 'src/components'),
-      '@utils': resolve(__dirname, 'src/utils'),
-      '@services': resolve(__dirname, 'src/services'),
-      '@features': resolve(__dirname, 'src/features'),
-      '@styles': resolve(__dirname, 'src/styles'),
-      '@pages': resolve(__dirname, 'src/pages'),
-      '@templates': resolve(__dirname, 'src/templates'),
-      '@config': resolve(__dirname, 'src/config.js'),
+      '@': resolve(__dirname, '.'),
+      '@components': resolve(__dirname, 'components'),
+      '@utils': resolve(__dirname, 'utils'),
+      '@services': resolve(__dirname, 'services'),
+      '@features': resolve(__dirname, '.'),
+      '@styles': resolve(__dirname, 'styles'),
+      '@pages': resolve(__dirname, 'pages'),
+      '@templates': resolve(__dirname, 'templates'),
+      '@config': resolve(__dirname, 'config.js'),
       '@public': resolve(__dirname, 'public'),
       '@test': resolve(__dirname, 'tests'),
     },

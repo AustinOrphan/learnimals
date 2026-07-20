@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
-import BaseComponent from '../../src/components/BaseComponent.js';
+import BaseComponent from '../../components/BaseComponent.js';
 
 // Mock DOM
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');

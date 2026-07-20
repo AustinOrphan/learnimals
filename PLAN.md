@@ -9,7 +9,7 @@ When this plan changes, update this file — do not fork a new one.
 ## Where things stand (verified 2026-07-17)
 
 - App: static, serverless, no build step. Served from the repo root
-  (`npm run serve`); homepage `src/pages/index.html`. 13 subjects, 12
+  (`npm run serve`); homepage `pages/index.html`. 13 subjects, 12
   games, character generation, PWA.
 - Browser e2e: Playwright suite green — 30 tests × 5 browser projects
   locally, 3-browser matrix green in CI (`e2e.yml`).
@@ -44,11 +44,11 @@ When this plan changes, update this file — do not fork a new one.
   (LICENSE-CONTENT.md), "Learnimals" name and logo reserved. The early
   contributor (4 commits, May 2025) is OK with the MIT grant and public
   visibility — confirmed 2026-07-19.
-- **IndexedDB island**: `src/services/{database,progress,achievements}`
+- **IndexedDB island**: `services/{database,progress,achievements}`
   has zero importers (the live progress path is
   `features/progress/ProgressTracker` + `utils/EnhancedProgressTracker`).
   Delete as dead code, or adopt it as the M3 storage layer.
-- **Progress dashboard (old M2.1)**: `src/features/progress/` is dead
+- **Progress dashboard (old M2.1)**: `progress/` is dead
   code; `progressDashboard.js` still imports an `authService` that only
   ever existed on abandoned auth branches. The shipped page uses
   `components/ui/GameProgressDashboard.js`. Revive (needs an auth/user
@@ -99,7 +99,7 @@ absent. Verdicts:
 
 ### Shared root causes (fixing these cascades across many features)
 
-1. `src/features/progress/ProgressTracker.js` is a mock missing
+1. `progress/ProgressTracker.js` is a mock missing
    `recordActivity()`; `AchievementSystem` missing `checkAchievement()` —
    every BaseGame game throws at `start()`. Blast: Element Match, Number
    Line Jump, Word Scramble, bubblepop-new, Color Palette.
@@ -164,9 +164,9 @@ unit-tested — that is how this rot accumulated.
 ## Standing rules
 
 - `.nvmrc` (20.15.1) is the single Node truth.
-- Serve the repo root; never `src/pages` as docroot.
-- Subject pages live at `src/features/subjects/<s>/<s>.html` — never
-  link `shared/<s>.html`.
+- Serve the repo root; the homepage is `pages/index.html`.
+- Subject pages live at `subjects/<s>/<s>.html` (Stage 2 will make these
+  `subjects/<s>/index.html`) — never link `shared/<s>.html`.
 - No file with a `name 2.ext`-style suffix is ever legitimate — it is
   an iCloud conflict artifact.
 - Conventional Commits with scope, no emoji.

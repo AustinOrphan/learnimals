@@ -6,12 +6,12 @@
 
 /* global FocusEvent */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
-import { accessibilityTester } from '../../src/utils/accessibilityTester.js';
+import { AccessibleComponent } from '../../components/AccessibleComponent.js';
+import { AccessibilityService } from '../../services/accessibility/AccessibilityService.js';
+import { accessibilityTester } from '../../utils/accessibilityTester.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

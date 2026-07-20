@@ -19,7 +19,7 @@ describe('Character Generation Regression Tests', () => {
     global.localStorage = localStorageMock;
 
     // Import the character generation system
-    const characterSystem = await import('../../src/features/character-generation/index.js');
+    const characterSystem = await import('../../character-generation/index.js');
     CharacterGenerationAPI = characterSystem.CharacterGenerationAPI;
     CharacterUtils = characterSystem.CharacterUtils;
     CharacterFactory = characterSystem.CharacterFactory;

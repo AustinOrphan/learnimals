@@ -100,7 +100,7 @@ describe('Modal Component', () => {
       // Override specific properties safely
       try {
         Object.defineProperty(global.window.location, 'pathname', {
-          value: '/src/pages/index.html',
+          value: '/pages/index.html',
           writable: true,
           configurable: true,
         });
@@ -116,7 +116,7 @@ describe('Modal Component', () => {
     }
 
     // Import Modal after BaseComponent is set up
-    const modalModule = await import('../../src/components/ui/Modal.js');
+    const modalModule = await import('../../components/ui/Modal.js');
     Modal = modalModule.default;
   });
 

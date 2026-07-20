@@ -5,10 +5,10 @@
 /* global CSSRule, DOMException, requestIdleCallback */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BundleOptimizer } from '../../src/utils/BundleOptimizer.js';
+import { BundleOptimizer } from '../../utils/BundleOptimizer.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 }));
 
 // Mock performance utilities
-vi.mock('../../src/utils/performanceUtils.js', () => ({
+vi.mock('../../utils/performanceUtils.js', () => ({
   performanceMonitor: {
     start: vi.fn(),
     end: vi.fn(),
@@ -940,9 +940,7 @@ describe('BundleOptimizer', () => {
 
       optimizer.setupRouteSplitting();
 
-      expect(global.lazyImport).toHaveBeenCalledWith(
-        '/src/features/games/bubble-pop/BubblePopGame.js'
-      );
+      expect(global.lazyImport).toHaveBeenCalledWith('/games/bubble-pop/BubblePopGame.js');
     });
 
     it('should prefetch routes on hover', () => {
@@ -954,9 +952,7 @@ describe('BundleOptimizer', () => {
       const link = document.querySelector('a');
       link.dispatchEvent(new Event('mouseenter'));
 
-      expect(global.lazyImport).toHaveBeenCalledWith(
-        '/src/features/games/word-scramble/WordScrambleGame.js'
-      );
+      expect(global.lazyImport).toHaveBeenCalledWith('/games/word-scramble/WordScrambleGame.js');
     });
   });
 

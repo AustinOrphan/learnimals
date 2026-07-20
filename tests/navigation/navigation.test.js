@@ -18,9 +18,9 @@ describe('Navigation Component', () => {
           </button>
           <nav id="nav-menu" class="navbar-links" aria-label="Main navigation">
             <ul>
-              <li><a href="/src/pages/index.html">Home</a></li>
-              <li><a href="/src/features/subjects/shared/math.html">Math</a></li>
-              <li><a href="/src/features/subjects/shared/science.html">Science</a></li>
+              <li><a href="/pages/index.html">Home</a></li>
+              <li><a href="/subjects/shared/math.html">Math</a></li>
+              <li><a href="/subjects/shared/science.html">Science</a></li>
             </ul>
           </nav>
         </header>
@@ -98,9 +98,9 @@ describe('Navigation Component', () => {
               </button>
               <nav id="nav-menu" class="navbar-links" aria-label="Main navigation">
                 <ul>
-                  <li><a href="/src/pages/index.html">Home</a></li>
-                  <li><a href="/src/features/subjects/shared/math.html">Math</a></li>
-                  <li><a href="/src/features/subjects/shared/science.html">Science</a></li>
+                  <li><a href="/pages/index.html">Home</a></li>
+                  <li><a href="/subjects/shared/math.html">Math</a></li>
+                  <li><a href="/subjects/shared/science.html">Science</a></li>
                 </ul>
               </nav>
             </header>
@@ -197,7 +197,7 @@ describe('Navigation Component', () => {
     it('should be loadable as regular script (not module)', () => {
       // Simulate loading as regular script
       const script = document.createElement('script');
-      script.src = '/src/components/layout/navigation.js';
+      script.src = '/components/layout/navigation.js';
       // Intentionally NOT setting type="module"
 
       document.head.appendChild(script);
@@ -227,7 +227,7 @@ describe('Navigation Component', () => {
       });
 
       // Read the actual navigation.js file content
-      const response = await fetch('/src/components/layout/navigation.js');
+      const response = await fetch('/components/layout/navigation.js');
       const content = await response.text();
 
       // Should not contain ES6 imports
@@ -436,7 +436,7 @@ describe('Navigation Component', () => {
       // Mock current page
       Object.defineProperty(window, 'location', {
         value: {
-          pathname: '/src/pages/index.html',
+          pathname: '/pages/index.html',
         },
         configurable: true,
       });
@@ -456,7 +456,7 @@ describe('Navigation Component', () => {
     it('should highlight current page link', () => {
       setupPageHighlighting();
 
-      const homeLink = document.querySelector('a[href="/src/pages/index.html"]');
+      const homeLink = document.querySelector('a[href="/pages/index.html"]');
 
       if (homeLink) {
         expect(homeLink.getAttribute('aria-current')).toBe('page');

@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Adventure Quest - Sky's Scientific Expedition educational game" />
+    <title>Adventure Quest - Sky's Scientific Expedition | Learnimals</title>
+
+    <!-- Base styles -->
+    <link rel="stylesheet" href="/styles/base/styles.css" />
+    <link rel="stylesheet" href="/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/components.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
+
+    <!-- Game-specific styles -->
+    <link rel="stylesheet" href="./adventureQuest.css" />
+
+    <!-- Favicon and manifest -->
+    <link rel="icon" href="/public/images/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="/public/manifest.json" />
+
+    <!-- Theme initialization -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+  </head>
+  <body>
+    <!-- Dynamic navbar load -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="adventure-quest-game">
+      <!-- Game Header -->
+      <header class="adventure-quest-header">
+        <h1 class="adventure-quest-title">Sky's Scientific Expedition</h1>
+        <div class="adventure-quest-stats">
+          <div class="stat-item">
+            <span>Score:</span>
+            <span class="stat-value" id="game-score">0</span>
+          </div>
+          <div class="stat-item">
+            <span>Discoveries:</span>
+            <span class="stat-value" id="game-discoveries">0</span>
+          </div>
+          <div class="stat-item">
+            <span>Level:</span>
+            <span class="stat-value" id="game-level">1</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Game Canvas Container -->
+      <div class="adventure-quest-canvas-container">
+        <canvas id="gameCanvas" class="adventure-quest-canvas" tabindex="0">
+          Your browser doesn't support HTML5 Canvas. Please update your browser.
+        </canvas>
+
+        <!-- Loading Screen -->
+        <div class="adventure-quest-loading" id="loadingScreen">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading Sky's Scientific Expedition...</p>
+        </div>
+      </div>
+
+      <!-- Game Controls -->
+      <div class="adventure-quest-controls">
+        <div class="control-group">
+          <button class="control-button" id="pauseBtn">
+            <span>⏸️</span>
+            <span>Pause</span>
+          </button>
+          <button class="control-button secondary" id="menuBtn">
+            <span>📋</span>
+            <span>Menu</span>
+          </button>
+          <button class="control-button secondary" id="journalBtn">
+            <span>📔</span>
+            <span>Journal</span>
+          </button>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Current Progress</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <button class="control-button secondary" id="achievementsBtn">
+            <span>🏆</span>
+            <span>Achievements</span>
+          </button>
+          <button class="control-button secondary" id="helpBtn">
+            <span>❓</span>
+            <span>Help</span>
+          </button>
+          <button class="control-button danger" id="exitBtn">
+            <span>🚪</span>
+            <span>Exit</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Container for overlays -->
+    <div id="modalContainer"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
+
+    <!-- Game initialization -->
+    <script type="module">
+      import AdventureQuestGame from './AdventureQuestGame.js';
+
+      // Wait for DOM to be fully loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        // Hide loading screen after a short delay
+        const loadingScreen = document.getElementById('loadingScreen');
+
+        // Initialize the game
+        const game = new AdventureQuestGame('gameCanvas', {
+          playerName: localStorage.getItem('playerName') || 'Explorer',
+          soundEnabled: localStorage.getItem('soundEnabled') !== 'false',
+        });
+
+        // Hide loading screen once game is ready
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+          // Focus the canvas for keyboard input
+          document.getElementById('gameCanvas').focus();
+        }, 1000);
+
+        // Update UI elements
+        function updateStats() {
+          const progress = game.getProgress();
+          document.getElementById('game-score').textContent = progress.score;
+          document.getElementById('game-discoveries').textContent = progress.discoveries;
+
+          // Update progress bar
+          const totalProgress = calculateOverallProgress(progress);
+          document.getElementById('progressBar').style.width = totalProgress + '%';
+          document.getElementById('progressPercent').textContent = totalProgress + '%';
+
+          // Update level based on score
+          const level = Math.floor(progress.score / 100) + 1;
+          document.getElementById('game-level').textContent = level;
+        }
+
+        function calculateOverallProgress(progress) {
+          // Calculate overall progress based on various factors
+          const storyWeight = 0.3;
+          const challengeWeight = 0.4;
+          const explorationWeight = 0.3;
+
+          const storyProgress = progress.storyProgress
+            ? (Object.keys(progress.storyProgress.completedChapters || []).length / 10) * 100
+            : 0;
+          const challengeProgress = progress.challengeProgress
+            ? (progress.challengeProgress.performance.correct /
+                (progress.challengeProgress.performance.correct + progress.challengeProgress.performance.incorrect ||
+                  1)) *
+              100
+            : 0;
+          const explorationProgress = progress.explorationProgress
+            ? (progress.explorationProgress.visitedIslands.length / 8) * 100
+            : 0;
+
+          return Math.round(
+            storyProgress * storyWeight + challengeProgress * challengeWeight + explorationProgress * explorationWeight
+          );
+        }
+
+        // Update stats periodically
+        setInterval(updateStats, 1000);
+
+        // Control button handlers
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+          game.togglePause();
+          const btn = document.getElementById('pauseBtn');
+          btn.innerHTML = game.gameState.isPaused
+            ? '<span>▶️</span><span>Resume</span>'
+            : '<span>⏸️</span><span>Pause</span>';
+        });
+
+        document.getElementById('menuBtn').addEventListener('click', () => {
+          game.showPauseMenu();
+        });
+
+        document.getElementById('journalBtn').addEventListener('click', () => {
+          showJournalModal(game);
+        });
+
+        document.getElementById('achievementsBtn').addEventListener('click', () => {
+          showAchievementsModal(game);
+        });
+
+        document.getElementById('helpBtn').addEventListener('click', () => {
+          showHelpModal();
+        });
+
+        document.getElementById('exitBtn').addEventListener('click', () => {
+          if (confirm('Are you sure you want to exit? Your progress will be saved.')) {
+            game.saveProgress();
+            window.location.href = '/subjects/science/science.html';
+          }
+        });
+
+        // Modal functions
+        function showJournalModal(game) {
+          const journal = game.discoveryTracker.scientificJournal;
+          let content = '<div class="journal-entries">';
+
+          if (journal.length === 0) {
+            content += '<p>Your scientific journal is empty. Make discoveries to add entries!</p>';
+          } else {
+            journal.forEach(entry => {
+              content += `
+                            <div class="journal-entry">
+                                <div class="journal-header">
+                                    <span class="journal-illustration">${entry.illustration}</span>
+                                    <span class="journal-title">${entry.title}</span>
+                                    <span class="journal-date">${entry.date}</span>
+                                </div>
+                                <div class="journal-content">${entry.content}</div>
+                            </div>
+                        `;
+            });
+          }
+
+          content += '</div>';
+          showModal('Scientific Journal', content);
+        }
+
+        function showAchievementsModal(game) {
+          const achievements = game.discoveryTracker.achievementDefinitions;
+          const unlocked = game.discoveryTracker.achievements;
+
+          let content = '<div class="achievements-grid">';
+
+          achievements.forEach(achievement => {
+            const isUnlocked = unlocked.some(a => a.id === achievement.id);
+            content += `
+                        <div class="achievement-card ${isUnlocked ? '' : 'locked'}">
+                            <div class="achievement-icon">${achievement.icon}</div>
+                            <div class="achievement-name">${achievement.name}</div>
+                            <div class="achievement-description">${achievement.description}</div>
+                            <div class="achievement-points">${achievement.points} points</div>
+                        </div>
+                    `;
+          });
+
+          content += '</div>';
+          showModal('Achievements', content);
+        }
+
+        function showHelpModal() {
+          const content = `
+                    <div class="help-content">
+                        <h3>How to Play</h3>
+                        <ul>
+                            <li><strong>Navigation:</strong> Click on islands to travel between them</li>
+                            <li><strong>Challenges:</strong> Answer questions and complete experiments</li>
+                            <li><strong>Story:</strong> Click to advance dialogue, make choices with number keys</li>
+                            <li><strong>Discoveries:</strong> Explore and complete challenges to unlock achievements</li>
+                        </ul>
+                        
+                        <h3>Keyboard Controls</h3>
+                        <ul>
+                            <li><strong>Space:</strong> Pause/Resume game</li>
+                            <li><strong>Escape:</strong> Open menu</li>
+                            <li><strong>H:</strong> Show this help</li>
+                            <li><strong>1-3:</strong> Select dialogue choices</li>
+                            <li><strong>Enter:</strong> Continue dialogue</li>
+                        </ul>
+                        
+                        <h3>Tips</h3>
+                        <ul>
+                            <li>Your progress is automatically saved</li>
+                            <li>Difficulty adapts to your performance</li>
+                            <li>Explore thoroughly to find all discoveries</li>
+                            <li>Complete challenges to unlock new islands</li>
+                        </ul>
+                    </div>
+                `;
+          showModal('Game Help', content);
+        }
+
+        function showModal(title, content) {
+          const modalContainer = document.getElementById('modalContainer');
+          modalContainer.innerHTML = `
+                    <div class="adventure-quest-modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title">${title}</h2>
+                                <button class="modal-close" onclick="this.closest('.adventure-quest-modal').remove()">×</button>
+                            </div>
+                            ${content}
+                        </div>
+                    </div>
+                `;
+        }
+
+        // Save progress before leaving
+        window.addEventListener('beforeunload', () => {
+          game.saveProgress();
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,45 +1,45 @@
 // Service Worker for Learnimals PWA
 // Served at the site root (see /serviceWorker.js shim) so its scope is '/',
-// which covers the whole app (pages live under /src/). All asset paths below
+// which covers the whole app (pages live under /). All asset paths below
 // are root-absolute so they resolve correctly regardless of where this script
 // is loaded from.
 const CACHE_NAME = 'learnimals-cache-v6';
-const OFFLINE_URL = '/src/pages/offline.html';
+const OFFLINE_URL = '/pages/offline.html';
 const ASSETS_TO_CACHE = [
   // HTML pages (only cache existing pages)
-  '/src/pages/index.html',
+  '/pages/index.html',
   OFFLINE_URL,
-  '/src/features/subjects/math/math.html',
-  '/src/features/subjects/shared/bubblepop.html',
+  '/subjects/math/math.html',
+  '/subjects/shared/bubblepop.html',
 
   // CSS files (only cache existing CSS)
-  '/src/styles/base/styles.css',
-  '/src/styles/components/navbar.css',
-  '/src/styles/components/bubblepop.css',
-  '/src/features/subjects/math/math.css',
-  '/src/features/subjects/science/science.css',
-  '/src/features/subjects/reading/reading.css',
-  '/src/features/subjects/art/art.css',
+  '/styles/base/styles.css',
+  '/styles/components/navbar.css',
+  '/styles/components/bubblepop.css',
+  '/subjects/math/math.css',
+  '/subjects/science/science.css',
+  '/subjects/reading/reading.css',
+  '/subjects/art/art.css',
 
   // JavaScript files (only cache existing JS)
-  '/src/config.js',
-  '/src/main.js',
-  '/src/themeInitializer.js',
-  '/src/features/subjects/math/math.js',
-  '/src/features/subjects/science/science.js',
-  '/src/features/subjects/art/art.js',
-  '/src/features/games/bubble-pop/bubblepop.js',
-  '/src/features/games/bubble-pop/Bubble.js',
-  '/src/features/games/word-scramble/wordScramble.js',
-  '/src/utils/common.js',
-  '/src/utils/themeManager.js',
-  '/src/utils/themeManagerUtils.js',
-  '/src/utils/themeRegistry.js',
-  '/src/components/layout/navigation.js',
-  '/src/components/layout/navbarLoader.js',
-  '/src/components/layout/themeSwitcher.js',
-  '/src/components/ui/Card.js',
-  '/src/components/ui/Modal.js',
+  '/config.js',
+  '/main.js',
+  '/themeInitializer.js',
+  '/subjects/math/math.js',
+  '/subjects/science/science.js',
+  '/subjects/art/art.js',
+  '/games/bubble-pop/bubblepop.js',
+  '/games/bubble-pop/Bubble.js',
+  '/games/word-scramble/wordScramble.js',
+  '/utils/common.js',
+  '/utils/themeManager.js',
+  '/utils/themeManagerUtils.js',
+  '/utils/themeRegistry.js',
+  '/components/layout/navigation.js',
+  '/components/layout/navbarLoader.js',
+  '/components/layout/themeSwitcher.js',
+  '/components/ui/Card.js',
+  '/components/ui/Modal.js',
 
   // Images (core images only)
   '/public/images/logo.png',
@@ -53,7 +53,7 @@ const ASSETS_TO_CACHE = [
   '/public/images/cody-cat2.png',
 
   // Components
-  '/src/components/layout/navbar.html',
+  '/components/layout/navbar.html',
 ];
 
 // Install event - Cache essential assets

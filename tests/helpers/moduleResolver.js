@@ -123,7 +123,7 @@ export function resolveModulePath(modulePath) {
   }
 
   // Handle absolute paths from src
-  if (modulePath.startsWith('/src/')) {
+  if (modulePath.startsWith('/')) {
     return modulePath;
   }
 

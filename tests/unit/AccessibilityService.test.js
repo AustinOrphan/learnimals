@@ -5,11 +5,11 @@
 
 /* global FocusEvent */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibilityService } from '../../src/services/accessibility/AccessibilityService.js';
+import { AccessibilityService } from '../../services/accessibility/AccessibilityService.js';
 import { DOMUtils } from '../fixtures/testDataFactory.js';
 
 // Mock logger with inline mock to avoid hoisting issues
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     level: 2,
     enabled: true,

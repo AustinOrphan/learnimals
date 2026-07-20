@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import BaseComponent from '../../src/components/BaseComponent.js';
+import BaseComponent from '../../components/BaseComponent.js';
 
 describe('BaseComponent Enhanced Tests', () => {
   let element;

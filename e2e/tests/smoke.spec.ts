@@ -18,7 +18,7 @@ createSmokeTests({
 });
 
 // Test specific subject pages
-createPageLoadTest('/src/features/subjects/math/math.html', {
+createPageLoadTest('/subjects/math/math.html', {
   expectedHeading: /math/i,
 });
 

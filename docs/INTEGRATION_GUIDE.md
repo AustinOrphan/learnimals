@@ -49,7 +49,7 @@ This guide provides step-by-step instructions for integrating new educational ga
 Create your game following this structure:
 
 ```
-src/features/games/[your-game-name]/
+games/[your-game-name]/
 ├── [YourGame]Game.js          # Main game engine
 ├── [YourGame]Story.js         # Narrative system (optional)
 ├── [YourGame]Challenge.js     # Challenge system (optional)
@@ -77,9 +77,9 @@ src/features/games/[your-game-name]/
 ### Base Game Class Structure
 
 ```javascript
-// src/features/games/math-quest/MathQuestGame.js
-import config from '../../../config.js';
-import { getRandomInt, debounce } from '../../../utils/common.js';
+// games/math-quest/MathQuestGame.js
+import config from '../../config.js';
+import { getRandomInt, debounce } from '../../utils/common.js';
 
 export default class MathQuestGame {
   constructor(canvasId, options = {}) {
@@ -207,7 +207,7 @@ resizeCanvas() {
 ### Add to config.js
 
 ```javascript
-// src/config.js
+// config.js
 export default {
   // ... existing config
 
@@ -242,7 +242,7 @@ export default {
 ### Add Game Section to Subject Page
 
 ```html
-<!-- src/features/subjects/shared/math.html -->
+<!-- subjects/shared/math.html -->
 <section class="section-box" id="math-quest-section">
   <h2>🧮 Maxwell's Math Adventure - Math Quest</h2>
   <p class="game-description">
@@ -302,13 +302,13 @@ export default {
 ### JavaScript Integration
 
 ```javascript
-// src/features/subjects/math/math.js
+// subjects/math/math.js
 
 /**
  * Launch the Math Quest game
  */
 function launchMathQuest() {
-  window.location.href = '/src/features/games/math-quest/index.html';
+  window.location.href = '/games/math-quest/index.html';
 }
 
 /**
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', initMathPage);
 ### HTML Template
 
 ```html
-<!-- src/features/games/math-quest/index.html -->
+<!-- games/math-quest/index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -344,8 +344,8 @@ document.addEventListener('DOMContentLoaded', initMathPage);
     <title>Math Quest - Maxwell's Mathematical Adventure</title>
 
     <!-- Learnimals core styles -->
-    <link rel="stylesheet" href="/src/styles/base/styles.css" />
-    <link rel="stylesheet" href="/src/styles/components/components.css" />
+    <link rel="stylesheet" href="/styles/base/styles.css" />
+    <link rel="stylesheet" href="/styles/components/components.css" />
 
     <!-- Game-specific styles -->
     <link rel="stylesheet" href="./math-quest.css" />
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', initMathPage);
   <body>
     <!-- Navigation back to subject page -->
     <nav class="game-nav">
-      <a href="/src/features/subjects/shared/math.html" class="back-link"> ← Back to Math </a>
+      <a href="/subjects/shared/math.html" class="back-link"> ← Back to Math </a>
     </nav>
 
     <main class="game-container">
@@ -478,7 +478,7 @@ class EducationalEngine {
 ```javascript
 // tests/games/math-quest.test.js
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import MathQuestGame from '../src/features/games/math-quest/MathQuestGame.js';
+import MathQuestGame from '../games/math-quest/MathQuestGame.js';
 
 describe('MathQuestGame', () => {
   let game;
@@ -858,7 +858,7 @@ if (endTime - startTime > 16.67) {
 
 ### Getting Help
 
-1. Check existing games in `/src/features/games/` for patterns
+1. Check existing games in `/games/` for patterns
 2. Review architectural documentation
 3. Run test suite to verify integration
 4. Follow performance and accessibility guidelines

@@ -6,11 +6,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AccessibleComponent } from '../../src/components/AccessibleComponent.js';
-import '../../src/services/accessibility/AccessibilityService.js';
+import { AccessibleComponent } from '../../components/AccessibleComponent.js';
+import '../../services/accessibility/AccessibilityService.js';
 
 // Mock logger
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),

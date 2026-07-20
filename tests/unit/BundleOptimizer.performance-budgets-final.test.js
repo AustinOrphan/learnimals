@@ -10,10 +10,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { BundleOptimizer } from '../../src/utils/BundleOptimizer.js';
+import { BundleOptimizer } from '../../utils/BundleOptimizer.js';
 
 // Mock logger to prevent console noise
-vi.mock('../../src/utils/logger.js', () => ({
+vi.mock('../../utils/logger.js', () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -22,7 +22,7 @@ vi.mock('../../src/utils/logger.js', () => ({
   },
 }));
 
-vi.mock('../../src/utils/performanceUtils.js', () => ({
+vi.mock('../../utils/performanceUtils.js', () => ({
   performanceMonitor: {
     startTimer: vi.fn(),
     endTimer: vi.fn(),

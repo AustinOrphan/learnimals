@@ -21,7 +21,7 @@ repository **regardless of which file it appears in**, including:
 - Audio content, if any
 
 Much of this content is embedded in source files (for example, character
-definitions in `src/config.js` and narrative text inside game modules). The
+definitions in `config.js` and narrative text inside game modules). The
 license follows the content, not the file: the surrounding **code** in those
 files is MIT-licensed (see LICENSE), while the creative content within them
 is CC BY-NC-SA 4.0.

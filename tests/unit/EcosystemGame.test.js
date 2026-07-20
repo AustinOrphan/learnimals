@@ -4,10 +4,10 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { setupCanvasMocking } from '../helpers/canvasMock.js';
-import EcosystemGame from '../../src/features/games/ecosystem-explorer/EcosystemGame.js';
+import EcosystemGame from '../../games/ecosystem-explorer/EcosystemGame.js';
 
 // Mock the dependencies (plain functions so global mock resets cannot strip implementations)
-vi.mock('../../src/utils/common.js', () => ({
+vi.mock('../../utils/common.js', () => ({
   getRandomInt: (min, max) => Math.floor(min + (max - min) * 0.5),
   debounce: fn => fn,
 }));

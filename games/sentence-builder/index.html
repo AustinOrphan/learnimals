@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sentence Builder - Bella's Reading Adventure</title>
+    <link rel="stylesheet" href="../../styles/base/reset.css" />
+    <link rel="stylesheet" href="../../styles/base/variables.css" />
+    <link rel="stylesheet" href="../../styles/base/base.css" />
+    <link rel="stylesheet" href="./sentenceBuilder.css" />
+  </head>
+  <body>
+    <div class="page-container">
+      <header class="game-header">
+        <h1>🐰 Bella's Sentence Builder</h1>
+        <p>Build sentences with Bella the Bunny to learn grammar and reading!</p>
+      </header>
+
+      <main class="game-main">
+        <div class="game-container" id="game-container">
+          <!-- Game instructions overlay -->
+          <div class="game-instructions" id="game-instructions">
+            <h3>📚 Welcome to Reading Time!</h3>
+            <div class="character-intro">
+              <div class="character-avatar">🐰</div>
+              <div class="character-text">
+                <strong>Meet Bella the Bunny!</strong><br />
+                Your friendly reading guide
+              </div>
+            </div>
+
+            <div class="reading-preview">
+              <div class="sample-sentence">
+                <div class="word-example">The</div>
+                <div class="word-example">cat</div>
+                <div class="word-example">sits</div>
+              </div>
+              <p class="example-text">Drag words to build sentences!</p>
+            </div>
+
+            <div class="instructions-content">
+              <h4>🎯 How to Play:</h4>
+              <div class="instruction-steps">
+                <div class="instruction-step">
+                  <span class="step-number">1</span>
+                  <span class="step-text">Read the hint to understand the sentence</span>
+                </div>
+                <div class="instruction-step">
+                  <span class="step-number">2</span>
+                  <span class="step-text">Drag words from the word bank</span>
+                </div>
+                <div class="instruction-step">
+                  <span class="step-number">3</span>
+                  <span class="step-text">Drop them in the sentence area</span>
+                </div>
+                <div class="instruction-step">
+                  <span class="step-number">4</span>
+                  <span class="step-text">Check if your sentence is correct!</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="difficulty-selection" id="difficulty-selection">
+              <h4>Choose Your Reading Level:</h4>
+              <div class="difficulty-options">
+                <button class="difficulty-btn selected" data-difficulty="easy">
+                  <span class="difficulty-emoji">🌱</span>
+                  <span class="difficulty-label">Easy</span>
+                  <span class="difficulty-desc">3-4 words</span>
+                </button>
+                <button class="difficulty-btn" data-difficulty="medium">
+                  <span class="difficulty-emoji">🌿</span>
+                  <span class="difficulty-label">Medium</span>
+                  <span class="difficulty-desc">5-7 words</span>
+                </button>
+                <button class="difficulty-btn" data-difficulty="hard">
+                  <span class="difficulty-emoji">🌳</span>
+                  <span class="difficulty-label">Hard</span>
+                  <span class="difficulty-desc">8+ words</span>
+                </button>
+              </div>
+            </div>
+
+            <button class="start-game-btn" id="start-game">Start Reading Adventure!</button>
+          </div>
+
+          <!-- Game will be loaded here -->
+          <div class="game-content" id="game-content"></div>
+
+          <!-- Loading screen -->
+          <div class="game-loading hidden" id="game-loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Bella's Library...</div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="game-footer">
+        <div class="educational-info">
+          <h3>📖 What You'll Learn</h3>
+          <div class="learning-objectives">
+            <div class="objective">
+              <strong>Grammar Skills:</strong> Understanding parts of speech and sentence structure
+            </div>
+            <div class="objective"><strong>Reading Comprehension:</strong> Building meaning through word order</div>
+            <div class="objective"><strong>Vocabulary:</strong> Learning new words and their meanings</div>
+            <div class="objective"><strong>Language Patterns:</strong> Recognizing common sentence structures</div>
+          </div>
+        </div>
+
+        <div class="reading-tips">
+          <h4>🌟 Reading Tips from Bella</h4>
+          <ul>
+            <li>Start sentences with capital letters</li>
+            <li>Listen to how sentences sound when you read them</li>
+            <li>Think about who or what the sentence is about</li>
+            <li>Notice how describing words make sentences more interesting</li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Game Script -->
+    <script type="module">
+      import SentenceBuilderGame from './sentenceBuilder.js';
+
+      // Game configuration
+      const gameConfig = {
+        gameTitle: 'Sentence Builder',
+        gameClass: 'SentenceBuilderGame',
+        gameScript: './sentenceBuilder.js',
+        containerId: 'game-content',
+        difficulty: 'easy', // Default difficulty
+        subject: 'reading',
+        character: {
+          name: 'Bella',
+          type: 'Bunny',
+          subject: 'Reading',
+        },
+      };
+
+      // BaseGame runs an async initialize() from its constructor, so a freshly
+      // constructed game is still in the 'loading' state. start() only proceeds from
+      // 'ready' (or 'game-over'), so wait for initialization to finish first.
+      async function waitForGameReady(game, timeoutMs = 8000) {
+        const deadline = performance.now() + timeoutMs;
+        while (game.state !== 'ready' && game.state !== 'game-over') {
+          if (game.state === 'error' || performance.now() > deadline) {
+            return false;
+          }
+          await new Promise(resolve => setTimeout(resolve, 16));
+        }
+        return true;
+      }
+
+      // Initialize game when DOM is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        let gameInstance = null;
+
+        // Difficulty selection
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        difficultyButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            difficultyButtons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            gameConfig.difficulty = btn.dataset.difficulty;
+          });
+        });
+
+        // Hide instructions and start game
+        document.getElementById('start-game').addEventListener('click', () => {
+          document.getElementById('game-instructions').style.display = 'none';
+          document.getElementById('game-loading').classList.remove('hidden');
+
+          // Initialize the game with a slight delay for loading animation
+          setTimeout(async () => {
+            document.getElementById('game-loading').classList.add('hidden');
+
+            gameInstance = new SentenceBuilderGame('game-content', {
+              difficulty: gameConfig.difficulty,
+              onScoreUpdate: score => {
+                // Score updates can be handled here if needed
+                console.log('Score updated:', score);
+              },
+              onLevelUpdate: level => {
+                // Level updates can be handled here if needed
+                console.log('Level updated:', level);
+              },
+              onGameOver: finalScore => {
+                setTimeout(() => {
+                  showGameOverModal(finalScore);
+                }, 1000);
+              },
+            });
+
+            // Make game instance available for debugging
+            window.gameInstance = gameInstance;
+
+            // Wait for async initialization to reach the 'ready' state, then start.
+            await waitForGameReady(gameInstance);
+            gameInstance.start();
+          }, 1500);
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', event => {
+          if (!gameInstance) return;
+
+          switch (event.key) {
+            case 'h':
+            case 'H':
+              if (event.ctrlKey || event.metaKey) {
+                event.preventDefault();
+                gameInstance.showHint();
+              }
+              break;
+            case 'Enter':
+              event.preventDefault();
+              const checkBtn = document.querySelector('#check-btn');
+              if (checkBtn && !checkBtn.disabled) {
+                gameInstance.checkSentence();
+              }
+              break;
+            case 'Escape':
+              event.preventDefault();
+              gameInstance.clearSentence();
+              break;
+          }
+        });
+      });
+
+      function showGameOverModal(finalScore) {
+        const modal = document.createElement('div');
+        modal.className = 'game-over-modal';
+        modal.innerHTML = `
+        <div class="modal-content">
+          <h2>🎉 Reading Adventure Complete!</h2>
+          <div class="bella-celebration">🐰✨</div>
+          <p>Excellent reading work!</p>
+          <div class="final-score">Final Score: <strong>${finalScore}</strong></div>
+          <div class="achievement">
+            <p>🏆 You've mastered sentence building!</p>
+            <p>📚 Keep reading and learning with Bella!</p>
+          </div>
+          <div class="modal-actions">
+            <button onclick="location.reload()" class="play-again-btn">
+              🔄 Read More Sentences
+            </button>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="close-btn">
+              📖 Explore Other Games
+            </button>
+          </div>
+        </div>
+      `;
+        document.body.appendChild(modal);
+      }
+
+      // Add global keyboard shortcut info
+      function showKeyboardShortcuts() {
+        const shortcuts = document.createElement('div');
+        shortcuts.className = 'keyboard-shortcuts';
+        shortcuts.innerHTML = `
+        <div class="shortcuts-content">
+          <h3>⌨️ Keyboard Shortcuts</h3>
+          <div class="shortcut-list">
+            <div class="shortcut-item">
+              <kbd>Ctrl</kbd> + <kbd>H</kbd> → Show Hint
+            </div>
+            <div class="shortcut-item">
+              <kbd>Enter</kbd> → Check Sentence
+            </div>
+            <div class="shortcut-item">
+              <kbd>Esc</kbd> → Clear Sentence
+            </div>
+          </div>
+          <button onclick="this.parentElement.parentElement.remove()" class="close-shortcuts">Got it!</button>
+        </div>
+      `;
+        document.body.appendChild(shortcuts);
+      }
+
+      // Add help button
+      const helpBtn = document.createElement('button');
+      helpBtn.className = 'help-btn';
+      helpBtn.innerHTML = '❓';
+      helpBtn.title = 'Keyboard Shortcuts';
+      helpBtn.onclick = showKeyboardShortcuts;
+      document.body.appendChild(helpBtn);
+    </script>
+
+    <style>
+      .page-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+        background: linear-gradient(135deg, #ffb6c1 0%, #dda0dd 50%, #98fb98 100%);
+        min-height: 100vh;
+      }
+
+      .game-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
+
+      .game-header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .game-header p {
+        font-size: 1.3rem;
+        opacity: 0.9;
+      }
+
+      .game-main {
+        margin-bottom: 40px;
+      }
+
+      .game-footer {
+        color: white;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        opacity: 0.9;
+      }
+
+      .educational-info h3,
+      .reading-tips h4 {
+        margin-bottom: 15px;
+        color: #dda0dd;
+      }
+
+      .learning-objectives {
+        display: grid;
+        gap: 10px;
+      }
+
+      .objective {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+
+      .reading-tips ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .reading-tips li {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+      }
+
+      /* Game Instructions Styles */
+      .game-instructions {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.98);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        pointer-events: auto;
+        z-index: 10;
+      }
+
+      .game-instructions h3 {
+        color: #6b46c1;
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
+
+      .character-intro {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        padding: 15px;
+        background: #f8f9ff;
+        border-radius: 12px;
+      }
+
+      .character-avatar {
+        font-size: 3rem;
+        animation: bellaWave 2s ease-in-out infinite;
+      }
+
+      @keyframes bellaWave {
+        0%,
+        100% {
+          transform: rotate(-5deg);
+        }
+        50% {
+          transform: rotate(5deg);
+        }
+      }
+
+      .character-text {
+        text-align: left;
+        color: #4a4a4a;
+        font-size: 1rem;
+      }
+
+      .reading-preview {
+        margin: 20px 0;
+        padding: 20px;
+        background: #e8f5e8;
+        border-radius: 12px;
+      }
+
+      .sample-sentence {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .word-example {
+        background: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: 2px solid #4caf50;
+        font-weight: bold;
+        color: #2e7d32;
+      }
+
+      .example-text {
+        color: #388e3c;
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
+      .instructions-content h4 {
+        color: #6b46c1;
+        margin: 20px 0 15px 0;
+        font-size: 1.2rem;
+      }
+
+      .instruction-steps {
+        display: grid;
+        gap: 12px;
+        text-align: left;
+        margin-bottom: 25px;
+      }
+
+      .instruction-step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        background: #f8f9ff;
+        border-radius: 8px;
+      }
+
+      .step-number {
+        background: #6b46c1;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+
+      .step-text {
+        color: #4a4a4a;
+        font-size: 0.9rem;
+      }
+
+      .difficulty-selection h4 {
+        color: #6b46c1;
+        margin-bottom: 15px;
+      }
+
+      .difficulty-options {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 25px;
+      }
+
+      .difficulty-btn {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 80px;
+        text-align: center;
+      }
+
+      .difficulty-btn:hover {
+        border-color: #6b46c1;
+        transform: translateY(-2px);
+      }
+
+      .difficulty-btn.selected {
+        border-color: #6b46c1;
+        background: #f3e8ff;
+        box-shadow: 0 4px 12px rgba(107, 70, 193, 0.2);
+      }
+
+      .difficulty-emoji {
+        display: block;
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+      }
+
+      .difficulty-label {
+        display: block;
+        font-weight: bold;
+        color: #4a4a4a;
+        font-size: 0.9rem;
+      }
+
+      .difficulty-desc {
+        display: block;
+        color: #9e9e9e;
+        font-size: 0.7rem;
+      }
+
+      .start-game-btn {
+        background: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(107, 70, 193, 0.3);
+      }
+
+      .start-game-btn:hover {
+        background: linear-gradient(135deg, #553c9a 0%, #7c3aed 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(107, 70, 193, 0.4);
+      }
+
+      /* Loading screen */
+      .game-loading {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 400px;
+        font-size: 1.2rem;
+        color: white;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top: 5px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-weight: bold;
+        opacity: 0.9;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Game Over Modal */
+      .game-over-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 450px;
+        margin: 20px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .bella-celebration {
+        font-size: 3rem;
+        margin: 20px 0;
+        animation: celebration 1s ease-in-out infinite;
+      }
+
+      @keyframes celebration {
+        0%,
+        100% {
+          transform: scale(1) rotate(-5deg);
+        }
+        50% {
+          transform: scale(1.1) rotate(5deg);
+        }
+      }
+
+      .final-score {
+        font-size: 1.8rem;
+        color: #6b46c1;
+        margin: 20px 0;
+      }
+
+      .achievement {
+        background: #f8f9ff;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px 0;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 25px;
+      }
+
+      .play-again-btn,
+      .close-btn {
+        background: #6b46c1;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .play-again-btn:hover,
+      .close-btn:hover {
+        background: #553c9a;
+        transform: translateY(-2px);
+      }
+
+      .close-btn {
+        background: #9e9e9e;
+      }
+
+      .close-btn:hover {
+        background: #757575;
+      }
+
+      /* Help button */
+      .help-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #6b46c1;
+        color: white;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
+        z-index: 100;
+      }
+
+      .help-btn:hover {
+        background: #553c9a;
+      }
+
+      /* Keyboard shortcuts modal */
+      .keyboard-shortcuts {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+      }
+
+      .shortcuts-content {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        max-width: 350px;
+      }
+
+      .shortcut-list {
+        margin: 20px 0;
+      }
+
+      .shortcut-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      kbd {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 0.8rem;
+      }
+
+      .close-shortcuts {
+        background: #6b46c1;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+
+      /* Mobile responsive adjustments */
+      @media (max-width: 768px) {
+        .page-container {
+          padding: 10px;
+        }
+
+        .game-header h1 {
+          font-size: 2.2rem;
+        }
+
+        .game-footer {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .game-instructions {
+          max-width: 90%;
+          padding: 20px;
+        }
+
+        .difficulty-options {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .modal-actions {
+          flex-direction: column;
+        }
+
+        .help-btn {
+          bottom: 15px;
+          right: 15px;
+          width: 45px;
+          height: 45px;
+        }
+      }
+    </style>
+  </body>
+</html>

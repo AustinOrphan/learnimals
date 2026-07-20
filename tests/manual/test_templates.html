@@ -150,10 +150,10 @@
       async function initializeTests() {
         try {
           // Import required modules
-          const gameSystemModule = await import('/src/utils/GameSystem.js');
+          const gameSystemModule = await import('/utils/GameSystem.js');
           gameSystem = gameSystemModule.default;
 
-          const registryModule = await import('/src/config/gameRegistry.js');
+          const registryModule = await import('/config/gameRegistry.js');
           GameRegistryUtil = registryModule.GameRegistryUtil;
 
           if (!gameSystem.initialized) {
@@ -185,9 +185,9 @@
         try {
           // Test if template files exist and are accessible
           const templateUrls = {
-            minimal: '/src/templates/minimal.html',
-            fullscreen: '/src/templates/fullscreen.html',
-            mobile: '/src/templates/mobile.html',
+            minimal: '/templates/minimal.html',
+            fullscreen: '/templates/fullscreen.html',
+            mobile: '/templates/mobile.html',
           };
 
           fetch(templateUrls[templateType])

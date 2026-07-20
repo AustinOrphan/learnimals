@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import AdventureQuestGame from '../../src/features/games/adventure-quest/AdventureQuestGame.js';
-import StoryProgression from '../../src/features/games/adventure-quest/StoryProgression.js';
-import ChallengeManager from '../../src/features/games/adventure-quest/ChallengeManager.js';
-import DiscoveryTracker from '../../src/features/games/adventure-quest/DiscoveryTracker.js';
-import IslandNavigator from '../../src/features/games/adventure-quest/IslandNavigator.js';
+import AdventureQuestGame from '../../games/adventure-quest/AdventureQuestGame.js';
+import StoryProgression from '../../games/adventure-quest/StoryProgression.js';
+import ChallengeManager from '../../games/adventure-quest/ChallengeManager.js';
+import DiscoveryTracker from '../../games/adventure-quest/DiscoveryTracker.js';
+import IslandNavigator from '../../games/adventure-quest/IslandNavigator.js';
 
 // Mock DOM elements
 const mockCanvas = {

@@ -191,19 +191,19 @@ jobs:
             echo "Checking for potential secrets..."
             
             # API keys
-            grep -r "api[_-]key" src/ --include="*.js" --include="*.html" --include="*.css" || true
+            grep -r "api[_-]key" . --include="*.js" --include="*.html" --include="*.css" || true
             
             # Passwords
-            grep -r "password.*=" src/ --include="*.js" --include="*.html" || true
+            grep -r "password.*=" . --include="*.js" --include="*.html" || true
             
             # Tokens
-            grep -r "token.*=" src/ --include="*.js" --include="*.html" || true
+            grep -r "token.*=" . --include="*.js" --include="*.html" || true
             
             # Database URLs
-            grep -r "mongodb://\|mysql://\|postgresql://" src/ --include="*.js" --include="*.html" || true
+            grep -r "mongodb://\|mysql://\|postgresql://" . --include="*.js" --include="*.html" || true
             
             # Email addresses in non-test files
-            grep -r "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" src/ --include="*.js" --include="*.html" | grep -v "test\|spec\|example.com" || true
+            grep -r "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" . --include="*.js" --include="*.html" | grep -v "test\|spec\|example.com" || true
           fi
 
       - name: Validate Content Security Policy
@@ -211,28 +211,28 @@ jobs:
           echo "Checking for CSP headers..."
 
           # Check if CSP is defined in HTML files
-          find src -name "*.html" -exec grep -l "Content-Security-Policy" {} \; || echo "No CSP found in HTML files"
+          find . -name "*.html" -exec grep -l "Content-Security-Policy" {} \; || echo "No CSP found in HTML files"
 
           # Check for inline scripts (potential CSP violations)
-          find src -name "*.html" -exec grep -l "javascript:" {} \; && echo "⚠️ Found inline javascript: URLs" || true
-          find src -name "*.html" -exec grep -l "onclick=" {} \; && echo "⚠️ Found inline onclick handlers" || true
-          find src -name "*.html" -exec grep -l "onload=" {} \; && echo "⚠️ Found inline onload handlers" || true
+          find . -name "*.html" -exec grep -l "javascript:" {} \; && echo "⚠️ Found inline javascript: URLs" || true
+          find . -name "*.html" -exec grep -l "onclick=" {} \; && echo "⚠️ Found inline onclick handlers" || true
+          find . -name "*.html" -exec grep -l "onload=" {} \; && echo "⚠️ Found inline onload handlers" || true
 
       - name: Check for unsafe practices
         run: |
           echo "Checking for unsafe JavaScript practices..."
 
           # Check for eval usage
-          grep -r "eval(" src/ --include="*.js" && echo "⚠️ Found eval() usage" || true
+          grep -r "eval(" . --include="*.js" && echo "⚠️ Found eval() usage" || true
 
           # Check for innerHTML usage (potential XSS)
-          grep -r "innerHTML" src/ --include="*.js" && echo "⚠️ Found innerHTML usage" || true
+          grep -r "innerHTML" . --include="*.js" && echo "⚠️ Found innerHTML usage" || true
 
           # Check for document.write usage
-          grep -r "document\.write" src/ --include="*.js" && echo "⚠️ Found document.write usage" || true
+          grep -r "document\.write" . --include="*.js" && echo "⚠️ Found document.write usage" || true
 
           # Check for dangerous jQuery methods
-          grep -r "\.html(" src/ --include="*.js" && echo "⚠️ Found jQuery .html() usage" || true
+          grep -r "\.html(" . --include="*.js" && echo "⚠️ Found jQuery .html() usage" || true
 
   child-safety-scan:
     runs-on: ubuntu-latest
@@ -267,32 +267,32 @@ jobs:
 
           # Check for data collection forms
           echo "Checking for data collection forms..."
-          find src -name "*.html" -exec grep -l "input.*name.*email\|input.*name.*phone\|input.*name.*address" {} \; || true
+          find . -name "*.html" -exec grep -l "input.*name.*email\|input.*name.*phone\|input.*name.*address" {} \; || true
 
           # Check for tracking scripts
           echo "Checking for tracking scripts..."
-          find src -name "*.html" -exec grep -l "google-analytics\|facebook\|tracking" {} \; || true
+          find . -name "*.html" -exec grep -l "google-analytics\|facebook\|tracking" {} \; || true
 
           # Check for third-party embedded content
           echo "Checking for third-party embedded content..."
-          find src -name "*.html" -exec grep -l "iframe\|embed\|object" {} \; || true
+          find . -name "*.html" -exec grep -l "iframe\|embed\|object" {} \; || true
 
           # Check for user-generated content areas
           echo "Checking for user-generated content areas..."
-          find src -name "*.html" -exec grep -l "textarea\|contenteditable" {} \; || true
+          find . -name "*.html" -exec grep -l "textarea\|contenteditable" {} \; || true
 
       - name: Privacy Policy Check
         run: |
           echo "Checking for privacy policy..."
 
           # Look for privacy policy references
-          find src -name "*.html" -exec grep -l -i "privacy.*policy\|privacy.*statement" {} \; || echo "⚠️ No privacy policy found"
+          find . -name "*.html" -exec grep -l -i "privacy.*policy\|privacy.*statement" {} \; || echo "⚠️ No privacy policy found"
 
           # Check for cookie usage
-          grep -r "cookie" src/ --include="*.js" --include="*.html" || true
+          grep -r "cookie" . --include="*.js" --include="*.html" || true
 
           # Check for localStorage usage
-          grep -r "localStorage\|sessionStorage" src/ --include="*.js" || true
+          grep -r "localStorage\|sessionStorage" . --include="*.js" || true
 
   security-headers:
     runs-on: ubuntu-latest

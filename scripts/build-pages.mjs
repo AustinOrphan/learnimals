@@ -1,17 +1,18 @@
 /**
  * Build the GitHub Pages site.
  *
- * The app is a no-build static site served from the repo root, and it uses
- * root-absolute URLs (/src/..., /public/..., /serviceWorker.js). GitHub
- * project Pages serves under a subpath (https://<user>.github.io/learnimals/),
- * where those root-absolute URLs would 404. This copies the site into _site/
- * and rewrites root-absolute paths to include the base prefix.
+ * The app is a no-build static site served from the repo root, using
+ * root-absolute URLs (/subjects/..., /games/..., /components/..., /public/...,
+ * /serviceWorker.js). GitHub project Pages serves under a subpath
+ * (https://<user>.github.io/learnimals/), where those URLs would 404. This
+ * copies the app into _site/ and rewrites root-absolute app paths to include
+ * the base prefix.
  *
- * Set PAGES_BASE='' to build for a root deployment (custom domain / Option A);
- * defaults to '/learnimals' for the project-Pages subpath (Option B).
+ * Set PAGES_BASE='' for a root deployment (custom domain / Option A, no
+ * rewrite); defaults to '/learnimals' for the project-Pages subpath.
  *
  * Only ROOT-ABSOLUTE occurrences are rewritten (a path preceded by a quote,
- * paren, '=', or whitespace) so relative paths like ../src/ are untouched.
+ * backtick, paren, '=', or whitespace) so relative paths are untouched.
  */
 import {
   existsSync,
@@ -29,51 +30,88 @@ const BASE = process.env.PAGES_BASE ?? '/learnimals';
 const ROOT = process.cwd();
 const SITE = join(ROOT, '_site');
 
-// 1. Fresh _site with the exact structure the app expects (repo-root docroot).
+// Everything at the repo root that is NOT part of the served app.
+const DENY = new Set([
+  'node_modules',
+  '.git',
+  '_site',
+  'tests',
+  'scripts',
+  'e2e',
+  'docker',
+  'k8s',
+  'docs',
+  '.github',
+  'coverage',
+  'playwright-report',
+  'test-results',
+  '.claudeCodeStuffToStashForNow',
+  'dedupe-archive',
+  '.serena',
+  '.husky',
+  '.vale',
+  '.zap',
+  '.claude_agent_farm_backups',
+]);
+// Root-level files that are tooling/config, not app assets.
+const isConfigFile = (name) =>
+  name.startsWith('.') ||
+  /\.(md|json|jsonc|ya?ml|mjs|txt|lock|log|toml|ini)$/i.test(name) ||
+  name === 'package.json' ||
+  name === 'package-lock.json' ||
+  name === 'Makefile' ||
+  name.startsWith('Makefile') ||
+  name.startsWith('Dockerfile') ||
+  name === 'vitest.config.js' ||
+  name === 'eslint.config.mjs' ||
+  name === 'postcss.config.js';
+
+// 1. Fresh _site with the served app (repo-root layout preserved).
 if (existsSync(SITE)) rmSync(SITE, { recursive: true, force: true });
 mkdirSync(SITE, { recursive: true });
-for (const entry of ['index.html', 'serviceWorker.js', 'src', 'public']) {
-  const from = join(ROOT, entry);
-  if (existsSync(from)) cpSync(from, join(SITE, entry), { recursive: true });
+for (const name of readdirSync(ROOT)) {
+  if (DENY.has(name)) continue;
+  const abs = join(ROOT, name);
+  const isDir = statSync(abs).isDirectory();
+  if (!isDir && isConfigFile(name)) continue; // skip root config/doc files
+  cpSync(abs, join(SITE, name), { recursive: true });
 }
 
-// 2. Rewrite root-absolute paths in text assets.
-const REWRITE_EXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.webmanifest']);
-const DELIM = `(["'(=\\s])`; // a path only counts as absolute after one of these
-
-const rules = BASE
-  ? [
-      [new RegExp(`${DELIM}/src/`, 'g'), `$1${BASE}/src/`],
-      [new RegExp(`${DELIM}/public/`, 'g'), `$1${BASE}/public/`],
-      [new RegExp(`${DELIM}/serviceWorker\\.js`, 'g'), `$1${BASE}/serviceWorker.js`],
-      // PWA manifest scope (start_url is covered by the /src/ rule).
-      [/("scope":\s*")\//g, `$1${BASE}/`],
-    ]
-  : [];
-
+// 2. Rewrite root-absolute app paths to the base prefix.
 let filesRewritten = 0;
 let replacements = 0;
-function walk(dir) {
-  for (const name of readdirSync(dir)) {
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) {
-      walk(p);
-    } else if (REWRITE_EXT.has(extname(p))) {
-      let s = readFileSync(p, 'utf8');
-      const before = s;
-      for (const [re, to] of rules) {
-        const m = s.match(re);
-        if (m) replacements += m.length;
-        s = s.replace(re, to);
-      }
-      if (s !== before) {
-        writeFileSync(p, s);
-        filesRewritten += 1;
+if (BASE) {
+  const segments = readdirSync(SITE); // the app's top-level entries (dirs + files)
+  const DELIM = `(["'\`(=\\s])`;
+  const rules = segments.map((seg) => [
+    new RegExp(`${DELIM}/${seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(/|["'\`)\\s]|$)`, 'g'),
+    `$1${BASE}/${seg}$2`,
+  ]);
+  // PWA manifest scope.
+  rules.push([/("scope":\s*")\//g, `$1${BASE}/`]);
+
+  const REWRITE_EXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.webmanifest']);
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (REWRITE_EXT.has(extname(p))) {
+        let s = readFileSync(p, 'utf8');
+        const before = s;
+        for (const [re, to] of rules) {
+          const m = s.match(re);
+          if (m) replacements += m.length;
+          s = s.replace(re, to);
+        }
+        if (s !== before) {
+          writeFileSync(p, s);
+          filesRewritten += 1;
+        }
       }
     }
-  }
+  };
+  walk(SITE);
 }
-if (rules.length) walk(SITE);
 
 console.log(
   `Built _site (base='${BASE || '(root)'}'): ${filesRewritten} files rewritten, ${replacements} path replacements.`

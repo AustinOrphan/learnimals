@@ -6,7 +6,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 // Unmock the logger for these tests since we're testing the logger itself
-vi.unmock('../../src/utils/logger.js');
+vi.unmock('../../utils/logger.js');
 
 describe('Logger Utility', () => {
   let originalWindow;
@@ -17,8 +17,8 @@ describe('Logger Utility', () => {
 
     // Clear module cache and reimport
     vi.resetModules();
-    vi.unmock('../../src/utils/logger.js'); // Ensure logger is not mocked
-    await import('../../src/utils/logger.js');
+    vi.unmock('../../utils/logger.js'); // Ensure logger is not mocked
+    await import('../../utils/logger.js');
   });
 
   afterEach(() => {
@@ -36,7 +36,7 @@ describe('Logger Utility', () => {
       };
 
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       const logger = module.default;
 
       expect(logger.level).toBe(2); // INFO level
@@ -49,7 +49,7 @@ describe('Logger Utility', () => {
       };
 
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       const logger = module.default;
 
       expect(logger.level).toBe(3); // DEBUG level
@@ -62,7 +62,7 @@ describe('Logger Utility', () => {
       };
 
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       const logger = module.default;
 
       expect(logger.level).toBe(3); // DEBUG level
@@ -75,7 +75,7 @@ describe('Logger Utility', () => {
       };
 
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       const logger = module.default;
 
       expect(logger.level).toBe(1); // WARN level
@@ -99,7 +99,7 @@ describe('Logger Utility', () => {
         };
 
         vi.resetModules();
-        const module = await import('../../src/utils/logger.js');
+        const module = await import('../../utils/logger.js');
         const logger = module.default;
 
         // Should be in production mode (INFO level), not development (DEBUG level)
@@ -117,7 +117,7 @@ describe('Logger Utility', () => {
         };
 
         vi.resetModules();
-        const module = await import('../../src/utils/logger.js');
+        const module = await import('../../utils/logger.js');
         const logger = module.default;
 
         // Should be in development mode (DEBUG level)
@@ -140,7 +140,7 @@ describe('Logger Utility', () => {
         };
 
         vi.resetModules();
-        const module = await import('../../src/utils/logger.js');
+        const module = await import('../../utils/logger.js');
         const logger = module.default;
 
         // Should be in production mode (INFO level)
@@ -155,7 +155,7 @@ describe('Logger Utility', () => {
         global.window = { location };
 
         vi.resetModules();
-        const module = await import('../../src/utils/logger.js');
+        const module = await import('../../utils/logger.js');
         const logger = module.default;
 
         // Should default to production mode (INFO level) for safety
@@ -168,7 +168,7 @@ describe('Logger Utility', () => {
       global.window = undefined;
 
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       const logger = module.default;
 
       // Should default to production mode (INFO level) for safety
@@ -188,7 +188,7 @@ describe('Logger Utility', () => {
 
       vi.resetModules();
 
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       logger = module.default;
 
       consoleSpy = {
@@ -264,7 +264,7 @@ describe('Logger Utility', () => {
 
     beforeEach(async () => {
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       logger = module.default;
     });
 
@@ -303,7 +303,7 @@ describe('Logger Utility', () => {
 
     beforeEach(async () => {
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       logger = module.default;
     });
 
@@ -336,7 +336,7 @@ describe('Logger Utility', () => {
       };
       vi.resetModules();
 
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       logger = module.default;
 
       consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -378,7 +378,7 @@ describe('Logger Utility', () => {
       };
       vi.resetModules();
 
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       const logger = module.default;
 
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -396,7 +396,7 @@ describe('Logger Utility', () => {
 
     beforeEach(async () => {
       vi.resetModules();
-      const module = await import('../../src/utils/logger.js');
+      const module = await import('../../utils/logger.js');
       logger = module.default;
     });
 
