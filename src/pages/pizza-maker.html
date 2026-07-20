@@ -22,6 +22,7 @@
     <main class="pizza-game-container">
       <div class="game-header">
         <h1 class="game-title">🍕 Pizza Party Rush!</h1>
+        <p class="game-subtitle">Count the toppings with Chef Mango the Shark! 🦈</p>
         <div class="game-stats">
           <div class="stat-item">
             <span class="stat-icon">⭐</span>
@@ -53,7 +54,7 @@
               <span class="customer-emoji">👧</span>
             </div>
             <div class="speech-bubble" id="speechBubble">
-              <p class="order-text">Hi! I'd like a pizza with...</p>
+              <p class="order-text"><span class="chef-badge">🦈 Chef Mango</span> has an order for you:</p>
               <div class="order-request" id="orderRequest">
                 <!-- Order items will be added dynamically -->
               </div>
@@ -166,14 +167,14 @@
       <div class="game-modal show" id="startScreen">
         <div class="modal-content start-screen">
           <h1 class="game-logo">🍕 Pizza Party Rush! 🍕</h1>
-          <p class="game-description">Help make pizzas for hungry customers!</p>
+          <p class="game-description">Count toppings with Chef Mango the Shark! 🦈</p>
           <div class="how-to-play">
             <h3>How to Play:</h3>
             <ol>
-              <li>Look at the customer's order</li>
-              <li>Drag the correct toppings to the pizza</li>
-              <li>Bake and serve before time runs out!</li>
-              <li>Get stars for perfect pizzas!</li>
+              <li>Read the order — it asks for a number of each topping</li>
+              <li>Drag exactly that many toppings onto the pizza</li>
+              <li>Watch the counter to check your counting</li>
+              <li>Bake and serve for stars and tips!</li>
             </ol>
           </div>
           <button class="btn-start" id="startGameButton">Start Game! 🎮</button>

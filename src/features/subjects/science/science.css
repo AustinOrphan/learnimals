@@ -21,9 +21,10 @@ footer {
 }
 
 .section-box {
-  background-color: white;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px var(--shadow-color);
   padding: 30px;
   margin-bottom: 40px;
   display: block;
@@ -39,13 +40,14 @@ footer {
   display: block;
   margin: 10px 0;
   padding: 10px;
-  background: #e0f7fa;
+  color: var(--text-primary);
+  background: var(--bg-card-alt);
   border-radius: 10px;
   transition: background 0.3s ease;
 }
 
 .fact-hover span:hover {
-  background: #b2ebf2;
+  background: var(--bg-highlight);
 }
 
 .rocket {
@@ -90,7 +92,7 @@ footer {
 }
 
 .quiz-question label:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg-highlight);
 }
 
 .quiz-submit-button {
@@ -114,13 +116,13 @@ footer {
 }
 
 .quiz-result-success {
-  color: green;
+  color: var(--success-color, green);
 }
 
 .quiz-result-error {
-  color: orange;
+  color: var(--warning-color, orange);
 }
 
 .quiz-result-missing {
-  color: red;
+  color: var(--text-danger, red);
 }

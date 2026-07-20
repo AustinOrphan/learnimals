@@ -31,16 +31,19 @@ export default class PizzaMakerGame {
     this.ordersCompleted = 0;
     this.levelScore = 0;
 
+    // Chef Mango hosts the pizzeria and relays each counting order
+    this.chefName = 'Mango';
+
     // Customer types with different personalities
     this.customers = [
-      { emoji: '👧', name: 'Sarah', greeting: 'Hi! Can I have' },
-      { emoji: '👦', name: 'Tommy', greeting: 'Hey! I want' },
-      { emoji: '👨', name: 'Mr. Jones', greeting: "Good day! I'd like" },
-      { emoji: '👩', name: 'Mrs. Smith', greeting: 'Hello! Please make me' },
-      { emoji: '🧑', name: 'Alex', greeting: 'Yo! Give me' },
-      { emoji: '👴', name: 'Grandpa Joe', greeting: 'Hello there! May I have' },
-      { emoji: '👵', name: 'Grandma Sue', greeting: "Hi sweetie! I'd love" },
-      { emoji: '👶', name: 'Baby Max', greeting: 'Goo goo! Want' },
+      { emoji: '👧', name: 'Sarah', greeting: 'Sarah would like' },
+      { emoji: '👦', name: 'Tommy', greeting: 'Tommy wants' },
+      { emoji: '👨', name: 'Mr. Jones', greeting: 'Mr. Jones ordered' },
+      { emoji: '👩', name: 'Mrs. Smith', greeting: 'Mrs. Smith asked for' },
+      { emoji: '🧑', name: 'Alex', greeting: 'Alex needs' },
+      { emoji: '👴', name: 'Grandpa Joe', greeting: 'Grandpa Joe would love' },
+      { emoji: '👵', name: 'Grandma Sue', greeting: 'Grandma Sue wants' },
+      { emoji: '👶', name: 'Baby Max', greeting: 'Baby Max points at' },
     ];
 
     // Available toppings
@@ -55,29 +58,12 @@ export default class PizzaMakerGame {
       bacon: { emoji: '🥓', name: 'Bacon', color: '#85144B' },
     };
 
-    // Pizza templates for different difficulty levels
-    this.pizzaTemplates = {
-      1: [
-        // Level 1 - Simple pizzas (1-2 toppings)
-        ['cheese'],
-        ['pepperoni'],
-        ['cheese', 'pepperoni'],
-        ['cheese', 'mushrooms'],
-      ],
-      2: [
-        // Level 2 - Medium pizzas (2-3 toppings)
-        ['cheese', 'pepperoni', 'mushrooms'],
-        ['cheese', 'peppers', 'olives'],
-        ['cheese', 'tomatoes', 'bacon'],
-        ['cheese', 'pineapple'],
-      ],
-      3: [
-        // Level 3+ - Complex pizzas (3-4 toppings)
-        ['cheese', 'pepperoni', 'mushrooms', 'peppers'],
-        ['cheese', 'bacon', 'pineapple', 'olives'],
-        ['cheese', 'tomatoes', 'peppers', 'mushrooms'],
-        ['cheese', 'pepperoni', 'bacon', 'olives'],
-      ],
+    // Counting pools per level. Each order asks for a specific COUNT of each
+    // topping (this is a math game), so only draggable grid toppings are used.
+    this.orderPools = {
+      1: ['pepperoni', 'mushrooms'],
+      2: ['pepperoni', 'mushrooms', 'peppers', 'olives'],
+      3: ['cheese', 'pepperoni', 'mushrooms', 'peppers', 'tomatoes', 'olives'],
     };
 
     // Drag and drop state
@@ -195,14 +181,11 @@ export default class PizzaMakerGame {
     const customer = this.customers[Math.floor(Math.random() * this.customers.length)];
     this.customerCharacter.querySelector('.customer-emoji').textContent = customer.emoji;
 
-    // Generate order based on level
-    const templates = this.pizzaTemplates[Math.min(this.currentLevel, 3)];
-    const orderTemplate = templates[Math.floor(Math.random() * templates.length)];
-
+    // Generate a count-based order based on level
     this.currentOrder = {
       customer: customer,
-      toppings: orderTemplate,
-      timeLimit: Math.max(30 - (this.currentLevel - 1) * 2, 15), // Decreasing time as levels progress
+      counts: this.generateOrderCounts(),
+      timeLimit: Math.max(45 - (this.currentLevel - 1) * 3, 25), // Decreasing time as levels progress
     };
 
     // Display order
@@ -215,23 +198,84 @@ export default class PizzaMakerGame {
     this.animateCustomerEntrance();
   }
 
+  // Build a count-based order, e.g. { pepperoni: 3, mushrooms: 2 }
+  generateOrderCounts() {
+    const level = Math.min(this.currentLevel, 3);
+    const pool = this.orderPools[level];
+    const numTypes = level === 1 ? 1 : level === 2 ? 2 : 2 + Math.floor(Math.random() * 2);
+    const maxCount = level === 1 ? 3 : level + 2; // L1: 1-3, L2: 1-4, L3: 1-5
+
+    const shuffled = [...pool]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, Math.min(numTypes, pool.length));
+    const counts = {};
+    shuffled.forEach(topping => {
+      counts[topping] = 1 + Math.floor(Math.random() * maxCount);
+    });
+    return counts;
+  }
+
+  // Count how many of each topping are currently on the pizza
+  getPlacedCounts() {
+    return this.currentToppings.reduce((acc, topping) => {
+      acc[topping] = (acc[topping] || 0) + 1;
+      return acc;
+    }, {});
+  }
+
   displayOrder() {
-    const orderHTML = this.currentOrder.toppings
-      .map(topping => {
-        const toppingData = this.toppings[topping];
-        return `<span class="order-topping">${toppingData.emoji} ${toppingData.name}</span>`;
+    const entries = Object.entries(this.currentOrder.counts);
+
+    // Readable, count-first sentence: "3 pepperoni and 2 mushrooms"
+    const sentence = entries
+      .map(([topping, count]) => {
+        const data = this.toppings[topping];
+        return `<strong>${count}</strong> ${data.emoji} ${data.name}`;
+      })
+      .join(' and ');
+
+    // Live tally so kids can count each topping as they add it
+    const tallies = entries
+      .map(([topping, count]) => {
+        const data = this.toppings[topping];
+        return `
+          <div class="order-tally" data-topping="${topping}">
+            <span class="order-tally-emoji">${data.emoji}</span>
+            <span class="order-tally-name">${data.name}</span>
+            <span class="order-tally-count"><span class="placed">0</span> / <span class="needed">${count}</span></span>
+          </div>`;
       })
       .join('');
 
     this.orderRequest.innerHTML = `
-      <p>${this.currentOrder.customer.greeting} a pizza with:</p>
-      <div class="order-toppings">${orderHTML}</div>
+      <p class="order-line">${this.currentOrder.customer.greeting} ${sentence}!</p>
+      <div class="order-tallies">${tallies}</div>
     `;
 
     // Reset star rating
     this.starRating.querySelectorAll('.star').forEach(star => {
       star.classList.remove('filled');
       star.classList.add('empty');
+    });
+
+    this.updateOrderProgress();
+  }
+
+  // Refresh the "placed / needed" tally after each drop or clear
+  updateOrderProgress() {
+    if (!this.currentOrder || !this.orderRequest) return;
+
+    const placed = this.getPlacedCounts();
+    this.orderRequest.querySelectorAll('.order-tally').forEach(row => {
+      const topping = row.dataset.topping;
+      const needed = this.currentOrder.counts[topping] || 0;
+      const have = placed[topping] || 0;
+
+      const placedEl = row.querySelector('.placed');
+      if (placedEl) placedEl.textContent = have;
+
+      row.classList.toggle('matched', have === needed);
+      row.classList.toggle('over', have > needed);
     });
   }
 
@@ -467,39 +511,28 @@ export default class PizzaMakerGame {
   }
 
   checkOrder() {
-    const orderSet = new Set(this.currentOrder.toppings);
-    const pizzaSet = new Set(this.currentToppings);
+    const needed = this.currentOrder.counts;
+    const placed = this.getPlacedCounts();
 
-    let correctToppings = 0;
-    let extraToppings = 0;
-    let missingToppings = 0;
+    const neededTypes = Object.keys(needed);
+    const extraTypes = Object.keys(placed).filter(topping => !needed[topping]);
 
-    // Check what's on the pizza
-    this.currentToppings.forEach(topping => {
-      if (orderSet.has(topping)) {
-        correctToppings++;
-      } else {
-        extraToppings++;
-      }
+    // A topping type counts as correct only when the COUNT matches exactly
+    let correctTypes = 0;
+    neededTypes.forEach(topping => {
+      if ((placed[topping] || 0) === needed[topping]) correctTypes++;
     });
 
-    // Check what's missing
-    this.currentOrder.toppings.forEach(topping => {
-      if (!pizzaSet.has(topping)) {
-        missingToppings++;
-      }
-    });
-
-    const perfectMatch =
-      correctToppings === this.currentOrder.toppings.length && extraToppings === 0;
-    const score = correctToppings / (this.currentOrder.toppings.length + extraToppings);
+    const perfectMatch = correctTypes === neededTypes.length && extraTypes.length === 0;
+    const denominator = neededTypes.length + extraTypes.length;
+    const score = denominator ? correctTypes / denominator : 0;
 
     return {
       perfectMatch,
       score,
-      correctToppings,
-      extraToppings,
-      missingToppings,
+      correctTypes,
+      extraTypes: extraTypes.length,
+      neededTypes: neededTypes.length,
     };
   }
 
@@ -603,6 +636,9 @@ export default class PizzaMakerGame {
     } else {
       this.bakeButton.innerHTML = '<span class="bake-icon">🔥</span> Add toppings first!';
     }
+
+    // Keep the count tally in sync with the pizza
+    this.updateOrderProgress();
   }
 
   animateCustomerEntrance() {

@@ -120,19 +120,21 @@ footer {
 }
 
 .reading-level.beginner {
-  /* pale tint + dark text: the saturated status colors fail WCAG with any text */
+  /* Pale, fixed-brightness tint in both themes, so it always needs a fixed dark
+     ink (not --text-primary, which flips to a pale color in dark mode and would
+     go near-invisible against this background). */
   background-color: #c8fcea;
-  color: var(--text-primary);
+  color: var(--text-on-accent);
 }
 
 .reading-level.intermediate {
   background-color: #ffeaa7;
-  color: var(--text-primary);
+  color: var(--text-on-accent);
 }
 
 .reading-level.advanced {
   background-color: #fab1a0;
-  color: var(--text-primary);
+  color: var(--text-on-accent);
 }
 
 .story-card img {

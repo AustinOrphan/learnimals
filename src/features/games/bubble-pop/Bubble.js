@@ -81,28 +81,17 @@ export default class Bubble {
       );
     }
 
-    // Draw the answer text with theme-aware color
-    const textColor =
-      getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() ||
-      getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() ||
-      getComputedStyle(document.documentElement).getPropertyValue('--foreground-color').trim() ||
-      '#000';
-
-    this.ctx.fillStyle = textColor;
-    this.ctx.font = '20px Comic Sans MS, Comic Sans, cursive';
+    // Draw the answer number in bold white with a dark outline so it stays
+    // legible on top of any vivid bubble color, in both light and dark themes.
+    this.ctx.font = 'bold 26px Comic Sans MS, Comic Sans, cursive';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
-
-    // Add text shadow for better visibility in both light and dark modes
-    this.ctx.shadowColor =
-      textColor.includes('#fff') || textColor.includes('255, 255, 255')
-        ? 'rgba(0, 0, 0, 0.5)'
-        : 'rgba(255, 255, 255, 0.5)';
-    this.ctx.shadowBlur = 2;
-    this.ctx.shadowOffsetX = 1;
-    this.ctx.shadowOffsetY = 1;
-
-    this.ctx.fillText(this.answer, this.x, this.y);
+    this.ctx.lineWidth = 4;
+    this.ctx.lineJoin = 'round';
+    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.75)';
+    this.ctx.strokeText(String(this.answer), this.x, this.y);
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillText(String(this.answer), this.x, this.y);
 
     this.ctx.restore();
   }
@@ -121,17 +110,14 @@ export default class Bubble {
       return; // Don't continue with normal update
     }
 
-    // Original upward floating movement (like the original game)
-    this.y -= this.speed * (deltaTime / 16.67); // Normalized to ~60 FPS
+    // Gentle bobbing around the spawn position so the four bubbles stay fully
+    // visible and clickable (instead of drifting off the top of the canvas).
+    this.bobTime = (this.bobTime || 0) + deltaTime;
+    this.y = this.originalY + Math.sin(this.bobTime / 600 + this.floatOffset) * this.floatAmplitude;
 
     // Pulse animation
     if (this.isPulsing) {
       this.pulseScale = 1 + Math.sin(Date.now() * this.pulseSpeed) * 0.2;
-    }
-
-    // Mark as inactive if out of canvas (only if floating upward)
-    if (this.y + this.radius < 0) {
-      this.active = false;
     }
   }
 

@@ -43,11 +43,6 @@ nav a {
   margin: 20px;
 }
 
-.hero-image {
-  width: 150px;
-  margin-top: 15px;
-}
-
 .games-section,
 .canvas-section,
 .color-theory {
@@ -69,8 +64,11 @@ nav a {
 }
 
 .games-list a {
-  /* accent mint is a background color, not a text color (1.9:1 on cream) */
-  color: #00664e;
+  /* Sits on var(--bg-card), which flips with the theme, so the link needs the
+     semantic foreground (--text-primary) rather than a fixed ink color -
+     a fixed dark green reads fine on the light-mode card but goes near-invisible
+     on the dark-mode card. */
+  color: var(--text-primary);
   font-weight: bold;
 }
 

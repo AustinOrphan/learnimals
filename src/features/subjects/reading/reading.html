@@ -80,13 +80,18 @@
             // Select clicked option
             option.classList.add('selected');
 
-            // Check if correct - use theme colors
+            // Check if correct - use theme colors. --success-color/--error-color
+            // are bright accent tones in both themes, so pair them with
+            // --text-on-accent (a fixed dark ink) instead of the default
+            // --text-primary, which flips to a pale color in dark mode and
+            // would go near-invisible against these backgrounds.
             const isCorrect = option.getAttribute('data-correct') === 'true';
             if (isCorrect) {
               option.style.backgroundColor = 'var(--success-color, #c8fcea)';
             } else {
               option.style.backgroundColor = 'var(--error-color, #ffcdd2)';
             }
+            option.style.color = 'var(--text-on-accent)';
           });
         });
       }
@@ -99,9 +104,6 @@
       <section class="hero">
         <h1>Reading with Ruby the Panda</h1>
         <p>Explore stories, play word games, and improve your reading skills!</p>
-        <div class="hero-image">
-          <img src="/public/images/reading-panda.png" alt="Ruby the Panda" />
-        </div>
       </section>
 
       <div class="reading-container">

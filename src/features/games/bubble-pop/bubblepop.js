@@ -29,6 +29,11 @@ export default class BubblePopGame {
     // Bubble cache for performance
     this.bubbleCache = {};
 
+    // Vivid, high-contrast bubble palette. These are deliberately fixed
+    // (not theme variables) so every bubble pops against the ocean
+    // background in both light and dark modes.
+    this.bubbleColors = ['#ff5252', '#ffb300', '#7c4dff', '#00c853', '#00b0ff', '#ff4081'];
+
     // Bind methods to preserve 'this' context
     this.handlePointerEvent = this.handlePointerEvent.bind(this);
     this.animate = this.animate.bind(this);
@@ -130,36 +135,81 @@ export default class BubblePopGame {
   }
 
   /**
-   * Create a cached bubble background for performance
+   * Create a cached, glossy bubble background for performance.
+   * Uses a fixed, vivid, high-contrast palette so bubbles are clearly visible
+   * against the ocean background in both light and dark themes.
    * @param {number} radius - The radius of the bubble
+   * @param {string} color - The vivid fill color for this bubble
    * @returns {HTMLCanvasElement} - The pre-rendered bubble canvas
    */
-  createBubbleBackground(radius) {
-    const cacheKey = `bubble_${radius}`;
+  createBubbleBackground(radius, color) {
+    const cacheKey = `bubble_${radius}_${color}`;
 
     if (!this.bubbleCache[cacheKey]) {
+      const pad = 6;
       const bubbleCanvas = document.createElement('canvas');
-      bubbleCanvas.width = radius * 2 + 4; // Add padding for stroke
-      bubbleCanvas.height = radius * 2 + 4;
+      bubbleCanvas.width = radius * 2 + pad * 2;
+      bubbleCanvas.height = radius * 2 + pad * 2;
       const bubbleCtx = bubbleCanvas.getContext('2d');
+      const cx = radius + pad;
+      const cy = radius + pad;
+
+      // Glossy radial gradient: bright highlight toward the top-left,
+      // deepening to the base color at the edge.
+      const gradient = bubbleCtx.createRadialGradient(
+        cx - radius * 0.35,
+        cy - radius * 0.35,
+        radius * 0.1,
+        cx,
+        cy,
+        radius
+      );
+      gradient.addColorStop(0, '#ffffff');
+      gradient.addColorStop(0.25, color);
+      gradient.addColorStop(1, this.shadeColor(color, -0.35));
 
       bubbleCtx.beginPath();
-      bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
-      bubbleCtx.fillStyle =
-        this.getThemeColor('--secondary-color') ||
-        this.getThemeColor('--bg-secondary') ||
-        '#a2e8ff';
+      bubbleCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+      bubbleCtx.fillStyle = gradient;
       bubbleCtx.fill();
-      bubbleCtx.strokeStyle =
-        this.getThemeColor('--primary-color') || this.getThemeColor('--bg-primary') || '#008cba';
-      bubbleCtx.lineWidth = 2;
+
+      // Bold white outline for crisp separation from the background.
+      bubbleCtx.lineWidth = 3;
+      bubbleCtx.strokeStyle = '#ffffff';
       bubbleCtx.stroke();
+      bubbleCtx.closePath();
+
+      // Small specular highlight for a shiny bubble look.
+      bubbleCtx.beginPath();
+      bubbleCtx.arc(cx - radius * 0.35, cy - radius * 0.38, radius * 0.22, 0, Math.PI * 2);
+      bubbleCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      bubbleCtx.fill();
       bubbleCtx.closePath();
 
       this.bubbleCache[cacheKey] = bubbleCanvas;
     }
 
     return this.bubbleCache[cacheKey];
+  }
+
+  /**
+   * Darken (negative amount) or lighten (positive amount) a hex color.
+   * @param {string} hex - Color in #rrggbb form
+   * @param {number} amount - Fraction from -1 (black) to 1 (white)
+   * @returns {string} - Adjusted #rrggbb color
+   */
+  shadeColor(hex, amount) {
+    const normalized = hex.replace('#', '');
+    const num = parseInt(normalized, 16);
+    let r = (num >> 16) & 0xff;
+    let g = (num >> 8) & 0xff;
+    let b = num & 0xff;
+    const target = amount < 0 ? 0 : 255;
+    const t = Math.abs(amount);
+    r = Math.round(r + (target - r) * t);
+    g = Math.round(g + (target - g) * t);
+    b = Math.round(b + (target - b) * t);
+    return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
   }
 
   /**
@@ -181,12 +231,17 @@ export default class BubblePopGame {
     this.bubbles = [];
     const correctPos = getRandomInt(0, 3); // Random position for correct answer
     const spacing = this.canvas.width / 5;
+    // Shuffle the palette so bubble colors vary each round while staying distinct.
+    const colors = [...this.bubbleColors].sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < 4; i++) {
-      const radius = 30;
-      // Distribute bubbles evenly across canvas width with proper spacing
+      const radius = 42;
+      // Distribute bubbles evenly across canvas width with proper spacing.
       const x = spacing * (i + 1);
-      const y = this.canvas.height - 40;
+      // Place the bubbles in the middle of the play area (below the score/question
+      // header) so they are always fully within the visible canvas.
+      const y = this.canvas.height * 0.5;
+      const color = colors[i];
       let answer;
 
       if (i === correctPos) {
@@ -211,7 +266,8 @@ export default class BubblePopGame {
         radius,
         answer,
         isCorrect,
-        bubbleBackground: this.createBubbleBackground(radius),
+        color,
+        bubbleBackground: this.createBubbleBackground(radius, color),
         ctx: this.ctx,
       });
 
@@ -327,23 +383,25 @@ export default class BubblePopGame {
       return;
     }
 
-    // Clear canvas and set background color based on theme
+    // Clear canvas and paint a SOLID, opaque ocean background. This is a fixed
+    // gradient (not a semi-transparent theme variable) so the alpha:false canvas
+    // never renders as muddy gray, and it stays high-contrast in light and dark.
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Apply theme-based background
-    this.ctx.fillStyle =
-      this.getThemeColor('--bg-card') || this.getThemeColor('--bg-body') || '#e0f7fa';
+    const bg = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    bg.addColorStop(0, '#4facfe');
+    bg.addColorStop(1, '#0a4d8c');
+    this.ctx.fillStyle = bg;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Draw game UI with shadow effect for better readability
-    this.ctx.font = '20px Comic Sans MS, Comic Sans, cursive';
-    this.ctx.fillStyle =
-      this.getThemeColor('--text-primary') || this.getThemeColor('--text-color') || '#333';
+    // Draw game UI in bold white with a dark shadow for readability on the ocean.
+    this.ctx.font = 'bold 22px Comic Sans MS, Comic Sans, cursive';
+    this.ctx.fillStyle = '#ffffff';
     this.ctx.textAlign = 'left';
-    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'; // Or a dedicated shadow variable
+    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
     this.ctx.shadowBlur = 4;
-    this.ctx.fillText(`Score: ${this.score}`, 10, 35);
-    this.ctx.fillText(`Solve: ${this.currentQuestion.text}`, 10, 60);
+    this.ctx.fillText(`Score: ${this.score}`, 12, 32);
+    this.ctx.fillText(`Solve: ${this.currentQuestion.text}`, 12, 62);
     this.ctx.shadowBlur = 0;
 
     // Draw message if present
@@ -364,6 +422,9 @@ export default class BubblePopGame {
 
     this.bubbles.forEach(bubble => {
       bubble.update(deltaTime);
+      // Render the bubble every frame (this was previously missing, so bubbles
+      // were never drawn at all).
+      bubble.draw();
       // Check if a correct bubble has left the screen
       if (!bubble.active && bubble.isCorrect) {
         missedCorrect = true;
