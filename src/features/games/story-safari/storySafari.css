@@ -1,0 +1,1310 @@
+/* Story Safari Game - Watercolor Safari Theme CSS */
+/* Beautiful, immersive styling for Ruby's interactive reading adventure */
+
+/* ================================
+   CSS Variables for Theme Colors
+   ================================ */
+:root {
+  /* Safari Color Palette */
+  --safari-warm-sand: #f4e4b8;
+  --safari-golden-grass: #d4b07a;
+  --safari-sunset-orange: #e8956f;
+  --safari-earth-brown: #8b5a3c;
+  --safari-forest-green: #6b8e5a;
+  --safari-sky-blue: #87ceeb;
+  --safari-water-teal: #4a9b9b;
+  --safari-accent-coral: #ff7f7f;
+
+  /* Text Colors */
+  --safari-text-dark: #2c1810;
+  --safari-text-medium: #5d4037;
+  --safari-text-light: #8d6e63;
+  --safari-text-white: #ffffff;
+
+  /* Background Gradients */
+  --safari-sunset-gradient: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%);
+  --safari-grass-gradient: linear-gradient(180deg, #a8e6cf 0%, #88c999 100%);
+  --safari-water-gradient: linear-gradient(180deg, #74b9ff 0%, #0984e3 100%);
+
+  /* Shadows and Effects */
+  --safari-soft-shadow: 0 4px 20px rgba(139, 90, 60, 0.15);
+  --safari-medium-shadow: 0 8px 30px rgba(139, 90, 60, 0.25);
+  --safari-strong-shadow: 0 12px 40px rgba(139, 90, 60, 0.35);
+
+  /* Animation Timings */
+  --safari-transition-fast: 0.2s ease-out;
+  --safari-transition-medium: 0.4s ease-out;
+  --safari-transition-slow: 0.6s ease-out;
+}
+
+/* ================================
+   Main Game Container
+   ================================ */
+.story-safari-game {
+  min-height: 100vh;
+  background: var(--safari-sunset-gradient);
+  background-attachment: fixed;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: var(--safari-text-dark);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Watercolor texture overlay */
+.story-safari-game::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 40%, rgba(255, 127, 127, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(135, 206, 235, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ================================
+   Safari Header
+   ================================ */
+.safari-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 3px solid var(--safari-golden-grass);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--safari-soft-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.progress-container {
+  flex: 1;
+  max-width: 400px;
+}
+
+.story-progress-bar {
+  background: var(--safari-warm-sand);
+  height: 8px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+  box-shadow: inset 0 2px 4px rgba(139, 90, 60, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--safari-sunset-gradient);
+  border-radius: 20px;
+  transition: width var(--safari-transition-medium);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--safari-text-medium);
+}
+
+.game-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  background: var(--safari-forest-green);
+  color: var(--safari-text-white);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 25px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--safari-transition-fast);
+  box-shadow: var(--safari-soft-shadow);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.control-btn:hover {
+  background: var(--safari-earth-brown);
+  transform: translateY(-2px);
+  box-shadow: var(--safari-medium-shadow);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+/* ================================
+   Story Main Content
+   ================================ */
+.story-main {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'character story'
+    'character story'
+    'character choices';
+  gap: 2rem;
+  padding: 2rem;
+  min-height: calc(100vh - 120px);
+  position: relative;
+  z-index: 2;
+}
+
+/* ================================
+   Character Container
+   ================================ */
+.character-container {
+  grid-area: character;
+  position: sticky;
+  top: 140px;
+  height: fit-content;
+}
+
+.ruby-character {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--safari-medium-shadow);
+  position: relative;
+  border: 3px solid var(--safari-golden-grass);
+}
+
+.ruby-character::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: var(--safari-sunset-gradient);
+  border-radius: 25px;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.character-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--safari-warm-sand);
+  box-shadow: var(--safari-soft-shadow);
+  transition: transform var(--safari-transition-medium);
+}
+
+.character-image:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.speech-bubble {
+  background: var(--safari-text-white);
+  border-radius: 20px;
+  padding: 1rem;
+  margin-top: 1rem;
+  position: relative;
+  box-shadow: var(--safari-soft-shadow);
+  border: 2px solid var(--safari-accent-coral);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all var(--safari-transition-medium);
+}
+
+.speech-bubble:not(.hidden) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--safari-accent-coral);
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--safari-text-white);
+}
+
+.character-speech {
+  font-style: italic;
+  color: var(--safari-text-medium);
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* ================================
+   Story Display Area
+   ================================ */
+.story-display {
+  grid-area: story;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--safari-medium-shadow);
+  position: relative;
+  border: 2px solid var(--safari-golden-grass);
+}
+
+.story-text-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.scene-title {
+  font-size: 2.2rem;
+  color: var(--safari-earth-brown);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(139, 90, 60, 0.1);
+}
+
+.story-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--safari-text-dark);
+  text-align: justify;
+  margin-bottom: 2rem;
+}
+
+.story-text p {
+  margin-bottom: 1.2rem;
+}
+
+.story-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Vocabulary word highlighting */
+.vocabulary-word {
+  background: linear-gradient(120deg, var(--safari-accent-coral) 0%, var(--safari-sunset-orange) 100%);
+  color: var(--safari-text-white);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--safari-transition-fast);
+  position: relative;
+}
+
+.vocabulary-word:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 127, 127, 0.3);
+}
+
+.vocabulary-word::after {
+  content: '📖';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 0.7em;
+  opacity: 0;
+  transition: opacity var(--safari-transition-fast);
+}
+
+.vocabulary-word:hover::after {
+  opacity: 1;
+}
+
+/* ================================
+   Story Interactives
+   ================================ */
+.story-interactives {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.word-detective {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--safari-text-white);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: var(--safari-strong-shadow);
+  border: 3px solid var(--safari-accent-coral);
+  max-width: 400px;
+  z-index: 1000;
+  pointer-events: all;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: all var(--safari-transition-medium);
+}
+
+.word-detective:not(.hidden) {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.word-definition .word-term {
+  font-size: 1.4rem;
+  color: var(--safari-earth-brown);
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.word-definition .word-meaning {
+  font-size: 1rem;
+  color: var(--safari-text-medium);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.close-definition {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--safari-text-light);
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all var(--safari-transition-fast);
+}
+
+.close-definition:hover {
+  background: var(--safari-warm-sand);
+  color: var(--safari-text-dark);
+}
+
+/* ================================
+   Choices Container
+   ================================ */
+.choices-container {
+  grid-area: choices;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--safari-medium-shadow);
+  border: 2px solid var(--safari-forest-green);
+}
+
+.choices-prompt {
+  font-size: 1.3rem;
+  color: var(--safari-earth-brown);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.choice-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.choice-button {
+  background: var(--safari-grass-gradient);
+  color: var(--safari-text-white);
+  border: none;
+  padding: 1.2rem 1.5rem;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--safari-transition-medium);
+  box-shadow: var(--safari-soft-shadow);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.choice-button:hover {
+  transform: translateX(10px);
+  border-color: var(--safari-forest-green);
+  box-shadow: var(--safari-medium-shadow);
+}
+
+.choice-button:active {
+  transform: translateX(5px);
+}
+
+.choice-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.choice-button:hover::before {
+  left: 100%;
+}
+
+/* ================================
+   Comprehension Panel
+   ================================ */
+.comprehension-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--safari-transition-medium);
+}
+
+.comprehension-panel:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.panel-content {
+  background: var(--safari-text-white);
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: var(--safari-strong-shadow);
+  border: 3px solid var(--safari-water-teal);
+  transform: scale(0.8);
+  transition: transform var(--safari-transition-medium);
+}
+
+.comprehension-panel:not(.hidden) .panel-content {
+  transform: scale(1);
+}
+
+.challenge-title {
+  font-size: 1.5rem;
+  color: var(--safari-water-teal);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.question-text {
+  font-size: 1.1rem;
+  color: var(--safari-text-dark);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.answer-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.answer-option {
+  background: var(--safari-warm-sand);
+  border: 2px solid var(--safari-golden-grass);
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--safari-transition-fast);
+  font-size: 0.95rem;
+}
+
+.answer-option:hover {
+  background: var(--safari-golden-grass);
+  border-color: var(--safari-earth-brown);
+  transform: translateX(5px);
+}
+
+.answer-option.selected {
+  background: var(--safari-forest-green);
+  color: var(--safari-text-white);
+  border-color: var(--safari-earth-brown);
+}
+
+.challenge-feedback {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.feedback-text {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.continue-btn {
+  background: var(--safari-sunset-gradient);
+  color: var(--safari-text-white);
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--safari-transition-fast);
+  box-shadow: var(--safari-soft-shadow);
+}
+
+.continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--safari-medium-shadow);
+}
+
+/* ================================
+   Safari Footer
+   ================================ */
+.safari-footer {
+  background: rgba(255, 255, 255, 0.9);
+  border-top: 3px solid var(--safari-golden-grass);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(139, 90, 60, 0.15);
+  position: relative;
+  z-index: 2;
+}
+
+.stats-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--safari-text-light);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--safari-earth-brown);
+}
+
+.achievements-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recent-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--safari-sunset-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: var(--safari-soft-shadow);
+  animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* ================================
+   Safari Journal Modal
+   ================================ */
+.safari-journal-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--safari-transition-medium);
+}
+
+.safari-journal-modal.journal-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.journal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.journal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--safari-text-white);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 800px;
+  height: 80vh;
+  box-shadow: var(--safari-strong-shadow);
+  border: 3px solid var(--safari-golden-grass);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.journal-header {
+  background: var(--safari-sunset-gradient);
+  color: var(--safari-text-white);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.journal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.journal-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: var(--safari-text-white);
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--safari-transition-fast);
+}
+
+.journal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.journal-tabs {
+  background: var(--safari-warm-sand);
+  display: flex;
+  border-bottom: 2px solid var(--safari-golden-grass);
+}
+
+.journal-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--safari-text-medium);
+  cursor: pointer;
+  transition: all var(--safari-transition-fast);
+  border-bottom: 3px solid transparent;
+}
+
+.journal-tab:hover {
+  background: rgba(139, 90, 60, 0.1);
+}
+
+.journal-tab.active {
+  background: var(--safari-text-white);
+  color: var(--safari-earth-brown);
+  border-bottom-color: var(--safari-earth-brown);
+}
+
+.journal-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: var(--safari-text-white);
+}
+
+.journal-footer {
+  background: var(--safari-warm-sand);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid var(--safari-golden-grass);
+}
+
+.journal-stats-summary {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--safari-text-medium);
+}
+
+.export-journal-btn {
+  background: var(--safari-forest-green);
+  color: var(--safari-text-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--safari-transition-fast);
+  box-shadow: var(--safari-soft-shadow);
+}
+
+.export-journal-btn:hover {
+  background: var(--safari-earth-brown);
+  transform: translateY(-2px);
+  box-shadow: var(--safari-medium-shadow);
+}
+
+/* ================================
+   Journal Content Sections
+   ================================ */
+.vocabulary-content,
+.progress-content,
+.achievements-content,
+.stats-content {
+  max-width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--safari-text-light);
+}
+
+.empty-state h3 {
+  color: var(--safari-earth-brown);
+  margin-bottom: 1rem;
+}
+
+.vocabulary-section {
+  margin-bottom: 2rem;
+}
+
+.difficulty-header {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.difficulty-header.easy {
+  background: var(--safari-grass-gradient);
+  color: var(--safari-text-white);
+}
+
+.difficulty-header.medium {
+  background: var(--safari-sunset-gradient);
+  color: var(--safari-text-white);
+}
+
+.difficulty-header.hard {
+  background: var(--safari-water-gradient);
+  color: var(--safari-text-white);
+}
+
+.difficulty-header.expert {
+  background: linear-gradient(135deg, var(--safari-earth-brown) 0%, var(--safari-forest-green) 100%);
+  color: var(--safari-text-white);
+}
+
+.vocabulary-grid,
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.vocabulary-card,
+.achievement-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--safari-warm-sand);
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: var(--safari-soft-shadow);
+  transition: all var(--safari-transition-fast);
+}
+
+.vocabulary-card:hover,
+.achievement-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--safari-medium-shadow);
+  border-color: var(--safari-golden-grass);
+}
+
+.vocabulary-card.mastered {
+  border-color: var(--safari-forest-green);
+  background: linear-gradient(135deg, rgba(107, 142, 90, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+}
+
+.word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.vocabulary-word {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--safari-earth-brown);
+  margin: 0;
+}
+
+.encounter-count {
+  background: var(--safari-accent-coral);
+  color: var(--safari-text-white);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.word-definition {
+  color: var(--safari-text-medium);
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.word-contexts {
+  margin-bottom: 0.75rem;
+}
+
+.word-contexts strong {
+  color: var(--safari-earth-brown);
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.context-example {
+  display: inline-block;
+  background: var(--safari-warm-sand);
+  color: var(--safari-text-dark);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  margin: 0.2rem 0.2rem 0.2rem 0;
+  font-style: italic;
+}
+
+.word-meta {
+  font-size: 0.75rem;
+  color: var(--safari-text-light);
+  border-top: 1px solid var(--safari-warm-sand);
+  padding-top: 0.5rem;
+}
+
+/* Progress Timeline */
+.story-map h3 {
+  color: var(--safari-earth-brown);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.progress-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.progress-timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--safari-golden-grass);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -35px;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background: var(--safari-sunset-gradient);
+  color: var(--safari-text-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  box-shadow: var(--safari-soft-shadow);
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--safari-warm-sand);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: var(--safari-soft-shadow);
+}
+
+.timeline-content h4 {
+  color: var(--safari-earth-brown);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-content time {
+  color: var(--safari-text-light);
+  font-size: 0.85rem;
+}
+
+.choices-made {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--safari-text-medium);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--safari-grass-gradient);
+  color: var(--safari-text-white);
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: var(--safari-soft-shadow);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.reading-progress {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.reading-progress h4 {
+  color: var(--safari-earth-brown);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.level-indicator {
+  margin-bottom: 1rem;
+}
+
+.level-indicator span {
+  display: block;
+  color: var(--safari-text-medium);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  background: var(--safari-warm-sand);
+  height: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(139, 90, 60, 0.2);
+}
+
+.progress-bar .progress-fill {
+  height: 100%;
+  background: var(--safari-forest-green);
+  border-radius: 10px;
+  transition: width var(--safari-transition-slow);
+}
+
+.journal-meta {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: var(--safari-text-medium);
+}
+
+/* ================================
+   Achievement Animations
+   ================================ */
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--safari-sunset-gradient);
+  color: var(--safari-text-white);
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  box-shadow: var(--safari-strong-shadow);
+  z-index: 4000;
+  transform: translateX(100%);
+  transition: transform var(--safari-transition-medium);
+}
+
+.achievement-notification.show {
+  transform: translateX(0);
+}
+
+.achievement-notification::before {
+  content: '🏆';
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+/* ================================
+   Responsive Design
+   ================================ */
+@media (max-width: 768px) {
+  .story-main {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'character'
+      'story'
+      'choices';
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .character-container {
+    position: static;
+  }
+
+  .ruby-character {
+    padding: 1rem;
+  }
+
+  .character-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .safari-header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .story-display,
+  .choices-container {
+    padding: 1.5rem;
+  }
+
+  .scene-title {
+    font-size: 1.8rem;
+  }
+
+  .story-text {
+    font-size: 1rem;
+  }
+
+  .journal-container {
+    width: 95%;
+    height: 90vh;
+  }
+
+  .journal-content {
+    padding: 1rem;
+  }
+
+  .vocabulary-grid,
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .safari-footer {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-controls {
+    flex-wrap: wrap;
+  }
+
+  .control-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .choice-button {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .word-detective {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  .panel-content {
+    padding: 1.5rem;
+  }
+}
+
+/* ================================
+   Accessibility Enhancements
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --safari-text-dark: #000000;
+    --safari-text-white: #ffffff;
+    --safari-warm-sand: #ffffff;
+  }
+
+  .vocabulary-word {
+    border: 2px solid var(--safari-text-dark);
+  }
+
+  .choice-button {
+    border: 2px solid var(--safari-text-dark);
+  }
+}
+
+/* Focus indicators for keyboard navigation */
+.control-btn:focus,
+.choice-button:focus,
+.journal-tab:focus,
+.answer-option:focus,
+.close-definition:focus {
+  outline: 3px solid var(--safari-accent-coral);
+  outline-offset: 2px;
+}
+
+/* Print styles for journal export */
+@media print {
+  .safari-journal-modal {
+    position: static;
+    background: white;
+  }
+
+  .journal-overlay {
+    display: none;
+  }
+
+  .journal-container {
+    position: static;
+    transform: none;
+    width: 100%;
+    height: auto;
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+
+  .journal-header {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+  }
+
+  .journal-close {
+    display: none;
+  }
+}
