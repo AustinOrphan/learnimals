@@ -12,7 +12,7 @@ jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -21,7 +21,7 @@ jobs:
           cache: 'npm'
 
       - name: Checkout e2e-core (public sibling dependency)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: AustinOrphan/e2e-core
           path: .e2e-core-checkout
@@ -106,7 +106,7 @@ jobs:
   mobile-performance:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -115,7 +115,7 @@ jobs:
           cache: 'npm'
 
       - name: Checkout e2e-core (public sibling dependency)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: AustinOrphan/e2e-core
           path: .e2e-core-checkout
@@ -169,7 +169,7 @@ jobs:
   web-vitals:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -178,7 +178,7 @@ jobs:
           cache: 'npm'
 
       - name: Checkout e2e-core (public sibling dependency)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: AustinOrphan/e2e-core
           path: .e2e-core-checkout
