@@ -1,5 +1,5 @@
 # Multi-stage build for optimized production image
-FROM node:20.15.1-alpine AS builder
+FROM node:26.5.0-alpine AS builder
 
 # Set working directory
 WORKDIR /app
