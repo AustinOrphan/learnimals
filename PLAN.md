@@ -41,9 +41,9 @@ When this plan changes, update this file — do not fork a new one.
 
 - **License**: RESOLVED 2026-07-19 — split licensing: MIT for code
   (LICENSE), CC BY-NC-SA 4.0 for creative/educational content
-  (LICENSE-CONTENT.md), "Learnimals" name and logo reserved. Open
-  follow-up: confirm the early contributor (4 commits, May 2025) is OK
-  with the MIT grant and public visibility.
+  (LICENSE-CONTENT.md), "Learnimals" name and logo reserved. The early
+  contributor (4 commits, May 2025) is OK with the MIT grant and public
+  visibility — confirmed 2026-07-19.
 - **IndexedDB island**: `src/services/{database,progress,achievements}`
   has zero importers (the live progress path is
   `features/progress/ProgressTracker` + `utils/EnhancedProgressTracker`).
@@ -73,12 +73,69 @@ When this plan changes, update this file — do not fork a new one.
   markdownlint. Either curate down to living documents or move to a
   `docs/archive/` subtree.
 
-## Milestone 3 — feature direction (after 1 and 2)
+## Functional audit (2026-07-19) — what actually works when driven
 
-The character-driven learning ecosystem from the old M2 roadmap is
-still the most coherent direction: progress tracking with character
-companions, achievements, profile growth. Build it on whichever storage
-layer survives the M2 decision, keeping the serverless constraint.
+Six agents drove the real app headless (Playwright) and read intent from
+source. Green tests hid the truth: most of the surface is broken or
+absent. Verdicts:
+
+- **Genuinely works end to end:** Bubble Pop, Ecosystem Explorer (games);
+  Science, Reading (subjects); theme switching; navigation; homepage,
+  about, contact; the character-generation ENGINE (factory, storage, SVG
+  renderer, customizer, studio, presets — all persist).
+- **Partial:** Pizza Party (core fraction loop works; no achievement popup
+  or game-over screen — both TODOs); Math, Art (widgets half-work); the
+  character-generation UI (engine works, wizard/gallery/canonical page
+  broken); Profile (shell works, save is a no-op); PWA (SW registers but
+  at wrong scope → inert).
+- **Broken but the code exists (revivable):** Element Match, Number Line
+  Jump, Word Scramble, Sentence Builder, Color Palette (games); Music,
+  Geography (subjects); profile-enhanced, progress-dashboard.
+- **Absent / skeleton:** Story Safari (game modules don't exist — only a
+  test harness); Ecosystem Safari (engine is empty placeholder methods
+  despite elaborate design docs); cooking/environment/history/language/
+  physics (no HTML page exists — unreachable); Coding (static "coming
+  soon" stub).
+
+### Shared root causes (fixing these cascades across many features)
+
+1. `src/features/progress/ProgressTracker.js` is a mock missing
+   `recordActivity()`; `AchievementSystem` missing `checkAchievement()` —
+   every BaseGame game throws at `start()`. Blast: Element Match, Number
+   Line Jump, Word Scramble, bubblepop-new, Color Palette.
+2. Subject `.js` (ESM) loaded as classic `<script>` by the `subject.html`
+   template (no `type=module`) → "Unexpected token 'export'". Blast: Math,
+   Music, Geography interactivity; also navigationHelper.js and
+   BaseComponent.js on many pages.
+3. Async `initialize()` vs synchronous `game.start()` race in game demo
+   HTML → state stuck at 'ready'. Compounds #1 on several games.
+4. `EnhancedProgressTracker` default export is an instance, not the class;
+   `progressIntegration.js` `new`s it. Blast: profile-enhanced,
+   progress-dashboard. (The named export already exists — fix the import.)
+5. `window.userProgress` never assigned (default-export only) → profile
+   save + dynamic data are dead.
+6. Service worker registers at `/public/` scope, not `/` → page
+   uncontrolled, entire PWA layer (offline/install/caching) inert.
+7. `createCharacter is not defined` in characterIntegration.js → character
+   rendering fails on music/geography.
+   Plus individual bugs: pizza-maker `_animationSequence` import typo;
+   adventure-quest click-handler deadlock (gated on isPlaying which only Start
+   sets); sentence-builder queries #hint-btn before it's created; art
+   `clearCanvas` undefined; CharacterWizard `this.init` missing; Character
+   Gallery no default export; character-customization.html imports a
+   nonexistent module.
+
+### Milestone 3 — remediation, then features
+
+Sequence: (A) land the 7 shared root-cause fixes — highest leverage,
+revives ~10 features at once, each verified by re-driving the app. (B)
+Individual bug fixes for the revivable games/pages. (C) PRODUCT DECISIONS
+(user's call): delete-or-build Story Safari & Ecosystem Safari skeletons;
+generate-or-drop the 5 subject-less pages (the generator works); build-or-
+label Coding; reconcile Bubble Pop not using BaseGame (it works — leave?).
+(D) Only then the character-progress ecosystem feature work. Every fix must
+be re-driven in a browser, not just unit-tested — that is how this rot
+accumulated.
 
 ## Standing rules
 
