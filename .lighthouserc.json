@@ -5,9 +5,9 @@
       "startServerReadyPattern": "Serving HTTP",
       "url": [
         "http://localhost:8080/",
-        "http://localhost:8080/src/pages/about.html",
-        "http://localhost:8080/src/features/subjects/shared/math.html",
-        "http://localhost:8080/src/features/subjects/shared/science.html"
+        "http://localhost:8080/pages/about.html",
+        "http://localhost:8080/subjects/math/",
+        "http://localhost:8080/subjects/science/"
       ],
       "numberOfRuns": 3
     },

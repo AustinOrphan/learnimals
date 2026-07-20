@@ -79,28 +79,28 @@ class MigrationReportGenerator {
 
     // Analyze specific migration patterns
     const migratedFiles = [
-      'src/utils/ModuleRegistry.js',
-      'src/components/EnhancedBaseComponent.js',
-      'src/utils/ModularThemeManager.js',
-      'src/utils/ComponentLoader.js',
-      'src/utils/ModularGameLoader.js',
-      'src/utils/htmlEscape.js',
-      'src/features/subjects/math/math.js',
-      'src/themeInitializer.js',
-      'src/components/ui/Card.js',
-      'src/components/forms/FormComponent.js',
-      'src/features/character-generation/ui/CharacterPreviewRenderer.js',
-      'src/components/ui/PlaceValueManipulative.js',
+      'utils/ModuleRegistry.js',
+      'components/EnhancedBaseComponent.js',
+      'utils/ModularThemeManager.js',
+      'utils/ComponentLoader.js',
+      'utils/ModularGameLoader.js',
+      'utils/htmlEscape.js',
+      'subjects/math/math.js',
+      'themeInitializer.js',
+      'components/ui/Card.js',
+      'components/forms/FormComponent.js',
+      'character-generation/ui/CharacterPreviewRenderer.js',
+      'components/ui/PlaceValueManipulative.js',
     ];
 
     this.migrationData.summary.migratedFiles = migratedFiles.length;
 
     // New files created
     const newFiles = [
-      'src/utils/ModuleRegistry.js',
-      'src/components/EnhancedBaseComponent.js',
-      'src/utils/ModularThemeManager.js',
-      'src/utils/ModularGameLoader.js',
+      'utils/ModuleRegistry.js',
+      'components/EnhancedBaseComponent.js',
+      'utils/ModularThemeManager.js',
+      'utils/ModularGameLoader.js',
       'scripts/detectMixedPatterns.js',
       'scripts/migrateMixedPatterns.js',
       'scripts/generateMigrationReport.js',
@@ -150,7 +150,7 @@ class MigrationReportGenerator {
   async collectFileChanges() {
     const changes = [
       {
-        file: 'src/utils/ModuleRegistry.js',
+        file: 'utils/ModuleRegistry.js',
         type: 'created',
         description:
           'Central registry for ES6 module component registration with dependency injection',
@@ -163,7 +163,7 @@ class MigrationReportGenerator {
         ],
       },
       {
-        file: 'src/components/EnhancedBaseComponent.js',
+        file: 'components/EnhancedBaseComponent.js',
         type: 'created',
         description: 'Extended BaseComponent with module registry integration',
         linesAdded: 120,
@@ -174,7 +174,7 @@ class MigrationReportGenerator {
         ],
       },
       {
-        file: 'src/utils/ModularThemeManager.js',
+        file: 'utils/ModularThemeManager.js',
         type: 'created',
         description: 'Theme manager with module integration capabilities',
         linesAdded: 180,
@@ -185,7 +185,7 @@ class MigrationReportGenerator {
         ],
       },
       {
-        file: 'src/utils/ModularGameLoader.js',
+        file: 'utils/ModularGameLoader.js',
         type: 'created',
         description: 'Advanced game loading system with module registry integration',
         linesAdded: 450,
@@ -197,7 +197,7 @@ class MigrationReportGenerator {
         ],
       },
       {
-        file: 'src/utils/ComponentLoader.js',
+        file: 'utils/ComponentLoader.js',
         type: 'migrated',
         description: 'Added ModuleRegistry integration to existing component loader',
         linesChanged: 45,
@@ -205,7 +205,7 @@ class MigrationReportGenerator {
         featuresAdded: ['Registry-based loading', 'Module registration on dynamic load'],
       },
       {
-        file: 'src/utils/htmlEscape.js',
+        file: 'utils/htmlEscape.js',
         type: 'migrated',
         description: 'Removed CommonJS compatibility, clean ES6 exports',
         linesChanged: 3,
@@ -213,7 +213,7 @@ class MigrationReportGenerator {
         featuresPreserved: ['XSS prevention', 'HTML escaping', 'Attribute escaping'],
       },
       {
-        file: 'src/features/subjects/math/math.js',
+        file: 'subjects/math/math.js',
         type: 'migrated',
         description: 'Removed global namespace pollution, clean ES6 module structure',
         linesChanged: 25,
@@ -225,7 +225,7 @@ class MigrationReportGenerator {
         ],
       },
       {
-        file: 'src/themeInitializer.js',
+        file: 'themeInitializer.js',
         type: 'migrated',
         description: 'Updated to use ModularThemeManager with clean exports',
         linesChanged: 12,
@@ -233,7 +233,7 @@ class MigrationReportGenerator {
         featuresPreserved: ['FOUC prevention', 'Theme initialization', 'Backward compatibility'],
       },
       {
-        file: 'src/components/ui/Card.js',
+        file: 'components/ui/Card.js',
         type: 'migrated',
         description: 'Removed mixed module pattern, clean ES6 export only',
         linesChanged: 6,
@@ -241,7 +241,7 @@ class MigrationReportGenerator {
         featuresPreserved: ['Card rendering', 'Event handling', 'Responsive design'],
       },
       {
-        file: 'src/components/forms/FormComponent.js',
+        file: 'components/forms/FormComponent.js',
         type: 'migrated',
         description: 'Removed mixed module pattern, added clean ES6 export',
         linesChanged: 6,
@@ -249,7 +249,7 @@ class MigrationReportGenerator {
         featuresPreserved: ['Form validation', 'localStorage integration', 'Event handling'],
       },
       {
-        file: 'src/features/character-generation/ui/CharacterPreviewRenderer.js',
+        file: 'character-generation/ui/CharacterPreviewRenderer.js',
         type: 'migrated',
         description: 'Removed global namespace pollution, clean ES6 export',
         linesChanged: 3,
@@ -257,7 +257,7 @@ class MigrationReportGenerator {
         featuresPreserved: ['Character rendering', 'Preview generation', 'Animation support'],
       },
       {
-        file: 'src/components/ui/PlaceValueManipulative.js',
+        file: 'components/ui/PlaceValueManipulative.js',
         type: 'migrated',
         description: 'Removed mixed module pattern, added ES6 export',
         linesChanged: 6,

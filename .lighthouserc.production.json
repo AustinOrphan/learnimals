@@ -3,10 +3,10 @@
     "collect": {
       "url": [
         "https://learnimals.app/",
-        "https://learnimals.app/src/pages/about.html",
-        "https://learnimals.app/src/features/subjects/shared/math.html",
-        "https://learnimals.app/src/features/subjects/shared/science.html",
-        "https://learnimals.app/src/pages/pizza-maker.html"
+        "https://learnimals.app/pages/about.html",
+        "https://learnimals.app/subjects/math/",
+        "https://learnimals.app/subjects/science/",
+        "https://learnimals.app/games/pizza-maker/"
       ],
       "numberOfRuns": 3
     },

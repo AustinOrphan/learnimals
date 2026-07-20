@@ -426,7 +426,7 @@ function initializeBasicReadingPage() {
     <div class="error-container">
       <h1>Reading Page</h1>
       <p>Enhanced character features are currently unavailable. Please check back later.</p>
-      <a href="/pages/index.html" class="back-link">← Back to Home</a>
+      <a href="/" class="back-link">← Back to Home</a>
     </div>
   `;
 }

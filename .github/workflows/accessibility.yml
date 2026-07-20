@@ -58,12 +58,12 @@ jobs:
           import { chromium } from '@playwright/test';
 
           const pages = [
-            '/pages/index.html',
-            '/subjects/math/math.html',
-            '/subjects/science/science.html',
-            '/subjects/reading/reading.html',
-            '/subjects/art/art.html',
-            '/subjects/coding/coding.html',
+            '/',
+            '/subjects/math/',
+            '/subjects/science/',
+            '/subjects/reading/',
+            '/subjects/art/',
+            '/subjects/coding/',
           ];
 
           const browser = await chromium.launch();
@@ -152,12 +152,12 @@ jobs:
           EOF
 
           PAGES=(
-            "http://localhost:3000/pages/index.html"
-            "http://localhost:3000/subjects/math/math.html"
-            "http://localhost:3000/subjects/science/science.html"
-            "http://localhost:3000/subjects/reading/reading.html"
-            "http://localhost:3000/subjects/art/art.html"
-            "http://localhost:3000/subjects/coding/coding.html"
+            "http://localhost:3000/"
+            "http://localhost:3000/subjects/math/"
+            "http://localhost:3000/subjects/science/"
+            "http://localhost:3000/subjects/reading/"
+            "http://localhost:3000/subjects/art/"
+            "http://localhost:3000/subjects/coding/"
           )
 
           echo "# Pa11y Test Results" > pa11y-results.txt
@@ -243,7 +243,7 @@ jobs:
 
           const browser = await chromium.launch();
           const page = await browser.newPage();
-          await page.goto('http://localhost:3000/pages/index.html', {
+          await page.goto('http://localhost:3000/', {
             waitUntil: 'networkidle',
           });
           await page.waitForSelector('#nav-menu a', { timeout: 10000 });

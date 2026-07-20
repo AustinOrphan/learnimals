@@ -1,4 +1,4 @@
-// filepath: src/features/games/pizza-party/Topping.js
+// filepath: games/pizza-party/Topping.js
 
 /**
  * Topping - Represents visual toppings for pizza slices

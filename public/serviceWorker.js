@@ -6,11 +6,13 @@
 const CACHE_NAME = 'learnimals-cache-v6';
 const OFFLINE_URL = '/pages/offline.html';
 const ASSETS_TO_CACHE = [
-  // HTML pages (only cache existing pages)
-  '/pages/index.html',
+  // HTML pages (only cache existing pages). Use '/index.html' (not a bare '/')
+  // so the Pages subpath rewrite can anchor on the index.html segment; both
+  // resolve to the homepage under a root deploy and under /learnimals/.
+  '/index.html',
   OFFLINE_URL,
-  '/subjects/math/math.html',
-  '/subjects/shared/bubblepop.html',
+  '/subjects/math/',
+  '/games/bubble-pop/',
 
   // CSS files (only cache existing CSS)
   '/styles/base/styles.css',

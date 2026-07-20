@@ -54,7 +54,7 @@ const DENY = new Set([
   '.claude_agent_farm_backups',
 ]);
 // Root-level files that are tooling/config, not app assets.
-const isConfigFile = (name) =>
+const isConfigFile = name =>
   name.startsWith('.') ||
   /\.(md|json|jsonc|ya?ml|mjs|txt|lock|log|toml|ini)$/i.test(name) ||
   name === 'package.json' ||
@@ -83,15 +83,23 @@ let replacements = 0;
 if (BASE) {
   const segments = readdirSync(SITE); // the app's top-level entries (dirs + files)
   const DELIM = `(["'\`(=\\s])`;
-  const rules = segments.map((seg) => [
+  const rules = segments.map(seg => [
     new RegExp(`${DELIM}/${seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(/|["'\`)\\s]|$)`, 'g'),
     `$1${BASE}/${seg}$2`,
   ]);
-  // PWA manifest scope.
+  // PWA manifest scope and start_url. These can be a bare "/" (the app root),
+  // which the segment rules above cannot match (no path segment to anchor on),
+  // so rewrite them explicitly to the subpath root.
   rules.push([/("scope":\s*")\//g, `$1${BASE}/`]);
+  rules.push([/("start_url":\s*")\//g, `$1${BASE}/`]);
+  // Bare-root attribute values (e.g. href="/" for the homepage) have no path
+  // segment for the rules above to anchor on. Rewrite only the quote-delimited
+  // `="/"` form — never a lone `'/'`, which is a path separator in JS
+  // (split('/'), join('/')) and must not be touched.
+  rules.push([/=(["'])\/\1/g, `=$1${BASE}/$1`]);
 
   const REWRITE_EXT = new Set(['.html', '.js', '.mjs', '.css', '.json', '.webmanifest']);
-  const walk = (dir) => {
+  const walk = dir => {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
       if (statSync(p).isDirectory()) walk(p);

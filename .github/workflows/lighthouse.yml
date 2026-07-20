@@ -66,9 +66,9 @@ jobs:
         run: |
           lhci autorun \
             --collect.url=http://localhost:3000 \
-            --collect.url=http://localhost:3000/pages/index.html \
-            --collect.url=http://localhost:3000/subjects/math/math.html \
-            --collect.url=http://localhost:3000/subjects/science/science.html \
+            --collect.url=http://localhost:3000/ \
+            --collect.url=http://localhost:3000/subjects/math/ \
+            --collect.url=http://localhost:3000/subjects/science/ \
             --collect.numberOfRuns=3 \
             --assert.assertions.categories:performance=0.8 \
             --assert.assertions.categories:accessibility=0.9 \

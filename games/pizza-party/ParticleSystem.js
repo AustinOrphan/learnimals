@@ -1,4 +1,4 @@
-// filepath: src/features/games/pizza-party/ParticleSystem.js
+// filepath: games/pizza-party/ParticleSystem.js
 
 /**
  * ParticleSystem - Creates beautiful particle effects for the pizza game

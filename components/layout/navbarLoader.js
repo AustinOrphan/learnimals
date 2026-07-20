@@ -1,4 +1,4 @@
-// src/components/layout/navbarLoader.js
+// components/layout/navbarLoader.js
 // Get the current script's path to determine the correct navbar.html location
 
 // Simple logger fallback for non-module script loading.

@@ -380,7 +380,7 @@ export default class GameTemplateLoader {
     if (referrer && referrer.includes(window.location.origin)) {
       window.location.href = referrer;
     } else {
-      window.location.href = '/pages/index.html';
+      window.location.href = '/';
     }
   }
 

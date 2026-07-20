@@ -17,8 +17,8 @@ createSmokeTests({
   ],
 });
 
-// Test specific subject pages
-createPageLoadTest('/subjects/math/math.html', {
+// Test specific subject pages (clean directory URL, served by subjects/math/index.html)
+createPageLoadTest('/subjects/math/', {
   expectedHeading: /math/i,
 });
 

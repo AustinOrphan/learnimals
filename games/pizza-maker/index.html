@@ -4,14 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pizza Maker - Learnimals</title>
-    <link rel="icon" type="image/png" href="../public/images/favicon.png" />
-    <link rel="stylesheet" href="../styles/base/reset.css" />
-    <link rel="stylesheet" href="../styles/base/typography.css" />
-    <link rel="stylesheet" href="../styles/base/responsive.css" />
-    <link rel="stylesheet" href="../styles/themes/theme-variables.css" />
-    <link rel="stylesheet" href="../styles/components/components.css" />
-    <link rel="stylesheet" href="../styles/components/navbar.css" />
-    <link rel="stylesheet" href="../games/pizza-maker/pizzaMaker.css" />
+    <link rel="icon" type="image/png" href="../../public/images/favicon.png" />
+    <link rel="stylesheet" href="../../styles/base/styles.css" />
+    <link rel="stylesheet" href="../../styles/base/responsive.css" />
+    <link rel="stylesheet" href="../../styles/components/components.css" />
+    <link rel="stylesheet" href="../../styles/components/navbar.css" />
+    <link rel="stylesheet" href="pizzaMaker.css" />
     <meta name="theme-color" content="#ff6b6b" />
   </head>
   <body class="pizza-maker-page">
@@ -183,14 +181,14 @@
     </main>
 
     <!-- Navigation Scripts -->
-    <script src="../components/layout/navbarLoader.js" defer></script>
-    <script type="module" src="../utils/navigationHelper.js"></script>
-    <script src="../components/layout/navigation.js" defer></script>
+    <script src="../../components/layout/navbarLoader.js" defer></script>
+    <script type="module" src="../../utils/navigationHelper.js"></script>
+    <script src="../../components/layout/navigation.js" defer></script>
 
     <!-- Game Scripts -->
-    <script type="module" src="../games/pizza-maker/PizzaMakerGame.js"></script>
+    <script type="module" src="PizzaMakerGame.js"></script>
     <script type="module">
-      import PizzaMakerGame from '../games/pizza-maker/PizzaMakerGame.js';
+      import PizzaMakerGame from './PizzaMakerGame.js';
 
       // Initialize the pizza making game when page loads
       document.addEventListener('DOMContentLoaded', () => {

@@ -1,4 +1,4 @@
-// filepath: src/features/games/pizza-party/pizzaParty.js
+// filepath: games/pizza-party/pizzaParty.js
 import {
   getRandomInt,
   debounce,

@@ -16,15 +16,13 @@
     />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../styles/base/reset.css" />
-    <link rel="stylesheet" href="../styles/base/variables.css" />
-    <link rel="stylesheet" href="../styles/base/typography.css" />
-    <link rel="stylesheet" href="../styles/components/navigation.css" />
-    <link rel="stylesheet" href="../games/pizza-party/pizzaParty.css" />
+    <link rel="stylesheet" href="../../styles/base/styles.css" />
+    <link rel="stylesheet" href="../../styles/components/navbar.css" />
+    <link rel="stylesheet" href="pizzaParty.css" />
 
     <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../public/images/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="../../public/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="../../public/images/favicon.png" />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
@@ -33,27 +31,27 @@
       property="og:description"
       content="Learn fractions the delicious way! Create pizzas by combining slices to match target fractions."
     />
-    <meta property="og:image" content="../public/images/pizza-party-preview.jpg" />
+    <meta property="og:image" content="../../public/images/pizza-party-preview.jpg" />
 
     <!-- PWA -->
-    <link rel="manifest" href="../public/manifest.json" />
+    <link rel="manifest" href="../../public/manifest.json" />
     <meta name="theme-color" content="#667eea" />
 
     <!-- Preload critical resources -->
-    <link rel="preload" href="../utils/common.js" as="script" />
-    <link rel="preload" href="../games/pizza-party/pizzaParty.js" as="script" />
+    <link rel="preload" href="../../utils/common.js" as="script" />
+    <link rel="preload" href="pizzaParty.js" as="script" />
   </head>
   <body>
     <!-- Navigation -->
     <nav class="main-navigation" aria-label="Main navigation">
       <div class="nav-container">
-        <a href="./index.html" class="nav-logo" aria-label="Learnimals Home">
-          <img src="../public/images/logo.svg" alt="Learnimals" width="120" height="40" />
+        <a href="/" class="nav-logo" aria-label="Learnimals Home">
+          <img src="../../public/images/logo.png" alt="Learnimals" width="120" height="40" />
         </a>
 
         <ul class="nav-menu" role="menubar">
           <li role="none">
-            <a href="./index.html" class="nav-link" role="menuitem">Home</a>
+            <a href="/" class="nav-link" role="menuitem">Home</a>
           </li>
           <li role="none">
             <a href="./subjects.html" class="nav-link" role="menuitem">Subjects</a>
@@ -187,9 +185,9 @@
 
     <!-- Scripts -->
     <script type="module">
-      import config from '../config.js';
-      import { getRandomInt, debounce } from '../utils/common.js';
-      import PizzaPartyGame from '../games/pizza-party/pizzaParty.js';
+      import config from '../../config.js';
+      import { getRandomInt, debounce } from '../../utils/common.js';
+      import PizzaPartyGame from './pizzaParty.js';
 
       // Game instance
       let game = null;

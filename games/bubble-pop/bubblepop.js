@@ -1,4 +1,4 @@
-// filepath: src/features/games/bubble-pop/bubblepop.js
+// filepath: games/bubble-pop/bubblepop.js
 import config from '../../config.js';
 import { getRandomInt, debounce } from '../../utils/common.js';
 import Bubble from './Bubble.js';

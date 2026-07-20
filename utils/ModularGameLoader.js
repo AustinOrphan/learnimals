@@ -12,14 +12,14 @@ class ModularGameLoader {
   /**
    * Create a modular game loader
    * @param {Object} options - Loader options
-   * @param {string} [options.basePath='src/features/games'] - Base path for game files
+   * @param {string} [options.basePath='games'] - Base path for game files
    * @param {boolean} [options.enableModuleRegistry=true] - Enable module registry integration
    * @param {boolean} [options.debugMode=false] - Enable debug logging
    * @param {Object} [options.gameDefaults={}] - Default options for all games
    */
   constructor(options = {}) {
     this.options = {
-      basePath: options.basePath || 'src/features/games',
+      basePath: options.basePath || 'games',
       enableModuleRegistry: options.enableModuleRegistry !== false,
       debugMode: options.debugMode || false,
       gameDefaults: options.gameDefaults || {},

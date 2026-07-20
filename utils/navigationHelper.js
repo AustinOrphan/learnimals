@@ -60,11 +60,11 @@ class NavigationHelper {
 
   // Navigation shortcuts
   getPageUrl(pageName) {
-    return this.getUrl(`src/pages/${pageName}.html`);
+    return this.getUrl(`pages/${pageName}.html`);
   }
 
   getSubjectUrl(subject) {
-    return this.getUrl(`src/features/subjects/${subject}/${subject}.html`);
+    return this.getUrl(`subjects/${subject}/`);
   }
 
   getImageUrl(imageName) {
@@ -72,25 +72,25 @@ class NavigationHelper {
   }
 
   getComponentUrl(componentName) {
-    return this.getUrl(`src/components/layout/${componentName}.html`);
+    return this.getUrl(`components/layout/${componentName}.html`);
   }
 
   // Update all navigation links on the page
   updateNavigationLinks() {
     const linkMappings = {
-      // Pages
-      home: 'src/pages/index.html',
-      about: 'src/pages/about.html',
-      contact: 'src/pages/contact.html',
-      profile: 'src/pages/profile.html',
+      // Pages (homepage is the site root)
+      home: '',
+      about: 'pages/about.html',
+      contact: 'pages/contact.html',
+      profile: 'pages/profile.html',
 
-      // Subjects
-      math: 'src/features/subjects/math/math.html',
-      science: 'src/features/subjects/science/science.html',
-      reading: 'src/features/subjects/reading/reading.html',
-      art: 'src/features/subjects/art/art.html',
-      coding: 'src/features/subjects/coding/coding.html',
-      bubblepop: 'src/features/subjects/shared/bubblepop.html',
+      // Subjects (clean directory URLs, served by <subject>/index.html)
+      math: 'subjects/math/',
+      science: 'subjects/science/',
+      reading: 'subjects/reading/',
+      art: 'subjects/art/',
+      coding: 'subjects/coding/',
+      bubblepop: 'games/bubble-pop/',
     };
 
     // Update links with data-nav attributes

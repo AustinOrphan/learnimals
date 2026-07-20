@@ -3,9 +3,9 @@
     "collect": {
       "url": [
         "https://staging.learnimals.app/",
-        "https://staging.learnimals.app/src/pages/about.html",
-        "https://staging.learnimals.app/src/features/subjects/shared/math.html",
-        "https://staging.learnimals.app/src/features/subjects/shared/science.html"
+        "https://staging.learnimals.app/pages/about.html",
+        "https://staging.learnimals.app/subjects/math/",
+        "https://staging.learnimals.app/subjects/science/"
       ],
       "numberOfRuns": 5
     },

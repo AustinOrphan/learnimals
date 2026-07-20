@@ -1,4 +1,4 @@
-// filepath: src/features/games/pizza-party/PizzaSlice.js
+// filepath: games/pizza-party/PizzaSlice.js
 
 /**
  * PizzaSlice - Represents a draggable pizza slice with fraction properties

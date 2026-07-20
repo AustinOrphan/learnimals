@@ -144,10 +144,10 @@ class PerformanceAnalyzer {
    */
   async countNewComponents() {
     const newComponents = [
-      'src/utils/ModuleRegistry.js',
-      'src/components/EnhancedBaseComponent.js',
-      'src/utils/ModularThemeManager.js',
-      'src/utils/ModularGameLoader.js',
+      'utils/ModuleRegistry.js',
+      'components/EnhancedBaseComponent.js',
+      'utils/ModularThemeManager.js',
+      'utils/ModularGameLoader.js',
     ];
 
     let count = 0;
@@ -238,7 +238,7 @@ class PerformanceAnalyzer {
    */
   async analyzeRegistrySystem() {
     return {
-      registryFile: 'src/utils/ModuleRegistry.js',
+      registryFile: 'utils/ModuleRegistry.js',
       features: [
         'O(1) component lookup via Map',
         'Dependency injection system',
@@ -266,10 +266,10 @@ class PerformanceAnalyzer {
   async analyzeComponentHierarchy() {
     return {
       baseComponents: ['BaseComponent.js', 'EnhancedBaseComponent.js'],
-      uiComponents: await this.countComponentsInDir('src/components/ui'),
-      formComponents: await this.countComponentsInDir('src/components/forms'),
-      gameComponents: await this.countComponentsInDir('src/features/games'),
-      utilityComponents: await this.countComponentsInDir('src/utils'),
+      uiComponents: await this.countComponentsInDir('components/ui'),
+      formComponents: await this.countComponentsInDir('components/forms'),
+      gameComponents: await this.countComponentsInDir('games'),
+      utilityComponents: await this.countComponentsInDir('utils'),
 
       hierarchy: {
         depth: 'Maximum 3 levels deep',

@@ -2,7 +2,7 @@
  * Storage configuration and repository access.
  *
  * Minimal localStorage-backed reconstruction of the repository interface
- * expected by src/features/progress/. The original implementation lived
+ * expected by progress/. The original implementation lived
  * only on abandoned infrastructure branches and depended on process.env,
  * which does not exist in this no-build browser app.
  */
