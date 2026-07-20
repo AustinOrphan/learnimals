@@ -77,3 +77,6 @@ test-results/
 playwright-report/
 # Generated test output
 coverage-report.json
+
+# Pages build output
+_site/

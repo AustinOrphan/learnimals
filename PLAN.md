@@ -151,6 +151,12 @@ profile-enhanced, progress-dashboard; systems — theme, navigation, PWA
 - Bubble Pop doesn't extend BaseGame (works anyway) — reconcile or leave.
 - Cosmetic: avatar PNGs and several base/theme CSS files 404 (never existed).
 
+Story Safari: SALVAGED + playable 2026-07-20 (commit a25736f) — restored
+from the branch, 14 stubbed methods implemented, narrative traverses the
+8-scene graph, linked from reading. Reachable surface hardened (art/coding
+dead links removed, math 404 links fixed). music/geography work but are
+not navbar-linked yet (add in the generate/add-on phase).
+
 (D) Then the character-progress ecosystem feature work — now on a foundation
 that actually runs. Every fix must be re-driven in a browser, not just
 unit-tested — that is how this rot accumulated.
