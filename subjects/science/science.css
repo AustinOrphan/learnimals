@@ -20,34 +20,121 @@ footer {
   flex-shrink: 0;
 }
 
-.section-box {
-  background-color: var(--bg-card);
-  color: var(--text-primary);
-  border-radius: 15px;
-  box-shadow: 0 5px 15px var(--shadow-color);
-  padding: 30px;
-  margin-bottom: 40px;
-  display: block;
-}
-
 .science-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
 }
 
+/* Theme-aware surface + text so dark mode actually applies. */
+.section-box {
+  background-color: var(--background-color-alt, #fff);
+  color: var(--text-color, #222);
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-head h2 {
+  margin: 0;
+}
+
+/* Small accent button used for shuffle / new quiz / next fact. */
+.science-btn {
+  background-color: var(--accent-primary, #4a90d9);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+}
+
+.science-btn:hover {
+  background-color: var(--accent-primary-hover, #3a78b5);
+  transform: scale(1.05);
+}
+
+/* Did You Know? facts */
 .fact-hover span {
   display: block;
   margin: 10px 0;
-  padding: 10px;
-  color: var(--text-primary);
-  background: var(--bg-card-alt);
-  border-radius: 10px;
-  transition: background 0.3s ease;
+  padding: 12px 14px;
+  color: var(--text-color, #222);
+  background: var(--background-color, #f4f8fb);
+  border-left: 4px solid var(--accent-primary, #4a90d9);
+  border-radius: 8px;
+  transition: transform 0.2s ease;
 }
 
 .fact-hover span:hover {
-  background: var(--bg-highlight);
+  transform: translateX(6px);
+}
+
+/* Space Zone */
+.space-fact {
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  background: var(--background-color, #f4f8fb);
+  color: var(--text-color, #222);
+  border-radius: 10px;
+  border-left: 4px solid var(--accent-primary, #4a90d9);
+  font-size: 1.1rem;
+  min-height: 1.5em;
+}
+
+.planets-title {
+  margin: 24px 0 12px;
+}
+
+.planet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 14px;
+}
+
+.planet-card {
+  background: var(--background-color, #f4f8fb);
+  color: var(--text-color, #222);
+  border: 1px solid var(--border-color, #dbe4ec);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.planet-emoji {
+  font-size: 2.2rem;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.planet-name {
+  font-weight: bold;
+  color: var(--accent-primary, #4a90d9);
+  margin-bottom: 6px;
+}
+
+.planet-fact {
+  font-size: 0.9rem;
+}
+
+.rocket-wrap {
+  text-align: center;
+  margin-top: 24px;
 }
 
 .rocket {
@@ -67,62 +154,89 @@ footer {
   }
 }
 
-/* Quiz specific styles */
+@media (prefers-reduced-motion: reduce) {
+  .rocket {
+    animation: none;
+  }
+}
+
+/* Quiz */
 #science-quiz {
-  border: 2px solid var(--primary-color);
-  position: relative;
-  z-index: 1;
+  border: 2px solid var(--accent-primary, #4a90d9);
 }
 
 .quiz-question {
   margin: 15px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border-left: 4px solid transparent;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
 }
 
-.quiz-question input[type='radio'] {
+.quiz-prompt {
+  font-weight: bold;
+  margin: 0 0 8px;
+}
+
+.quiz-option {
+  display: block;
+  margin: 6px 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quiz-option input[type='radio'] {
   margin-right: 8px;
 }
 
-.quiz-question label {
-  display: inline-block;
-  margin: 5px 0;
-  padding: 5px;
-  border-radius: 5px;
-  transition: background-color 0.2s;
-  cursor: pointer;
+.quiz-option:hover {
+  background-color: var(--background-color, #f4f8fb);
 }
 
-.quiz-question label:hover {
-  background-color: var(--bg-highlight);
+.quiz-question.correct {
+  background-color: rgba(46, 204, 113, 0.15);
+  border-left-color: var(--success-color, #2ecc71);
+}
+
+.quiz-question.incorrect {
+  background-color: rgba(231, 76, 60, 0.15);
+  border-left-color: var(--error-color, #e74c3c);
 }
 
 .quiz-submit-button {
-  margin-top: 10px;
-  background-color: var(--primary-color);
-  color: var(--text-on-accent, #142233);
+  margin-top: 16px;
+  background-color: var(--accent-primary, #4a90d9);
+  color: #fff;
   border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: inherit;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .quiz-submit-button:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--accent-primary-hover, #3a78b5);
 }
 
 #quiz-result {
-  margin-top: 10px;
+  margin-top: 14px;
   font-weight: bold;
 }
 
 .quiz-result-success {
-  color: var(--success-color, green);
+  color: var(--success-color, #2ecc71);
 }
 
-.quiz-result-error {
-  color: var(--warning-color, orange);
+.quiz-result-partial {
+  color: var(--accent-primary, #4a90d9);
 }
 
 .quiz-result-missing {
-  color: var(--text-danger, red);
+  color: var(--error-color, #e74c3c);
 }
