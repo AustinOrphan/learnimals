@@ -141,12 +141,16 @@ profile-enhanced, progress-dashboard; systems — theme, navigation, PWA
 (C) STILL PENDING — PRODUCT DECISIONS (user's call), not bugs:
 
 - Story Safari: game modules don't exist (only a test harness) — build or delete.
-- Ecosystem Safari: engine is empty placeholder methods — build or delete.
+- Ecosystem Safari: init crash FIXED 2026-07-21 (commit f21d731) — it called a
+  non-existent `window.Modal.show()`; now uses `new Modal({...}).open()`, so the
+  game initialises and shows its welcome modal. It renders and steps phases;
+  deeper gameplay depth vs the design docs is a separate build-out call.
 - 5 subject-less pages (cooking/environment/history/language/physics): no HTML
   exists; the generator works — generate or drop from scope.
 - Coding: static "coming soon" stub — build lessons or keep labeled.
-- adventure-quest: click-handler deadlock (start gated on isPlaying which only
-  Start sets) — fixable game bug, deferred (unlinked, direct-URL only).
+- adventure-quest: click-handler deadlock FIXED 2026-07-21 (commit f21d731) —
+  handleCanvasClick now allows intro-scene clicks so the Start button works and
+  the game starts. Still unlinked (direct-URL only); link it in a nav pass.
 - art page: 3 game links are dead href="#", "Clear" was fixed elsewhere.
 - Bubble Pop doesn't extend BaseGame (works anyway) — reconcile or leave.
 - Cosmetic: avatar PNGs and several base/theme CSS files 404 (never existed).
