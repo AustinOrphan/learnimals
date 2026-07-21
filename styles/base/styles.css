@@ -980,31 +980,12 @@ footer {
 }
 
 @media screen and (max-width: 768px) {
-  .menu-toggle {
-    display: flex;
-  }
-
-  nav ul {
-    position: fixed;
-    flex-direction: column;
-    background-color: var(--accent-color);
-    width: 100%;
-    top: 0;
-    right: -100%;
-    height: 100vh;
-    padding-top: 80px;
-    z-index: 10;
-    transition: right 0.3s ease;
-    align-items: center;
-  }
-
-  nav ul.active {
-    right: 0;
-  }
-
-  nav ul li {
-    margin: 15px 0;
-  }
+  /* NOTE: an obsolete off-canvas mobile menu used to live here (`.menu-toggle`
+     and `nav ul { position: fixed; right: -100% }` with `nav ul.active`). It
+     conflicted with the real navbar (styles/components/navbar.css): the generic
+     `nav ul` rule forced the menu ul off-screen, and its `.active` was expected
+     on the ul, whereas the current system toggles `.active` on `.navbar-links`.
+     Removed so the hamburger dropdown works. */
 
   .features {
     gap: 20px;
