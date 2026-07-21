@@ -137,30 +137,68 @@
         ],
       };
 
-      document.addEventListener('DOMContentLoaded', async () => {
-        await SubjectTemplateLoader.renderTemplate(placeValueOptions);
-
-        // The template renders asynchronously; give it a beat, then wire up the
-        // builder, the "build this number" challenge, and the dynamic practice.
-        setTimeout(() => {
-          let builder = null;
-          const container = document.getElementById('place-value-builder');
-          if (container && window.PlaceValueManipulative) {
-            builder = new PlaceValueManipulative({
-              containerId: 'place-value-builder',
-              maxNumber: 9999,
-              mode: 'compose',
-            });
-          } else if (container) {
-            container.innerHTML = `
+      function setupActivities() {
+        let builder = null;
+        const container = document.getElementById('place-value-builder');
+        if (container && window.PlaceValueManipulative) {
+          builder = new PlaceValueManipulative({
+            containerId: 'place-value-builder',
+            maxNumber: 9999,
+            mode: 'compose',
+          });
+        } else if (container) {
+          container.innerHTML = `
                                 <p>Place Value Builder is loading...</p>
                                 <p>Try refreshing the page if it doesn't appear.</p>
                             `;
-          }
+        }
 
-          initBuildChallenge('pv-challenge', builder);
-          initPractice('pv-practice');
-        }, 120);
+        initBuildChallenge('pv-challenge', builder);
+        initPractice('pv-practice');
+      }
+
+      // Why this is not a one-shot init: renderTemplate rewrites the whole
+      // document (document.write), then the template's own script renders the
+      // feature cards with Card.js — on 'componentsLoaded' AND again ~100ms after
+      // DOMContentLoaded — clearing #feature-cards-container each time. A fixed
+      // setTimeout init raced with (and was wiped by) that re-render, so every
+      // activity ended up empty (worst on slower/mobile devices).
+      //
+      // Instead, (re)initialise whenever fresh, empty activity containers appear.
+      // A per-element flag makes this idempotent: the same container is set up
+      // once, but a card re-render creates new (unflagged) containers that get
+      // re-initialised, so the activities can never be left blank.
+      function setupWhenReady() {
+        const builderEl = document.getElementById('place-value-builder');
+        const challengeEl = document.getElementById('pv-challenge');
+        const practiceEl = document.getElementById('pv-practice');
+        if (!builderEl || !challengeEl || !practiceEl) return;
+        if (builderEl.dataset.pvInit === '1') return; // this container is already set up
+        builderEl.dataset.pvInit = '1';
+        setupActivities();
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        await SubjectTemplateLoader.renderTemplate(placeValueOptions);
+
+        // renderTemplate rewrites the document (document.write); when this
+        // resolves the parser may not have created <body> yet, so observe the
+        // <html> root (documentElement), which exists as soon as parsing starts.
+        // Guard anyway and retry on the next frame if even that isn't ready.
+        const attach = () => {
+          const root = document.body || document.documentElement;
+          if (!root) {
+            requestAnimationFrame(attach);
+            return;
+          }
+          setupWhenReady();
+          const observer = new MutationObserver(setupWhenReady);
+          observer.observe(root, { childList: true, subtree: true });
+          // The card re-renders all happen in the first moments after load; stop
+          // watching once things have settled.
+          setTimeout(() => observer.disconnect(), 6000);
+        };
+        attach();
       });
     </script>
 
