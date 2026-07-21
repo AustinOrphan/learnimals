@@ -28,9 +28,19 @@
 
       <div class="am-game">
         <div class="am-hud">
-          <div class="am-problem" id="am-problem">Ready?</div>
+          <div class="am-topbar">
+            <div class="am-controls-spacer" aria-hidden="true"></div>
+            <div class="am-problem" id="am-problem">Ready?</div>
+            <div class="am-controls">
+              <button class="am-icon-btn" id="am-pause" type="button" aria-label="Pause game" disabled>⏸</button>
+              <button class="am-icon-btn" id="am-mute" type="button" aria-label="Mute sound" aria-pressed="false">
+                🔊
+              </button>
+            </div>
+          </div>
           <div class="am-stats">
             <span>Score <b id="am-score">0</b></span>
+            <span>Best <b id="am-best">0</b></span>
             <span>Level <b id="am-level">1</b></span>
             <span>Streak <b id="am-streak">0</b></span>
             <span>Lives <b id="am-lives">🚀🚀🚀</b></span>
@@ -38,7 +48,12 @@
         </div>
 
         <div class="am-stage">
-          <canvas id="asteroid-canvas" class="am-canvas"></canvas>
+          <canvas
+            id="asteroid-canvas"
+            class="am-canvas"
+            aria-label="Asteroid Math play area. Blast the asteroid showing the correct answer."
+          ></canvas>
+          <div id="am-live" class="am-visually-hidden" aria-live="polite" aria-atomic="true"></div>
 
           <div class="am-overlay show" id="am-start">
             <div class="am-panel">
@@ -50,7 +65,7 @@
               <ul class="am-how">
                 <li>🖱️ Move your mouse or finger to aim</li>
                 <li>💥 Click, tap, or press Space to fire</li>
-                <li>🎯 Right answers earn points &amp; streaks; wrong ones cost points</li>
+                <li>🎯 Right answers earn points &amp; streaks; a wrong hit costs a life</li>
               </ul>
               <button class="am-btn" id="am-start-btn" type="button">Start Mission 🚀</button>
             </div>
@@ -59,8 +74,18 @@
           <div class="am-overlay" id="am-gameover">
             <div class="am-panel">
               <h2>💥 Game Over</h2>
+              <p class="am-new-best" id="am-new-best" style="display: none">New best! 🏆</p>
               <p class="am-final">Final score: <b id="am-final-score">0</b></p>
+              <p class="am-best-line">Best score: <b id="am-gameover-best">0</b></p>
               <button class="am-btn" id="am-play-again" type="button">Play Again 🔄</button>
+            </div>
+          </div>
+
+          <div class="am-overlay" id="am-pause-overlay">
+            <div class="am-panel">
+              <h2>⏸ Paused</h2>
+              <p>Take a breath. Your mission is waiting.</p>
+              <button class="am-btn" id="am-resume" type="button">Resume 🚀</button>
             </div>
           </div>
         </div>
@@ -97,18 +122,28 @@
       const el = {
         problem: document.getElementById('am-problem'),
         score: document.getElementById('am-score'),
+        best: document.getElementById('am-best'),
         level: document.getElementById('am-level'),
         streak: document.getElementById('am-streak'),
         lives: document.getElementById('am-lives'),
         start: document.getElementById('am-start'),
         gameover: document.getElementById('am-gameover'),
+        pause: document.getElementById('am-pause-overlay'),
         finalScore: document.getElementById('am-final-score'),
+        gameoverBest: document.getElementById('am-gameover-best'),
+        newBest: document.getElementById('am-new-best'),
+        muteBtn: document.getElementById('am-mute'),
+        pauseBtn: document.getElementById('am-pause'),
+        live: document.getElementById('am-live'),
       };
 
       const game = new AsteroidMathGame('asteroid-canvas', { elements: el });
       window.asteroidMathGame = game;
       document.getElementById('am-start-btn').addEventListener('click', () => game.start());
       document.getElementById('am-play-again').addEventListener('click', () => game.start());
+      document.getElementById('am-resume').addEventListener('click', () => game.resume());
+      el.muteBtn.addEventListener('click', () => game.toggleMute());
+      el.pauseBtn.addEventListener('click', () => game.togglePause());
     </script>
   </body>
 </html>

@@ -36,13 +36,105 @@
   margin-bottom: 10px;
 }
 
+/* Three columns: a spacer, the centered problem, and the controls. The spacer
+   matches the controls' width so the problem stays visually centered without
+   the controls ever overlapping it (the old absolute-positioned version did). */
+.am-topbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.am-controls,
+.am-controls-spacer {
+  flex: 0 0 auto;
+  min-width: 86px;
+}
+
 .am-problem {
-  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
   font-weight: 800;
   letter-spacing: 1px;
   color: #ffffff;
   text-shadow: 0 0 12px rgba(79, 195, 247, 0.6);
   min-height: 1.2em;
+  white-space: nowrap;
+}
+
+/* A quick pop when a new problem appears, so it doesn't snap in cold. */
+.am-problem--pop {
+  animation: am-pop 0.32s ease-out;
+}
+
+@keyframes am-pop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.2;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.am-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.am-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  line-height: 1;
+  border: 1px solid rgba(79, 195, 247, 0.35);
+  border-radius: 10px;
+  background: rgba(79, 195, 247, 0.12);
+  color: #e8f6ff;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    opacity 0.15s;
+}
+
+.am-icon-btn:hover:not(:disabled) {
+  background: rgba(79, 195, 247, 0.28);
+  transform: scale(1.06);
+}
+
+.am-icon-btn:focus-visible {
+  outline: 2px solid #4fc3f7;
+  outline-offset: 2px;
+}
+
+.am-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Off-screen but available to screen readers (for the aria-live region). */
+.am-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .am-stats {
@@ -62,8 +154,11 @@
 .am-stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  max-height: 70vh;
+  /* A plain responsive height (no aspect-ratio) so the box never drives its own
+     width — aspect-ratio + a min-height would give the canvas an intrinsic
+     width that overflows narrow phones. The engine sizes the bitmap to this box
+     exactly, so circles stay round and taps map 1:1 at any shape. */
+  height: clamp(300px, 60vh, 520px);
   margin: 0 auto;
 }
 
@@ -131,6 +226,25 @@
   color: #ffd54f;
 }
 
+.am-best-line {
+  font-size: 1rem;
+  color: #a9c3e6;
+  margin: 0 0 1rem;
+}
+
+.am-best-line b {
+  color: #ffffff;
+}
+
+.am-new-best {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffd54f;
+  text-shadow: 0 0 14px rgba(255, 213, 79, 0.6);
+  margin: 0 0 0.5rem;
+  animation: am-pop 0.4s ease-out;
+}
+
 .am-btn {
   background: linear-gradient(135deg, #4fc3f7, #2196f3);
   color: #05122b;
@@ -195,4 +309,18 @@
 .grown-ups-content {
   padding-bottom: 1.25rem;
   line-height: 1.6;
+}
+
+/* Respect the OS "reduce motion" preference for DOM-level animation.
+   (The canvas engine reads matchMedia directly for shake/twinkle/particles.) */
+@media (prefers-reduced-motion: reduce) {
+  .am-problem--pop,
+  .am-new-best {
+    animation: none;
+  }
+
+  .am-btn:hover,
+  .am-icon-btn:hover:not(:disabled) {
+    transform: none;
+  }
 }
