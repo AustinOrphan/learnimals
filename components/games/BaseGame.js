@@ -279,10 +279,18 @@ export default class BaseGame {
       eventTarget.addEventListener('mousedown', this.boundHandlers.mousedown);
       eventTarget.addEventListener('mouseup', this.boundHandlers.mouseup);
 
-      // Touch events
-      eventTarget.addEventListener('touchstart', this.boundHandlers.touchstart, { passive: false });
-      eventTarget.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
-      eventTarget.addEventListener('touchend', this.boundHandlers.touchend, { passive: false });
+      // Touch events — canvas games ONLY. These handlers call preventDefault()
+      // to translate raw touches into canvas coordinates; binding them on a
+      // DOM-container game suppresses the synthesized click for every tap, which
+      // made DOM games (e.g. Word Scramble) completely unusable on touch devices.
+      // DOM games interact through normal click/tap events instead.
+      if (!this.useDOMContainer) {
+        eventTarget.addEventListener('touchstart', this.boundHandlers.touchstart, {
+          passive: false,
+        });
+        eventTarget.addEventListener('touchmove', this.boundHandlers.touchmove, { passive: false });
+        eventTarget.addEventListener('touchend', this.boundHandlers.touchend, { passive: false });
+      }
     }
 
     // Window events
@@ -477,19 +485,25 @@ export default class BaseGame {
       return;
     }
 
-    // Prevent zoom on double tap for game canvas
-    let lastTouchEnd = 0;
-    this.canvas.addEventListener(
-      'touchend',
-      e => {
-        const now = new Date().getTime();
-        if (now - lastTouchEnd <= 300) {
-          e.preventDefault();
-        }
-        lastTouchEnd = now;
-      },
-      { passive: false }
-    );
+    // Prevent zoom on double tap — canvas games only. DOM-container games have
+    // no canvas (this would have crashed init on mobile), and they already get
+    // double-tap-zoom prevention from `touch-action: manipulation` set on the
+    // container in setupDOMContainer. Calling preventDefault() on touchend here
+    // for a DOM game would also suppress the synthesized click, breaking taps.
+    if (this.canvas) {
+      let lastTouchEnd = 0;
+      this.canvas.addEventListener(
+        'touchend',
+        e => {
+          const now = new Date().getTime();
+          if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+          }
+          lastTouchEnd = now;
+        },
+        { passive: false }
+      );
+    }
 
     // Optimize viewport for mobile gaming
     this.setupMobileViewport();
@@ -533,17 +547,21 @@ export default class BaseGame {
    * Setup mobile-specific event listeners
    */
   setupMobileEventListeners() {
-    // Prevent context menu on long press
-    this.canvas.addEventListener('contextmenu', e => e.preventDefault());
+    // Prevent context menu on long press. DOM-container games have no canvas,
+    // so target the container (guarding against both being absent).
+    const gameEl = this.canvas || this.container;
+    if (gameEl) {
+      gameEl.addEventListener('contextmenu', e => e.preventDefault());
+    }
 
     // Handle orientation changes
     window.addEventListener('orientationchange', () => {
       setTimeout(() => this.handleOrientationChange(), 500);
     });
 
-    // Handle focus changes for mobile keyboards
+    // Handle focus changes for mobile keyboards (canvas games only need resize)
     window.addEventListener('resize', () => {
-      if (this.isMobile) {
+      if (this.isMobile && this.canvas) {
         setTimeout(() => this.resizeCanvas(), 100);
       }
     });

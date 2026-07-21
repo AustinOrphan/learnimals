@@ -3,9 +3,13 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: white;
+  /* Theme-aware surface + text so dark mode actually applies. --background-color
+     and --text-color flip per theme/mode globally (unlike --bg-secondary, which
+     is only defined in a few component stylesheets). */
+  background-color: var(--background-color-alt, #fff);
+  color: var(--text-color, #222);
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
 .game-header {
@@ -31,7 +35,8 @@
   justify-content: space-between;
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: var(--background-color, #f0f0f0);
+  color: var(--text-color, #222);
   border-radius: 10px;
 }
 
@@ -42,7 +47,8 @@
 .word-hint {
   margin-bottom: 15px;
   padding: 10px;
-  background-color: #e8f5e9;
+  background-color: var(--background-color, #e8f5e9);
+  color: var(--text-color, #222);
   border-radius: 8px;
   font-size: 1.1rem;
 }
@@ -60,22 +66,22 @@
 }
 
 .scrambled-letters {
-  background-color: #e3f2fd;
+  background-color: var(--background-color, #e3f2fd);
 }
 
 .solution-area {
-  background-color: #fff8e1;
+  background-color: var(--background-color, #fff8e1);
   border: 2px dashed #ffb74d;
 }
 
 .letter-tile {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #6c5ce7;
-  color: white;
+  color: #fff;
   font-size: 1.5rem;
   font-weight: bold;
   border-radius: 8px;
@@ -93,9 +99,9 @@
 }
 
 .empty-tile {
-  width: 40px;
-  height: 40px;
-  border: 2px dashed #ccc;
+  width: 44px;
+  height: 44px;
+  border: 2px dashed var(--border-color, #ccc);
   border-radius: 8px;
 }
 
@@ -107,12 +113,12 @@
 }
 
 .success-message {
-  color: #2ecc71;
+  color: var(--success-color, #2ecc71);
   font-weight: bold;
 }
 
 .error-message {
-  color: #e74c3c;
+  color: var(--error-color, #e74c3c);
 }
 
 .game-controls {
@@ -124,7 +130,7 @@
 .game-button {
   padding: 10px 20px;
   background-color: #00b894;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 25px;
   font-size: 1rem;

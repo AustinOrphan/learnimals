@@ -23,6 +23,48 @@ const basePath = scriptPath
   : '/components/layout';
 const navbarPath = basePath + '/navbar.html';
 
+// Wire the mobile hamburger toggle. Idempotent: sets a data flag so it never
+// binds twice, even if navigation.js is also present on the page (that script
+// checks the same flag and skips its own hamburger setup).
+function wireMobileMenu() {
+  const button = document.getElementById('mobile-menu');
+  const navMenu = document.getElementById('nav-menu');
+  if (!button || !navMenu || button.dataset.menuBound === '1') {
+    return;
+  }
+  button.dataset.menuBound = '1';
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', 'nav-menu');
+
+  const close = () => {
+    navMenu.classList.remove('active');
+    button.classList.remove('active');
+    button.setAttribute('aria-expanded', 'false');
+  };
+
+  button.addEventListener('click', event => {
+    event.stopPropagation();
+    const open = navMenu.classList.toggle('active');
+    button.classList.toggle('active', open);
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close when tapping outside the menu, or pressing Escape.
+  document.addEventListener('click', event => {
+    if (!navMenu.contains(event.target) && !button.contains(event.target)) {
+      close();
+    }
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      close();
+    }
+  });
+
+  // Close after choosing a destination on mobile.
+  navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', close));
+}
+
 fetch(navbarPath)
   .then(res => {
     if (!res.ok) {
@@ -35,6 +77,12 @@ fetch(navbarPath)
     if (placeholder) {
       placeholder.innerHTML = data;
       logger.debug('Navbar loaded successfully from:', navbarPath);
+
+      // Wire the mobile hamburger menu right here, so it works on EVERY page
+      // that loads the shared navbar — not only the handful that also happen to
+      // include navigation.js. The navbar is injected asynchronously, so a
+      // handler bound on DOMContentLoaded would run before this element exists.
+      wireMobileMenu();
 
       // Update navigation links if navigation helper is available
       if (window.navigationHelper) {

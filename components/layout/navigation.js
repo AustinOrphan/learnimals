@@ -16,6 +16,17 @@ class NavigationComponent {
   }
 
   init() {
+    // Highlighting the current page is unique to this component, so always do it.
+    this.highlightCurrentPage();
+
+    // navbarLoader.js now wires the hamburger inline as soon as it injects the
+    // navbar, and sets data-menu-bound. If that already happened, binding a
+    // second toggle/outside/escape here would cancel the first out — so skip it.
+    if (this.mobileMenuButton.dataset.menuBound === '1') {
+      return;
+    }
+    this.mobileMenuButton.dataset.menuBound = '1';
+
     // Set ARIA attributes on load
     this.mobileMenuButton.setAttribute('aria-expanded', 'false');
     this.mobileMenuButton.setAttribute('aria-controls', 'nav-menu');
@@ -36,9 +47,6 @@ class NavigationComponent {
 
     // Add keyboard accessibility
     this.addKeyboardSupport();
-
-    // Set current page in navigation
-    this.highlightCurrentPage();
   }
 
   toggleMenu() {

@@ -78,6 +78,60 @@ class WordScrambleGame extends BaseGame {
     this.createGameUI();
     this.setupWordScrambleEventListeners();
     this.setupDragAndDrop();
+    this.setupTapToPlace();
+  }
+
+  /**
+   * Tap / click to place a letter. This is the PRIMARY interaction and works on
+   * every device. HTML5 drag-and-drop (setupDragAndDrop) never fires on touch
+   * screens, which left the game completely unplayable on phones and tablets.
+   * Tap a scrambled letter to drop it into the next open slot; tap a placed
+   * letter to send it back to the pool.
+   */
+  setupTapToPlace() {
+    this.container.addEventListener('click', e => {
+      const tile = e.target.closest('.letter-tile');
+      if (!tile) {
+        return;
+      }
+      const scrambledArea = this.elements.scrambledArea;
+      const solutionArea = this.elements.solutionArea;
+      if (!scrambledArea || !solutionArea) {
+        return;
+      }
+
+      if (scrambledArea.contains(tile)) {
+        // Place the tapped letter into the first empty solution slot.
+        const slot = solutionArea.querySelector('.empty-tile');
+        if (!slot) {
+          return;
+        }
+        const placed = tile.cloneNode(true);
+        placed.setAttribute('draggable', 'false');
+        placed.classList.remove('dragging');
+        solutionArea.replaceChild(placed, slot);
+        tile.remove();
+        if (this.hapticFeedback && navigator.vibrate) {
+          navigator.vibrate(20);
+        }
+        // When the last letter is placed, check the answer.
+        if (scrambledArea.children.length === 0) {
+          setTimeout(() => this.checkAnswer(), 150);
+        }
+      } else if (solutionArea.contains(tile)) {
+        // Tap a placed letter to return it to the scrambled pool.
+        const letter = tile.getAttribute('data-letter');
+        const back = document.createElement('div');
+        back.className = 'letter-tile';
+        back.textContent = letter;
+        back.setAttribute('draggable', 'true');
+        back.setAttribute('data-letter', letter);
+        scrambledArea.appendChild(back);
+        const slot = document.createElement('div');
+        slot.className = 'empty-tile';
+        solutionArea.replaceChild(slot, tile);
+      }
+    });
   }
 
   /**
@@ -611,10 +665,10 @@ class WordScrambleGame extends BaseGame {
       }
     });
 
-    // Enhanced touch support for mobile devices
-    if (this.isMobile) {
-      this.setupMobileDragAndDrop();
-    }
+    // NOTE: we deliberately do NOT wire the old touch-drag handler here. It
+    // called e.preventDefault() on touchstart for letter tiles, which suppressed
+    // the synthesized click and made the tiles untappable on phones. Placement on
+    // touch (and mouse) is handled by setupTapToPlace instead.
   }
 
   /**
