@@ -3,7 +3,7 @@
 // which covers the whole app (pages live under /). All asset paths below
 // are root-absolute so they resolve correctly regardless of where this script
 // is loaded from.
-const CACHE_NAME = 'learnimals-cache-v6';
+const CACHE_NAME = 'learnimals-cache-v7';
 const OFFLINE_URL = '/pages/offline.html';
 const ASSETS_TO_CACHE = [
   // HTML pages (only cache existing pages). Use '/index.html' (not a bare '/')
@@ -30,7 +30,7 @@ const ASSETS_TO_CACHE = [
   '/subjects/math/math.js',
   '/subjects/science/science.js',
   '/subjects/art/art.js',
-  '/games/bubble-pop/bubblepop.js',
+  '/games/bubble-pop/BubblePopGameTemplate.js',
   '/games/bubble-pop/Bubble.js',
   '/games/word-scramble/wordScramble.js',
   '/utils/common.js',

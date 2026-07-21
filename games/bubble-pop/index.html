@@ -1,77 +1,204 @@
-<!--        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Mango's Bubble Pop - Learnimals</title>
-        <link rel="stylesheet" href="/styles/base/styles.css" />
-        <link rel="stylesheet" href="/styles/components/navbar.css" />
-        <link rel="stylesheet" href="/styles/components/bubblepop.css" /> bubblepop.html -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pop the bubble with the correct answer before time runs out! Math game with Mango the Shark."
+    />
     <title>Mango's Bubble Pop - Learnimals</title>
+
+    <!-- Base Styles -->
     <link rel="stylesheet" href="/styles/base/styles.css" />
     <link rel="stylesheet" href="/styles/components/navbar.css" />
     <link rel="stylesheet" href="/styles/components/components.css" />
     <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
-    <link rel="stylesheet" href="/styles/components/base-component.css" />
+
+    <!-- Game Template Styles -->
+    <link rel="stylesheet" href="/styles/components/games/game-template.css" />
+    <link rel="stylesheet" href="/styles/components/games/game-hero.css" />
+    <link rel="stylesheet" href="/styles/components/games/game-controls.css" />
+    <link rel="stylesheet" href="/styles/components/games/game-modals.css" />
+
+    <!-- Game-Specific Styles -->
     <link rel="stylesheet" href="/styles/components/bubblepop.css" />
-    <script type="module" src="/games/bubble-pop/bubblepop.js"></script>
     <link rel="stylesheet" href="/styles/components/grown-ups.css" />
+
+    <link rel="icon" href="/public/images/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="/public/manifest.json" />
   </head>
   <body>
+    <!-- Navigation -->
     <div id="navbar-placeholder"></div>
 
-    <main>
-      <section class="hero">
-        <h2>Mango’s Bubble Pop</h2>
-        <p>Pop the bubble with the correct answer before time runs out!</p>
-        <div class="hero-image">
-          <img src="/public/images/mango-swimming.png" alt="Mango the Shark" />
+    <main class="game-page">
+      <!-- Game Hero Section -->
+      <section class="game-hero math-theme">
+        <div class="hero-content">
+          <h1 class="game-title">Mango's Bubble Pop</h1>
+          <p class="game-description">Pop the bubble with the correct answer before time runs out!</p>
+          <button class="btn btn-outline how-to-play-btn" aria-label="Learn how to play">
+            <span class="btn-icon">❓</span>
+            How to Play
+          </button>
+        </div>
+        <div class="hero-character">
+          <img src="/public/images/mango-swimming.png" alt="Mango the Shark" class="character-image" />
         </div>
       </section>
 
-      <section class="game-container">
-        <!-- Game elements will go here -->
-        <canvas id="gameCanvas"></canvas>
-        <div id="questionBox"></div>
+      <!-- Game Instructions (Collapsible) -->
+      <section class="game-instructions" id="game-instructions" aria-hidden="true">
+        <div class="instructions-content">
+          <h2>How to Play</h2>
+          <ol class="instructions-list">
+            <li>Look at the math problem displayed at the top</li>
+            <li>Find the bubble with the correct answer</li>
+            <li>Click or tap the bubble to pop it</li>
+            <li>Answer quickly before time runs out!</li>
+            <li>Build up streaks for bonus points</li>
+          </ol>
+          <div class="controls-info">
+            <h3>Controls</h3>
+            <ul class="controls-list">
+              <li>Click or tap bubbles to pop them</li>
+              <li>Spacebar to pause/resume</li>
+              <li>Escape key to pause or close modals</li>
+              <li>F11 to toggle fullscreen</li>
+            </ul>
+          </div>
+          <button class="btn btn-primary start-game-btn">Start Playing!</button>
+        </div>
       </section>
 
-      <script type="module">
-        import BubblePopGame from '/games/bubble-pop/bubblepop.js';
+      <!-- Game Container -->
+      <div class="game-container" id="game-container">
+        <!-- Game Status Bar -->
+        <div class="game-status">
+          <div class="score-display">
+            <span class="score-label">Score:</span>
+            <span class="score-value" id="score-value">0</span>
+          </div>
+          <div class="level-display">
+            <span class="level-label">Round:</span>
+            <span class="level-value" id="level-value">1</span>
+          </div>
+          <div class="game-info" id="game-info">Pop the correct bubble to earn points!</div>
+        </div>
 
-        // Initialize the game when DOM is fully loaded or content is already available
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initGame);
-        } else {
-          initGame();
-        }
+        <!-- Game Controls -->
+        <div class="game-controls">
+          <button class="game-btn pause-btn" id="pause-btn" aria-label="Pause game">
+            <span class="btn-icon">⏸️</span>
+            <span class="btn-text">Pause</span>
+          </button>
+          <button class="game-btn restart-btn" id="restart-btn" aria-label="Restart game">
+            <span class="btn-icon">🔄</span>
+            <span class="btn-text">Restart</span>
+          </button>
+          <button class="game-btn fullscreen-btn" id="fullscreen-btn" aria-label="Toggle fullscreen">
+            <span class="btn-icon">⤢</span>
+            <span class="btn-text">Fullscreen</span>
+          </button>
+          <button class="game-btn help-btn" id="help-btn" aria-label="Show help">
+            <span class="btn-icon">❓</span>
+            <span class="btn-text">Help</span>
+          </button>
+        </div>
 
-        function initGame() {
-          // Create game instance and make available for debugging
-          window.game = new BubblePopGame('gameCanvas');
+        <!-- Game Canvas/Content Area -->
+        <div class="game-content" id="game-content">
+          <canvas id="gameCanvas" class="game-canvas" aria-label="Bubble Pop game playing area"></canvas>
+          <div id="game-ui-overlay" class="game-ui-overlay">
+            <!-- Additional UI elements can go here -->
+          </div>
+        </div>
 
-          // Add event listeners for fullscreen mode if supported
-          const canvasContainer = document.querySelector('.game-container');
-          if (canvasContainer && document.fullscreenEnabled) {
-            const fullscreenBtn = document.createElement('button');
-            fullscreenBtn.className = 'fullscreen-btn';
-            fullscreenBtn.innerHTML = '⤢'; // Fullscreen icon
-            fullscreenBtn.title = 'Toggle fullscreen';
-            fullscreenBtn.addEventListener('click', () => {
-              if (!document.fullscreenElement) {
-                canvasContainer.requestFullscreen().catch(err => {
-                  console.log(`Error attempting to enable fullscreen: ${err.message}`);
-                });
-              } else {
-                document.exitFullscreen();
-              }
-            });
-            canvasContainer.appendChild(fullscreenBtn);
-          }
-        }
-      </script>
+        <!-- Game Loading State -->
+        <div class="game-loading" id="game-loading">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading Mango's Bubble Pop...</p>
+        </div>
+      </div>
     </main>
+
+    <!-- Game Modals -->
+    <!-- Pause Modal -->
+    <div class="game-modal" id="pause-modal" role="dialog" aria-labelledby="pause-title" aria-hidden="true">
+      <div class="modal-content">
+        <h2 id="pause-title">Game Paused</h2>
+        <p>Take a break! The game will resume when you're ready.</p>
+        <div class="modal-actions">
+          <button class="btn btn-primary resume-btn">Resume</button>
+          <button class="btn btn-outline restart-game-btn">Restart</button>
+          <button class="btn btn-outline quit-game-btn">Quit Game</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="game-modal" id="game-over-modal" role="dialog" aria-labelledby="game-over-title" aria-hidden="true">
+      <div class="modal-content">
+        <h2 id="game-over-title">Game Over!</h2>
+        <div class="final-score">
+          <p>Your Score: <span id="final-score">0</span></p>
+          <p class="high-score">High Score: <span id="high-score">0</span></p>
+        </div>
+        <div class="achievement-section hidden" id="achievement-section">
+          <!-- Achievements will be populated here -->
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary play-again-btn">Play Again</button>
+          <button class="btn btn-outline share-score-btn">Share Score</button>
+          <button class="btn btn-outline back-to-menu-btn">Back to Math</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div
+      class="game-modal"
+      id="instructions-modal"
+      role="dialog"
+      aria-labelledby="instructions-title"
+      aria-hidden="true"
+    >
+      <div class="modal-content">
+        <button class="modal-close" aria-label="Close instructions">&times;</button>
+        <h2 id="instructions-title">How to Play Mango's Bubble Pop</h2>
+        <div class="instructions-content">
+          <ol class="instructions-list">
+            <li>Look at the math problem displayed at the top</li>
+            <li>Find the bubble with the correct answer</li>
+            <li>Click or tap the bubble to pop it</li>
+            <li>Answer quickly before time runs out!</li>
+            <li>Build up streaks for bonus points</li>
+            <li>Wrong answers will make bubbles disappear</li>
+          </ol>
+          <div class="controls-info">
+            <h3>Controls</h3>
+            <ul class="controls-list">
+              <li>Click or tap bubbles to pop them</li>
+              <li>Spacebar to pause/resume</li>
+              <li>Escape key to pause or close modals</li>
+              <li>F11 to toggle fullscreen</li>
+            </ul>
+          </div>
+          <div class="controls-info">
+            <h3>Difficulty Levels</h3>
+            <ul class="controls-list">
+              <li><strong>Easy:</strong> Simple addition (1-10)</li>
+              <li><strong>Medium:</strong> Addition & subtraction (1-20)</li>
+              <li><strong>Hard:</strong> Addition, subtraction & multiplication (1-50)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-primary start-playing-btn">Start Playing!</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Parent/educator info, collapsed, below the game (shared pattern). -->
     <section class="grown-ups-section">
@@ -80,12 +207,13 @@
         <div class="grown-ups-content">
           <p>
             Bubble Pop is quick mental-arithmetic practice — children pop the bubble showing the correct answer to a
-            math fact, building speed and accuracy with addition, subtraction, and more.
+            math fact before it floats away, building speed and accuracy with addition, subtraction, and more.
           </p>
         </div>
       </details>
     </section>
 
+    <!-- Footer -->
     <footer>
       <p>&copy; 2025 Learnimals. All rights reserved.</p>
       <div class="footer-links">
@@ -96,11 +224,36 @@
       </div>
     </footer>
 
-    <!-- JS -->
+    <!-- Core Scripts -->
     <script defer type="module" src="/themeInitializer.js"></script>
     <script type="module" src="/utils/themeManager.js"></script>
     <script type="module" src="/components/layout/themeSwitcher.js"></script>
     <script defer src="/components/layout/navbarLoader.js"></script>
     <script defer src="/components/component-loader.js"></script>
+
+    <!-- Game Template Scripts -->
+    <script type="module">
+      import GameTemplateLoader from '/components/games/GameTemplateLoader.js';
+
+      // Initialize game template when DOM is ready
+      document.addEventListener('DOMContentLoaded', () => {
+        const gameConfig = {
+          gameTitle: "Mango's Bubble Pop",
+          gameClass: 'BubblePopGameTemplate',
+          gameScript: '/games/bubble-pop/BubblePopGameTemplate.js',
+          canvasId: 'gameCanvas',
+          difficulty: 'medium', // easy, medium, hard
+          features: {
+            achievements: true,
+            highScores: true,
+            shareScore: true,
+            fullscreen: true,
+            sounds: true,
+          },
+        };
+
+        window.gameTemplate = new GameTemplateLoader(gameConfig);
+      });
+    </script>
   </body>
 </html>

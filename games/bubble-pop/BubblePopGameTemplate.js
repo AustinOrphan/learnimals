@@ -29,6 +29,11 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.messageQueue = [];
     this.bubbleCache = new Map();
 
+    // Vivid, high-contrast bubble palette — deliberately fixed (not theme
+    // variables) so every bubble pops against the ocean background in both
+    // light and dark modes.
+    this.bubbleColors = ['#ff5252', '#ffb300', '#7c4dff', '#00c853', '#00b0ff', '#ff4081'];
+
     // Theme colors - will be initialized after theme is loaded
     this.themeColors = null;
 
@@ -266,6 +271,9 @@ export default class BubblePopGameTemplate extends BaseGame {
     const radius = Math.min(40, spacing / 3);
     const startY = this.canvas.height + radius + 20; // Start below canvas
 
+    // Shuffle the vivid palette so colours vary each round while staying distinct.
+    const colors = [...this.bubbleColors].sort(() => Math.random() - 0.5);
+
     for (let i = 0; i < this.settings.bubbleCount; i++) {
       const x = spacing * (i + 1);
       const y = startY + getRandomInt(0, 40); // Stagger start positions slightly
@@ -285,18 +293,18 @@ export default class BubblePopGameTemplate extends BaseGame {
         );
       }
 
-      const themeColors = this.ensureThemeColors();
       const isCorrect = i === this.correctBubbleIndex;
+      const color = colors[i % colors.length];
       const bubble = new Bubble({
         x,
         y,
         radius,
         answer,
         isCorrect,
-        bubbleBackground: this.createBubbleBackground(radius),
+        bubbleBackground: this.createBubbleBackground(radius, color),
         ctx: this.ctx,
         floatSpeed: 0.8 + Math.random() * 0.4, // Slightly faster and more varied
-        color: isCorrect ? themeColors.success : themeColors.primary,
+        color,
       });
 
       this.bubbles.push(bubble);
@@ -309,62 +317,74 @@ export default class BubblePopGameTemplate extends BaseGame {
   /**
    * Create cached bubble background for performance
    */
-  createBubbleBackground(radius) {
-    // Ensure theme colors are available
-    this.ensureThemeColors();
-
-    // Include theme colors in cache key to handle theme changes
-    const primaryColor = this.themeColors.primary;
-    const secondaryColor = this.themeColors.secondary;
-    const cacheKey = `bubble_${radius}_${primaryColor}_${secondaryColor}`;
+  createBubbleBackground(radius, color = '#00b0ff') {
+    const cacheKey = `bubble_${radius}_${color}`;
 
     if (!this.bubbleCache.has(cacheKey)) {
+      const pad = 6;
       const bubbleCanvas = document.createElement('canvas');
-      bubbleCanvas.width = radius * 2 + 4;
-      bubbleCanvas.height = radius * 2 + 4;
+      bubbleCanvas.width = radius * 2 + pad * 2;
+      bubbleCanvas.height = radius * 2 + pad * 2;
       const bubbleCtx = bubbleCanvas.getContext('2d');
+      const cx = radius + pad;
+      const cy = radius + pad;
 
-      // Clear the bubble canvas completely first
-      bubbleCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
-
-      // Create gradient
+      // Glossy radial gradient: bright highlight toward the top-left,
+      // deepening to the base colour at the edge.
       const gradient = bubbleCtx.createRadialGradient(
-        radius + 2,
-        radius + 2,
-        0,
-        radius + 2,
-        radius + 2,
+        cx - radius * 0.35,
+        cy - radius * 0.35,
+        radius * 0.1,
+        cx,
+        cy,
         radius
       );
+      gradient.addColorStop(0, '#ffffff');
+      gradient.addColorStop(0.25, color);
+      gradient.addColorStop(1, this.shadeColor(color, -0.35));
 
-      // Convert colors to rgba with alpha
-      const secondaryWithAlpha = this.convertToRgba(this.themeColors.secondary, 0.5);
-      gradient.addColorStop(0, secondaryWithAlpha);
-      gradient.addColorStop(1, this.themeColors.primary);
-
-      // Draw bubble
       bubbleCtx.beginPath();
-      bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
+      bubbleCtx.arc(cx, cy, radius, 0, Math.PI * 2);
       bubbleCtx.fillStyle = gradient;
       bubbleCtx.fill();
 
-      // Add shine effect with better opacity for dark mode
-      bubbleCtx.beginPath();
-      bubbleCtx.arc(radius + 2 - radius / 3, radius + 2 - radius / 3, radius / 4, 0, Math.PI * 2);
-      bubbleCtx.fillStyle = 'rgba(255, 255, 255, 0.3)'; // Slightly less opacity
-      bubbleCtx.fill();
-
-      // Border
-      bubbleCtx.beginPath();
-      bubbleCtx.arc(radius + 2, radius + 2, radius, 0, Math.PI * 2);
-      bubbleCtx.strokeStyle = this.themeColors.primary;
-      bubbleCtx.lineWidth = 2;
+      // Bold white outline for crisp separation from the background.
+      bubbleCtx.lineWidth = 3;
+      bubbleCtx.strokeStyle = '#ffffff';
       bubbleCtx.stroke();
+      bubbleCtx.closePath();
+
+      // Small specular highlight for a shiny bubble look.
+      bubbleCtx.beginPath();
+      bubbleCtx.arc(cx - radius * 0.35, cy - radius * 0.38, radius * 0.22, 0, Math.PI * 2);
+      bubbleCtx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      bubbleCtx.fill();
+      bubbleCtx.closePath();
 
       this.bubbleCache.set(cacheKey, bubbleCanvas);
     }
 
     return this.bubbleCache.get(cacheKey);
+  }
+
+  /**
+   * Darken (negative amount) or lighten (positive amount) a hex color.
+   * @param {string} hex - Color in #rrggbb form
+   * @param {number} amount - Fraction from -1 (black) to 1 (white)
+   * @returns {string} - Adjusted #rrggbb color
+   */
+  shadeColor(hex, amount) {
+    const normalized = hex.replace('#', '');
+    const num = parseInt(normalized, 16);
+    let r = (num >> 16) & 0xff;
+    let g = (num >> 8) & 0xff;
+    let b = num & 0xff;
+    const target = amount < 0 ? 0 : 255;
+    const t = Math.abs(amount);
+    r = Math.round(r + (target - r) * t);
+    g = Math.round(g + (target - g) * t);
+    b = Math.round(b + (target - b) * t);
+    return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
   }
 
   /**
@@ -700,12 +720,12 @@ export default class BubblePopGameTemplate extends BaseGame {
     // Clear canvas completely first
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Fill with theme-aware background
-    this.ctx.fillStyle =
-      this.getThemeColor('--bg-card') ||
-      this.getThemeColor('--bg-primary') ||
-      this.getThemeColor('--background-color') ||
-      '#f8f9fa';
+    // Paint a solid, vivid ocean gradient. Fixed (not a theme variable) so it
+    // stays high-contrast against the bubbles in both light and dark modes.
+    const bg = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    bg.addColorStop(0, '#4facfe');
+    bg.addColorStop(1, '#0a4d8c');
+    this.ctx.fillStyle = bg;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw question
@@ -753,19 +773,20 @@ export default class BubblePopGameTemplate extends BaseGame {
     const bgWidth = metrics.width + padding * 2;
     const bgHeight = 50;
 
-    // Draw background
-    this.ctx.fillStyle = this.getThemeColor('--bg-secondary') || '#e9ecef';
+    // Draw background — fixed dark translucent panel so the white question text
+    // stays legible over the ocean gradient in both light and dark themes.
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     this.drawRoundedRect(bgX, bgY, bgWidth, bgHeight, 10);
     this.ctx.fill();
 
     // Add border for better visibility
-    this.ctx.strokeStyle = this.getThemeColor('--border-color') || '#ddd';
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
     this.ctx.lineWidth = 2;
     this.drawRoundedRect(bgX, bgY, bgWidth, bgHeight, 10);
     this.ctx.stroke();
 
     // Question text
-    this.ctx.fillStyle = this.getThemeColor('--text-primary') || '#333';
+    this.ctx.fillStyle = '#ffffff';
     this.ctx.fillText(questionText, this.canvas.width / 2, bgY + bgHeight / 2);
 
     this.ctx.restore();
@@ -801,9 +822,9 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.drawRoundedRect(x, y, fillWidth, barHeight, 4);
     this.ctx.fill();
 
-    // Timer text
-    this.ctx.font = '16px Arial';
-    this.ctx.fillStyle = this.getThemeColor('--text-secondary') || '#666';
+    // Timer text — white for contrast against the ocean background.
+    this.ctx.font = 'bold 16px Arial';
+    this.ctx.fillStyle = '#ffffff';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(
       `Time: ${Math.ceil(this.timeRemaining)}s`,

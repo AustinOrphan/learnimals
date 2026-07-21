@@ -81,8 +81,8 @@ export const gameRegistry = [
     id: 'bubble-pop',
     name: 'Bubble Pop Math',
     description: 'Pop bubbles with the correct answers to solve math problems!',
-    gameClass: 'BubblePopGame',
-    scriptPath: '/games/bubble-pop/bubblepop.js',
+    gameClass: 'BubblePopGameTemplate',
+    scriptPath: '/games/bubble-pop/BubblePopGameTemplate.js',
     styleSheet: '/games/bubble-pop/bubblepop.css',
 
     // Subject and character information

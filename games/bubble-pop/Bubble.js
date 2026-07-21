@@ -110,10 +110,21 @@ export default class Bubble {
       return; // Don't continue with normal update
     }
 
-    // Gentle bobbing around the spawn position so the four bubbles stay fully
-    // visible and clickable (instead of drifting off the top of the canvas).
+    // Float steadily upward and off the top of the canvas — the core mechanic
+    // (pop the correct bubble before it drifts away). deltaTime is normalised to
+    // ~60fps steps so the rise speed is frame-rate independent.
+    const frames = deltaTime / 16.67;
+    this.y -= this.speed * frames;
+
+    // A little horizontal sway around the spawn column for character.
+    if (this.baseX === undefined) this.baseX = this.x;
     this.bobTime = (this.bobTime || 0) + deltaTime;
-    this.y = this.originalY + Math.sin(this.bobTime / 600 + this.floatOffset) * this.floatAmplitude;
+    this.x = this.baseX + Math.sin(this.bobTime / 500 + this.floatOffset) * 6;
+
+    // Deactivate once fully off the top so the game can score/advance the round.
+    if (this.y < -this.radius) {
+      this.active = false;
+    }
 
     // Pulse animation
     if (this.isPulsing) {

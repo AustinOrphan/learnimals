@@ -47,3 +47,75 @@ test.describe('ecosystem-safari', () => {
     expect(errors).toEqual([]);
   });
 });
+
+// Bubble Pop was migrated to the BaseGame version (BubblePopGameTemplate):
+//  - it now extends BaseGame,
+//  - BaseGame sizes the canvas buffer to its display box (no mobile squish),
+//  - Bubble.update() floats bubbles up and off the top (was bobbing in place).
+// Each browser-side block re-scans window because GameTemplateLoader's global
+// name isn't guaranteed (installs a findGame() on window for reuse).
+const INSTALL_FINDER = () => {
+  (window as any).findGame = () => {
+    for (const k of Object.keys(window)) {
+      const v = (window as any)[k];
+      if (v && Array.isArray(v.bubbles) && v.canvas) return v;
+      if (v && v.game && Array.isArray(v.game.bubbles)) return v.game;
+    }
+    return null;
+  };
+};
+
+test.describe('bubble-pop', () => {
+  test('runs the BaseGame version without a squished canvas', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/games/bubble-pop/');
+    await page.waitForSelector('canvas');
+    await page.evaluate(INSTALL_FINDER);
+    await page.waitForFunction(() => (window as any).findGame());
+    const info = await page.evaluate(() => {
+      const g = (window as any).findGame();
+      const c = g.canvas as HTMLCanvasElement;
+      const r = c.getBoundingClientRect();
+      return {
+        className: g.constructor.name,
+        bufAR: c.width / c.height,
+        cssAR: r.width / r.height,
+      };
+    });
+    expect(info.className).toBe('BubblePopGameTemplate');
+    // Buffer aspect ratio must match the display box (no squish).
+    expect(Math.abs(info.bufAR - info.cssAR)).toBeLessThan(0.05);
+  });
+
+  test('bubbles float up into view and a correct pop scores', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 1100 });
+    await page.goto('/games/bubble-pop/');
+    const canvas = page.locator('canvas');
+    await canvas.scrollIntoViewIfNeeded();
+    await page.evaluate(INSTALL_FINDER);
+    await page.waitForFunction(() => (window as any).findGame());
+    // Wait for the correct bubble to rise inside the visible canvas.
+    await page.waitForFunction(
+      () => {
+        const g = (window as any).findGame();
+        if (!g) return false;
+        const cb = g.bubbles.find((b: any) => b.isCorrect);
+        return cb && cb.y > cb.radius && cb.y < g.canvas.height - cb.radius;
+      },
+      undefined,
+      { timeout: 10000 }
+    );
+    const before = await page.evaluate(() => (window as any).findGame().score);
+    const pos = await page.evaluate(() => {
+      const g = (window as any).findGame();
+      const cb = g.bubbles.find((b: any) => b.isCorrect);
+      const c = g.canvas;
+      const r = c.getBoundingClientRect();
+      return { x: cb.x * (r.width / c.width), y: cb.y * (r.height / c.height) };
+    });
+    await canvas.click({ position: pos });
+    await expect
+      .poll(() => page.evaluate(() => (window as any).findGame().score))
+      .toBeGreaterThan(before);
+  });
+});

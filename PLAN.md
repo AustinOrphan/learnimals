@@ -152,7 +152,12 @@ profile-enhanced, progress-dashboard; systems — theme, navigation, PWA
   handleCanvasClick now allows intro-scene clicks so the Start button works and
   the game starts. Still unlinked (direct-URL only); link it in a nav pass.
 - art page: 3 game links are dead href="#", "Clear" was fixed elsewhere.
-- Bubble Pop doesn't extend BaseGame (works anyway) — reconcile or leave.
+- Bubble Pop: MIGRATED to BaseGame 2026-07-21 — the live /games/bubble-pop/ page
+  now runs BubblePopGameTemplate (extends BaseGame). Fixed the mobile canvas squish
+  (BaseGame sizes the buffer to the display box) and restored bubbles floating up and
+  off the top (Bubble.update rises again instead of bobbing in place); vivid ocean
+  visuals ported over. Old standalone bubblepop.js and the duplicate bubblepop-new.html
+  removed; registry + service-worker precache updated.
 - Cosmetic: avatar PNGs and several base/theme CSS files 404 (never existed).
 
 Story Safari: SALVAGED + playable 2026-07-20 (commit a25736f) — restored
