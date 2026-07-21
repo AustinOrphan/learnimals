@@ -684,9 +684,14 @@ nav a:hover {
    and the last row lines up under the columns above (a wrapping flexbox
    center-floats the leftover cards, which looked inconsistent). One card size
    at every breakpoint; column count adapts to the width. */
+/* Flexbox (not grid): grid's auto-fit fills tracks left-to-right, so a partial
+   last row leaves the orphan card left-aligned instead of centred. Flex with
+   justify-content:center centres EVERY wrapped row, including the last. Cards
+   are a fixed 320px and never grow (flex-grow 0), so every card is the same
+   width at a given breakpoint; they shrink to fit on narrow screens. */
 .features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 320px));
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
   padding: 60px 20px;
@@ -694,21 +699,20 @@ nav a:hover {
   background-color: var(--background-color);
 }
 
-/* The grid item is the <a> wrapper; make it (and the card) fill the cell so
-   every card is a uniform width and equal height across the row. */
+/* The flex item is the <a> wrapper. flex:0 1 320px = don't grow, may shrink,
+   base 320px. display:flex lets the inner card stretch to the row's height so
+   cards stay equal-height across a row (align-items:stretch on the container). */
 .features .feature-card-link {
-  display: block;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex: 0 1 320px;
+  max-width: 320px;
   margin: 0;
   padding: 0;
-  max-width: none;
 }
 
 .features .feature-card {
   width: 100%;
   max-width: none;
-  height: 100%;
 }
 
 .feature-card {
