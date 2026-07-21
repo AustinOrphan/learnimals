@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Meet the Learnimals animal friends — say hello, learn fun facts, and take a quick quiz!"
+    />
+    <title>Meet the Animals - Learnimals</title>
+    <link rel="stylesheet" href="/styles/base/styles.css" />
+    <link rel="stylesheet" href="/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/components.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
+    <link rel="stylesheet" href="/subjects/animals/animals.css" />
+    <link rel="icon" href="/public/images/favicon.ico" type="image/x-icon" />
+    <link rel="manifest" href="/public/manifest.json" />
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <main>
+      <section class="hero">
+        <h1>🐾 Meet the Animals</h1>
+        <p>Say hello to your Learnimals friends, learn amazing animal facts, and try a fun quiz!</p>
+      </section>
+
+      <!-- Gallery of animal cards (rendered by animals.js) -->
+      <section class="animals-gallery" id="animals-gallery" aria-label="Meet the animals"></section>
+
+      <!-- Meet view for a single animal (rendered by animals.js on hash change) -->
+      <section class="animal-meet" id="animal-meet" hidden></section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Learnimals. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/pages/about.html">About Us</a>
+        <a href="/pages/contact.html">Contact</a>
+        <a href="/pages/privacy.html">Privacy Policy</a>
+        <a href="/pages/profile.html">My Profile</a>
+      </div>
+    </footer>
+
+    <script type="module" src="/subjects/animals/animals.js"></script>
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
+    <script defer src="/components/component-loader.js"></script>
+  </body>
+</html>

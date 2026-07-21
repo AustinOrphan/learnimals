@@ -1,0 +1,175 @@
+/* Animals subject: gallery grid + single-animal meet view. Semantic theme
+   variables only; motion gated behind prefers-reduced-motion. */
+
+.animals-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  max-width: 900px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+/* Author-origin `display: grid` above otherwise beats the browser's default
+   `[hidden] { display: none }` UA rule, since author styles always win over
+   user-agent styles regardless of specificity — so the `hidden` attribute set
+   by animals.js was silently ignored and the gallery stayed visible under the
+   meet view. Matches the `.tab-panel[hidden]` convention in components.css. */
+.animals-gallery[hidden] {
+  display: none;
+}
+
+.animal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.15s ease;
+}
+.animal-card:hover,
+.animal-card:focus-visible {
+  transform: translateY(-4px);
+  outline: 2px solid var(--accent-primary);
+}
+.animal-card img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+.animal-card .animal-card-name {
+  font-weight: 700;
+}
+.animal-card .animal-card-kind {
+  font-size: 0.85rem;
+  color: var(--text-secondary, var(--text-primary));
+}
+
+/* Meet view */
+.animal-meet {
+  max-width: 720px;
+  margin: 1.5rem auto;
+  padding: 0 1rem 3rem;
+}
+.animal-meet .meet-back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accent-primary);
+}
+.animal-meet .meet-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+.animal-meet .meet-art {
+  width: 180px;
+  height: 180px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+/* `object-fit` only applies to replaced elements (the <img> inside the
+   button), not the button itself, so without this rule the mascot image
+   rendered at its full intrinsic size (some source art is 1024x1024),
+   overflowing the 180px button and intercepting clicks on content below it. */
+.animal-meet .meet-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.animal-meet .meet-speech {
+  min-height: 1.5em;
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+/* Fun facts (tap to reveal) */
+.animal-facts {
+  margin-top: 2rem;
+}
+.fact-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 0.5rem 0;
+  padding: 0.85rem 1rem;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-primary);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.fact-card .fact-text {
+  display: none;
+}
+.fact-card.revealed .fact-text {
+  display: block;
+}
+.fact-card.revealed .fact-prompt {
+  display: none;
+}
+
+/* Quiz (reuses the shape of science.js) */
+.animal-quiz {
+  margin-top: 2rem;
+}
+.quiz-question {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-radius: 12px;
+}
+.quiz-question.correct {
+  background: rgba(46, 204, 113, 0.15);
+}
+.quiz-question.incorrect {
+  background: rgba(231, 76, 60, 0.15);
+}
+.quiz-option {
+  display: block;
+  margin: 0.25rem 0;
+  cursor: pointer;
+}
+.quiz-submit-button {
+  margin-top: 0.5rem;
+}
+#quiz-result.quiz-result-success {
+  font-weight: 700;
+}
+
+/* Reaction + greeting animations, gated on motion preference */
+@media (prefers-reduced-motion: no-preference) {
+  .animal-meet .meet-art.reacting.wiggle {
+    animation: animal-wiggle 0.6s ease;
+  }
+  .animal-meet .meet-art.reacting.bob {
+    animation: animal-bob 0.6s ease;
+  }
+}
+@keyframes animal-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-8deg);
+  }
+  75% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes animal-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
