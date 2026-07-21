@@ -221,10 +221,11 @@ textarea:focus-visible,
 
 /* Touch Target Improvements */
 @media (pointer: coarse) {
-  /* Ensure minimum touch target size */
+  /* Ensure minimum touch target size. Radios/checkboxes are excluded: forcing
+     44px min-width/height distorts the control (its touch target is its label). */
   button,
   a,
-  input,
+  input:not([type='radio']):not([type='checkbox']),
   select,
   textarea,
   [role='button'],
@@ -668,10 +669,11 @@ input[type='radio'] {
   }
 }
 
-/* Ensure interactive elements are large enough on mobile */
+/* Ensure interactive elements are large enough on mobile. Radios/checkboxes
+   excluded: a 44px min-height stretches them (their target is the label). */
 @media (max-width: 768px) {
   button,
-  input,
+  input:not([type='radio']):not([type='checkbox']),
   select,
   textarea,
   a {

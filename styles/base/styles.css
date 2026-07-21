@@ -1048,8 +1048,10 @@ footer {
     font-size: 16px;
   }
 
-  /* Improved form inputs for mobile */
-  input,
+  /* Improved form inputs for mobile. Exclude radios/checkboxes: a 44px
+     min-height stretches them into tall boxes (their touch target is the
+     surrounding label, not the control itself). */
+  input:not([type='radio']):not([type='checkbox']),
   select,
   textarea {
     font-size: 16px; /* Prevent zoom on iOS */

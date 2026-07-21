@@ -50,6 +50,18 @@ test.describe('Animals subject', () => {
     await expect(page.locator('.animal-card')).toHaveCount(7);
   });
 
+  test('quiz radios are not stretched on mobile', async ({ page }) => {
+    // Regression: the global mobile `input { min-height: 44px }` rule used to
+    // stretch quiz radios into tall boxes. They must stay their natural size
+    // (the label is the touch target), not 44px tall.
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto('/subjects/animals/#shark');
+    const radio = page.locator('.quiz-option input[type="radio"]').first();
+    const box = await radio.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeLessThanOrEqual(24);
+  });
+
   test('returning to the gallery moves focus to its heading', async ({ page }) => {
     await page.goto('/subjects/animals/#shark');
     await page.locator('.meet-back').click();
