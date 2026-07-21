@@ -680,13 +680,35 @@ nav a:hover {
 }
 
 /* Features Section */
+/* A centered grid with equal, aligned columns so every card is the same width
+   and the last row lines up under the columns above (a wrapping flexbox
+   center-floats the leftover cards, which looked inconsistent). One card size
+   at every breakpoint; column count adapts to the width. */
 .features {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 320px));
   justify-content: center;
+  align-items: stretch;
   padding: 60px 20px;
   gap: 30px;
   background-color: var(--background-color);
+}
+
+/* The grid item is the <a> wrapper; make it (and the card) fill the cell so
+   every card is a uniform width and equal height across the row. */
+.features .feature-card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+
+.features .feature-card {
+  width: 100%;
+  max-width: none;
+  height: 100%;
 }
 
 .feature-card {
@@ -1032,9 +1054,6 @@ footer {
   }
 
   .feature-card {
-    width: 100%;
-    max-width: 340px;
-    margin: 0 auto;
     padding: 20px 16px;
   }
 
