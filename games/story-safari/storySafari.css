@@ -1308,3 +1308,122 @@
     display: none;
   }
 }
+
+/* ============================================================
+   Game-first layout: compact header + parent info below game
+   ============================================================ */
+.hero-section.compact {
+  display: block;
+  text-align: center;
+  min-height: 0;
+  padding: 1.5rem 1rem 0.75rem;
+  background: none;
+}
+
+.hero-section.compact .hero-title {
+  font-size: 1.9rem;
+  margin: 0 0 0.25rem;
+}
+
+.hero-section.compact .hero-subtitle {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.grown-ups-section {
+  max-width: 900px;
+  margin: 2.5rem auto 1rem;
+  padding: 0 1rem;
+}
+
+.grown-ups {
+  background: var(--background-color-alt, #fff);
+  color: var(--text-color, #1f2937);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 12px;
+  padding: 0 1.25rem;
+}
+
+.grown-ups summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 1rem 0;
+  list-style: none;
+  color: var(--text-color, #1f2937);
+}
+
+.grown-ups summary::-webkit-details-marker {
+  display: none;
+}
+
+.grown-ups summary::before {
+  content: '▸ ';
+}
+
+.grown-ups[open] summary::before {
+  content: '▾ ';
+}
+
+.grown-ups-content {
+  padding-bottom: 1.25rem;
+}
+
+.grown-ups-content h3 {
+  margin: 1.25rem 0 0.75rem;
+  color: var(--text-color, #1f2937);
+}
+
+.grown-ups .features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.grown-ups .objectives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.grown-ups .feature-card,
+.grown-ups .objective-item {
+  background: var(--background-color, #f7f9fb);
+  color: var(--text-color, #1f2937);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: none;
+  width: auto;
+  max-width: none;
+}
+
+.grown-ups .feature-card h3,
+.grown-ups .feature-card p,
+.grown-ups .objective-item h4,
+.grown-ups .objective-item p {
+  color: var(--text-color, #1f2937);
+}
+
+/* Compact, self-contained intro header (avoids the heavy .hero-section styling
+   whose gradient-clipped title renders invisible on a plain background). */
+.story-safari-intro {
+  text-align: center;
+  padding: 1.25rem 1rem 0.5rem;
+  background: var(--background-color, #fff8ef);
+  color: var(--text-color, #2d3436);
+}
+
+.story-safari-intro h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.7rem;
+  color: var(--text-color, #2d3436);
+}
+
+.story-safari-intro p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-color, #2d3436);
+}

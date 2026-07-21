@@ -36,143 +36,13 @@
     <!-- Shared site navigation -->
     <div id="navbar-placeholder"></div>
 
-    <!-- Page Header -->
-    <header class="page-header">
-      <div class="hero-section">
-        <div class="hero-content">
-          <h1 class="hero-title">Ruby's Story Safari</h1>
-          <p class="hero-subtitle">An Interactive Reading Adventure</p>
-          <p class="hero-description">
-            Join Ruby the Panda on an exciting African safari where every choice you make leads to new discoveries,
-            friendships, and reading adventures. Build your vocabulary, improve comprehension skills, and explore
-            branching storylines in this immersive educational experience.
-          </p>
+    <!-- Compact, kid-friendly header — the game itself comes right below. -->
+    <div class="story-safari-intro">
+      <h1>🐼 Ruby's Story Safari</h1>
+      <p>An interactive reading adventure — every choice shapes your story!</p>
+    </div>
 
-          <div class="hero-features">
-            <div class="feature-badge">
-              <span class="badge-icon">📖</span>
-              <span class="badge-text">Interactive Stories</span>
-            </div>
-            <div class="feature-badge">
-              <span class="badge-icon">🧠</span>
-              <span class="badge-text">Reading Comprehension</span>
-            </div>
-            <div class="feature-badge">
-              <span class="badge-icon">📚</span>
-              <span class="badge-text">Vocabulary Building</span>
-            </div>
-            <div class="feature-badge">
-              <span class="badge-icon">🏆</span>
-              <span class="badge-text">Achievement System</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="hero-character">
-          <img
-            src="/public/images/reading-panda.png"
-            alt="Ruby the Panda ready for adventure"
-            class="character-preview"
-            onerror="this.style.display='none'"
-          />
-          <div class="character-speech-preview">
-            <p>"Ready for an amazing safari adventure? Let's explore together!"</p>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Game Features Section -->
-    <section class="features-section">
-      <div class="container">
-        <h2 class="section-title">What Makes Story Safari Special?</h2>
-
-        <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">🌟</div>
-            <h3>Branching Adventures</h3>
-            <p>
-              Your choices shape Ruby's journey! With 15+ decision points, every playthrough offers new discoveries and
-              storylines to explore.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">📝</div>
-            <h3>Safari Journal</h3>
-            <p>
-              Collect vocabulary words, track your progress, and build your personal safari journal filled with new
-              discoveries.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🎯</div>
-            <h3>Reading Challenges</h3>
-            <p>
-              Test your comprehension with context clues, character analysis, and prediction challenges woven into the
-              story.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🗺️</div>
-            <h3>Story Mapping</h3>
-            <p>
-              Visualize your adventure path and see how your choices connect to create your unique safari experience.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🎨</div>
-            <h3>Beautiful Design</h3>
-            <p>
-              Immerse yourself in watercolor-themed visuals that bring the African safari to life with stunning
-              animations.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">📱</div>
-            <h3>Mobile Ready</h3>
-            <p>
-              Adventure anywhere! Fully responsive design works perfectly on tablets, phones, and desktop computers.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Learning Objectives Section -->
-    <section class="objectives-section">
-      <div class="container">
-        <h2 class="section-title">Educational Benefits</h2>
-
-        <div class="objectives-grid">
-          <div class="objective-item">
-            <h4>Reading Fluency</h4>
-            <p>Natural pacing encourages smooth reading development with adaptive text speed.</p>
-          </div>
-
-          <div class="objective-item">
-            <h4>Vocabulary Expansion</h4>
-            <p>Contextual learning makes new words memorable through interactive discovery.</p>
-          </div>
-
-          <div class="objective-item">
-            <h4>Critical Thinking</h4>
-            <p>Decision points require analysis, prediction, and character understanding.</p>
-          </div>
-
-          <div class="objective-item">
-            <h4>Story Structure</h4>
-            <p>Multiple playthroughs reveal narrative patterns and story development.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Game Container -->
+    <!-- The game comes first, right under the header. -->
     <main class="game-section">
       <div class="container">
         <div class="game-wrapper">
@@ -191,6 +61,67 @@
         </div>
       </div>
     </main>
+
+    <!-- Parent / educator info, BELOW the game and collapsed by default so it
+         never sits between kids and the activity. -->
+    <section class="grown-ups-section">
+      <div class="container">
+        <details class="grown-ups">
+          <summary>👩‍🏫 For grown-ups: what's inside &amp; why it helps</summary>
+          <div class="grown-ups-content">
+            <h3>What makes Story Safari special</h3>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">🌟</div>
+                <h3>Branching Adventures</h3>
+                <p>
+                  Every choice shapes Ruby's journey. With 15+ decision points, each playthrough offers new discoveries
+                  and storylines.
+                </p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Safari Journal</h3>
+                <p>Collect vocabulary words and track progress in a personal journal of new discoveries.</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Reading Challenges</h3>
+                <p>Context clues, character analysis, and prediction challenges are woven into the story.</p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>Story Mapping</h3>
+                <p>See how choices connect to create each unique safari path.</p>
+              </div>
+            </div>
+
+            <h3>Educational benefits</h3>
+            <div class="objectives-grid">
+              <div class="objective-item">
+                <h4>Reading Fluency</h4>
+                <p>Natural pacing encourages smooth reading development.</p>
+              </div>
+              <div class="objective-item">
+                <h4>Vocabulary Expansion</h4>
+                <p>Contextual learning makes new words memorable.</p>
+              </div>
+              <div class="objective-item">
+                <h4>Critical Thinking</h4>
+                <p>Decision points require analysis, prediction, and character understanding.</p>
+              </div>
+              <div class="objective-item">
+                <h4>Story Structure</h4>
+                <p>Multiple playthroughs reveal narrative patterns and story development.</p>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
 
     <!-- Footer -->
     <footer class="page-footer">
