@@ -92,6 +92,7 @@ class NavigationHelper {
       coding: 'subjects/coding/',
       music: 'subjects/music/',
       geography: 'subjects/geography/',
+      animals: 'subjects/animals/',
       bubblepop: 'games/bubble-pop/',
     };
 
