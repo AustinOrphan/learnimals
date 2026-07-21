@@ -90,6 +90,8 @@ class NavigationHelper {
       reading: 'subjects/reading/',
       art: 'subjects/art/',
       coding: 'subjects/coding/',
+      music: 'subjects/music/',
+      geography: 'subjects/geography/',
       bubblepop: 'games/bubble-pop/',
     };
 
