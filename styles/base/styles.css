@@ -25,8 +25,11 @@ button,
 footer,
 .footer-links a {
   transition-property: background-color, color, border-color, box-shadow, fill, stroke;
-  will-change: background-color, color, border-color, box-shadow, fill, stroke; /* Add will-change */
-  transition-duration: 0.4s;
+  /* Keep the theme toggle snappy. At 0.4s the page background (which is in this
+     list) visibly lagged behind content that flips instantly (e.g. .section-box,
+     which is not), so on switching to dark mode the body looked wrong — pale
+     behind already-dark cards — until the fade caught up. */
+  transition-duration: 0.15s;
   transition-timing-function: ease;
 }
 
