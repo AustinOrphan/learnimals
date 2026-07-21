@@ -49,4 +49,11 @@ test.describe('Animals subject', () => {
     await page.goto('/subjects/animals/');
     await expect(page.locator('.animal-card')).toHaveCount(7);
   });
+
+  test('returning to the gallery moves focus to its heading', async ({ page }) => {
+    await page.goto('/subjects/animals/#shark');
+    await page.locator('.meet-back').click();
+    await expect(page).not.toHaveURL(/#shark$/);
+    await expect(page.locator('#gallery-heading')).toBeFocused();
+  });
 });

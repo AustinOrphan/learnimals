@@ -16,7 +16,7 @@ const prefersReducedMotion = () =>
   window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /** Render the gallery of animal cards. */
-function renderGallery() {
+function renderGallery(isNavigation) {
   const gallery = document.getElementById('animals-gallery');
   const meet = document.getElementById('animal-meet');
   if (!gallery) return;
@@ -34,6 +34,12 @@ function renderGallery() {
       <span class="animal-card-name">${a.name}</span>
       <span class="animal-card-kind">the ${a.type}</span>`;
     gallery.appendChild(card);
+  }
+
+  // Move focus to the gallery heading when returning via navigation, so
+  // keyboard/screen-reader focus doesn't drop to <body>. Skip on initial load.
+  if (isNavigation) {
+    document.getElementById('gallery-heading')?.focus();
   }
 }
 
@@ -176,16 +182,18 @@ function checkQuiz(quiz) {
   result.className = perfect ? 'quiz-result-success' : 'quiz-result-partial';
 }
 
-/** Route based on the current hash: a known species → meet view, else gallery. */
-function route() {
+/** Route based on the current hash: a known species → meet view, else gallery.
+ *  `isNavigation` is true for hash changes (not the initial page load), so we
+ *  only steal focus back to the gallery heading on a real "back" navigation. */
+function route(isNavigation) {
   const animal = resolveSpecies(window.location.hash, animals);
   if (animal) renderMeet(animal);
-  else renderGallery();
+  else renderGallery(isNavigation);
 }
 
 function init() {
-  window.addEventListener('hashchange', route);
-  route();
+  window.addEventListener('hashchange', () => route(true));
+  route(false);
 }
 
 if (document.readyState === 'loading') {
