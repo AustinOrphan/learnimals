@@ -5,7 +5,10 @@
 
 /* ------ Card Component ------ */
 .feature-card {
-  background-color: var(--bg-card);
+  /* Global theme vars so the card (and its text below) actually flip in dark
+     mode; --bg-card / --text-primary were not defined per-theme and stayed a
+     frosted white, leaving dark-mode content unreadable. */
+  background-color: var(--background-color-alt, #fff);
   border-radius: 12px;
   padding: 20px;
   margin: 10px;
@@ -26,8 +29,16 @@
 
 .feature-card h3 {
   margin-top: 0;
-  color: var(--text-primary);
+  color: var(--text-color, #1f2937);
   font-size: 1.5rem;
+}
+
+/* Card.js renders titles as .card-title; several equal-specificity rules
+   (.feature-card h3 -> --primary-color, .component h3 -> --text-primary) set a
+   non-flipping color, leaving titles invisible on dark cards. Win with a more
+   specific, theme-aware rule. */
+.feature-card .card-title {
+  color: var(--text-color, #1f2937);
 }
 
 .feature-card .card-image {

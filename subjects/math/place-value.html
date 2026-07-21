@@ -14,6 +14,7 @@
 
     <script type="module">
       import SubjectTemplateLoader from '/utils/subjectTemplateLoader.js';
+      import { initPractice, initBuildChallenge } from '/subjects/math/place-value.js';
 
       // Define content for place value page
       const placeValueOptions = {
@@ -27,23 +28,13 @@
         // Fallback HTML for feature cards if Card.js doesn't work
         featureCards: `
                     <div class="feature-card">
-                        <h3>Place Value Builder</h3>
-                        <p>Build numbers using thousands, hundreds, tens, and ones blocks!</p>
+                        <div id="pv-challenge"></div>
                         <div id="place-value-builder"></div>
                     </div>
 
                     <div class="feature-card">
                         <h3>Quick Practice</h3>
-                        <div class="quick-practice">
-                            <p>What is the value of the digit 5 in the number 2,584?</p>
-                            <div class="practice-buttons">
-                                <button class="practice-btn" data-answer="5">5</button>
-                                <button class="practice-btn" data-answer="50">50</button>
-                                <button class="practice-btn" data-answer="500" data-correct="true">500</button>
-                                <button class="practice-btn" data-answer="5000">5,000</button>
-                            </div>
-                            <p id="practice-feedback" class="practice-feedback"></p>
-                        </div>
+                        <div id="pv-practice"></div>
                     </div>
 
                     <div class="feature-card">
@@ -89,25 +80,16 @@
         // Card.js data for generating feature cards
         featureCardsData: [
           {
-            title: 'Place Value Builder',
+            title: '🎯 Build-a-Number Challenge',
             content: `
-                            <p>Build numbers using thousands, hundreds, tens, and ones blocks!</p>
+                            <div id="pv-challenge"></div>
                             <div id="place-value-builder"></div>
                         `,
           },
           {
             title: 'Quick Practice',
             content: `
-                            <div class="quick-practice">
-                                <p>What is the value of the digit 5 in the number 2,584?</p>
-                                <div class="practice-buttons">
-                                    <button class="practice-btn" data-answer="5">5</button>
-                                    <button class="practice-btn" data-answer="50">50</button>
-                                    <button class="practice-btn" data-answer="500" data-correct="true">500</button>
-                                    <button class="practice-btn" data-answer="5000">5,000</button>
-                                </div>
-                                <p id="practice-feedback" class="practice-feedback"></p>
-                            </div>
+                            <div id="pv-practice"></div>
                         `,
           },
           {
@@ -158,78 +140,28 @@
       document.addEventListener('DOMContentLoaded', async () => {
         await SubjectTemplateLoader.renderTemplate(placeValueOptions);
 
-        // Initialize place value manipulative
-        initializePlaceValue();
-
-        // Initialize quick practice
-        initializeQuickPractice();
-      });
-
-      function initializePlaceValue() {
-        // Wait for DOM to be ready
+        // The template renders asynchronously; give it a beat, then wire up the
+        // builder, the "build this number" challenge, and the dynamic practice.
         setTimeout(() => {
+          let builder = null;
           const container = document.getElementById('place-value-builder');
           if (container && window.PlaceValueManipulative) {
-            new PlaceValueManipulative({
+            builder = new PlaceValueManipulative({
               containerId: 'place-value-builder',
               maxNumber: 9999,
               mode: 'compose',
             });
-          } else {
-            console.warn('PlaceValueManipulative not found or container missing');
-            // Fallback content
-            if (container) {
-              container.innerHTML = `
+          } else if (container) {
+            container.innerHTML = `
                                 <p>Place Value Builder is loading...</p>
                                 <p>Try refreshing the page if it doesn't appear.</p>
                             `;
-            }
           }
-        }, 100);
-      }
 
-      function initializeQuickPractice() {
-        setTimeout(() => {
-          const practiceButtons = document.querySelectorAll('.practice-btn');
-          const feedback = document.getElementById('practice-feedback');
-
-          practiceButtons.forEach(button => {
-            button.addEventListener('click', () => {
-              const isCorrect = button.hasAttribute('data-correct');
-              const answer = button.getAttribute('data-answer');
-
-              // Reset all buttons
-              practiceButtons.forEach(btn => {
-                btn.classList.remove('correct', 'incorrect');
-                btn.disabled = false;
-              });
-
-              if (isCorrect) {
-                button.classList.add('correct');
-                feedback.textContent = '🎉 Correct! The 5 is in the hundreds place, so its value is 500.';
-                feedback.className = 'practice-feedback correct';
-              } else {
-                button.classList.add('incorrect');
-                feedback.textContent = `❌ Not quite. You selected ${answer}, but the 5 is in the hundreds place.`;
-                feedback.className = 'practice-feedback incorrect';
-              }
-
-              // Disable all buttons after selection
-              practiceButtons.forEach(btn => (btn.disabled = true));
-
-              // Enable reset after 3 seconds
-              setTimeout(() => {
-                practiceButtons.forEach(btn => {
-                  btn.classList.remove('correct', 'incorrect');
-                  btn.disabled = false;
-                });
-                feedback.textContent = '';
-                feedback.className = 'practice-feedback';
-              }, 3000);
-            });
-          });
-        }, 100);
-      }
+          initBuildChallenge('pv-challenge', builder);
+          initPractice('pv-practice');
+        }, 120);
+      });
     </script>
 
     <!-- Stylesheets -->
