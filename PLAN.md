@@ -151,7 +151,10 @@ profile-enhanced, progress-dashboard; systems — theme, navigation, PWA
 - adventure-quest: click-handler deadlock FIXED 2026-07-21 (commit f21d731) —
   handleCanvasClick now allows intro-scene clicks so the Start button works and
   the game starts. Still unlinked (direct-URL only); link it in a nav pass.
-- art page: 3 game links are dead href="#", "Clear" was fixed elsewhere.
+- art page: FIXED 2026-07-21 — the "Art Games" section was a dead "coming soon"
+  text; it now links the working Color Palette Creator (`/games/color-palette/`,
+  the only art-subject game with a dir). Shape Builder / Memory Art don't exist yet
+  (noted as coming soon). "Clear" was fixed elsewhere.
 - Bubble Pop: MIGRATED to BaseGame 2026-07-21 — the live /games/bubble-pop/ page
   now runs BubblePopGameTemplate (extends BaseGame). Fixed the mobile canvas squish
   (BaseGame sizes the buffer to the display box) and restored bubbles floating up and
