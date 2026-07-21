@@ -182,19 +182,33 @@ footer {
 
 .quiz-option {
   display: block;
-  margin: 6px 0;
-  padding: 6px 8px;
-  border-radius: 6px;
+  margin: 8px 0;
+  padding: 12px 14px;
+  border: 2px solid var(--border-color, #d0d7de);
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  background: var(--background-color, #fff);
+  color: var(--text-color, #222);
+  font-size: 1rem;
+  min-height: 44px; /* comfortable touch target */
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
 }
 
 .quiz-option input[type='radio'] {
-  margin-right: 8px;
+  margin-right: 10px;
 }
 
 .quiz-option:hover {
-  background-color: var(--background-color, #f4f8fb);
+  border-color: var(--accent-primary, #4a90d9);
+}
+
+/* Clear selected state — the whole option highlights, not just the tiny radio. */
+.quiz-option:has(input:checked) {
+  border-color: var(--accent-primary, #4a90d9);
+  background: rgba(74, 144, 217, 0.18);
+  font-weight: 600;
 }
 
 .quiz-question.correct {
