@@ -8,6 +8,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   width: 100%;
   flex-wrap: wrap;
+  /* Stick the site nav to the top and keep it above game start-screens and
+     custom page overlays, so the hamburger is always reachable on mobile and
+     never trapped under a full-screen game modal or a page's own layered
+     sections. */
+  position: sticky;
+  top: 0;
+  z-index: 5000;
 }
 
 .navbar-logo img {
