@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Asteroid Math — a fast, fun arcade game where you blast the asteroid showing the correct answer to a math problem."
+    />
+    <title>Asteroid Math - Learnimals</title>
+
+    <link rel="stylesheet" href="/styles/base/styles.css" />
+    <link rel="stylesheet" href="/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
+    <link rel="stylesheet" href="/games/asteroid-math/asteroidMath.css" />
+    <link rel="icon" href="/public/images/favicon.ico" type="image/x-icon" />
+    <meta name="theme-color" content="#0b1026" />
+  </head>
+  <body>
+    <!-- Shared site navigation -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="asteroid-page">
+      <div class="am-intro">
+        <h1>🚀 Asteroid Math</h1>
+        <p>Blast the asteroid with the correct answer before time runs out!</p>
+      </div>
+
+      <div class="am-game">
+        <div class="am-hud">
+          <div class="am-problem" id="am-problem">Ready?</div>
+          <div class="am-stats">
+            <span>Score <b id="am-score">0</b></span>
+            <span>Level <b id="am-level">1</b></span>
+            <span>Streak <b id="am-streak">0</b></span>
+            <span>Lives <b id="am-lives">🚀🚀🚀</b></span>
+          </div>
+        </div>
+
+        <div class="am-stage">
+          <canvas id="asteroid-canvas" class="am-canvas"></canvas>
+
+          <div class="am-overlay show" id="am-start">
+            <div class="am-panel">
+              <h2>🚀 Asteroid Math</h2>
+              <p>
+                A math problem shows at the top. Aim your rocket and blast the asteroid with the
+                <b>correct answer</b> — be quick, and don't hit the wrong ones!
+              </p>
+              <ul class="am-how">
+                <li>🖱️ Move your mouse or finger to aim</li>
+                <li>💥 Click, tap, or press Space to fire</li>
+                <li>🎯 Right answers earn points &amp; streaks; wrong ones cost points</li>
+              </ul>
+              <button class="am-btn" id="am-start-btn" type="button">Start Mission 🚀</button>
+            </div>
+          </div>
+
+          <div class="am-overlay" id="am-gameover">
+            <div class="am-panel">
+              <h2>💥 Game Over</h2>
+              <p class="am-final">Final score: <b id="am-final-score">0</b></p>
+              <button class="am-btn" id="am-play-again" type="button">Play Again 🔄</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="am-hint">On a phone: drag to aim, tap to fire.</p>
+      </div>
+
+      <section class="grown-ups-section">
+        <details class="grown-ups">
+          <summary>👩‍🏫 For grown-ups: what this practises</summary>
+          <div class="grown-ups-content">
+            <p>
+              Asteroid Math is quick-fire mental-arithmetic practice. Each round poses an addition, subtraction, or
+              multiplication problem and asks the player to pick the correct answer from several floating options under
+              light time pressure — building fluency, number sense, and the ability to reject plausible-but-wrong
+              answers. Difficulty scales automatically: later levels use bigger numbers, more decoys, and a tighter
+              timer.
+            </p>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <!-- Shared navigation + theming -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
+
+    <!-- Game -->
+    <script type="module">
+      import AsteroidMathGame from '/games/asteroid-math/asteroidMath.js';
+
+      const el = {
+        problem: document.getElementById('am-problem'),
+        score: document.getElementById('am-score'),
+        level: document.getElementById('am-level'),
+        streak: document.getElementById('am-streak'),
+        lives: document.getElementById('am-lives'),
+        start: document.getElementById('am-start'),
+        gameover: document.getElementById('am-gameover'),
+        finalScore: document.getElementById('am-final-score'),
+      };
+
+      const game = new AsteroidMathGame('asteroid-canvas', { elements: el });
+      window.asteroidMathGame = game;
+      document.getElementById('am-start-btn').addEventListener('click', () => game.start());
+      document.getElementById('am-play-again').addEventListener('click', () => game.start());
+    </script>
+  </body>
+</html>
