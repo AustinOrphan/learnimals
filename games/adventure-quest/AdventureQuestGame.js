@@ -170,7 +170,16 @@ export default class AdventureQuestGame {
    * @param {MouseEvent} event - Click event
    */
   handleCanvasClick(event) {
-    if (!this.gameState.isPlaying && !this.gameState.isPaused) return;
+    // The intro scene draws the Start button on the canvas, and clicking it is
+    // the only way to call startGame() (which sets isPlaying). So intro clicks
+    // must be allowed through — otherwise the game can never start (deadlock).
+    if (
+      !this.gameState.isPlaying &&
+      !this.gameState.isPaused &&
+      this.gameState.currentScene !== 'intro'
+    ) {
+      return;
+    }
 
     const rect = this.canvas.getBoundingClientRect();
     const clickX = event.clientX - rect.left;

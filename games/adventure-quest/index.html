@@ -140,6 +140,9 @@
           soundEnabled: localStorage.getItem('soundEnabled') !== 'false',
         });
 
+        // Expose the instance for debugging and end-to-end tests.
+        window.adventureQuestGame = game;
+
         // Hide loading screen once game is ready
         setTimeout(() => {
           loadingScreen.style.display = 'none';

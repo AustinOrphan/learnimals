@@ -344,9 +344,15 @@ export default class EcosystemSafariGame {
       <p><strong>Phase 1:</strong> Let's start by choosing the perfect habitat for our ecosystem.</p>
     `;
 
-    // Integration point with existing Modal system
+    // Integration point with existing Modal system. Modal is a class you
+    // instantiate and open() — there is no static Modal.show().
     if (window.Modal) {
-      window.Modal.show("Sky's Science Safari", message);
+      new window.Modal({
+        title: "Sky's Science Safari",
+        content: message,
+        confirmButtonText: "Let's explore!",
+        showCancelButton: false,
+      }).open();
     }
   }
 
