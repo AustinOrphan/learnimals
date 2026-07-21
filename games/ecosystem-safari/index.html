@@ -56,8 +56,12 @@
         background: var(--bg-primary);
       }
     </style>
+    <link rel="stylesheet" href="/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
   </head>
   <body>
+    <!-- Shared site navigation -->
+    <div id="navbar-placeholder"></div>
     <div class="ecosystem-safari-game">
       <!-- Main Game Canvas -->
       <canvas id="ecosystem-canvas" class="ecosystem-canvas"></canvas>
@@ -369,5 +373,10 @@
       // Start health simulation
       setTimeout(simulateEcosystemHealth, 3000);
     </script>
+    <!-- Shared navigation + theming -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
   </body>
 </html>

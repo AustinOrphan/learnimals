@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sky's Ecosystem Explorer</title>
     <link rel="stylesheet" href="ecosystemExplorer.css" />
+    <link rel="stylesheet" href="/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
   </head>
   <body>
+    <!-- Shared site navigation -->
+    <div id="navbar-placeholder"></div>
     <div class="game-wrapper">
       <header class="game-header">
         <div class="character-intro">
@@ -190,5 +194,10 @@
         new EcosystemGameController();
       });
     </script>
+    <!-- Shared navigation + theming -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
   </body>
 </html>

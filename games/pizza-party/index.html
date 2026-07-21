@@ -40,35 +40,11 @@
     <!-- Preload critical resources -->
     <link rel="preload" href="../../utils/common.js" as="script" />
     <link rel="preload" href="pizzaParty.js" as="script" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
   </head>
   <body>
     <!-- Navigation -->
-    <nav class="main-navigation" aria-label="Main navigation">
-      <div class="nav-container">
-        <a href="/" class="nav-logo" aria-label="Learnimals Home">
-          <img src="../../public/images/logo.png" alt="Learnimals" width="120" height="40" />
-        </a>
-
-        <ul class="nav-menu" role="menubar">
-          <li role="none">
-            <a href="/" class="nav-link" role="menuitem">Home</a>
-          </li>
-          <li role="none">
-            <a href="./subjects.html" class="nav-link" role="menuitem">Subjects</a>
-          </li>
-          <li role="none">
-            <a href="./games.html" class="nav-link active" role="menuitem" aria-current="page">Games</a>
-          </li>
-          <li role="none">
-            <a href="./progress.html" class="nav-link" role="menuitem">Progress</a>
-          </li>
-        </ul>
-
-        <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-          <span class="hamburger"></span>
-        </button>
-      </div>
-    </nav>
+    <div id="navbar-placeholder"></div>
 
     <!-- Main Game Container -->
     <main class="pizza-party-game" role="main">
@@ -560,5 +536,10 @@
         }
       }
     </style>
+    <!-- Shared navigation + theming -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
   </body>
 </html>

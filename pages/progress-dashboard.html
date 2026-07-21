@@ -86,24 +86,11 @@
         transform: translateY(-2px);
       }
     </style>
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
   </head>
   <body class="dashboard-page">
     <!-- Navigation -->
-    <nav class="navbar">
-      <div class="navbar-container">
-        <a href="index.html" class="navbar-brand">
-          <img src="../public/images/logo.png" alt="Learnimals Logo" />
-          Learnimals
-        </a>
-        <div class="navbar-links">
-          <a href="index.html">Home</a>
-          <a href="subjects.html">Subjects</a>
-          <a href="games.html">Games</a>
-          <a href="progress-dashboard.html" class="active">Progress</a>
-          <a href="profile.html">Profile</a>
-        </div>
-      </div>
-    </nav>
+    <div id="navbar-placeholder"></div>
 
     <!-- Dashboard Header -->
     <header class="dashboard-header">
@@ -217,5 +204,10 @@
         }
       };
     </script>
+    <!-- Shared navigation + theming -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
   </body>
 </html>

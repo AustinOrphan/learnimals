@@ -8,8 +8,12 @@
     <link rel="stylesheet" href="../../styles/base/variables.css" />
     <link rel="stylesheet" href="../../styles/base/base.css" />
     <link rel="stylesheet" href="./sentenceBuilder.css" />
+    <link rel="stylesheet" href="/styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
   </head>
   <body>
+    <!-- Shared site navigation -->
+    <div id="navbar-placeholder"></div>
     <div class="page-container">
       <header class="game-header">
         <h1>🐰 Bella's Sentence Builder</h1>
@@ -789,5 +793,10 @@
         }
       }
     </style>
+    <!-- Shared navigation + theming -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
+    <script defer src="/components/layout/navbarLoader.js"></script>
   </body>
 </html>
