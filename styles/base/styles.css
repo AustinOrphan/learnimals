@@ -737,6 +737,15 @@ nav a:hover {
   background-color: var(--accent-color-alt);
 }
 
+/* Homepage subject cards auto-alternate their colour by position, so the `alt`
+   colour is never hand-placed in the markup. Odd cards (1st, 3rd, …) take the
+   accent background; the rest use the default. Column count changes with the
+   viewport, so this alternates in source order (a checkerboard only when the
+   column count is odd). */
+.features .feature-card-link:nth-child(odd) .feature-card {
+  background-color: var(--accent-color-alt);
+}
+
 .feature-card.alt:hover,
 .feature-card:hover {
   transform: translateY(-8px);
