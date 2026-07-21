@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="../../styles/base/responsive.css" />
     <link rel="stylesheet" href="../../styles/components/components.css" />
     <link rel="stylesheet" href="../../styles/components/navbar.css" />
+    <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
     <link rel="stylesheet" href="pizzaMaker.css" />
     <meta name="theme-color" content="#ff6b6b" />
+    <link rel="stylesheet" href="/styles/components/grown-ups.css" />
   </head>
   <body class="pizza-maker-page">
     <!-- Navigation -->
@@ -180,7 +182,23 @@
       </div>
     </main>
 
+    <!-- Parent/educator info, collapsed, below the game (shared pattern). -->
+    <section class="grown-ups-section">
+      <details class="grown-ups">
+        <summary>👩‍🏫 For grown-ups: what this practises</summary>
+        <div class="grown-ups-content">
+          <p>
+            Pizza Party Rush practises counting and number recognition — children read an order and add exactly the
+            right number of each topping, reinforcing one-to-one counting under gentle time pressure.
+          </p>
+        </div>
+      </details>
+    </section>
+
     <!-- Navigation Scripts -->
+    <script defer type="module" src="/themeInitializer.js"></script>
+    <script type="module" src="/utils/themeManager.js"></script>
+    <script type="module" src="/components/layout/themeSwitcher.js"></script>
     <script src="../../components/layout/navbarLoader.js" defer></script>
     <script type="module" src="../../utils/navigationHelper.js"></script>
     <script src="../../components/layout/navigation.js" defer></script>

@@ -1,0 +1,72 @@
+/* "For grown-ups" — a collapsed, parent/educator-oriented info panel that sits
+   BELOW a game or activity (never above it). Theme-aware so it works in dark
+   mode. Shared across all game pages. */
+
+.grown-ups-section {
+  max-width: 760px;
+  margin: 2rem auto 0;
+  padding: 0 1rem;
+}
+
+.grown-ups {
+  background: var(--background-color-alt, #fff);
+  color: var(--text-color, #1f2937);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 12px;
+  padding: 0 1.25rem;
+}
+
+.grown-ups summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 1rem 0;
+  list-style: none;
+  color: var(--text-color, #1f2937);
+}
+
+.grown-ups summary::-webkit-details-marker {
+  display: none;
+}
+
+.grown-ups summary::before {
+  content: '▸ ';
+}
+
+.grown-ups[open] summary::before {
+  content: '▾ ';
+}
+
+.grown-ups-content {
+  padding-bottom: 1.25rem;
+  line-height: 1.6;
+  color: var(--text-color, #1f2937);
+}
+
+.grown-ups-content h3 {
+  margin: 1.25rem 0 0.75rem;
+  color: var(--text-color, #1f2937);
+}
+
+.grown-ups-content .features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.grown-ups-content .objectives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.grown-ups-content .feature-card,
+.grown-ups-content .objective-item {
+  background: var(--background-color, #f7f9fb);
+  color: var(--text-color, #1f2937);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: none;
+  width: auto;
+  max-width: none;
+}

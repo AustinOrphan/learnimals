@@ -43,6 +43,7 @@
         min-height: 400px;
       }
     </style>
+    <link rel="stylesheet" href="/styles/components/grown-ups.css" />
   </head>
   <body class="word-scramble-body">
     <!-- Navigation -->
@@ -58,6 +59,19 @@
       <!-- WordScrambleGame renders its full UI inside this container -->
       <div id="word-scramble-game"></div>
     </main>
+
+    <!-- Parent/educator info, collapsed, below the game (shared pattern). -->
+    <section class="grown-ups-section">
+      <details class="grown-ups">
+        <summary>👩‍🏫 For grown-ups: what this practises</summary>
+        <div class="grown-ups-content">
+          <p>
+            Word Scramble builds spelling, vocabulary, and letter recognition by unscrambling letters to form words,
+            with a hint for every word to support developing readers.
+          </p>
+        </div>
+      </details>
+    </section>
 
     <!-- Core scripts -->
     <script defer type="module" src="/themeInitializer.js"></script>

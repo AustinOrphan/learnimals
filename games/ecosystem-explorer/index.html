@@ -4,9 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sky's Ecosystem Explorer</title>
+    <link rel="stylesheet" href="/styles/base/styles.css" />
     <link rel="stylesheet" href="ecosystemExplorer.css" />
     <link rel="stylesheet" href="/styles/components/navbar.css" />
     <link rel="stylesheet" href="/styles/components/themeSwitcher.css" />
+    <link rel="stylesheet" href="/styles/components/grown-ups.css" />
   </head>
   <body>
     <!-- Shared site navigation -->
@@ -194,6 +196,20 @@
         new EcosystemGameController();
       });
     </script>
+
+    <!-- Parent/educator info, collapsed, below the game (shared pattern). -->
+    <section class="grown-ups-section">
+      <details class="grown-ups">
+        <summary>👩‍🏫 For grown-ups: what this practises</summary>
+        <div class="grown-ups-content">
+          <p>
+            Sky's Ecosystem Explorer teaches how living things depend on one another. Children build balanced habitats
+            and see the effects of adding or removing species — early biology and systems thinking.
+          </p>
+        </div>
+      </details>
+    </section>
+
     <!-- Shared navigation + theming -->
     <script defer type="module" src="/themeInitializer.js"></script>
     <script type="module" src="/utils/themeManager.js"></script>
