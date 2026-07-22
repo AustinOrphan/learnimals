@@ -24,7 +24,7 @@
 
       <section class="eco-game" aria-label="Ecosystem Safari game">
         <div class="eco-topbar">
-          <h2 class="eco-goal" id="eco-goal" tabindex="-1">Loading…</h2>
+          <h2 class="eco-goal" id="eco-goal" tabindex="-1" aria-live="polite">Loading…</h2>
           <span class="eco-timer" id="eco-timer" aria-hidden="true"></span>
           <div class="eco-controls">
             <button type="button" id="eco-pause">⏸ Pause</button>
@@ -52,16 +52,16 @@
         <div class="eco-palette" id="eco-palette"></div>
 
         <!-- Win / Lose overlays (hidden by default) -->
-        <div class="eco-overlay" id="eco-win" hidden>
+        <div class="eco-overlay" id="eco-win" role="alert" hidden>
           <div class="eco-card">
-            <h2 id="eco-win-title">Balanced! 🎉</h2>
+            <h2 id="eco-win-title" tabindex="-1">Balanced! 🎉</h2>
             <p id="eco-win-lesson"></p>
             <button type="button" id="eco-next">Next level →</button>
           </div>
         </div>
-        <div class="eco-overlay" id="eco-lose" hidden>
+        <div class="eco-overlay" id="eco-lose" role="alert" hidden>
           <div class="eco-card">
-            <h2>Oops — the food web broke!</h2>
+            <h2 id="eco-lose-title" tabindex="-1">Oops — the food web broke!</h2>
             <p id="eco-lose-hint"></p>
             <button type="button" id="eco-retry">Try again</button>
           </div>

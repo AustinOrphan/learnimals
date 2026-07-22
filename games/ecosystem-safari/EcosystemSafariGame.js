@@ -127,21 +127,27 @@ export default class EcosystemSafariGame extends BaseGame {
   }
 
   roleLabel(sp) {
-    return sp.trophicLevel <= 1
-      ? 'producer'
-      : sp.trophicLevel >= 3
-        ? 'predator'
-        : sp.trophicLevel === 0
-          ? 'decomposer'
+    return sp.trophicLevel === 0
+      ? 'decomposer'
+      : sp.trophicLevel <= 1
+        ? 'producer'
+        : sp.trophicLevel >= 3
+          ? 'predator'
           : 'herbivore';
   }
 
-  /** Player taps a species: add it (or nudge its population up if already present). */
+  /** Player taps a species: add it, or increase its population if already present. */
   addSpeciesByTap(id) {
     if (this.state !== 'playing' || this._attemptOver) return;
     const sp = this.speciesManager.getSpecies(id);
     if (!sp) return;
-    this.engine.addSpecies(sp, 12);
+    const STARTING_POPULATION = 12;
+    const TAP_INCREMENT = 8;
+    const existing = this.state_?.populations.find(p => p.id === id);
+    const amount = existing
+      ? Math.round(existing.currentPopulation) + TAP_INCREMENT
+      : STARTING_POPULATION;
+    this.engine.addSpecies(sp, amount);
     this.playSound(440, 120);
     this.state_ = this.engine.getEcosystemState();
     this.rebuildCreatures();
@@ -204,25 +210,63 @@ export default class EcosystemSafariGame extends BaseGame {
     }
     if (label) label.textContent = `Health: ${health}%`;
 
-    const panel = document.getElementById('eco-population-panel');
-    if (panel) {
-      panel.innerHTML = '';
-      for (const p of s.populations) {
-        const li = document.createElement('li');
-        li.className = 'eco-pop-row';
-        const count = Math.round(p.currentPopulation);
-        li.innerHTML = `<button type="button" class="eco-pop-btn" aria-label="${p.name}: ${count}. Tap for facts.">
-            <span class="eco-emoji" aria-hidden="true">${SPECIES_EMOJI[p.id] || '❓'}</span>
-            <span class="eco-pop-count">${count}</span>
-            <span class="eco-pop-bar" aria-hidden="true"><span style="width:${Math.min(100, (p.currentPopulation / (p.maxPopulation || 100)) * 100)}%"></span></span>
-          </button>`;
-        li.querySelector('button').addEventListener('click', () => this.showFactCard(p.id));
-        panel.appendChild(li);
-      }
-    }
+    this.syncPopulationPanel(s.populations);
 
     const timer = document.getElementById('eco-timer');
     if (timer) timer.textContent = this.timerText();
+  }
+
+  /**
+   * Update the population panel rows in place instead of rebuilding them.
+   * syncPanels runs every update() (~60fps); recreating each <li><button>
+   * every frame destroys focus and drops the click listener a
+   * keyboard/screen-reader user needs to open a species' fun-fact card. Rows
+   * are keyed by a data-species attribute so existing rows are patched
+   * (count, bar width, aria-label) without replacing the node; rows are only
+   * added when a species newly appears and removed when it disappears.
+   */
+  syncPopulationPanel(populations) {
+    const panel = document.getElementById('eco-population-panel');
+    if (!panel) return;
+
+    // Index existing rows by species id (avoids CSS.escape + repeated
+    // attribute-selector queries, and lets us detect stale rows in one pass).
+    const rows = new Map();
+    for (const li of panel.querySelectorAll('li[data-species]')) {
+      rows.set(li.dataset.species, li);
+    }
+
+    for (const p of populations) {
+      const count = Math.round(p.currentPopulation);
+      const barPct = Math.min(100, (p.currentPopulation / (p.maxPopulation || 100)) * 100);
+      const label = `${p.name}: ${count}. Tap for facts.`;
+
+      let li = rows.get(p.id);
+      if (!li) {
+        li = document.createElement('li');
+        li.className = 'eco-pop-row';
+        li.dataset.species = p.id;
+        li.innerHTML = `<button type="button" class="eco-pop-btn">
+            <span class="eco-emoji" aria-hidden="true">${SPECIES_EMOJI[p.id] || '❓'}</span>
+            <span class="eco-pop-count"></span>
+            <span class="eco-pop-bar" aria-hidden="true"><span></span></span>
+          </button>`;
+        li.querySelector('button').addEventListener('click', () => this.showFactCard(p.id));
+        panel.appendChild(li);
+        rows.set(p.id, li);
+      }
+      rows.delete(p.id); // remaining entries after the loop are stale rows
+
+      const btn = li.querySelector('.eco-pop-btn');
+      if (btn.getAttribute('aria-label') !== label) btn.setAttribute('aria-label', label);
+      const countEl = li.querySelector('.eco-pop-count');
+      if (countEl.textContent !== String(count)) countEl.textContent = String(count);
+      const barFill = li.querySelector('.eco-pop-bar span');
+      barFill.style.width = `${barPct}%`;
+    }
+
+    // Whatever is left in `rows` belongs to species no longer present.
+    for (const li of rows.values()) li.remove();
   }
 
   timerText() {
@@ -294,6 +338,10 @@ export default class EcosystemSafariGame extends BaseGame {
     if (next)
       next.textContent =
         this.levelManager.current >= this.levelManager.length - 1 ? 'Play again' : 'Next level →';
+    // Move focus into the overlay so screen-reader / keyboard users get the
+    // win signal (role="alert" on #eco-win announces it, but focus still
+    // needs to move there so subsequent Tab presses land inside the card).
+    document.getElementById('eco-win-title')?.focus();
   }
 
   loseLevel(reason) {
@@ -303,6 +351,7 @@ export default class EcosystemSafariGame extends BaseGame {
     if (hintEl) hintEl.textContent = `${reason ? reason + '. ' : ''}${this.level_.hint}`;
     const lose = document.getElementById('eco-lose');
     if (lose) lose.hidden = false;
+    document.getElementById('eco-lose-title')?.focus();
   }
 
   hideOverlays() {

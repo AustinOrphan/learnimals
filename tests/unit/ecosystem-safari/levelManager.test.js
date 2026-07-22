@@ -58,3 +58,50 @@ describe('LevelManager progression', () => {
     expect(lm.current).toBe(1); // clamped at last
   });
 });
+
+describe('LevelManager _everAlive semantics (regression)', () => {
+  it('a required species that was never added does not count as lost, even past duration', () => {
+    const lm = new LevelManager([{ id: 'a', goal: survive }]);
+    // 'rabbit' is required but has never appeared in any state snapshot —
+    // the player hasn't tapped it into the palette yet, so this must stay
+    // 'playing' (not 'lost') no matter how far past durationSec we go.
+    const r = lm.evaluateGoal({ goal: survive }, state(80, ['grass']), 999);
+    expect(r.status).toBe('playing');
+  });
+
+  it('a required species that was alive and then disappears is lost', () => {
+    const lm = new LevelManager([{ id: 'a', goal: survive }]);
+    // First tick: both required species alive — records them in _everAlive.
+    const first = lm.evaluateGoal({ goal: survive }, state(80, ['grass', 'rabbit']), 5);
+    expect(first.status).toBe('playing');
+    // Second tick: rabbit is gone after having been alive — real loss.
+    const second = lm.evaluateGoal({ goal: survive }, state(80, ['grass']), 6);
+    expect(second.status).toBe('lost');
+  });
+
+  it('resetAttempt() clears _everAlive so a retry does not immediately lose', () => {
+    const lm = new LevelManager([{ id: 'a', goal: survive }]);
+    lm.evaluateGoal({ goal: survive }, state(80, ['grass', 'rabbit']), 5);
+    const lost = lm.evaluateGoal({ goal: survive }, state(80, ['grass']), 6);
+    expect(lost.status).toBe('lost');
+
+    lm.resetAttempt();
+    // rabbit still isn't present in the fresh attempt's first snapshot, but
+    // since it was never (yet) alive THIS attempt, it must read as
+    // 'playing', not an instant 'lost' carried over from the last attempt.
+    const retry = lm.evaluateGoal({ goal: survive }, state(80, ['grass']), 1);
+    expect(retry.status).toBe('playing');
+  });
+
+  it('advance() also clears _everAlive for the next level', () => {
+    const lm = new LevelManager([
+      { id: 'a', goal: survive },
+      { id: 'b', goal: survive },
+    ]);
+    lm.evaluateGoal({ goal: survive }, state(80, ['grass', 'rabbit']), 5);
+    lm.advance();
+    // New level, fresh attempt: rabbit hasn't been alive yet this attempt.
+    const r = lm.evaluateGoal({ goal: survive }, state(80, ['grass']), 1);
+    expect(r.status).toBe('playing');
+  });
+});
