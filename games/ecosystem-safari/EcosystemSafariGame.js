@@ -28,7 +28,16 @@ const HABITAT_BG = {
   ocean: ['#4facfe', '#0a4d8c'],
 };
 
-const SIM_TICK_MS = 500; // engine ticks twice a second
+const SIM_TICK_MS = 1000; // engine ticks once a second
+// NOTE: this also controls predator-hunting pressure, not just growth speed —
+// EcosystemEngine.updateFoodWebDynamics() removes a flat 10% of a predator's
+// population from its prey on every engine.update() call, unlike population
+// growth/mortality which is properly scaled by deltaTime. So halving the tick
+// frequency (500ms -> 1000ms) halves realtime hunting pressure without
+// changing the realtime growth rate. Levels are tuned assuming this value;
+// changing it requires re-tuning games/ecosystem-safari/levels.js (see
+// tests/unit/ecosystem-safari/balance.test.js, whose TICK constant must be
+// kept in lockstep).
 
 export default class EcosystemSafariGame extends BaseGame {
   constructor(canvasId, options = {}) {
