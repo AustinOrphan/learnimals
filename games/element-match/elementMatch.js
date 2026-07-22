@@ -137,8 +137,8 @@ class ElementMatchGame extends BaseGame {
    * Setup game layout based on canvas size
    */
   setupGameLayout() {
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+    const width = this.width;
+    const height = this.height;
 
     // Position Sage in top-left corner
     this.sagePosition.x = 80;
@@ -374,8 +374,8 @@ class ElementMatchGame extends BaseGame {
     // Create particles at card positions
     for (let i = 0; i < 10; i++) {
       this.particles.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
+        x: Math.random() * this.width,
+        y: Math.random() * this.height,
         vx: (Math.random() - 0.5) * 4,
         vy: (Math.random() - 0.5) * 4,
         life: 1.0,
@@ -491,17 +491,17 @@ class ElementMatchGame extends BaseGame {
    */
   renderBackground() {
     // Laboratory-themed background
-    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
     gradient.addColorStop(0, '#2C3E50');
     gradient.addColorStop(1, '#34495E');
 
     this.ctx.fillStyle = gradient;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillRect(0, 0, this.width, this.height);
 
     // Add subtle pattern
     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-    for (let i = 0; i < this.canvas.width; i += 40) {
-      for (let j = 0; j < this.canvas.height; j += 40) {
+    for (let i = 0; i < this.width; i += 40) {
+      for (let j = 0; j < this.height; j += 40) {
         this.ctx.fillRect(i, j, 1, 1);
       }
     }
@@ -582,7 +582,7 @@ class ElementMatchGame extends BaseGame {
     this.ctx.fillStyle = 'white';
     this.ctx.font = 'bold 18px Arial';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText(`Round ${this.currentRound}: ${matchType.name}`, this.canvas.width / 2, 50);
+    this.ctx.fillText(`Round ${this.currentRound}: ${matchType.name}`, this.width / 2, 50);
   }
 
   /**

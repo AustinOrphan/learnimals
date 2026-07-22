@@ -118,8 +118,8 @@ class ColorPaletteGame extends BaseGame {
    * Setup game layout based on canvas size
    */
   setupGameLayout() {
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+    const width = this.width;
+    const height = this.height;
 
     // Position Aria the Owl in top-left corner
     this.ariaPosition.x = 80;
@@ -803,12 +803,12 @@ class ColorPaletteGame extends BaseGame {
    */
   renderBackground() {
     // Studio background with easel and art supplies
-    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    const gradient = this.ctx.createLinearGradient(0, 0, 0, this.height);
     gradient.addColorStop(0, '#F5F3E7');
     gradient.addColorStop(1, '#E6DDD4');
 
     this.ctx.fillStyle = gradient;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillRect(0, 0, this.width, this.height);
 
     // Easel
     this.ctx.fillStyle = this.colors.easel;
@@ -891,10 +891,10 @@ class ColorPaletteGame extends BaseGame {
     this.ctx.fillStyle = this.colors.text;
     this.ctx.font = 'bold 18px Arial';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText(this.currentChallenge.title, this.canvas.width / 2, 30);
+    this.ctx.fillText(this.currentChallenge.title, this.width / 2, 30);
 
     this.ctx.font = '14px Arial';
-    this.ctx.fillText(this.currentChallenge.instruction, this.canvas.width / 2, 55);
+    this.ctx.fillText(this.currentChallenge.instruction, this.width / 2, 55);
   }
 
   /**
@@ -1142,13 +1142,13 @@ class ColorPaletteGame extends BaseGame {
     this.ctx.textAlign = 'right';
 
     // Score and challenge info
-    this.ctx.fillText(`Score: ${this.score}`, this.canvas.width - 20, 30);
+    this.ctx.fillText(`Score: ${this.score}`, this.width - 20, 30);
     this.ctx.fillText(
       `Challenge: ${this.currentChallengeIndex + 1}/${this.challenges.length}`,
-      this.canvas.width - 20,
+      this.width - 20,
       50
     );
-    this.ctx.fillText(`Colors Created: ${this.colorsCreated}`, this.canvas.width - 20, 70);
+    this.ctx.fillText(`Colors Created: ${this.colorsCreated}`, this.width - 20, 70);
   }
 
   /**

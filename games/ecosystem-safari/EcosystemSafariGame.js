@@ -207,14 +207,14 @@ export default class EcosystemSafariGame extends BaseGame {
 
   /** Draw the habitat background. Creatures added in Task 4. */
   render() {
-    const { ctx, canvas } = this;
+    const { ctx, width, height } = this;
     if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    ctx.clearRect(0, 0, width, height);
+    const grad = ctx.createLinearGradient(0, 0, 0, height);
     grad.addColorStop(0, this.habitatBg[0]);
     grad.addColorStop(1, this.habitatBg[1]);
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, width, height);
     this.renderCreatures(); // Task 4 (safe no-op until then)
   }
 
@@ -445,8 +445,8 @@ export default class EcosystemSafariGame extends BaseGame {
   }
 
   spawnCreature(p) {
-    const w = this.canvas.width || 600;
-    const h = this.canvas.height || 400;
+    const w = this.width || 600;
+    const h = this.height || 400;
     const isProducer = p.trophicLevel <= 1;
     return {
       id: p.id,
@@ -463,7 +463,7 @@ export default class EcosystemSafariGame extends BaseGame {
     // rebuild counts, then drift (unless reduced motion).
     this.rebuildCreatures();
     if (this.reducedMotion() || !this.canvas) return;
-    const w = this.canvas.width;
+    const w = this.width;
     for (const c of this.creatures) {
       if (c.isProducer) continue;
       c.phase += deltaTime / 500;

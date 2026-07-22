@@ -133,8 +133,8 @@ class NumberLineJumpGame extends BaseGame {
    * Setup game dimensions based on canvas size
    */
   setupGameDimensions() {
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+    const width = this.width;
+    const height = this.height;
 
     // Position number line in middle of canvas
     this.numberLineY = height * 0.5;
@@ -153,8 +153,8 @@ class NumberLineJumpGame extends BaseGame {
    * Create UI buttons for jump controls
    */
   createButtons() {
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+    const width = this.width;
+    const height = this.height;
 
     this.buttons = [];
 
@@ -325,7 +325,7 @@ class NumberLineJumpGame extends BaseGame {
    */
   animateLeoToPosition(position) {
     this.isAnimating = true;
-    const targetX = this.canvas.width * 0.1 + position * this.tickSpacing;
+    const targetX = this.width * 0.1 + position * this.tickSpacing;
     this.targetLeoPosition.x = targetX;
 
     // Play jump sound
@@ -487,14 +487,14 @@ class NumberLineJumpGame extends BaseGame {
    */
   renderBackground() {
     this.ctx.fillStyle = this.colors.background;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillRect(0, 0, this.width, this.height);
   }
 
   /**
    * Render the number line
    */
   renderNumberLine() {
-    const width = this.canvas.width;
+    const width = this.width;
     const startX = width * 0.1;
     const endX = startX + this.maxNumber * this.tickSpacing;
 
@@ -557,7 +557,7 @@ class NumberLineJumpGame extends BaseGame {
    * Render target indicator
    */
   renderTarget() {
-    const targetX = this.canvas.width * 0.1 + this.targetNumber * this.tickSpacing;
+    const targetX = this.width * 0.1 + this.targetNumber * this.tickSpacing;
     const targetY = this.numberLineY - 30;
 
     // Draw star shape for target
@@ -597,7 +597,7 @@ class NumberLineJumpGame extends BaseGame {
     this.ctx.fillStyle = this.colors.equation;
     this.ctx.font = 'bold 18px Arial';
     this.ctx.textAlign = 'center';
-    this.ctx.fillText(equation, this.canvas.width / 2, 50);
+    this.ctx.fillText(equation, this.width / 2, 50);
   }
 
   /**

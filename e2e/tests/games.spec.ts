@@ -85,24 +85,26 @@ test.describe('bubble-pop', () => {
     await canvas.scrollIntoViewIfNeeded();
     await page.evaluate(INSTALL_FINDER);
     await page.waitForFunction(() => (window as any).findGame());
-    // Wait for the correct bubble to rise inside the visible canvas.
+    // Wait for the correct bubble to rise inside the visible canvas. BaseGame
+    // lays games out in logical (CSS-pixel) space — this.width/this.height —
+    // not the (possibly HiDPI-scaled) canvas.width/canvas.height buffer.
     await page.waitForFunction(
       () => {
         const g = (window as any).findGame();
         if (!g) return false;
         const cb = g.bubbles.find((b: any) => b.isCorrect);
-        return cb && cb.y > cb.radius && cb.y < g.canvas.height - cb.radius;
+        return cb && cb.y > cb.radius && cb.y < g.height - cb.radius;
       },
       undefined,
       { timeout: 10000 }
     );
     const before = await page.evaluate(() => (window as any).findGame().score);
+    // Bubble x/y are already logical CSS-pixel coordinates matching the
+    // canvas's display box, so no device-pixel-ratio scaling is needed.
     const pos = await page.evaluate(() => {
       const g = (window as any).findGame();
       const cb = g.bubbles.find((b: any) => b.isCorrect);
-      const c = g.canvas;
-      const r = c.getBoundingClientRect();
-      return { x: cb.x * (r.width / c.width), y: cb.y * (r.height / c.height) };
+      return { x: cb.x, y: cb.y };
     });
     await canvas.click({ position: pos });
     await expect

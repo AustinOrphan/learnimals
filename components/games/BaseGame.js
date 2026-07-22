@@ -66,6 +66,10 @@ export default class BaseGame {
     this.touchSensitivity = options.touchSensitivity || (this.isMobile ? 0.8 : 1.0);
     this.hapticFeedback = options.hapticFeedback !== false && 'vibrate' in navigator;
 
+    // Logical (CSS-pixel) canvas dimensions — set by resizeCanvas() before first paint
+    this.width = 0;
+    this.height = 0;
+
     // Timing
     this.startTime = null;
     this.pausedTime = 0;
@@ -216,19 +220,9 @@ export default class BaseGame {
    * Set up canvas properties and responsive sizing
    */
   setupCanvas() {
-    // Set canvas size with mobile-first responsive approach
+    // Set canvas size with mobile-first responsive approach. This also handles
+    // HiDPI backing-store sizing and the ctx transform — see resizeCanvas().
     this.resizeCanvas();
-
-    // Enable high DPI support
-    const pixelRatio = window.devicePixelRatio || 1;
-    if (pixelRatio > 1) {
-      const rect = this.canvas.getBoundingClientRect();
-      this.canvas.width = rect.width * pixelRatio;
-      this.canvas.height = rect.height * pixelRatio;
-      this.ctx.scale(pixelRatio, pixelRatio);
-      this.canvas.style.width = rect.width + 'px';
-      this.canvas.style.height = rect.height + 'px';
-    }
 
     // Set default canvas styles with mobile optimizations
     this.ctx.imageSmoothingEnabled = true;
@@ -910,12 +904,23 @@ export default class BaseGame {
       width = height * aspectRatio;
     }
 
+    // Logical (CSS-pixel) dimensions — games lay out and read bounds in this space.
+    this.width = width;
+    this.height = height;
+
+    const dpr = window.devicePixelRatio || 1;
+
     this.canvas.style.width = width + 'px';
     this.canvas.style.height = height + 'px';
-    this.canvas.width = width;
-    this.canvas.height = height;
 
-    this.onResize(width, height);
+    // Backing store is DPR-scaled for a crisp draw; setting canvas.width/height
+    // resets the transform, so re-apply it every time via setTransform (absolute,
+    // not ctx.scale, so repeated resizes don't compound).
+    this.canvas.width = Math.round(width * dpr);
+    this.canvas.height = Math.round(height * dpr);
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    this.onResize(this.width, this.height);
   }
 
   /**
@@ -935,22 +940,21 @@ export default class BaseGame {
       y = event.clientY - rect.top;
     }
 
-    // For canvas games, apply scaling
+    // For canvas games, coordinates are already in CSS px (rect is the CSS box),
+    // matching the logical (this.width/this.height) space games now draw in —
+    // the canvas backing store's device-pixel size is irrelevant here.
     if (!this.useDOMContainer && this.canvas) {
-      const scaleX = this.canvas.width / rect.width;
-      const scaleY = this.canvas.height / rect.height;
-      x *= scaleX;
-      y *= scaleY;
-
       return {
         x: x,
         y: y,
-        normalizedX: x / this.canvas.width,
-        normalizedY: y / this.canvas.height,
+        normalizedX: x / rect.width,
+        normalizedY: y / rect.height,
       };
     }
 
-    // For DOM games, use container dimensions
+    // For DOM games, use container dimensions. Left in CSS-pixel space
+    // intentionally: DOM-container games position elements in CSS px, so no
+    // DPR conversion applies here (unlike the canvas branch above).
     return {
       x: x,
       y: y,
@@ -1020,9 +1024,11 @@ export default class BaseGame {
 
   render() {
     // Override in subclasses
-    // Clear canvas (only for canvas-based games)
+    // Clear canvas (only for canvas-based games). Use the logical size: the ctx
+    // is DPR-scaled (see resizeCanvas), so clearing 0..this.width/this.height
+    // covers the full buffer in the same coordinate space subclasses draw in.
     if (!this.useDOMContainer && this.ctx) {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.clearRect(0, 0, this.width, this.height);
     }
   }
 

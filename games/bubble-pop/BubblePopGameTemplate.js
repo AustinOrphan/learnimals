@@ -267,9 +267,9 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.correctBubbleIndex = getRandomInt(0, this.settings.bubbleCount - 1);
 
     // Calculate bubble positions - start off-screen (below canvas)
-    const spacing = this.canvas.width / (this.settings.bubbleCount + 1);
+    const spacing = this.width / (this.settings.bubbleCount + 1);
     const radius = Math.min(40, spacing / 3);
-    const startY = this.canvas.height + radius + 20; // Start below canvas
+    const startY = this.height + radius + 20; // Start below canvas
 
     // Shuffle the vivid palette so colours vary each round while staying distinct.
     const colors = [...this.bubbleColors].sort(() => Math.random() - 0.5);
@@ -535,8 +535,8 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.messageQueue.push({
       text,
       color,
-      x: this.canvas.width / 2,
-      y: this.canvas.height / 2 - 50,
+      x: this.width / 2,
+      y: this.height / 2 - 50,
       vy: -1,
       life: 1.0,
       decay: 0.015,
@@ -718,15 +718,15 @@ export default class BubblePopGameTemplate extends BaseGame {
    */
   render() {
     // Clear canvas completely first
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.width, this.height);
 
     // Paint a solid, vivid ocean gradient. Fixed (not a theme variable) so it
     // stays high-contrast against the bubbles in both light and dark modes.
-    const bg = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+    const bg = this.ctx.createLinearGradient(0, 0, 0, this.height);
     bg.addColorStop(0, '#4facfe');
     bg.addColorStop(1, '#0a4d8c');
     this.ctx.fillStyle = bg;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillRect(0, 0, this.width, this.height);
 
     // Draw question
     this.renderQuestion();
@@ -768,7 +768,7 @@ export default class BubblePopGameTemplate extends BaseGame {
     const questionText = `Solve: ${this.currentQuestion.text} = ?`;
     const metrics = this.ctx.measureText(questionText);
     const padding = 20;
-    const bgX = this.canvas.width / 2 - metrics.width / 2 - padding;
+    const bgX = this.width / 2 - metrics.width / 2 - padding;
     const bgY = 30;
     const bgWidth = metrics.width + padding * 2;
     const bgHeight = 50;
@@ -787,7 +787,7 @@ export default class BubblePopGameTemplate extends BaseGame {
 
     // Question text
     this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillText(questionText, this.canvas.width / 2, bgY + bgHeight / 2);
+    this.ctx.fillText(questionText, this.width / 2, bgY + bgHeight / 2);
 
     this.ctx.restore();
   }
@@ -796,7 +796,7 @@ export default class BubblePopGameTemplate extends BaseGame {
    * Render timer bar
    */
   renderTimer() {
-    const barWidth = this.canvas.width - 40;
+    const barWidth = this.width - 40;
     const barHeight = 8;
     const x = 20;
     const y = 100;
@@ -828,7 +828,7 @@ export default class BubblePopGameTemplate extends BaseGame {
     this.ctx.textAlign = 'center';
     this.ctx.fillText(
       `Time: ${Math.ceil(this.timeRemaining)}s`,
-      this.canvas.width / 2,
+      this.width / 2,
       y + barHeight + 20
     );
   }
@@ -880,12 +880,12 @@ export default class BubblePopGameTemplate extends BaseGame {
       this.ctx.font = 'bold 20px Arial';
       this.ctx.fillStyle = this.themeColors.warning;
       this.ctx.textAlign = 'right';
-      this.ctx.fillText(text, this.canvas.width - 20, 40);
+      this.ctx.fillText(text, this.width - 20, 40);
 
       // Add fire emoji for high streaks
       if (this.streakCount >= 5) {
         this.ctx.font = '24px Arial';
-        this.ctx.fillText('🔥', this.canvas.width - 20, 65);
+        this.ctx.fillText('🔥', this.width - 20, 65);
       }
 
       this.ctx.restore();
