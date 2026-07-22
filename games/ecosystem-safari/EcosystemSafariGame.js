@@ -380,8 +380,91 @@ export default class EcosystemSafariGame extends BaseGame {
       ?.addEventListener('click', () => this.setTip(this.level_.hint));
   }
 
-  // --- Task 4 placeholders (no-op until implemented) ----------------------
-  rebuildCreatures() {}
-  updateCreatures(_dt) {}
-  renderCreatures() {}
+  // --- Creature model + rendering ------------------------------------------
+  static SCALE = 6;
+  static MAX_PER_SPECIES = 8;
+
+  reducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  creatureCountFor(pop) {
+    return Math.max(
+      0,
+      Math.min(EcosystemSafariGame.MAX_PER_SPECIES, Math.round(pop / EcosystemSafariGame.SCALE))
+    );
+  }
+
+  /** Reconcile the creature list with current populations (add/remove to match counts). */
+  rebuildCreatures() {
+    if (!this.state_ || !this.canvas) return;
+    const byId = {};
+    for (const c of this.creatures) (byId[c.id] ??= []).push(c);
+    const next = [];
+    for (const p of this.state_.populations) {
+      const want = this.creatureCountFor(p.currentPopulation);
+      const have = byId[p.id] || [];
+      for (let i = 0; i < want; i++) {
+        next.push(have[i] || this.spawnCreature(p));
+      }
+    }
+    this.creatures = next;
+  }
+
+  spawnCreature(p) {
+    const w = this.canvas.width || 600;
+    const h = this.canvas.height || 400;
+    const isProducer = p.trophicLevel <= 1;
+    return {
+      id: p.id,
+      emoji: SPECIES_EMOJI[p.id] || '❓',
+      x: 20 + Math.random() * (w - 40),
+      y: isProducer ? h - 20 - Math.random() * 40 : 40 + Math.random() * (h - 90),
+      isProducer,
+      phase: Math.random() * Math.PI * 2,
+      vx: (Math.random() - 0.5) * 0.4,
+    };
+  }
+
+  updateCreatures(deltaTime) {
+    // rebuild counts, then drift (unless reduced motion).
+    this.rebuildCreatures();
+    if (this.reducedMotion() || !this.canvas) return;
+    const w = this.canvas.width;
+    for (const c of this.creatures) {
+      if (c.isProducer) continue;
+      c.phase += deltaTime / 500;
+      c.x += c.vx * (deltaTime / 16.67);
+      if (c.x < 16 || c.x > w - 16) c.vx *= -1;
+    }
+  }
+
+  renderCreatures() {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '28px serif';
+    for (const c of this.creatures) {
+      const bob = c.isProducer || this.reducedMotion() ? 0 : Math.sin(c.phase) * 4;
+      ctx.fillText(c.emoji, c.x, c.y + bob);
+    }
+  }
+
+  /** Tap a creature → fun-fact card (BaseGame passes canvas-pixel position). */
+  onClick(position) {
+    if (!this.creatures.length) return;
+    let best = null;
+    let bestD = 30 * 30; // within ~30px
+    for (const c of this.creatures) {
+      const dx = c.x - position.x;
+      const dy = c.y - position.y;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) {
+        bestD = d;
+        best = c;
+      }
+    }
+    if (best) this.showFactCard(best.id);
+  }
 }
