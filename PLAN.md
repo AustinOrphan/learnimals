@@ -93,9 +93,9 @@ absent. Verdicts:
   Geography (subjects); profile-enhanced, progress-dashboard.
 - **Absent / skeleton:** Story Safari (game modules don't exist — only a
   test harness); Ecosystem Safari (engine is empty placeholder methods
-  despite elaborate design docs); cooking/environment/history/language/
-  physics (no HTML page exists — unreachable); Coding (static "coming
-  soon" stub).
+  despite elaborate design docs — now built out, see Milestone 3 (C) below);
+  cooking/environment/history/language/physics (no HTML page exists —
+  unreachable); Coding (static "coming soon" stub).
 
 ### Shared root causes (fixing these cascades across many features)
 
@@ -142,9 +142,12 @@ profile-enhanced, progress-dashboard; systems — theme, navigation, PWA
 
 - Story Safari: game modules don't exist (only a test harness) — build or delete.
 - Ecosystem Safari: init crash FIXED 2026-07-21 (commit f21d731) — it called a
-  non-existent `window.Modal.show()`; now uses `new Modal({...}).open()`, so the
-  game initialises and shows its welcome modal. It renders and steps phases;
-  deeper gameplay depth vs the design docs is a separate build-out call.
+  non-existent `window.Modal.show()`; now uses `new Modal({...}).open()`. BUILT OUT
+  2026-07-21 — now a real 5-level guided game on `BaseGame` (grassland/forest/
+  ocean), with an animated emoji habitat and a real population-dynamics engine
+  (`EcosystemEngine`/`SpeciesManager`/`HabitatBuilder`/`DiscoveryJournal` reused
+  as the model layer). Linked from the Science subject page. Sandbox mode,
+  difficulty tiers, and achievements are v2.
 - 5 subject-less pages (cooking/environment/history/language/physics): no HTML
   exists; the generator works — generate or drop from scope.
 - Coding: static "coming soon" stub — build lessons or keep labeled.

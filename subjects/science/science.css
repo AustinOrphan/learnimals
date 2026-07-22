@@ -49,6 +49,21 @@ footer {
   margin: 0;
 }
 
+.games-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.games-list li {
+  margin: 10px 0;
+}
+
+.games-list a {
+  color: var(--text-color, #222);
+  font-weight: bold;
+}
+
 /* Small accent button used for shuffle / new quiz / next fact. */
 .science-btn {
   background-color: var(--accent-primary, #4a90d9);
