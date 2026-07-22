@@ -36,17 +36,8 @@ test.describe('adventure-quest', () => {
   });
 });
 
-test.describe('ecosystem-safari', () => {
-  test('initialises without error and opens the welcome modal', async ({ page }) => {
-    const errors: string[] = [];
-    page.on('pageerror', e => errors.push(e.message));
-    await page.goto('/games/ecosystem-safari/');
-    // window.ecosystemGame is only set if construction completes (it used to throw).
-    await page.waitForFunction(() => (window as any).ecosystemGame);
-    await expect(page.locator('.modal').first()).toBeVisible();
-    expect(errors).toEqual([]);
-  });
-});
+// ecosystem-safari's coverage moved to e2e/tests/ecosystem-safari.spec.ts when the
+// game was rebuilt on BaseGame (the old init-crash welcome modal no longer exists).
 
 // Bubble Pop was migrated to the BaseGame version (BubblePopGameTemplate):
 //  - it now extends BaseGame,
