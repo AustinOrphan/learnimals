@@ -436,6 +436,16 @@ export default class DiscoveryJournal {
   }
 
   /**
+   * Read a loaded lesson by id, ignoring unlock state. Used for end-of-level
+   * recaps where we deliberately want to show the concept regardless of triggers.
+   * @param {string} lessonId
+   * @returns {Object|null} the lesson content object, or null if unknown
+   */
+  getLessonContent(lessonId) {
+    return this.educationalContent.get(lessonId) || null;
+  }
+
+  /**
    * Get all unlocked educational content for a category
    * @param {string} category - Content category
    * @returns {Array} Array of unlocked content in category

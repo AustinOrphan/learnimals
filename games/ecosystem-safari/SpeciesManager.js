@@ -241,7 +241,7 @@ export default class SpeciesManager {
       reproductionRate: 0.1,
       adaptability: 0.6,
       size: 'large',
-      prey: ['sea_turtle', 'fish'], // fish would be another species we could add
+      prey: ['sea_turtle'], // sharks hunt sea turtles in this ecosystem
       description: 'Apex predators that keep marine ecosystems balanced',
       facts: [
         'Sharks have been around for over 400 million years',
