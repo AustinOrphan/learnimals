@@ -7,6 +7,13 @@ export default class LevelManager {
     this.current = 0;
     // Transient per-attempt trackers (reset via resetAttempt on each (re)start).
     this._healthHeldSince = null;
+    // Species observed alive at least once this attempt. Distinguishes a
+    // required species that hasn't been added to the ecosystem yet (still
+    // playable — the player has time to add it) from one that was added and
+    // then died out (a real loss). Every current guided level lists at least
+    // one `goal.requires` species that starts outside `starting` and is meant
+    // to be added via the palette, so "missing" alone can't mean "lost".
+    this._everAlive = new Set();
   }
 
   get length() {
@@ -34,6 +41,7 @@ export default class LevelManager {
 
   resetAttempt() {
     this._healthHeldSince = null;
+    this._everAlive = new Set();
   }
 
   /** Which required species are currently alive (present with a positive population). */
@@ -50,18 +58,28 @@ export default class LevelManager {
   evaluateGoal(level, state, elapsedSec) {
     const goal = level.goal;
     const alive = this._alive(state);
+    for (const id of alive) this._everAlive.add(id);
 
     switch (goal.type) {
       case 'survive': {
-        const missing = goal.requires.filter(id => !alive.has(id));
-        if (missing.length) return { status: 'lost', reason: `${missing[0]} died out` };
-        if (elapsedSec >= goal.durationSec) return { status: 'won', reason: 'balanced' };
+        // A required species that was never added isn't "lost" yet — the
+        // player may still add it via the palette. Only a required species
+        // that was alive at some point and is now gone counts as died out.
+        const diedOut = goal.requires.filter(id => this._everAlive.has(id) && !alive.has(id));
+        if (diedOut.length) return { status: 'lost', reason: `${diedOut[0]} died out` };
+        const allPresent = goal.requires.every(id => alive.has(id));
+        if (allPresent && elapsedSec >= goal.durationSec) {
+          return { status: 'won', reason: 'balanced' };
+        }
         return { status: 'playing', reason: '' };
       }
       case 'noExtinctions': {
-        const missing = goal.requires.filter(id => !alive.has(id));
-        if (missing.length) return { status: 'lost', reason: `${missing[0]} died out` };
-        if (elapsedSec >= goal.durationSec) return { status: 'won', reason: 'survived' };
+        const diedOut = goal.requires.filter(id => this._everAlive.has(id) && !alive.has(id));
+        if (diedOut.length) return { status: 'lost', reason: `${diedOut[0]} died out` };
+        const allPresent = goal.requires.every(id => alive.has(id));
+        if (allPresent && elapsedSec >= goal.durationSec) {
+          return { status: 'won', reason: 'survived' };
+        }
         return { status: 'playing', reason: '' };
       }
       case 'reachHealth': {

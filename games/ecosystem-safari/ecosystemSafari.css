@@ -618,6 +618,328 @@
   }
 }
 
+/* ==========================================================================
+   Guided-levels layout (Task 3). The rules above styled the old free-play
+   demo shell (deleted from index.html); these style the current BaseGame-
+   driven page: a topbar, Sky's tip, a canvas + live side panel, a tappable
+   species palette, and win/lose overlays.
+   ========================================================================== */
+
+.eco-game {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.eco-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.eco-goal {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.eco-goal:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.eco-timer {
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.eco-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.eco-controls button {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.eco-controls button:hover {
+  border-color: var(--accent-primary);
+}
+
+.eco-controls button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.eco-tip {
+  background: var(--accent-secondary-10, rgba(111, 66, 193, 0.1));
+  border-left: 4px solid var(--accent-secondary, var(--accent-primary));
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  margin: 0;
+  color: var(--text-primary);
+  min-height: 1.4em;
+}
+
+.eco-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(220px, 280px);
+  gap: 1rem;
+  align-items: start;
+}
+
+#ecosystem-canvas {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+}
+
+.eco-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 0.9rem;
+}
+
+.eco-side h3 {
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.eco-health {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.eco-health-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.eco-health-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--text-success);
+  border-radius: 5px;
+  transition:
+    width 0.4s ease,
+    background 0.4s ease;
+}
+
+.eco-population-panel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.eco-pop-row {
+  margin: 0;
+}
+
+.eco-pop-btn {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.eco-pop-btn:hover {
+  border-color: var(--accent-primary);
+}
+
+.eco-pop-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.eco-pop-count {
+  font-weight: 700;
+  min-width: 2ch;
+  text-align: right;
+}
+
+.eco-pop-bar {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.eco-pop-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent-primary);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.eco-emoji {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.eco-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.eco-palette-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 84px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-primary);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.eco-palette-item .eco-emoji {
+  font-size: 1.8rem;
+}
+
+.eco-palette-item .eco-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.eco-palette-item:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.eco-palette-item:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.eco-palette-item:active {
+  transform: translateY(0);
+}
+
+/* Win / lose overlays */
+.eco-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
+  padding: 1rem;
+}
+
+.eco-overlay[hidden] {
+  display: none;
+}
+
+.eco-card {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.eco-card h2 {
+  margin-top: 0;
+}
+
+.eco-card button {
+  margin-top: 0.75rem;
+  background: var(--accent-primary);
+  color: var(--text-on-accent, #142233);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.eco-card button:hover {
+  background: var(--accent-primary-dark, var(--accent-primary));
+}
+
+.eco-card button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Stack the side panel under the canvas on narrow screens */
+@media (max-width: 720px) {
+  .eco-stage {
+    grid-template-columns: 1fr;
+  }
+
+  #ecosystem-canvas {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eco-palette-item:hover {
+    transform: none;
+  }
+}
+
 /* Dark Mode Adjustments */
 @media (prefers-color-scheme: dark) {
   .ecosystem-game {
