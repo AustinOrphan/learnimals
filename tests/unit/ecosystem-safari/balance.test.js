@@ -55,6 +55,65 @@ describe('level balance (winnable with the intended action)', () => {
   }
 });
 
+describe('sequential play through a single shared engine (regression)', () => {
+  // The real controller (EcosystemSafariGame) builds ONE EcosystemEngine and
+  // reuses it across levels via engine.reset() + engine.addHabitat(...) per
+  // level (see loadCurrentLevel()) — unlike playLevel() above, which builds a
+  // fresh engine per level and therefore can never see state bleed between
+  // levels. If EcosystemEngine.reset() ever stops clearing
+  // habitatSuitability, suitability scores from every habitat visited so far
+  // in the playthrough keep accumulating in that Map, and
+  // updateEnvironmentalFactors() averages carrying capacity across ALL of
+  // them instead of just the current habitat — silently lowering carrying
+  // capacity on later levels. This test plays all 5 levels in order through
+  // one shared engine, exactly as the controller does, so it would catch
+  // that regression.
+  it('every level is winnable in order, with habitat state carried across levels as the controller carries it', () => {
+    const sm = new SpeciesManager();
+    const hb = new HabitatBuilder();
+    const engine = new EcosystemEngine({});
+    const lm = new LevelManager(levels);
+
+    const plans = {
+      'meadow-food-chain': ['rabbit'],
+      'meadow-predator-prey': ['hawk'],
+      'forest-decomposers': ['bacteria'],
+      'ocean-balance': ['sea_turtle', 'shark'],
+      'meadow-drought': ['rabbit', 'bacteria'],
+    };
+
+    for (const level of levels) {
+      // Mirror EcosystemSafariGame.loadCurrentLevel(): reset the shared
+      // engine and re-add the habitat, rather than constructing a new engine
+      // per level. No manual habitatSuitability.clear() here — reset() is
+      // solely responsible for leaving the engine in a clean state.
+      lm.resetAttempt();
+      hb.selectHabitat(level.habitat);
+      const habitat = hb.getCurrentHabitat();
+      engine.reset();
+      engine.addHabitat({ ...habitat, type: habitat.id });
+      for (const s of level.starting) engine.addSpecies(sm.getSpecies(s.species), s.population);
+
+      let elapsed = 0;
+      let verdict = { status: 'playing' };
+      const limit = level.goal.durationSec || level.goal.timeoutSec || 30;
+      let challengeFired = false;
+      for (const id of plans[level.id]) engine.addSpecies(sm.getSpecies(id), 12);
+      while (elapsed <= limit + 5 && verdict.status === 'playing') {
+        if (level.challenge && !challengeFired && elapsed >= level.challenge.atSec) {
+          engine.applyChallenge({ type: level.challenge.type });
+          challengeFired = true;
+        }
+        engine.update(TICK);
+        elapsed += TICK / 1000;
+        verdict = lm.evaluateGoal(level, engine.getEcosystemState(), elapsed);
+      }
+
+      expect(verdict.status, `level "${level.id}" should be won`).toBe('won');
+    }
+  });
+});
+
 describe('level balance (inaction does not trivially win)', () => {
   // Levels whose goal is to survive/keep specific species alive, or to reach
   // a health target, should not be winnable by doing nothing — the player

@@ -40,6 +40,7 @@ export default class EcosystemEngine {
     this.populations.clear();
     this.foodWeb.clear();
     this.relationships.clear();
+    this.habitatSuitability.clear();
 
     this.ecosystemData = {
       temperature: 20,

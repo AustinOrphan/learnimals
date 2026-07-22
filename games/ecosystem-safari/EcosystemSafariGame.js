@@ -92,6 +92,7 @@ export default class EcosystemSafariGame extends BaseGame {
     this._simAccumMs = 0;
     this._attemptOver = false;
     this._challengeFired = false;
+    this._lastHintSec = 0;
     this.levelManager.resetAttempt();
 
     // Habitat → engine (bridge id → type).
