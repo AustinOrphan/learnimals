@@ -131,3 +131,21 @@ describe('level balance (inaction does not trivially win)', () => {
     });
   }
 });
+
+describe('forest-decomposers requires an actual decomposer (regression)', () => {
+  // goal.type is reachHealth, and the starting oak_tree/deer/wolf mix already
+  // drifts up near the health target on its own — a biodiversity bump from
+  // adding a bee (no decomposer at all) used to be enough to win, defeating
+  // the level's "add decomposers" lesson. goal.requires: ['bacteria'] (see
+  // LevelManager.evaluateGoal's reachHealth branch) closes that hole: health
+  // above target is necessary but not sufficient without bacteria alive too.
+  const level = levels.find(l => l.id === 'forest-decomposers');
+
+  it('wins when bacteria is added', () => {
+    expect(playLevel(level, ['bacteria'])).toBe('won');
+  });
+
+  it('does NOT win when only a bee is added (no bacteria)', () => {
+    expect(playLevel(level, ['bee'])).not.toBe('won');
+  });
+});

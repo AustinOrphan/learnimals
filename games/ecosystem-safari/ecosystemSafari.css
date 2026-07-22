@@ -654,7 +654,8 @@
   outline-offset: 2px;
 }
 
-.eco-timer {
+.eco-timer,
+.eco-score {
   font-weight: 600;
   color: var(--text-secondary);
   white-space: nowrap;

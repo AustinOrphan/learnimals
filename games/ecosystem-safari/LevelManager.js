@@ -73,17 +73,9 @@ export default class LevelManager {
         }
         return { status: 'playing', reason: '' };
       }
-      case 'noExtinctions': {
-        const diedOut = goal.requires.filter(id => this._everAlive.has(id) && !alive.has(id));
-        if (diedOut.length) return { status: 'lost', reason: `${diedOut[0]} died out` };
-        const allPresent = goal.requires.every(id => alive.has(id));
-        if (allPresent && elapsedSec >= goal.durationSec) {
-          return { status: 'won', reason: 'survived' };
-        }
-        return { status: 'playing', reason: '' };
-      }
       case 'reachHealth': {
-        if (state.health >= goal.healthTarget) {
+        const requiresMet = !goal.requires || goal.requires.every(id => alive.has(id));
+        if (state.health >= goal.healthTarget && requiresMet) {
           if (this._healthHeldSince == null) this._healthHeldSince = elapsedSec;
           if (elapsedSec - this._healthHeldSince >= goal.holdSec) {
             return { status: 'won', reason: 'healthy' };

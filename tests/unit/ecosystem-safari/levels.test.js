@@ -35,7 +35,7 @@ describe('level definitions integrity', () => {
   it('every goal is well-formed for its type', () => {
     for (const lvl of levels) {
       const g = lvl.goal;
-      expect(['survive', 'reachHealth', 'noExtinctions', 'biodiversity']).toContain(g.type);
+      expect(['survive', 'reachHealth', 'biodiversity']).toContain(g.type);
       if (g.type === 'survive') {
         expect(Array.isArray(g.requires)).toBe(true);
         expect(g.durationSec).toBeGreaterThan(0);

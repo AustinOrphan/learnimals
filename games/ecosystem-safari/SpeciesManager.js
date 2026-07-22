@@ -154,8 +154,17 @@ export default class SpeciesManager {
       preferredHabitat: 'ocean',
       maxPopulation: 15,
       growthRate: 0.08,
-      mortalityRate: 0.12,
-      energyNeeds: 18,
+      // mortalityRate/energyNeeds tuned down from 0.12/18 (games/ecosystem-safari
+      // v1.1): sea_turtle is only used by the ocean-balance level, and at the
+      // original values it was food-limited (foodAvailability ~0.2 against a
+      // ~50-population seaweed patch) and starved out around t=9s even with
+      // seaweed + shark both added, leaving only a ~2s winnable window before
+      // the level's durationSec. These lower values let it settle into a
+      // stable, slowly-declining-but-non-extinct equilibrium alongside a
+      // hunting shark, giving real margin to the level's durationSec: 25. See
+      // tests/unit/ecosystem-safari/balance.test.js.
+      mortalityRate: 0.03,
+      energyNeeds: 6,
       reproductionRate: 0.1,
       adaptability: 0.4,
       size: 'large',

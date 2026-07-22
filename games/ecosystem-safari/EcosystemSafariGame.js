@@ -5,12 +5,17 @@ import HabitatBuilder from './HabitatBuilder.js';
 import DiscoveryJournal from './DiscoveryJournal.js';
 import LevelManager from './LevelManager.js';
 import levels from './levels.js';
+import { getLocalStorage, setLocalStorage } from '../../utils/common.js';
+
+// localStorage key for the highest level index the player has reached, so a
+// reload resumes progress instead of restarting from level 0.
+const PROGRESS_KEY = 'ecosystem-safari-progress';
 
 // Emoji per species id (no art assets). Producers first, then consumers, decomposer, pollinator.
 const SPECIES_EMOJI = {
   grass: '🌿',
   oak_tree: '🌳',
-  seaweed: '🪸',
+  seaweed: '🍃',
   rabbit: '🐰',
   deer: '🦌',
   sea_turtle: '🐢',
@@ -48,6 +53,12 @@ export default class EcosystemSafariGame extends BaseGame {
     this.discoveryJournal = new DiscoveryJournal();
     this.engine = new EcosystemEngine({});
     this.levelManager = new LevelManager(levels);
+
+    // Resume at the highest level the player has previously reached, if any.
+    const savedLevel = getLocalStorage(PROGRESS_KEY, 0);
+    if (Number.isInteger(savedLevel) && savedLevel > 0 && savedLevel < levels.length) {
+      this.levelManager.current = savedLevel;
+    }
 
     this.creatures = []; // {id, emoji, x, y, driftPhase} — populated in Task 4
     this.state_ = null; // latest engine.getEcosystemState()
@@ -224,6 +235,9 @@ export default class EcosystemSafariGame extends BaseGame {
 
     const timer = document.getElementById('eco-timer');
     if (timer) timer.textContent = this.timerText();
+
+    const scoreEl = document.getElementById('eco-score');
+    if (scoreEl) scoreEl.textContent = `Score: ${this.score}`;
   }
 
   /**
@@ -295,7 +309,6 @@ export default class EcosystemSafariGame extends BaseGame {
     const g = level.goal;
     switch (g.type) {
       case 'survive':
-      case 'noExtinctions':
         return `${level.title}: keep ${g.requires.map(id => SPECIES_EMOJI[id] || id).join(' ')} alive for ${g.durationSec}s`;
       case 'reachHealth':
         return `${level.title}: get ecosystem health to ${g.healthTarget}%`;
@@ -336,6 +349,11 @@ export default class EcosystemSafariGame extends BaseGame {
   winLevel() {
     this._attemptOver = true;
     this.addScore(100);
+    // addScore() lands after this frame's syncPanels() call in update(), and
+    // _attemptOver now short-circuits update() (so syncPanels won't run
+    // again) — refresh the score display directly so the win is reflected.
+    const scoreEl = document.getElementById('eco-score');
+    if (scoreEl) scoreEl.textContent = `Score: ${this.score}`;
     this.playSound(660, 200);
     const lesson = this.discoveryJournal.getLessonContent(this.level_.lesson);
     const lessonEl = document.getElementById('eco-win-lesson');
@@ -371,8 +389,13 @@ export default class EcosystemSafariGame extends BaseGame {
 
   wireControls() {
     document.getElementById('eco-next')?.addEventListener('click', () => {
-      if (this.levelManager.current >= this.levelManager.length - 1) this.levelManager.reset();
-      else this.levelManager.advance();
+      if (this.levelManager.current >= this.levelManager.length - 1) {
+        this.levelManager.reset();
+        setLocalStorage(PROGRESS_KEY, 0);
+      } else {
+        this.levelManager.advance();
+        setLocalStorage(PROGRESS_KEY, this.levelManager.current);
+      }
       this.loadNextAttempt();
     });
     document.getElementById('eco-retry')?.addEventListener('click', () => {

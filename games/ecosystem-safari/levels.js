@@ -1,7 +1,7 @@
 // The 5 guided levels for Ecosystem Safari v1. Each is a small ecological puzzle
 // with one teaching goal. Species in `starting`/`palette` must belong to the
 // level's habitat roster (grassland/forest/ocean); `lesson` is a DiscoveryJournal
-// key (underscore form); `goal.type` is one of survive|reachHealth|noExtinctions|biodiversity.
+// key (underscore form); `goal.type` is one of survive|reachHealth|biodiversity.
 
 export const levels = [
   {
@@ -45,7 +45,13 @@ export const levels = [
       { species: 'wolf', population: 1 },
     ],
     palette: ['bacteria', 'bee'],
-    goal: { type: 'reachHealth', healthTarget: 71, holdSec: 4, timeoutSec: 40 },
+    goal: {
+      type: 'reachHealth',
+      healthTarget: 71,
+      holdSec: 4,
+      timeoutSec: 40,
+      requires: ['bacteria'],
+    },
     challenge: null,
     lesson: 'limiting_factors',
     hint: 'Add bacteria — decomposers recycle dead matter back into nutrients the trees need.',
@@ -58,7 +64,7 @@ export const levels = [
       'Sky: Dive in! A healthy ocean needs producers, plant-eaters, AND predators. Build a food web that stays in balance.',
     starting: [{ species: 'seaweed', population: 50 }],
     palette: ['sea_turtle', 'shark', 'bacteria'],
-    goal: { type: 'survive', requires: ['seaweed', 'sea_turtle', 'shark'], durationSec: 7 },
+    goal: { type: 'survive', requires: ['seaweed', 'sea_turtle', 'shark'], durationSec: 25 },
     challenge: null,
     lesson: 'food_chains',
     hint: 'Seaweed feeds sea turtles, and sharks hunt sea turtles. Add all three and watch the balance.',
