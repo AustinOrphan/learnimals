@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,7 +32,7 @@ jobs:
       # public sibling repo must be checked out two levels above the package
       # root and built before npm ci.
       - name: Checkout e2e-core (public sibling dependency)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: AustinOrphan/e2e-core
           path: .e2e-core-checkout
